@@ -3,7 +3,8 @@ import Card from "../components/Card";
 import Notification from "../components/Notification";
 import Events from "../components/Events";
 import NoticeBoard from "../components/Noticeboard";
-import { FaDoorOpen, FaExclamationCircle } from "react-icons/fa";
+import { FaDoorOpen, FaExclamationCircle ,FaUser} from "react-icons/fa";
+
 
 const Dashboard = () => {
   return (
@@ -15,11 +16,13 @@ const Dashboard = () => {
       <header className="flex justify-between items-center w-full px-6 py-4 rounded-[12px]">
   <h1 className="text-2xl font-bold flex-1">Dashboard</h1>
   <div className="flex items-center space-x-6">
-    <button className="bg-red-500 text-white px-5 py-2 rounded-[12px]">⚠ Alert</button>
-    <button className="bg-white text-black px-8 py-2 rounded-[12px] border border-gray-300">
-      Profile
-    </button>
-  </div>
+    <button className="bg-white text-red-600 px-5 py-2 rounded-[12px]">⚠ Alert</button>
+    <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] transition-all duration-200 hover:text-gray-600">
+        <FaUser className="w-5 h-5" /> 
+        <span>Profile</span>
+      </button>
+
+</div>
 </header>
 
 <div className="bg-white shadow-md p-6 rounded-lg flex justify-between items-center mt-6">
