@@ -1,4 +1,4 @@
-const Card = ({ title, value, icon, bgColor = "bg-blue-600" }) => {
+const Card = ({ title, value, icon, bgColor="bg-[#1360AB]" }) => {
   return (
     <div className={`${bgColor} text-white p-4 rounded-[12px] flex flex-col items-center justify-center w-40 h-24`}>
       <div className="text-lg">{icon}</div>

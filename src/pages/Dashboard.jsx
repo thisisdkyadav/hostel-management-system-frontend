@@ -9,42 +9,53 @@ import { FaDoorOpen, FaExclamationCircle ,FaUser} from "react-icons/fa";
 const Dashboard = () => {
   return (
     <div className="flex bg-[#EFF3F4] min-h-screen">
-      
-      <Sidebar />
+  <Sidebar />
 
-      <div className="flex-1 p-6">
-      <header className="flex justify-between items-center w-full px-6 py-4 rounded-[12px]">
-  <h1 className="text-2xl font-bold flex-1">Dashboard</h1>
-  <div className="flex items-center space-x-6">
-    <button className="bg-white text-red-600 px-5 py-2 rounded-[12px]">⚠ Alert</button>
-    <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] transition-all duration-200 hover:text-gray-600">
-        <FaUser className="w-5 h-5" /> 
-        <span>Profile</span>
-      </button>
+  <div className="px-10 py-6 flex-1">
+    <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
+      <h1 className="text-2xl px-3 font-bold">Dashboard</h1>
+      <div className="flex items-center space-x-6">
+        <button className="bg-white text-red-600 px-5 py-2 rounded-[12px]">⚠ Alert</button>
+        <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] hover:text-gray-600">
+          <FaUser className="w-5 h-5" /> 
+          <span>Profile</span>
+        </button>
+      </div>
+    </header>
 
-</div>
-</header>
-
-<div className="bg-white shadow-md p-6 rounded-lg flex justify-between items-center mt-6">
-  <div>
-    <h3 className="text-gray-600">Your Room</h3>
-    <p className="text-3xl font-bold">207 E2</p>
-  </div>
-  
-</div>
-
-        <div className="mt-4 flex space-x-4">
-          <Card title="Pending Complaints" value="5" icon={<FaExclamationCircle />} bgColor="bg-[#1360AB]" />
-          <Card title="Lost & Found" value="0" icon={<FaDoorOpen />} bgColor="bg-[#1360AB]" />
+    {/* Main Container with Left and Right Sections */}
+    <div className="flex gap-6 items-start"> {/* ✅ Ensures both sections start at the top */}
+      {/* Left Section */}
+      <div className=" px-6 py-2 w-1/2">
+        <div className="bg-white shadow-md p-6 rounded-lg mt-6 w-100 h-[200px]">
+          <h3 className="text-gray-600">Your Room</h3>
+          <p className="text-3xl font-bold">207 E2</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-6">
+        <div className="mt-13 flex space-x-4">
+          <Card title="Pending Complaints" value="5" icon={<FaExclamationCircle />} />
+          <Card title="Lost & Found" value="0" icon={<FaDoorOpen />} />
+        </div>
+      </div>
+
+      {/* Right Section */}
+      <div className="w-1/2 py-8 flex flex-col">
+        {/* First row with Events and Notifications */}
+        <div className="grid grid-cols-2 gap-4">
           <Events />
           <Notification />
+        </div>
+
+        {/* Second row with NoticeBoard */}
+        <div className="mt-4">
           <NoticeBoard />
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+  
   );
 };
 
