@@ -23,9 +23,8 @@ const Dashboard = () => {
       </div>
     </header>
 
-    {/* Main Container with Left and Right Sections */}
-    <div className="flex gap-6 items-start"> {/* ✅ Ensures both sections start at the top */}
-      {/* Left Section */}
+    
+    <div className="flex gap-6 items-start">
       <div className=" px-6 py-2 w-1/2">
         <div className="bg-white shadow-md p-6 rounded-lg mt-6 w-100 h-[200px]">
           <h3 className="text-gray-600">Your Room</h3>
@@ -38,15 +37,13 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Right Section */}
       <div className="w-1/2 py-8 flex flex-col">
-        {/* First row with Events and Notifications */}
+  
         <div className="grid grid-cols-2 gap-4">
           <Events />
           <Notification />
         </div>
 
-        {/* Second row with NoticeBoard */}
         <div className="mt-4">
           <NoticeBoard />
         </div>
