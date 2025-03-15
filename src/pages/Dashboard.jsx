@@ -4,7 +4,7 @@ import Notification from "../components/Notification";
 import Events from "../components/Events";
 import NoticeBoard from "../components/Noticeboard";
 import { FaDoorOpen, FaExclamationCircle ,FaUser} from "react-icons/fa";
-
+import { CgSearchFound } from "react-icons/cg";
 
 const Dashboard = () => {
   return (
@@ -15,7 +15,7 @@ const Dashboard = () => {
     <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
       <h1 className="text-2xl px-3 font-bold">Dashboard</h1>
       <div className="flex items-center space-x-6">
-        <button className="bg-white text-red-600 px-5 py-2 rounded-[12px]">⚠ Alert</button>
+        <button className="bg-white text-red-600 px-5 py-2 shadow--[0px_1px_20px_rgba(0,0,0,0.06)] rounded-[12px]">⚠ Alert</button>
         <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] hover:text-gray-600">
           <FaUser className="w-5 h-5" /> 
           <span>Profile</span>
@@ -26,28 +26,39 @@ const Dashboard = () => {
     
     <div className="flex gap-6 items-start">
       <div className=" px-6 py-2 w-1/2">
-        <div className="bg-white shadow-md p-6 rounded-lg mt-6 w-100 h-[200px]">
+        <div className="bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.06)] p-6 rounded-[20px] mt-6 w-100 h-[200px]">
           <h3 className="text-gray-600">Your Room</h3>
           <p className="text-3xl font-bold">207 E2</p>
         </div>
 
         <div className="mt-13 flex space-x-4">
           <Card title="Pending Complaints" value="5" icon={<FaExclamationCircle />} />
-          <Card title="Lost & Found" value="0" icon={<FaDoorOpen />} />
+          <Card title="Lost & Found" value="0" icon={<CgSearchFound />} />
         </div>
       </div>
 
-      <div className="w-1/2 py-8 flex flex-col">
-  
-        <div className="grid grid-cols-2 gap-4">
-          <Events />
-          <Notification />
-        </div>
+      <div className="w-1/2 py-8 h-[600px] flex flex-col">
 
-        <div className="mt-4">
-          <NoticeBoard />
-        </div>
-      </div>
+  <div className="flex gap-4 items-start">
+    <div className="w-[300px] ">
+      <Events />
+    </div>
+    <div className="w-[200px]">
+      <Notification />
+    </div>
+  </div>
+
+  <div className="mt-auto py-4 w-full">
+    <NoticeBoard />
+  </div>
+
+</div>
+
+
+
+
+
+
     </div>
   </div>
 </div>
