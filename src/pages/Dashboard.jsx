@@ -5,7 +5,7 @@ import Events from "../components/Events";
 import NoticeBoard from "../components/Noticeboard";
 import { FaDoorOpen, FaExclamationCircle ,FaUser} from "react-icons/fa";
 import { CgSearchFound } from "react-icons/cg";
-
+import { BsDoorOpen,BsDoorOpenFill } from "react-icons/bs";
 const Dashboard = () => {
   return (
     <div className="flex bg-[#EFF3F4] min-h-screen">
@@ -27,7 +27,10 @@ const Dashboard = () => {
     <div className="flex gap-6 items-start">
       <div className=" px-6 py-2 w-1/2">
         <div className="bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.06)] p-6 rounded-[20px] mt-6 w-100 h-[200px]">
+        <div className="flex items-center space-x-2">
+        <BsDoorOpenFill className="text-[#1360AB] text-xl"/>
           <h3 className="text-gray-600">Your Room</h3>
+          </div>
           <p className="text-3xl font-bold">207 E2</p>
         </div>
 

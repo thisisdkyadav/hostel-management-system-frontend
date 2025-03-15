@@ -17,7 +17,7 @@ const Sidebar = () => {
               ${active === "Dashboard" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
             onClick={() => setActive("Dashboard")}
           >
-            <MdSpaceDashboard  className="mr-3"/> Dashboard
+            <MdSpaceDashboard  className="mr-3 "/> Dashboard
           </li>
 
           <li 
