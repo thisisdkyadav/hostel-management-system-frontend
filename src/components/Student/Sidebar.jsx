@@ -1,5 +1,5 @@
 import { FaUser, FaCog, FaExclamationTriangle, FaClipboardList, FaSearch } from "react-icons/fa";
-import IITI_Logo from "../assets/logos/IITILogo.png";  
+import IITI_Logo from "../../assets/logos/IITILogo.png";  
 import { useState } from "react";
 import { MdSpaceDashboard } from "react-icons/md";
 

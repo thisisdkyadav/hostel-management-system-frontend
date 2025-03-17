@@ -1,5 +1,5 @@
 // import { ReactComponent as NoticeIcon } from "../assets/icons/noticeboard.svg";
-import nb from "../assets/icons/noticeboard.svg";
+import nb from "../../assets/icons/noticeboard.svg";
 const Noticeboard = () => {
   return (
     <div className="bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.06)] py-4 rounded-[20px] w-130 h-70 text-center">
