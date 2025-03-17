@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "../pages/Dashboard";
+import SDashboard from "../pages/student/SDashboard";
 import LoginPage from "../pages/LoginPage";
 const AppRoutes = () => {
   return (
     <Routes>
      
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
     </Routes>
   );
