@@ -15,7 +15,7 @@ const Dashboard = () => {
     <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
       <h1 className="text-2xl px-3 font-bold">Dashboard</h1>
       <div className="flex items-center space-x-6">
-        <button className="bg-white text-red-600 px-5 py-2 shadow--[0px_1px_20px_rgba(0,0,0,0.06)] rounded-[12px]">⚠ Alert</button>
+        <button className="bg-white text-red-600 px-5 py-2 shadow-[0px_1px_20px_rgba(0,0,0,0.06)] rounded-[12px]">⚠ Alert</button>
         <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] hover:text-gray-600">
           <FaUser className="w-5 h-5" /> 
           <span>Profile</span>
