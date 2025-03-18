@@ -1,9 +1,10 @@
 import React from "react";
-import Sidebar from "../../components/Warden/Sidebar";
-import Card from "../../components/Warden/Card";
-import Events from "../../components/Warden/Events";
-import Notification from "../../components/Warden/Notification";
-import IssueNotice from "../../components/Warden/Issuenotice";
+import Sidebar from "../../components/warden/Sidebar";
+import Card from "../../components/warden/Card";
+import Events from "../../components/warden/Events";
+import Navbar from "../../components/warden/Navbar";
+import Notification from "../../components/warden/Notification";
+import IssueNotice from "../../components/warden/Issuenotice";
 import { FaBuilding } from "react-icons/fa";
 
 const Dashboard = () => {
@@ -15,7 +16,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 p-6">
         {/* Header */}
-        <header className="flex justify-between items-center mb-6">
+        {/* <header className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold">Warden</h1>
             <p className="text-sm text-gray-500">13 Feb 2025</p>
@@ -26,7 +27,8 @@ const Dashboard = () => {
             </button>
             <span className="font-medium text-gray-700">Warden</span>
           </div>
-        </header>
+        </header> */}
+        <Navbar />
 
         {/* Top Section Grid */}
         <div className="grid grid-cols-12 gap-4 mb-6">
