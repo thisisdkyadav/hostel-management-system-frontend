@@ -36,25 +36,25 @@ const Complaint = () => {
 
   return (
     <div className="flex">
-      {/* Sidebar */}
+     
       <Sidebar />
 
-      {/* Main Content */}
+     
       <div className="flex-1 p-6 bg-[#EFF3F4] min-h-screen">
-        {/* Navbar */}
+       
         <Navbar />
 
-        {/* Search & Filter */}
-        <div className="flex items-center space-x-4 bg-white p-3 rounded-lg shadow-md">
-          <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 rounded-md">
+       
+        <div className="flex items-center space-x-4 bg-[#EFF3F4] py-3 px-4 h-10 w-[100vh] rounded-lg ">
+          <button className="flex items-center space-x-2 px-4 py-2 h-8 bg-gray-200 rounded-[12px]">
             <FaBars />
             <span>Filter by categories</span>
           </button>
-          <div className="relative flex-1">
+          <div className="relative shadow-[0px_1px_20px_rgba(0,0,0,0.06) rounded-[12px] h-10 bg-white flex-1">
             <input
               type="text"
               placeholder="Search complaints..."
-              className="w-full pl-10 pr-4 py-2 border rounded-md focus:ring-1 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2   rounded-[12px] focus:ring-1 focus:ring-[#1360AB] outline-none"
             />
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
           </div>
