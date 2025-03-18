@@ -1,4 +1,4 @@
-import Sidebar from "../../components/student/Sidebar";
+import Sidebar from "../../components/student/Sidebar2.jsx";
 import Card from "../../components/student/Card";
 import Notification from "../../components/student/Notification";
 import Events from "../../components/student/Events";
