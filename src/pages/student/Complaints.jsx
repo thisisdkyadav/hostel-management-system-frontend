@@ -52,14 +52,14 @@ const Complaints = () => {
             </div>
         </div>
 
-        <div className='absolute left-[17%] top-[22%] w-[55%] h-[70vh] overflow-y-scroll flex flex-col gap-3'>
+        <div className='absolute left-[17%] top-[22%] w-[60%] h-[70vh] overflow-y-scroll flex flex-col gap-3'>
             <ComplaintsCard />
             <ComplaintsCard />
             <ComplaintsCard />
             <ComplaintsCard />
         </div>
 
-        <div className='absolute left-[74%] top-[22%] w-[20%] h-[70vh]'>
+        <div className='absolute left-[80%] top-[22%] w-[15%] h-[70vh]'>
             <PendingComplaintsCard />
         </div>
         
