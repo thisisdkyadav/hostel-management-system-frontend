@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import user from '../../assets/girlImg.jpeg'
 import SideBar from '../../components/Student/Sidebar'
+import LostAndFoundCard from '../../components/Student/LostAndFoundCard'
+import LostAndFoundComplaintCard from '../../components/Student/LostAndFoundComplaintCard'
 
 const LostAndFound = () => {
+    const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click(); // Trigger file input click
+  };
   return (
     <div className='bg-neutral-100'>
         <SideBar />
@@ -48,9 +55,113 @@ const LostAndFound = () => {
             </div>
         </div>
 
-        <div className='absolute left-[17%] top-[15%] bg-black flex flex-col gap-8 rounded-xl w-[60%] h-[20%]'>
-            
-            
+        <div className='absolute left-[20%] top-[20%] flex flex-col gap-7 rounded-xl w-[60%] h-[80%]'>
+            <div className=' bg-[#1360AB] !p-2 !px-5 rounded-xl flex gap-17 max-h-[45%] w-[40%] items-center justify-between'>
+                <div className='flex flex-row gap-3 items-center justify-start'>
+                    <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="4" width="36" height="36" rx="8" fill="#85AED6"/>
+                        <rect x="4" y="4" width="36" height="36" rx="8" stroke="#85AED6" stroke-width="8"/>
+                        <path d="M15.0001 12.6667H19.6667M12.6667 19.6667V15M22.0001 15V19.6667M15.0001 22H19.6667M24.3334 22H29.0001M31.3334 24.3333V29M22.0001 24.3333V29M24.3334 31.3333H29.0001" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12.6666 15C13.9552 15 14.9999 13.9553 14.9999 12.6667C14.9999 11.378 13.9552 10.3333 12.6666 10.3333C11.3779 10.3333 10.3333 11.378 10.3333 12.6667C10.3333 13.9553 11.3779 15 12.6666 15Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12.6666 24.3333C13.9552 24.3333 14.9999 23.2887 14.9999 22C14.9999 20.7113 13.9552 19.6667 12.6666 19.6667C11.3779 19.6667 10.3333 20.7113 10.3333 22C10.3333 23.2887 11.3779 24.3333 12.6666 24.3333Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22.0001 15C23.2887 15 24.3334 13.9553 24.3334 12.6667C24.3334 11.378 23.2887 10.3333 22.0001 10.3333C20.7114 10.3333 19.6667 11.378 19.6667 12.6667C19.6667 13.9553 20.7114 15 22.0001 15Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22.0001 24.3333C23.2887 24.3333 24.3334 23.2887 24.3334 22C24.3334 20.7113 23.2887 19.6667 22.0001 19.6667C20.7114 19.6667 19.6667 20.7113 19.6667 22C19.6667 23.2887 20.7114 24.3333 22.0001 24.3333Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M31.3333 24.3333C32.622 24.3333 33.6667 23.2887 33.6667 22C33.6667 20.7113 32.622 19.6667 31.3333 19.6667C30.0447 19.6667 29 20.7113 29 22C29 23.2887 30.0447 24.3333 31.3333 24.3333Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22.0001 33.6667C23.2887 33.6667 24.3334 32.622 24.3334 31.3333C24.3334 30.0447 23.2887 29 22.0001 29C20.7114 29 19.6667 30.0447 19.6667 31.3333C19.6667 32.622 20.7114 33.6667 22.0001 33.6667Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M31.3333 33.6667C32.622 33.6667 33.6667 32.622 33.6667 31.3333C33.6667 30.0447 32.622 29 31.3333 29C30.0447 29 29 30.0447 29 31.3333C29 32.622 30.0447 33.6667 31.3333 33.6667Z" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <p className='text-white font-semibold text-xl'>Lost and Found</p>
+                </div>
+                <div>
+                    <p className='text-white text-2xl'>5</p>
+                </div>
+            </div>
+            <div className='flex flex-col items-center gap-5 w-[80%] h-[70%] overflow-y-scroll' >
+                <LostAndFoundComplaintCard />
+                <LostAndFoundComplaintCard />
+                <LostAndFoundComplaintCard />
+                
+            </div>
+        </div>
+
+        <div className='absolute flex flex-col gap-3 left-[72%] top-[17%] w-[25%] h-[60%]'>
+            <div className='!p-3 flex flex-col items-start justify-start gap-3 bg-white rounded-xl'>
+                <div className='flex items-center !p-1 justify-between '>
+                    <div className='flex items-center justify-start gap-3'>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z" stroke="black" stroke-width="1.5"/>
+                            <path d="M18 18H10" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18 14H15M12 14H10" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p className='text-lg text-black text-semibold'>Products submitted by you</p>
+                    </div>
+                </div>
+                <div className='h-0.5 w-[98%] bg-neutral-300 !my-1' ></div>
+                <div className='flex flex-col gap-7 items-start h-[68%] overflow-y-scroll !p-1'>
+                    <div className='flex !pl-1 items-center justify-start gap-3'>
+                        <svg width="15" height="15" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 10.5C8.20914 10.5 10 8.70914 10 6.5C10 4.29086 8.20914 2.5 6 2.5C3.79086 2.5 2 4.29086 2 6.5C2 8.70914 3.79086 10.5 6 10.5Z" stroke="black" stroke-width="1.75" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora, sequi.</p>
+                    </div>
+                    <div className='flex !pl-1 items-center justify-start gap-3'>
+                        <svg width="15" height="15" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 10.5C8.20914 10.5 10 8.70914 10 6.5C10 4.29086 8.20914 2.5 6 2.5C3.79086 2.5 2 4.29086 2 6.5C2 8.70914 3.79086 10.5 6 10.5Z" stroke="black" stroke-width="1.75" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora, sequi.</p>
+                    </div>
+                    <div className='flex !pl-1 items-center justify-start gap-3'>
+                        <svg width="15" height="15" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 10.5C8.20914 10.5 10 8.70914 10 6.5C10 4.29086 8.20914 2.5 6 2.5C3.79086 2.5 2 4.29086 2 6.5C2 8.70914 3.79086 10.5 6 10.5Z" stroke="black" stroke-width="1.75" stroke-linejoin="round"/>
+                        </svg>
+                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora, sequi.</p>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div className='!p-3 flex flex-col items-start justify-start gap-3 bg-white rounded-xl'>
+                <div className='flex items-center !p-1 justify-between gap-15'>
+                    <div className='flex items-center justify-start gap-3'>
+                        <svg width="34" height="33" viewBox="0 0 34 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.5 17.875C8.5 13.3186 12.3056 9.625 17 9.625C21.6944 9.625 25.5 13.3186 25.5 17.875C25.5 22.4313 21.6944 26.125 17 26.125C12.3056 26.125 8.5 22.4313 8.5 17.875Z" stroke="black" stroke-width="1.5"/>
+                            <path d="M21.9584 11V7.59087C21.9584 4.91733 19.7385 2.75 17.0001 2.75C14.2617 2.75 12.0417 4.91733 12.0417 7.59087V11" stroke="black" stroke-width="1.5"/>
+                            <path d="M16.9998 17.875H17.0125" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.0001 26.125V30.25M17.0001 30.25H28.3334M17.0001 30.25H5.66675" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+
+                        <p className='text-lg text-black text-semibold'>Write about your lost product</p>
+                    </div>
+                    <div className='cursor-pointer'>
+                        <svg width="40" height="40" viewBox="0 0 59 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M51.7422 5.85147C46.3879 1.3558 6.11251 12.3686 6.14577 16.3894C6.18348 20.949 21.8744 22.3516 26.2234 23.303C28.8389 23.875 29.5392 24.4615 30.1423 26.5997C32.8735 36.2835 34.2447 41.1001 37.37 41.2076C42.3516 41.3793 56.9676 10.2389 51.7422 5.85147Z" stroke="black" stroke-width="1.5"/>
+                            <path d="M28.271 23.9583L36.8752 17.25" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <div className='h-0.5 w-[98%] bg-neutral-300 !my-1' ></div>
+                <div className='flex items-center justify-center gap-3'>
+                    <div className='inline-block'>
+                        <textarea name="lostandfoundcomplaint" id="" placeholder="Type your text here..." className='w-[90%] h-40 p-2'></textarea>
+                    </div>
+                    <div className='h-40 w-0.5 bg-neutral-300 !my-1' ></div>
+                    <div className='w-10'>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            onChange={(e) => console.log(e.target.files[0])}
+                        />
+                        <button
+                            onClick={handleButtonClick}
+                            className=" text-neutral-400 px-4 py-2 rounded-lg"
+                        >
+                            Upload/Drag and drop image of lost item here
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
         </div>
 
     </div>
