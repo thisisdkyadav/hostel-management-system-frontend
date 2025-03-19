@@ -11,16 +11,15 @@ import Complaint from "../pages/warden/Complaint"
 import MDashboard from "../pages/maintainance/MDashboard"
 import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
+import Notification from "../components/Maintainance/NotificationM"
+// import related to admin
 import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
 import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
-
-import MDashboard from "../pages/maintainance/MDashboard";
-import ScheduleM from "../pages/maintainance/ScheduleM";
-import ComplaintsPage from "../pages/maintainance/ComplaintsPage";
+import AlertPage from "../pages/maintainance/AlertPage"
 const AppRoutes = () => {
   return (
     <Routes>
@@ -34,13 +33,15 @@ const AppRoutes = () => {
 
       <Route path="/guard/dashboard" element={<GuardDashboard />} />
       <Route path="/AddVisitor/dashboard" element={<AddVisitor />} />
-
       <Route path="/warden/complaint" element={<Complaint />} />
+
       {/* Routes for maintenance related pages*/}
       <Route path="/maintainance/dashboard" element={<MDashboard />} />
       <Route path="/maintainance/complaints" element={<ComplaintsPage />} />
       <Route path="/maintainance/schedule" element={<ScheduleM />} />
+      <Route path= "/maintainance/alert" element={<AlertPage />} />
 
+      {/* Routes for admin related pages */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="hostels" element={<AdminHostels />} />
