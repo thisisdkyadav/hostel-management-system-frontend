@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SideBar from '../../components/Student/Sidebar'
 import user from '../../assets/girlImg.jpeg'
 import { BsDoorOpen, BsDoorOpenFill } from "react-icons/bs";
@@ -6,6 +6,7 @@ import CourseComponent from '../../components/Student/CourseComponent';
 import ContactCard from '../../components/Student/ContactCard';
 
 const Profile = () => {
+    const [isOpen, setIsOpen] = useState(false);
     return (
         <div className='bg-neutral-100'>
             <SideBar />
@@ -178,6 +179,54 @@ const Profile = () => {
                     <ContactCard />
                 </div>
             </div> 
+            <div className="bg-neutral-100 min-h-screen relative">
+      
+      <button
+        className="fixed left-[80%] top-[90%] w-[14%] py-2 bg-[#1360AB] text-white rounded-lg shadow-md hover:bg-[#a79edb] transition"
+        onClick={() => setIsOpen(true)}
+      >
+        Apply for Room Change
+      </button>
+
+      
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+         
+          <div
+            className="absolute inset-0 bg-opacity-20 backdrop-blur-sm"
+            onClick={() => setIsOpen(false)}
+          ></div>
+
+         
+          <div className="relative bg-[#1360AB] w-[40%] p-6 rounded-[12px] shadow-lg">
+           
+            <button
+              className="absolute top-3 right-3 text-white text-xl"
+              onClick={() => setIsOpen(false)}
+            >
+              &times;
+            </button>
+
+            
+            <h2 className="text-white text-xl font-semibold mb-4">Apply for Room Change</h2>
+
+            
+            <div className="flex flex-col gap-3">
+              <input
+                type="text"
+                placeholder="Preferred Room No.-"
+                className="p-2 rounded-[12px] bg-gray-200 w-full"
+              />
+              <textarea placeholder="Reason For Room Change-" className="p-2 bg-gray-200 rounded-lg w-full h-[100px]" />
+
+              <button className="bg-green-500 text-black px-6 py-2 rounded-md hover:bg-green-600">
+                SUBMIT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
         </div>
     )
 }
