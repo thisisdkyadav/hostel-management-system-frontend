@@ -6,8 +6,10 @@ import DashboardSection from "../../components/admin/DashboardSection"
 import StatCard from "../../components/admin/StatCard"
 import ProgressItem from "../../components/admin/ProgressItem"
 import ActivityItem from "../../components/admin/ActivityItem"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const Dashboard = () => {
+  const { user } = useAuth()
   return (
     <div className="px-10 py-6 flex-1">
       <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
@@ -18,7 +20,7 @@ const Dashboard = () => {
           </button>
           <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] hover:text-gray-600">
             <FaUser className="w-5 h-5" />
-            <span>Admin</span>
+            <span>{user?.name}</span>
           </button>
         </div>
       </header>
