@@ -11,6 +11,8 @@ const AdminProvider = ({ children }) => {
   const fetchHostelList = async () => {
     try {
       const data = await adminApi.getHostelList()
+      console.log(data, "Hostel List from API")
+
       setHostelList(data)
     } catch (error) {
       console.error("Error fetching hostel list:", error)

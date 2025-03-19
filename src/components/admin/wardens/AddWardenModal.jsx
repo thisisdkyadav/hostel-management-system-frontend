@@ -46,8 +46,14 @@ const AddWardenModal = ({ show, onClose }) => {
 
   if (!show) return null
 
+  const handleCloseModal = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-50">
+    <div onClick={handleCloseModal} className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-[20px] w-[500px] max-w-full shadow-xl">
         <h2 className="text-2xl font-bold mb-6 text-[#1360AB]">Add New Warden</h2>
 

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FaClipboardList, FaFilter } from "react-icons/fa"
 import { filterComplaints } from "../../utils/adminUtils"
 import FilterTabs from "../../components/admin/FilterTabs"
@@ -9,8 +9,13 @@ import ComplaintDetailModal from "../../components/admin/complaints/ComplaintDet
 import ComplaintListView from "../../components/admin/complaints/ComplaintListView"
 import ComplaintCardView from "../../components/admin/complaints/ComplaintCardView"
 import { COMPLAINT_FILTER_TABS } from "../../constants/adminConstants"
+import { useAdmin } from "../../contexts/AdminProvider"
+import { adminApi } from "../../services/apiService"
 
 const Complaints = () => {
+  const { hostelList = [] } = useAdmin()
+  const hostels = hostelList.map((hostel) => hostel.name)
+
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [filterPriority, setFilterPriority] = useState("all")
@@ -20,34 +25,35 @@ const Complaints = () => {
   const [selectedComplaint, setSelectedComplaint] = useState(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [viewMode, setViewMode] = useState("list")
+  const [complaints, setComplaints] = useState([])
 
-  const hostels = ["Hostel A", "Hostel B", "Hostel C", "Hostel D", "Hostel E", "Hostel F", "Hostel G"]
+  // const hostels = ["Hostel A", "Hostel B", "Hostel C", "Hostel D", "Hostel E", "Hostel F", "Hostel G"]
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
   const priorities = ["Low", "Medium", "High", "Urgent"]
 
-  const complaints = [
-    {
-      id: "CMP-2025-001",
-      title: "Water leakage from ceiling",
-      description: "There is a continuous water leakage from the ceiling in my room, especially when it rains. The wall is also getting damp.",
-      status: "Pending",
-      category: "Plumbing",
-      priority: "High",
-      hostel: "Hostel A",
-      roomNumber: "207-A1",
-      reportedBy: {
-        email: "rahul.kumar@example.com",
-        name: "Rahul Kumar",
-        image: "https://randomuser.me/api/portraits/men/32.jpg",
-        phone: "+91 9876543210",
-      },
-      assignedTo: null,
-      createdDate: "2025-03-15T09:24:00",
-      lastUpdated: "2025-03-15T09:24:00",
-      resolutionNotes: "",
-      images: ["https://images.unsplash.com/photo-1594761051355-bce9126f9f25?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"],
-    },
-  ]
+  // const complaints = [
+  //   {
+  //     id: "CMP-2025-001",
+  //     title: "Water leakage from ceiling",
+  //     description: "There is a continuous water leakage from the ceiling in my room, especially when it rains. The wall is also getting damp.",
+  //     status: "Pending",
+  //     category: "Plumbing",
+  //     priority: "High",
+  //     hostel: "Hostel A",
+  //     roomNumber: "207-A1",
+  //     reportedBy: {
+  //       email: "rahul.kumar@example.com",
+  //       name: "Rahul Kumar",
+  //       image: "https://randomuser.me/api/portraits/men/32.jpg",
+  //       phone: "+91 9876543210",
+  //     },
+  //     assignedTo: null,
+  //     resolutionNotes: "",
+  //     images: ["https://images.unsplash.com/photo-1594761051355-bce9126f9f25?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"],
+  //     createdDate: "2025-03-15T09:24:00",
+  //     lastUpdated: "2025-03-15T09:24:00",
+  //   },
+  // ]
 
   const filteredComplaints = filterComplaints(complaints, filterStatus, filterPriority, filterCategory, filterHostel, searchTerm)
 
@@ -55,6 +61,19 @@ const Complaints = () => {
     setSelectedComplaint(complaint)
     setShowDetailModal(true)
   }
+
+  const fetchComplaints = async () => {
+    try {
+      const response = await adminApi.getAllComplaints()
+      setComplaints(response || [])
+    } catch (error) {
+      console.error("Error fetching complaints:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchComplaints()
+  }, [])
 
   return (
     <div className="px-10 py-6 flex-1">

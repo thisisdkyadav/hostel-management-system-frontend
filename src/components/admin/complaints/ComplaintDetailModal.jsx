@@ -3,8 +3,14 @@ import { RiUserSettingsFill } from "react-icons/ri"
 import { getStatusColor, getPriorityColor } from "../../../utils/adminUtils"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
+  const handleCloseModal = (e) => {
+    if (e.target === e.currentTarget) {
+      setShowDetailModal(false)
+    }
+  }
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div onClick={handleCloseModal} className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-[20px] w-[800px] max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-start mb-6">
           <div>
@@ -57,7 +63,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
           <div className="bg-gray-50 p-4 rounded-lg text-gray-700">{selectedComplaint.description}</div>
         </div>
 
-        {selectedComplaint.images.length > 0 && (
+        {/* {selectedComplaint.images.length > 0 && (
           <div className="mb-6">
             <h4 className="text-sm font-semibold text-gray-500 mb-3">Images</h4>
             <div className="grid grid-cols-3 gap-4">
@@ -68,9 +74,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <h4 className="text-sm font-semibold text-gray-500 mb-3">Assignment</h4>
           {selectedComplaint.assignedTo ? (
             <div className="bg-gray-50 p-4 rounded-lg flex items-center">
@@ -86,7 +92,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
               <span>Not assigned yet</span>
             </div>
           )}
-        </div>
+        </div> */}
 
         <div className="mb-6">
           <h4 className="text-sm font-semibold text-gray-500 mb-3">Resolution Notes</h4>
@@ -99,13 +105,11 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
         </div>
 
         <div className="flex justify-between items-center">
-          <div className="space-x-2">
-            <button className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">Delete</button>
-          </div>
+          <div className="space-x-2">{/* <button className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100">Delete</button> */}</div>
 
           <div className="space-x-2">
-            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Close</button>
-            <button className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700">{selectedComplaint.status === "Pending" ? "Assign & Process" : "Update Status"}</button>
+            {/* <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Close</button> */}
+            {/* <button className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700">{selectedComplaint.status === "Pending" ? "Assign & Process" : "Update Status"}</button> */}
           </div>
         </div>
       </div>
