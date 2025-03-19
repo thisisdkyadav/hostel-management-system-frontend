@@ -7,6 +7,7 @@ import Complaints from "../pages/student/Complaints"
 import GuardDashboard from "../pages/guard/GDashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
 import Complaint from "../pages/warden/Complaint"
+import DataPage from "../pages/warden/DataPage";
 // import related to maintainance
 import MDashboard from "../pages/maintainance/MDashboard"
 import ScheduleM from "../pages/maintainance/ScheduleM"
@@ -30,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/warden/dashboard" element={<WardenDashboard />} />
+      <Route path="/warden/data" element={<DataPage />} />
 
       <Route path="/guard/dashboard" element={<GuardDashboard />} />
       <Route path="/AddVisitor/dashboard" element={<AddVisitor />} />
