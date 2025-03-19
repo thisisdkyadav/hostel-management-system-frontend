@@ -29,16 +29,9 @@ const Hostels = () => {
       occupancyRate: 93,
       blocks: ["A1", "A2", "A3"], // Adding blocks for display
     },
-    // Add more hostels as needed
   ]
 
-  // Filter hostels based on gender instead of type
-  const filteredHostels = hostels
-    .filter((hostel) => {
-      if (activeTab === "all") return true
-      return hostel.gender.toLowerCase() === activeTab
-    })
-    .filter((hostel) => hostel.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredHostels = filterHostels(hostels, activeTab, searchTerm)
 
   return (
     <>

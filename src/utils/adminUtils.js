@@ -36,14 +36,9 @@ export const filterHostels = (hostels, activeTab, searchTerm) => {
   return hostels
     .filter((hostel) => {
       if (activeTab === "all") return true
-      if (activeTab === "boys") return hostel.type === "Boys"
-      if (activeTab === "girls") return hostel.type === "Girls"
-      if (activeTab === "special") return hostel.type !== "Boys" && hostel.type !== "Girls"
-      return true
+      return hostel.gender.toLowerCase() === activeTab
     })
-    .filter((hostel) => {
-      return hostel.name.toLowerCase().includes(searchTerm.toLowerCase()) || hostel.warden.toLowerCase().includes(searchTerm.toLowerCase())
-    })
+    .filter((hostel) => hostel.name.toLowerCase().includes(searchTerm.toLowerCase()))
 }
 
 export const filterComplaints = (complaints, filterStatus, filterPriority, filterCategory, filterHostel, searchTerm) => {
