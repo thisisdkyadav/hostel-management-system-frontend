@@ -19,13 +19,14 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
-import AlertPage from "../pages/maintainance/AlertPage"
+
 const AppRoutes = () => {
   return (
     <Routes>
       {/* Routes for student related pages  */}
       <Route path="/api/v0/student/dashboard" element={<SDashboard />} />
       <Route path="/api/v0/student/complaints" element={<Complaints />} />
+      <Route path="/api/v0/student/profile" element={<Profile />} />
 
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
