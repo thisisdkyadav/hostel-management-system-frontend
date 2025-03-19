@@ -41,7 +41,7 @@ const AppRoutes = () => {
       <Route path="/AddVisitor/dashboard" element={<AddVisitor />} />
       <Route path="/warden/complaint" element={<Complaint />} />
 
-      {/* Routes for maintenance related pages*/}
+      {/* Routes for Maintenance related pages*/}
       <Route path="/maintainance/dashboard" element={<MDashboard />} />
       <Route path="/maintainance/complaints" element={<ComplaintsPage />} />
       <Route path="/maintainance/schedule" element={<ScheduleM />} />
