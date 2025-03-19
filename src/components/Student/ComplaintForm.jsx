@@ -6,7 +6,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
   return (
     <div className="fixed inset-0  bg-opacity-20 backdrop-blur-sm flex items-center justify-center">
       <div className="bg-[#1360AB] w-[40%] h-[70vh] p-6 rounded-lg shadow-lg relative">
-        {/* Close Button */}
+        
         <button
           className="absolute top-3 right-3 text-white text-2xl"
           onClick={() => setIsOpen(false)}
@@ -14,19 +14,37 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
           &times;
         </button>
 
-        {/* Form Title */}
+    
         <h2 className="text-white text-xl font-bold">FILL THE FORM</h2>
 
-        {/* Form Fields */}
+       
         <div className="flex flex-col gap-3 mt-4">
-          <input type="text" placeholder="Complaint Type" className="p-2 rounded-lg w-full" />
-          <textarea placeholder="Complaint Description-" className="p-2 rounded-lg w-full h-[100px]" />
-          <input type="text" placeholder="Hostel" className="p-2 rounded-lg w-full" />
-          <input type="text" placeholder="ROOM NO.-" className="p-2 rounded-lg w-full bg-gray-200" />
-          <input type="file" className="p-2 rounded-lg w-full bg-gray-200" />
-          <input type="text" placeholder="SEVERITY-" className="p-2 rounded-lg w-full bg-gray-200" />
+        <select className="p-2 bg-gray-200 rounded-lg w-full">
+  <option value="" disabled selected>
+    Complaint Type
+  </option>
+  <option value="Electricity">Electricity</option>
+  <option value="Water">Water</option>
+  <option value="Internet">Internet</option>
+  <option value="Cleaning">Cleaning</option>
+  <option value="Civil">Civil</option>
+  <option value="Other">Other</option>
+</select>
 
-          {/* Submit Button */}
+          <textarea placeholder="Complaint Description-" className="p-2 bg-gray-200 rounded-lg w-full h-[100px]" />
+          <input type="text" placeholder="Hostel-" className="p-2 bg-gray-200 rounded-lg w-full focus:border-[#1360AB] focus:outline-none" />
+          <input type="text" placeholder="ROOM NO.-" className="p-2 rounded-lg w-full bg-gray-200" />
+          <input type="text" placeholder="Attachment(URL)" className="p-2 rounded-lg w-full bg-gray-200" />
+          <select className="p-2 rounded-lg w-full bg-gray-200">
+  <option value="" disabled selected>
+    SEVERITY-
+  </option>
+  <option value="Low">Low</option>
+  <option value="Medium">Medium</option>
+  <option value="High">High</option>
+</select>
+
+
           <button className="bg-green-500 text-white px-6 py-2 rounded-md mt-2 hover:bg-green-600">
             SUBMIT
           </button>
