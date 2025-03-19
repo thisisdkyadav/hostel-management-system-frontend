@@ -134,12 +134,6 @@ const ScheduleM = () => {
                 </div>
               )}
             </div>
-
-            <div className="mt-6 pt-4 border-t border-gray-100">
-              <button className="bg-[#1360AB] text-white px-4 py-2 rounded-md text-sm flex items-center mx-auto">
-                + Add New Task
-              </button>
-            </div>
           </div>
         </div>
       </div>
