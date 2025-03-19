@@ -1,10 +1,9 @@
 import { Routes, Route } from "react-router-dom"
-import SDashboard from "../pages/student/SDashboard"
+import SDashboard from "../pages/student/SDashboard.jsx"
 import LoginPage from "../pages/LoginPage"
 import WardenDashboard from "../pages/warden/DashboardWarden"
 import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
-
 import GuardDashboard from "../pages/guard/GDashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
 import Complaint from "../pages/warden/Complaint"
@@ -21,6 +20,9 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
+import Profile from "../pages/student/Profile.jsx"
+import AlertPage from "../pages/maintainance/AlertPage.jsx"
+import LostAndFound from "../pages/student/LostAndFound.jsx"
 
 const AppRoutes = () => {
   return (
@@ -29,6 +31,7 @@ const AppRoutes = () => {
       <Route path="/api/v0/student/dashboard" element={<SDashboard />} />
       <Route path="/api/v0/student/complaints" element={<Complaints />} />
       <Route path="/api/v0/student/profile" element={<Profile />} />
+      <Route path="/api/v0/student/lost-and-found" element={<LostAndFound />} />
 
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
