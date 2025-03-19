@@ -3,7 +3,7 @@ import SDashboard from "../pages/student/SDashboard"
 import LoginPage from "../pages/LoginPage"
 import WardenDashboard from "../pages/warden/DashboardWarden"
 import Complaints from "../pages/student/Complaints"
-
+import Profile from "../pages/student/Profile"
 import GuardDashboard from "../pages/guard/GDashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
 import Complaint from "../pages/warden/Complaint"
@@ -12,6 +12,7 @@ import DataPage from "../pages/warden/DataPage";
 import MDashboard from "../pages/maintainance/MDashboard"
 import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
+import AlertPage from "../pages/maintainance/AlertPage"
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
