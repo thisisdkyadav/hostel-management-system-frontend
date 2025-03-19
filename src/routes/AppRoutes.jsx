@@ -3,6 +3,7 @@ import SDashboard from "../pages/student/SDashboard"
 import LoginPage from "../pages/LoginPage"
 import WardenDashboard from "../pages/warden/DashboardWarden"
 import Complaints from "../pages/student/Complaints"
+import Profile from "../pages/student/Profile"
 
 import GuardDashboard from "../pages/guard/GDashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
@@ -12,7 +13,6 @@ import DataPage from "../pages/warden/DataPage";
 import MDashboard from "../pages/maintainance/MDashboard"
 import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
-import Notification from "../components/Maintainance/NotificationM"
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
@@ -20,13 +20,14 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
-import AlertPage from "../pages/maintainance/AlertPage"
+
 const AppRoutes = () => {
   return (
     <Routes>
       {/* Routes for student related pages  */}
       <Route path="/api/v0/student/dashboard" element={<SDashboard />} />
       <Route path="/api/v0/student/complaints" element={<Complaints />} />
+      <Route path="/api/v0/student/profile" element={<Profile />} />
 
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
