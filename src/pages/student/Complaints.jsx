@@ -6,13 +6,12 @@ import PendingComplaintsCard from '../../components/Student/PendingComplaintsCar
 import ComplaintForm from '../../components/Student/ComplaintForm';
 
 const Complaints = () => {
-    const [isOpen, setIsOpen] = useState(false); // State to control modal visibility
+    const [isOpen, setIsOpen] = useState(false); 
 
     return (
         <div className="bg-neutral-100 min-h-screen relative">
             <SideBar />
 
-            {/* Background content with reduced opacity when modal is open */}
             <div className={`${isOpen ? 'opacity-40 pointer-events-none' : ''}`}>
                 <div className='absolute top-[6%] left-[17%] flex items-center justify-between w-[80vw] [@media(max-width:900px)]:hidden'>
                     <div className='flex flex-row gap-1'>
@@ -32,7 +31,7 @@ const Complaints = () => {
                     <PendingComplaintsCard />
                 </div>
 
-                {/* Button to Open Modal */}
+               
                 <button
                     className="absolute left-[80%] top-[90%] w-[14%] py-2 bg-[#1360AB] text-white rounded-lg shadow-md hover:bg-[#7c82bd] transition"
                     onClick={() => setIsOpen(true)}
@@ -41,7 +40,7 @@ const Complaints = () => {
                 </button>
             </div>
 
-            {/* Complaint Form Modal (stays fully visible) */}
+            
             {isOpen && <ComplaintForm isOpen={isOpen} setIsOpen={setIsOpen} />}
         </div>
     );
