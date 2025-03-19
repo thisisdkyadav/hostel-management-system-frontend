@@ -15,7 +15,7 @@ const PendingComplaintsCard = () => {
         </div>
         <div className='flex flex-row gap-4'>
             <div className='w-[20%]'></div>
-            <p className='text-white text-4xl font-bold'>5</p>
+            <p className='text-white text-4xl font-bold !pb-2'>5</p>
         </div>
     </div>
   )
