@@ -32,7 +32,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
 </select>
 
           <textarea placeholder="Complaint Description-" className="p-2 bg-gray-200 rounded-lg w-full h-[100px]" />
-          <input type="text" placeholder="Hostel-" className="p-2 bg-gray-200 rounded-lg w-full focus:border-[#1360AB] focus:outline-none" />
+          <input type="text" placeholder="Hostel-" className="p-2 bg-gray-200 rounded-lg w-full  " />
           <input type="text" placeholder="ROOM NO.-" className="p-2 rounded-lg w-full bg-gray-200" />
           <input type="text" placeholder="Attachment(URL)" className="p-2 rounded-lg w-full bg-gray-200" />
           <select className="p-2 rounded-lg w-full bg-gray-200">
