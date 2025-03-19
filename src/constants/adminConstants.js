@@ -36,5 +36,5 @@ export const HOSTEL_FILTER_TABS = [
   { label: "All Hostels", value: "all", color: "[#1360AB]" },
   { label: "Boys", value: "boys", color: "[#1360AB]" },
   { label: "Girls", value: "girls", color: "[#1360AB]" },
-  { label: "Special", value: "special", color: "[#1360AB]" },
+  { label: "Co-ed", value: "co-ed", color: "[#1360AB]" },
 ]
