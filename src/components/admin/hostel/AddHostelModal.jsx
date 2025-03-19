@@ -28,6 +28,10 @@ const AddHostelModal = ({ show, onClose }) => {
     e.preventDefault()
 
     const hostel = await adminApi.addHostel(formData)
+    if (!hostel) {
+      alert("Failed to add hostel. Please try again.")
+      return
+    }
     alert(`Hostel ${hostel.name} added successfully!`)
     onClose()
   }
