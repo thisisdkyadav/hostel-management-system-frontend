@@ -1,4 +1,4 @@
-import StatCards from "./StatCards"
+import StatCards from "../StatCards"
 import { FaUsers } from "react-icons/fa"
 import { MdVerified } from "react-icons/md"
 import { FaBuilding } from "react-icons/fa"

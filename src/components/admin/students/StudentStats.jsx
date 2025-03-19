@@ -1,7 +1,7 @@
 import { FaUsers } from "react-icons/fa"
 import { BsGenderMale, BsGenderFemale } from "react-icons/bs"
 import { IoMdSchool } from "react-icons/io"
-import StatCards from "./StatCards"
+import StatCards from "../StatCards"
 
 const StudentStats = ({ students }) => {
   const totalStudents = students.length

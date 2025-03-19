@@ -2,7 +2,7 @@ import React from "react"
 import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
 import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
-import StatCards from "./StatCards"
+import StatCards from "../StatCards"
 
 const ComplaintStats = ({ complaints }) => {
   const totalComplaints = complaints.length
