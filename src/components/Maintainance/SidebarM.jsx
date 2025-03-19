@@ -1,0 +1,83 @@
+import { FaUser, FaCog, FaExclamationTriangle, FaClipboardList, FaSearch } from "react-icons/fa";
+import IITI_Logo from "../../assets/logos/IITILogo.png";
+import { useState } from "react";
+import { MdSpaceDashboard } from "react-icons/md";
+import { Link } from "react-router-dom";
+
+const Sidebar = () => {
+  const [active, setActive] = useState("Dashboard");
+
+  return (
+    <div className="fixed top-0 left-0 w-60 h-screen bg-white shadow-md flex flex-col p-5 z-10">
+      <img src={IITI_Logo} alt="IIT Indore Logo" className="h-24 w-auto mx-auto mb-3 object-contain" />
+
+      <nav className="mt-6 flex-1">
+        <ul className="space-y-2">
+          <li
+            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
+              ${active === "Dashboard" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
+            onClick={() => setActive("Dashboard")}
+          >
+            <Link to="/maintainance/dashboard" className="flex items-center w-full">
+              <MdSpaceDashboard className="mr-3" /> Dashboard
+            </Link>
+          </li>
+
+          <li
+            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
+              ${active === "Complaints" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
+            onClick={() => setActive("Complaints")}
+          >
+            <Link to="/maintainance/complaints" className="flex items-center w-full">
+              <FaClipboardList className="mr-3" /> Complaints
+            </Link>
+          </li>
+
+          <li
+            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
+              ${active === "Schedule" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
+            onClick={() => setActive("Schedule")}
+          >
+            <Link to="/maintainance/schedule" className="flex items-center w-full">
+              <FaSearch className="mr-3" /> Schedule
+            </Link>
+          </li>
+
+          <li
+            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
+              ${active === "Profile" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
+            onClick={() => setActive("Profile")}
+          >
+            <Link to="/maintainance/profile" className="flex items-center w-full">
+              <FaUser className="mr-3" /> Profile
+            </Link>
+          </li>
+
+          <li
+            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
+              ${active === "Alert" ? "bg-[#1360AB] text-white" : "bg-white text-red-600 hover:bg-red-500 hover:text-white"}`}
+            onClick={() => setActive("Alert")}
+          >
+            <Link to="/maintainance/alert" className="flex items-center w-full">
+              <FaExclamationTriangle className="mr-3" /> Alert
+            </Link>
+          </li>
+        </ul>
+      </nav>
+
+      <div className="mb-5">
+        <li
+          className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
+            ${active === "Settings" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
+          onClick={() => setActive("Settings")}
+        >
+          <Link to="/maintainance/settings" className="flex items-center w-full">
+            <FaCog className="mr-3" /> Settings
+          </Link>
+        </li>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
