@@ -5,8 +5,8 @@ import SearchBar from "../../components/admin/SearchBar"
 import HostelCard from "../../components/admin/HostelCard"
 import AddHostelModal from "../../components/admin/AddHostelModal"
 import NoResults from "../../components/admin/NoResults"
-import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import HostelStats from "../../components/admin/HostelStats"
+import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
 
 const Hostels = () => {
@@ -17,19 +17,28 @@ const Hostels = () => {
   const hostels = [
     {
       id: 1,
-      name: "Hostel A",
-      type: "Boys",
-      warden: "Dr. Rajesh Kumar",
+      name: "CVRaman Hostel",
+      type: "unit-based", // unit-based, room-only
+      gender: "Boys", // Boys, Girls, Co-ed
+      wardens: ["Dr. Rajesh Kumar"], // array of wardens
       totalRooms: 120,
       occupiedRooms: 112,
       vacantRooms: 8,
       maintenanceIssues: 3,
-      blocks: ["A1", "A2", "A3"],
+      capacity: 300,
       occupancyRate: 93,
+      blocks: ["A1", "A2", "A3"], // Adding blocks for display
     },
+    // Add more hostels as needed
   ]
 
-  const filteredHostels = filterHostels(hostels, activeTab, searchTerm)
+  // Filter hostels based on gender instead of type
+  const filteredHostels = hostels
+    .filter((hostel) => {
+      if (activeTab === "all") return true
+      return hostel.gender.toLowerCase() === activeTab
+    })
+    .filter((hostel) => hostel.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
     <>

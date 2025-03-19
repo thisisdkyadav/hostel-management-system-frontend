@@ -4,9 +4,9 @@ import { MdMeetingRoom } from "react-icons/md"
 import { BsThreeDotsVertical } from "react-icons/bs"
 
 const HostelCard = ({ hostel }) => {
-  const getTypeColor = (type) => {
-    if (type === "Boys") return "bg-blue-100 text-blue-600"
-    if (type === "Girls") return "bg-pink-100 text-pink-600"
+  const getTypeColor = (gender) => {
+    if (gender === "Boys") return "bg-blue-100 text-blue-600"
+    if (gender === "Girls") return "bg-pink-100 text-pink-600"
     return "bg-purple-100 text-purple-600"
   }
 
@@ -14,12 +14,14 @@ const HostelCard = ({ hostel }) => {
     <div className="bg-white rounded-[20px] p-6 shadow-[0px_1px_20px_rgba(0,0,0,0.06)]">
       <div className="flex justify-between items-start">
         <div className="flex items-center">
-          <div className={`p-3 mr-4 rounded-xl ${getTypeColor(hostel.type)}`}>
+          <div className={`p-3 mr-4 rounded-xl ${getTypeColor(hostel.gender)}`}>
             <FaBuilding size={24} />
           </div>
           <div>
             <h3 className="font-bold text-lg">{hostel.name}</h3>
-            <span className="text-sm text-gray-600">{hostel.type}</span>
+            <span className="text-sm text-gray-600">
+              {hostel.gender} ({hostel.type})
+            </span>
           </div>
         </div>
         <div className="dropdown relative">
@@ -33,7 +35,7 @@ const HostelCard = ({ hostel }) => {
         <div>
           <div className="flex items-center mt-3">
             <FaUserTie className="text-gray-500 mr-2" />
-            <span className="text-sm">{hostel.warden}</span>
+            <span className="text-sm">{hostel.wardens && hostel.wardens.length > 0 ? hostel.wardens[0] : "No warden assigned"}</span>
           </div>
           <div className="flex items-center mt-2">
             <MdMeetingRoom className="text-gray-500 mr-2" />
@@ -41,13 +43,15 @@ const HostelCard = ({ hostel }) => {
               {hostel.totalRooms} Total Rooms ({hostel.vacantRooms} vacant)
             </span>
           </div>
-          <div className="flex mt-2 space-x-2">
-            {hostel.blocks.map((block, index) => (
-              <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded-lg">
-                {block}
-              </span>
-            ))}
-          </div>
+          {hostel.blocks && (
+            <div className="flex mt-2 space-x-2">
+              {hostel.blocks.map((block, index) => (
+                <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded-lg">
+                  {block}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col items-center justify-center">
