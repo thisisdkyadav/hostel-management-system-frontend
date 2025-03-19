@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaTimes } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
+import { useAdmin } from "../../../contexts/AdminProvider"
 
-const EditWardenForm = ({ warden, onClose, hostelList = [] }) => {
+const EditWardenForm = ({ warden, onClose }) => {
+  const { hostelList } = useAdmin()
+
   const [formData, setFormData] = useState({
     phone: warden.phone || "",
     hostelId: warden.hostelId || "",

@@ -3,16 +3,7 @@ import { Navigate, useLocation } from "react-router-dom"
 import { authApi } from "../services/apiService"
 
 export const AuthContext = createContext(null)
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  console.log("Auth context:", context)
-
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
-  }
-  return context
-}
+export const useAuth = () => useContext(AuthContext)
 
 export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, loading } = useAuth()

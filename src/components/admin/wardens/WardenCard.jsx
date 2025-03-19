@@ -2,8 +2,11 @@ import React, { useState } from "react"
 import { FaBuilding, FaEdit, FaEnvelope, FaPhone } from "react-icons/fa"
 import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
+import { useAdmin } from "../../../contexts/AdminProvider"
 
-const WardenCard = ({ warden, onUpdate, onDelete, hostelList }) => {
+const WardenCard = ({ warden, onUpdate, onDelete }) => {
+  const { hostelList } = useAdmin()
+
   const [showEditForm, setShowEditForm] = useState(false)
 
   const getHostelName = (hostelId) => {
@@ -89,7 +92,7 @@ const WardenCard = ({ warden, onUpdate, onDelete, hostelList }) => {
         </div>
       </div>
 
-      {showEditForm && <EditWardenForm warden={warden} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={onDelete} hostelList={hostelList} />}
+      {showEditForm && <EditWardenForm warden={warden} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={onDelete} />}
     </>
   )
 }

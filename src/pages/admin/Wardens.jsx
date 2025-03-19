@@ -9,13 +9,15 @@ import WardenStats from "../../components/admin/wardens/WardenStats"
 import { filterWardens } from "../../utils/adminUtils"
 import { WARDEN_FILTER_TABS } from "../../constants/adminConstants"
 import { adminApi } from "../../services/apiService"
+import { useAdmin } from "../../contexts/AdminProvider"
 
 const Wardens = () => {
+  const { hostelList } = useAdmin()
+
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [showAddModal, setShowAddModal] = useState(false)
   const [wardens, setWardens] = useState([])
-  const [hostelList, setHostelList] = useState([])
 
   const filteredWardens = filterWardens(wardens, filterStatus, searchTerm)
 
@@ -28,18 +30,8 @@ const Wardens = () => {
     }
   }
 
-  const fetchHostels = async () => {
-    try {
-      const response = await adminApi.getHostelList()
-      setHostelList(response)
-    } catch (error) {
-      console.error("Failed to fetch hostels:", error)
-    }
-  }
-
   useEffect(() => {
     fetchWardens()
-    fetchHostels()
   }, [])
 
   return (
