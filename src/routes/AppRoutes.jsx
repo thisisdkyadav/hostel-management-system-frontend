@@ -28,37 +28,14 @@ import AdminComplaints from "../pages/admin/Complaints"
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Routes for student related pages  */}
-      <Route path="/api/v0/student/dashboard" element={<SDashboard />} />
-      <Route path="/api/v0/student/complaints" element={<Complaints />} />
-      <Route path="/api/v0/student/profile" element={<Profile />} />
-      <Route path="/api/v0/student/lost-and-found" element={<LostAndFound />} />
-
-      <Route path="/" element={<SDashboard />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/warden/dashboard" element={<WardenDashboard />} />
-      <Route path="/warden/data" element={<DataPage />} />
-
-      <Route path="/guard/dashboard" element={<GuardDashboard />} />
-      <Route path="/AddVisitor/dashboard" element={<AddVisitor />} />
-      <Route path="/warden/complaint" element={<Complaint />} />
-
-      {/* Routes for maintenance related pages*/}
-      <Route path="/maintainance/dashboard" element={<MDashboard />} />
-      <Route path="/maintainance/complaints" element={<ComplaintsPage />} />
-      <Route path="/maintainance/schedule" element={<ScheduleM />} />
-      <Route path= "/maintainance/alert" element={<AlertPage />} />
-
-      {/* Routes for admin related pages */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<AdminDashboard />} />
-        <Route path="hostels" element={<AdminHostels />} />
-        <Route path="wardens" element={<AdminWarden />} />
-        <Route path="students" element={<AdminStudents />} />
-        <Route path="complaints" element={<AdminComplaints />} />
-      </Route>
+       {/* Routes for student related pages  */}
+        <Route path="/api/v0/student/dashboard" element={<SDashboard/>} />
+        <Route path="/api/v0/student/complaints" element={<Complaints />} />
+        
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/warden/dashboard" element={<WardenDashboard />} />
     </Routes>
-  )
-}
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;
