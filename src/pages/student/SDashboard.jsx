@@ -2,7 +2,7 @@ import Sidebar from "../../components/student/Sidebar2.jsx";
 import Card from "../../components/student/Card";
 import Notification from "../../components/student/Notification";
 import Events from "../../components/student/Events";
-import NoticeBoard from "../../components/student/Noticeboard";
+import NoticeBoard from "../../components/Student/Noticeboard";
 import { FaDoorOpen, FaExclamationCircle ,FaUser} from "react-icons/fa";
 import { CgSearchFound } from "react-icons/cg";
 import { BsDoorOpen,BsDoorOpenFill } from "react-icons/bs";
