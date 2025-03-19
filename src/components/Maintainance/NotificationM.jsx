@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { IoNotificationsOutline, IoCloseOutline } from "react-icons/io5";
 import { FaExclamationTriangle, FaCheck, FaTools, FaWrench, FaBell } from "react-icons/fa";
 
-const Notification = ({ alertTriggered, onAlertClear }) => {
+const Notification = ({ alertTriggered, onAlertClear, compact = false }) => {
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -36,6 +36,7 @@ const Notification = ({ alertTriggered, onAlertClear }) => {
 
   const [showHighlight, setShowHighlight] = useState(false);
   const notificationRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   // Handle alert trigger
   useEffect(() => {
@@ -68,6 +69,12 @@ const Notification = ({ alertTriggered, onAlertClear }) => {
     setNotifications(notifications.filter(notification => notification.id !== id));
   };
 
+  // Clear all notifications
+  const clearAll = () => {
+    setNotifications([]);
+    if (onAlertClear) onAlertClear();
+  };
+
   // Get icon based on notification type
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -87,7 +94,7 @@ const Notification = ({ alertTriggered, onAlertClear }) => {
   return (
     <div 
       ref={notificationRef}
-      className={`bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.06)] p-5 rounded-[20px] w-full transition-all duration-300 ${
+      className={`bg-white shadow-[0px_1px_20px_rgba(0,0,0,0.06)] p-5 rounded-[20px] ${
         showHighlight ? "ring-2 ring-red-500" : ""
       }`}
     >
@@ -100,28 +107,30 @@ const Notification = ({ alertTriggered, onAlertClear }) => {
           <span className="bg-[#1360AB] text-white text-xs px-2 py-1 rounded-full">
             {notifications.filter(n => !n.read).length}
           </span>
-          {onAlertClear && (
-            <button 
-              onClick={onAlertClear}
-              className="text-sm text-[#1360AB] font-medium hover:underline"
-            >
-              Clear All
-            </button>
-          )}
+          <button 
+            onClick={clearAll}
+            className="text-sm text-[#1360AB] font-medium hover:underline"
+          >
+            Clear All
+          </button>
         </div>
       </div>
 
-      <div className="mt-4 space-y-3 max-h-[300px] overflow-y-auto">
+      <div 
+        ref={scrollContainerRef}
+        className="mt-4 space-y-3 overflow-y-auto pr-1 pb-1 custom-scrollbar"
+        style={{ maxHeight: compact ? "380px" : "500px" }}
+      >
         {notifications.length > 0 ? (
           notifications.map((notification) => (
             <div 
               key={notification.id} 
-              className={`p-3 rounded-lg relative border-l-4 ${
+              className={`p-4 rounded-lg relative border-l-4 ${
                 notification.read 
                   ? "bg-gray-50 border-gray-300" 
                   : notification.type === "alert"
                     ? "bg-red-50 border-red-500"
-                    : "bg-blue-50 border-[#1360AB]"
+                    : "bg-[#E4F1FF] border-[#1360AB]"
               }`}
             >
               <div className="flex">
@@ -161,6 +170,23 @@ const Notification = ({ alertTriggered, onAlertClear }) => {
           </div>
         )}
       </div>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #1360AB;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #0f4c8a;
+        }
+      `}</style>
     </div>
   );
 };
