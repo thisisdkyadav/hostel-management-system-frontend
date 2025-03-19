@@ -12,7 +12,6 @@ import DataPage from "../pages/warden/DataPage";
 import MDashboard from "../pages/maintainance/MDashboard"
 import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
-import Notification from "../components/Maintainance/NotificationM"
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
