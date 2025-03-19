@@ -583,6 +583,8 @@ export const adminApi = {
       throw new Error(errorData.message || "Failed to fetch hostels")
     }
 
+    const data = await response.json()
+
     return data
   },
 
