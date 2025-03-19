@@ -19,7 +19,7 @@ const Complaints = () => {
                             <path d="M9.48956 17.0033L11.2211 17.9549C14.0265 19.4968 15.4292 20.2676 16.5675 19.916C17.7058 19.5644 17.7058 18.3601 17.7058 15.9516V14.0484C17.7058 11.6399 17.7058 10.4357 16.5675 10.084C15.4292 9.73238 14.0265 10.5033 11.2211 12.0452L9.48956 12.9968C7.80043 13.9251 6.95587 14.3894 6.95587 15C6.95587 15.6106 7.80043 16.0749 9.48956 17.0033Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
 
-                    </div>
+                    </div> 
                     <div className='flex flex-col '>
                         <p className='text-2xl font-bold text-black'>Complaints</p>
                         <p className='text-sm text-neutral-600'>17th March 2025</p>
