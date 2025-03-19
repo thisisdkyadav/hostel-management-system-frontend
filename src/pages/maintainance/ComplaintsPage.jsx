@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Maintainance/SidebarM";
-import ComplaintsM from "./ComplaintsParts/ComplaintsM";
+import ComplaintsM from "../../components/Maintainance/ComplaintsM";
 import { FaUser } from "react-icons/fa";
 
 const ComplaintsPage = () => {
