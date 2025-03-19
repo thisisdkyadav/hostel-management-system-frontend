@@ -2,10 +2,10 @@ import { useState, useEffect } from "react"
 import { FaPlus } from "react-icons/fa"
 import FilterTabs from "../../components/admin/FilterTabs"
 import SearchBar from "../../components/admin/SearchBar"
-import HostelCard from "../../components/admin/HostelCard"
-import AddHostelModal from "../../components/admin/AddHostelModal"
 import NoResults from "../../components/admin/NoResults"
-import HostelStats from "../../components/admin/HostelStats"
+import HostelCard from "../../components/admin/hostel/HostelCard"
+import HostelStats from "../../components/admin/hostel//HostelStats"
+import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
 import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
 import { adminApi } from "../../services/apiService"
@@ -14,7 +14,7 @@ const Hostels = () => {
   const [activeTab, setActiveTab] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
-  const [hostels, setHostels] = useState([]) // Initialize with empty array
+  const [hostels, setHostels] = useState([])
 
   // const hostels = [
   //   {
