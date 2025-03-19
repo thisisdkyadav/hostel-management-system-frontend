@@ -74,7 +74,39 @@ export const guardApi = {}
 
 export const maintenanceApi = {}
 
-export const adminApi = {}
+export const adminApi = {
+  getAllHostels: async () => {
+    const response = await fetch(`${baseUrl}/admin/hostels`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch hostels")
+    }
+
+    const data = await response.json()
+    console.log("Fetched hostels:", data)
+
+    return data
+  },
+
+  addHostel: async (hostelData) => {
+    const response = await fetch(`${baseUrl}/admin/hostel/add`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(hostelData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add hostel")
+    }
+
+    return response.json()
+  },
+}
 
 export default {
   auth: authApi,
