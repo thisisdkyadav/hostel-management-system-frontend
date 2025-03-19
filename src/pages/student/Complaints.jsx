@@ -9,6 +9,30 @@ const Complaints = () => {
     const [complaints, setComplaints] = useState([]);
     const [pendingComplaints, setPendingComplaints] = useState([]);
     const pendingCount = complaints.filter(c => c.status === "Pending").length;
+    // useEffect(() => {
+    //     const fetchComplaints = async () => {
+    //       try {
+    //         const data = await studentApi.getAllComplaints(userId)
+    //         setComplaints(data.filter((c) => c.status !== "Pending"))
+    //         setPendingComplaints(data.filter((c) => c.status === "Pending"))
+    //       } catch (error) {
+    //         setError("Failed to fetch complaints")
+    //       } finally {
+    //         setLoading(false)
+    //       }
+    //     }
+    //     fetchComplaints()
+    //   }, [])
+    
+    //   const handleNewComplaint = async (complaintText) => {
+    //     try {
+    //       const newComplaint = await studentApi.fileComplaint(userId, { text: complaintText })
+    //       setComplaints([newComplaint, ...complaints])
+    //       setIsOpen(false) // Close the form after submission
+    //     } catch (error) {
+    //       console.error("Error filing complaint:", error.message)
+    //     }
+    //   }
     useEffect(() => {
         const generateRandomComplaints = () => {
             const randomComplaints = Array.from({ length: 5 }, (_, i) => ({
