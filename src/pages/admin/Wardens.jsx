@@ -14,19 +14,48 @@ const Wardens = () => {
   const [filterStatus, setFilterStatus] = useState("all")
   const [showAddModal, setShowAddModal] = useState(false)
 
+  // Enhanced dummy data with more wardens
+  // const wardens = []
   const wardens = [
     {
       id: 1,
       name: "Dr. Rajesh Kumar",
       email: "rajesh.kumar@iiti.ac.in",
       phone: "+91 9876543210",
-      department: "Computer Science",
-      hostelAssigned: "Hostel A",
-      status: "active",
-      experience: 7,
+      hostelAssigned: "CVRaman Hostel",
       joinDate: "2016-06-15",
-      education: "Ph.D. Computer Science",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      profilePic: "https://randomuser.me/api/portraits/men/32.jpg",
+      status: "active",
+    },
+    {
+      id: 2,
+      name: "Dr. Meena Sharma",
+      email: "meena.sharma@iiti.ac.in",
+      phone: "+91 9876543211",
+      hostelAssigned: "Homi Bhabha Hostel",
+      joinDate: "2018-07-23",
+      profilePic: "https://randomuser.me/api/portraits/women/42.jpg",
+      status: "active",
+    },
+    {
+      id: 3,
+      name: "Dr. Anand Patel",
+      email: "anand.patel@iiti.ac.in",
+      phone: "+91 9876543212",
+      hostelAssigned: "",
+      joinDate: "2022-01-10",
+      profilePic: "https://randomuser.me/api/portraits/men/45.jpg",
+      status: "unassigned",
+    },
+    {
+      id: 4,
+      name: "Dr. Priya Verma",
+      email: "priya.verma@iiti.ac.in",
+      phone: "+91 9876543213",
+      hostelAssigned: "Vikram Sarabhai Hostel",
+      joinDate: "2017-05-18",
+      profilePic: "https://randomuser.me/api/portraits/women/28.jpg",
+      status: "active",
     },
   ]
 
@@ -47,10 +76,10 @@ const Wardens = () => {
 
       <div className="mt-8 flex justify-between items-center">
         <FilterTabs tabs={WARDEN_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by name, department, or hostel" className="w-1/2" />
+        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search wardens by name or hostel" className="w-1/2" />
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-6">
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredWardens.map((warden) => (
           <WardenCard key={warden.id} warden={warden} />
         ))}

@@ -8,7 +8,15 @@ const WardenStats = ({ wardens }) => {
   const totalWardens = wardens.length
   const activeWardens = wardens.filter((w) => w.status === "active").length
   const unassignedWardens = wardens.filter((w) => w.status === "unassigned").length
-  const averageExperience = Math.round(wardens.reduce((acc, warden) => acc + warden.experience, 0) / wardens.length || 0)
+
+  // Calculate average service years
+  const calculateServiceYears = (joinDate) => {
+    const start = new Date(joinDate)
+    const now = new Date()
+    return Math.floor((now - start) / (365.25 * 24 * 60 * 60 * 1000))
+  }
+
+  const averageExperience = Math.round(wardens.reduce((acc, warden) => acc + calculateServiceYears(warden.joinDate), 0) / wardens.length || 0)
 
   const statsData = [
     {
