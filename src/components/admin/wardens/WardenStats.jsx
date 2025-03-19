@@ -6,7 +6,7 @@ import { BsCalendarCheck } from "react-icons/bs"
 
 const WardenStats = ({ wardens }) => {
   const totalWardens = wardens.length
-  const activeWardens = wardens.filter((w) => w.status === "active").length
+  const assignedWardens = wardens.filter((w) => w.status === "assigned").length
   const unassignedWardens = wardens.filter((w) => w.status === "unassigned").length
 
   // Calculate average service years
@@ -27,8 +27,8 @@ const WardenStats = ({ wardens }) => {
       color: "#1360AB",
     },
     {
-      title: "Active Wardens",
-      value: activeWardens,
+      title: "Assigned Wardens",
+      value: assignedWardens,
       subtitle: "Currently assigned",
       icon: <MdVerified className="text-2xl" />,
       color: "#22c55e", // green-500
