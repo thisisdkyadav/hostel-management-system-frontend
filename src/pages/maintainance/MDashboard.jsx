@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Maintainance/SidebarM";
 import Notification from "../../components/Maintainance/NotificationM";
-import ComplaintsM from "../../components/Maintainance/ComplaintsParts/ComplaintsM";
+import ComplaintsM from "../../components/Maintainance/ComplaintsM";
 import { FaUser } from "react-icons/fa";
 
 const MDashboard = () => {
@@ -50,6 +50,9 @@ const MDashboard = () => {
     resolved: 0
   });
 
+  // Alert state
+  const [alertTriggered, setAlertTriggered] = useState(false);
+
   // Update stats whenever complaints change
   useEffect(() => {
     const newStats = {
@@ -69,7 +72,10 @@ const MDashboard = () => {
         <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
           <h1 className="text-2xl px-3 font-bold">Dashboard</h1>
           <div className="flex items-center space-x-6">
-            <button className="bg-white text-red-600 px-5 py-2 shadow-md rounded-[12px]">
+            <button 
+              className="bg-white text-red-600 px-5 py-2 shadow-md rounded-[12px]"
+              onClick={() => setAlertTriggered(true)}
+            >
               ⚠ Alert
             </button>
             <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] hover:text-gray-600">
@@ -91,7 +97,10 @@ const MDashboard = () => {
 
           {/* Notification Sidebar (20%) */}
           <div className="w-1/5">
-            <Notification />
+            <Notification 
+              alertTriggered={alertTriggered} 
+              onAlertClear={() => setAlertTriggered(false)}
+            />
           </div>
         </div>
       </div>

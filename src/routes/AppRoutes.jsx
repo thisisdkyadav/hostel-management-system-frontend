@@ -9,8 +9,8 @@ import AddVisitor from "../pages/guard/AddVisitor";
 import Complaint from "../pages/warden/Complaint";
 // import related to maintainance
 import MDashboard from "../pages/maintainance/MDashboard";
-import ScheduleM from "../components/Maintainance/ScheduleM";
-import ComplaintsPage from "../components/Maintainance/ComplaintsPage";
+import ScheduleM from "../pages/maintainance/ScheduleM";
+import ComplaintsPage from "../pages/maintainance/ComplaintsPage";
 const AppRoutes = () => {
   return (
     <Routes>
