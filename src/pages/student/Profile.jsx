@@ -178,7 +178,6 @@ const Profile = () => {
                     <ContactCard />
                 </div>
             </div> 
-
         </div>
     )
 }
