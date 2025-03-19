@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FaPlus } from "react-icons/fa"
 import FilterTabs from "../../components/admin/FilterTabs"
 import SearchBar from "../../components/admin/SearchBar"
@@ -8,30 +8,47 @@ import NoResults from "../../components/admin/NoResults"
 import HostelStats from "../../components/admin/HostelStats"
 import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
+import { adminApi } from "../../services/apiService"
 
 const Hostels = () => {
   const [activeTab, setActiveTab] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
+  const [hostels, setHostels] = useState([]) // Initialize with empty array
 
-  const hostels = [
-    {
-      id: 1,
-      name: "CVRaman Hostel",
-      type: "unit-based", // unit-based, room-only
-      gender: "Boys", // Boys, Girls, Co-ed
-      wardens: ["Dr. Rajesh Kumar"], // array of wardens
-      totalRooms: 120,
-      occupiedRooms: 112,
-      vacantRooms: 8,
-      maintenanceIssues: 3,
-      capacity: 300,
-      occupancyRate: 93,
-      blocks: ["A1", "A2", "A3"], // Adding blocks for display
-    },
-  ]
+  // const hostels = [
+  //   {
+  //     id: 1,
+  //     name: "CVRaman Hostel",
+  //     type: "unit-based", // unit-based, room-only
+  //     gender: "Boys", // Boys, Girls, Co-ed
+  //     wardens: ["Dr. Rajesh Kumar"], // array of wardens
+  //     totalRooms: 120,
+  //     occupiedRooms: 112,
+  //     vacantRooms: 8,
+  //     maintenanceIssues: 3,
+  //     capacity: 300,
+  //     occupancyRate: 93,
+  //     blocks: ["A1", "A2", "A3"], // Adding blocks for display
+  //   },
+  // ]
 
   const filteredHostels = filterHostels(hostels, activeTab, searchTerm)
+
+  const fetchHostels = async () => {
+    try {
+      const response = await adminApi.getAllHostels()
+      console.log("Fetched hostels:", response.data)
+
+      setHostels(response || [])
+    } catch (error) {
+      console.error("Error fetching hostels:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchHostels()
+  }, [])
 
   return (
     <>
