@@ -1,12 +1,12 @@
 import { useState } from "react"
 import { FaUserGraduate, FaEye, FaFileExport, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
-import StudentStats from "../../components/admin/StudentStats"
-import StudentFilterSection from "../../components/admin/StudentFilterSection"
-import StudentCard from "../../components/admin/StudentCard"
-import StudentDetailModal from "../../components/admin/StudentDetailModal"
-import { filterStudents } from "../../utils/adminUtils"
 import NoResults from "../../components/admin/NoResults"
+import StudentStats from "../../components/admin/students/StudentStats"
+import StudentFilterSection from "../../components/admin/students/StudentFilterSection"
+import StudentCard from "../../components/admin/students/StudentCard"
+import StudentDetailModal from "../../components/admin/students/StudentDetailModal"
+import { filterStudents } from "../../utils/adminUtils"
 
 const Students = () => {
   // State for filters and search

@@ -1,12 +1,12 @@
 import { useState } from "react"
 import { FaUserTie, FaPlus } from "react-icons/fa"
-import SearchBar from "../../components/admin/SearchBar"
-import WardenCard from "../../components/admin/WardenCard"
-import AddWardenModal from "../../components/admin/AddWardenModal"
-import NoResults from "../../components/admin/NoResults"
-import { filterWardens } from "../../utils/adminUtils"
-import WardenStats from "../../components/admin/WardenStats"
 import FilterTabs from "../../components/admin/FilterTabs"
+import SearchBar from "../../components/admin/SearchBar"
+import NoResults from "../../components/admin/NoResults"
+import WardenCard from "../../components/admin/wardens/WardenCard"
+import AddWardenModal from "../../components/admin/wardens/AddWardenModal"
+import WardenStats from "../../components/admin/wardens/WardenStats"
+import { filterWardens } from "../../utils/adminUtils"
 import { WARDEN_FILTER_TABS } from "../../constants/adminConstants"
 
 const Wardens = () => {

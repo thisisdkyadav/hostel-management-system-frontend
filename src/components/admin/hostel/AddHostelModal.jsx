@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import UnitBasedForm from "./forms/UnitBasedForm"
-import RoomOnlyForm from "./forms/RoomOnlyForm"
-import { adminApi } from "../../services/apiService"
+import UnitBasedForm from "../forms/UnitBasedForm"
+import RoomOnlyForm from "../forms/RoomOnlyForm"
+import { adminApi } from "../../../services/apiService"
 
 const AddHostelModal = ({ show, onClose }) => {
   const [formData, setFormData] = useState({
