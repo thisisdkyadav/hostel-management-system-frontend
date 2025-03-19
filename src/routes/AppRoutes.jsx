@@ -31,7 +31,10 @@ const AppRoutes = () => {
        {/* Routes for student related pages  */}
         <Route path="/api/v0/student/dashboard" element={<SDashboard/>} />
         <Route path="/api/v0/student/complaints" element={<Complaints />} />
-        
+        <Route path='/maintainance/schedule' element={<ScheduleM />} />
+        <Route path = "/maintainance/complaints" element={<ComplaintsPage />} />
+        <Route path = "/maintainance/alert" element={<AlertPage />} />
+        <Route path = "maintainance/dashboard" element={<MDashboard />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/warden/dashboard" element={<WardenDashboard />} />
     </Routes>
