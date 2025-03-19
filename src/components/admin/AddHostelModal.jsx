@@ -13,17 +13,27 @@ const AddHostelModal = ({ show, onClose }) => {
             <input type="text" className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Enter hostel name" />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Type</label>
+            <label className="block text-gray-700 mb-2">Gender</label>
             <select className="w-full p-2 border border-gray-300 rounded-lg">
               <option>Boys</option>
               <option>Girls</option>
-              <option>Research Scholars</option>
-              <option>International</option>
+              <option>Co-ed</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Hostel Type</label>
+            <select className="w-full p-2 border border-gray-300 rounded-lg">
+              <option>unit-based</option>
+              <option>room-only</option>
             </select>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Total Rooms</label>
             <input type="number" className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Enter total rooms" />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Capacity</label>
+            <input type="number" className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Enter total capacity" />
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Assign Warden</label>
