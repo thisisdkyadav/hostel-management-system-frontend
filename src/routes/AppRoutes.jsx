@@ -1,9 +1,12 @@
 import { Routes, Route } from "react-router-dom"
-import SDashboard from "../pages/student/SDashboard.jsx"
 import LoginPage from "../pages/LoginPage"
 import WardenDashboard from "../pages/warden/DashboardWarden"
+//--------------------------------below is student---------------------
+import SDashboard from "../pages/student/SDashboard.jsx"
 import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
+import LostAndFound from "../pages/student/LostAndFound.jsx"
+// -------------------------student ends here ----------------------------------
 import GuardDashboard from "../pages/guard/GDashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
 import Complaint from "../pages/warden/Complaint"
@@ -20,9 +23,7 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
-import Profile from "../pages/student/Profile.jsx"
-import AlertPage from "../pages/maintainance/AlertPage.jsx"
-import LostAndFound from "../pages/student/LostAndFound.jsx"
+
 
 const AppRoutes = () => {
   return (
