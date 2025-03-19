@@ -11,11 +11,14 @@ import GuardDashboard from "../pages/guard/GDashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
 import Complaint from "../pages/warden/Complaint"
 import DataPage from "../pages/warden/DataPage"
-// import related to maintainance
+
+//--------------------------------below is maintenance---------------------
 import MDashboard from "../pages/maintainance/MDashboard"
 import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
 import AlertPage from "../pages/maintainance/AlertPage"
+// -------------------------maintenance ends here ----------------------------------
+
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
