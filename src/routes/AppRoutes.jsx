@@ -20,8 +20,7 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
-import Profile from "../pages/student/Profile.jsx"
-import AlertPage from "../pages/maintainance/AlertPage.jsx"
+
 import LostAndFound from "../pages/student/LostAndFound.jsx"
 
 const AppRoutes = () => {
