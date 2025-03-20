@@ -84,6 +84,53 @@ export const securityApi = {
 
     return response.json()
   },
+
+  getVisitors: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/security/visitors${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch visitors")
+    }
+
+    return response.json()
+  },
+
+  addVisitor: async (visitorData) => {
+    const response = await fetch(`${baseUrl}/security/visitors`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(visitorData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add visitor")
+    }
+
+    return response.json()
+  },
+
+  updateVisitor: async (visitorId, visitorData) => {
+    const response = await fetch(`${baseUrl}/security/visitors/${visitorId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(visitorData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update visitor")
+    }
+
+    return response.json()
+  },
 }
 
 export const maintenanceApi = {

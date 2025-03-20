@@ -6,6 +6,7 @@ export const useSecurity = () => useContext(SecurityContext)
 
 const SecurityProvider = ({ children }) => {
   const [securityInfo, setSecurityInfo] = useState()
+  const [visitors, setVisitors] = useState([])
 
   const fetchSecurityInfo = async () => {
     try {
@@ -16,11 +17,21 @@ const SecurityProvider = ({ children }) => {
     }
   }
 
+  const fetchVisitors = async () => {
+    try {
+      const data = await securityApi.getVisitors()
+      setVisitors(data)
+    } catch (error) {
+      console.error("Error fetching visitors:", error)
+    }
+  }
+
   useEffect(() => {
     fetchSecurityInfo()
+    fetchVisitors()
   }, [])
 
-  const value = { securityInfo }
+  const value = { securityInfo, setSecurityInfo, visitors, setVisitors }
 
   return <SecurityContext.Provider value={value}>{children}</SecurityContext.Provider>
 }
