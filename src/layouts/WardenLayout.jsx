@@ -10,6 +10,7 @@ const AdminLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/warden/complaints" },
     { name: "Polls", icon: FaClipboardList, section: "main", path: "/warden/polls" },
     { name: "Data", icon: FaClipboardList, section: "main", path: "/warden/data" },
+    { name: "Students", icon: FaClipboardList, section: "main", path: "/warden/students" },
     { name: "Analytics", icon: FaClipboardList, section: "main", path: "/warden/analytics" },
     { name: "Staff", icon: FaUserTie, section: "main", path: "/warden/staff" },
     // { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/warden/alerts", isAlert: true },
