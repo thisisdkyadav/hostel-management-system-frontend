@@ -3,7 +3,7 @@ import SideBar from '../../components/Student/Sidebar';
 import { BsDoorOpenFill } from "react-icons/bs";
 import userImg from '../../assets/girlImg.jpeg'; 
 import { fetchStudentProfile } from '../../services/studentService';
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../contexts/AuthProvider";
 
 const Profile = () => {
   const [isOpen, setIsOpen] = useState(false);
