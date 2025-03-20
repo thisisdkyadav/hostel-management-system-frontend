@@ -19,7 +19,7 @@ export const HOSTEL_FILTER_TABS = [
 ]
 
 export const SECURITY_FILTER_TABS = [
-  { id: "all", label: "All Security" },
-  { id: "assigned", label: "Assigned" },
-  { id: "unassigned", label: "Unassigned" },
+  { label: "All Security", value: "all", color: "[#1360AB]" },
+  { label: "Active", value: "active", color: "[#1360AB]" },
+  { label: "Inactive", value: "inactive", color: "[#1360AB]" },
 ]
