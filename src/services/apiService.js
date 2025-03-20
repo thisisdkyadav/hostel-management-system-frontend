@@ -70,7 +70,21 @@ export const studentApi = {}
 
 export const wardenApi = {}
 
-export const guardApi = {}
+export const securityApi = {
+  getSecurityInfo: async () => {
+    const response = await fetch(`${baseUrl}/security/info`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch security info")
+    }
+
+    return response.json()
+  },
+}
 
 export const maintenanceApi = {
   // Complaints
@@ -739,7 +753,7 @@ export default {
   auth: authApi,
   student: studentApi,
   warden: wardenApi,
-  guard: guardApi,
+  security: securityApi,
   maintenance: maintenanceApi,
   admin: adminApi,
 }
