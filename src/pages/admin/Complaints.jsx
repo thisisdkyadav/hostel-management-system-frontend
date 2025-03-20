@@ -27,34 +27,8 @@ const Complaints = () => {
   const [viewMode, setViewMode] = useState("list")
   const [complaints, setComplaints] = useState([])
 
-  // const hostels = ["Hostel A", "Hostel B", "Hostel C", "Hostel D", "Hostel E", "Hostel F", "Hostel G"]
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
   const priorities = ["Low", "Medium", "High", "Urgent"]
-
-  // const complaints = [
-  //   {
-  //     id: "CMP-2025-001",
-  //     title: "Water leakage from ceiling",
-  //     description: "There is a continuous water leakage from the ceiling in my room, especially when it rains. The wall is also getting damp.",
-  //     status: "Pending",
-  //     category: "Plumbing",
-  //     priority: "High",
-  //     hostel: "Hostel A",
-  //     roomNumber: "207-A1",
-  //     reportedBy: {
-  //       email: "rahul.kumar@example.com",
-  //       name: "Rahul Kumar",
-  //       image: "https://randomuser.me/api/portraits/men/32.jpg",
-  //       phone: "+91 9876543210",
-  //     },
-  //     assignedTo: null,
-  //     resolutionNotes: "",
-  //     images: ["https://images.unsplash.com/photo-1594761051355-bce9126f9f25?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"],
-  //     createdDate: "2025-03-15T09:24:00",
-  //     lastUpdated: "2025-03-15T09:24:00",
-  //   },
-  // ]
-
   const filteredComplaints = filterComplaints(complaints, filterStatus, filterPriority, filterCategory, filterHostel, searchTerm)
 
   const viewComplaintDetails = (complaint) => {
@@ -65,6 +39,8 @@ const Complaints = () => {
   const fetchComplaints = async () => {
     try {
       const response = await adminApi.getAllComplaints()
+      console.log("Fetched complaints:", response)
+
       setComplaints(response || [])
     } catch (error) {
       console.error("Error fetching complaints:", error)
