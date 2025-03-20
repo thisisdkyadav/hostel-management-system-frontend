@@ -689,6 +689,50 @@ export const adminApi = {
 
     return response.json()
   },
+
+  addSecurity: async (securityData) => {
+    const response = await fetch(`${baseUrl}/admin/security/add`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(securityData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add security")
+    }
+
+    return response.json()
+  },
+
+  getAllSecurityLogins: async () => {
+    const response = await fetch(`${baseUrl}/admin/security`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch security staff")
+    }
+
+    return response.json()
+  },
+
+  updateSecurity: async (securityId, securityData) => {
+    const response = await fetch(`${baseUrl}/admin/security/update/${securityId}`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(securityData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update security staff")
+    }
+
+    return response.json()
+  },
 }
 
 export default {
