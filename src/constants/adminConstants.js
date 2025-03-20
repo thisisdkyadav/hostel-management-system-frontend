@@ -17,3 +17,9 @@ export const HOSTEL_FILTER_TABS = [
   { label: "Girls", value: "girls", color: "[#1360AB]" },
   { label: "Co-ed", value: "co-ed", color: "[#1360AB]" },
 ]
+
+export const SECURITY_FILTER_TABS = [
+  { id: "all", label: "All Security" },
+  { id: "assigned", label: "Assigned" },
+  { id: "unassigned", label: "Unassigned" },
+]

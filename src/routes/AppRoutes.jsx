@@ -26,6 +26,7 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
+import SecurityLogins from "../pages/admin/SecurityLogins.jsx"
 
 const AppRoutes = () => {
   return (
@@ -41,7 +42,7 @@ const AppRoutes = () => {
       <Route path="/warden/data" element={<DataPage />} />
 
       <Route path="/guard/dashboard" element={<GuardDashboard />} />
-      <Route path="/AddVisitor/dashboard" element={<AddVisitor />} />
+      <Route path="/guard/visitors" element={<AddVisitor />} />
       <Route path="/warden/complaint" element={<Complaint />} />
 
       {/* Routes for Maintenance related pages*/}
@@ -57,6 +58,7 @@ const AppRoutes = () => {
         <Route path="wardens" element={<AdminWarden />} />
         <Route path="students" element={<AdminStudents />} />
         <Route path="complaints" element={<AdminComplaints />} />
+        <Route path="security" element={<SecurityLogins />} />
       </Route>
     </Routes>
   )

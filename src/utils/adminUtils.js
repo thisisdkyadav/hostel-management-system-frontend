@@ -58,6 +58,19 @@ export const filterComplaints = (complaints, filterStatus, filterPriority, filte
   })
 }
 
+export const filterSecurity = (securityStaff, filterStatus, searchTerm) => {
+  return securityStaff
+    .filter((staff) => {
+      if (filterStatus === "assigned") return staff.hostelId
+      if (filterStatus === "unassigned") return !staff.hostelId
+      return true // "all" filter
+    })
+    .filter((staff) => {
+      const searchLower = searchTerm.toLowerCase()
+      return staff.name.toLowerCase().includes(searchLower) || (staff.email && staff.email.toLowerCase().includes(searchLower))
+    })
+}
+
 export const getTimeSince = (dateString) => {
   const date = new Date(dateString)
   const now = new Date()

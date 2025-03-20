@@ -11,6 +11,7 @@ const AdminLayout = () => {
     { name: "Wardens", icon: FaUserTie, section: "main", path: "/admin/wardens" },
     { name: "Students", icon: FaUsers, section: "main", path: "/admin/students" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
+    { name: "Security", icon: FaUser, section: "main", path: "/admin/security" },
     // { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/admin/alerts", isAlert: true },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/admin/profile" },
     { name: "Settings", icon: FaCog, section: "bottom", path: "/admin/settings" },
