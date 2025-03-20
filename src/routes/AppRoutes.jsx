@@ -18,7 +18,7 @@ import AlertPage from "../pages/maintainance/AlertPage"
 // -------------------------maintenance ends here ----------------------------------
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
-import GuardDashboard from "../pages/guard/GDashboard"
+import GuardDashboard from "../pages/guard/Dashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
 import Visitors from "../pages/guard/Visitors.jsx"
 
