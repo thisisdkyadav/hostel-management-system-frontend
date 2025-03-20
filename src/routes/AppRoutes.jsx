@@ -7,8 +7,6 @@ import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
 import LostAndFound from "../pages/student/LostAndFound.jsx"
 // -------------------------student ends here ----------------------------------
-import GuardDashboard from "../pages/guard/GDashboard"
-import AddVisitor from "../pages/guard/AddVisitor"
 import Complaint from "../pages/warden/Complaint"
 import DataPage from "../pages/warden/DataPage"
 
@@ -18,6 +16,10 @@ import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
 import AlertPage from "../pages/maintainance/AlertPage"
 // -------------------------maintenance ends here ----------------------------------
+
+import SecurityLayout from "../layouts/SecurityLayout.jsx"
+import GuardDashboard from "../pages/guard/GDashboard"
+import AddVisitor from "../pages/guard/AddVisitor"
 
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
@@ -41,8 +43,6 @@ const AppRoutes = () => {
       <Route path="/warden/dashboard" element={<WardenDashboard />} />
       <Route path="/warden/data" element={<DataPage />} />
 
-      <Route path="/guard/dashboard" element={<GuardDashboard />} />
-      <Route path="/guard/visitors" element={<AddVisitor />} />
       <Route path="/warden/complaint" element={<Complaint />} />
 
       {/* Routes for Maintenance related pages*/}
@@ -50,6 +50,12 @@ const AppRoutes = () => {
       <Route path="/maintainance/complaints" element={<ComplaintsPage />} />
       <Route path="/maintainance/schedule" element={<ScheduleM />} />
       <Route path="/maintainance/alert" element={<AlertPage />} />
+
+      {/* Routes for Guard related pages */}
+      <Route path="/guard" element={<SecurityLayout />}>
+        <Route index element={<GuardDashboard />} />
+        <Route path="add-visitor" element={<AddVisitor />} />
+      </Route>
 
       {/* Routes for admin related pages */}
       <Route path="/admin" element={<AdminLayout />}>
