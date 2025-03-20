@@ -1,14 +1,11 @@
 import { Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
-import WardenDashboard from "../pages/warden/DashboardWarden"
 //--------------------------------below is student---------------------
 import SDashboard from "../pages/student/SDashboard.jsx"
 import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
 import LostAndFound from "../pages/student/LostAndFound.jsx"
 // -------------------------student ends here ----------------------------------
-import Complaint from "../pages/warden/Complaint"
-import DataPage from "../pages/warden/DataPage"
 
 //--------------------------------below is maintenance---------------------
 import MDashboard from "../pages/maintainance/MDashboard"
@@ -16,6 +13,12 @@ import ScheduleM from "../pages/maintainance/ScheduleM"
 import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
 import AlertPage from "../pages/maintainance/AlertPage"
 // -------------------------maintenance ends here ----------------------------------
+
+// import related to warden
+import WardenLayout from "../layouts/WardenLayout.jsx"
+import WardenDashboard from "../pages/warden/DashboardWarden"
+import Complaint from "../pages/warden/Complaint"
+import DataPage from "../pages/warden/DataPage"
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
 import GuardDashboard from "../pages/guard/Dashboard"
@@ -41,16 +44,18 @@ const AppRoutes = () => {
 
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/warden/dashboard" element={<WardenDashboard />} />
-      <Route path="/warden/data" element={<DataPage />} />
-
-      <Route path="/warden/complaint" element={<Complaint />} />
 
       {/* Routes for Maintenance related pages*/}
       <Route path="/maintainance/dashboard" element={<MDashboard />} />
       <Route path="/maintainance/complaints" element={<ComplaintsPage />} />
       <Route path="/maintainance/schedule" element={<ScheduleM />} />
       <Route path="/maintainance/alert" element={<AlertPage />} />
+
+      <Route path="/warden" element={<WardenLayout />}>
+        <Route index element={<WardenDashboard />} />
+        <Route path="complaints" element={<Complaint />} />
+        <Route path="data" element={<DataPage />} />
+      </Route>
 
       {/* Routes for Guard related pages */}
       <Route path="/guard" element={<SecurityLayout />}>
