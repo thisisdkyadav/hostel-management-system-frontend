@@ -18,8 +18,9 @@ import AlertPage from "../pages/maintainance/AlertPage"
 // -------------------------maintenance ends here ----------------------------------
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
-import GuardDashboard from "../pages/guard/GDashboard"
+import GuardDashboard from "../pages/guard/Dashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
+import Visitors from "../pages/guard/Visitors.jsx"
 
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
@@ -54,7 +55,8 @@ const AppRoutes = () => {
       {/* Routes for Guard related pages */}
       <Route path="/guard" element={<SecurityLayout />}>
         <Route index element={<GuardDashboard />} />
-        <Route path="add-visitor" element={<AddVisitor />} />
+        <Route path="visitors/add" element={<AddVisitor />} />
+        <Route path="visitors" element={<Visitors />} />
       </Route>
 
       {/* Routes for admin related pages */}
