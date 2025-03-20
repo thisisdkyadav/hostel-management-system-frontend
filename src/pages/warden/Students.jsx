@@ -9,6 +9,7 @@ import StudentDetailModal from "../../components/admin/students/StudentDetailMod
 import ImportStudentModal from "../../components/admin/students/ImportStudentModal"
 import { filterStudents } from "../../utils/adminUtils"
 import StudentTableView from "../../components/admin/students/StudentTableView"
+import { studentApi } from "../../services/apiService"
 
 const Students = () => {
   // State for filters and search
@@ -55,18 +56,18 @@ const Students = () => {
   ]
 
   // Handle imported student data
-  const handleImportStudents = (importedStudents) => {
-    // In a real application, this would likely make an API call
-    // For now, we'll just log the imported data
-    console.log("Imported students:", importedStudents)
-
-    // Here you would typically add the students to your data source
-    // For example:
-    // const updatedStudents = [...allStudents, ...importedStudents];
-    // setAllStudents(updatedStudents);
-
-    // Show success message
-    alert(`Successfully imported ${importedStudents.length} students`)
+  const handleImportStudents = async (importedStudents) => {
+    try {
+      const response = await studentApi.importStudents(importedStudents)
+      if (response.error) {
+        alert(`Error importing students: ${response.error.message}`)
+        return false
+      }
+      alert("Students imported successfully")
+      return true
+    } catch (error) {
+      alert(`An error occurred: ${error.message}`)
+    }
   }
 
   const filteredStudents = filterStudents(allStudents, selectedHostel, selectedYear, selectedDepartment, selectedStatus, selectedGender, searchTerm, sortField, sortDirection)
@@ -222,7 +223,7 @@ const Students = () => {
       {filteredStudents.length === 0 && <NoResults icon={<FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
 
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} />}
-      {/* <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} /> */}
+      <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />
     </div>
   )
 }

@@ -19,11 +19,12 @@ import WardenLayout from "../layouts/WardenLayout.jsx"
 import WardenDashboard from "../pages/warden/DashboardWarden"
 import Complaint from "../pages/warden/Complaint"
 import DataPage from "../pages/warden/DataPage"
+import Students from "../pages/warden/Students"
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
 import GuardDashboard from "../pages/guard/Dashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
-import Visitors from "../pages/guard/Visitors.jsx"
+import Visitors from "../pages/guard/Visitors"
 
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
@@ -32,7 +33,7 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
-import SecurityLogins from "../pages/admin/SecurityLogins.jsx"
+import SecurityLogins from "../pages/admin/SecurityLogins"
 
 const AppRoutes = () => {
   return (
@@ -55,6 +56,7 @@ const AppRoutes = () => {
         <Route index element={<WardenDashboard />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="data" element={<DataPage />} />
+        <Route path="students" element={<Students />} />
       </Route>
 
       {/* Routes for Guard related pages */}

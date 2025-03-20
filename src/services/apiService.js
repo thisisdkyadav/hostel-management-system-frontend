@@ -68,7 +68,36 @@ export const authApi = {
 
 export const studentApi = {}
 
-export const wardenApi = {}
+export const wardenApi = {
+  getProfile: async () => {
+    const response = await fetch(`${baseUrl}/warden/profile`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch warden profile")
+    }
+
+    return response.json()
+  },
+
+  updateProfile: async (profileData) => {
+    const response = await fetch(`${baseUrl}/warden/profile/update`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(profileData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update warden profile")
+    }
+
+    return response.json()
+  },
+}
 
 export const securityApi = {
   getSecurityInfo: async () => {
