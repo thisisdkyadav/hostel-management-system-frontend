@@ -9,9 +9,7 @@ import LostAndFound from "../pages/student/LostAndFound.jsx"
 
 //--------------------------------below is maintenance---------------------
 import MDashboard from "../pages/maintainance/MDashboard"
-import ScheduleM from "../pages/maintainance/ScheduleM"
-import ComplaintsPage from "../pages/maintainance/ComplaintsPage"
-import AlertPage from "../pages/maintainance/AlertPage"
+
 // -------------------------maintenance ends here ----------------------------------
 
 // import related to warden
@@ -48,9 +46,7 @@ const AppRoutes = () => {
 
       {/* Routes for Maintenance related pages*/}
       <Route path="/maintainance/dashboard" element={<MDashboard />} />
-      <Route path="/maintainance/complaints" element={<ComplaintsPage />} />
-      <Route path="/maintainance/schedule" element={<ScheduleM />} />
-      <Route path="/maintainance/alert" element={<AlertPage />} />
+
 
       <Route path="/warden" element={<WardenLayout />}>
         <Route index element={<WardenDashboard />} />

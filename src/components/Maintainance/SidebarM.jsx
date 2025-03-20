@@ -25,41 +25,11 @@ const Sidebar = () => {
 
           <li
             className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
-              ${active === "Complaints" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
-            onClick={() => setActive("Complaints")}
-          >
-            <Link to="/maintainance/complaints" className="flex items-center w-full">
-              <FaClipboardList className="mr-3" /> Complaints
-            </Link>
-          </li>
-
-          <li
-            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
-              ${active === "Schedule" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
-            onClick={() => setActive("Schedule")}
-          >
-            <Link to="/maintainance/schedule" className="flex items-center w-full">
-              <FaSearch className="mr-3" /> Schedule
-            </Link>
-          </li>
-
-          <li
-            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
               ${active === "Profile" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 hover:bg-[#1360AB] hover:text-white"}`}
             onClick={() => setActive("Profile")}
           >
             <Link to="/maintainance/profile" className="flex items-center w-full">
               <FaUser className="mr-3" /> Profile
-            </Link>
-          </li>
-
-          <li
-            className={`p-3 rounded-[12px] flex items-center cursor-pointer transition-colors
-              ${active === "Alert" ? "bg-[#1360AB] text-white" : "bg-white text-red-600 hover:bg-red-500 hover:text-white"}`}
-            onClick={() => setActive("Alert")}
-          >
-            <Link to="/maintainance/alert" className="flex items-center w-full">
-              <FaExclamationTriangle className="mr-3" /> Alert
             </Link>
           </li>
         </ul>
