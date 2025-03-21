@@ -2,14 +2,14 @@ import React from "react"
 import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
 import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
-import StatCards from "../StatCards"
+import StatCards from "../admin/StatCards"
 
 const ComplaintStats = ({ complaints }) => {
   const totalComplaints = complaints.length
   const newComplaints = complaints.filter((c) => c.status === "Pending").length
   const inProgressComplaints = complaints.filter((c) => c.status === "In Progress").length
   const resolvedComplaints = complaints.filter((c) => c.status === "Resolved").length
-  const urgentComplaints = complaints.filter((c) => c.priority === "Urgent").length
+  // const urgentComplaints = complaints.filter((c) => c.priority === "Urgent").length
 
   const statsData = [
     {
@@ -44,17 +44,17 @@ const ComplaintStats = ({ complaints }) => {
       color: "#22c55e", // green-500
       iconColor: "text-green-500",
     },
-    {
-      title: "Urgent",
-      value: urgentComplaints,
-      subtitle: "High Priority",
-      icon: <MdPriorityHigh className="text-2xl" />,
-      color: "#ef4444", // red-500
-      iconColor: "text-red-500",
-    },
+    // {
+    //   title: "Urgent",
+    //   value: urgentComplaints,
+    //   subtitle: "High Priority",
+    //   icon: <MdPriorityHigh className="text-2xl" />,
+    //   color: "#ef4444", // red-500
+    //   iconColor: "text-red-500",
+    // },
   ]
 
-  return <StatCards stats={statsData} columns={5} />
+  return <StatCards stats={statsData} />
 }
 
 export default ComplaintStats

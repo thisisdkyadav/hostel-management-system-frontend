@@ -71,6 +71,27 @@ export const filterSecurity = (securityStaff, filterStatus, searchTerm) => {
     })
 }
 
+export const filterLostItems = (items, filter, searchTerm) => {
+  // First filter by tab
+  let filteredItems = items
+  if (filter !== "all") {
+    const statusMap = {
+      found: "Found",
+      claimed: "Claimed",
+      inProgress: "In Progress",
+    }
+    filteredItems = items.filter((item) => item.status === statusMap[filter])
+  }
+
+  // Then filter by search term
+  if (searchTerm) {
+    const term = searchTerm.toLowerCase()
+    filteredItems = filteredItems.filter((item) => item.itemName.toLowerCase().includes(term) || item.description.toLowerCase().includes(term) || item._id.toLowerCase().includes(term))
+  }
+
+  return filteredItems
+}
+
 export const getTimeSince = (dateString) => {
   const date = new Date(dateString)
   const now = new Date()

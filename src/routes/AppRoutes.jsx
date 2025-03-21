@@ -74,7 +74,7 @@ const AppRoutes = () => {
         <Route path="security" element={<SecurityLogins />} />
       </Route>
     </Routes>
-  )
-}
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;

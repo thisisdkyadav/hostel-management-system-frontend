@@ -1,6 +1,6 @@
 import React from "react"
 import { RiUserSettingsFill } from "react-icons/ri"
-import { getStatusColor, getPriorityColor } from "../../../utils/adminUtils"
+import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
   const handleCloseModal = (e) => {

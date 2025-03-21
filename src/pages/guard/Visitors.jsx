@@ -5,7 +5,7 @@ import FilterTabs from "../../components/admin/FilterTabs"
 import NoResults from "../../components/admin/NoResults"
 import VisitorTable from "../../components/guard/VisitorTable"
 import { filterVisitors } from "../../utils/securityUtils"
-import { useSecurity } from "../../contexts/SecurityProvider"
+import { securityApi } from "../../services/apiService"
 
 const VISITOR_FILTER_TABS = [
   { label: "All", value: "all" },
@@ -14,19 +14,27 @@ const VISITOR_FILTER_TABS = [
 ]
 
 const Visitors = () => {
-  const { visitors = [] } = useSecurity()
-
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [filterDate, setFilterDate] = useState("")
   const [showFilters, setShowFilters] = useState(false)
+  const [visitors, setVisitors] = useState([])
 
   const handleUpdateVisitor = (updatedVisitor) => {
     setVisitors(visitors.map((visitor) => (visitor.id === updatedVisitor.id ? updatedVisitor : visitor)))
   }
 
+  const fetchVisitors = async () => {
+    try {
+      const data = await securityApi.getVisitors()
+      setVisitors(data)
+    } catch (error) {
+      console.error("Error fetching visitors:", error)
+    }
+  }
+
   useEffect(() => {
-    // fetchVisitors()
+    fetchVisitors()
     console.log(filterStatus, filterDate, searchTerm, "Fetching visitors data...")
   }, [filterStatus, filterDate, searchTerm])
 

@@ -431,6 +431,65 @@ export const adminApi = {
   },
 }
 
+export const lostAndFoundApi = {
+  addLostItem: async (itemData) => {
+    const response = await fetch(`${baseUrl}/lost-and-found`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(itemData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add lost item")
+    }
+
+    return response.json()
+  },
+  getAllLostItems: async () => {
+    const response = await fetch(`${baseUrl}/lost-and-found`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch lost items")
+    }
+
+    return response.json()
+  },
+
+  updateLostItem: async (itemId, itemData) => {
+    const response = await fetch(`${baseUrl}/lost-and-found/${itemId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(itemData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update lost item")
+    }
+
+    return response.json()
+  },
+
+  deleteLostItem: async (itemId) => {
+    const response = await fetch(`${baseUrl}/lost-and-found/${itemId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete lost item")
+    }
+
+    return response.json()
+  },
+}
+
 export default {
   auth: authApi,
   student: studentApi,
