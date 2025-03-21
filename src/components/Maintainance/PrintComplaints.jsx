@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaPrint } from "react-icons/fa";
 
-const PrintComplaintsModal = ({ complaints }) => {
+const PrintComplaints = ({ complaints }) => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedPrintStatuses, setSelectedPrintStatuses] = useState([]);
   const [printComplaints, setPrintComplaints] = useState([]);
@@ -184,4 +184,4 @@ const PrintComplaintsModal = ({ complaints }) => {
   );
 };
 
-export default PrintComplaintsModal;
+export default PrintComplaints;

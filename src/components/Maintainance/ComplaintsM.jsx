@@ -4,7 +4,7 @@ import apiService from "../../services/apiService";
 import ComplaintItemM from "./ComplaintItemM";
 import ComplaintsStatsM from "./ComplaintsStatsM";
 import ComplaintDetailModal from "./ComplaintDetailModal";
-import PrintComplaintsModal from "./PrintComplaintsModal";
+import PrintComplaints from "./PrintComplaints";
 
 const ComplaintsM = () => {
   // State for complaints data
@@ -147,8 +147,8 @@ const ComplaintsM = () => {
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-semibold">Complaints Management</h3>
         <div className="flex space-x-2">
-          {/* Print button now comes from the PrintComplaintsModal component */}
-          <PrintComplaintsModal complaints={complaints} />
+          {/* Print button now comes from the PrintComplaints component */}
+          <PrintComplaints complaints={complaints} />
         </div>
       </div>
       
