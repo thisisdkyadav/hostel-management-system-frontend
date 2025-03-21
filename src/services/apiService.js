@@ -147,7 +147,7 @@ export const wardenApi = {
 
 export const securityApi = {
   getSecurityInfo: async () => {
-    const response = await fetch(`${baseUrl}/security/info`, {
+    const response = await fetch(`${baseUrl}/security`, {
       method: "GET",
       ...fetchOptions,
     })
@@ -202,6 +202,67 @@ export const securityApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update visitor")
+    }
+
+    return response.json()
+  },
+
+  addStudentEntry: async (entryData) => {
+    const response = await fetch(`${baseUrl}/security/entries`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(entryData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add student entry")
+    }
+
+    return response.json()
+  },
+
+  getRecentStudentEntries: async () => {
+    const response = await fetch(`${baseUrl}/security/entries/recent`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch recent student entries")
+    }
+
+    return response.json()
+  },
+
+  updateStudentEntry: async (entryData) => {
+    const response = await fetch(`${baseUrl}/security/entries/${entryData._id}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(entryData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update student entry")
+    }
+
+    return response.json()
+  },
+
+  getStudentEntries: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/security/entries${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student entries")
     }
 
     return response.json()
