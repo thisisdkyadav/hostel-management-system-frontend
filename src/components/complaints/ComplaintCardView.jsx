@@ -1,6 +1,6 @@
 import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
-import { getStatusColor, getPriorityColor, getTimeSince } from "../../../utils/adminUtils"
+import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (

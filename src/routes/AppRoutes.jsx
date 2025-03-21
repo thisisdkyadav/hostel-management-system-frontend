@@ -11,13 +11,13 @@ import Profile from "../pages/student/Profile"
 import MDashboard from "../pages/maintainance/MDashboard"
 
 // -------------------------maintenance ends here ----------------------------------
+import Complaint from "../pages/Complaints.jsx"
+import Students from "../pages/Students"
 
 // import related to warden
 import WardenLayout from "../layouts/WardenLayout.jsx"
 import WardenDashboard from "../pages/warden/DashboardWarden"
-import Complaint from "../pages/warden/Complaint"
 import DataPage from "../pages/warden/DataPage"
-import Students from "../pages/Students"
 import Poll from "../pages/warden/poll.jsx"
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
@@ -30,7 +30,6 @@ import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
 import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
-import AdminComplaints from "../pages/admin/Complaints"
 import SecurityLogins from "../pages/admin/SecurityLogins"
 import LostAndFound from "../pages/LostAndFound.jsx"
 
@@ -54,7 +53,7 @@ const AppRoutes = () => {
         <Route path="data" element={<DataPage />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<Visitors />} />
-        <Route path="polls" element={<Poll />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
       </Route>
 
       {/* Routes for Guard related pages */}
@@ -62,6 +61,7 @@ const AppRoutes = () => {
         <Route index element={<GuardDashboard />} />
         <Route path="visitors/add" element={<AddVisitor />} />
         <Route path="visitors" element={<Visitors />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
       </Route>
 
       {/* Routes for admin related pages */}
@@ -70,7 +70,7 @@ const AppRoutes = () => {
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="wardens" element={<AdminWarden />} />
         <Route path="students" element={<Students />} />
-        <Route path="complaints" element={<AdminComplaints />} />
+        <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
       </Route>
