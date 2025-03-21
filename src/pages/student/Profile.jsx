@@ -19,7 +19,7 @@ const Profile = () => {
         if (data.error) {
           setError(data.message);
         } else {
-          setStudent(data);
+          setStudent(data); 
         }
       });
     }
