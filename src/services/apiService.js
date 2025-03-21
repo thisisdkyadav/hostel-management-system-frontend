@@ -66,7 +66,53 @@ export const authApi = {
   },
 }
 
-export const studentApi = {}
+export const studentApi = {
+  importStudents: async (students) => {
+    const response = await fetch(`${baseUrl}/student/profiles`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(students),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to import students")
+    }
+
+    return response.json()
+  },
+
+  getStudents: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/student/profiles${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch students")
+    }
+
+    return response.json()
+  },
+
+  getStudentDetails: async (studentId) => {
+    const response = await fetch(`${baseUrl}/student/profile/details/${studentId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student details")
+    }
+
+    return response.json()
+  },
+}
 
 export const wardenApi = {
   getProfile: async () => {

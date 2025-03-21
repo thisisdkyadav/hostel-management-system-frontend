@@ -17,7 +17,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const fileInputRef = useRef(null)
 
   // Define available and required fields
-  const availableFields = ["name", "email", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bed", "phone", "address", "admissionDate"]
+  const availableFields = ["name", "email", "password", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bed", "phone", "address", "admissionDate"]
   const requiredFields = ["name", "email", "rollNumber", "room", "unit"]
 
   const handleFileUpload = (e) => {

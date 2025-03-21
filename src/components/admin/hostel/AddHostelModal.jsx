@@ -6,7 +6,7 @@ import { adminApi } from "../../../services/apiService"
 const AddHostelModal = ({ show, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
-    gender: "Male",
+    gender: "Boys",
     type: "unit-based",
     location: "",
     wardenId: "",
