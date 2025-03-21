@@ -32,6 +32,7 @@ import AdminWarden from "../pages/admin/Wardens"
 import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
 import SecurityLogins from "../pages/admin/SecurityLogins"
+import { Settings } from "lucide-react"
 
 const AppRoutes = () => {
   return (
@@ -40,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/api/v0/student/complaints" element={<Complaints />} />
       <Route path="/api/v0/student/profile" element={<Profile />} />
       <Route path="/api/v0/student/lost-and-found" element={<LostAndFound />} />
+      <Route path="/api/v0/student/settings" element={<Settings />} />
 
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
