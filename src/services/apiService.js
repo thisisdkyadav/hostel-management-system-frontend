@@ -429,6 +429,21 @@ export const adminApi = {
 
     return response.json()
   },
+
+  updateUserPassword: async (email, newPassword) => {
+    const response = await fetch(`${baseUrl}/admin/user/update-password`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ email, newPassword }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update password")
+    }
+
+    return response.json()
+  },
 }
 
 export const lostAndFoundApi = {

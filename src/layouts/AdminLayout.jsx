@@ -14,6 +14,7 @@ const AdminLayout = () => {
     { name: "Security", icon: FaUser, section: "main", path: "/admin/security" },
     { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/admin/lost-and-found" },
     { name: "Events", icon: FaClipboardList, section: "main", path: "/admin/events" },
+    { name: "Update Password", icon: FaCog, section: "main", path: "/admin/update-password" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/admin/profile" },
     { name: "Settings", icon: FaCog, section: "bottom", path: "/admin/settings" },
   ]
