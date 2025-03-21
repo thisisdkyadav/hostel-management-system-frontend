@@ -1,5 +1,5 @@
 import { FaEye } from "react-icons/fa"
-import { getStatusColor, getPriorityColor, getTimeSince } from "../../../utils/adminUtils"
+import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
 
 const ComplaintListView = ({ complaints, onViewDetails }) => {
   return (

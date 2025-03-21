@@ -16,23 +16,6 @@ const Hostels = () => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [hostels, setHostels] = useState([])
 
-  // const hostels = [
-  //   {
-  //     id: 1,
-  //     name: "CVRaman Hostel",
-  //     type: "unit-based", // unit-based, room-only
-  //     gender: "Boys", // Boys, Girls, Co-ed
-  //     wardens: ["Dr. Rajesh Kumar"], // array of wardens
-  //     totalRooms: 120,
-  //     occupiedRooms: 112,
-  //     vacantRooms: 8,
-  //     maintenanceIssues: 3,
-  //     capacity: 300,
-  //     occupancyRate: 93,
-  //     blocks: ["A1", "A2", "A3"], // Adding blocks for display
-  //   },
-  // ]
-
   const filteredHostels = filterHostels(hostels, activeTab, searchTerm)
 
   const fetchHostels = async () => {
