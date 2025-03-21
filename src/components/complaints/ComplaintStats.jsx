@@ -2,14 +2,14 @@ import React from "react"
 import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
 import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
-import StatCards from "../StatCards"
+import StatCards from "../admin/StatCards"
 
 const ComplaintStats = ({ complaints }) => {
   const totalComplaints = complaints.length
   const newComplaints = complaints.filter((c) => c.status === "Pending").length
   const inProgressComplaints = complaints.filter((c) => c.status === "In Progress").length
   const resolvedComplaints = complaints.filter((c) => c.status === "Resolved").length
-  const urgentComplaints = complaints.filter((c) => c.priority === "Urgent").length
+  // const urgentComplaints = complaints.filter((c) => c.priority === "Urgent").length
 
   const statsData = [
     {

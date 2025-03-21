@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react"
 import { FaClipboardList, FaFilter } from "react-icons/fa"
-import { filterComplaints } from "../../utils/adminUtils"
-import FilterTabs from "../../components/admin/FilterTabs"
-import SearchBar from "../../components/admin/SearchBar"
-import NoResults from "../../components/admin/NoResults"
-import ComplaintStats from "../../components/admin/complaints/ComplaintStats"
-import ComplaintDetailModal from "../../components/admin/complaints/ComplaintDetailModal"
-import ComplaintListView from "../../components/admin/complaints/ComplaintListView"
-import ComplaintCardView from "../../components/admin/complaints/ComplaintCardView"
-import { COMPLAINT_FILTER_TABS } from "../../constants/adminConstants"
-import { adminApi } from "../../services/apiService"
-import { useWarden } from "../../contexts/WardenProvider"
+import { filterComplaints } from "../utils/adminUtils"
+import FilterTabs from "../components/admin/FilterTabs"
+import SearchBar from "../components/admin/SearchBar"
+import NoResults from "../components/admin/NoResults"
+import ComplaintStats from "../components/complaints/ComplaintStats"
+import ComplaintDetailModal from "../components/complaints/ComplaintDetailModal"
+import ComplaintListView from "../components/complaints/ComplaintListView"
+import ComplaintCardView from "../components/complaints/ComplaintCardView"
+import { COMPLAINT_FILTER_TABS } from "../constants/adminConstants"
+import { adminApi } from "../services/apiService"
+import { useGlobal } from "../contexts/GlobalProvider"
 
 const Complaints = () => {
-  const { hostelList = [] } = useWarden()
-  const hostels = hostelList.map((hostel) => hostel.name)
+  const { hostelList = [] } = useGlobal()
+  const hostels = hostelList
 
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
@@ -97,8 +97,8 @@ const Complaints = () => {
                 <select className="w-full p-2 border border-gray-300 rounded-lg" value={filterHostel} onChange={(e) => setFilterHostel(e.target.value)}>
                   <option value="all">All Hostels</option>
                   {hostels.map((hostel, index) => (
-                    <option key={index} value={hostel}>
-                      {hostel}
+                    <option key={index} value={hostel._id}>
+                      {hostel.name}
                     </option>
                   ))}
                 </select>
