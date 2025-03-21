@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FaUserGraduate, FaEye, FaFileExport, FaFileImport, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
 import NoResults from "../../components/admin/NoResults"
@@ -22,12 +22,13 @@ const Students = () => {
   const [selectedGender, setSelectedGender] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [studentsPerPage] = useState(10)
-  const [sortField, setSortField] = useState("name")
+  const [sortField, setSortField] = useState("rollNumber")
   const [sortDirection, setSortDirection] = useState("asc")
   const [viewMode, setViewMode] = useState("table") // table or card
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [allStudents, setAllStudents] = useState([])
 
   // Sample data for departments, years, and hostels
   const departments = ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry", "Humanities"]
@@ -35,31 +36,30 @@ const Students = () => {
   const hostels = ["Hostel A", "Hostel B", "Hostel C", "Hostel D", "Hostel E", "Hostel F", "Hostel G"]
 
   // Sample student data
-  const allStudents = [
-    {
-      id: "S12345",
-      name: "Rahul Sharma",
-      email: "rahul.sharma@students.iiti.ac.in",
-      gender: "Male",
-      department: "Computer Science",
-      year: "3rd Year",
-      hostel: "Hostel A",
-      room: "A-203",
-      phone: "9876543201",
-      status: "Active",
-      address: "123 Main St, Mumbai, Maharashtra",
-      guardian: "Rajesh Sharma",
-      guardianPhone: "9876543222",
-      admissionDate: "2020-08-15",
-      image: "https://randomuser.me/api/portraits/men/11.jpg",
-    },
-  ]
+  // const allStudents = [
+  //   {
+  //     id: "S12345",
+  //     name: "Rahul Sharma",
+  //     email: "rahul.sharma@students.iiti.ac.in",
+  //     gender: "Male",
+  //     department: "Computer Science",
+  //     year: "3rd Year",
+  //     hostel: "Hostel A",
+  //     room: "A-203",
+  //     phone: "9876543201",
+  //     status: "Active",
+  //     address: "123 Main St, Mumbai, Maharashtra",
+  //     guardian: "Rajesh Sharma",
+  //     guardianPhone: "9876543222",
+  //     admissionDate: "2020-08-15",
+  //     image: "https://randomuser.me/api/portraits/men/11.jpg",
+  //   },
+  // ]
 
-  // Handle imported student data
   const handleImportStudents = async (importedStudents) => {
     try {
       const response = await studentApi.importStudents(importedStudents)
-      if (response.error) {
+      if (response?.error) {
         alert(`Error importing students: ${response.error.message}`)
         return false
       }
@@ -105,6 +105,21 @@ const Students = () => {
 
   // Pagination controls
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
+
+  const fetchStudents = async () => {
+    try {
+      const response = await studentApi.getStudents()
+      console.log(response, "Students from API")
+
+      setAllStudents(response?.data || [])
+    } catch (error) {
+      alert(`An error occurred: ${error.message}`)
+    }
+  }
+
+  useEffect(() => {
+    fetchStudents()
+  }, [])
 
   return (
     <div className="px-10 py-6 flex-1">
