@@ -13,6 +13,7 @@ import MDashboard from "../pages/maintainance/MDashboard"
 // -------------------------maintenance ends here ----------------------------------
 import Complaint from "../pages/Complaints.jsx"
 import Students from "../pages/Students"
+import Events from "../pages/Events.jsx"
 
 // import related to warden
 import WardenLayout from "../layouts/WardenLayout.jsx"
@@ -32,14 +33,18 @@ import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
 import SecurityLogins from "../pages/admin/SecurityLogins"
 import LostAndFound from "../pages/LostAndFound.jsx"
+import StudentLayout from "../layouts/StudentLayout.jsx"
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/api/v0/student/dashboard" element={<SDashboard />} />
-      <Route path="/api/v0/student/complaints" element={<Complaints />} />
-      <Route path="/api/v0/student/profile" element={<Profile />} />
-      <Route path="/api/v0/student/lost-and-found" element={<LostAndFound />} />
+      <Route path="/student" element={<StudentLayout />}>
+        <Route index element={<SDashboard />} />
+        <Route path="complaints" element={<Complaints />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="events" element={<Events />} />
+      </Route>
 
       <Route path="/" element={<SDashboard />} />
       <Route path="/login" element={<LoginPage />} />
@@ -54,6 +59,7 @@ const AppRoutes = () => {
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<Visitors />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="events" element={<Events />} />
       </Route>
 
       {/* Routes for Guard related pages */}

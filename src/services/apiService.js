@@ -490,6 +490,65 @@ export const lostAndFoundApi = {
   },
 }
 
+export const eventsApi = {
+  getAllEvents: async () => {
+    const response = await fetch(`${baseUrl}/event`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch events")
+    }
+
+    return response.json()
+  },
+
+  addEvent: async (eventData) => {
+    const response = await fetch(`${baseUrl}/event`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(eventData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add event")
+    }
+
+    return response.json()
+  },
+
+  updateEvent: async (eventId, eventData) => {
+    const response = await fetch(`${baseUrl}/event/${eventId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(eventData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update event")
+    }
+
+    return response.json()
+  },
+  deleteEvent: async (eventId) => {
+    const response = await fetch(`${baseUrl}/event/${eventId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete event")
+    }
+
+    return response.json()
+  },
+}
+
 export default {
   auth: authApi,
   student: studentApi,

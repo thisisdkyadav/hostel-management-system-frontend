@@ -9,6 +9,7 @@ const AdminLayout = () => {
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/warden" },
     { name: "Students", icon: FaClipboardList, section: "main", path: "/warden/students" },
     { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/warden/lost-and-found" },
+    { name: "Events", icon: FaClipboardList, section: "main", path: "/warden/events" },
     // { name: "Polls", icon: FaClipboardList, section: "main", path: "/warden/polls" },
     // { name: "Data", icon: FaClipboardList, section: "main", path: "/warden/data" },
     // { name: "Analytics", icon: FaClipboardList, section: "main", path: "/warden/analytics" },
