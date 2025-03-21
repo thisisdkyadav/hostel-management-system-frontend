@@ -44,17 +44,17 @@ const ComplaintStats = ({ complaints }) => {
       color: "#22c55e", // green-500
       iconColor: "text-green-500",
     },
-    {
-      title: "Urgent",
-      value: urgentComplaints,
-      subtitle: "High Priority",
-      icon: <MdPriorityHigh className="text-2xl" />,
-      color: "#ef4444", // red-500
-      iconColor: "text-red-500",
-    },
+    // {
+    //   title: "Urgent",
+    //   value: urgentComplaints,
+    //   subtitle: "High Priority",
+    //   icon: <MdPriorityHigh className="text-2xl" />,
+    //   color: "#ef4444", // red-500
+    //   iconColor: "text-red-500",
+    // },
   ]
 
-  return <StatCards stats={statsData} columns={5} />
+  return <StatCards stats={statsData} />
 }
 
 export default ComplaintStats

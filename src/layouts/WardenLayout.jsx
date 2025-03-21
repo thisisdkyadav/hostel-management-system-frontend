@@ -7,12 +7,13 @@ import WardenProvider from "../contexts/WardenProvider"
 const AdminLayout = () => {
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/warden" },
-    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/warden/complaints" },
-    { name: "Polls", icon: FaClipboardList, section: "main", path: "/warden/polls" },
-    { name: "Data", icon: FaClipboardList, section: "main", path: "/warden/data" },
     { name: "Students", icon: FaClipboardList, section: "main", path: "/warden/students" },
-    { name: "Analytics", icon: FaClipboardList, section: "main", path: "/warden/analytics" },
-    { name: "Staff", icon: FaUserTie, section: "main", path: "/warden/staff" },
+    { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/warden/lost-and-found" },
+    // { name: "Polls", icon: FaClipboardList, section: "main", path: "/warden/polls" },
+    // { name: "Data", icon: FaClipboardList, section: "main", path: "/warden/data" },
+    // { name: "Analytics", icon: FaClipboardList, section: "main", path: "/warden/analytics" },
+    { name: "Visitors", icon: FaUserTie, section: "main", path: "/warden/visitors" },
+    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/warden/complaints" },
     // { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/warden/alerts", isAlert: true },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/warden/profile" },
     { name: "Settings", icon: FaCog, section: "bottom", path: "/warden/settings" },
