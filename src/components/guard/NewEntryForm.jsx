@@ -23,23 +23,25 @@ const NewEntryForm = ({ onAddEntry }) => {
     setFormData({ ...formData, status })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     const isUnitBased = securityInfo?.hostelType === "unit-based"
-    const isFormValid = isUnitBased ? formData.unit && formData.room && formData.bed : formData.room
+    const isFormValid = isUnitBased ? formData.unit && formData.room && formData.bed : formData.room && formData.bed
 
     if (isFormValid) {
-      onAddEntry(formData)
+      const success = await onAddEntry(formData)
 
-      setFormData({
-        ...formData,
-        unit: "",
-        room: "",
-        bed: "",
-        time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-        date: new Date().toISOString().split("T")[0],
-      })
+      if (success) {
+        setFormData({
+          ...formData,
+          unit: "",
+          room: "",
+          bed: "",
+          time: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+          date: new Date().toISOString().split("T")[0],
+        })
+      }
     }
   }
 
