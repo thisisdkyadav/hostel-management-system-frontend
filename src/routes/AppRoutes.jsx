@@ -4,7 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import SDashboard from "../pages/student/SDashboard.jsx"
 import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
-import LostAndFound from "../pages/student/LostAndFound.jsx"
+// import LostAndFound from "../pages/student/LostAndFound.jsx"
 // -------------------------student ends here ----------------------------------
 
 //--------------------------------below is maintenance---------------------
@@ -17,7 +17,8 @@ import WardenLayout from "../layouts/WardenLayout.jsx"
 import WardenDashboard from "../pages/warden/DashboardWarden"
 import Complaint from "../pages/warden/Complaint"
 import DataPage from "../pages/warden/DataPage"
-import Students from "../pages/warden/Students"
+import Students from "../pages/Students"
+import Poll from "../pages/warden/poll.jsx"
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
 import GuardDashboard from "../pages/guard/Dashboard"
@@ -29,9 +30,9 @@ import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
 import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
-import AdminStudents from "../pages/admin/Students"
 import AdminComplaints from "../pages/admin/Complaints"
 import SecurityLogins from "../pages/admin/SecurityLogins"
+import LostAndFound from "../pages/LostAndFound.jsx"
 
 const AppRoutes = () => {
   return (
@@ -47,12 +48,13 @@ const AppRoutes = () => {
       {/* Routes for Maintenance related pages*/}
       <Route path="/maintainance/dashboard" element={<MDashboard />} />
 
-
       <Route path="/warden" element={<WardenLayout />}>
         <Route index element={<WardenDashboard />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="data" element={<DataPage />} />
         <Route path="students" element={<Students />} />
+        <Route path="visitors" element={<Visitors />} />
+        <Route path="polls" element={<Poll />} />
       </Route>
 
       {/* Routes for Guard related pages */}
@@ -67,9 +69,10 @@ const AppRoutes = () => {
         <Route index element={<AdminDashboard />} />
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="wardens" element={<AdminWarden />} />
-        <Route path="students" element={<AdminStudents />} />
+        <Route path="students" element={<Students />} />
         <Route path="complaints" element={<AdminComplaints />} />
         <Route path="security" element={<SecurityLogins />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
       </Route>
     </Routes>
   )
