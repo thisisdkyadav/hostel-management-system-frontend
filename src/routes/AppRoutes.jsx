@@ -80,9 +80,10 @@ const AppRoutes = () => {
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="wardens" element={<AdminWarden />} />
         <Route path="students" element={<Students />} />
-        <Route path="complaints" element={<Complaints />} />
+        <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="events" element={<Events />} />
       </Route>
     </Routes>
   )
