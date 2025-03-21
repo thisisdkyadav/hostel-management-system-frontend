@@ -346,7 +346,7 @@ export const adminApi = {
   },
 
   addHostel: async (hostelData) => {
-    const response = await fetch(`${baseUrl}/admin/hostel/add`, {
+    const response = await fetch(`${baseUrl}/admin/hostel`, {
       method: "POST",
       ...fetchOptions,
       body: JSON.stringify(hostelData),
@@ -375,7 +375,7 @@ export const adminApi = {
   },
 
   addWarden: async (wardenData) => {
-    const response = await fetch(`${baseUrl}/admin/warden/add`, {
+    const response = await fetch(`${baseUrl}/admin/warden`, {
       method: "POST",
       ...fetchOptions,
       body: JSON.stringify(wardenData),
@@ -406,8 +406,8 @@ export const adminApi = {
     return data
   },
   updateWarden: async (wardenId, wardenData) => {
-    const response = await fetch(`${baseUrl}/admin/warden/update/${wardenId}`, {
-      method: "POST",
+    const response = await fetch(`${baseUrl}/admin/warden/${wardenId}`, {
+      method: "PUT",
       ...fetchOptions,
       body: JSON.stringify(wardenData),
     })
@@ -420,7 +420,7 @@ export const adminApi = {
     return response.json()
   },
   deleteWarden: async (wardenId) => {
-    const response = await fetch(`${baseUrl}/admin/warden/delete/${wardenId}`, {
+    const response = await fetch(`${baseUrl}/admin/warden/${wardenId}`, {
       method: "DELETE",
       ...fetchOptions,
     })
@@ -448,7 +448,7 @@ export const adminApi = {
   },
 
   addSecurity: async (securityData) => {
-    const response = await fetch(`${baseUrl}/admin/security/add`, {
+    const response = await fetch(`${baseUrl}/admin/security`, {
       method: "POST",
       ...fetchOptions,
       body: JSON.stringify(securityData),
@@ -477,8 +477,8 @@ export const adminApi = {
   },
 
   updateSecurity: async (securityId, securityData) => {
-    const response = await fetch(`${baseUrl}/admin/security/update/${securityId}`, {
-      method: "POST",
+    const response = await fetch(`${baseUrl}/admin/security/${securityId}`, {
+      method: "PUT",
       ...fetchOptions,
       body: JSON.stringify(securityData),
     })
@@ -488,6 +488,18 @@ export const adminApi = {
       throw new Error(errorData.message || "Failed to update security staff")
     }
 
+    return response.json()
+  },
+
+  deleteSecurity: async (securityId) => {
+    const response = await fetch(`${baseUrl}/admin/security/${securityId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete security staff")
+    }
     return response.json()
   },
 
