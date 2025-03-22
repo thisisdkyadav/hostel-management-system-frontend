@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import Sidebar from "../../components/guard/Sidebar"
 import DashboardHeader from "../../components/guard/DashboardHeader"
 import NewEntryForm from "../../components/guard/NewEntryForm"
 import EntriesTable from "../../components/guard/EntriesTable"

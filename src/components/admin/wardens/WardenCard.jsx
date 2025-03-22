@@ -10,7 +10,7 @@ const WardenCard = ({ warden, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
 
   const getHostelName = (hostelId) => {
-    const hostel = hostelList.find((hostel) => hostel._id === hostelId)
+    const hostel = hostelList?.find((hostel) => hostel._id === hostelId)
     return hostel ? hostel.name : "Not assigned to any hostel"
   }
 

@@ -38,6 +38,9 @@ import SecurityLogins from "../pages/admin/SecurityLogins"
 import LostAndFound from "../pages/LostAndFound.jsx"
 import StudentLayout from "../layouts/StudentLayout.jsx"
 import { Settings } from "lucide-react"
+import UpdatePassword from "../pages/UpdatePassword.jsx"
+import StudentEntries from "../pages/guard/StudentEntries.jsx"
+import AddStudentEntry from "../pages/guard/AddStudentEntry.jsx"
 
 const AppRoutes = () => {
   return (
@@ -72,6 +75,8 @@ const AppRoutes = () => {
         <Route path="visitors/add" element={<AddVisitor />} />
         <Route path="visitors" element={<Visitors />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="entries" element={<StudentEntries />} />
+        <Route path="add-entry" element={<AddStudentEntry />} />
       </Route>
 
       {/* Routes for admin related pages */}
@@ -84,6 +89,7 @@ const AppRoutes = () => {
         <Route path="security" element={<SecurityLogins />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
+        <Route path="update-password" element={<UpdatePassword />} />
       </Route>
     </Routes>
   )

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPrint } from "react-icons/fa";
+import { FaPrint, FaTimes } from "react-icons/fa";
 
 const PrintComplaints = ({ complaints }) => {
   const [showPrintModal, setShowPrintModal] = useState(false);
@@ -45,9 +45,16 @@ const PrintComplaints = ({ complaints }) => {
       table { width: 100%; border-collapse: collapse; margin-top: 20px; }
       th, td { border: 1px solid #333; padding: 8px; text-align: left; }
       th { background: #f2f2f2; }
+      @media print {
+        @page { size: landscape; }
+      }
+      @media screen and (max-width: 768px) {
+        th, td { padding: 4px; font-size: 12px; }
+      }
     </style>`);
     printWindow.document.write('</head><body>');
     printWindow.document.write('<h2>Complaints Report</h2>');
+    printWindow.document.write('<div style="overflow-x:auto;">'); // For horizontal scrolling on small screens
     printWindow.document.write('<table>');
     printWindow.document.write('<thead><tr>' +
       '<th>ID</th>' +
@@ -79,6 +86,7 @@ const PrintComplaints = ({ complaints }) => {
       );
     });
     printWindow.document.write('</tbody></table>');
+    printWindow.document.write('</div>'); // Close the overflow div
     printWindow.document.write('</body></html>');
     printWindow.document.close();
     printWindow.focus();
@@ -90,23 +98,31 @@ const PrintComplaints = ({ complaints }) => {
     <>
       {/* Print Button */}
       <button 
-        className="no-print bg-[#1360AB] text-white px-4 py-3 rounded-md text-sm flex items-center space-x-1"
+        className="no-print bg-[#1360AB] text-white px-3 py-2 md:px-4 md:py-3 rounded-md text-sm flex items-center space-x-1"
         onClick={handlePrint}
       >
         <FaPrint className="text-sm" />
-        <span>Print</span>
+        <span className="hidden sm:inline">Print</span>
       </button>
 
       {/* Print Modal */}
       {showPrintModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 no-print">
-          <div className="bg-white rounded-[20px] w-full max-w-sm p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 no-print p-4">
+          <div className="bg-white rounded-[20px] w-full max-w-sm p-6 relative">
+            <button 
+              onClick={() => setShowPrintModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <FaTimes />
+            </button>
+            
             <h3 className="text-lg font-semibold mb-4">Select Complaint Statuses</h3>
             <div className="space-y-2">
               {printStatusOptions.map(status => (
-                <label key={status} className="flex items-center space-x-2">
+                <label key={status} className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded">
                   <input 
                     type="checkbox"
+                    className="w-4 h-4"
                     checked={selectedPrintStatuses.includes(status)}
                     onChange={() => togglePrintStatus(status)}
                   />
@@ -114,15 +130,15 @@ const PrintComplaints = ({ complaints }) => {
                 </label>
               ))}
             </div>
-            <div className="mt-4 flex justify-end space-x-2">
+            <div className="mt-6 flex flex-col sm:flex-row gap-2 sm:justify-end">
               <button 
-                className="px-4 py-2 border rounded"
+                className="px-4 py-2 border rounded w-full sm:w-auto"
                 onClick={() => setShowPrintModal(false)}
               >
                 Cancel
               </button>
               <button 
-                className="px-4 py-2 bg-[#1360AB] text-white rounded"
+                className="px-4 py-2 bg-[#1360AB] text-white rounded w-full sm:w-auto"
                 onClick={confirmPrint}
               >
                 Print
@@ -131,55 +147,6 @@ const PrintComplaints = ({ complaints }) => {
           </div>
         </div>
       )}
-
-      {/* Printable Section - only visible in print */}
-      <div className="print-section" style={{ display: "none" }}>
-        <h2>Complaints Report</h2>
-        <table border="1" cellPadding="5" cellSpacing="0" width="100%">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Location</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th>Complaintee Name</th>
-              <th>Room</th>
-              <th>Hostel Name</th>
-              <th>Phone Number</th>
-            </tr>
-          </thead>
-          <tbody>
-            {printComplaints.map(complaint => (
-              <tr key={complaint.id}>
-                <td>{complaint.id}</td>
-                <td>{complaint.title}</td>
-                <td>{complaint.description}</td>
-                <td>{complaint.location}</td>
-                <td>{complaint.category}</td>
-                <td>{complaint.status}</td>
-                <td>{complaint.complainteeName || "N/A"}</td>
-                <td>{complaint.room || "N/A"}</td>
-                <td>{complaint.hostelName || "N/A"}</td>
-                <td>{complaint.phoneNumber || "N/A"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Inline styles for print media */}
-      <style>{`
-        @media print {
-          .no-print {
-            display: none !important;
-          }
-          .print-section {
-            display: block !important;
-          }
-        }
-      `}</style>
     </>
   );
 };
