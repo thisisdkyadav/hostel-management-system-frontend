@@ -1,7 +1,7 @@
 import React from "react"
 import { FaExchangeAlt, FaClock, FaCheck, FaTimes } from "react-icons/fa"
 import { IoStatsChart } from "react-icons/io5"
-import StatCards from "../admin/StatCards"
+import StatCards from "../../common/StatCards"
 
 const RoomChangeRequestStats = ({ requests, totalCount }) => {
   // Calculate statistics

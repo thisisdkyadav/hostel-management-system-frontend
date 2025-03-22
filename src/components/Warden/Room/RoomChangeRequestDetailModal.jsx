@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { MdClose } from "react-icons/md"
 import { FaExchangeAlt, FaCheck, FaTimes, FaInfoCircle, FaBed, FaUser } from "react-icons/fa"
-import { hostelApi } from "../../services/apiService"
-import BedSelectionComponent from "./BedSelectionComponent"
+import { hostelApi } from "../../../services/apiService"
+import BedSelectionComponent from "../BedSelectionComponent"
 
 const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
   console.log("requestId", requestId)

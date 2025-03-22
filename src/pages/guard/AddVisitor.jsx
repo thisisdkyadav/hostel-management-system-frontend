@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import VisitorForm from "../../components/guard/VisitorForm"
-import VisitorTable from "../../components/guard/VisitorTable"
+import VisitorForm from "../../components/visitor/VisitorForm"
+import VisitorTable from "../../components/visitor/VisitorTable"
 import { securityApi } from "../../services/apiService"
 import { useSecurity } from "../../contexts/SecurityProvider"
 

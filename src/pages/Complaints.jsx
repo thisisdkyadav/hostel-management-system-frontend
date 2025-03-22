@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react"
 import { FaClipboardList, FaFilter } from "react-icons/fa"
 import { filterComplaints } from "../utils/adminUtils"
-import FilterTabs from "../components/admin/FilterTabs"
-import SearchBar from "../components/admin/SearchBar"
-import NoResults from "../components/admin/NoResults"
+import FilterTabs from "../components/common/FilterTabs"
+import SearchBar from "../components/common/SearchBar"
+import NoResults from "../components/common/NoResults"
 import ComplaintStats from "../components/complaints/ComplaintStats"
 import ComplaintDetailModal from "../components/complaints/ComplaintDetailModal"
 import ComplaintListView from "../components/complaints/ComplaintListView"
 import ComplaintCardView from "../components/complaints/ComplaintCardView"
+import ComplaintForm from "../components/student/ComplaintForm"
 import { COMPLAINT_FILTER_TABS } from "../constants/adminConstants"
 import { adminApi } from "../services/apiService"
 import { useGlobal } from "../contexts/GlobalProvider"
+import { useAuth } from "../contexts/AuthProvider"
 
 const Complaints = () => {
+  const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
   const hostels = hostelList
 
@@ -25,6 +28,7 @@ const Complaints = () => {
   const [selectedComplaint, setSelectedComplaint] = useState(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [viewMode, setViewMode] = useState("list")
+  const [showCraftComplaint, setShowCraftComplaint] = useState(false)
   const [complaints, setComplaints] = useState([])
 
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
@@ -56,6 +60,11 @@ const Complaints = () => {
       <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
         <h1 className="text-2xl px-3 font-bold">Complaints Management</h1>
         <div className="flex items-center space-x-4">
+          {["Student"].includes(user?.role) && (
+            <button className="absolute left-[80%] top-[90%] w-[14%] py-2 bg-[#1360AB] text-white rounded-lg shadow-md hover:bg-[#7c82bd] transition" onClick={() => setShowCraftComplaint(true)}>
+              Craft a Complaint
+            </button>
+          )}
           <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2 rounded-[12px] ${showFilters ? "bg-[#1360AB] text-white" : "bg-white text-gray-700"}`}>
             <FaFilter className="mr-2" /> Filters
           </button>
@@ -142,6 +151,8 @@ const Complaints = () => {
         <NoResults icon={<FaClipboardList className="mx-auto text-gray-300 text-5xl mb-4" />} message="No complaints found" suggestion="Try changing your search or filter criteria" />
       )}
       {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} />}
+
+      {showCraftComplaint && ["Student"].includes(user?.role) && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} />}
     </div>
   )
 }
