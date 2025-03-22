@@ -1,27 +1,38 @@
 import React from "react"
 
-// Individual card component
 const StatCard = ({ title, value, subtitle, icon, color = "#1360AB" }) => {
   return (
-    <div className="bg-white rounded-[20px] p-5 shadow-[0px_1px_20px_rgba(0,0,0,0.06)]">
-      <div className="flex justify-between items-center">
-        <span className="text-gray-600">{title}</span>
-        <div style={{ color }}>{icon}</div>
+    <div className="bg-white rounded-xl hover:rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 h-full" style={{ borderLeftColor: color }}>
+      <div className="flex justify-between items-start">
+        <span className="text-gray-600 text-sm font-medium">{title}</span>
+        <div className="p-2 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${color}15` }}>
+          {React.cloneElement(icon, { style: { color }, className: "text-xl" })}
+        </div>
       </div>
       <div className="mt-4">
-        <h3 className="text-3xl font-bold" style={{ color }}>
+        <h3 className="text-2xl md:text-3xl font-bold" style={{ color }}>
           {value}
         </h3>
-        <p className="text-sm text-gray-500">{subtitle}</p>
+        <p className="text-xs md:text-sm text-gray-500 mt-1">{subtitle}</p>
       </div>
     </div>
   )
 }
 
-// Main component that renders a grid of stat cards
 const StatCards = ({ stats, columns = 4 }) => {
+  const getGridClass = () => {
+    let gridClass = "grid-cols-1 sm:grid-cols-2"
+    if (columns === 3) {
+      gridClass += " md:grid-cols-3"
+    } else if (columns >= 4) {
+      gridClass += " lg:grid-cols-4"
+    }
+
+    return gridClass
+  }
+
   return (
-    <div className={`grid grid-cols-${columns} gap-4 mt-6`}>
+    <div className={`grid ${getGridClass()} gap-3 md:gap-5`}>
       {stats.map((stat, index) => (
         <StatCard key={index} title={stat.title} value={stat.value} subtitle={stat.subtitle} icon={stat.icon} color={stat.color} />
       ))}
