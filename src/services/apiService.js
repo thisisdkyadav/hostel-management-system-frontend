@@ -637,6 +637,80 @@ export const eventsApi = {
   },
 }
 
+export const hostelApi = {
+  getUnits: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/hostel/units/${hostelId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch units")
+    }
+
+    return response.json()
+  },
+
+  getRoomsByUnit: async (unitId) => {
+    const response = await fetch(`${baseUrl}/hostel/rooms/${unitId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch rooms")
+    }
+
+    return response.json()
+  },
+
+  allocateRoom: async (allocationData) => {
+    const response = await fetch(`${baseUrl}/hostel/allocate`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(allocationData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to allocate room")
+    }
+
+    return response.json()
+  },
+
+  updateRoomStatus: async (roomId, status) => {
+    const response = await fetch(`${baseUrl}/hostel/rooms/${roomId}/status`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ status }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update room status")
+    }
+
+    return response.json()
+  },
+
+  deallocateRoom: async (allocationId) => {
+    const response = await fetch(`${baseUrl}/hostel/deallocate/${allocationId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to deallocate room")
+    }
+
+    return response.json()
+  },
+}
+
 export default {
   auth: authApi,
   student: studentApi,

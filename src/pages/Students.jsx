@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import { FaUserGraduate, FaEye, FaFileExport, FaFileImport } from "react-icons/fa"
+import { useState } from "react"
+import { FaUserGraduate, FaFileExport, FaFileImport } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
 import NoResults from "../components/admin/NoResults"
 import StudentStats from "../components/common/students/StudentStats"
@@ -9,8 +9,7 @@ import StudentDetailModal from "../components/common/students/StudentDetailModal
 import ImportStudentModal from "../components/common/students/ImportStudentModal"
 import StudentTableView from "../components/common/students/StudentTableView"
 import Pagination from "../components/common/Pagination"
-import { studentApi } from "../services/apiService"
-import { useStudentFilters } from "../hooks/useStudentFilters"
+import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -25,12 +24,15 @@ const Students = () => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
-  const [allStudents, setAllStudents] = useState([])
-  const [totalStudents, setTotalStudents] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [studentsPerPage] = useState(10)
+
+  // Use our combined hook
+  const { students, totalCount, loading, error, filters, updateFilter, pagination, setCurrentPage, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
+    perPage: 10,
+    autoFetch: true,
+  })
 
   const departments = ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry", "Humanities"]
+
   const years = [
     { value: "1", label: "1st Year" },
     { value: "2", label: "2nd Year" },
@@ -38,38 +40,21 @@ const Students = () => {
     { value: "4", label: "4th Year" },
     { value: "5", label: "5th Year" },
   ]
+
   const degrees = ["B.Tech", "M.Tech", "PhD", "BSc", "MSc", "MBA", "BBA"]
-
-  const fetchStudents = async () => {
-    try {
-      setLoading(true)
-      const queryParams = filterState.buildQueryParams()
-      const response = await studentApi.getStudents(queryParams)
-      console.log(response, "Students from API")
-
-      setAllStudents(response?.data || [])
-      setTotalStudents(response?.meta?.total || 0)
-    } catch (error) {
-      alert(`An error occurred: ${error.message}`)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filterState = useStudentFilters(fetchStudents)
 
   const handleImportStudents = async (importedStudents) => {
     try {
-      const response = await studentApi.importStudents(importedStudents)
-      if (response?.error) {
-        alert(`Error importing students: ${response.error.message}`)
+      const result = await importStudents(importedStudents)
+      if (result.error) {
+        alert(`Error importing students: ${result.error.message}`)
         return false
       }
       alert("Students imported successfully")
-      fetchStudents()
       return true
     } catch (error) {
       alert(`An error occurred: ${error.message}`)
+      return false
     }
   }
 
@@ -78,16 +63,13 @@ const Students = () => {
     setShowStudentDetail(true)
   }
 
-  const paginate = (pageNumber) => filterState.pagination.setCurrentPage(pageNumber)
-
-  const totalPages = Math.ceil(totalStudents / studentsPerPage)
-
-  useEffect(() => {
-    fetchStudents()
-  }, [filterState.pagination.currentPage, filterState.sorting.sortField, filterState.sorting.sortDirection])
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  const totalPages = Math.ceil(totalCount / pagination.perPage)
 
   return (
     <div className="px-10 py-6 flex-1">
+      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">Error: {error}</div>}
+
       <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
         <h1 className="text-2xl px-3 font-bold">Student Management</h1>
         <div className="flex items-center space-x-4">
@@ -107,13 +89,13 @@ const Students = () => {
         </div>
       </header>
 
-      <StudentStats students={allStudents} totalCount={totalStudents} />
+      <StudentStats students={students} totalCount={totalCount} />
 
-      {showFilters && <StudentFilterSection filters={filterState.filters} resetFilters={filterState.resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} />}
+      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} />}
 
       <div className="mt-6 flex justify-between items-center">
         <div className="text-gray-600">
-          Showing <span className="font-semibold">{allStudents.length}</span> out of <span className="font-semibold">{totalStudents}</span> students
+          Showing <span className="font-semibold">{students.length}</span> out of <span className="font-semibold">{totalCount}</span> students
         </div>
 
         <div className="flex space-x-2">
@@ -141,23 +123,23 @@ const Students = () => {
         </div>
       ) : (
         <>
-          {viewMode === "table" && <StudentTableView currentStudents={allStudents} sortField={filterState.sorting.sortField} sortDirection={filterState.sorting.sortDirection} handleSort={filterState.sorting.handleSort} viewStudentDetails={viewStudentDetails} />}
+          {viewMode === "table" && <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />}
 
           {viewMode === "card" && (
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allStudents.map((student) => (
+              {students.map((student) => (
                 <StudentCard key={student.id} student={student} onClick={() => viewStudentDetails(student)} />
               ))}
             </div>
           )}
 
-          {allStudents.length === 0 && !loading && <NoResults icon={<FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
+          {students.length === 0 && !loading && <NoResults icon={<FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
         </>
       )}
 
-      {allStudents.length > 0 && <Pagination currentPage={filterState.pagination.currentPage} totalPages={totalPages} paginate={paginate} />}
+      {students.length > 0 && <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />}
 
-      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={fetchStudents} />}
+      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
       {["Warden"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
     </div>
