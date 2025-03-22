@@ -72,13 +72,11 @@ export const filterSecurity = (securityStaff, filterStatus, searchTerm) => {
 }
 
 export const filterLostItems = (items, filter, searchTerm) => {
-  // First filter by tab
   let filteredItems = items
   if (filter !== "all") {
     const statusMap = {
-      found: "Found",
-      claimed: "Claimed",
-      inProgress: "In Progress",
+      Active: "Active",
+      Claimed: "Claimed",
     }
     filteredItems = items.filter((item) => item.status === statusMap[filter])
   }

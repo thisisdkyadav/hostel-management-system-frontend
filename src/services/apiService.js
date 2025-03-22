@@ -348,7 +348,7 @@ export const adminApi = {
   addHostel: async (hostelData) => {
     const response = await fetch(`${baseUrl}/admin/hostel`, {
       method: "POST",
-      ...fetchOptions, 
+      ...fetchOptions,
       body: JSON.stringify(hostelData),
     })
 
@@ -705,6 +705,37 @@ export const hostelApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to deallocate room")
+    }
+
+    return response.json()
+  },
+
+  getRoomChangeRequests: async (hostelId, filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/hostel/room-change-requests/${hostelId}${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch room change requests")
+    }
+
+    return response.json()
+  },
+
+  getRoomChangeRequestById: async (requestId) => {
+    const response = await fetch(`${baseUrl}/hostel/room-change-request/${requestId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch room change request")
     }
 
     return response.json()
