@@ -1,87 +1,124 @@
-import { useState, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 
-export const useStudentFilters = (fetchDataCallback) => {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedHostel, setSelectedHostel] = useState("")
-  const [selectedUnit, setSelectedUnit] = useState("")
-  const [selectedYear, setSelectedYear] = useState("")
-  const [selectedDepartment, setSelectedDepartment] = useState("")
-  const [selectedDegree, setSelectedDegree] = useState("")
-  const [selectedGender, setSelectedGender] = useState("")
-  const [roomNumber, setRoomNumber] = useState("")
-  const [hasAllocation, setHasAllocation] = useState("")
-  const [admissionDateFrom, setAdmissionDateFrom] = useState(null)
-  const [admissionDateTo, setAdmissionDateTo] = useState(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [sortField, setSortField] = useState("rollNumber")
-  const [sortDirection, setSortDirection] = useState("asc")
+export const useStudentFilters = (onFilterChange, initialFilters = {}) => {
+  // Initialize all filter states with initial values or defaults
+  const [filters, setFilters] = useState({
+    searchTerm: initialFilters.searchTerm || "",
+    hostelId: initialFilters.hostelId || "",
+    unitNumber: initialFilters.unitNumber || "",
+    yearOfStudy: initialFilters.yearOfStudy || "",
+    department: initialFilters.department || "",
+    degree: initialFilters.degree || "",
+    gender: initialFilters.gender || "",
+    roomNumber: initialFilters.roomNumber || "",
+    hasAllocation: initialFilters.hasAllocation || "",
+    admissionDateFrom: initialFilters.admissionDateFrom || null,
+    admissionDateTo: initialFilters.admissionDateTo || null,
+  })
 
-  const resetFilters = () => {
-    setSearchTerm("")
-    setSelectedHostel("")
-    setSelectedUnit("")
-    setSelectedYear("")
-    setSelectedDepartment("")
-    setSelectedDegree("")
-    setSelectedGender("")
-    setRoomNumber("")
-    setHasAllocation("")
-    setAdmissionDateFrom(null)
-    setAdmissionDateTo(null)
-    setCurrentPage(1)
-    setSortField("rollNumber")
-    setSortDirection("asc")
-  }
+  const [pagination, setPagination] = useState({
+    currentPage: initialFilters.page || 1,
+    perPage: initialFilters.limit || 10,
+  })
 
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
-    } else {
-      setSortField(field)
-      setSortDirection("asc")
-    }
-  }
+  const [sorting, setSorting] = useState({
+    sortField: initialFilters.sortField || "rollNumber",
+    sortDirection: initialFilters.sortDirection || "asc",
+  })
 
-  const buildQueryParams = () => {
+  // Update individual filter
+  const updateFilter = useCallback((key, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }))
+    // Reset to page 1 when filters change
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: 1,
+    }))
+  }, [])
+
+  // Change page without resetting filters
+  const setCurrentPage = useCallback((page) => {
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: page,
+    }))
+  }, [])
+
+  // Handle sort logic
+  const handleSort = useCallback((field) => {
+    setSorting((prev) => ({
+      sortField: field,
+      sortDirection: prev.sortField === field && prev.sortDirection === "asc" ? "desc" : "asc",
+    }))
+  }, [])
+
+  // Reset all filters to default values
+  const resetFilters = useCallback(() => {
+    setFilters({
+      searchTerm: "",
+      hostelId: "",
+      unitNumber: "",
+      yearOfStudy: "",
+      department: "",
+      degree: "",
+      gender: "",
+      roomNumber: "",
+      hasAllocation: "",
+      admissionDateFrom: null,
+      admissionDateTo: null,
+    })
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: 1,
+    }))
+    setSorting({
+      sortField: "rollNumber",
+      sortDirection: "asc",
+    })
+  }, [])
+
+  // Build query params from current state
+  const buildQueryParams = useCallback(() => {
     const params = new URLSearchParams()
 
-    params.append("page", currentPage)
-    params.append("limit", 10)
+    params.append("page", pagination.currentPage)
+    params.append("limit", pagination.perPage)
 
-    // Add search term to relevant fields
-    if (searchTerm) {
-      if (searchTerm.match(/^[a-zA-Z\s]+$/)) {
-        params.append("name", searchTerm)
-      } else if (searchTerm.includes("@")) {
-        params.append("email", searchTerm)
+    // Handle search term logic
+    if (filters.searchTerm) {
+      if (filters.searchTerm.match(/^[a-zA-Z\s]+$/)) {
+        params.append("name", filters.searchTerm)
+      } else if (filters.searchTerm.includes("@")) {
+        params.append("email", filters.searchTerm)
       } else {
-        params.append("rollNumber", searchTerm)
+        params.append("rollNumber", filters.searchTerm)
       }
     }
 
     // Add filter parameters
-    if (selectedDepartment) params.append("department", selectedDepartment)
-    if (selectedDegree) params.append("degree", selectedDegree)
-    if (selectedGender) params.append("gender", selectedGender)
-    if (selectedHostel) params.append("hostelId", selectedHostel)
-    if (selectedUnit) params.append("unitNumber", selectedUnit)
-    if (roomNumber) params.append("roomNumber", roomNumber)
-    if (selectedYear) params.append("yearOfStudy", selectedYear)
-    if (hasAllocation) params.append("hasAllocation", hasAllocation)
+    if (filters.department) params.append("department", filters.department)
+    if (filters.degree) params.append("degree", filters.degree)
+    if (filters.gender) params.append("gender", filters.gender)
+    if (filters.hostelId) params.append("hostelId", filters.hostelId)
+    if (filters.unitNumber) params.append("unitNumber", filters.unitNumber)
+    if (filters.roomNumber) params.append("roomNumber", filters.roomNumber)
+    if (filters.yearOfStudy) params.append("yearOfStudy", filters.yearOfStudy)
+    if (filters.hasAllocation) params.append("hasAllocation", filters.hasAllocation)
 
     // Add date parameters
-    if (admissionDateFrom) {
-      // Format date manually without date-fns
-      const fromDate = admissionDateFrom
+    if (filters.admissionDateFrom) {
+      const fromDate = filters.admissionDateFrom
       const fromYear = fromDate.getFullYear()
       const fromMonth = String(fromDate.getMonth() + 1).padStart(2, "0")
       const fromDay = String(fromDate.getDate()).padStart(2, "0")
       params.append("admissionDateFrom", `${fromYear}-${fromMonth}-${fromDay}`)
     }
 
-    if (admissionDateTo) {
-      // Format date manually without date-fns
-      const toDate = admissionDateTo
+    if (filters.admissionDateTo) {
+      const toDate = filters.admissionDateTo
       const toYear = toDate.getFullYear()
       const toMonth = String(toDate.getMonth() + 1).padStart(2, "0")
       const toDay = String(toDate.getDate()).padStart(2, "0")
@@ -89,55 +126,28 @@ export const useStudentFilters = (fetchDataCallback) => {
     }
 
     // Add sorting parameters
-    params.append("sortBy", sortField)
-    params.append("sortOrder", sortDirection)
+    params.append("sortBy", sorting.sortField)
+    params.append("sortOrder", sorting.sortDirection)
 
     return params.toString()
-  }
+  }, [filters, pagination, sorting])
 
+  // Set up debounced filter callback
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      setCurrentPage(1)
-      fetchDataCallback()
+      if (onFilterChange) onFilterChange()
     }, 500)
 
     return () => clearTimeout(delayDebounceFn)
-  }, [searchTerm, selectedHostel, selectedUnit, selectedYear, selectedDepartment, selectedDegree, selectedGender, roomNumber, hasAllocation, admissionDateFrom, admissionDateTo])
+  }, [filters, sorting, pagination.currentPage, onFilterChange])
 
   return {
-    filters: {
-      searchTerm,
-      setSearchTerm,
-      selectedHostel,
-      setSelectedHostel,
-      selectedUnit,
-      setSelectedUnit,
-      selectedYear,
-      setSelectedYear,
-      selectedDepartment,
-      setSelectedDepartment,
-      selectedDegree,
-      setSelectedDegree,
-      selectedGender,
-      setSelectedGender,
-      roomNumber,
-      setRoomNumber,
-      hasAllocation,
-      setHasAllocation,
-      admissionDateFrom,
-      setAdmissionDateFrom,
-      admissionDateTo,
-      setAdmissionDateTo,
-    },
-    pagination: {
-      currentPage,
-      setCurrentPage,
-    },
-    sorting: {
-      sortField,
-      sortDirection,
-      handleSort,
-    },
+    filters,
+    updateFilter,
+    pagination,
+    setCurrentPage,
+    sorting,
+    handleSort,
     resetFilters,
     buildQueryParams,
   }
