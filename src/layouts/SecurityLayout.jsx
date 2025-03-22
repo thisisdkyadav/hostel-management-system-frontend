@@ -1,10 +1,23 @@
 import Sidebar from "../components/Sidebar"
-import { Outlet } from "react-router-dom"
-import { FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaExclamationTriangle } from "react-icons/fa"
+import { Outlet, useNavigate } from "react-router-dom"
+import { FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaExclamationTriangle, FaSignOutAlt } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import SecurityProvider from "../contexts/SecurityProvider"
+import { useAuth } from "../contexts/AuthProvider"
 
 const SecurityLayout = () => {
+  const navigate = useNavigate()
+  const { logout } = useAuth ? useAuth() : { logout: () => {} }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate("/login")
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+  }
+
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/guard" },
     { name: "Add Student Entry", icon: FaClipboardList, section: "main", path: "/guard/add-entry" },
@@ -14,14 +27,14 @@ const SecurityLayout = () => {
     { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/guard/lost-and-found" },
     { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/guard/alerts", isAlert: true },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/guard/profile" },
-    { name: "Settings", icon: FaCog, section: "bottom", path: "/guard/settings" },
+    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
 
   return (
     <SecurityProvider>
-      <div className="flex bg-[#EFF3F4] min-h-screen">
+      <div className="flex flex-col md:flex-row bg-[#EFF3F4] min-h-screen">
         <Sidebar navItems={navItems} />
-        <div className="flex-1 h-screen overflow-auto">
+        <div className="flex-1 h-screen overflow-auto pt-16 md:pt-0">
           <Outlet />
         </div>
       </div>
