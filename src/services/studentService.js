@@ -5,6 +5,8 @@ export const fetchStudentProfile = async (userId) => {
     console.error("Error: User ID is undefined!");
     return { error: true, message: "User ID is required" };
   }
+  console.log("userId is: ", userId);
+  
 
   try {
     const response = await fetch(`${API_BASE_URL}/student/profiles/${userId}`, {
