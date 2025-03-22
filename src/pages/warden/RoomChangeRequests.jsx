@@ -4,12 +4,12 @@ import { MdFilterAlt, MdClearAll } from "react-icons/md"
 import { hostelApi } from "../../services/apiService"
 import { useWarden } from "../../contexts/WardenProvider"
 import Pagination from "../../components/common/Pagination"
-import NoResults from "../../components/admin/NoResults"
-import SearchBar from "../../components/admin/SearchBar"
-import RoomChangeRequestStats from "../../components/warden/RoomChangeRequestStats"
-import RoomChangeRequestFilterSection from "../../components/warden/RoomChangeRequestFilterSection"
-import RoomChangeRequestListView from "../../components/warden/RoomChangeRequestListView"
-import RoomChangeRequestDetailModal from "../../components/warden/RoomChangeRequestDetailModal"
+import NoResults from "../../components/common/NoResults"
+import SearchBar from "../../components/common/SearchBar"
+import RoomChangeRequestStats from "../../components/Warden/Room/RoomChangeRequestStats"
+import RoomChangeRequestFilterSection from "../../components/Warden/Room/RoomChangeRequestFilterSection"
+import RoomChangeRequestListView from "../../components/Warden/Room/RoomChangeRequestListView"
+import RoomChangeRequestDetailModal from "../../components/Warden/Room/RoomChangeRequestDetailModal"
 
 const RoomChangeRequests = () => {
   const { profile } = useWarden()

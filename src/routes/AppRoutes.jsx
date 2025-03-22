@@ -2,10 +2,8 @@ import { Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
 //--------------------------------below is student---------------------
 import SDashboard from "../pages/student/SDashboard.jsx"
-import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
 import Settings from "../pages/student/Settings.jsx"
-// import LostAndFound from "../pages/student/LostAndFound.jsx"
 // -------------------------student ends here ----------------------------------
 
 //--------------------------------below is maintenance---------------------
@@ -18,15 +16,14 @@ import Events from "../pages/Events.jsx"
 
 // import related to warden
 import WardenLayout from "../layouts/WardenLayout.jsx"
-import WardenDashboard from "../pages/warden/DashboardWarden"
+import WardenDashboard from "../pages/warden/Dashboard.jsx"
 // import Complaint from "../pages/warden/Complaint"
-import DataPage from "../pages/warden/DataPage"
 // import Students from "../pages/warden/Students"
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
 import GuardDashboard from "../pages/guard/Dashboard"
 import AddVisitor from "../pages/guard/AddVisitor"
-import Visitors from "../pages/guard/Visitors"
+import Visitors from "../pages/Visitors"
 
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
@@ -39,7 +36,7 @@ import SecurityLogins from "../pages/admin/SecurityLogins"
 import LostAndFound from "../pages/LostAndFound.jsx"
 import StudentLayout from "../layouts/StudentLayout.jsx"
 
-import UpdatePassword from "../pages/UpdatePassword.jsx"
+import UpdatePassword from "../pages/admin/UpdatePassword.jsx"
 import StudentEntries from "../pages/guard/StudentEntries.jsx"
 import AddStudentEntry from "../pages/guard/AddStudentEntry.jsx"
 import RoomChangeRequests from "../pages/warden/RoomChangeRequests.jsx"
@@ -49,7 +46,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/student" element={<StudentLayout />}>
         <Route index element={<SDashboard />} />
-        <Route path="complaints" element={<Complaints />} />
+        <Route path="complaints" element={<Complaint />} />
         <Route path="profile" element={<Profile />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
@@ -65,7 +62,6 @@ const AppRoutes = () => {
       <Route path="/warden" element={<WardenLayout />}>
         <Route index element={<WardenDashboard />} />
         <Route path="complaints" element={<Complaint />} />
-        <Route path="data" element={<DataPage />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<Visitors />} />
         <Route path="lost-and-found" element={<LostAndFound />} />

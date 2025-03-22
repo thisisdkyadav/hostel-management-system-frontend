@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FaUserGraduate, FaFileExport, FaFileImport } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
-import NoResults from "../components/admin/NoResults"
+import NoResults from "../components/common/NoResults"
 import StudentStats from "../components/common/students/StudentStats"
 import StudentFilterSection from "../components/common/students/StudentFilterSection"
 import StudentCard from "../components/common/students/StudentCard"

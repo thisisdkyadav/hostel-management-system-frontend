@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { HiKey } from "react-icons/hi"
-import UpdatePasswordForm from "../components/password/UpdatePasswordForm"
-import SuccessModal from "../components/password/SuccessModal"
-import { useAuth } from "../contexts/AuthProvider"
-import { adminApi } from "../services/apiService"
+import UpdatePasswordForm from "../../components/admin/password/UpdatePasswordForm"
+import SuccessModal from "../../components/admin/password/SuccessModal"
+import { useAuth } from "../../contexts/AuthProvider"
+import { adminApi } from "../../services/apiService"
 
 const UpdatePassword = () => {
   const { user } = useAuth()

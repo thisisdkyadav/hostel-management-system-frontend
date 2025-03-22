@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
 import { FaUserFriends, FaFilter } from "react-icons/fa"
-import SearchBar from "../../components/admin/SearchBar"
-import FilterTabs from "../../components/admin/FilterTabs"
-import NoResults from "../../components/admin/NoResults"
-import VisitorTable from "../../components/guard/VisitorTable"
-import { filterVisitors } from "../../utils/securityUtils"
-import { securityApi } from "../../services/apiService"
+import SearchBar from "../components/common/SearchBar"
+import FilterTabs from "../components/common/FilterTabs"
+import NoResults from "../components/common/NoResults"
+import VisitorTable from "../components/visitor/VisitorTable"
+import { filterVisitors } from "../utils/securityUtils"
+import { securityApi } from "../services/apiService"
 
 const VISITOR_FILTER_TABS = [
   { label: "All", value: "all" },
