@@ -9,7 +9,7 @@ export const fetchStudentProfile = async (userId) => {
   
 
   try {
-    const response = await fetch(`${API_BASE_URL}/student/profiles/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/student/profile/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
