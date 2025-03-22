@@ -158,12 +158,12 @@ const ComplaintsM = () => {
       <h3 className="text-lg font-semibold mb-4">Recent Complaints</h3>
       
       {/* Search, Filter & Clear Controls */}
-      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 no-print">
+      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:space-x-2 no-print">
         <div className="w-full sm:flex-1 relative">
           <input
             type="text"
             placeholder="Search complaints..."
-            className="w-full p-3 pr-10 border rounded-md"
+            className="w-full p-2 sm:p-3 pr-10 border rounded-md text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -172,14 +172,14 @@ const ComplaintsM = () => {
         
         <div className="relative w-full sm:w-auto">
           <button 
-            className="w-full sm:w-auto bg-[#1360AB] text-white px-4 py-3 rounded-md text-sm flex items-center justify-center sm:justify-start space-x-1"
+            className="w-full sm:w-auto bg-[#1360AB] text-white px-3 py-2 sm:px-4 sm:py-3 rounded-md text-sm flex items-center justify-center sm:justify-start space-x-1"
             onClick={() => setShowFilterMenu(!showFilterMenu)}
           >
             <FaFilter className="text-sm" />
             <span>Filter: {filterStatus}</span>
           </button>
           {showFilterMenu && (
-            <div className="absolute right-0 mt-1 w-40 bg-white border rounded-md shadow-lg z-10">
+            <div className="absolute right-0 mt-1 w-full sm:w-40 bg-white border rounded-md shadow-lg z-10">
               <ul>
                 <li 
                   className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -212,10 +212,20 @@ const ComplaintsM = () => {
         
         {(searchTerm || filterStatus !== "All") && (
           <button 
-            className="text-gray-500 hover:text-gray-700"
+            className="hidden sm:block text-gray-500 hover:text-gray-700"
             onClick={clearFilters}
           >
             <FaTimes className="text-lg" />
+          </button>
+        )}
+        
+        {/* Clear filters button for mobile - full width */}
+        {(searchTerm || filterStatus !== "All") && (
+          <button 
+            className="sm:hidden w-full text-center text-blue-500 py-2 border border-blue-500 rounded-md"
+            onClick={clearFilters}
+          >
+            Clear Filters
           </button>
         )}
       </div>
