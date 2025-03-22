@@ -1,72 +1,51 @@
 import React from "react";
-import { FaRegClock, FaExclamationCircle, FaCheck } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
-const ComplaintItemM = ({ complaint, changeStatus, onViewDetails, categoryBg, statusColor, priorityColor }) => {
-  // Format createdDate for display
-  const formattedDate = new Date(complaint.createdDate).toLocaleDateString();
-
+const ComplaintItemM = ({ 
+  complaint, 
+  onViewDetails, 
+  onChangeStatus,
+  categoryBg,
+  statusColor,
+  priorityColor
+}) => {
   return (
-    <div className="p-4 bg-[#E4F1FF] rounded-md shadow-md">
-      <div className="flex justify-between items-start">
-        <div>
-          <div className="flex items-center space-x-2 mb-1">
-            <h4 className="text-lg font-semibold">{complaint.title}</h4>
-            <span className={`${categoryBg[complaint.category]} px-2 py-0.5 rounded-full text-xs`}>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <div className="flex flex-col sm:flex-row justify-between gap-3">
+        <div className="flex-1">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+            <span className={`inline-block px-2 py-1 rounded text-xs ${categoryBg[complaint.category] || categoryBg.Other}`}>
               {complaint.category}
             </span>
-            <span className={`${statusColor[complaint.status]} px-2 py-0.5 rounded-full text-xs`}>
-              {complaint.status}
+            <span className="text-gray-500 text-sm">
+              {new Date(complaint.date).toLocaleDateString()}
+            </span>
+            <span className="flex items-center">
+              <span className={`inline-block w-2 h-2 rounded-full mr-1 ${priorityColor[complaint.priority]}`}></span>
+              <span className="text-xs">{complaint.priority} Priority</span>
             </span>
           </div>
-          <p className="text-sm text-gray-600 mb-2 line-clamp-1">
-            {complaint.description}
-          </p>
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Location:</span> {complaint.hostel} - {complaint.roomNumber}
-          </p>
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Date:</span> {formattedDate}
-          </p>
-        </div>
-        <div className="flex flex-col items-end space-y-2">
-          <span className={`${priorityColor[complaint.priority]} text-white px-3 py-1 rounded-full text-xs`}>
-            {complaint.priority} Priority
-          </span>
-          <div className="flex space-x-2">
-            <button 
-              onClick={() => changeStatus(complaint.id, "Pending")}
-              className={`px-2 py-1 rounded ${complaint.status === "Pending" ? "bg-[#1360AB] text-white" : "bg-gray-200"}`}
-              title="Set as Pending"
-            >
-              <FaRegClock />
-            </button>
-            <button 
-              onClick={() => changeStatus(complaint.id, "In Progress")}
-              className={`px-2 py-1 rounded ${complaint.status === "In Progress" ? "bg-[#1360AB] text-white" : "bg-gray-200"}`}
-              title="Set as In Progress"
-            >
-              <FaExclamationCircle />
-            </button>
-            <button 
-              onClick={() => changeStatus(complaint.id, "Resolved")}
-              className={`px-2 py-1 rounded ${complaint.status === "Resolved" ? "bg-[#1360AB] text-white" : "bg-gray-200"}`}
-              title="Set as Resolved"
-            >
-              <FaCheck />
-            </button>
+          
+          <h4 className="font-medium mb-1 line-clamp-1">{complaint.title}</h4>
+          <p className="text-sm text-gray-600 line-clamp-2 mb-2">{complaint.description}</p>
+          
+          <div className="text-sm text-gray-500">
+            Location: {complaint.location}
           </div>
         </div>
-      </div>
-      <div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-200">
-        <p className="text-xs text-gray-500">
-          <span className="font-medium">Assigned to:</span> {complaint.assignedTo || "Not Assigned"}
-        </p>
-        <button 
-          onClick={() => onViewDetails(complaint)}
-          className="text-sm text-[#1360AB] font-semibold hover:underline"
-        >
-          View Details
-        </button>
+        
+        <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3">
+          <div className={`border px-3 py-1 rounded-full text-xs ${statusColor[complaint.status]}`}>
+            {complaint.status}
+          </div>
+          
+          <button 
+            onClick={() => onViewDetails(complaint)}
+            className="bg-[#1360AB] text-white px-3 py-1 rounded-md text-xs flex items-center"
+          >
+            <FaEye className="mr-1" /> View Details
+          </button>
+        </div>
       </div>
     </div>
   );

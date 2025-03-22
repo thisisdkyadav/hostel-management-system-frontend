@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import SDashboard from "../pages/student/SDashboard.jsx"
 import Complaints from "../pages/student/Complaints"
 import Profile from "../pages/student/Profile"
+import Settings from "../pages/student/Settings.jsx"
 // import LostAndFound from "../pages/student/LostAndFound.jsx"
 // -------------------------student ends here ----------------------------------
 
@@ -37,7 +38,7 @@ import AdminWarden from "../pages/admin/Wardens"
 import SecurityLogins from "../pages/admin/SecurityLogins"
 import LostAndFound from "../pages/LostAndFound.jsx"
 import StudentLayout from "../layouts/StudentLayout.jsx"
-import { Settings } from "lucide-react"
+
 import UpdatePassword from "../pages/UpdatePassword.jsx"
 import StudentEntries from "../pages/guard/StudentEntries.jsx"
 import AddStudentEntry from "../pages/guard/AddStudentEntry.jsx"
@@ -51,6 +52,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
 
       <Route path="/" element={<SDashboard />} />
