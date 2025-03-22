@@ -10,20 +10,13 @@ const Sidebar = ({ navItems }) => {
   const location = useLocation()
 
   useEffect(() => {
-    const currentPath = location.pathname
-    const currentItem = navItems.find((item) => item.path === currentPath || (currentPath.startsWith(item.path) && item.path !== "/"))
+    const currentItem = navItems.find((item) => location.pathname === item.path || (location.pathname === "/" && item.path === "/Dashboard"))
 
     if (currentItem) {
       setActive(currentItem.name)
     }
-
-    // Close sidebar on mobile when changing routes
-    if (window.innerWidth < 768) {
-      setIsOpen(false)
-    }
   }, [location.pathname, navItems])
 
-  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       setIsOpen(window.innerWidth >= 768)
