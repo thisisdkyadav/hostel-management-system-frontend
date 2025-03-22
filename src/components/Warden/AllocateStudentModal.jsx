@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import { FaSearch, FaUserPlus, FaTimes, FaExclamationTriangle, FaBed } from "react-icons/fa"
+import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGraduate } from "react-icons/fa"
 import { hostelApi } from "../../services/apiService"
 import { useStudents } from "../../hooks/useStudents"
+import Modal from "../common/Modal"
 
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
-  console.log(room)
-
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)
   const [error, setError] = useState(null)
@@ -91,49 +90,44 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
-      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 p-6 animate-fadeIn">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Allocate Student to Room {room.roomNumber}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition-colors">
-            <FaTimes size={20} />
-          </button>
-        </div>
-
-        <div className="bg-blue-50 p-4 rounded-md mb-6">
-          <h3 className="font-semibold text-gray-800 mb-2">Room Details</h3>
-          <div className="grid grid-cols-2 gap-4">
+    <Modal title={`Allocate Student to Room ${room.roomNumber}`} onClose={onClose} width={650}>
+      <div className="space-y-6">
+        <div className="bg-blue-50 p-5 rounded-xl">
+          <h3 className="font-medium text-[#1360AB] flex items-center mb-3">
+            <FaHome className="mr-2" /> Room Details
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <p className="text-sm text-gray-600">Room Number:</p>
+              <p className="text-xs text-gray-500 mb-1">Room Number</p>
               <p className="font-medium">{room.roomNumber}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Floor:</p>
-              <p className="font-medium">{room.floorNumber}</p>
+              <p className="text-xs text-gray-500 mb-1">Floor</p>
+              <p className="font-medium">{room.floorNumber || room.floor || "Ground"}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Capacity:</p>
+              <p className="text-xs text-gray-500 mb-1">Capacity</p>
               <p className="font-medium">{room.capacity}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Currently Occupied:</p>
+              <p className="text-xs text-gray-500 mb-1">Currently Occupied</p>
               <p className="font-medium">
-                {room.occupiedCount} / {room.capacity}
+                {room.occupiedCount || room.currentOccupancy} / {room.capacity}
               </p>
             </div>
           </div>
 
-          {room.occupiedCount >= room.capacity && (
+          {(room.occupiedCount >= room.capacity || room.currentOccupancy >= room.capacity) && (
             <div className="flex items-center mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md">
-              <FaExclamationTriangle className="mr-2" />
-              <p>This room is already at full capacity.</p>
+              <FaExclamationTriangle className="mr-2 flex-shrink-0" />
+              <p className="text-sm">This room is already at full capacity.</p>
             </div>
           )}
         </div>
 
-        <div className="mb-6">
+        <div>
           <div className="relative">
-            <input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" />
             <span className="absolute left-3 top-3 text-gray-400">
               <FaSearch />
             </span>
@@ -141,19 +135,22 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         {/* Bed Selection Section */}
-        <div className="mb-6">
-          <h3 className="font-semibold text-gray-800 mb-2 flex items-center">
-            <FaBed className="mr-2" /> Select Bed Number
+        <div>
+          <h3 className="font-medium text-gray-700 mb-3 flex items-center">
+            <FaBed className="mr-2 text-[#1360AB]" /> Select Bed Number
           </h3>
           {availableBeds.length === 0 ? (
-            <div className="p-3 bg-yellow-100 text-yellow-800 rounded-md">No beds available in this room</div>
+            <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg flex items-center">
+              <FaExclamationTriangle className="mr-2 flex-shrink-0" />
+              <p>No beds available in this room</p>
+            </div>
           ) : (
             <div className="flex flex-wrap gap-2">
               {availableBeds.map((bedNumber) => (
                 <button
                   key={bedNumber}
                   onClick={() => handleBedSelect(bedNumber)}
-                  className={`px-4 py-2 rounded-md border flex items-center justify-center w-16 transition-colors ${selectedBed === bedNumber ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"}`}
+                  className={`px-4 py-2 rounded-lg border flex items-center justify-center w-14 transition-colors ${selectedBed === bedNumber ? "bg-[#1360AB] text-white border-[#1360AB]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
                 >
                   {bedNumber}
                 </button>
@@ -162,61 +159,75 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           )}
         </div>
 
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-md">{error}</div>}
-
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#1360AB]"></div>
+        {error && (
+          <div className="p-4 bg-red-50 text-red-800 rounded-lg flex items-start">
+            <FaExclamationTriangle className="mt-0.5 mr-2 flex-shrink-0" />
+            <p>{error}</p>
           </div>
-        ) : (
-          <>
-            {unallocatedStudents.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">No unallocated students found</div>
-            ) : (
-              <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-md">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50 sticky top-0">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {unallocatedStudents.map((student) => (
-                      <tr key={student.id} className={`hover:bg-gray-50 ${selectedStudent?.id === student.id ? "bg-blue-50" : ""}`}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">{student.fullName?.charAt(0) || "S"}</div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{student.fullName}</div>
-                              <div className="text-sm text-gray-500">{student.email}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.studentId || student.rollNumber}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button onClick={() => handleStudentSelect(student)} className={`px-3 py-1 rounded-md ${selectedStudent?.id === student.id ? "bg-blue-500 text-white" : "bg-blue-100 text-blue-700 hover:bg-blue-200"}`}>
-                            Select
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </>
         )}
 
-        <div className="mt-8 flex justify-end space-x-3">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md text-gray-800 font-medium transition-colors">
+        <div>
+          <h3 className="font-medium text-gray-700 mb-3 flex items-center">
+            <FaUserGraduate className="mr-2 text-[#1360AB]" /> Unallocated Students
+          </h3>
+
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="relative w-12 h-12">
+                <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+                <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {unallocatedStudents.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No unallocated students found</div>
+              ) : (
+                <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50 sticky top-0">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">ID</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {unallocatedStudents.map((student) => (
+                        <tr key={student.id} className={`hover:bg-gray-50 transition-colors ${selectedStudent?.id === student.id ? "bg-blue-50" : ""}`}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">{student.fullName?.charAt(0) || "S"}</div>
+                              <div className="ml-3">
+                                <div className="text-sm font-medium text-gray-900">{student.fullName}</div>
+                                <div className="text-sm text-gray-500">{student.email}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">{student.studentId || student.rollNumber}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button onClick={() => handleStudentSelect(student)} className={`px-3 py-1 rounded-md ${selectedStudent?.id === student.id ? "bg-[#1360AB] text-white" : "bg-blue-50 text-[#1360AB] hover:bg-blue-100"}`}>
+                              Select
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-col-reverse sm:flex-row justify-end space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3 pt-4 mt-3 border-t border-gray-100">
+          <button onClick={onClose} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition-colors">
             Cancel
           </button>
           <button
             onClick={handleAllocateStudent}
             disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity}
-            className={`flex items-center px-4 py-2 rounded-md font-medium transition-colors ${!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-[#1360AB] text-white hover:bg-blue-700"}`}
+            className={`flex items-center justify-center px-4 py-2.5 rounded-lg font-medium transition-colors ${!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-[#1360AB] text-white hover:bg-[#0d4b86]"}`}
           >
             {allocating ? (
               <>
@@ -232,7 +243,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   )
 }
 

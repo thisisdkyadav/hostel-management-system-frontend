@@ -2,12 +2,10 @@ import { useState, useEffect } from "react"
 import { FaBuilding, FaDoorOpen, FaUserPlus } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { useAuth } from "../../contexts/AuthProvider"
 import { hostelApi } from "../../services/apiService"
 import Pagination from "../../components/common/Pagination"
 import NoResults from "../../components/common/NoResults"
 import UnitStats from "../../components/warden/UnitStats"
-import UnitFilterSection from "../../components/warden/UnitFilterSection"
 import UnitListView from "../../components/warden/UnitListView"
 import RoomListView from "../../components/warden/RoomListView"
 import RoomDetailModal from "../../components/warden/RoomDetailModal"
@@ -140,17 +138,17 @@ const DashboardWarden = () => {
   }, [currentPage, currentView, filters, profile])
 
   return (
-    <div className="px-10 py-6 flex-1">
-      <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
-        <h1 className="text-2xl px-3 font-bold">{currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.name || "Selected Unit"}`}</h1>
-        <div className="flex items-center space-x-4">
+    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">{currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.name || "Selected Unit"}`}</h1>
+        <div className="flex flex-wrap gap-2">
           {currentView === "rooms" && (
-            <button onClick={goBackToUnits} className="flex items-center px-3 py-2 text-gray-600 bg-white rounded-[12px] hover:bg-gray-100">
+            <button onClick={goBackToUnits} className="flex items-center px-3 py-2 text-gray-700 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
               <FaBuilding className="mr-2" /> Back to Units
             </button>
           )}
 
-          <button className="flex items-center px-3 py-2 text-gray-600 bg-white rounded-[12px] hover:bg-gray-100" onClick={() => setShowFilters(!showFilters)}>
+          <button className="flex items-center px-3 py-2 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
@@ -161,18 +159,60 @@ const DashboardWarden = () => {
 
       {showFilters && (
         <div className="mt-6">
-          <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} className="w-full" />
+          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
+              <h3 className="font-bold text-gray-700 flex items-center mb-2 sm:mb-0">
+                <MdFilterAlt className="mr-2 text-[#1360AB]" /> Advanced Filters
+              </h3>
+              <button onClick={resetFilters} className="text-sm text-gray-500 hover:text-[#1360AB] flex items-center px-2 py-1 hover:bg-gray-50 rounded-md transition-colors">
+                <MdClearAll className="mr-1" /> Reset Filters
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} className="w-full" />
+
+              {/* Additional filters can be added here */}
+              {currentView === "rooms" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Occupancy Status</label>
+                    <select value={filters.occupancyStatus} onChange={(e) => setFilters({ ...filters, occupancyStatus: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
+                      <option value="">All Statuses</option>
+                      <option value="full">Full</option>
+                      <option value="partial">Partially Occupied</option>
+                      <option value="empty">Empty</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Room Type</label>
+                    <select value={filters.roomType} onChange={(e) => setFilters({ ...filters, roomType: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
+                      <option value="">All Types</option>
+                      <option value="single">Single</option>
+                      <option value="double">Double</option>
+                      <option value="triple">Triple</option>
+                    </select>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
       <div className="mt-6 flex justify-between items-center">
-        <div className="flex space-x-2">
-          <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg ${viewMode === "table" ? "bg-[#1360AB] text-white" : "bg-white text-gray-600"}`}>
+        <div className="text-sm text-gray-600">
+          Showing <span className="font-semibold">{currentView === "units" ? units.length : rooms.length}</span> {currentView}
+        </div>
+        <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+          <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg transition-all ${viewMode === "table" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Table view">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
           </button>
-          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg ${viewMode === "card" ? "bg-[#1360AB] text-white" : "bg-white text-gray-600"}`}>
+
+          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg transition-all ${viewMode === "card" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Card view">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -187,23 +227,22 @@ const DashboardWarden = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1360AB]"></div>
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+          </div>
         </div>
       ) : (
         <>
-          {currentView === "units" ? <UnitListView units={units} viewMode={viewMode} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} viewMode={viewMode} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}
+          <div className="mt-4">{currentView === "units" ? <UnitListView units={units} viewMode={viewMode} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} viewMode={viewMode} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
 
           {((currentView === "units" && units.length === 0) || (currentView === "rooms" && rooms.length === 0)) && !loading && (
-            <NoResults
-              icon={currentView === "units" ? <FaBuilding className="mx-auto text-gray-300 text-5xl mb-4" /> : <MdMeetingRoom className="mx-auto text-gray-300 text-5xl mb-4" />}
-              message={`No ${currentView === "units" ? "units" : "rooms"} found`}
-              suggestion="Try changing your search or filter criteria"
-            />
+            <NoResults icon={currentView === "units" ? <FaBuilding className="text-gray-300 text-4xl" /> : <MdMeetingRoom className="text-gray-300 text-4xl" />} message={`No ${currentView} found`} suggestion="Try changing your search or filter criteria" />
           )}
         </>
       )}
 
-      {totalItems > 0 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
+      {totalItems > itemsPerPage && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
 
       {showRoomDetail && selectedRoom && <RoomDetailModal room={selectedRoom} onClose={() => setShowRoomDetail(false)} onUpdate={handleUpdateSuccess} onAllocate={() => setShowAllocateModal(true)} />}
 
