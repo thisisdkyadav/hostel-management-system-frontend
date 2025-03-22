@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { FaPlus } from "react-icons/fa"
+import { FaPlus, FaCalendarAlt } from "react-icons/fa"
 import FilterTabs from "../components/common/FilterTabs"
 import SearchBar from "../components/common/SearchBar"
 import NoResults from "../components/common/NoResults"
