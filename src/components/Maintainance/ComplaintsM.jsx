@@ -158,8 +158,8 @@ const ComplaintsM = () => {
       <h3 className="text-lg font-semibold mb-4">Recent Complaints</h3>
       
       {/* Search, Filter & Clear Controls */}
-      <div className="mb-6 flex items-center space-x-2 no-print">
-        <div className="flex-1 relative">
+      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 no-print">
+        <div className="w-full sm:flex-1 relative">
           <input
             type="text"
             placeholder="Search complaints..."
@@ -170,9 +170,9 @@ const ComplaintsM = () => {
           <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
         
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <button 
-            className="bg-[#1360AB] text-white px-4 py-3 rounded-md text-sm flex items-center space-x-1"
+            className="w-full sm:w-auto bg-[#1360AB] text-white px-4 py-3 rounded-md text-sm flex items-center justify-center sm:justify-start space-x-1"
             onClick={() => setShowFilterMenu(!showFilterMenu)}
           >
             <FaFilter className="text-sm" />
