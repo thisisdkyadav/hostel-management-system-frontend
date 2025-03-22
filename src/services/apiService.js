@@ -348,7 +348,7 @@ export const adminApi = {
   addHostel: async (hostelData) => {
     const response = await fetch(`${baseUrl}/admin/hostel`, {
       method: "POST",
-      ...fetchOptions,
+      ...fetchOptions, 
       body: JSON.stringify(hostelData),
     })
 
