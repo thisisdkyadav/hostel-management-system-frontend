@@ -39,12 +39,12 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
     const { name, value } = e.target;
 
     if (name === "hostel") {
-      // Find the corresponding hostel ID when a hostel is selected
+      
       const selectedHostel = hostelList.find((h) => h.name === value);
       setFormData((prev) => ({
         ...prev,
         hostel: value,
-        hostelId: selectedHostel ? selectedHostel._id : "", // Store hostelId automatically
+        hostelId: selectedHostel ? selectedHostel._id : "", 
       }));
     } else {
       setFormData((prev) => ({
@@ -159,18 +159,18 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
 
           <input
             type="text"
-            name="room"
-            placeholder="Room ID"
-            className="p-2 bg-gray-200 rounded-lg w-full"
-            value={formData.room}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
             name="unit"
             placeholder="Unit"
             className="p-2 bg-gray-200 rounded-lg w-full"
             value={formData.unit}
+            onChange={handleChange}
+          />
+           <input
+            type="text"
+            name="room"
+            placeholder="Room ID"
+            className="p-2 bg-gray-200 rounded-lg w-full"
+            value={formData.room}
             onChange={handleChange}
           />
 
