@@ -11,15 +11,15 @@ import { lostAndFoundApi } from "../services/apiService"
 import { useAuth } from "../contexts/AuthProvider"
 
 const LOST_FILTER_TABS = [
-  { id: "all", label: "All Items" },
-  { id: "Active", label: "Active" },
-  { id: "Claimed", label: "Claimed" },
+  { label: "All", value: "all" },
+  { label: "Active", value: "Active" },
+  { label: "Claimed", value: "Claimed" },
 ]
 
 const LostAndFound = () => {
   const { user } = useAuth()
 
-  const [activeTab, setActiveTab] = useState("all")
+  const [activeTab, setActiveTab] = useState("Active")
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
   const [lostItems, setLostItems] = useState([])
@@ -29,6 +29,9 @@ const LostAndFound = () => {
   const fetchLostItems = async () => {
     try {
       const response = await lostAndFoundApi.getAllLostItems()
+
+      console.log("Fetched lost items:", response.lostAndFoundItems)
+
       setLostItems(response.lostAndFoundItems || [])
     } catch (error) {
       console.error("Error fetching lost items:", error)
