@@ -7,7 +7,7 @@ export const fetchStudentProfile = async (userId) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/student/profile/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/student/profiles/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -25,5 +25,30 @@ export const fetchStudentProfile = async (userId) => {
   } catch (error) {
     console.error("Failed to fetch student profile:", error);
     return { error: true, message: error.message };
+  }
+};
+
+export const submitComplaint = async (complaintData) => {
+  try {
+
+    console.log(complaintData);
+    
+    const response = await fetch(`${API_BASE_URL}/complaint/student/complaints`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+      body: JSON.stringify(complaintData)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit complaint");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error submitting complaint:", error);
+    throw error;
   }
 };
