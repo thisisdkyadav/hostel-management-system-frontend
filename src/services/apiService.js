@@ -147,7 +147,7 @@ export const wardenApi = {
 
 export const securityApi = {
   getSecurityInfo: async () => {
-    const response = await fetch(`${baseUrl}/security/info`, {
+    const response = await fetch(`${baseUrl}/security`, {
       method: "GET",
       ...fetchOptions,
     })
@@ -202,6 +202,67 @@ export const securityApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update visitor")
+    }
+
+    return response.json()
+  },
+
+  addStudentEntry: async (entryData) => {
+    const response = await fetch(`${baseUrl}/security/entries`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(entryData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add student entry")
+    }
+
+    return response.json()
+  },
+
+  getRecentStudentEntries: async () => {
+    const response = await fetch(`${baseUrl}/security/entries/recent`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch recent student entries")
+    }
+
+    return response.json()
+  },
+
+  updateStudentEntry: async (entryData) => {
+    const response = await fetch(`${baseUrl}/security/entries/${entryData._id}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(entryData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update student entry")
+    }
+
+    return response.json()
+  },
+
+  getStudentEntries: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/security/entries${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student entries")
     }
 
     return response.json()
@@ -285,9 +346,9 @@ export const adminApi = {
   },
 
   addHostel: async (hostelData) => {
-    const response = await fetch(`${baseUrl}/admin/hostel/add`, {
+    const response = await fetch(`${baseUrl}/admin/hostel`, {
       method: "POST",
-      ...fetchOptions,
+      ...fetchOptions, 
       body: JSON.stringify(hostelData),
     })
 
@@ -314,7 +375,7 @@ export const adminApi = {
   },
 
   addWarden: async (wardenData) => {
-    const response = await fetch(`${baseUrl}/admin/warden/add`, {
+    const response = await fetch(`${baseUrl}/admin/warden`, {
       method: "POST",
       ...fetchOptions,
       body: JSON.stringify(wardenData),
@@ -345,8 +406,8 @@ export const adminApi = {
     return data
   },
   updateWarden: async (wardenId, wardenData) => {
-    const response = await fetch(`${baseUrl}/admin/warden/update/${wardenId}`, {
-      method: "POST",
+    const response = await fetch(`${baseUrl}/admin/warden/${wardenId}`, {
+      method: "PUT",
       ...fetchOptions,
       body: JSON.stringify(wardenData),
     })
@@ -359,7 +420,7 @@ export const adminApi = {
     return response.json()
   },
   deleteWarden: async (wardenId) => {
-    const response = await fetch(`${baseUrl}/admin/warden/delete/${wardenId}`, {
+    const response = await fetch(`${baseUrl}/admin/warden/${wardenId}`, {
       method: "DELETE",
       ...fetchOptions,
     })
@@ -387,7 +448,7 @@ export const adminApi = {
   },
 
   addSecurity: async (securityData) => {
-    const response = await fetch(`${baseUrl}/admin/security/add`, {
+    const response = await fetch(`${baseUrl}/admin/security`, {
       method: "POST",
       ...fetchOptions,
       body: JSON.stringify(securityData),
@@ -416,8 +477,8 @@ export const adminApi = {
   },
 
   updateSecurity: async (securityId, securityData) => {
-    const response = await fetch(`${baseUrl}/admin/security/update/${securityId}`, {
-      method: "POST",
+    const response = await fetch(`${baseUrl}/admin/security/${securityId}`, {
+      method: "PUT",
       ...fetchOptions,
       body: JSON.stringify(securityData),
     })
@@ -425,6 +486,33 @@ export const adminApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update security staff")
+    }
+
+    return response.json()
+  },
+
+  deleteSecurity: async (securityId) => {
+    const response = await fetch(`${baseUrl}/admin/security/${securityId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete security staff")
+    }
+    return response.json()
+  },
+
+  updateUserPassword: async (email, newPassword) => {
+    const response = await fetch(`${baseUrl}/admin/user/update-password`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ email, newPassword }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update password")
     }
 
     return response.json()
