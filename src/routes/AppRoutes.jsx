@@ -60,7 +60,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
 
       {/* Routes for Maintenance related pages*/}
-      <Route path="/maintainance/dashboard" element={<MDashboard />} />
+      <Route path="/maintenance/dashboard" element={<MDashboard />} />
 
       <Route path="/warden" element={<WardenLayout />}>
         <Route index element={<WardenDashboard />} />
