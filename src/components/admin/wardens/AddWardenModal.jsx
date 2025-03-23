@@ -54,75 +54,77 @@ const AddWardenModal = ({ show, onClose }) => {
   }
 
   return (
-    // <div onClick={handleCloseModal} className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50">
-    //   <div className="bg-white p-8 rounded-[20px] w-[500px] max-w-full shadow-xl">
-    //     <h2 className="text-2xl font-bold mb-6 text-[#1360AB]">Add New Warden</h2>
     <Modal title="Add New Warden" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="bg-blue-50 p-4 rounded-lg mb-4">
+          <div className="flex items-center text-blue-800">
+            <FiUser className="mr-2" />
+            <h4 className="font-medium">Basic Information</h4>
+          </div>
+        </div>
+
         <div className="space-y-4">
-          <div className="relative">
-            <label className="block text-gray-700 font-medium mb-2">Name</label>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Name</label>
             <div className="relative">
               <div className="absolute left-3 top-3 text-gray-400">
                 <FiUser />
               </div>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB] focus:border-transparent" placeholder="Dr. Full Name" required />
+              <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Dr. Full Name" required />
             </div>
           </div>
 
-          <div className="relative">
-            <label className="block text-gray-700 font-medium mb-2">Email</label>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Email</label>
             <div className="relative">
               <div className="absolute left-3 top-3 text-gray-400">
                 <FiMail />
               </div>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB] focus:border-transparent" placeholder="email@iiti.ac.in" required />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="email@iiti.ac.in" required />
             </div>
           </div>
 
-          <div className="relative">
-            <label className="block text-gray-700 font-medium mb-2">Password</label>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Password</label>
             <div className="relative">
               <div className="absolute left-3 top-3 text-gray-400">
                 <FiLock />
               </div>
-              <input type="password" name="password" value={formData.password} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB] focus:border-transparent" placeholder="Enter password" required />
+              <input type="password" name="password" value={formData.password} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter password" required />
             </div>
           </div>
 
-          <div className="relative">
-            <label className="block text-gray-700 font-medium mb-2">Phone</label>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Phone</label>
             <div className="relative">
               <div className="absolute left-3 top-3 text-gray-400">
                 <FiPhone />
               </div>
-              <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB] focus:border-transparent" placeholder="+91 9876543210" />
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="+91 9876543210" />
             </div>
           </div>
 
-          <div className="relative">
-            <label className="block text-gray-700 font-medium mb-2">Join Date</label>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Join Date</label>
             <div className="relative">
               <div className="absolute left-3 top-3 text-gray-400">
                 <FiCalendar />
               </div>
-              <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB] focus:border-transparent" />
+              <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end mt-8 space-x-3">
-          <button type="button" className="px-5 py-2.5 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors" onClick={onClose}>
+        <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 sm:space-y-0 sm:space-x-3">
+          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0D4D8A] transition-colors">
+          <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow">
             Add Warden
           </button>
         </div>
       </form>
     </Modal>
-    // </div>
-    // </div>
   )
 }
 

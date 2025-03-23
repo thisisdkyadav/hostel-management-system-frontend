@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
-import { FaTrash, FaSave, FaTimes } from "react-icons/fa"
+import React, { useState } from "react"
+import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
+import Modal from "../../common/Modal"
 
-const EditWardenForm = ({ warden, onClose }) => {
+const EditWardenForm = ({ warden, onClose, onSave, onDelete }) => {
   const { hostelList } = useAdmin()
 
   const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ const EditWardenForm = ({ warden, onClose }) => {
         return
       }
       alert("Warden updated successfully!")
+      if (onSave) onSave()
       onClose()
     } catch (error) {
       console.error("Failed to update warden:", error)
@@ -46,6 +48,7 @@ const EditWardenForm = ({ warden, onClose }) => {
           return
         }
         alert("Warden deleted successfully!")
+        if (onDelete) onDelete()
         onClose()
       } catch (error) {
         console.error("Failed to delete warden:", error)
@@ -55,52 +58,60 @@ const EditWardenForm = ({ warden, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Edit Warden</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <FaTimes />
-          </button>
+    <Modal title={`Edit Warden: ${warden.name}`} onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="bg-blue-50 p-4 rounded-lg mb-4">
+          <div className="flex items-center text-blue-800">
+            <FaBuilding className="mr-2" />
+            <h4 className="font-medium">Warden Information</h4>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-              <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter phone number" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hostel Assignment</label>
-              <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select a hostel</option>
-                {hostelList.map((hostel) => (
-                  <option key={hostel._id} value={hostel._id}>
-                    {hostel.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Join Date</label>
-              <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaPhone />
+              </div>
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter phone number" />
             </div>
           </div>
 
-          <div className="mt-6 flex justify-between">
-            <button type="button" onClick={handleDelete} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 flex items-center">
-              <FaTrash className="mr-2" /> Delete
-            </button>
-
-            <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 flex items-center">
-              <FaSave className="mr-2" /> Save Changes
-            </button>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Hostel Assignment</label>
+            <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white">
+              <option value="">Select a hostel</option>
+              {hostelList.map((hostel) => (
+                <option key={hostel._id} value={hostel._id}>
+                  {hostel.name}
+                </option>
+              ))}
+            </select>
           </div>
-        </form>
-      </div>
-    </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Join Date</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaCalendarAlt />
+              </div>
+              <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col-reverse sm:flex-row justify-between pt-5 mt-6 border-t border-gray-100">
+          <button type="button" onClick={handleDelete} className="mt-3 sm:mt-0 px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all flex items-center justify-center">
+            <FaTrash className="mr-2" /> Delete Warden
+          </button>
+
+          <button type="submit" className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow flex items-center justify-center">
+            <FaSave className="mr-2" /> Save Changes
+          </button>
+        </div>
+      </form>
+    </Modal>
   )
 }
 

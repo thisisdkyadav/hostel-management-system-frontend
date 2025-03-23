@@ -5,7 +5,6 @@ import { createPortal } from "react-dom"
 const Modal = ({ title, children, onClose, width }) => {
   const modalRef = useRef(null)
 
-  // Close modal on escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -17,27 +16,34 @@ const Modal = ({ title, children, onClose, width }) => {
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [onClose])
 
-  // Handle backdrop click
   const handleBackdropClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       onClose()
     }
   }
 
-  // Create portal for modal to render at root level of DOM
   return createPortal(
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50" onClick={handleBackdropClick}>
-      <div ref={modalRef} className={`bg-white p-8 rounded-[20px] shadow-xl ${width ? `w-[${width}px] max-w-full` : "max-w-2xl w-full"} overflow-hidden animate-fadeIn`} onClick={(e) => e.stopPropagation()}>
-        {/* Modal Header */}
-        <div className="flex justify-between items-center mb-6 border-gray-200">
-          <h3 className="text-2xl font-bold text-[#1360AB]">{title}</h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full p-2 transition-colors" aria-label="Close modal">
-            <FaTimes />
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 md:p-6" onClick={handleBackdropClick}>
+      <div
+        ref={modalRef}
+        className={`
+          bg-white rounded-2xl shadow-2xl 
+          overflow-hidden
+          animate-fadeIn
+          w-full max-h-[90vh]
+          ${width ? `max-w-[${width}px]` : "max-w-2xl"}
+        `}
+        style={{ width: width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 z-10 bg-white px-6 py-4 flex justify-between items-center border-b border-gray-100">
+          <h3 className="text-xl md:text-2xl font-bold text-[#1360AB]">{title}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all duration-200" aria-label="Close modal">
+            <FaTimes className="text-lg" />
           </button>
         </div>
 
-        {/* Modal Content */}
-        <div className="overflow-y-auto  max-h-[calc(90vh-120px)]">{children}</div>
+        <div className="px-6 py-5 overflow-y-auto max-h-[calc(90vh-120px)]">{children}</div>
       </div>
     </div>,
     document.body
