@@ -20,6 +20,7 @@ const WardenLayout = () => {
 
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/warden" },
+    { name: "Units and Rooms", icon: FaBuilding, section: "main", path: "/warden/units-and-rooms" },
     { name: "Students", icon: FaClipboardList, section: "main", path: "/warden/students" },
     { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/warden/lost-and-found" },
     { name: "Events", icon: FaClipboardList, section: "main", path: "/warden/events" },

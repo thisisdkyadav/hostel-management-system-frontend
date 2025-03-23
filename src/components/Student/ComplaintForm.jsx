@@ -12,7 +12,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
     title: "",
     description: "",
     category: "",
-    hostel: "",
     hostelId: "",
     room: "",
     unit: "",
@@ -79,7 +78,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         title: "",
         description: "",
         category: "",
-        hostel: "",
         hostelId: "",
         room: "",
         unit: "",
@@ -135,7 +133,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
                   <option value="Plumbing">Plumbing</option>
                   <option value="Electrical">Electrical</option>
                   <option value="Internet">Internet</option>
-                  <option value="Cleaning">Cleaning</option>
+                  <option value="Cleanliness">Cleanliness</option>
                   <option value="Civil">Civil</option>
                   <option value="Other">Other</option>
                 </select>
@@ -161,12 +159,12 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaBuilding />
               </div>
-              <select name="hostel" className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" value={formData.hostel} onChange={handleChange} required>
+              <select name="hostelId" className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" value={formData.hostelId} onChange={handleChange} required>
                 <option value="" disabled>
                   Select Hostel
                 </option>
                 {hostelList.map((hostel) => (
-                  <option key={hostel._id} value={hostel.name}>
+                  <option key={hostel._id} value={hostel._id}>
                     {hostel.name}
                   </option>
                 ))}
@@ -176,8 +174,8 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">Unit/Block</label>
-              <input type="text" name="unit" placeholder="Unit/Block number" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.unit} onChange={handleChange} />
+              <label className="block text-gray-700 text-sm font-medium mb-2">Unit</label>
+              <input type="text" name="unit" placeholder="Unit" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.unit} onChange={handleChange} />
             </div>
 
             <div>
@@ -186,10 +184,10 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">Attachment URL (optional)</label>
             <input type="text" name="attachments" placeholder="URL to an image of the issue" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.attachments} onChange={handleChange} />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3">

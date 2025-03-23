@@ -38,7 +38,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-gray-100 to-blue-200 p-4">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-100 to-blue-200 p-4">
       <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[0_10px_40px_rgba(19,96,171,0.15)] w-full max-w-md transition-all duration-300 border border-gray-100">
         <div className="flex flex-col items-center">
           <img src={IITI_Logo} className="h-20 sm:h-28 mb-4 sm:mb-6 transition-all duration-300" alt="IIT Logo" />

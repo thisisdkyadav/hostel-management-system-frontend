@@ -40,6 +40,7 @@ import UpdatePassword from "../pages/admin/UpdatePassword.jsx"
 import StudentEntries from "../pages/guard/StudentEntries.jsx"
 import AddStudentEntry from "../pages/guard/AddStudentEntry.jsx"
 import RoomChangeRequests from "../pages/warden/RoomChangeRequests.jsx"
+import UnitsAndRooms from "../pages/warden/UnitsAndRooms.jsx"
 
 const AppRoutes = () => {
   return (
@@ -67,6 +68,7 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="room-change-requests" element={<RoomChangeRequests />} />
+        <Route path="units-and-rooms" element={<UnitsAndRooms />} />
       </Route>
 
       {/* Routes for Guard related pages */}

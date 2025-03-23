@@ -10,38 +10,39 @@ import RoomChangeRequestStats from "../../components/Warden/Room/RoomChangeReque
 import RoomChangeRequestFilterSection from "../../components/Warden/Room/RoomChangeRequestFilterSection"
 import RoomChangeRequestListView from "../../components/Warden/Room/RoomChangeRequestListView"
 import RoomChangeRequestDetailModal from "../../components/Warden/Room/RoomChangeRequestDetailModal"
+import FilterTabs from "../../components/common/FilterTabs"
+
+const ROOM_CHANGE_FILTER_TABS = [
+  { label: "All", value: "all" },
+  { label: "Pending", value: "Pending" },
+  { label: "Approved", value: "Approved" },
+  { label: "Rejected", value: "Rejected" },
+]
 
 const RoomChangeRequests = () => {
   const { profile } = useWarden()
 
-  // View state
   const [viewMode, setViewMode] = useState("table")
   const [showFilters, setShowFilters] = useState(true)
 
-  // Data state
   const [requests, setRequests] = useState([])
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [totalItems, setTotalItems] = useState(0)
   const [loading, setLoading] = useState(false)
 
-  // Modal state
   const [showDetailModal, setShowDetailModal] = useState(false)
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(10)
 
-  // Filters
   const [filters, setFilters] = useState({
-    status: "",
-    priority: "",
+    status: "Pending",
     searchTerm: "",
   })
 
   const resetFilters = () => {
     setFilters({
-      status: "",
-      priority: "",
+      status: "Pending",
       searchTerm: "",
     })
   }
@@ -53,20 +54,15 @@ const RoomChangeRequests = () => {
       }
 
       setLoading(true)
-      // Replace with actual API call
-      const response = await hostelApi.getRoomChangeRequests(
-        // {
-        profile.hostelId?._id
-        // page: currentPage,
-        // limit: itemsPerPage,
-        // ...filters,
-        //   }
-      )
+      const response = await hostelApi.getRoomChangeRequests(profile.hostelId?._id, {
+        page: currentPage,
+        limit: itemsPerPage,
+        ...filters,
+      })
 
-      console.log("Room Change Requests:", response)
-
-      setRequests(response || [])
-      setTotalItems(response.length || 0)
+      setRequests(response.data || [])
+      const { totalCount, totalPages, limit } = response.meta
+      setTotalItems(totalCount || 0)
     } catch (error) {
       console.error("Error fetching room change requests:", error)
     } finally {
@@ -88,7 +84,10 @@ const RoomChangeRequests = () => {
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
   useEffect(() => {
-    fetchRequests()
+    const delay = setTimeout(() => {
+      fetchRequests()
+    }, 500)
+    return () => clearTimeout(delay)
   }, [currentPage, filters, profile])
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
@@ -106,8 +105,9 @@ const RoomChangeRequests = () => {
 
       {showFilters && (
         <div className="mt-6">
-          <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder="Search by student name, ID or room number..." className="w-full mb-4" />
-          <RoomChangeRequestFilterSection filters={filters} setFilters={setFilters} resetFilters={resetFilters} />
+          <FilterTabs tabs={ROOM_CHANGE_FILTER_TABS} activeTab={filters.status} setActiveTab={(tab) => setFilters({ ...filters, status: tab })} className="mb-4" />
+          {/* <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder="Search by student name, ID or room number..." className="w-full mb-4" />
+          <RoomChangeRequestFilterSection filters={filters} setFilters={setFilters} resetFilters={resetFilters} /> */}
         </div>
       )}
 
@@ -144,11 +144,13 @@ const RoomChangeRequests = () => {
         </div>
       ) : (
         <>
-          <div className="mt-4">
-            <RoomChangeRequestListView requests={requests} viewMode={viewMode} onRequestClick={handleRequestClick} />
-          </div>
-
-          {requests.length === 0 && !loading && <NoResults icon={<FaExchangeAlt className="text-gray-300 text-4xl" />} message="No room change requests found" suggestion="Try changing your search or filter criteria" />}
+          {requests.length ? (
+            <div className="mt-4">
+              <RoomChangeRequestListView loading={loading} requests={requests} viewMode={viewMode} onRequestClick={handleRequestClick} />
+            </div>
+          ) : (
+            <NoResults icon={<FaExchangeAlt className="text-gray-300 text-4xl" />} message="No room change requests found" suggestion="Try changing your search or filter criteria" />
+          )}
         </>
       )}
 

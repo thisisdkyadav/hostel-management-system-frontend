@@ -15,7 +15,6 @@ const RoomChangeRequestListView = ({ requests, viewMode, onRequestClick }) => {
         return <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Unknown</span>
     }
   }
-
   return (
     <>
       {viewMode === "table" ? (
@@ -52,9 +51,9 @@ const RoomChangeRequestListView = ({ requests, viewMode, onRequestClick }) => {
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">{new Date(request.createdAt).toLocaleDateString()}</td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      {request.status === "pending" && <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-100 text-yellow-800">Pending</span>}
-                      {request.status === "approved" && <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800">Approved</span>}
-                      {request.status === "rejected" && <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-red-100 text-red-800">Rejected</span>}
+                      {request.status === "Pending" && <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-100 text-yellow-800">Pending</span>}
+                      {request.status === "Approved" && <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800">Approved</span>}
+                      {request.status === "Rejected" && <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-red-100 text-red-800">Rejected</span>}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-right">
                       <button onClick={() => onRequestClick(request)} className="text-[#1360AB] hover:text-blue-800 transition-colors p-2 rounded-full hover:bg-blue-50" aria-label="View details">
@@ -66,14 +65,12 @@ const RoomChangeRequestListView = ({ requests, viewMode, onRequestClick }) => {
               </tbody>
             </table>
           </div>
-          {requests.length === 0 && <div className="text-center py-8 text-gray-500">No room change requests to display</div>}
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {requests.map((request) => (
             <RoomChangeRequestCard key={request.id} request={request} onClick={() => onRequestClick(request)} />
           ))}
-          {requests.length === 0 && <div className="col-span-full text-center py-8 text-gray-500">No room change requests to display</div>}
         </div>
       )}
     </>
