@@ -54,28 +54,27 @@ export const submitComplaint = async (complaintData) => {
 }
 
 export const updateProfile = async (userId, profileData) => {
-    try {
-        console.log("profile data is: " ,profileData);
-        
-        const response = await fetch(`${API_BASE_URL}/student/profile/update/${userId}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(profileData),
-        })
-    
-        if (!response.ok) {
-        throw new Error("Failed to update profile")
-        }
-        const result = await response.json()
-        console.log("response.json() is: ", result);
-        
-    
-        return result.data;
-    } catch (error) {
-        console.error("Error updating profile:", error)
-        throw error
+  try {
+    console.log("profile data is: ", profileData)
+
+    const response = await fetch(`${API_BASE_URL}/student/profile/update/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(profileData),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to update profile")
     }
+    const result = await response.json()
+    console.log("response.json() is: ", result)
+
+    return result.data
+  } catch (error) {
+    console.error("Error updating profile:", error)
+    throw error
+  }
 }

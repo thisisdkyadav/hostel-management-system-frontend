@@ -70,7 +70,10 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
       const response = await hostelApi.allocateRoom({
         roomId: room.id,
+        hostelId: room.hostel._id,
+        unitId: room.unit._id,
         studentId: selectedStudent.id,
+        userId: selectedStudent.userId,
         bedNumber: selectedBed,
       })
 
