@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
 //--------------------------------below is student---------------------
 import SDashboard from "../pages/student/SDashboard.jsx"
-import Profile from "../pages/student/Profile"
+import StudentProfile from "../pages/student/Profile"
 import Settings from "../pages/student/Settings.jsx"
 // -------------------------student ends here ----------------------------------
 
@@ -41,6 +41,7 @@ import StudentEntries from "../pages/guard/StudentEntries.jsx"
 import AddStudentEntry from "../pages/guard/AddStudentEntry.jsx"
 import RoomChangeRequests from "../pages/warden/RoomChangeRequests.jsx"
 import UnitsAndRooms from "../pages/warden/UnitsAndRooms.jsx"
+import Profile from "../pages/Profile.jsx"
 
 const AppRoutes = () => {
   return (
@@ -49,6 +50,7 @@ const AppRoutes = () => {
         <Route index element={<SDashboard />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="profile" element={<Profile />} />
+        {/* <Route path="profile" element={<StudentProfile />} /> */}
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="settings" element={<Settings />} />
@@ -69,6 +71,7 @@ const AppRoutes = () => {
         <Route path="events" element={<Events />} />
         <Route path="room-change-requests" element={<RoomChangeRequests />} />
         <Route path="units-and-rooms" element={<UnitsAndRooms />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       {/* Routes for Guard related pages */}
@@ -92,6 +95,7 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="update-password" element={<UpdatePassword />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
     </Routes>
   )

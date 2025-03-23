@@ -54,12 +54,27 @@ export const authApi = {
 
   logout: async () => {
     const response = await fetch(`${baseUrl}/auth/logout`, {
-      method: "POST",
+      method: "GET",
       ...fetchOptions,
     })
 
     if (!response.ok) {
       throw new Error("Logout failed on server")
+    }
+
+    return response.json()
+  },
+
+  changePassword: async (oldPassword, newPassword) => {
+    const response = await fetch(`${baseUrl}/auth/update-password`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ oldPassword, newPassword }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update password")
     }
 
     return response.json()
@@ -123,6 +138,20 @@ export const studentApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to submit room change request")
+    }
+
+    return response.json()
+  },
+
+  getStudent: async () => {
+    const response = await fetch(`${baseUrl}/student/profile`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student profile")
     }
 
     return response.json()
