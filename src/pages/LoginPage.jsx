@@ -8,11 +8,11 @@ const LoginPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showForgotPasswordMsg, setShowForgotPasswordMsg] = useState(false)
-  const { login, loading, error, loginWithGoogle } = useAuth()
+  const { login, loading, error, loginWithGoogle, getHomeRoute } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
-  const from = location.state?.from?.pathname || "/"
+  const from = location.state?.from?.pathname || getHomeRoute()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
