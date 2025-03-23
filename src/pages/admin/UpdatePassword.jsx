@@ -7,7 +7,7 @@ import { adminApi } from "../../services/apiService"
 
 const UpdatePassword = () => {
   const { user } = useAuth()
-  const [showSuccessModal, setShowSuccessModal] = useState(true)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [updatedEmail, setUpdatedEmail] = useState("")
 
   if (user?.role !== "Admin") {
