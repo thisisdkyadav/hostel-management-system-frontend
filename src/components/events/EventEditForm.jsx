@@ -33,40 +33,47 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   }
 
   return (
-    <div className="bg-white rounded-[20px] p-6 shadow-[0px_1px_20px_rgba(0,0,0,0.06)]">
+    <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
       <form onSubmit={handleSubmit}>
-        <div className="flex items-center mb-5">
-          <div className="p-3 mr-4 rounded-xl bg-blue-100 text-blue-600">
-            <FaCalendarAlt size={24} />
+        <div className="flex items-center mb-4">
+          <div className={`p-2.5 mr-3 rounded-xl bg-blue-100 text-blue-600`}>
+            <FaCalendarAlt size={20} />
           </div>
           <div className="w-full">
-            <input type="text" name="eventName" value={formData.eventName} onChange={handleChange} className="font-bold text-lg w-full border-b border-gray-300 focus:border-blue-500 outline-none" required />
-            <span className="text-sm text-gray-600">ID: {event._id.substring(0, 8)}</span>
+            <input type="text" name="eventName" value={formData.eventName} onChange={handleChange} className="font-bold text-lg w-full border-b border-gray-300 focus:border-[#1360AB] outline-none pb-1" required />
+            <span className="text-xs text-gray-500">ID: {event._id.substring(0, 8)}</span>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center">
-            <FaCalendarAlt className="text-gray-500 mr-2" />
-            <BsClock className="text-gray-500 mr-2" />
-            <input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} className="text-sm border-b border-gray-300 focus:border-blue-500 outline-none" />
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Date and Time</label>
+            <input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" />
           </div>
 
           <div>
-            <textarea name="description" value={formData.description} onChange={handleChange} rows="3" className="w-full text-sm text-gray-700 border rounded-md p-2 focus:border-blue-500 outline-none" placeholder="Event description"></textarea>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="4"
+              className="w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-3 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-100 outline-none resize-none"
+              placeholder="Event description"
+            ></textarea>
           </div>
         </div>
 
-        <div className="mt-5 flex justify-between">
-          <button type="button" onClick={handleDelete} className="flex items-center px-4 py-2 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-colors">
+        <div className="mt-5 pt-3 border-t border-gray-100 flex flex-col-reverse sm:flex-row justify-between sm:items-center space-y-3 space-y-reverse sm:space-y-0">
+          <button type="button" onClick={handleDelete} className="flex items-center justify-center px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
             <MdDelete className="mr-2" /> Delete
           </button>
 
-          <div className="flex space-x-3">
-            <button type="button" onClick={onCancel} className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors">
+          <div className="flex flex-col-reverse sm:flex-row space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3">
+            <button type="button" onClick={onCancel} className="flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
               <MdCancel className="mr-2" /> Cancel
             </button>
-            <button type="submit" className="flex items-center px-4 py-2 bg-[#1360AB] text-white rounded-xl hover:bg-[#0d4b86] transition-colors">
+            <button type="submit" className="flex items-center justify-center px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors">
               <FaSave className="mr-2" /> Save
             </button>
           </div>
