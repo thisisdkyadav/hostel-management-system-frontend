@@ -5,8 +5,11 @@ import { MdInventory } from "react-icons/md"
 import { formatDate } from "../../utils/formatters"
 import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import { lostAndFoundApi } from "../../services/apiService"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const LostAndFoundCard = ({ item, refresh }) => {
+  const { user } = useAuth()
+
   const [isEditing, setIsEditing] = useState(false)
 
   const getStatusColor = (status) => {
@@ -91,9 +94,11 @@ const LostAndFoundCard = ({ item, refresh }) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-        <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
-          <FaEdit className="mr-2" /> Edit
-        </button>
+        {["Admin", "Warden", "Security"].includes(user.role) && (
+          <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <FaEdit className="mr-2" /> Edit
+          </button>
+        )}
       </div>
     </div>
   )

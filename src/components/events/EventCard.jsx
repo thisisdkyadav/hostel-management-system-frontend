@@ -3,20 +3,11 @@ import { FaEdit, FaCalendarAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
 import EventEditForm from "./EventEditForm"
 import { eventsApi } from "../../services/apiService"
-
-// Mock API service - replace with actual implementation from Events.jsx
-// const eventsApi = {
-//   updateEvent: async (id, event) => {
-//     // Replace with actual API call
-//     return { success: true }
-//   },
-//   deleteEvent: async (id) => {
-//     // Replace with actual API call
-//     return { success: true }
-//   },
-// }
+import { useAuth } from "../../contexts/AuthProvider"
 
 const EventCard = ({ event, refresh }) => {
+  const { user } = useAuth()
+
   const [isEditing, setIsEditing] = useState(false)
 
   const formatDateTime = (dateTimeString) => {
@@ -103,9 +94,11 @@ const EventCard = ({ event, refresh }) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-        <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
-          <FaEdit className="mr-2" /> Edit
-        </button>
+        {["Admin", "Warden", "Security"].includes(user.role) && (
+          <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <FaEdit className="mr-2" /> Edit
+          </button>
+        )}
       </div>
     </div>
   )
