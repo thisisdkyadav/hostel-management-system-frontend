@@ -6,15 +6,15 @@ import StatCards from "../../common/StatCards"
 const RoomChangeRequestStats = ({ requests, totalCount }) => {
   // Calculate statistics
   const getPendingCount = () => {
-    return requests.filter((req) => req.status === "pending").length
+    return requests.filter((req) => req.status === "Pending").length
   }
 
   const getApprovedCount = () => {
-    return requests.filter((req) => req.status === "approved").length
+    return requests.filter((req) => req.status === "Approved").length
   }
 
   const getRejectedCount = () => {
-    return requests.filter((req) => req.status === "rejected").length
+    return requests.filter((req) => req.status === "Rejected").length
   }
 
   const getPendingRate = () => {

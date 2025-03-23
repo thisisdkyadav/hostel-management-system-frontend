@@ -13,7 +13,7 @@ const RoomChangeRequestFilterSection = ({ filters, setFilters, resetFilters }) =
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1.5">Status</label>
           <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
@@ -21,16 +21,6 @@ const RoomChangeRequestFilterSection = ({ filters, setFilters, resetFilters }) =
             <option value="pending">Pending</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1.5">Priority</label>
-          <select value={filters.priority} onChange={(e) => setFilters({ ...filters, priority: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
-            <option value="">All Priorities</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
           </select>
         </div>
 

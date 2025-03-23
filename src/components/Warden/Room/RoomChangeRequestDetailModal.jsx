@@ -23,6 +23,8 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
       setLoading(true)
       // Replace with actual API call
       const response = await hostelApi.getRoomChangeRequestById(requestId)
+      console.log("Fetched request details:", response)
+
       setRequest(response)
       setRequestedRoomDetails(response.requestedRoom)
     } catch (error) {
@@ -34,20 +36,15 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
   }
 
   const handleApproveRequest = async () => {
-    if (!selectedBed && requestedRoomDetails?.currentOccupancy < requestedRoomDetails?.capacity) {
+    if (!selectedBed && requestedRoomDetails?.occupancy < requestedRoomDetails?.capacity) {
       setError("Please select a bed for the new room allocation")
       return
     }
-
     try {
       setLoading(true)
       setError(null)
 
-      // Replace with actual API call
-      const response = await hostelApi.approveRoomChangeRequest({
-        requestId: request.id,
-        bedNumber: selectedBed,
-      })
+      const response = await hostelApi.approveRoomChangeRequest(request.id, selectedBed)
 
       if (response.success) {
         onUpdate()
@@ -68,10 +65,7 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
       setError(null)
 
       // Replace with actual API call
-      const response = await hostelApi.rejectRoomChangeRequest({
-        requestId: request.id,
-        reason: rejectionReason,
-      })
+      const response = await hostelApi.rejectRoomChangeRequest(request.id, rejectionReason)
 
       if (response.success) {
         onUpdate()
@@ -88,10 +82,10 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
 
   const isRoomAvailable = () => {
     if (!requestedRoomDetails) return false
-    return requestedRoomDetails.currentOccupancy < requestedRoomDetails.capacity
+    return requestedRoomDetails.occupancy < requestedRoomDetails.capacity
   }
 
-  const isPending = request?.status === "pending"
+  const isPending = request?.status === "Pending"
 
   return (
     <Modal title="Room Change Request Details" onClose={onClose} width={800}>
@@ -115,8 +109,8 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
         <div>
           {/* Request Status Badge */}
           <div className="mb-6">
-            <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${request.status === "pending" ? "bg-yellow-100 text-yellow-800" : request.status === "approved" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-              {request.status === "pending" ? "Pending" : request.status === "approved" ? "Approved" : "Rejected"}
+            <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${request.status === "Pending" ? "bg-yellow-100 text-yellow-800" : request.status === "approved" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+              {request.status === "Pending" ? "Pending" : request.status === "approved" ? "Approved" : "Rejected"}
             </div>
 
             {request.status === "rejected" && request.rejectionReason && <div className="mt-2 text-sm text-red-600">Rejection reason: {request.rejectionReason}</div>}
@@ -143,12 +137,12 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
               <h3 className="font-medium text-gray-700 mb-3">Current Room</h3>
               <ul className="space-y-3">
                 <li className="flex justify-between items-center">
-                  <span className="text-gray-500">Room Number:</span>
-                  <span className="font-medium bg-white px-3 py-1 rounded-lg border border-blue-100">{request.currentRoom?.roomNumber}</span>
+                  <span className="text-gray-500">Unit:</span>
+                  <span className="font-medium">{request.currentRoom?.unitNumber || "N/A"}</span>
                 </li>
                 <li className="flex justify-between items-center">
-                  <span className="text-gray-500">Building:</span>
-                  <span className="font-medium">{request.currentRoom?.hostel || "N/A"}</span>
+                  <span className="text-gray-500">Room Number:</span>
+                  <span className="font-medium bg-white px-3 py-1 rounded-lg border border-blue-100">{request.currentRoom?.roomNumber}</span>
                 </li>
               </ul>
             </div>
@@ -157,12 +151,12 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
               <h3 className="font-medium text-gray-700 mb-3">Requested Room</h3>
               <ul className="space-y-3">
                 <li className="flex justify-between items-center">
-                  <span className="text-gray-500">Room Number:</span>
-                  <span className="font-medium bg-white px-3 py-1 rounded-lg border border-green-100">{request.requestedRoom?.roomNumber}</span>
+                  <span className="text-gray-500">Building:</span>
+                  <span className="font-medium">{request.currentRoom?.unitNumber || "N/A"}</span>
                 </li>
                 <li className="flex justify-between items-center">
-                  <span className="text-gray-500">Building:</span>
-                  <span className="font-medium">{request.requestedRoom?.hostel || "N/A"}</span>
+                  <span className="text-gray-500">Room Number:</span>
+                  <span className="font-medium bg-white px-3 py-1 rounded-lg border border-green-100">{request.requestedRoom?.roomNumber}</span>
                 </li>
                 <li className="flex justify-between items-center">
                   <span className="text-gray-500">Availability:</span>
@@ -177,6 +171,14 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
             <h3 className="font-medium text-gray-700 mb-2">Reason for Request</h3>
             <p className="text-gray-700">{request.reason || "No reason provided"}</p>
           </div>
+
+          {/* reason for rejection */}
+          {request.status === "Rejected" && request.rejectionReason && (
+            <div className="bg-red-50 p-5 rounded-xl mb-6">
+              <h3 className="font-medium text-red-700 mb-2">Rejection Reason</h3>
+              <p className="text-red-700">{request.rejectionReason}</p>
+            </div>
+          )}
 
           {/* Bed Selection (if request is pending and room is available) */}
           {isPending && (

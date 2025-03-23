@@ -17,11 +17,11 @@ const RoomChangeRequestCard = ({ request, onClick }) => {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case "pending":
+      case "Pending":
         return <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-      case "approved":
+      case "Approved":
         return <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Approved</span>
-      case "rejected":
+      case "Rejected":
         return <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Rejected</span>
       default:
         return <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">Unknown</span>

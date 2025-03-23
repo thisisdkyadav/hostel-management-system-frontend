@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardList, FaFilter, FaPlus } from "react-icons/fa"
-import { filterComplaints } from "../utils/adminUtils"
+import { MdClearAll } from "react-icons/md"
 import FilterTabs from "../components/common/FilterTabs"
 import SearchBar from "../components/common/SearchBar"
 import NoResults from "../components/common/NoResults"
@@ -9,6 +9,7 @@ import ComplaintDetailModal from "../components/complaints/ComplaintDetailModal"
 import ComplaintListView from "../components/complaints/ComplaintListView"
 import ComplaintCardView from "../components/complaints/ComplaintCardView"
 import ComplaintForm from "../components/student/ComplaintForm"
+import Pagination from "../components/common/Pagination"
 import { COMPLAINT_FILTER_TABS } from "../constants/adminConstants"
 import { adminApi } from "../services/apiService"
 import { useGlobal } from "../contexts/GlobalProvider"
@@ -19,41 +20,97 @@ const Complaints = () => {
   const { hostelList = [] } = useGlobal()
   const hostels = hostelList
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterStatus, setFilterStatus] = useState("all")
-  const [filterPriority, setFilterPriority] = useState("all")
-  const [filterCategory, setFilterCategory] = useState("all")
-  const [filterHostel, setFilterHostel] = useState("all")
+  // Combine all filters into a single state object
+  const [filters, setFilters] = useState({
+    status: "all",
+    priority: "all",
+    category: "all",
+    hostelId: "all",
+    searchTerm: "",
+    page: 1,
+    limit: 10,
+  })
+
+  // UI state
   const [showFilters, setShowFilters] = useState(false)
   const [selectedComplaint, setSelectedComplaint] = useState(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [viewMode, setViewMode] = useState("list")
   const [showCraftComplaint, setShowCraftComplaint] = useState(false)
+
+  // Data state
   const [complaints, setComplaints] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
 
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
   const priorities = ["Low", "Medium", "High", "Urgent"]
-  const filteredComplaints = filterComplaints(complaints, filterStatus, filterPriority, filterCategory, filterHostel, searchTerm)
 
   const viewComplaintDetails = (complaint) => {
     setSelectedComplaint(complaint)
     setShowDetailModal(true)
   }
 
+  const paginate = (pageNumber) => {
+    setFilters((prev) => ({ ...prev, page: pageNumber }))
+    // Scroll to top when changing pages
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  const updateFilter = (key, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value,
+      // Reset page to 1 whenever a filter changes
+      page: key !== "page" ? 1 : prev.page,
+    }))
+  }
+
+  const resetFilters = () => {
+    setFilters({
+      status: "all",
+      priority: "all",
+      category: "all",
+      hostelId: "all",
+      searchTerm: "",
+      page: 1,
+      limit: filters.limit, // Keep the current limit
+    })
+  }
+
   const fetchComplaints = async () => {
     try {
-      const response = await adminApi.getAllComplaints()
+      setLoading(true)
+      const queryParams = new URLSearchParams()
+      if (filters.status !== "all") queryParams.append("status", filters.status)
+      if (filters.priority !== "all") queryParams.append("priority", filters.priority)
+      if (filters.category !== "all") queryParams.append("category", filters.category)
+      if (filters.hostelId !== "all") queryParams.append("hostelId", filters.hostelId)
+      if (filters.searchTerm) queryParams.append("search", filters.searchTerm)
+      queryParams.append("page", filters.page)
+      queryParams.append("limit", filters.limit)
+
+      const response = await adminApi.getAllComplaints(queryParams.toString())
       console.log("Fetched complaints:", response)
 
-      setComplaints(response || [])
+      setComplaints(response.data || [])
+      setTotalItems(response.meta?.total || 0)
+      setTotalPages(response.meta?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching complaints:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchComplaints()
-  }, [])
+    const delay = setTimeout(() => {
+      fetchComplaints()
+    }, 500)
+
+    return () => clearTimeout(delay)
+  }, [filters])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
@@ -94,9 +151,9 @@ const Complaints = () => {
 
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div className="w-full sm:w-auto overflow-x-auto pb-2">
-          <FilterTabs tabs={COMPLAINT_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+          <FilterTabs tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
         </div>
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search complaints..." className="w-full sm:w-64 md:w-72" />
+        <SearchBar value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search complaints..." className="w-full sm:w-64 md:w-72" />
       </div>
 
       {showFilters && (
@@ -105,22 +162,15 @@ const Complaints = () => {
             <h3 className="font-bold text-gray-700 flex items-center mb-2 sm:mb-0">
               <FaFilter className="mr-2 text-[#1360AB]" /> Advanced Filters
             </h3>
-            <button
-              onClick={() => {
-                setFilterHostel("all")
-                setFilterCategory("all")
-                setFilterPriority("all")
-              }}
-              className="text-sm text-gray-500 hover:text-[#1360AB] flex items-center px-2 py-1 hover:bg-gray-50 rounded-md transition-colors"
-            >
-              Reset Filters
+            <button onClick={resetFilters} className="text-sm text-gray-500 hover:text-[#1360AB] flex items-center px-2 py-1 hover:bg-gray-50 rounded-md transition-colors">
+              <MdClearAll className="mr-1" /> Reset Filters
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
-              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filterHostel} onChange={(e) => setFilterHostel(e.target.value)}>
+              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
                 <option value="all">All Hostels</option>
                 {hostels.map((hostel, index) => (
                   <option key={index} value={hostel._id}>
@@ -132,7 +182,7 @@ const Complaints = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5">Category</label>
-              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.category} onChange={(e) => updateFilter("category", e.target.value)}>
                 <option value="all">All Categories</option>
                 {categories.map((category, index) => (
                   <option key={index} value={category}>
@@ -144,7 +194,7 @@ const Complaints = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5">Priority</label>
-              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}>
+              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.priority} onChange={(e) => updateFilter("priority", e.target.value)}>
                 <option value="all">All Priorities</option>
                 {priorities.map((priority, index) => (
                   <option key={index} value={priority}>
@@ -153,29 +203,42 @@ const Complaints = () => {
                 ))}
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1.5">Items Per Page</label>
+              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.limit} onChange={(e) => updateFilter("limit", Number(e.target.value))}>
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
           </div>
         </div>
       )}
 
-      {filteredComplaints.length > 0 ? (
-        viewMode === "list" ? (
-          <div className="mt-6">
-            <ComplaintListView complaints={filteredComplaints} onViewDetails={viewComplaintDetails} />
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
           </div>
-        ) : (
-          <div className="mt-6">
-            <ComplaintCardView complaints={filteredComplaints} onViewDetails={viewComplaintDetails} />
-          </div>
-        )
+        </div>
+      ) : complaints.length > 0 ? (
+        <>
+          <div className="mt-6">{viewMode === "list" ? <ComplaintListView complaints={complaints} onViewDetails={viewComplaintDetails} /> : <ComplaintCardView complaints={complaints} onViewDetails={viewComplaintDetails} />}</div>
+
+          {totalPages > 1 && <Pagination currentPage={filters.page} totalPages={totalPages} paginate={paginate} />}
+        </>
       ) : (
         <div className="mt-12">
           <NoResults icon={<FaClipboardList className="text-gray-300 text-5xl" />} message="No complaints found" suggestion="Try changing your search or filter criteria" />
         </div>
       )}
 
-      {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} />}
+      {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onUpdate={fetchComplaints} />}
 
-      {showCraftComplaint && ["Student"].includes(user?.role) && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} />}
+      {showCraftComplaint && ["Student"].includes(user?.role) && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} onSuccess={fetchComplaints} />}
     </div>
   )
 }
