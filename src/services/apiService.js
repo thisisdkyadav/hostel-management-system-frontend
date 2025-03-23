@@ -112,6 +112,21 @@ export const studentApi = {
 
     return response.json()
   },
+
+  submitRoomChangeRequest: async (requestData) => {
+    const response = await fetch(`${baseUrl}/student/room-change`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(requestData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to submit room change request")
+    }
+
+    return response.json()
+  },
 }
 
 export const wardenApi = {
