@@ -63,10 +63,10 @@ const Settings = () => {
     };
 
     return (
-        <div className='bg-neutral-100 fixed h-screen w-screen'>
+        <div className='bg-gray-100 fixed h-screen w-screen'>
             <div className='absolute top-[40px] left-[2%] flex items-center justify-between w-[80vw] [@media(max-width:900px)]:hidden'>
                 <div className='flex flex-col'>
-                    <p className='text-2xl font-bold text-black'>Dashboard</p>
+                    <p className='text-2xl font-bold text-black'>Settings</p>
                     <p className='text-sm text-neutral-600'>{getFormattedDate()}</p>
                 </div>
                 <div className='flex items-center justify-center gap-15'>
