@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react"
-import { FaUserGraduate, FaEye, FaFileExport, FaFileImport } from "react-icons/fa"
+import { useState } from "react"
+import { FaUserGraduate, FaFileExport, FaFileImport } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
-import NoResults from "../components/admin/NoResults"
+import NoResults from "../components/common/NoResults"
 import StudentStats from "../components/common/students/StudentStats"
 import StudentFilterSection from "../components/common/students/StudentFilterSection"
 import StudentCard from "../components/common/students/StudentCard"
@@ -9,8 +9,7 @@ import StudentDetailModal from "../components/common/students/StudentDetailModal
 import ImportStudentModal from "../components/common/students/ImportStudentModal"
 import StudentTableView from "../components/common/students/StudentTableView"
 import Pagination from "../components/common/Pagination"
-import { studentApi } from "../services/apiService"
-import { useStudentFilters } from "../hooks/useStudentFilters"
+import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -25,12 +24,15 @@ const Students = () => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
-  const [allStudents, setAllStudents] = useState([])
-  const [totalStudents, setTotalStudents] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [studentsPerPage] = useState(10)
+
+  // Use our combined hook
+  const { students, totalCount, loading, error, filters, updateFilter, pagination, setCurrentPage, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
+    perPage: 10,
+    autoFetch: true,
+  })
 
   const departments = ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry", "Humanities"]
+
   const years = [
     { value: "1", label: "1st Year" },
     { value: "2", label: "2nd Year" },
@@ -38,38 +40,21 @@ const Students = () => {
     { value: "4", label: "4th Year" },
     { value: "5", label: "5th Year" },
   ]
+
   const degrees = ["B.Tech", "M.Tech", "PhD", "BSc", "MSc", "MBA", "BBA"]
-
-  const fetchStudents = async () => {
-    try {
-      setLoading(true)
-      const queryParams = filterState.buildQueryParams()
-      const response = await studentApi.getStudents(queryParams)
-      console.log(response, "Students from API")
-
-      setAllStudents(response?.data || [])
-      setTotalStudents(response?.meta?.total || 0)
-    } catch (error) {
-      alert(`An error occurred: ${error.message}`)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filterState = useStudentFilters(fetchStudents)
 
   const handleImportStudents = async (importedStudents) => {
     try {
-      const response = await studentApi.importStudents(importedStudents)
-      if (response?.error) {
-        alert(`Error importing students: ${response.error.message}`)
+      const result = await importStudents(importedStudents)
+      if (result.error) {
+        alert(`Error importing students: ${result.error.message}`)
         return false
       }
       alert("Students imported successfully")
-      fetchStudents()
       return true
     } catch (error) {
       alert(`An error occurred: ${error.message}`)
+      return false
     }
   }
 
@@ -78,51 +63,55 @@ const Students = () => {
     setShowStudentDetail(true)
   }
 
-  const paginate = (pageNumber) => filterState.pagination.setCurrentPage(pageNumber)
-
-  const totalPages = Math.ceil(totalStudents / studentsPerPage)
-
-  useEffect(() => {
-    fetchStudents()
-  }, [filterState.pagination.currentPage, filterState.sorting.sortField, filterState.sorting.sortDirection])
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  const totalPages = Math.ceil(totalCount / pagination.perPage)
 
   return (
-    <div className="px-10 py-6 flex-1">
-      <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
-        <h1 className="text-2xl px-3 font-bold">Student Management</h1>
-        <div className="flex items-center space-x-4">
-          <button className="flex items-center px-3 py-2 text-gray-600 bg-white rounded-[12px] hover:bg-gray-100" onClick={() => setShowFilters(!showFilters)}>
+    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+      {error && (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
+          <p className="font-medium">Error:</p>
+          <p>{error}</p>
+        </div>
+      )}
+
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Student Management</h1>
+        <div className="flex flex-wrap gap-2">
+          <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
 
           {["Warden"].includes(user?.role) && (
-            <button className="flex items-center px-3 py-2 text-gray-600 bg-white rounded-[12px] hover:bg-gray-100" onClick={() => setShowImportModal(true)}>
+            <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowImportModal(true)}>
               <FaFileImport className="mr-2" /> Import
             </button>
           )}
-          <button className="flex items-center px-3 py-2 text-gray-600 bg-white rounded-[12px] hover:bg-gray-100">
+
+          <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700">
             <FaFileExport className="mr-2" /> Export
           </button>
         </div>
       </header>
 
-      <StudentStats students={allStudents} totalCount={totalStudents} />
+      <StudentStats students={students} totalCount={totalCount} />
 
-      {showFilters && <StudentFilterSection filters={filterState.filters} resetFilters={filterState.resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} />}
+      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} />}
 
-      <div className="mt-6 flex justify-between items-center">
-        <div className="text-gray-600">
-          Showing <span className="font-semibold">{allStudents.length}</span> out of <span className="font-semibold">{totalStudents}</span> students
+      <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+        <div className="text-sm text-gray-600">
+          Showing <span className="font-semibold">{students.length}</span> out of <span className="font-semibold">{totalCount}</span> students
         </div>
 
-        <div className="flex space-x-2">
-          <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg ${viewMode === "table" ? "bg-[#1360AB] text-white" : "bg-white text-gray-600"}`}>
+        <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+          <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg transition-all ${viewMode === "table" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Table view">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
             </svg>
           </button>
-          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg ${viewMode === "card" ? "bg-[#1360AB] text-white" : "bg-white text-gray-600"}`}>
+
+          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg transition-all ${viewMode === "card" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Card view">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
@@ -137,27 +126,32 @@ const Students = () => {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1360AB]"></div>
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+          </div>
         </div>
       ) : (
         <>
-          {viewMode === "table" && <StudentTableView currentStudents={allStudents} sortField={filterState.sorting.sortField} sortDirection={filterState.sorting.sortDirection} handleSort={filterState.sorting.handleSort} viewStudentDetails={viewStudentDetails} />}
+          <div className="mt-4">
+            {viewMode === "table" && <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />}
 
-          {viewMode === "card" && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allStudents.map((student) => (
-                <StudentCard key={student.id} student={student} onClick={() => viewStudentDetails(student)} />
-              ))}
-            </div>
-          )}
+            {viewMode === "card" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {students.map((student) => (
+                  <StudentCard key={student.id} student={student} onClick={() => viewStudentDetails(student)} />
+                ))}
+              </div>
+            )}
+          </div>
 
-          {allStudents.length === 0 && !loading && <NoResults icon={<FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
+          {students.length === 0 && !loading && <NoResults icon={<FaUserGraduate className="text-gray-300 text-4xl" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
         </>
       )}
 
-      {allStudents.length > 0 && <Pagination currentPage={filterState.pagination.currentPage} totalPages={totalPages} paginate={paginate} />}
+      {students.length > 0 && totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />}
 
-      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={fetchStudents} />}
+      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
       {["Warden"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
     </div>

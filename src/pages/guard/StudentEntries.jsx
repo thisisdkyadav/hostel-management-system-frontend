@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
 import { FaUserGraduate, FaFilter } from "react-icons/fa"
-import SearchBar from "../../components/admin/SearchBar"
-import FilterTabs from "../../components/admin/FilterTabs"
-import NoResults from "../../components/admin/NoResults"
+import SearchBar from "../../components/common/SearchBar"
+import FilterTabs from "../../components/common/FilterTabs"
+import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import { securityApi } from "../../services/apiService"
 
