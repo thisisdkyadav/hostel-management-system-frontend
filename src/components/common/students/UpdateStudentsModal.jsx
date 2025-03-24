@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
@@ -6,7 +6,7 @@ import { useWarden } from "../../../contexts/WardenProvider"
 import Modal from "../../common/Modal"
 import StudentDetailModal from "./StudentDetailModal"
 
-const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
+const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const { profile } = useWarden()
   const hostelId = profile?.hostelId._id || null
   const hostelType = profile?.hostelId.type || null
@@ -15,19 +15,14 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [parsedData, setParsedData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
-  const [step, setStep] = useState(1) // 1: Upload, 2: Preview
+  const [step, setStep] = useState(1)
   const fileInputRef = useRef(null)
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  // Define available fields
-  const availableFields = ["name", "email", "phone", "password", "profilePic", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bedNumber", "address", "admissionDate", "guardian", "guardianPhone"]
+  const availableFields = ["name", "email", "phone", "password", "profilePic", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bedNumber", "address", "admissionDate", "guardian", "guardianPhone"]
 
-  // Base required fields without unit
-  const baseRequiredFields = ["name", "email", "rollNumber", "room", "bedNumber"]
-
-  // Dynamically determine required fields based on hostel type
-  const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
+  const requiredFields = ["rollNumber"]
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
@@ -42,14 +37,14 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   }
 
   const generateCsvTemplate = () => {
-    const headers = availableFields
+    const headers = ["rollNumber", "name", "email", "phone", "password", "profilePic", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bedNumber", "address", "admissionDate", "guardian", "guardianPhone"]
     const csvContent = headers.join(",")
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.setAttribute("download", "import_students_template.csv")
+    link.setAttribute("download", "update_students_template.csv")
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -97,18 +92,30 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             return
           }
 
+          // Check if at least one updatable field is present
+          const updatableFields = headers.filter((field) => availableFields.includes(field))
+          if (updatableFields.length === 0) {
+            setError(`CSV must include at least one field to update: ${availableFields.join(", ")}`)
+            setIsLoading(false)
+            return
+          }
+
           const parsedData = results.data.map((student, index) => {
-            // Create initial student object with only allowed fields
+            // Create initial student object with identifier
             const studentData = {
+              rollNumber: student.rollNumber,
               hostelId: hostelId,
             }
 
             // Add only available fields from CSV
             availableFields.forEach((field) => {
-              if (field === "admissionDate") {
-                studentData[field] = student[field] || new Date().toISOString().split("T")[0]
-              } else {
-                studentData[field] = student[field] || ""
+              if (student[field]) {
+                // Only include fields that have values
+                if (field === "admissionDate") {
+                  studentData[field] = student[field] || new Date().toISOString().split("T")[0]
+                } else {
+                  studentData[field] = student[field] || ""
+                }
               }
             })
 
@@ -118,6 +125,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             } else {
               studentData.displayRoom = student.room || ""
             }
+
+            // Add hostel name for display
+            studentData.hostel = profile?.hostelId.name || "N/A"
 
             return studentData
           })
@@ -137,22 +147,22 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     })
   }
 
-  const handleImport = async () => {
+  const handleUpdate = async () => {
     if (parsedData.length === 0) {
-      setError("No data to import")
+      setError("No data to update")
       return
     }
 
-    // Validate data before import
+    // Validate data before update
     let hasError = false
     let errorMessage = ""
 
-    // For unit-based hostels, check if unit is provided
+    // For unit-based hostels, check if unit is provided when room is updated
     if (hostelType === "unit-based") {
-      const missingUnitRecords = parsedData.filter((student) => !student.unit)
-      if (missingUnitRecords.length > 0) {
+      const invalidRecords = parsedData.filter((student) => student.room && !student.unit)
+      if (invalidRecords.length > 0) {
         hasError = true
-        errorMessage = `${missingUnitRecords.length} student(s) missing unit number, which is required for unit-based hostels.`
+        errorMessage = `${invalidRecords.length} student(s) have room updates without unit numbers, which is required for unit-based hostels.`
       }
     }
 
@@ -161,9 +171,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       return
     }
 
-    console.log("Importing data:", parsedData)
+    console.log("Updating data:", parsedData)
 
-    const isSuccess = await onImport(parsedData)
+    const isSuccess = await onUpdate(parsedData)
     if (isSuccess) {
       onClose()
       resetForm()
@@ -185,21 +195,20 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   if (!isOpen) return null
 
   return (
-    <Modal title="Import Students" onClose={onClose} width={900}>
+    <Modal title="Update Students in Bulk" onClose={onClose} width={900}>
       {step === 1 && (
         <div className="space-y-5">
           <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
             <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
             <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
             <p className="mt-3 text-xs text-gray-500">
-              <strong>Required fields:</strong> {requiredFields.join(", ")}
+              <strong>Required field:</strong> rollNumber (used as identifier - cannot be changed)
             </p>
             <p className="mt-1 text-xs text-gray-500">
-              <strong>Optional fields:</strong> {availableFields.filter((field) => !requiredFields.includes(field)).join(", ")}
+              <strong>Updatable fields:</strong> {availableFields.join(", ")}
             </p>
             <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
           </div>
-
           <div className="flex flex-col items-center">
             <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
               <FaFileDownload className="mr-1" />
@@ -210,25 +219,14 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               <p className="font-medium mb-1">Field Input Types:</p>
               <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
                 <li>
-                  <span className="font-medium">name:</span> String (Required)
-                </li>
-                <li>
-                  <span className="font-medium">email:</span> Email (Required)
-                </li>
-                <li>
                   <span className="font-medium">rollNumber:</span> String (Required)
                 </li>
                 <li>
-                  <span className="font-medium">room:</span> String/Number (Required)
+                  <span className="font-medium">name:</span> String
                 </li>
                 <li>
-                  <span className="font-medium">bedNumber:</span> Number (Required)
+                  <span className="font-medium">email:</span> Email
                 </li>
-                {hostelType === "unit-based" && (
-                  <li>
-                    <span className="font-medium">unit:</span> String (Required)
-                  </li>
-                )}
                 <li>
                   <span className="font-medium">phone:</span> Number
                 </li>
@@ -251,6 +249,15 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <span className="font-medium">year:</span> Number
                 </li>
                 <li>
+                  <span className="font-medium">unit:</span> String
+                </li>
+                <li>
+                  <span className="font-medium">room:</span> String/Number
+                </li>
+                <li>
+                  <span className="font-medium">bedNumber:</span> Number
+                </li>
+                <li>
                   <span className="font-medium">address:</span> String
                 </li>
                 <li>
@@ -265,7 +272,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </ul>
             </div>
           </div>
-
           {csvFile && (
             <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
               <span className="text-sm text-blue-700">
@@ -282,9 +288,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </button>
             </div>
           )}
-
           {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
-
           {isLoading && (
             <div className="flex items-center justify-center py-4">
               <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
@@ -297,8 +301,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       {step === 2 && (
         <div className="space-y-5">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-800">Preview Import Data</h3>
-            <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} students found in CSV</div>
+            <h3 className="text-lg font-medium text-gray-800">Preview Updates</h3>
+            <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} students will be updated</div>
           </div>
 
           <div className="border rounded-lg overflow-hidden">
@@ -321,8 +325,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         )}
 
         {step === 2 && (
-          <button onClick={handleImport} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading}>
-            <FaCheck className="mr-2" /> Confirm Import
+          <button onClick={handleUpdate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading}>
+            <FaCheck className="mr-2" /> Confirm Update
           </button>
         )}
       </div>
@@ -331,4 +335,4 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   )
 }
 
-export default ImportStudentModal
+export default UpdateStudentsModal

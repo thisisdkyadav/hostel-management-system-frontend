@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaUserGraduate, FaFileExport, FaFileImport } from "react-icons/fa"
+import { FaUserGraduate, FaFileExport, FaFileImport, FaEdit } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
 import NoResults from "../components/common/NoResults"
 import StudentStats from "../components/common/students/StudentStats"
@@ -7,11 +7,13 @@ import StudentFilterSection from "../components/common/students/StudentFilterSec
 import StudentCard from "../components/common/students/StudentCard"
 import StudentDetailModal from "../components/common/students/StudentDetailModal"
 import ImportStudentModal from "../components/common/students/ImportStudentModal"
+import UpdateStudentsModal from "../components/common/students/UpdateStudentsModal"
 import StudentTableView from "../components/common/students/StudentTableView"
 import Pagination from "../components/common/Pagination"
 import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
+import { studentApi } from "../services/apiService"
 
 const Students = () => {
   const { user } = useAuth()
@@ -24,6 +26,7 @@ const Students = () => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
 
   // Use our combined hook
   const { students, totalCount, loading, error, filters, updateFilter, pagination, setCurrentPage, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
@@ -58,6 +61,18 @@ const Students = () => {
     }
   }
 
+  const handleUpdateStudents = async (updatedStudents) => {
+    try {
+      await studentApi.updateStudents(updatedStudents)
+      alert("Students updated successfully")
+      refreshStudents()
+      return true
+    } catch (error) {
+      alert(`An error occurred: ${error.message}`)
+      return false
+    }
+  }
+
   const viewStudentDetails = (student) => {
     setSelectedStudent(student)
     setShowStudentDetail(true)
@@ -84,9 +99,14 @@ const Students = () => {
           </button>
 
           {["Warden"].includes(user?.role) && (
-            <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowImportModal(true)}>
-              <FaFileImport className="mr-2" /> Import
-            </button>
+            <>
+              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowImportModal(true)}>
+                <FaFileImport className="mr-2" /> Import
+              </button>
+              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowUpdateModal(true)}>
+                <FaEdit className="mr-2" /> Bulk Update
+              </button>
+            </>
           )}
 
           <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700">
@@ -154,6 +174,7 @@ const Students = () => {
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
       {["Warden"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
+      {["Warden"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
     </div>
   )
 }
