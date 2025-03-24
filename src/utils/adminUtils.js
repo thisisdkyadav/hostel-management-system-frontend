@@ -72,13 +72,11 @@ export const filterSecurity = (securityStaff, filterStatus, searchTerm) => {
 }
 
 export const filterLostItems = (items, filter, searchTerm) => {
-  // First filter by tab
   let filteredItems = items
   if (filter !== "all") {
     const statusMap = {
-      found: "Found",
-      claimed: "Claimed",
-      inProgress: "In Progress",
+      Active: "Active",
+      Claimed: "Claimed",
     }
     filteredItems = items.filter((item) => item.status === statusMap[filter])
   }
@@ -134,4 +132,13 @@ export const getPriorityColor = (priority) => {
     default:
       return "bg-gray-100 text-gray-700"
   }
+}
+
+export const filterMaintenanceStaff = (staff, category, searchTerm) => {
+  return staff.filter((member) => {
+    const matchesCategory = category === "all" || member.category === category
+    const matchesSearch = !searchTerm || member.name.toLowerCase().includes(searchTerm.toLowerCase()) || member.email.toLowerCase().includes(searchTerm.toLowerCase()) || member.category.toLowerCase().includes(searchTerm.toLowerCase())
+
+    return matchesCategory && matchesSearch
+  })
 }

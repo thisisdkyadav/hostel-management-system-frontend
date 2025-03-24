@@ -5,8 +5,11 @@ import { MdInventory } from "react-icons/md"
 import { formatDate } from "../../utils/formatters"
 import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import { lostAndFoundApi } from "../../services/apiService"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const LostAndFoundCard = ({ item, refresh }) => {
+  const { user } = useAuth()
+
   const [isEditing, setIsEditing] = useState(false)
 
   const getStatusColor = (status) => {
@@ -66,34 +69,36 @@ const LostAndFoundCard = ({ item, refresh }) => {
   }
 
   return (
-    <div className="bg-white rounded-[20px] p-6 shadow-[0px_1px_20px_rgba(0,0,0,0.06)] hover:shadow-lg transition-all duration-300">
+    <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
       <div className="flex justify-between items-start">
         <div className="flex items-center">
-          <div className={`p-3 mr-4 rounded-xl ${getStatusColor(item.status)}`}>
-            <MdInventory size={24} />
+          <div className={`p-2.5 mr-3 rounded-lg ${getStatusColor(item.status)}`}>
+            <MdInventory size={20} />
           </div>
           <div>
-            <h3 className="font-bold text-lg">{item.itemName}</h3>
-            <span className="text-sm text-gray-600">ID: {item._id.substring(0, 8)}</span>
+            <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{item.itemName}</h3>
+            <span className="text-xs text-gray-500">ID: {item._id.substring(0, 8)}</span>
           </div>
         </div>
-        <span className={`text-xs px-3 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
+        <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
       </div>
 
-      <div className="mt-5 space-y-3">
+      <div className="mt-4 space-y-3">
         <div className="flex items-center">
-          <BsCalendarDate className="text-gray-500 mr-2" />
-          <span className="text-sm">Date Found: {formatDate(item.dateFound)}</span>
+          <BsCalendarDate className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
+          <span className="text-sm text-gray-700">{formatDate(item.dateFound)}</span>
         </div>
-        <div>
-          <p className="text-sm text-gray-700">{item.description}</p>
+        <div className="bg-gray-50 p-3 rounded-lg">
+          <p className="text-sm text-gray-700 line-clamp-3">{item.description}</p>
         </div>
       </div>
 
-      <div className="mt-5 flex justify-end">
-        <button onClick={handleEditClick} className="flex items-center px-5 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-xl hover:bg-[#1360AB] hover:text-white transition-colors">
-          <FaEdit className="mr-2" /> Edit
-        </button>
+      <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+        {["Admin", "Warden", "Security"].includes(user?.role) && (
+          <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <FaEdit className="mr-2" /> Edit
+          </button>
+        )}
       </div>
     </div>
   )

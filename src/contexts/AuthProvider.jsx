@@ -89,16 +89,22 @@ export const AuthProvider = ({ children }) => {
     if (!user) return "/login"
 
     switch (user.role) {
-      case "student":
-        return "/api/v0/student/dashboard"
-      case "warden":
-        return "/warden/dashboard"
-      case "guard":
-        return "/guard/dashboard"
-      case "maintenance":
-        return "/maintainance/dashboard"
-      case "admin":
+      case "Student":
+        return "/student"
+      case "Warden":
+        return "/warden"
+      case "Security":
+        return "/guard"
+      case "Maintenance Staff":
+        return "/maintenance"
+      case "Admin":
         return "/admin"
+      case "Warden":
+        return "/warden"
+      case "Security":
+        return "/guard"
+      case "Maintenance Staff":
+        return "/maintenance"
       default:
         return "/login"
     }

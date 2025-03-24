@@ -1,7 +1,7 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaUserCheck, FaUserAltSlash } from "react-icons/fa"
 import { IoStatsChart } from "react-icons/io5"
-import StatCards from "../admin/StatCards"
+import StatCards from "../common/StatCards"
 
 const UnitStats = ({ units, rooms, currentView, totalCount }) => {
   // Calculate statistics

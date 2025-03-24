@@ -54,12 +54,27 @@ export const authApi = {
 
   logout: async () => {
     const response = await fetch(`${baseUrl}/auth/logout`, {
-      method: "POST",
+      method: "GET",
       ...fetchOptions,
     })
 
     if (!response.ok) {
       throw new Error("Logout failed on server")
+    }
+
+    return response.json()
+  },
+
+  changePassword: async (oldPassword, newPassword) => {
+    const response = await fetch(`${baseUrl}/auth/update-password`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ oldPassword, newPassword }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update password")
     }
 
     return response.json()
@@ -108,6 +123,35 @@ export const studentApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to fetch student details")
+    }
+
+    return response.json()
+  },
+
+  submitRoomChangeRequest: async (requestData) => {
+    const response = await fetch(`${baseUrl}/student/room-change`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(requestData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to submit room change request")
+    }
+
+    return response.json()
+  },
+
+  getStudent: async () => {
+    const response = await fetch(`${baseUrl}/student/profile`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student profile")
     }
 
     return response.json()
@@ -271,18 +315,18 @@ export const securityApi = {
 
 export const maintenanceApi = {
   // Complaints
-  getComplaints: async () => {
-    const response = await fetch(`${baseUrl}/complaint/all`, {
+  getComplaints: async (queries) => {
+    const response = await fetch(`${baseUrl}/complaint/all?${queries}`, {
       method: "GET",
       ...fetchOptions,
     })
+
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to fetch complaints")
     }
-    const data = await response.json()
-    console.log("Fetched complaints:", data)
-    return data
+
+    return response.json()
   },
 
   updateComplaintStatus: async (id, status) => {
@@ -348,7 +392,7 @@ export const adminApi = {
   addHostel: async (hostelData) => {
     const response = await fetch(`${baseUrl}/admin/hostel`, {
       method: "POST",
-      ...fetchOptions, 
+      ...fetchOptions,
       body: JSON.stringify(hostelData),
     })
 
@@ -433,8 +477,8 @@ export const adminApi = {
     return response.json()
   },
 
-  getAllComplaints: async () => {
-    const response = await fetch(`${baseUrl}/complaint/all`, {
+  getAllComplaints: async (queries) => {
+    const response = await fetch(`${baseUrl}/complaint/all?${queries}`, {
       method: "GET",
       ...fetchOptions,
     })
@@ -513,6 +557,61 @@ export const adminApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update password")
+    }
+
+    return response.json()
+  },
+
+  getAllMaintenanceStaff: async () => {
+    const response = await fetch(`${baseUrl}/admin/maintenance`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch maintenance staff")
+    }
+
+    return response.json()
+  },
+  addMaintenanceStaff: async (maintenanceData) => {
+    const response = await fetch(`${baseUrl}/admin/maintenance`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(maintenanceData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add maintenance staff")
+    }
+
+    return response.json()
+  },
+  updateMaintenanceStaff: async (maintenanceId, maintenanceData) => {
+    const response = await fetch(`${baseUrl}/admin/maintenance/${maintenanceId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(maintenanceData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update maintenance staff")
+    }
+
+    return response.json()
+  },
+  deleteMaintenanceStaff: async (maintenanceId) => {
+    const response = await fetch(`${baseUrl}/admin/maintenance/${maintenanceId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete maintenance staff")
     }
 
     return response.json()
@@ -705,6 +804,69 @@ export const hostelApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to deallocate room")
+    }
+
+    return response.json()
+  },
+
+  getRoomChangeRequests: async (hostelId, filters = {}) => {
+    console.log("Fetching room change requests for hostel:", hostelId, "with filters:", filters)
+
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/hostel/room-change-requests/${hostelId}${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch room change requests")
+    }
+
+    return response.json()
+  },
+
+  getRoomChangeRequestById: async (requestId) => {
+    const response = await fetch(`${baseUrl}/hostel/room-change-request/${requestId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch room change request")
+    }
+
+    return response.json()
+  },
+
+  approveRoomChangeRequest: async (requestId, bedNumber) => {
+    const response = await fetch(`${baseUrl}/hostel/room-change-request/approve/${requestId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ bedNumber }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to approve room change request")
+    }
+
+    return response.json()
+  },
+
+  rejectRoomChangeRequest: async (requestId, reason) => {
+    const response = await fetch(`${baseUrl}/hostel/room-change-request/reject/${requestId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ reason }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to reject room change request")
     }
 
     return response.json()
