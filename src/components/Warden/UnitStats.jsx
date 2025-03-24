@@ -8,19 +8,22 @@ const UnitStats = ({ units, rooms, currentView, totalCount }) => {
   const getUnitStats = () => {
     const totalUnits = units.length
     const totalRooms = units.reduce((acc, unit) => acc + (unit.roomCount || 0), 0)
-    const occupiedRooms = units.reduce((acc, unit) => acc + (unit.occupiedRoomCount || 0), 0)
-    const occupancyRate = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0
+    const occupancy = units.reduce((acc, unit) => acc + (unit.occupancy || 0), 0)
+    const capacity = units.reduce((acc, unit) => acc + (unit.capacity || 0), 0)
+    const occupancyRate = totalRooms > 0 ? Math.round((occupancy / capacity) * 100) : 0
 
-    return { totalUnits, totalRooms, occupiedRooms, occupancyRate }
+    return { totalUnits, totalRooms, occupancy, occupancyRate }
   }
 
   const getRoomStats = () => {
     const totalRooms = rooms.length
-    const occupiedRooms = rooms.filter((room) => room.currentOccupancy > 0).length
-    const fullRooms = rooms.filter((room) => room.currentOccupancy >= room.capacity).length
-    const occupancyRate = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0
+    const activeRooms = rooms.filter((room) => room.status === "Active").length
+    const fullRooms = rooms.filter((room) => (room.capacity ? room.currentOccupancy >= room.capacity : 0)).length
+    const totalOccupancy = rooms.reduce((acc, room) => acc + (room.currentOccupancy || 0), 0)
+    const totalCapacity = rooms.reduce((acc, room) => acc + (room.capacity || 0), 0)
+    const occupancyRate = totalRooms > 0 ? Math.round((totalOccupancy / totalCapacity) * 100) : 0
 
-    return { totalRooms, occupiedRooms, fullRooms, occupancyRate }
+    return { totalRooms, activeRooms, fullRooms, occupancyRate }
   }
 
   const stats = currentView === "units" ? getUnitStats() : getRoomStats()
@@ -41,9 +44,9 @@ const UnitStats = ({ units, rooms, currentView, totalCount }) => {
       color: "#22c55e", // green-500
     },
     {
-      title: "Occupied Rooms",
-      value: stats.occupiedRooms,
-      subtitle: `${stats.totalRooms > 0 ? ((stats.occupiedRooms / stats.totalRooms) * 100).toFixed(1) : 0}% of total`,
+      title: "Total Occupancy",
+      value: stats.occupancy,
+      subtitle: `${stats.totalRooms > 0 ? ((stats.occupancy / stats.totalRooms) * 100).toFixed(1) : 0}% of total`,
       icon: <FaUserCheck className="text-2xl" />,
       color: "#6366f1", // indigo-500
     },
@@ -65,9 +68,9 @@ const UnitStats = ({ units, rooms, currentView, totalCount }) => {
       color: "#1360AB",
     },
     {
-      title: "Occupied Rooms",
-      value: stats.occupiedRooms,
-      subtitle: `${stats.totalRooms > 0 ? ((stats.occupiedRooms / stats.totalRooms) * 100).toFixed(1) : 0}% of total`,
+      title: "Active Rooms",
+      value: stats.activeRooms,
+      subtitle: `${stats.totalRooms > 0 ? ((stats.activeRooms / stats.totalRooms) * 100).toFixed(1) : 0}% of total`,
       icon: <FaUserCheck className="text-2xl" />,
       color: "#22c55e", // green-500
     },

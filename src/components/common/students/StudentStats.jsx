@@ -5,9 +5,8 @@ import StatCards from "../StatCards"
 
 const StudentStats = ({ students }) => {
   const totalStudents = students.length
-  const maleStudents = students.filter((s) => s.gender === "male").length
-  const femaleStudents = students.filter((s) => s.gender === "female").length
-  const activeStudents = students.filter((s) => s.status === "active").length
+  const maleStudents = students.filter((s) => s.gender === "Male").length
+  const femaleStudents = students.filter((s) => s.gender === "Female").length
 
   const statsData = [
     {
@@ -31,16 +30,16 @@ const StudentStats = ({ students }) => {
       icon: <BsGenderFemale className="text-2xl" />,
       color: "#ec4899", // pink-500
     },
-    {
-      title: "Active Status",
-      value: activeStudents,
-      subtitle: `${((activeStudents / totalStudents) * 100).toFixed(1)}% active students`,
-      icon: <IoMdSchool className="text-2xl" />,
-      color: "#22c55e", // green-500
-    },
+    // {
+    //   title: "Active Status",
+    //   value: activeStudents,
+    //   subtitle: `${((activeStudents / totalStudents) * 100).toFixed(1)}% active students`,
+    //   icon: <IoMdSchool className="text-2xl" />,
+    //   color: "#22c55e", // green-500
+    // },
   ]
 
-  return <StatCards stats={statsData} />
+  return <StatCards stats={statsData} columns={3} />
 }
 
 export default StudentStats

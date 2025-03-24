@@ -32,7 +32,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
         rooms.push({
           roomNumber,
           capacity: standardCapacity,
-          status: "Available",
+          status: "Active",
         })
       }
     }

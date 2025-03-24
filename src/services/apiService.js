@@ -93,6 +93,8 @@ export const studentApi = {
 
     if (!response.ok) {
       const errorData = await response.json()
+      console.log("Error importing students:", errorData)
+
       throw new Error(errorData.message || "Failed to import students")
     }
 

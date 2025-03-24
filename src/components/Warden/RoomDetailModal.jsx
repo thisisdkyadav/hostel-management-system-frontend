@@ -141,8 +141,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Roll Number</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Bed Number</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Department</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Year</th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
                     </tr>
                   </thead>
@@ -162,8 +162,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden sm:table-cell">{student.rollNumber}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden lg:table-cell">{student.bedNumber}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden md:table-cell">{student.department}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden lg:table-cell">{student.year} Year</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                           <button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} className="text-red-600 hover:bg-red-50 p-2 rounded-full transition-colors" title="Remove from Room">
                             <FaTrash />

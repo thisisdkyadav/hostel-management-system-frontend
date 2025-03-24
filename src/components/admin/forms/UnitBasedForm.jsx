@@ -46,7 +46,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             unitNumber,
             roomNumber: roomLetter,
             capacity: standardCapacity,
-            status: "Available",
+            status: "Active",
           })
         }
       }
