@@ -95,16 +95,10 @@ export const AuthProvider = ({ children }) => {
         return "/warden"
       case "Security":
         return "/guard"
-      case "Maintenance Staff":
-        return "/maintenance"
       case "Admin":
         return "/admin"
-      case "Warden":
-        return "/warden"
-      case "Security":
-        return "/guard"
       case "Maintenance Staff":
-        return "/maintenance"
+        return "/maintenance/dashboard"
       default:
         return "/login"
     }

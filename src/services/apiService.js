@@ -114,8 +114,8 @@ export const studentApi = {
     return response.json()
   },
 
-  getStudentDetails: async (studentId) => {
-    const response = await fetch(`${baseUrl}/student/profile/details/${studentId}`, {
+  getStudentDetails: async (userID) => {
+    const response = await fetch(`${baseUrl}/student/profile/details/${userID}`, {
       method: "GET",
       ...fetchOptions,
     })
@@ -152,6 +152,21 @@ export const studentApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to fetch student profile")
+    }
+
+    return response.json()
+  },
+
+  updateStudent: async (userId, studentData) => {
+    const response = await fetch(`${baseUrl}/student/profile/${userId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(studentData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update student profile")
     }
 
     return response.json()
