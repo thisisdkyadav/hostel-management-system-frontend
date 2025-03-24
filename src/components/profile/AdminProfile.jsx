@@ -1,56 +1,70 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { FiMail, FiPhone, FiCalendar, FiMapPin, FiUser, FiShield, FiLock } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
+import LoadingState from "../common/LoadingState"
+import ErrorState from "../common/ErrorState"
+import EmptyState from "../common/EmptyState"
+import { useAuth } from "../../contexts/AuthProvider"
 
-const AdminProfile = ({ user, activeTab }) => {
-  // Dummy admin data
-  const adminData = {
-    name: "Priya Kapoor",
-    email: "priya.kapoor@example.com",
-    phone: "+91 9876543216",
-    role: "System Administrator",
-    joiningDate: "12 March 2019",
-    address: "321 Tech Park, Hyderabad, Telangana",
-    department: "IT Administration",
-    accessLevel: "Full Access",
-    lastLogin: "Today at 09:45 AM",
-    twoFactorEnabled: "Yes",
+const AdminProfile = () => {
+  const { user } = useAuth()
+
+  const [adminData, setAdminData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const loadProfile = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      if (user) {
+        setAdminData({
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          role: "System Administrator",
+        })
+      }
+    } catch (err) {
+      console.error("Error loading admin profile:", err)
+      setError("Failed to load your profile data. Please try again later.")
+    } finally {
+      setLoading(false)
+    }
   }
 
-  if (activeTab === "profile") {
-    return (
-      <div>
-        <ProfileHeader user={adminData} role="Administrator" subtitle={`${adminData.department} | ${adminData.role}`} />
+  useEffect(() => {
+    loadProfile()
+  }, [user])
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-          <div>
-            <ProfileCard title="Personal Information">
-              <ProfileInfo label="Email Address" value={adminData.email} icon={FiMail} />
-              <ProfileInfo label="Phone Number" value={adminData.phone} icon={FiPhone} />
-              <ProfileInfo label="Address" value={adminData.address} icon={FiMapPin} />
-            </ProfileCard>
-          </div>
+  if (loading) {
+    return <LoadingState message="Loading your profile..." description="Please wait while we fetch your information" />
+  }
 
-          <div>
-            <ProfileCard title="System Access">
-              <ProfileInfo label="Department" value={adminData.department} icon={FiUser} />
-              <ProfileInfo label="Joining Date" value={adminData.joiningDate} icon={FiCalendar} />
-              <ProfileInfo label="Access Level" value={adminData.accessLevel} icon={FiShield} />
-              <ProfileInfo label="Last Login" value={adminData.lastLogin} icon={FiCalendar} />
-              <ProfileInfo label="Two-Factor Authentication" value={adminData.twoFactorEnabled} icon={FiLock} />
-            </ProfileCard>
-          </div>
-        </div>
-      </div>
-    )
+  if (error) {
+    return <ErrorState message={error} onRetry={loadProfile} />
+  }
+
+  if (!adminData) {
+    return <EmptyState icon={FiUser} title="Profile Not Found" message="We couldn't find your profile information. Please contact the system administrator if this issue persists." />
   }
 
   return (
-    <div className="text-center py-8 text-gray-500">
-      {activeTab === "security" && "Security settings will be displayed here"}
-      {activeTab === "notifications" && "Notification preferences will be displayed here"}
+    <div>
+      <ProfileHeader user={adminData} role="Administrator" subtitle={`${adminData.role}`} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div>
+          <ProfileCard title="Personal Information">
+            <ProfileInfo label="Email Address" value={adminData.email} icon={FiMail} />
+            <ProfileInfo label="Phone Number" value={adminData.phone} icon={FiPhone} />
+            <ProfileInfo label="Role" value={adminData.role} icon={FiShield} />
+          </ProfileCard>
+        </div>
+      </div>
     </div>
   )
 }
