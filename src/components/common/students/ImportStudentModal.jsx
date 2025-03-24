@@ -1,13 +1,15 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { FaFileUpload, FaCheck, FaTimes } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import { useWarden } from "../../../contexts/WardenProvider"
 import Modal from "../../common/Modal"
+import StudentDetailModal from "./StudentDetailModal"
 
 const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const { profile } = useWarden()
   const hostelId = profile?.hostelId._id || null
+  const hostelType = profile?.hostelId.type || null
 
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -15,10 +17,17 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [error, setError] = useState("")
   const [step, setStep] = useState(1) // 1: Upload, 2: Preview
   const fileInputRef = useRef(null)
+  const [showStudentDetail, setShowStudentDetail] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState(null)
 
-  // Define available and required fields
-  const availableFields = ["name", "email", "password", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bed", "phone", "address", "admissionDate"]
-  const requiredFields = ["name", "email", "rollNumber", "room", "unit"]
+  // Define available fields
+  const availableFields = ["name", "email", "phone", "password", "profilePic", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bedNumber", "address", "admissionDate", "guardian", "guardianPhone"]
+
+  // Base required fields without unit
+  const baseRequiredFields = ["name", "email", "rollNumber", "room", "bedNumber"]
+
+  // Dynamically determine required fields based on hostel type
+  const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
@@ -50,7 +59,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   }
 
   const parseCSV = (file) => {
-    // Existing parseCSV logic...
     setIsLoading(true)
     setError("")
 
@@ -91,7 +99,11 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             })
 
             // Add displayRoom for the table view
-            studentData.displayRoom = `${student.unit || ""}-${student.room || ""}`
+            if (hostelType === "unit-based") {
+              studentData.displayRoom = `${student.unit || ""}-${student.room || ""}`
+            } else {
+              studentData.displayRoom = student.room || ""
+            }
 
             return studentData
           })
@@ -116,6 +128,25 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       setError("No data to import")
       return
     }
+
+    // Validate data before import
+    let hasError = false
+    let errorMessage = ""
+
+    // For unit-based hostels, check if unit is provided
+    if (hostelType === "unit-based") {
+      const missingUnitRecords = parsedData.filter((student) => !student.unit)
+      if (missingUnitRecords.length > 0) {
+        hasError = true
+        errorMessage = `${missingUnitRecords.length} student(s) missing unit number, which is required for unit-based hostels.`
+      }
+    }
+
+    if (hasError) {
+      setError(errorMessage)
+      return
+    }
+
     console.log("Importing data:", parsedData)
 
     const isSuccess = await onImport(parsedData)
@@ -130,6 +161,11 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     setParsedData([])
     setError("")
     setStep(1)
+  }
+
+  const viewStudentDetails = (student) => {
+    setSelectedStudent(student)
+    setShowStudentDetail(true)
   }
 
   if (!isOpen) return null
@@ -186,7 +222,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           </div>
 
           <div className="border rounded-lg overflow-hidden">
-            <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={() => {}} />
+            <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
           </div>
 
           {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
@@ -210,6 +246,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           </button>
         )}
       </div>
+      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={null} isImport={true} />}
     </Modal>
   )
 }

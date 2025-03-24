@@ -4,7 +4,7 @@ import { studentApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 
-const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate }) => {
+const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -23,8 +23,25 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate })
   }
 
   useEffect(() => {
-    if (selectedStudent?.id) {
+    if (selectedStudent?.id && !isImport) {
       fetchStudentDetails()
+    } else if (isImport) {
+      console.log("Selected Student for Import:", selectedStudent)
+
+      setStudentDetails({
+        ...selectedStudent,
+        image: selectedStudent.image || "",
+        rollNumber: selectedStudent.rollNumber || "",
+        department: selectedStudent.department || "",
+        degree: selectedStudent.degree || "",
+        year: selectedStudent.year || "",
+        admissionDate: selectedStudent.admissionDate || "",
+        hostel: selectedStudent.hostel || "",
+        unit: selectedStudent.unit || "",
+        room: selectedStudent.room || "",
+        bedNumber: selectedStudent.bedNumber || "",
+      })
+      setLoading(false)
     }
   }, [selectedStudent?.id])
 
@@ -174,9 +191,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate })
               <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
                 Close
               </button>
-              <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                Edit Student
-              </button>
+              {!isImport && (
+                <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                  Edit Student
+                </button>
+              )}
             </div>
           </>
         )}
