@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../services/apiService"
+import Modal from "../common/Modal"
+import { FaCalendarAlt, FaClipboardList, FaBoxOpen } from "react-icons/fa"
 
 const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
   const [formData, setFormData] = useState({
@@ -35,46 +37,70 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
   if (!show) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-8 rounded-[20px] w-[600px] max-w-[95%] max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-5">Add Lost Item</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Item Name</label>
-            <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Enter item name" required />
+    <Modal title="Add Lost Item" onClose={onClose} width={600}>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* <div className="bg-blue-50 p-4 rounded-lg mb-4">
+          <div className="flex items-center text-blue-800">
+            <FaBoxOpen className="mr-2" />
+            <h4 className="font-medium">Item Information</h4>
+          </div>
+        </div> */}
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Item Name</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaClipboardList />
+              </div>
+              <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter item name" required />
+            </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} rows="4" className="w-full p-2 border border-gray-300 rounded-lg resize-none" placeholder="Describe the item, condition, where it was found, etc." required></textarea>
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="4"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all resize-none"
+              placeholder="Describe the item, condition, where it was found, etc."
+              required
+            ></textarea>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Date Found</label>
-              <input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-lg" required />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-2">Date Found</label>
+              <div className="relative">
+                <div className="absolute left-3 top-3 text-gray-400">
+                  <FaCalendarAlt />
+                </div>
+                <input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" required />
+              </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Status</label>
-              <select name="status" value={formData.status} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded-lg" required>
+            <div>
+              <label className="block text-gray-700 text-sm font-medium mb-2">Status</label>
+              <select name="status" value={formData.status} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" required>
                 <option value="Active">Active</option>
                 <option value="Claimed">Claimed</option>
               </select>
             </div>
           </div>
+        </div>
 
-          <div className="flex justify-end mt-6 space-x-3">
-            <button type="button" className="px-5 py-2 bg-gray-200 rounded-lg" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="px-5 py-2 bg-[#1360AB] text-white rounded-lg">
-              Add Item
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 sm:space-y-0 sm:space-x-3">
+          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium">
+            Add Item
+          </button>
+        </div>
+      </form>
+    </Modal>
   )
 }
 
