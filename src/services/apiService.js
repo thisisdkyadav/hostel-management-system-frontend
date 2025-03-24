@@ -561,6 +561,61 @@ export const adminApi = {
 
     return response.json()
   },
+
+  getAllMaintenanceStaff: async () => {
+    const response = await fetch(`${baseUrl}/admin/maintenance`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch maintenance staff")
+    }
+
+    return response.json()
+  },
+  addMaintenanceStaff: async (maintenanceData) => {
+    const response = await fetch(`${baseUrl}/admin/maintenance`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(maintenanceData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add maintenance staff")
+    }
+
+    return response.json()
+  },
+  updateMaintenanceStaff: async (maintenanceId, maintenanceData) => {
+    const response = await fetch(`${baseUrl}/admin/maintenance/${maintenanceId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(maintenanceData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update maintenance staff")
+    }
+
+    return response.json()
+  },
+  deleteMaintenanceStaff: async (maintenanceId) => {
+    const response = await fetch(`${baseUrl}/admin/maintenance/${maintenanceId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete maintenance staff")
+    }
+
+    return response.json()
+  },
 }
 
 export const lostAndFoundApi = {

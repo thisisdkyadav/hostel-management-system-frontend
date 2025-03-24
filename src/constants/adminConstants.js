@@ -23,3 +23,13 @@ export const SECURITY_FILTER_TABS = [
   { label: "Assigned", value: "Assigned", color: "[#1360AB]" },
   { label: "Inactive", value: "Inactive", color: "[#1360AB]" },
 ]
+
+export const MAINTENANCE_FILTER_TABS = [
+  { label: "all", value: "all", color: "[#1360AB]" },
+  { label: "Plumbing", value: "Plumbing", color: "[#1360AB]" },
+  { label: "Electrical", value: "Electrical", color: "[#1360AB]" },
+  { label: "Civil", value: "Civil", color: "[#1360AB]" },
+  { label: "Cleanliness", value: "Cleanliness", color: "[#1360AB]" },
+  { label: "Internet", value: "Internet", color: "[#1360AB]" },
+  { label: "Other", value: "Other", color: "[#1360AB]" },
+]
