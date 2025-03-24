@@ -81,6 +81,69 @@ const Students = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
   const totalPages = Math.ceil(totalCount / pagination.perPage)
 
+  const fetchFullStudentDetails = async (userIds) => {
+    try {
+      const response = await studentApi.getStudentsByIds(userIds)
+      console.log("Fetched student details:", response)
+
+      return response.data
+    } catch (error) {
+      console.error("Error fetching student details:", error)
+      throw error
+    }
+  }
+
+  const handleExportStudents = async () => {
+    const userIds = students.map((student) => student.userId)
+    if (userIds.length === 0) {
+      alert("No students to export")
+      return
+    }
+    const studentsDetails = await fetchFullStudentDetails(userIds)
+
+    if (studentsDetails.length === 0) {
+      alert("No students to export")
+      return
+    }
+
+    try {
+      const firstStudent = studentsDetails[0]
+      const headers = Object.keys(firstStudent).filter((key) => !["id", "userId"].includes(key))
+
+      let csvContent = headers.join(",") + "\n"
+
+      studentsDetails.forEach((student) => {
+        const row = headers
+          .map((header) => {
+            const value = student[header] !== null && student[header] !== undefined ? student[header] : ""
+
+            if (typeof value === "string" && (value.includes(",") || value.includes('"') || value.includes("\n"))) {
+              return `"${value.replace(/"/g, '""')}"`
+            }
+            return value
+          })
+          .join(",")
+
+        csvContent += row + "\n"
+      })
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+
+      const date = new Date().toISOString().split("T")[0]
+
+      link.href = url
+      link.setAttribute("download", `students_export_${date}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error("Error exporting students:", error)
+      alert("Failed to export students: " + error.message)
+    }
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       {error && (
@@ -109,7 +172,7 @@ const Students = () => {
             </>
           )}
 
-          <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700">
+          <button onClick={handleExportStudents} className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700">
             <FaFileExport className="mr-2" /> Export
           </button>
         </div>
