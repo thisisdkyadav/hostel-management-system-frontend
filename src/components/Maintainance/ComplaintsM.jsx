@@ -87,8 +87,8 @@ const ComplaintsM = () => {
       console.log("Query String:", queryString)
 
       const complaintsData = await maintenanceApi.getComplaints(queryString)
-      setComplaints(complaintsData.data)
-      setTotalComplaints(complaintsData.meta.total || complaintsData.data.length)
+      setComplaints(complaintsData.data || [])  // Ensure we handle empty response
+      setTotalComplaints(complaintsData.meta?.total || complaintsData.data?.length || 0)  // Add fallbacks
 
       // Fetch stats separately
       await fetchStats()
@@ -97,6 +97,8 @@ const ComplaintsM = () => {
     } catch (err) {
       console.error("Failed to fetch data:", err)
       setError("Failed to load data. Please try again.")
+      setComplaints([])  // Clear complaints on error
+      setTotalComplaints(0)
     } finally {
       setLoading(false)
     }
@@ -109,6 +111,7 @@ const ComplaintsM = () => {
       setStats(statsData)
     } catch (err) {
       console.error("Error fetching stats:", err)
+      // Maintain current stats on error
     }
   }
 
@@ -130,7 +133,9 @@ const ComplaintsM = () => {
       const newComplaint = response.data
 
       // Update local state
-      setComplaints((prevComplaints) => prevComplaints.map((complaint) => (complaint.id === id ? { ...complaint, status: newComplaint.status } : complaint)))
+      setComplaints((prevComplaints) => prevComplaints.map((complaint) => 
+        complaint.id === id ? { ...complaint, status: newComplaint.status } : complaint
+      ))
 
       // If the selected complaint is being viewed in modal, update it too
       if (selectedComplaint && selectedComplaint.id === id) {
@@ -247,7 +252,17 @@ const ComplaintsM = () => {
       </div>
 
       {/* Error Message */}
-      {error && <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 no-print">{error}</div>}
+      {error && (
+        <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 no-print">
+          {error}
+          <button 
+            className="ml-4 underline"
+            onClick={fetchComplaints}
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Loading Spinner or Complaints List */}
       {loading ? (
@@ -257,22 +272,56 @@ const ComplaintsM = () => {
         </div>
       ) : (
         <>
-          {complaints.length > 0 ? (
+          {complaints && complaints.length > 0 ? (
             <div className="mt-4 space-y-4">
               {complaints.map((complaint) => (
-                <ComplaintItemM key={complaint.id} complaint={complaint} onViewDetails={handleViewDetails} onChangeStatus={changeStatus} categoryBg={categoryBg} statusColor={statusColor} priorityColor={priorityColor} />
+                <ComplaintItemM 
+                  key={complaint.id} 
+                  complaint={complaint} 
+                  onViewDetails={handleViewDetails} 
+                  onChangeStatus={changeStatus} 
+                  categoryBg={categoryBg} 
+                  statusColor={statusColor} 
+                  priorityColor={priorityColor} 
+                />
               ))}
 
               {/* Pagination component */}
-              <Pagination currentPage={currentPage} totalPages={Math.ceil(totalComplaints / itemsPerPage)} paginate={paginate} />
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={Math.ceil(totalComplaints / itemsPerPage)} 
+                paginate={paginate} 
+              />
             </div>
           ) : (
-            <div className="text-center py-10 no-print">
+            <div className="text-center py-10 bg-gray-50 rounded-lg no-print">
               <FaClipboardList className="mx-auto text-4xl text-gray-300" />
-              <p className="mt-2 text-gray-500">No complaints match your filters</p>
+              <p className="mt-2 text-gray-500 font-medium">
+                {searchTerm || filterStatus !== "All" 
+                  ? "No complaints match your search" 
+                  : "No complaints available"}
+              </p>
+              <p className="text-gray-400 text-sm mt-1">
+                {searchTerm 
+                  ? `No results found for "${searchTerm}"` 
+                  : filterStatus !== "All"
+                    ? `No ${filterStatus} complaints found`
+                    : "There are no complaints in the system yet"}
+              </p>
               {(searchTerm || filterStatus !== "All") && (
-                <button className="mt-2 text-blue-500 hover:underline" onClick={clearFilters}>
+                <button 
+                  className="mt-4 bg-blue-50 text-blue-500 hover:bg-blue-100 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  onClick={clearFilters}
+                >
                   Clear filters
+                </button>
+              )}
+              {!searchTerm && filterStatus === "All" && !error && (
+                <button 
+                  className="mt-4 bg-blue-50 text-blue-500 hover:bg-blue-100 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  onClick={fetchComplaints}
+                >
+                  Refresh
                 </button>
               )}
             </div>
@@ -281,7 +330,15 @@ const ComplaintsM = () => {
       )}
 
       {/* Complaint Detail Modal */}
-      <ComplaintDetailModal showModal={showModal} selectedComplaint={selectedComplaint} onClose={() => setShowModal(false)} changeStatus={changeStatus} categoryBg={categoryBg} statusColor={statusColor} priorityColor={priorityColor} />
+      <ComplaintDetailModal 
+        showModal={showModal} 
+        selectedComplaint={selectedComplaint} 
+        onClose={() => setShowModal(false)} 
+        changeStatus={changeStatus} 
+        categoryBg={categoryBg} 
+        statusColor={statusColor} 
+        priorityColor={priorityColor} 
+      />
     </div>
   )
 }
