@@ -27,7 +27,7 @@ const RoomChangeForm = ({ student }) => {
     setError(null)
 
     try {
-      await studentApi.submitRoomChangeRequest({ ...formData, currentAllocationId: student.currentRoomAllocation })
+      await studentApi.submitRoomChangeRequest({ ...formData, currentAllocationId: student.allocationId })
 
       alert("Room change request submitted successfully!")
       setIsOpen(false)
