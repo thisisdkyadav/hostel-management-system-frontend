@@ -133,3 +133,12 @@ export const getPriorityColor = (priority) => {
       return "bg-gray-100 text-gray-700"
   }
 }
+
+export const filterMaintenanceStaff = (staff, category, searchTerm) => {
+  return staff.filter((member) => {
+    const matchesCategory = category === "all" || member.category === category
+    const matchesSearch = !searchTerm || member.name.toLowerCase().includes(searchTerm.toLowerCase()) || member.email.toLowerCase().includes(searchTerm.toLowerCase()) || member.category.toLowerCase().includes(searchTerm.toLowerCase())
+
+    return matchesCategory && matchesSearch
+  })
+}

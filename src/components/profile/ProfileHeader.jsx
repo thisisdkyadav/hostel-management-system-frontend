@@ -1,6 +1,7 @@
 import React from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
+import RoomChangeForm from "../student/RoomChangeForm"
 
 const ProfileHeader = ({ user, role, subtitle }) => {
   return (
@@ -14,6 +15,7 @@ const ProfileHeader = ({ user, role, subtitle }) => {
         <p className="text-gray-500 mt-1">{subtitle}</p>
         <div className="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
           <ChangePasswordButton email={user.email} />
+          {role === "Student" && <RoomChangeForm student={user} />}
         </div>
       </div>
     </div>
