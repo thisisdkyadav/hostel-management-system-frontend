@@ -935,6 +935,137 @@ export const hostelApi = {
   },
 }
 
+export const statsApi = {
+  getHostelStats: async () => {
+    const response = await fetch(`${baseUrl}/stats/hostel`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch hostel stats")
+    }
+
+    return response.json()
+  },
+
+  getSecurityStats: async () => {
+    const response = await fetch(`${baseUrl}/stats/security`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch security stats")
+    }
+
+    return response.json()
+  },
+
+  getMaintenanceStaffStats: async () => {
+    const response = await fetch(`${baseUrl}/stats/maintenancestaff`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch maintenance stats")
+    }
+
+    return response.json()
+  },
+
+  getVisitorStats: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/stats/visitor/${hostelId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch visitor stats")
+    }
+
+    return response.json()
+  },
+
+  getEventStats: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/stats/event/${hostelId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch event stats")
+    }
+
+    return response.json()
+  },
+
+  getLostAndFoundStats: async () => {
+    const response = await fetch(`${baseUrl}/stats/lostandfound`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch lost and found stats")
+    }
+
+    return response.json()
+  },
+
+  getRoomChangeRequestsStats: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/stats/room-change-requests/${hostelId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch room change requests stats")
+    }
+
+    const data = await response.json()
+    console.log("Room change requests stats:", data)
+
+    return data
+  },
+
+  getWardenStats: async () => {
+    const response = await fetch(`${baseUrl}/stats/wardens`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch warden stats")
+    }
+
+    return response.json()
+  },
+
+  getComplaintsStats: async () => {
+    const response = await fetch(`${baseUrl}/stats/complaints`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch complaints stats")
+    }
+
+    return response.json()
+  },
+}
+
 export default {
   auth: authApi,
   student: studentApi,

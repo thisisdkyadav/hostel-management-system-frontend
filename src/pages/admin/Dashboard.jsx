@@ -1,23 +1,228 @@
-import Card from "../../components/student/Card"
-import { FaExclamationCircle, FaUser, FaUsers, FaBuilding, FaUserTie, FaPercent, FaChartLine, FaCheckCircle, FaHourglassHalf } from "react-icons/fa"
-import { MdMeetingRoom, MdSecurity, MdOutlineWarning } from "react-icons/md"
-import { RiDoorOpenFill } from "react-icons/ri"
-import DashboardSection from "../../components/admin/dashboard/DashboardSection"
-import StatCard from "../../components/common/StatCard"
-import ProgressItem from "../../components/admin/dashboard/ProgressItem"
-import ActivityItem from "../../components/admin/dashboard/ActivityItem"
+import { useState, useEffect } from "react"
+import { FaUser, FaUsers, FaUserTie, FaUserShield, FaBuilding, FaTools, FaWrench } from "react-icons/fa"
+import { MdSecurity, MdMeetingRoom, MdPendingActions, MdDoneAll } from "react-icons/md"
+import { BiError, BiCheckCircle } from "react-icons/bi"
+import { TbBuildingWarehouse, TbBuildingCommunity } from "react-icons/tb"
+import { GiElectric, GiBroom, GiNetworkBars, GiHouseKeys } from "react-icons/gi"
+import { FiAlertTriangle, FiXCircle, FiSettings } from "react-icons/fi"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useAuth } from "../../contexts/AuthProvider"
+import { statsApi } from "../../services/apiService"
+import StatCards from "../../components/common/StatCards"
 
 const Dashboard = () => {
   const { user } = useAuth()
+  const [complaintsStats, setComplaintsStats] = useState(null)
+  const [hostelStats, setHostelStats] = useState(null)
+  const [wardenStats, setWardenStats] = useState(null)
+  const [securityStats, setSecurityStats] = useState(null)
+  const [maintenanceStats, setMaintenanceStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchAllStats = async () => {
+      try {
+        setLoading(true)
+
+        // Fetch all stats in parallel
+        const [complaintsData, hostelData, wardenData, securityData, maintenanceData] = await Promise.all([statsApi.getComplaintsStats(), statsApi.getHostelStats(), statsApi.getWardenStats(), statsApi.getSecurityStats(), statsApi.getMaintenanceStaffStats()])
+
+        setComplaintsStats(complaintsData)
+        setHostelStats(hostelData)
+        setWardenStats(wardenData)
+        setSecurityStats(securityData)
+        setMaintenanceStats(maintenanceData)
+      } catch (err) {
+        console.error("Error fetching stats:", err)
+        setError("Failed to load dashboard statistics")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAllStats()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin mb-3" />
+          <div className="text-xl text-gray-600">Loading dashboard data...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="px-10 py-6 flex-1 text-red-500 flex items-center justify-center">
+        <BiError className="mr-2 text-2xl" /> {error}
+      </div>
+    )
+  }
+
+  const complaintsStatCards = [
+    {
+      title: "Total Complaints",
+      value: complaintsStats?.total || 0,
+      subtitle: "All registered complaints",
+      icon: <FiSettings />,
+      color: "#3B82F6",
+    },
+    {
+      title: "Pending Complaints",
+      value: complaintsStats?.pending || 0,
+      subtitle: "Awaiting assignment",
+      icon: <MdPendingActions />,
+      color: "#F59E0B",
+    },
+    {
+      title: "In Process",
+      value: complaintsStats?.inProgress || 0,
+      subtitle: "Currently being addressed",
+      icon: <FiAlertTriangle />,
+      color: "#EC4899",
+    },
+    {
+      title: "Resolved Complaints",
+      value: complaintsStats?.resolved || 0,
+      subtitle: "Successfully resolved",
+      icon: <BiCheckCircle />,
+      color: "#10B981",
+    },
+  ]
+
+  const hostelStatCards = [
+    {
+      title: "Total Hostels",
+      value: hostelStats?.totalHostels || 0,
+      subtitle: "All managed hostels",
+      icon: <TbBuildingCommunity />,
+      color: "#6366F1",
+    },
+    {
+      title: "Total Rooms",
+      value: hostelStats?.totalRooms || 0,
+      subtitle: "Available in all hostels",
+      icon: <MdMeetingRoom />,
+      color: "#8B5CF6",
+    },
+    {
+      title: "Available Rooms",
+      value: hostelStats?.availableRooms || 0,
+      subtitle: "Rooms ready for allocation",
+      icon: <GiHouseKeys />,
+      color: "#22C55E",
+    },
+    {
+      title: "Occupancy Rate",
+      value: `${hostelStats?.occupancyRate || 0}%`,
+      subtitle: "Current utilization",
+      icon: <FaBuilding />,
+      color: "#3B82F6",
+    },
+  ]
+
+  const wardenStatCards = [
+    {
+      title: "Total Wardens",
+      value: wardenStats?.total || 0,
+      subtitle: "All registered wardens",
+      icon: <FaUserTie />,
+      color: "#6366F1",
+    },
+    {
+      title: "Assigned Wardens",
+      value: wardenStats?.assigned || 0,
+      subtitle: "Managing hostels",
+      icon: <FaUser />,
+      color: "#10B981",
+    },
+    {
+      title: "Unassigned Wardens",
+      value: wardenStats?.unassigned || 0,
+      subtitle: "Available for assignment",
+      icon: <FiXCircle />,
+      color: "#F97316",
+    },
+  ]
+
+  const securityStatCards = [
+    {
+      title: "Total Security Staff",
+      value: securityStats?.total || 0,
+      subtitle: "All security personnel",
+      icon: <MdSecurity />,
+      color: "#3B82F6",
+    },
+    {
+      title: "Assigned Staff",
+      value: securityStats?.assigned || 0,
+      subtitle: "Currently on duty",
+      icon: <FaUserShield />,
+      color: "#10B981",
+    },
+    {
+      title: "Unassigned Staff",
+      value: securityStats?.unassigned || 0,
+      subtitle: "Available for duty",
+      icon: <FiXCircle />,
+      color: "#F97316",
+    },
+  ]
+
+  const maintenanceStatCards = [
+    {
+      title: "Total Maintenance Staff",
+      value: maintenanceStats?.total || 0,
+      subtitle: "All maintenance personnel",
+      icon: <FaTools />,
+      color: "#3B82F6",
+    },
+    {
+      title: "Plumbing Staff",
+      value: maintenanceStats?.plumbing || 0,
+      subtitle: "Water system specialists",
+      icon: <FaWrench />,
+      color: "#0EA5E9",
+    },
+    {
+      title: "Electrical Staff",
+      value: maintenanceStats?.electrical || 0,
+      subtitle: "Electrical specialists",
+      icon: <GiElectric />,
+      color: "#F59E0B",
+    },
+    {
+      title: "Cleanliness Staff",
+      value: maintenanceStats?.cleanliness || 0,
+      subtitle: "Cleaning specialists",
+      icon: <GiBroom />,
+      color: "#10B981",
+    },
+    {
+      title: "Internet Staff",
+      value: maintenanceStats?.internet || 0,
+      subtitle: "Network specialists",
+      icon: <GiNetworkBars />,
+      color: "#8B5CF6",
+    },
+    {
+      title: "Civil Staff",
+      value: maintenanceStats?.civil || 0,
+      subtitle: "Building maintenance",
+      icon: <TbBuildingWarehouse />,
+      color: "#6B7280",
+    },
+  ]
+
   return (
     <div className="px-10 py-6 flex-1">
-      <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
+      <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px] mb-6">
         <h1 className="text-2xl px-3 font-bold">Admin Dashboard</h1>
         <div className="flex items-center space-x-6">
-          <button className="bg-white text-red-600 px-5 py-2 shadow-[0px_1px_20px_rgba(0,0,0,0.06)] rounded-[12px] flex items-center">
-            <MdOutlineWarning className="mr-2" /> 3 Urgent Alerts
-          </button>
           <button className="flex items-center space-x-2 text-black text-base px-5 py-2 rounded-[12px] hover:text-gray-600">
             <FaUser className="w-5 h-5" />
             <span>{user?.name}</span>
@@ -25,80 +230,41 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="flex gap-6 items-start">
-        <div className="px-6 py-2 w-1/2">
-          {/* Key Metrics Cards */}
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <Card title="Vacant Rooms" value="68" icon={<MdMeetingRoom />} />
-            <Card title="Pending Complaints" value="27" icon={<FaExclamationCircle />} />
-            <Card title="Active Wardens" value="16" icon={<FaUserTie />} />
-            <Card title="Maintenance Issues" value="12" icon={<FaBuilding />} />
-          </div>
+      <div className="space-y-8">
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <TbBuildingCommunity className="mr-2" /> Hostel Statistics
+          </h2>
+          <StatCards stats={hostelStatCards} columns={4} />
+        </section>
 
-          {/* Complaint Resolution Tracker */}
-          <DashboardSection icon={<FaChartLine />} title="Complaint Resolution" rightContent={<span className="text-sm text-gray-500">Last 30 days</span>} className="mt-6">
-            <div className="grid grid-cols-3 gap-3">
-              <StatCard icon={<FaCheckCircle />} iconColor="text-green-600" bgColor="bg-green-50" title="Resolved" value="43" />
-              <StatCard icon={<FaHourglassHalf />} iconColor="text-yellow-600" bgColor="bg-yellow-50" title="In Progress" value="18" />
-              <StatCard bgColor="bg-blue-50" iconColor="text-blue-600" title="Resolution Rate" value="92%" />
-            </div>
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <FiSettings className="mr-2" /> Complaints Overview
+          </h2>
+          <StatCards stats={complaintsStatCards} columns={4} />
+        </section>
 
-            <div className="mt-4 pt-4 border-t">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Avg. Resolution Time:</span>
-                <span className="font-semibold">1.8 days</span>
-              </div>
-            </div>
-          </DashboardSection>
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <FaUserTie className="mr-2" /> Warden Statistics
+          </h2>
+          <StatCards stats={wardenStatCards} columns={3} />
+        </section>
 
-          {/* Upcoming Events */}
-          <DashboardSection title="Upcoming Events" rightContent={<button className="text-xs text-blue-600">View All</button>} className="mt-6">
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <div className="bg-[#E4F1FF] text-[#1360AB] rounded-lg p-2 mr-3">
-                  <span className="block text-center font-bold">23</span>
-                  <span className="text-xs">MAR</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Warden Meeting</h4>
-                  <p className="text-xs text-gray-500">10:00 AM - Conference Room</p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <div className="bg-[#E4F1FF] text-[#1360AB] rounded-lg p-2 mr-3">
-                  <span className="block text-center font-bold">27</span>
-                  <span className="text-xs">MAR</span>
-                </div>
-                <div>
-                  <h4 className="font-medium">Hostel Inspection</h4>
-                  <p className="text-xs text-gray-500">9:30 AM - Block C</p>
-                </div>
-              </li>
-            </ul>
-          </DashboardSection>
-        </div>
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <MdSecurity className="mr-2" /> Security Staff
+          </h2>
+          <StatCards stats={securityStatCards} columns={3} />
+        </section>
 
-        <div className="w-1/2 py-2 flex flex-col gap-6">
-          {/* Maintenance Status */}
-          <DashboardSection icon={<FaBuilding />} title="Maintenance Status">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <ProgressItem title="Plumbing" pending="4" color="blue" percentage={70} />
-              <ProgressItem title="Electrical" pending="2" color="green" percentage={85} />
-              <ProgressItem title="Furniture" pending="6" color="yellow" percentage={45} />
-              <ProgressItem title="Cleaning" pending="0" color="purple" percentage={100} />
-            </div>
-          </DashboardSection>
-
-          {/* Recent Student Activity */}
-          <DashboardSection icon={<RiDoorOpenFill />} title="Recent Student Activity" rightContent={<span className="text-xs text-gray-500">Last 24 hours</span>}>
-            <ul className="space-y-2">
-              <ActivityItem icon={<FaUser className="text-xs" />} iconBgColor="bg-green-100" iconColor="text-green-600" name="Rahul Singh" status="Check-in" statusColor="text-green-600" additionalInfo="Room 302" time="2 hours ago" />
-              <ActivityItem icon={<FaUser className="text-xs" />} iconBgColor="bg-red-100" iconColor="text-red-600" name="Priya Sharma" status="Check-out" statusColor="text-red-600" additionalInfo="Room 115" time="5 hours ago" />
-              <ActivityItem icon={<MdSecurity />} iconBgColor="bg-yellow-100" iconColor="text-yellow-600" name="Late Entry" status="4 students" statusColor="text-gray-600" additionalInfo="Block C" time="Yesterday" />
-            </ul>
-            <button className="w-full mt-3 text-blue-600 text-sm">View All Activity</button>
-          </DashboardSection>
-        </div>
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <FaTools className="mr-2" /> Maintenance Staff
+          </h2>
+          <StatCards stats={maintenanceStatCards} columns={3} />
+        </section>
       </div>
     </div>
   )
