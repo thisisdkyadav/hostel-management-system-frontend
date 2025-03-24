@@ -453,6 +453,19 @@ export const adminApi = {
     return response.json()
   },
 
+  updateHostel: async (hostelId, hostelData) => {
+    const response = await fetch(`${baseUrl}/admin/hostel/${hostelId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(hostelData),
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update hostel")
+    }
+    return response.json()
+  },
+
   getHostelList: async () => {
     const response = await fetch(`${baseUrl}/admin/hostel/list`, {
       method: "GET",

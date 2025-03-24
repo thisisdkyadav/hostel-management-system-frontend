@@ -32,11 +32,10 @@ const Sidebar = ({ navItems }) => {
   const bottomNavItems = navItems.filter((item) => item.section === "bottom")
 
   const handleNavigation = (item) => {
-    setActive(item.name)
-
     if (item.action) {
       item.action()
     } else if (item.path) {
+      setActive(item.name)
       navigate(item.path)
     }
 

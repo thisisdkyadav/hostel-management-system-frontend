@@ -188,9 +188,13 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             </div>
 
             <div className="mt-6 flex justify-end space-x-4 pt-4 border-t border-gray-100">
+              {/* mailto button */}
               <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
                 Close
               </button>
+              <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                Email Student
+              </a>
               {!isImport && (
                 <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                   Edit Student

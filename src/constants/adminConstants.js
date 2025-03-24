@@ -20,8 +20,8 @@ export const HOSTEL_FILTER_TABS = [
 
 export const SECURITY_FILTER_TABS = [
   { label: "All Security", value: "all", color: "[#1360AB]" },
-  { label: "Assigned", value: "Assigned", color: "[#1360AB]" },
-  { label: "Inactive", value: "Inactive", color: "[#1360AB]" },
+  { label: "Assigned", value: "assigned", color: "[#1360AB]" },
+  { label: "Unassigned", value: "unassigned", color: "[#1360AB]" },
 ]
 
 export const MAINTENANCE_FILTER_TABS = [
