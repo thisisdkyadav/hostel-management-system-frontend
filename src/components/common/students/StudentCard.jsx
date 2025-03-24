@@ -1,6 +1,6 @@
 import React from "react"
 import { IoMdSchool } from "react-icons/io"
-import { FaBuilding, FaSearch, FaEye } from "react-icons/fa"
+import { FaBuilding, FaEnvelope, FaIdCard, FaEye } from "react-icons/fa"
 
 const StudentCard = ({ student, onClick }) => {
   return (
@@ -16,42 +16,43 @@ const StudentCard = ({ student, onClick }) => {
           )}
           <div className="ml-3">
             <h3 className="font-bold text-gray-800 text-base md:text-lg">{student.name}</h3>
-            <p className="text-xs text-gray-500">{student.id}</p>
+            <p className="text-xs text-gray-500">{student.email}</p>
           </div>
         </div>
-        <span className={`px-2 py-1 text-xs font-medium rounded-full ${student.status === "Active" ? "bg-green-100 text-green-800" : student.status === "Inactive" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`}>{student.status}</span>
       </div>
 
       <div className="mt-4 space-y-2.5">
         <div className="flex items-center text-sm">
           <div className="w-6 flex justify-center">
-            <IoMdSchool className="text-[#1360AB] text-opacity-80" />
+            <FaIdCard className="text-[#1360AB] text-opacity-80" />
           </div>
-          <div className="ml-2 flex justify-between w-full">
-            <span className="text-gray-700">{student.department}</span>
-            <span className="text-gray-600 text-xs bg-gray-100 px-2 py-0.5 rounded">{student.year}</span>
-          </div>
+          <span className="ml-2 text-gray-700 font-medium">{student.rollNumber}</span>
         </div>
 
         <div className="flex items-center text-sm">
           <div className="w-6 flex justify-center">
             <FaBuilding className="text-[#1360AB] text-opacity-80" />
           </div>
-          <span className="ml-2 text-gray-700 truncate">
-            {student.hostel}, Room {student.room}
-          </span>
+          <div className="ml-2 flex justify-between w-full">
+            <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-blue-50 text-[#1360AB]">{student.hostel || "N/A"}</span>
+            <span className="text-gray-600 font-medium">{student.displayRoom || `Room not allocated`}</span>
+          </div>
         </div>
 
-        <div className="flex items-center text-sm">
-          <div className="w-6 flex justify-center">
-            <FaSearch className="text-[#1360AB] text-opacity-80" />
+        {student.department && (
+          <div className="flex items-center text-sm">
+            <div className="w-6 flex justify-center">
+              <IoMdSchool className="text-[#1360AB] text-opacity-80" />
+            </div>
+            <div className="ml-2 flex justify-between w-full">
+              <span className="text-gray-700">{student.department}</span>
+              {student.year && <span className="text-gray-600 text-xs bg-gray-100 px-2 py-0.5 rounded">{student.year}</span>}
+            </div>
           </div>
-          <span className="ml-2 text-gray-700">{student.phone || "No phone"}</span>
-        </div>
+        )}
       </div>
 
-      <div className="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
-        <span className="text-xs text-gray-500">Admitted: {new Date(student.admissionDate).toLocaleDateString()}</span>
+      <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end items-center">
         <button
           className="text-[#1360AB] hover:bg-blue-50 p-2 rounded-full transition-colors"
           onClick={(e) => {

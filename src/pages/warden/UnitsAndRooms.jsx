@@ -14,7 +14,6 @@ import SearchBar from "../../components/common/SearchBar"
 import { useWarden } from "../../contexts/WardenProvider"
 
 const UnitsAndRooms = () => {
-  const { hostelList = [] } = useGlobal()
   const { profile } = useWarden()
   // View state
   const [viewMode, setViewMode] = useState("table")
@@ -140,7 +139,7 @@ const UnitsAndRooms = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">{currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.name || "Selected Unit"}`}</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">{currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || "Selected Unit"}`}</h1>
         <div className="flex flex-wrap gap-2">
           {currentView === "rooms" && (
             <button onClick={goBackToUnits} className="flex items-center px-3 py-2 text-gray-700 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">

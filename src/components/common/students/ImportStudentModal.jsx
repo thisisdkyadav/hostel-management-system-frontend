@@ -14,6 +14,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
   const [error, setError] = useState("")
   const [step, setStep] = useState(1) // 1: Upload, 2: Preview
   const fileInputRef = useRef(null)
@@ -163,13 +164,19 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
     console.log("Importing data:", parsedData)
 
-    const isSuccess = await onImport(parsedData)
-    if (isSuccess) {
-      onClose()
-      resetForm()
+    // Set importing state to true
+    setIsImporting(true)
+
+    try {
+      const isSuccess = await onImport(parsedData)
+      if (isSuccess) {
+        onClose()
+        resetForm()
+      }
+    } finally {
+      setIsImporting(false) // Reset importing state regardless of outcome
     }
   }
-
   const resetForm = () => {
     setCsvFile(null)
     setParsedData([])
@@ -321,8 +328,17 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         )}
 
         {step === 2 && (
-          <button onClick={handleImport} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading}>
-            <FaCheck className="mr-2" /> Confirm Import
+          <button onClick={handleImport} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading || isImporting}>
+            {isImporting ? (
+              <>
+                <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Importing Students...
+              </>
+            ) : (
+              <>
+                <FaCheck className="mr-2" /> Confirm Import
+              </>
+            )}
           </button>
         )}
       </div>
