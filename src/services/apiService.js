@@ -5,7 +5,9 @@ const fetchOptions = {
   },
 }
 
+// const baseUrl = "https://hostel-management-system-backend-and4hrevaag3f5gs.centralindia-01.azurewebsites.net/api"
 const baseUrl = "http://localhost:5000/api"
+// const baseUrl = "https://9m64jhxk-5000.inc1.devtunnels.ms/api"
 
 export const authApi = {
   verify: async () => {
@@ -167,6 +169,21 @@ export const studentApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update student profile")
+    }
+
+    return response.json()
+  },
+
+  updateStudents: async (students) => {
+    const response = await fetch(`${baseUrl}/student/profiles`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(students),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update students")
     }
 
     return response.json()
