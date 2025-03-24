@@ -29,6 +29,15 @@ const Hostels = () => {
     }
   }
 
+  const handleUpdateHostel = async (updatedHostel) => {
+    try {
+      await adminApi.updateHostel(updatedHostel.id, updatedHostel)
+      fetchHostels()
+    } catch (error) {
+      console.error("Error updating hostel:", error)
+    }
+  }
+
   useEffect(() => {
     fetchHostels()
   }, [])
@@ -54,7 +63,7 @@ const Hostels = () => {
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredHostels.map((hostel) => (
-            <HostelCard key={hostel.id} hostel={hostel} />
+            <HostelCard key={hostel.id} hostel={hostel} onUpdate={handleUpdateHostel} />
           ))}
         </div>
 

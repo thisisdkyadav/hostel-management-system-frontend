@@ -4,6 +4,8 @@ import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
+  console.log(selectedComplaint)
+
   if (!selectedComplaint) return null
 
   return (
@@ -64,21 +66,6 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
           </h4>
           <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{selectedComplaint.description}</div>
         </div>
-
-        {selectedComplaint.images && selectedComplaint.images.length > 0 && (
-          <div>
-            <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
-              <FaInfoCircle className="mr-2" /> Images
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {selectedComplaint.images.map((image, index) => (
-                <div key={index} className="relative h-40 rounded-lg overflow-hidden">
-                  <img src={image} alt={`Complaint ${index + 1}`} className="w-full h-full object-cover" />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div>
           <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">

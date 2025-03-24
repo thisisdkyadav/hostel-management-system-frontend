@@ -10,9 +10,9 @@ import { useAuth } from "../contexts/AuthProvider"
 import { eventsApi } from "../services/apiService"
 
 const EVENT_FILTER_TABS = [
-  { id: "all", label: "All Events" },
-  { id: "upcoming", label: "Upcoming" },
-  { id: "past", label: "Past" },
+  { label: "All Events", value: "all", color: "[#1360AB]" },
+  { label: "Upcoming", value: "upcoming", color: "[#1360AB]" },
+  { label: "Past", value: "past", color: "[#1360AB]" },
 ]
 
 const filterEvents = (events, filter, searchTerm) => {
@@ -37,7 +37,7 @@ const filterEvents = (events, filter, searchTerm) => {
 const Events = () => {
   const { user } = useAuth()
 
-  const [activeTab, setActiveTab] = useState("all")
+  const [activeTab, setActiveTab] = useState("upcoming")
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
   const [events, setEvents] = useState([])
