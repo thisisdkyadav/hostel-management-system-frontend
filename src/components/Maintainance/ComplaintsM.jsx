@@ -234,6 +234,12 @@ const ComplaintsM = () => {
       {error && (
         <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 no-print">
           {error}
+          <button 
+            className="ml-4 underline"
+            onClick={fetchComplaints}
+          >
+            Retry
+          </button>
         </div>
       )}
 
@@ -245,7 +251,7 @@ const ComplaintsM = () => {
         </div>
       ) : (
         <>
-          {filteredComplaints.length > 0 ? (
+          {filteredComplaints && filteredComplaints.length > 0 ? (
             <div className="mt-4 space-y-4">
               {filteredComplaints.map(complaint => (
                 <ComplaintItemM
@@ -260,15 +266,32 @@ const ComplaintsM = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-10 no-print">
+            <div className="text-center py-10 bg-gray-50 rounded-lg no-print">
               <FaClipboardList className="mx-auto text-4xl text-gray-300" />
-              <p className="mt-2 text-gray-500">No complaints match your filters</p>
-              {(searchTerm || filterStatus !== "All") && (
+              <p className="mt-2 text-gray-500 font-medium">
+                {complaints.length === 0 ? "No complaints available" : "No complaints match your search"}
+              </p>
+              <p className="text-gray-400 text-sm mt-1">
+                {complaints.length === 0 
+                  ? "There are no complaints in the system yet" 
+                  : searchTerm 
+                    ? `No results found for "${searchTerm}"` 
+                    : "Try adjusting your filters"}
+              </p>
+              {complaints.length > 0 && (searchTerm || filterStatus !== "All") && (
                 <button 
-                  className="mt-2 text-blue-500 hover:underline"
+                  className="mt-4 bg-blue-50 text-blue-500 hover:bg-blue-100 px-4 py-2 rounded-md text-sm font-medium transition-colors"
                   onClick={clearFilters}
                 >
                   Clear filters
+                </button>
+              )}
+              {complaints.length === 0 && !error && (
+                <button 
+                  className="mt-4 bg-blue-50 text-blue-500 hover:bg-blue-100 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  onClick={fetchComplaints}
+                >
+                  Refresh
                 </button>
               )}
             </div>
