@@ -188,6 +188,21 @@ export const studentApi = {
 
     return response.json()
   },
+
+  getStudentsByIds: async (userIds) => {
+    const response = await fetch(`${baseUrl}/student/profiles/ids`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ userIds }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch students by IDs")
+    }
+
+    return response.json()
+  },
 }
 
 export const wardenApi = {
