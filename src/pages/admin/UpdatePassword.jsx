@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { HiKey } from "react-icons/hi"
 import UpdatePasswordForm from "../../components/admin/password/UpdatePasswordForm"
-import SuccessModal from "../../components/admin/password/SuccessModal"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/apiService"
+import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 
 const UpdatePassword = () => {
   const { user } = useAuth()
@@ -98,7 +98,17 @@ const UpdatePassword = () => {
         </div>
       </div>
 
-      {showSuccessModal && <SuccessModal show={showSuccessModal} email={updatedEmail} onClose={() => setShowSuccessModal(false)} />}
+      {showSuccessModal && (
+        <CommonSuccessModal
+          show={showSuccessModal}
+          onClose={() => setShowSuccessModal(false)}
+          title="Password Updated Successfully"
+          message="The password has been successfully updated. The user will need to use this new password for their next login."
+          infoText={updatedEmail}
+          infoIcon={HiKey}
+          buttonText="Done"
+        />
+      )}
     </div>
   )
 }

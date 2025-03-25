@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaComments } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -29,7 +29,7 @@ const WardenLayout = () => {
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/warden/events" },
     { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/warden/room-change-requests" },
     { name: "Visitors", icon: FaUserTie, section: "main", path: "/warden/visitors" },
-    { name: "Complaints", icon: FaComments, section: "main", path: "/warden/complaints" },
+    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/warden/complaints" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/warden/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

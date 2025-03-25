@@ -39,10 +39,10 @@ const HostelCard = ({ hostel, onUpdate }) => {
 
         <div className="mt-4 flex flex-col sm:flex-row justify-between">
           <div className="space-y-2">
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <FaUserTie className="text-gray-500 mr-2 text-sm" />
               <span className="text-xs md:text-sm truncate max-w-[180px]">{hostel.wardens && hostel.wardens.length > 0 ? hostel.wardens[0] : "No warden assigned"}</span>
-            </div>
+            </div> */}
             <div className="flex items-center">
               <MdMeetingRoom className="text-gray-500 mr-2 text-sm" />
               <span className="text-xs md:text-sm">
@@ -53,7 +53,6 @@ const HostelCard = ({ hostel, onUpdate }) => {
               <FaLocationDot className="text-gray-500 mr-2 text-sm" />
               <span className="text-xs md:text-sm">{hostel.location}</span>
             </div>
-            {/* maintenance issues count */}
             <div className="flex items-center">
               <FaTools className="text-gray-500 mr-2 text-sm" />
               <span className="text-xs md:text-sm">{hostel.maintenanceIssues} maintenance issues</span>

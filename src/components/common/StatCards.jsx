@@ -1,6 +1,6 @@
 import React from "react"
 
-const StatCard = ({ title, value, subtitle, icon, color = "#1360AB" }) => {
+export const StatCard = ({ title, value, subtitle, icon, color = "#1360AB" }) => {
   return (
     <div className="bg-white rounded-xl hover:rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border-l-4 h-full" style={{ borderLeftColor: color }}>
       <div className="flex justify-between items-start">
@@ -21,8 +21,14 @@ const StatCard = ({ title, value, subtitle, icon, color = "#1360AB" }) => {
 
 const StatCards = ({ stats, columns = 4 }) => {
   const getGridClass = () => {
-    let gridClass = "grid-cols-1 sm:grid-cols-2"
-    if (columns === 3) {
+    // Show 2 cards per row by default, 1 card only on tiny screens (<480px)
+    let gridClass = "grid-cols-2 max-[375px]:grid-cols-1"
+
+    if (columns === 1) {
+      gridClass = "grid-cols-1"
+    } else if (columns === 2) {
+      gridClass = "grid-cols-2"
+    } else if (columns === 3) {
       gridClass += " md:grid-cols-3"
     } else if (columns >= 4) {
       gridClass += " lg:grid-cols-4"

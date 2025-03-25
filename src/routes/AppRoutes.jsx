@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
 //--------------------------------below is student---------------------
-import SDashboard from "../pages/student/SDashboard.jsx"
+import StudentDashboard from "../pages/student/Dashboard.jsx"
 import StudentProfile from "../pages/student/Profile"
 import Settings from "../pages/student/Settings.jsx"
 // -------------------------student ends here ----------------------------------
@@ -62,8 +62,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        {/* <Route index element={<SDashboard />} /> */}
-        <Route index element={<Profile />} />
+        <Route index element={<StudentDashboard />} />
+        {/* <Route index element={<Profile />} /> */}
         <Route path="complaints" element={<Complaint />} />
         <Route path="profile" element={<Profile />} />
         <Route path="lost-and-found" element={<LostAndFound />} />

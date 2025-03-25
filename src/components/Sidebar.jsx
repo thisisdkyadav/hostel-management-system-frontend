@@ -101,15 +101,7 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div
-        className={`
-        fixed md:relative z-30 h-screen transition-all duration-300 ease-in-out
-        bg-white shadow-lg border-r border-gray-100
-        ${isOpen ? "left-0" : "-left-full md:left-0"}
-        ${isOpen ? "w-64" : "w-0 md:w-20"}
-        ${isMobile ? "mt-16" : ""}
-      `}
-      >
+      <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-white shadow-lg border-r border-gray-100 ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-64" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
         <div className="flex flex-col h-full">
           <div className={`p-4 flex justify-center items-center border-b border-gray-100 ${isOpen ? "h-20" : "h-16"} ${isMobile ? "hidden" : ""} cursor-pointer`} onClick={() => navigate("/")}>
             {isOpen ? <img src={IITI_Logo} alt="IIT Indore Logo" className="h-14 w-auto object-contain" /> : <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-xs transition-all hover:bg-[#0d4d8c]">IITI</div>}

@@ -40,16 +40,9 @@ const WardenStats = ({ wardens }) => {
       icon: <FaBuilding className="text-2xl" />,
       color: "#f97316", // orange-500
     },
-    {
-      title: "Avg. Experience",
-      value: `${averageExperience} yrs`,
-      subtitle: "Of service",
-      icon: <BsCalendarCheck className="text-2xl" />,
-      color: "#1360AB",
-    },
   ]
 
-  return <StatCards stats={statsData} />
+  return <StatCards stats={statsData} columns={3} />
 }
 
 export default WardenStats

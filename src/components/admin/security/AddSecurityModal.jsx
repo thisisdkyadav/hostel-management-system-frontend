@@ -104,7 +104,7 @@ const AddSecurityModal = ({ show, onClose, onSuccess }) => {
             <div className="absolute left-3 top-3 text-gray-400">
               <FiHome />
             </div>
-            <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] appearance-none bg-white">
+            <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] appearance-none bg-white" required>
               <option value="">Select a hostel (optional)</option>
               {hostelList.map((hostel) => (
                 <option key={hostel._id} value={hostel._id}>

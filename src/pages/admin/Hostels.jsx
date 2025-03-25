@@ -70,7 +70,7 @@ const Hostels = () => {
         {filteredHostels.length === 0 && <NoResults />}
       </div>
 
-      <AddHostelModal show={showAddModal} onClose={() => setShowAddModal(false)} />
+      <AddHostelModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={fetchHostels} />
     </>
   )
 }
