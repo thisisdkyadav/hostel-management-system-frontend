@@ -1,4 +1,4 @@
-import Card from "../../components/student/Card"
+// import Card from "../../components/student/Card"
 import Notification from "../../components/student/Notification"
 import Events from "../../components/student/Events"
 import NoticeBoard from "../../components/student/Noticeboard"
@@ -43,8 +43,8 @@ const Dashboard = () => {
           </div>
 
           <div className="mt-13 flex space-x-4">
-            <Card title="Pending Complaints" value="5" icon={<FaExclamationCircle />} />
-            <Card title="Lost & Found" value="0" icon={<CgSearchFound />} />
+            {/* <Card title="Pending Complaints" value="5" icon={<FaExclamationCircle />} />
+            <Card title="Lost & Found" value="0" icon={<CgSearchFound />} /> */}
           </div>
         </div>
 

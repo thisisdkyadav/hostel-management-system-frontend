@@ -43,11 +43,16 @@ import RoomChangeRequests from "../pages/warden/RoomChangeRequests.jsx"
 import UnitsAndRooms from "../pages/warden/UnitsAndRooms.jsx"
 import Profile from "../pages/Profile.jsx"
 import MaintenanceStaff from "../pages/admin/MaintenanceStaff.jsx"
-import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
+import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
 
 const AppRoutes = () => {
+  const { user } = useAuth()
+
   return (
     <Routes>
+      <Route path="/" element={<SDashboard />} />
+      <Route path="/login" element={<LoginPage />} />
+
       <Route
         path="/student"
         element={
@@ -64,9 +69,6 @@ const AppRoutes = () => {
         <Route path="events" element={<Events />} />
         <Route path="settings" element={<Settings />} />
       </Route>
-
-      <Route path="/" element={<SDashboard />} />
-      <Route path="/login" element={<LoginPage />} />
 
       {/* Routes for Maintenance related pages*/}
       <Route
