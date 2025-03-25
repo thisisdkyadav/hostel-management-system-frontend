@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react"
+import { useNavigate } from "react-router-dom" // Add this import
 import IITI_Logo from "../assets/logos/IITILogo.png"
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) => {
+  const navigate = useNavigate() // Add this line
   const { user } = useAuth()
 
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -28,7 +30,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
       </button>
 
-      <div className="flex items-center">
+      <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
         <img src={IITI_Logo} alt="IIT Indore Logo" className="h-10 w-auto object-contain" />
       </div>
 
