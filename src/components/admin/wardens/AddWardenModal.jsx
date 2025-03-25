@@ -3,7 +3,7 @@ import { FiUser, FiMail, FiPhone, FiLock, FiCalendar } from "react-icons/fi"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 
-const AddWardenModal = ({ show, onClose }) => {
+const AddWardenModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,7 +27,7 @@ const AddWardenModal = ({ show, onClose }) => {
         alert("Failed to add warden. Please try again.")
         return
       }
-
+      onAdd()
       alert("Warden added successfully!")
 
       setFormData({

@@ -8,7 +8,11 @@ import { FiAlertTriangle, FiXCircle, FiSettings } from "react-icons/fi"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useAuth } from "../../contexts/AuthProvider"
 import { statsApi } from "../../services/apiService"
-import StatCards from "../../components/common/StatCards"
+import StatCards, { StatCard } from "../../components/common/StatCards"
+import ComplaintsChart from "../../components/charts/ComplaintsChart"
+import HostelOccupancyChart from "../../components/charts/HostelOccupancyChart"
+import StaffDistributionChart from "../../components/charts/StaffDistributionChart"
+import MaintenanceBreakdownChart from "../../components/charts/MaintenanceBreakdownChart"
 
 const Dashboard = () => {
   const { user } = useAuth()
@@ -25,7 +29,6 @@ const Dashboard = () => {
       try {
         setLoading(true)
 
-        // Fetch all stats in parallel
         const [complaintsData, hostelData, wardenData, securityData, maintenanceData] = await Promise.all([statsApi.getComplaintsStats(), statsApi.getHostelStats(), statsApi.getWardenStats(), statsApi.getSecurityStats(), statsApi.getMaintenanceStaffStats()])
 
         setComplaintsStats(complaintsData)
@@ -235,6 +238,13 @@ const Dashboard = () => {
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
             <TbBuildingCommunity className="mr-2" /> Hostel Statistics
           </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <HostelOccupancyChart hostelStats={hostelStats} />
+            <div className="grid grid-cols-2 gap-3 h-full">
+              <StatCard title="Total Hostels" value={hostelStats?.totalHostels || 0} subtitle="All managed hostels" icon={<TbBuildingCommunity />} color="#6366F1" />
+              <StatCard title="Total Rooms" value={hostelStats?.totalRooms || 0} subtitle="Available in all hostels" icon={<MdMeetingRoom />} color="#8B5CF6" />
+            </div>
+          </div>
           <StatCards stats={hostelStatCards} columns={4} />
         </section>
 
@@ -242,7 +252,21 @@ const Dashboard = () => {
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
             <FiSettings className="mr-2" /> Complaints Overview
           </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <ComplaintsChart complaintsStats={complaintsStats} />
+            <StatCard title="Total Complaints" value={complaintsStats?.total || 0} subtitle="All registered complaints" icon={<FiSettings />} color="#3B82F6" className="h-full" />
+          </div>
           <StatCards stats={complaintsStatCards} columns={4} />
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <FaUsers className="mr-2" /> Staff Overview
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <StaffDistributionChart wardenStats={wardenStats} securityStats={securityStats} maintenanceStats={maintenanceStats} />
+            <MaintenanceBreakdownChart maintenanceStats={maintenanceStats} />
+          </div>
         </section>
 
         <section>

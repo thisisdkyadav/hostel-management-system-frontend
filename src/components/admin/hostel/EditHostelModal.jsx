@@ -114,7 +114,7 @@ const EditHostelModal = ({ hostel, onClose, onSave }) => {
               <option value="">Select Gender</option>
               <option value="Boys">Boys</option>
               <option value="Girls">Girls</option>
-              <option value="Co-Ed">Co-Ed</option>
+              <option value="Co-ed">Co-ed</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
               <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">

@@ -21,7 +21,7 @@ const StudentLayout = () => {
   }
 
   const navItems = [
-    // { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/student" },
+    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/student" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/student/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },

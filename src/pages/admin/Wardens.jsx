@@ -60,7 +60,7 @@ const Wardens = () => {
 
       {filteredWardens.length === 0 && <NoResults icon={<FaUserTie className="text-gray-300 text-3xl" />} message="No wardens found" suggestion="Try changing your search or filter criteria" />}
 
-      <AddWardenModal show={showAddModal} onClose={() => setShowAddModal(false)} />
+      <AddWardenModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={fetchWardens} />
     </div>
   )
 }

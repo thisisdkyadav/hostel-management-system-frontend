@@ -205,6 +205,20 @@ export const studentApi = {
 
     return response.json()
   },
+
+  getStudentDashboard: async () => {
+    const response = await fetch(`${baseUrl}/student/dashboard`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student dashboard data")
+    }
+
+    return response.json()
+  },
 }
 
 export const wardenApi = {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../services/apiService"
-import StatCards from "../../components/common/StatCards"
+import StatCards, { StatCard } from "../../components/common/StatCards"
 import { BiBriefcase, BiCalendarEvent, BiError, BiCheck } from "react-icons/bi"
 import { FaUser, FaUsers, FaUserCheck, FaUserClock } from "react-icons/fa"
 import { MdEventAvailable, MdEventBusy, MdChangeCircle } from "react-icons/md"
@@ -9,6 +9,10 @@ import { FiSearch, FiCheckCircle, FiXCircle, FiAlertTriangle } from "react-icons
 import { AiOutlineClockCircle, AiOutlineHistory } from "react-icons/ai"
 import { TbBuildingWarehouse, TbBuildingCommunity } from "react-icons/tb"
 import { useWarden } from "../../contexts/WardenProvider"
+import RoomChangeRequestsChart from "../../components/charts/RoomChangeRequestsChart"
+import VisitorStatsChart from "../../components/charts/VisitorStatsChart"
+import EventsChart from "../../components/charts/EventsChart"
+import LostFoundChart from "../../components/charts/LostFoundChart"
 
 const DashboardWarden = () => {
   const { profile } = useWarden()
@@ -184,30 +188,56 @@ const DashboardWarden = () => {
       <div className="space-y-8">
         <section>
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
+            <FiSearch className="mr-2" /> Lost & Found Items
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <LostFoundChart lostFoundStats={lostFoundStats} />
+            <div className="grid grid-cols-1 gap-3 h-full">
+              <StatCard title="Active Items" value={lostFoundStats?.active || 0} subtitle="Items waiting to be claimed" icon={<AiOutlineClockCircle />} color="#F59E0B" />
+            </div>
+          </div>
+          <StatCards stats={lostFoundStatCards.slice(1, 3)} columns={2} />
+        </section>
+        <section>
+          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
             <MdChangeCircle className="mr-2" /> Room Change Requests
           </h2>
-          <StatCards stats={roomChangeStatCards} columns={4} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <RoomChangeRequestsChart roomChangeStats={roomChangeStats} />
+            <div className="grid grid-cols-1 gap-3 h-full">
+              <StatCard title="Pending Requests" value={roomChangeStats?.pending || 0} subtitle="Awaiting decision" icon={<FiAlertTriangle />} color="#F97316" />
+              <StatCard title="Approved Requests" value={roomChangeStats?.approved || 0} subtitle="Successfully approved" icon={<FiCheckCircle />} color="#10B981" />
+            </div>
+          </div>
+          <StatCards stats={[roomChangeStatCards[0], roomChangeStatCards[roomChangeStatCards.length - 1]]} columns={2} />
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
             <FaUsers className="mr-2" /> Visitor Statistics
           </h2>
-          <StatCards stats={visitorStatCards} columns={4} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <VisitorStatsChart visitorStats={visitorStats} />
+            <div className="grid grid-cols-1 gap-3 h-full">
+              <StatCard title="Checked In" value={visitorStats?.checkedIn || 0} subtitle="Currently in hostel" icon={<GiEntryDoor />} color="#22C55E" />
+              <StatCard title="Checked Out" value={visitorStats?.checkedOut || 0} subtitle="Completed visits" icon={<GiExitDoor />} color="#6B7280" />
+            </div>
+          </div>
+          <StatCards stats={[visitorStatCards[0], visitorStatCards[visitorStatCards.length - 1]]} columns={2} />
         </section>
 
         <section>
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
             <BiCalendarEvent className="mr-2" /> Events Overview
           </h2>
-          <StatCards stats={eventStatCards} columns={3} />
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-            <FiSearch className="mr-2" /> Lost & Found Items
-          </h2>
-          <StatCards stats={lostFoundStatCards} columns={3} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+            <EventsChart eventStats={eventStats} />
+            <div className="grid grid-cols-1 gap-3 h-full">
+              <StatCard title="Upcoming Events" value={eventStats?.upcoming || 0} subtitle="Events in the future" icon={<MdEventAvailable />} color="#4F46E5" />
+              <StatCard title="Past Events" value={eventStats?.past || 0} subtitle="Completed events" icon={<MdEventBusy />} color="#8B5CF6" />
+            </div>
+          </div>
+          <StatCards stats={eventStatCards.slice(0, 1)} columns={1} />
         </section>
       </div>
     </div>
