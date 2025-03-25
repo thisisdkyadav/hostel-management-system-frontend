@@ -1,151 +1,166 @@
-import React from 'react';
-import { useState } from "react";
-import { Link } from 'react-router-dom';
-import IITI_Logo from "../assets/logos/IITILogo.png";
+import React from "react"
+import { useState } from "react"
+import { Link } from "react-router-dom"
+import IITI_Logo from "../assets/logos/IITILogo.png"
 
 import IITI6 from "../assets/hostel6.jpg"
 const HomePage = () => {
-  
   const hostels = [
-    { name: 'Abhinandan Bhawan', type: 'Boys Hostel', image: '/hostel1.jpg' },
-    { name: 'Droupadi Bhawan', type: 'Girls Hostel', image: '/hostel2.jpg' },
-    { name: 'Gautam Bhawan', type: 'Boys Hostel', image: '/hostel3.jpg' },
-    { name: 'Maltreyi Bhawan', type: 'Girls Hostel', image: '/hostel4.jpg' },
-  ];
+    { name: "Abhinandan Bhawan", type: "Boys Hostel", image: "/hostel1.jpg" },
+    { name: "Droupadi Bhawan", type: "Girls Hostel", image: "/hostel2.jpg" },
+    { name: "Gautam Bhawan", type: "Boys Hostel", image: "/hostel3.jpg" },
+    { name: "Maltreyi Bhawan", type: "Girls Hostel", image: "/hostel4.jpg" },
+  ]
 
   const quickLinks = [
-    { name: 'Academic Calendar', path: '/academic-calendar' },
-    { name: 'Announcements', path: '/announcements' },
-    { name: 'Anti-Ragging Measures', path: '/anti-ragging' },
-    { name: 'Library Access', path: '/library' },
-  ];
+    { name: "Academic Calendar", path: "/" },
+    { name: "Announcements", path: "/" },
+    { name: "Anti-Ragging Measures", path: "/" },
+    { name: "Library Access", path: "/" },
+  ]
 
   const adminLinks = [
-    { name: 'Degree Verification', path: '/degree-verification' },
-    { name: 'ERP Portal', path: '/erp-portal' },
-    { name: 'Fee Payment', path: '/fee-payment' },
-    { name: 'Holiday List', path: '/holiday-list' },
-  ];
+    { name: "Degree Verification", path: "/" },
+    { name: "ERP Portal", path: "/" },
+    { name: "Fee Payment", path: "/" },
+    { name: "Holiday List", path: "/" },
+  ]
 
   const hallCategories = [
-    { name: 'Eateries', path: '/eateries' },
-    { name: 'Events and Festivals', path: '/events' },
-    { name: 'Halls of Residence', path: '/halls' },
-    { name: 'Health and Wellness', path: '/health' },
-    { name: 'Social and Cultural', path: '/cultural' },
-    { name: 'Sports and Games', path: '/sports' },
-    { name: 'Student Activity Center', path: '/activity-center' },
-    { name: 'Techno Management', path: '/techno-management' },
-  ];
+    { name: "Eateries", path: "/" },
+    { name: "Events and Festivals", path: "/" },
+    { name: "Halls of Residence", path: "/" },
+    { name: "Health and Wellness", path: "/" },
+    { name: "Social and Cultural", path: "/" },
+    { name: "Sports and Games", path: "/" },
+    { name: "Student Activity Center", path: "/" },
+    { name: "Techno Management", path: "/" },
+  ]
 
-  const boysHostels = [
-    'APJ Hostel',
-    'C.V.Raman Hostel',
-    'Homi Jehangir Bhabha Hostel',
-    'Vikram Sarabhai (VSB) Hostel',
-    'J.C. Bose Hall of Residence',
-    
-  ];
+  const boysHostels = ["APJ Hostel", "C.V.Raman Hostel", "Homi Jehangir Bhabha Hostel", "Vikram Sarabhai (VSB) Hostel", "J.C. Bose Hall of Residence"]
 
-  const girlsHostels = [
-    'Devi Ahilya Hall of Residence',
-   
-  ];
+  const girlsHostels = ["Devi Ahilya Hall of Residence"]
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-    
-      <header className="shadow-md bg-neutral-100">
-      {/* Top Bar with Institute Name */}
-      <div className="py-2 px-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <img src={IITI_Logo} alt="IIT Indore Logo" className="h-12" />
-            <div>
-              <h1 className="text-lg font-bold">INDIAN INSTITUTE OF TECHNOLOGY INDORE</h1>
-              <p className="text-sm">Halls of Residence</p>
-            </div>
-          </div>
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/login" className="px-4 py-2 shadow bg-neutral-200 text-[#1360AB] rounded-2xl font-semibold hover:bg-opacity-90">
-              Login
-            </Link>
-            <div className="relative bg-neutral-200 shadow-2xl rounded-2xl">
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className="pl-10 pr-4 py-2 rounded text-gray-800 w-64"
-              />
-              <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="p-2 hover:bg-white/10 rounded">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+      <header className="shadow-md bg-neutral-100">
+        {/* Top Bar with Institute Name */}
+        <div className="py-2 px-4">
+          <div className="container mx-auto flex justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <img src={IITI_Logo} alt="IIT Indore Logo" className="h-12" />
+              <div>
+                <h1 className="text-lg font-bold">INDIAN INSTITUTE OF TECHNOLOGY INDORE</h1>
+                <p className="text-sm">Halls of Residence</p>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center space-x-4">
+              <Link to="/login" className="px-4 py-2 shadow bg-neutral-200 text-[#1360AB] rounded-2xl font-semibold hover:bg-opacity-90">
+                Login
+              </Link>
+              <div className="relative bg-neutral-200 shadow-2xl rounded-2xl">
+                <input type="text" placeholder="Search..." className="pl-10 pr-4 py-2 rounded text-gray-800 w-64" />
+                <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button onClick={() => setIsOpen(!isOpen)} className="p-2 hover:bg-white/10 rounded">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Navigation Bar */}
-      <nav className="bg-[#1360AB] text-white md:py-3 ">
-        <div className="container mx-auto px-4">
-          <div className="md:flex justify-between items-center hidden">
-            {/* Left Side Navigation */}
-            <div className="flex space-x-6">
-              <Link to="/about" className="font-medium hover:text-yellow-200 transition-colors">About</Link>
-              <Link to="/administration" className="font-medium hover:text-yellow-200 transition-colors">Administration</Link>
-              <Link to="/students" className="font-medium hover:text-yellow-200 transition-colors">Students</Link>
-              <Link to="/faculty-staff" className="font-medium hover:text-yellow-200 transition-colors">Faculty & Staff</Link>
-              <Link to="/visitors" className="font-medium hover:text-yellow-200 transition-colors">Visitors</Link>
-            </div>
+        {/* Main Navigation Bar */}
+        <nav className="bg-[#1360AB] text-white md:py-3 ">
+          <div className="container mx-auto px-4">
+            <div className="md:flex justify-between items-center hidden">
+              {/* Left Side Navigation */}
+              {/* <div className="flex space-x-6"> */}
+              {/* <Link to="/about" className="font-medium hover:text-yellow-200 transition-colors">
+                  About
+                </Link>
+                <Link to="/administration" className="font-medium hover:text-yellow-200 transition-colors">
+                  Administration
+                </Link>
+                <Link to="/students" className="font-medium hover:text-yellow-200 transition-colors">
+                  Students
+                </Link>
+                <Link to="/faculty-staff" className="font-medium hover:text-yellow-200 transition-colors">
+                  Faculty & Staff
+                </Link>
+                <Link to="/visitors" className="font-medium hover:text-yellow-200 transition-colors">
+                  Visitors
+                </Link>
+              </div> */}
 
-            {/* Center Navigation */}
-            {/* <div className="flex space-x-6">
+              {/* Center Navigation */}
+              {/* <div className="flex space-x-6">
               <Link to="/academics" className="font-medium hover:text-yellow-200 transition-colors">Academics</Link>
               <Link to="/admissions" className="font-medium hover:text-yellow-200 transition-colors">Admissions</Link>
               <Link to="/research" className="font-medium hover:text-yellow-200 transition-colors">Research</Link>
               <Link to="/industry" className="font-medium hover:text-yellow-200 transition-colors">Industry</Link>
             </div> */}
 
-            {/* Right Side Navigation */}
-            {/* <div className="flex space-x-6">
+              {/* Right Side Navigation */}
+              {/* <div className="flex space-x-6">
               <Link to="/outreach" className="font-medium hover:text-yellow-200 transition-colors">Outreach</Link>
               <Link to="/alumni" className="font-medium hover:text-yellow-200 transition-colors">Alumni</Link>
               <Link to="/jobs" className="font-medium hover:text-yellow-200 transition-colors">Jobs</Link>
             </div> */}
-          </div>
-
-          {/* Mobile Navigation */}
-          {isOpen && (
-            <div className="md:hidden flex  flex-col  space-y-4 pt-4">
-              <Link to="/about" className="block text-center py-2 hover:text-yellow-200">About</Link>
-              <Link to="/administration" className="block text-center py-2 hover:text-yellow-200">Administration</Link>
-              <Link to="/students" className="block text-center py-2 hover:text-yellow-200">Students</Link>
-              <Link to="/faculty-staff" className="block text-center py-2 hover:text-yellow-200">Faculty & Staff</Link>
-              <Link to="/visitors" className="block text-center py-2 hover:text-yellow-200">Visitors</Link>
-              <Link to="/academics" className="block text-center py-2 hover:text-yellow-200">Academics</Link>
-              <Link to="/admissions" className="block text-center py-2 hover:text-yellow-200">Admissions</Link>
-              <Link to="/research" className="block text-center py-2 hover:text-yellow-200">Research</Link>
-              <Link to="/industry" className="block text-center py-2 hover:text-yellow-200">Industry</Link>
-              <Link to="/outreach" className="block text-center py-2 hover:text-yellow-200">Outreach</Link>
-              <Link to="/alumni" className="block text-center py-2 hover:text-yellow-200">Alumni</Link>
-              <Link to="/jobs" className="block text-center py-2 hover:text-yellow-200">Jobs</Link>
             </div>
-          )}
-        </div>
-      </nav>
-    </header>
 
+            {/* Mobile Navigation */}
+            {isOpen && (
+              <div className="md:hidden flex  flex-col  space-y-4 pt-4">
+                {/* <Link to="/administration" className="block text-center py-2 hover:text-yellow-200">
+                  Administration
+                </Link>
+                <Link to="/students" className="block text-center py-2 hover:text-yellow-200">
+                  Students
+                </Link>
+                <Link to="/faculty-staff" className="block text-center py-2 hover:text-yellow-200">
+                  Faculty & Staff
+                </Link>
+                <Link to="/visitors" className="block text-center py-2 hover:text-yellow-200">
+                  Visitors
+                </Link>
+                <Link to="/academics" className="block text-center py-2 hover:text-yellow-200">
+                  Academics
+                </Link>
+                <Link to="/admissions" className="block text-center py-2 hover:text-yellow-200">
+                  Admissions
+                </Link>
+                <Link to="/research" className="block text-center py-2 hover:text-yellow-200">
+                  Research
+                </Link>
+                <Link to="/industry" className="block text-center py-2 hover:text-yellow-200">
+                  Industry
+                </Link>
+                <Link to="/outreach" className="block text-center py-2 hover:text-yellow-200">
+                  Outreach
+                </Link>
+                <Link to="/alumni" className="block text-center py-2 hover:text-yellow-200">
+                  Alumni
+                </Link> */}
+                <Link to="/login" className="block text-center py-2 hover:text-yellow-200">
+                  Login
+                </Link>
+              </div>
+            )}
+          </div>
+        </nav>
+      </header>
 
       <section className="relative bg-blue-900 text-white py-20 h-[380px]">
         <div className="absolute inset-0  bg-black/50">
@@ -153,24 +168,26 @@ const HomePage = () => {
         </div>
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-4xl font-bold mb-6">Halls of Residence</h1>
-          <p className="text-xl mb-8 max-w-3xl mx-auto font-bold">
-            WELCOME TO INDIAN INSTITUTE OF TECHNOLOGY INDORE
-          </p>
-          
+          <p className="text-xl mb-8 max-w-3xl mx-auto font-bold">WELCOME TO INDIAN INSTITUTE OF TECHNOLOGY INDORE</p>
         </div>
       </section>
 
       {/* Hall Categories */}
       <section className="py-12 bg-white">
+        {/* large login button in center */}
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center mb-8">
+            <Link to="/login" className="px-6 py-3 bg-[#1360AB] text-white rounded-lg shadow-lg hover:bg-blue-600 transition-colors duration-200">
+              Login to view Dashboard
+            </Link>
+          </div>
+        </div>
+
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Hall Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {hallCategories.map((category, index) => (
-              <Link 
-                key={index} 
-                to={category.path}
-                className="bg-blue-200 hover:bg-blue-400 border border-gray-200 rounded-lg p-4 text-center transition-colors"
-              >
+              <Link key={index} to={category.path} className="bg-blue-200 hover:bg-blue-400 border border-gray-200 rounded-lg p-4 text-center transition-colors">
                 <h3 className="font-medium text-gray-800">{category.name}</h3>
               </Link>
             ))}
@@ -183,12 +200,9 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Halls of Residence</h2>
           <div className="max-w-4xl mx-auto mb-8 text-center">
-            <p className="text-lg text-gray-600">
-              IIT Indore provides excellent residential facilities spread across the campus. 
-              There are currently 4 Halls of Residence (2 for boys, 2 for girls) with modern amenities.
-            </p>
+            <p className="text-lg text-gray-600">IIT Indore provides excellent residential facilities spread across the campus. There are currently 4 Halls of Residence (2 for boys, 2 for girls) with modern amenities.</p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <div className=" p-6 rounded-lg shadow-lg bg-blue-50">
               <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Boys Hostels</h3>
@@ -200,11 +214,11 @@ const HomePage = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/boys-hostels" className="inline-block mt-4 text-blue-600 hover:underline">
+              <Link to="/" className="inline-block mt-4 text-blue-600 hover:underline">
                 View All Boys Hostels →
               </Link>
             </div>
-            
+
             <div className=" p-6 rounded-lg shadow-lg bg-blue-50">
               <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Girls Hostels</h3>
               <ul className="space-y-2">
@@ -215,7 +229,7 @@ const HomePage = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/girls-hostels" className="inline-block mt-4 text-blue-600 hover:underline">
+              <Link to="/" className="inline-block mt-4 text-blue-600 hover:underline">
                 View All Girls Hostels →
               </Link>
             </div>
@@ -225,93 +239,87 @@ const HomePage = () => {
 
       {/* Quick Links */}
       <section className="py-12  bg-neutral-50">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Quick Links Column */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-[#1360AB] border-b-2 border-[#1360AB] pb-2">Quick Links</h3>
-            <ul className="space-y-3">
-              {quickLinks.map((link, index) => (
-                <li key={index}>
-                  <Link 
-                    to={link.path} 
-                    className="text-[#1360AB] hover:text-orange-500 transition-colors duration-200 flex items-start"
-                  >
-                    <span className="inline-block w-1.5 h-1.5 bg-[#1360AB] rounded-full mt-2 mr-2"></span>
-                    <span className="hover:underline">{link.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Quick Links Column */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-[#1360AB] border-b-2 border-[#1360AB] pb-2">Quick Links</h3>
+              <ul className="space-y-3">
+                {quickLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link to={link.path} className="text-[#1360AB] hover:text-orange-500 transition-colors duration-200 flex items-start">
+                      <span className="inline-block w-1.5 h-1.5 bg-[#1360AB] rounded-full mt-2 mr-2"></span>
+                      <span className="hover:underline">{link.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Administration Links Column */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-[#1360AB] border-b-2 border-[#1360AB] pb-2">Administration</h3>
-            <ul className="space-y-3">
-              {adminLinks.map((link, index) => (
-                <li key={index}>
-                  <Link 
-                    to={link.path} 
-                    className="text-[#1360AB] hover:text-orange-500 transition-colors duration-200 flex items-start"
-                  >
-                    <span className="inline-block w-1.5 h-1.5 bg-[#1360AB] rounded-full mt-2 mr-2"></span>
-                    <span className="hover:underline ">{link.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Administration Links Column */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-[#1360AB] border-b-2 border-[#1360AB] pb-2">Administration</h3>
+              <ul className="space-y-3">
+                {adminLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link to={link.path} className="text-[#1360AB] hover:text-orange-500 transition-colors duration-200 flex items-start">
+                      <span className="inline-block w-1.5 h-1.5 bg-[#1360AB] rounded-full mt-2 mr-2"></span>
+                      <span className="hover:underline ">{link.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Contact Information Column */}
-          <div>
-            <h3 className="text-xl font-semibold mb-4 text-[#1360AB] border-b-2 border-[#1360AB] pb-2">Contact Information</h3>
-            <address className="not-italic text-[#1360AB]">
-              <div className='flex space-x-14'>
-                <div>
-              <div className="mb-4 flex items-start">
-                <svg className="w-5 h-5 mr-3 mt-0.5 text-[#1360AB] " fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <div>
-                  <p>Indian Institute of Technology Indore</p>
-                  <p>Simrol, Indore, MP - 453552</p>
+            {/* Contact Information Column */}
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-[#1360AB] border-b-2 border-[#1360AB] pb-2">Contact Information</h3>
+              <address className="not-italic text-[#1360AB]">
+                <div className="flex space-x-14">
+                  <div>
+                    <div className="mb-4 flex items-start">
+                      <svg className="w-5 h-5 mr-3 mt-0.5 text-[#1360AB] " fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <div>
+                        <p>Indian Institute of Technology Indore</p>
+                        <p>Simrol, Indore, MP - 453552</p>
+                      </div>
+                    </div>
+
+                    <div className="mb-4 flex items-center">
+                      <svg className="w-5 h-5 mr-3 text-[#1360AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <a href="mailto:hostel@iiti.ac.in" className="hover:text-orange-500 hover:underline transition-colors duration-200">
+                        hostel@iiti.ac.in
+                      </a>
+                    </div>
+
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 mr-3 text-[#1360AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
+                      </svg>
+                      <a href="tel:+917316602000" className="hover:text-orange-500 hover:underline transition-colors duration-200">
+                        +91-731-660-2000
+                      </a>
+                    </div>
+                  </div>
+
+                  <div>
+                    <img src={IITI_Logo} alt="IIT Indore Logo" className="h-24" />
+                  </div>
                 </div>
-              </div>
-              
-              
-              <div className="mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-3 text-[#1360AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <a href="mailto:hostel@iiti.ac.in" className="hover:text-orange-500 hover:underline transition-colors duration-200">
-                  hostel@iiti.ac.in
-                </a>
-              </div>
-              
-              <div className="flex items-center">
-                <svg className="w-5 h-5 mr-3 text-[#1360AB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <a href="tel:+917316602000" className="hover:text-orange-500 hover:underline transition-colors duration-200">
-                  +91-731-660-2000
-                </a>
-              </div>
-              </div>
-              
-              <div>
-              <img src={IITI_Logo} alt="IIT Indore Logo" className="h-24" />
-              </div>
-              </div>
-            </address>
-            
+              </address>
+            </div>
           </div>
-          
         </div>
-
-        
-      </div>
       </section>
 
       {/* Footer */}
@@ -348,7 +356,7 @@ const HomePage = () => {
         </div>
       </footer>
     </div>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage
