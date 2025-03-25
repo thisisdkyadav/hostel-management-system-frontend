@@ -20,11 +20,6 @@ const DashboardHeader = () => {
           <p className="text-sm text-gray-500">{formattedDate}</p>
         </div>
 
-        <div className="relative w-full max-w-md mt-4 md:mt-0 mx-4">
-          <input type="text" placeholder="Search by name or room" className="w-full bg-gray-50 px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-[#1360AB] focus:outline-none transition" />
-          <FaSearch className="absolute right-3 top-3 text-gray-500" />
-        </div>
-
         <div className="flex items-center space-x-4 mt-4 md:mt-0 bg-gray-50 px-4 py-2 rounded-lg">
           <FaUserCircle className="text-[#1360AB]" size={25} />
           <div>

@@ -836,6 +836,8 @@ export const hostelApi = {
 
     if (!response.ok) {
       const errorData = await response.json()
+      console.log("Error allocating room:", errorData)
+
       throw new Error(errorData.message || "Failed to allocate room")
     }
 
@@ -929,6 +931,21 @@ export const hostelApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to reject room change request")
+    }
+
+    return response.json()
+  },
+
+  getRooms: async (query) => {
+    const queryParams = new URLSearchParams(query).toString()
+    const response = await fetch(`${baseUrl}/hostel/rooms-room-only${queryParams ? `?${queryParams}` : ""}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch rooms")
     }
 
     return response.json()
