@@ -1,8 +1,7 @@
 import IITI_Logo from "../assets/logos/IITILogo.png"
 import { useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import { FaBars, FaTimes } from "react-icons/fa"
-import MobileHeader from "./MobileHeader" // Import the new component
+import MobileHeader from "./MobileHeader"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -112,15 +111,8 @@ const Sidebar = ({ navItems }) => {
       `}
       >
         <div className="flex flex-col h-full">
-          {/* Logo section - hide on mobile since it's in the header */}
-          <div
-            className={`
-            p-4 flex justify-center items-center border-b border-gray-100
-            ${isOpen ? "h-20" : "h-16"}
-            ${isMobile ? "hidden" : ""}
-          `}
-          >
-            {isOpen ? <img src={IITI_Logo} alt="IIT Indore Logo" className="h-14 w-auto object-contain" /> : <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-xs">IITI</div>}
+          <div className={`p-4 flex justify-center items-center border-b border-gray-100 ${isOpen ? "h-20" : "h-16"} ${isMobile ? "hidden" : ""} cursor-pointer`} onClick={() => navigate("/")}>
+            {isOpen ? <img src={IITI_Logo} alt="IIT Indore Logo" className="h-14 w-auto object-contain" /> : <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-xs transition-all hover:bg-[#0d4d8c]">IITI</div>}
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
