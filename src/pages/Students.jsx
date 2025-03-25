@@ -108,7 +108,7 @@ const Students = () => {
 
     try {
       const firstStudent = studentsDetails[0]
-      const headers = Object.keys(firstStudent).filter((key) => !["id", "userId"].includes(key))
+      const headers = Object.keys(firstStudent).filter((key) => !["id", "userId", "allocationId"].includes(key))
 
       let csvContent = headers.join(",") + "\n"
 
