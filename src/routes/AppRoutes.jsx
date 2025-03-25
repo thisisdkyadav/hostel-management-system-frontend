@@ -62,10 +62,10 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<SDashboard />} />
+        {/* <Route index element={<SDashboard />} /> */}
+        <Route index element={<Profile />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="profile" element={<Profile />} />
-        {/* <Route path="profile" element={<StudentProfile />} /> */}
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="settings" element={<Settings />} />
