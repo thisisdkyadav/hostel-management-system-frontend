@@ -4,7 +4,7 @@ import { BsDoorOpenFill } from "react-icons/bs"
 import userImg from "../../assets/girlImg.jpeg"
 import { fetchStudentProfile } from "../../services/studentService"
 import { useAuth } from "../../contexts/AuthProvider"
-import RoomChangeForm from "../../components/Student/RoomChangeForm"
+import RoomChangeForm from "../../components/student/RoomChangeForm"
 
 const Profile = () => {
   const [isOpen, setIsOpen] = useState(false)
