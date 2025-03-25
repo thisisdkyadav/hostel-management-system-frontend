@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaExclamationTriangle, FaSignOutAlt } from "react-icons/fa"
+import { FaSignOutAlt, FaExclamationTriangle, FaSearch, FaUserPlus, FaClipboardList, FaUserClock, FaUsers } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import SecurityProvider from "../contexts/SecurityProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -23,12 +23,12 @@ const SecurityLayout = () => {
 
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/guard" },
-    { name: "Add Student Entry", icon: FaClipboardList, section: "main", path: "/guard/add-entry" },
-    { name: "Student Entries", icon: FaClipboardList, section: "main", path: "/guard/entries" },
-    { name: "Add Visitors", icon: FaClipboardList, section: "main", path: "/guard/visitors/add" },
-    { name: "Visitors", icon: FaClipboardList, section: "main", path: "/guard/visitors" },
-    { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/guard/lost-and-found" },
-    { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/guard/alerts", isAlert: true },
+    { name: "Add Student Entry", icon: FaUserPlus, section: "main", path: "/guard/add-entry" },
+    { name: "Student Entries", icon: FaUserClock, section: "main", path: "/guard/entries" },
+    { name: "Add Visitors", icon: FaUserPlus, section: "main", path: "/guard/visitors/add" },
+    { name: "Visitors", icon: FaUsers, section: "main", path: "/guard/visitors" },
+    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/guard/lost-and-found" },
+    // { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/guard/alerts", isAlert: true },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
 
