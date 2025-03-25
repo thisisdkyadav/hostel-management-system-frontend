@@ -29,7 +29,6 @@ const SecurityLayout = () => {
     { name: "Visitors", icon: FaClipboardList, section: "main", path: "/guard/visitors" },
     { name: "Lost and Found", icon: FaClipboardList, section: "main", path: "/guard/lost-and-found" },
     { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/guard/alerts", isAlert: true },
-    { name: "Profile", icon: FaUser, section: "bottom", path: "/guard/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
 
