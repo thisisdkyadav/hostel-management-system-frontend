@@ -219,6 +219,21 @@ export const studentApi = {
 
     return response.json()
   },
+
+  submitFeedback: async (title, description) => {
+    const response = await fetch(`${baseUrl}/feedback/add`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ title, description }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to submit feedback")
+    }
+
+    return response.json()
+  },
 }
 
 export const wardenApi = {
@@ -246,6 +261,35 @@ export const wardenApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update warden profile")
+    }
+
+    return response.json()
+  },
+
+  getFeedbacks: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/feedback/all/${hostelId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch feedbacks")
+    }
+
+    return response.json()
+  },
+
+  updateFeedbackStatus: async (feedbackId, status) => {
+    const response = await fetch(`${baseUrl}/feedback/update-status/${feedbackId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ status }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update feedback status")
     }
 
     return response.json()

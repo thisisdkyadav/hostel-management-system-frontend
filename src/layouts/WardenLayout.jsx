@@ -4,6 +4,7 @@ import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, 
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
+import { HiAnnotation } from "react-icons/hi"
 
 const WardenLayout = () => {
   const navigate = useNavigate()
@@ -30,6 +31,7 @@ const WardenLayout = () => {
     { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/warden/room-change-requests" },
     { name: "Visitors", icon: FaUserTie, section: "main", path: "/warden/visitors" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/warden/complaints" },
+    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/warden/feedbacks" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/warden/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { FaUser, FaClipboardList, FaSignOutAlt, FaSearch, FaCalendarAlt } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import { useAuth } from "../contexts/AuthProvider"
+import { HiAnnotation } from "react-icons/hi"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
@@ -25,6 +26,7 @@ const StudentLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/student/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },
+    { name: "Feedback", icon: HiAnnotation, section: "main", path: "/student/feedback" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

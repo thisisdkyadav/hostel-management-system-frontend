@@ -1,44 +1,33 @@
 import { useState } from "react"
-import { HiKey } from "react-icons/hi"
-import UpdatePasswordForm from "../../components/admin/password/UpdatePasswordForm"
+import { HiAnnotation } from "react-icons/hi"
+import FeedbackForm from "../../components/student/feedback/FeedbackForm"
 import { useAuth } from "../../contexts/AuthProvider"
-import { adminApi } from "../../services/apiService"
+import { studentApi } from "../../services/apiService"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 
-const UpdatePassword = () => {
+const Feedback = () => {
   const { user } = useAuth()
   const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [updatedEmail, setUpdatedEmail] = useState("")
+  const [feedbackTitle, setFeedbackTitle] = useState("")
 
-  if (user?.role !== "Admin") {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="bg-red-100 text-red-700 p-6 rounded-lg">
-          <h2 className="text-xl font-bold">Access Denied</h2>
-          <p>You do not have permission to access this page.</p>
-        </div>
-      </div>
-    )
-  }
-
-  const handlePasswordUpdate = async (email, newPassword) => {
-    const confirmUpdate = window.confirm("Are you sure you want to update this user's password?")
-    if (!confirmUpdate) return
+  const handleFeedbackSubmit = async (title, description) => {
     try {
-      const response = await adminApi.updateUserPassword(email, newPassword)
+      const response = await studentApi.submitFeedback(title, description)
       if (response.success) {
-        setUpdatedEmail(email)
+        setFeedbackTitle(title)
         setShowSuccessModal(true)
+        return true
       } else {
-        alert("Failed to update password. Please try again.")
+        alert("Failed to submit feedback. Please try again.")
+        return false
       }
     } catch (error) {
-      console.error("Error updating password:", error)
-      alert("An error occurred while updating the password. Please try again.")
+      console.error("Error submitting feedback:", error)
+      alert("An error occurred while submitting feedback. Please try again.")
     }
   }
 
-  if (user?.role !== "Admin") {
+  if (user?.role !== "Student") {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
         <div className="bg-white rounded-xl shadow-md p-6 md:p-8 max-w-md w-full border border-red-100">
@@ -48,7 +37,7 @@ const UpdatePassword = () => {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">Access Denied</h2>
-          <p className="text-gray-600 text-center mb-6">You do not have permission to access this page. Please contact an administrator if you believe this is an error.</p>
+          <p className="text-gray-600 text-center mb-6">You do not have permission to access this page. This page is only for students.</p>
           <div className="flex justify-center">
             <a href="/" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm">
               Return to Home
@@ -64,11 +53,11 @@ const UpdatePassword = () => {
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div className="flex items-center mb-4 sm:mb-0">
           <div className="p-3 mr-4 rounded-xl bg-blue-100 text-[#1360AB] flex-shrink-0">
-            <HiKey size={24} />
+            <HiAnnotation size={24} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Update User Password</h1>
-            <p className="text-gray-500 text-sm mt-1 max-w-xl">Reset password for any user in the system. They'll use this new password for their next login.</p>
+            <h1 className="text-2xl font-bold text-gray-800">Submit Feedback</h1>
+            <p className="text-gray-500 text-sm mt-1 max-w-xl">Share your thoughts, suggestions, or concerns with the hostel management.</p>
           </div>
         </div>
       </header>
@@ -77,8 +66,8 @@ const UpdatePassword = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <HiKey className="mr-2 text-[#1360AB]" size={20} />
-              Password Reset Form
+              <HiAnnotation className="mr-2 text-[#1360AB]" size={20} />
+              Feedback Form
             </h2>
           </div>
 
@@ -89,10 +78,10 @@ const UpdatePassword = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <p className="text-sm">As an administrator, you can reset the password for any user. This action cannot be undone, and the user will be required to use this new password for their next login.</p>
+              <p className="text-sm">Your feedback is important to us. It helps us improve the hostel services and address any issues you may be facing.</p>
             </div>
 
-            <UpdatePasswordForm onSubmit={handlePasswordUpdate} />
+            <FeedbackForm onSubmit={handleFeedbackSubmit} />
           </div>
         </div>
       </div>
@@ -101,10 +90,10 @@ const UpdatePassword = () => {
         <CommonSuccessModal
           show={showSuccessModal}
           onClose={() => setShowSuccessModal(false)}
-          title="Password Updated Successfully"
-          message="The password has been successfully updated. The user will need to use this new password for their next login."
-          infoText={updatedEmail}
-          infoIcon={HiKey}
+          title="Feedback Submitted Successfully"
+          message="Thank you for your feedback. The hostel management will review it and take appropriate action if necessary."
+          infoText={feedbackTitle}
+          infoIcon={HiAnnotation}
           buttonText="Done"
         />
       )}
@@ -112,4 +101,4 @@ const UpdatePassword = () => {
   )
 }
 
-export default UpdatePassword
+export default Feedback

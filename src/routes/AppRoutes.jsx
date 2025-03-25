@@ -45,6 +45,8 @@ import UnitsAndRooms from "../pages/warden/UnitsAndRooms.jsx"
 import Profile from "../pages/Profile.jsx"
 import MaintenanceStaff from "../pages/admin/MaintenanceStaff.jsx"
 import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
+import StudentFeedback from "../pages/student/Feedback.jsx"
+import Feedbacks from "../pages/warden/Feedbacks.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -68,6 +70,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
+        <Route path="feedback" element={<StudentFeedback />} />
         <Route path="settings" element={<Settings />} />
       </Route>
 
@@ -98,6 +101,7 @@ const AppRoutes = () => {
         <Route path="room-change-requests" element={<RoomChangeRequests />} />
         <Route path="units-and-rooms" element={<UnitsAndRooms />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
 
       {/* Routes for Guard related pages */}
