@@ -1,7 +1,7 @@
 import React from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
-import RoomChangeForm from "../student/RoomChangeForm"
+import RoomChangeForm from "../students/RoomChangeForm"
 
 const ProfileHeader = ({ user, role, subtitle }) => {
   return (
