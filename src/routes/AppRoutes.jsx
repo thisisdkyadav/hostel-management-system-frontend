@@ -43,11 +43,19 @@ import RoomChangeRequests from "../pages/warden/RoomChangeRequests.jsx"
 import UnitsAndRooms from "../pages/warden/UnitsAndRooms.jsx"
 import Profile from "../pages/Profile.jsx"
 import MaintenanceStaff from "../pages/admin/MaintenanceStaff.jsx"
+import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/student" element={<StudentLayout />}>
+      <Route
+        path="/student"
+        element={
+          // <ProtectedRoute allowedRoles={["Student"]}>
+          <StudentLayout />
+          //  </ProtectedRoute>
+        }
+      >
         <Route index element={<SDashboard />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="profile" element={<Profile />} />
@@ -61,9 +69,23 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
 
       {/* Routes for Maintenance related pages*/}
-      <Route path="/maintenance/dashboard" element={<MDashboard />} />
+      <Route
+        path="/maintenance/dashboard"
+        element={
+          // <ProtectedRoute allowedRoles={["Maintenance Staff"]}>
+          <MDashboard />
+          // </ProtectedRoute>
+        }
+      />
 
-      <Route path="/warden" element={<WardenLayout />}>
+      <Route
+        path="/warden"
+        element={
+          // <ProtectedRoute allowedRoles={["Warden"]}>
+          <WardenLayout />
+          // </ProtectedRoute>
+        }
+      >
         <Route index element={<WardenDashboard />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
@@ -76,7 +98,14 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for Guard related pages */}
-      <Route path="/guard" element={<SecurityLayout />}>
+      <Route
+        path="/guard"
+        element={
+          // <ProtectedRoute allowedRoles={["Security"]}>
+          <SecurityLayout />
+          // </ProtectedRoute>
+        }
+      >
         <Route index element={<GuardDashboard />} />
         <Route path="visitors/add" element={<AddVisitor />} />
         <Route path="visitors" element={<Visitors />} />
@@ -86,7 +115,14 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for admin related pages */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route
+        path="/admin"
+        element={
+          // <ProtectedRoute allowedRoles={["Admin"]}>
+          <AdminLayout />
+          // </ProtectedRoute>
+        }
+      >
         <Route index element={<AdminDashboard />} />
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="wardens" element={<AdminWarden />} />
