@@ -2,10 +2,12 @@ import IITI_Logo from "../assets/logos/IITILogo.png"
 import { useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { FaBars, FaTimes } from "react-icons/fa"
+import MobileHeader from "./MobileHeader" // Import the new component
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
   const [isOpen, setIsOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -19,6 +21,8 @@ const Sidebar = ({ navItems }) => {
 
   useEffect(() => {
     const handleResize = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
       setIsOpen(window.innerWidth >= 768)
     }
 
@@ -94,11 +98,9 @@ const Sidebar = ({ navItems }) => {
 
   return (
     <>
-      <button onClick={() => setIsOpen(!isOpen)} className="md:hidden fixed z-50 top-4 left-4 bg-[#1360AB] text-white p-2.5 rounded-full shadow-lg">
-        {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
-      </button>
+      <MobileHeader isOpen={isOpen} setIsOpen={setIsOpen} bottomNavItems={bottomNavItems} handleNavigation={handleNavigation} />
 
-      {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm" onClick={() => setIsOpen(false)}></div>}
+      {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
         className={`
@@ -106,14 +108,16 @@ const Sidebar = ({ navItems }) => {
         bg-white shadow-lg border-r border-gray-100
         ${isOpen ? "left-0" : "-left-full md:left-0"}
         ${isOpen ? "w-64" : "w-0 md:w-20"}
+        ${isMobile ? "mt-16" : ""}
       `}
       >
         <div className="flex flex-col h-full">
-          {/* Logo section */}
+          {/* Logo section - hide on mobile since it's in the header */}
           <div
             className={`
             p-4 flex justify-center items-center border-b border-gray-100
             ${isOpen ? "h-20" : "h-16"}
+            ${isMobile ? "hidden" : ""}
           `}
           >
             {isOpen ? <img src={IITI_Logo} alt="IIT Indore Logo" className="h-14 w-auto object-contain" /> : <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-xs">IITI</div>}
