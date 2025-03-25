@@ -5,5 +5,5 @@ import tailwindcss from "@tailwindcss/vite"
 export default defineConfig({
   plugins: [tailwindcss(), react()],
 
-  base: "./", // Ensures relative paths for assets
+  base: "/", // Ensures relative paths for assets
 })

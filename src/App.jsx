@@ -5,13 +5,13 @@ import GlobalProvider from "./contexts/GlobalProvider"
 
 function App() {
   return (
-    <AuthProvider>
-      <GlobalProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <GlobalProvider>
           <AppRoutes />
-        </BrowserRouter>
-      </GlobalProvider>
-    </AuthProvider>
+        </GlobalProvider>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 
