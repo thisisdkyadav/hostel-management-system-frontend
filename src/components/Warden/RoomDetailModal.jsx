@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../services/apiService"
-import Modal from "../../components/common/Modal"
+import Modal from "../common/Modal"
 
 const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   const [loading, setLoading] = useState(false)

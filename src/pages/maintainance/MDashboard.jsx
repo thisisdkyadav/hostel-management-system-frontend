@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import Sidebar from "../../components/Maintainance/SidebarM"
-import ComplaintsM from "../../components/Maintainance/ComplaintsM"
+import Sidebar from "../../components/maintainance/SidebarM"
+import ComplaintsM from "../../components/maintainance/ComplaintsM"
 import { FaUser, FaBars } from "react-icons/fa"
 
 const MDashboard = () => {
