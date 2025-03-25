@@ -12,12 +12,12 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const from = location.state?.from?.pathname || getHomeRoute()
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await login({ email, password })
+      const userData = await login({ email, password })
+      const from = userData ? calculateHomeRoute(userData) : "/login"
+      console.log(from, "from")
       navigate(from, { replace: true })
     } catch (err) {
       console.error("Login failed:", err)
@@ -26,7 +26,8 @@ const LoginPage = () => {
 
   const handleGoogleCallback = async (token) => {
     try {
-      await loginWithGoogle(token)
+      const userData = await loginWithGoogle(token)
+      const from = userData ? calculateHomeRoute(userData) : "/login"
       navigate(from, { replace: true })
     } catch (err) {
       console.error("Google login failed:", err)
@@ -35,6 +36,23 @@ const LoginPage = () => {
 
   const handleForgotPassword = () => {
     setShowForgotPasswordMsg(true)
+  }
+
+  const calculateHomeRoute = (user) => {
+    switch (user.role) {
+      case "Student":
+        return "/student"
+      case "Warden":
+        return "/warden"
+      case "Security":
+        return "/guard"
+      case "Admin":
+        return "/admin"
+      case "Maintenance Staff":
+        return "/maintenance"
+      default:
+        return "/login"
+    }
   }
 
   return (
