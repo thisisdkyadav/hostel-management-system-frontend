@@ -47,6 +47,7 @@ import MaintenanceStaff from "../pages/admin/MaintenanceStaff.jsx"
 import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
 import StudentFeedback from "../pages/student/Feedback.jsx"
 import Feedbacks from "../pages/warden/Feedbacks.jsx"
+import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -79,10 +80,12 @@ const AppRoutes = () => {
         path="/maintenance"
         element={
           <ProtectedRoute allowedRoles={["Maintenance Staff"]}>
-            <MDashboard />
+            <MaintenanceLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<MDashboard />} />
+      </Route>
 
       <Route
         path="/warden"
