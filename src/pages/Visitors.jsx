@@ -4,6 +4,7 @@ import SearchBar from "../components/common/SearchBar"
 import FilterTabs from "../components/common/FilterTabs"
 import NoResults from "../components/common/NoResults"
 import VisitorTable from "../components/visitor/VisitorTable"
+import VisitorStats from "../components/visitor/VisitorStats"
 import { filterVisitors } from "../utils/securityUtils"
 import { securityApi } from "../services/apiService"
 
@@ -22,6 +23,10 @@ const Visitors = () => {
 
   const handleUpdateVisitor = (updatedVisitor) => {
     setVisitors(visitors.map((visitor) => (visitor.id === updatedVisitor.id ? updatedVisitor : visitor)))
+  }
+
+  const handleDeleteVisitor = (visitorId) => {
+    setVisitors(visitors.filter((visitor) => visitor.id !== visitorId))
   }
 
   const fetchVisitors = async () => {
@@ -53,69 +58,7 @@ const Visitors = () => {
         </button>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-500">Total Visitors</p>
-              <h3 className="text-2xl font-bold text-gray-800">{visitors.length}</h3>
-            </div>
-            <div className="p-3 bg-blue-100 text-[#1360AB] rounded-lg">
-              <FaUserFriends size={20} />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-500">Checked In</p>
-              <h3 className="text-2xl font-bold text-green-600">{visitors.filter((v) => v.status === "Checked In").length}</h3>
-            </div>
-            <div className="p-3 bg-green-100 text-green-600 rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-500">Checked Out</p>
-              <h3 className="text-2xl font-bold text-red-600">{visitors.filter((v) => v.status === "Checked Out").length}</h3>
-            </div>
-            <div className="p-3 bg-red-100 text-red-600 rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-500">Today's Visitors</p>
-              <h3 className="text-2xl font-bold text-[#1360AB]">
-                {
-                  visitors.filter((v) => {
-                    const today = new Date().toISOString().split("T")[0]
-                    const visitorDate = new Date(v.DateTime).toISOString().split("T")[0]
-                    return visitorDate === today
-                  }).length
-                }
-              </h3>
-            </div>
-            <div className="p-3 bg-blue-100 text-[#1360AB] rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
+      <VisitorStats visitors={visitors} />
 
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div className="w-full sm:w-auto overflow-x-auto pb-2">
@@ -153,7 +96,7 @@ const Visitors = () => {
 
       {filteredVisitors.length > 0 ? (
         <div className="mt-6">
-          <VisitorTable visitors={filteredVisitors} onUpdateVisitor={handleUpdateVisitor} />
+          <VisitorTable visitors={filteredVisitors} onUpdateVisitor={handleUpdateVisitor} onDeleteVisitor={handleDeleteVisitor} refresh={fetchVisitors} />
         </div>
       ) : (
         <div className="mt-12">

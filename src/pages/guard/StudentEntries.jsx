@@ -78,7 +78,7 @@ const StudentEntries = () => {
       <div className="mt-8 flex flex-col space-y-4">
         <div className="flex justify-between items-center">
           <FilterTabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} />
-          <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by room, student name, ID..." className="w-1/2" />
+          <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by unit, room" className="w-1/2" />
         </div>
 
         {showFilters && (

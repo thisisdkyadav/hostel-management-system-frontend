@@ -4,7 +4,7 @@ import Button from "../common/Button"
 import Modal from "../common/Modal"
 import { useSecurity } from "../../contexts/SecurityProvider"
 
-const EditStudentEntryModal = ({ entry, onClose, onSave }) => {
+const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
   const { securityInfo } = useSecurity()
 
   const [formData, setFormData] = useState({
@@ -25,7 +25,6 @@ const EditStudentEntryModal = ({ entry, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Combine date and time into a dateTime field
     const dateTime = new Date(`${formData.date}T${formData.time}`).toISOString()
 
     const updatedEntry = {
@@ -34,6 +33,14 @@ const EditStudentEntryModal = ({ entry, onClose, onSave }) => {
     }
 
     await onSave(updatedEntry)
+    onClose()
+  }
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this entry?")) {
+      return
+    }
+    await onDelete(entry._id)
     onClose()
   }
 
@@ -65,18 +72,18 @@ const EditStudentEntryModal = ({ entry, onClose, onSave }) => {
           {securityInfo?.hostelType === "unit-based" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-              <input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" />
+              <input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" />
             </div>
           )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Room</label>
-            <input type="text" name="room" value={formData.room} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <input type="text" name="room" value={formData.room} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Bed</label>
-            <input type="text" name="bed" value={formData.bed} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <input type="text" name="bed" value={formData.bed} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
           </div>
 
           <div>
@@ -90,18 +97,18 @@ const EditStudentEntryModal = ({ entry, onClose, onSave }) => {
           </div>
         </div>
 
-        {/* <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
-          <textarea name="notes" value={formData.notes || ""} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" rows="2" />
-        </div> */}
-
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+        <div className="flex justify-between gap-2">
+          <Button type="button" variant="danger" onClick={handleDelete}>
+            Delete Entry
           </Button>
-          <Button type="submit" variant="primary">
-            Save Changes
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary">
+              Save Changes
+            </Button>
+          </div>
         </div>
       </form>
     </Modal>

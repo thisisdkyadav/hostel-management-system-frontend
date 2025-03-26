@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { FaBuilding, FaDoorOpen } from "react-icons/fa"
+import { FaBuilding, FaDoorOpen, FaFileImport } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../../services/apiService"
 import Pagination from "../../components/common/Pagination"
@@ -12,6 +12,7 @@ import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import SearchBar from "../../components/common/SearchBar"
 import { useWarden } from "../../contexts/WardenProvider"
 import RoomStats from "../../components/wardens/RoomStats"
+import UpdateAllocationModal from "../../components/wardens/UpdateAllocationModal"
 
 const UnitsAndRooms = () => {
   const { profile } = useWarden()
@@ -38,6 +39,7 @@ const UnitsAndRooms = () => {
   // Modal state
   const [showRoomDetail, setShowRoomDetail] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
+  const [showUploadModal, setShowUploadModal] = useState(false)
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1)
@@ -156,6 +158,35 @@ const UnitsAndRooms = () => {
     }
   }
 
+  const handleUpdateAllocations = async (allocations) => {
+    try {
+      setLoading(true)
+      const response = await hostelApi.updateRoomAllocations(allocations)
+      console.log("Update allocations response:", response)
+      if (response.success) {
+        setShowAllocateModal(false)
+        fetchUnits()
+        setCurrentView("units")
+        setSelectedUnit(null)
+        const errors = response.errors || []
+        if (errors.length > 0) {
+          alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")}`)
+        } else {
+          alert("Allocations updated successfully")
+        }
+        return true
+      } else {
+        alert("Failed to update allocations")
+        return false
+      }
+    } catch (error) {
+      alert("An error occurred while updating allocations")
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleUnitClick = (unit) => {
     setSelectedUnit(unit)
     setCurrentView("rooms")
@@ -217,6 +248,10 @@ const UnitsAndRooms = () => {
               <FaBuilding className="mr-2" /> Back to Units
             </button>
           )}
+
+          <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowUploadModal(true)}>
+            <FaFileImport className="mr-2" /> Update Allocations
+          </button>
 
           <button className="flex items-center px-3 py-2 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
@@ -338,6 +373,8 @@ const UnitsAndRooms = () => {
       {showRoomDetail && selectedRoom && <RoomDetailModal room={selectedRoom} onClose={() => setShowRoomDetail(false)} onUpdate={handleUpdateSuccess} onAllocate={() => setShowAllocateModal(true)} />}
 
       {showAllocateModal && selectedRoom && <AllocateStudentModal room={selectedRoom} isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onSuccess={handleAllocationSuccess} />}
+
+      {showUploadModal && <UpdateAllocationModal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)} onAllocate={handleUpdateAllocations} />}
     </div>
   )
 }

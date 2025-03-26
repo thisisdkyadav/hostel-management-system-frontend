@@ -4,7 +4,7 @@ import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
 
-const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, years, departments, degrees, units }) => {
+const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize }) => {
   return (
     <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
@@ -55,14 +55,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, ye
                   </option>
                 ))}
             </select> */}
-            <input
-              type="text"
-              placeholder="Unit number"
-              className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
-              value={filters.unitNumber}
-              onChange={(e) => updateFilter("unitNumber", e.target.value)}
-              // disabled={!filters.hostelId}
-            />
+            <input type="text" placeholder="Unit number" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
           </div>
 
           <div>
@@ -71,27 +64,16 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, ye
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Year of Study</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.yearOfStudy} onChange={(e) => updateFilter("yearOfStudy", e.target.value)}>
-              <option value="">All Years</option>
-              {years.map((year, index) => (
-                <option key={index} value={year.value || year}>
-                  {year.label || year}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Department</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)}>
+            {/* <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)}>
               <option value="">All Departments</option>
               {departments.map((dept, index) => (
                 <option key={index} value={dept}>
                   {dept}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <input type="text" placeholder="Department" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)} />
           </div>
 
           <div>
@@ -122,6 +104,16 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, ye
               <option value="">All Students</option>
               <option value="true">Allocated Room</option>
               <option value="false">No Allocation</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Students per page</label>
+            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.studentsPerPage} onChange={(e) => setPageSize(e.target.value)}>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
             </select>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import StudentEntryForm from "../../components/guard/StudentEntryForm"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import { securityApi } from "../../services/apiService"
 import NewEntryForm from "../../components/guard/NewEntryForm"
@@ -36,21 +35,10 @@ const AddStudentEntry = () => {
       if (response.success) {
         fetchRecentEntries()
         return true
-      } else {
-        throw new Error("Failed to add student entry")
       }
     } catch (error) {
-      console.error(error)
+      alert(error.message || "Failed to add student entry")
       return false
-    }
-  }
-
-  const handleUpdateEntry = async (updatedEntry) => {
-    try {
-      await securityApi.updateStudentEntry(updatedEntry)
-      setEntries(entries.map((entry) => (entry._id === updatedEntry._id ? updatedEntry : entry)))
-    } catch (error) {
-      console.error("Error updating entry:", error)
     }
   }
 
@@ -63,7 +51,7 @@ const AddStudentEntry = () => {
 
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4 px-3">Recent Entry Records</h2>
-        <StudentEntryTable entries={entries} onUpdateEntry={handleUpdateEntry} refresh={fetchRecentEntries} />
+        <StudentEntryTable entries={entries} refresh={fetchRecentEntries} />
       </div>
     </div>
   )

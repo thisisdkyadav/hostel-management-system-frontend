@@ -1,28 +1,29 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
-import StudentTableView from "./StudentTableView"
+import StudentTableView from "../common/students/StudentTableView"
 import Papa from "papaparse"
-import { useWarden } from "../../../contexts/WardenProvider"
-import Modal from "../../common/Modal"
-import StudentDetailModal from "./StudentDetailModal"
+import { useWarden } from "../../contexts/WardenProvider"
+import Modal from "../common/Modal"
+import StudentDetailModal from "../common/students/StudentDetailModal"
 
-const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
+const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   const { profile } = useWarden()
   const hostelId = profile?.hostelId._id || null
+  const hostelType = profile?.hostelId.type || null
 
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [isAllocating, setIsAllocating] = useState(false)
   const [error, setError] = useState("")
   const [step, setStep] = useState(1)
   const fileInputRef = useRef(null)
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  // Remove room, unit, and bedNumber from available fields
-  const availableFields = ["name", "email", "phone", "password", "profilePic", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone"]
-  const requiredFields = ["rollNumber"]
+  // Only allocation fields
+  const baseRequiredFields = ["rollNumber", "room", "bedNumber"]
+  const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
@@ -37,14 +38,14 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   }
 
   const generateCsvTemplate = () => {
-    const headers = ["rollNumber", ...availableFields]
+    const headers = requiredFields
     const csvContent = headers.join(",")
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.setAttribute("download", "update_students_template.csv")
+    link.setAttribute("download", "room_allocation_template.csv")
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -91,28 +92,20 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             return
           }
 
-          const updatableFields = headers.filter((field) => availableFields.includes(field))
-          if (updatableFields.length === 0) {
-            setError(`CSV must include at least one field to update: ${availableFields.join(", ")}`)
-            setIsLoading(false)
-            return
-          }
-
           const parsedData = results.data.map((student, index) => {
             const studentData = {
-              rollNumber: student.rollNumber,
               hostelId: hostelId,
+              rollNumber: student.rollNumber,
+              room: student.room,
+              bedNumber: student.bedNumber,
             }
 
-            availableFields.forEach((field) => {
-              if (student[field]) {
-                if (field === "admissionDate") {
-                  studentData[field] = student[field] || new Date().toISOString().split("T")[0]
-                } else {
-                  studentData[field] = student[field] || ""
-                }
-              }
-            })
+            if (hostelType === "unit-based") {
+              studentData.unit = student.unit
+              studentData.displayRoom = `${student.unit || ""}-${student.room || ""}`
+            } else {
+              studentData.displayRoom = student.room || ""
+            }
 
             // Add hostel name for display in the table
             studentData.hostel = profile?.hostelId.name || "N/A"
@@ -135,22 +128,38 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     })
   }
 
-  const handleUpdate = async () => {
+  const handleAllocate = async () => {
     if (parsedData.length === 0) {
-      setError("No data to update")
+      setError("No data to allocate")
       return
     }
 
-    setIsUpdating(true)
+    let hasError = false
+    let errorMessage = ""
+
+    if (hostelType === "unit-based") {
+      const missingUnitRecords = parsedData.filter((student) => !student.unit)
+      if (missingUnitRecords.length > 0) {
+        hasError = true
+        errorMessage = `${missingUnitRecords.length} student(s) missing unit number, which is required for unit-based hostels.`
+      }
+    }
+
+    if (hasError) {
+      setError(errorMessage)
+      return
+    }
+
+    setIsAllocating(true)
 
     try {
-      const isSuccess = await onUpdate(parsedData)
+      const isSuccess = await onAllocate(parsedData)
       if (isSuccess) {
-        onClose()
+        onClose(false)
         resetForm()
       }
     } finally {
-      setIsUpdating(false)
+      setIsAllocating(false)
     }
   }
 
@@ -169,20 +178,18 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   if (!isOpen) return null
 
   return (
-    <Modal title="Update Students in Bulk" onClose={onClose} width={900}>
+    <Modal title="Update Room Allocations" onClose={onClose} width={900}>
       {step === 1 && (
         <div className="space-y-5">
           <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
             <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
             <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
             <p className="mt-3 text-xs text-gray-500">
-              <strong>Required field:</strong> rollNumber (used as identifier - cannot be changed)
-            </p>
-            <p className="mt-1 text-xs text-gray-500">
-              <strong>Updatable fields:</strong> {availableFields.join(", ")}
+              <strong>Required fields:</strong> {requiredFields.join(", ")}
             </p>
             <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
           </div>
+
           <div className="flex flex-col items-center">
             <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
               <FaFileDownload className="mr-1" />
@@ -196,47 +203,20 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <span className="font-medium">rollNumber:</span> String (Required)
                 </li>
                 <li>
-                  <span className="font-medium">name:</span> String
+                  <span className="font-medium">room:</span> String/Number (Required)
                 </li>
                 <li>
-                  <span className="font-medium">email:</span> Email
+                  <span className="font-medium">bedNumber:</span> Number (Required)
                 </li>
-                <li>
-                  <span className="font-medium">phone:</span> Number
-                </li>
-                <li>
-                  <span className="font-medium">password:</span> String
-                </li>
-                <li>
-                  <span className="font-medium">gender:</span> Male/Female/Other
-                </li>
-                <li>
-                  <span className="font-medium">dateOfBirth:</span> YYYY-MM-DD
-                </li>
-                <li>
-                  <span className="font-medium">degree:</span> String
-                </li>
-                <li>
-                  <span className="font-medium">department:</span> String
-                </li>
-                <li>
-                  <span className="font-medium">year:</span> Number
-                </li>
-                <li>
-                  <span className="font-medium">address:</span> String
-                </li>
-                <li>
-                  <span className="font-medium">admissionDate:</span> YYYY-MM-DD
-                </li>
-                <li>
-                  <span className="font-medium">guardian:</span> String
-                </li>
-                <li>
-                  <span className="font-medium">guardianPhone:</span> Number
-                </li>
+                {hostelType === "unit-based" && (
+                  <li>
+                    <span className="font-medium">unit:</span> String (Required)
+                  </li>
+                )}
               </ul>
             </div>
           </div>
+
           {csvFile && (
             <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
               <span className="text-sm text-blue-700">
@@ -253,7 +233,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               </button>
             </div>
           )}
+
           {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+
           {isLoading && (
             <div className="flex items-center justify-center py-4">
               <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
@@ -266,8 +248,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       {step === 2 && (
         <div className="space-y-5">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-800">Preview Updates</h3>
-            <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} students will be updated</div>
+            <h3 className="text-lg font-medium text-gray-800">Preview Room Allocations</h3>
+            <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} room allocations found in CSV</div>
           </div>
 
           <div className="border rounded-lg overflow-hidden">
@@ -290,15 +272,15 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         )}
 
         {step === 2 && (
-          <button onClick={handleUpdate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading || isUpdating}>
-            {isUpdating ? (
+          <button onClick={handleAllocate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading || isAllocating}>
+            {isAllocating ? (
               <>
                 <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Updating Students...
+                Updating Allocations...
               </>
             ) : (
               <>
-                <FaCheck className="mr-2" /> Confirm Update
+                <FaCheck className="mr-2" /> Confirm Allocations
               </>
             )}
           </button>
@@ -309,4 +291,4 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   )
 }
 
-export default UpdateStudentsModal
+export default UpdateAllocationModal

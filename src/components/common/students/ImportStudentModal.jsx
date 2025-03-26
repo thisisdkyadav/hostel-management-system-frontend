@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
@@ -9,7 +9,6 @@ import StudentDetailModal from "./StudentDetailModal"
 const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const { profile } = useWarden()
   const hostelId = profile?.hostelId._id || null
-  const hostelType = profile?.hostelId.type || null
 
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -21,11 +20,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  const availableFields = ["name", "email", "phone", "password", "profilePic", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bedNumber", "address", "admissionDate", "guardian", "guardianPhone"]
-
-  const baseRequiredFields = ["name", "email", "rollNumber", "room", "bedNumber"]
-
-  const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
+  // Remove room, unit, and bedNumber from available fields
+  const availableFields = ["name", "email", "phone", "password", "profilePic", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone"]
+  const requiredFields = ["name", "email", "rollNumber"]
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
@@ -107,11 +104,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               }
             })
 
-            if (hostelType === "unit-based") {
-              studentData.displayRoom = `${student.unit || ""}-${student.room || ""}`
-            } else {
-              studentData.displayRoom = student.room || ""
-            }
+            // Add hostel name for display in the table
+            studentData.hostel = profile?.hostelId.name || "N/A"
 
             return studentData
           })
@@ -137,22 +131,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       return
     }
 
-    let hasError = false
-    let errorMessage = ""
-
-    if (hostelType === "unit-based") {
-      const missingUnitRecords = parsedData.filter((student) => !student.unit)
-      if (missingUnitRecords.length > 0) {
-        hasError = true
-        errorMessage = `${missingUnitRecords.length} student(s) missing unit number, which is required for unit-based hostels.`
-      }
-    }
-
-    if (hasError) {
-      setError(errorMessage)
-      return
-    }
-
     setIsImporting(true)
 
     try {
@@ -165,6 +143,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       setIsImporting(false)
     }
   }
+
   const resetForm = () => {
     setCsvFile(null)
     setParsedData([])
@@ -213,17 +192,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <li>
                   <span className="font-medium">rollNumber:</span> String (Required)
                 </li>
-                <li>
-                  <span className="font-medium">room:</span> String/Number (Required)
-                </li>
-                <li>
-                  <span className="font-medium">bedNumber:</span> Number (Required)
-                </li>
-                {hostelType === "unit-based" && (
-                  <li>
-                    <span className="font-medium">unit:</span> String (Required)
-                  </li>
-                )}
                 <li>
                   <span className="font-medium">phone:</span> Number
                 </li>

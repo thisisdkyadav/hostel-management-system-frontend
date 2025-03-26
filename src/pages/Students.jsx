@@ -28,8 +28,7 @@ const Students = () => {
   const [showImportModal, setShowImportModal] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
 
-  // Use our combined hook
-  const { students, totalCount, loading, error, filters, updateFilter, pagination, setCurrentPage, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
+  const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
     perPage: 10,
     autoFetch: true,
   })
@@ -79,7 +78,6 @@ const Students = () => {
   }
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
-  const totalPages = Math.ceil(totalCount / pagination.perPage)
 
   const fetchFullStudentDetails = async (userIds) => {
     try {
@@ -180,7 +178,7 @@ const Students = () => {
 
       <StudentStats students={students} totalCount={totalCount} />
 
-      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} />}
+      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} />}
 
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
         <div className="text-sm text-gray-600">
@@ -228,11 +226,11 @@ const Students = () => {
             )}
           </div>
 
+          <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />
+
           {students.length === 0 && !loading && <NoResults icon={<FaUserGraduate className="text-gray-300 text-4xl" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
         </>
       )}
-
-      {students.length > 0 && totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />}
 
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
