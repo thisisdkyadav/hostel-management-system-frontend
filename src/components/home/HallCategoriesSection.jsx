@@ -2,7 +2,7 @@ import React from "react"
 
 const HallCategoriesSection = ({ categories }) => {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-10 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-3 text-gray-800">Hall Categories</h2>
         <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Explore the various categories of facilities and services available at IIT Indore</p>
