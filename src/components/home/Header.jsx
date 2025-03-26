@@ -121,8 +121,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* ... rest of your component */}
-
       <nav className="bg-[#1360AB] text-white h-[60px] md:py-3">
         <div className="container mx-auto px-4 flex items-center h-full">
           <div className="md:flex justify-between items-center hidden w-full">
