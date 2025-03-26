@@ -245,7 +245,7 @@ const Dashboard = () => {
               <StatCard title="Total Rooms" value={hostelStats?.totalRooms || 0} subtitle="Available in all hostels" icon={<MdMeetingRoom />} color="#8B5CF6" />
             </div>
           </div>
-          <StatCards stats={hostelStatCards} columns={4} />
+          <StatCards stats={hostelStatCards.slice(2, 4)} columns={2} />
         </section>
 
         <section>
@@ -256,7 +256,7 @@ const Dashboard = () => {
             <ComplaintsChart complaintsStats={complaintsStats} />
             <StatCard title="Total Complaints" value={complaintsStats?.total || 0} subtitle="All registered complaints" icon={<FiSettings />} color="#3B82F6" className="h-full" />
           </div>
-          <StatCards stats={complaintsStatCards} columns={4} />
+          <StatCards stats={complaintsStatCards.slice(1, 4)} columns={3} />
         </section>
 
         <section>
