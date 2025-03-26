@@ -1141,6 +1141,37 @@ export const statsApi = {
   },
 }
 
+export const alertApi = {
+  sendAlert: async (alertType, triggeredBy) => {
+    const response = await fetch(`${baseUrl}/alerts/create`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ alertType, triggeredBy }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to send alert");
+    }
+
+    return response.json();
+  },
+
+  getAlerts: async (userId) => {
+    const response = await fetch(`${baseUrl}/alerts/${userId}`, {
+      method: "GET",
+      ...fetchOptions,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch alerts");
+    }
+
+    return response.json();
+  },
+};
+
 export default {
   auth: authApi,
   student: studentApi,
@@ -1148,4 +1179,5 @@ export default {
   security: securityApi,
   maintenance: maintenanceApi,
   admin: adminApi,
+  alert: alertApi,
 }
