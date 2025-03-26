@@ -16,18 +16,15 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [error, setError] = useState("")
-  const [step, setStep] = useState(1) // 1: Upload, 2: Preview
+  const [step, setStep] = useState(1)
   const fileInputRef = useRef(null)
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  // Define available fields
   const availableFields = ["name", "email", "phone", "password", "profilePic", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "unit", "room", "bedNumber", "address", "admissionDate", "guardian", "guardianPhone"]
 
-  // Base required fields without unit
   const baseRequiredFields = ["name", "email", "rollNumber", "room", "bedNumber"]
 
-  // Dynamically determine required fields based on hostel type
   const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
 
   const handleFileUpload = (e) => {
@@ -88,7 +85,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             return
           }
 
-          // Check if all required fields are present
           const headers = results.meta.fields
           const missingFields = requiredFields.filter((field) => !headers.includes(field))
 
@@ -99,12 +95,10 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           }
 
           const parsedData = results.data.map((student, index) => {
-            // Create initial student object with only allowed fields
             const studentData = {
               hostelId: hostelId,
             }
 
-            // Add only available fields from CSV
             availableFields.forEach((field) => {
               if (field === "admissionDate") {
                 studentData[field] = student[field] || new Date().toISOString().split("T")[0]
@@ -113,7 +107,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               }
             })
 
-            // Add displayRoom for the table view
             if (hostelType === "unit-based") {
               studentData.displayRoom = `${student.unit || ""}-${student.room || ""}`
             } else {
@@ -144,11 +137,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       return
     }
 
-    // Validate data before import
     let hasError = false
     let errorMessage = ""
 
-    // For unit-based hostels, check if unit is provided
     if (hostelType === "unit-based") {
       const missingUnitRecords = parsedData.filter((student) => !student.unit)
       if (missingUnitRecords.length > 0) {
@@ -162,9 +153,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       return
     }
 
-    console.log("Importing data:", parsedData)
-
-    // Set importing state to true
     setIsImporting(true)
 
     try {
@@ -174,7 +162,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         resetForm()
       }
     } finally {
-      setIsImporting(false) // Reset importing state regardless of outcome
+      setIsImporting(false)
     }
   }
   const resetForm = () => {

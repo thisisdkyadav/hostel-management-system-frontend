@@ -82,7 +82,6 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             return
           }
 
-          // Check if all required fields are present
           const headers = results.meta.fields
           const missingFields = requiredFields.filter((field) => !headers.includes(field))
 
@@ -92,7 +91,6 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             return
           }
 
-          // Check if at least one updatable field is present
           const updatableFields = headers.filter((field) => availableFields.includes(field))
           if (updatableFields.length === 0) {
             setError(`CSV must include at least one field to update: ${availableFields.join(", ")}`)
@@ -101,16 +99,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           }
 
           const parsedData = results.data.map((student, index) => {
-            // Create initial student object with identifier
             const studentData = {
               rollNumber: student.rollNumber,
               hostelId: hostelId,
             }
 
-            // Add only available fields from CSV
             availableFields.forEach((field) => {
               if (student[field]) {
-                // Only include fields that have values
                 if (field === "admissionDate") {
                   studentData[field] = student[field] || new Date().toISOString().split("T")[0]
                 } else {
@@ -119,14 +114,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               }
             })
 
-            // Add displayRoom for the table view
             if (hostelType === "unit-based") {
               studentData.displayRoom = `${student.unit || ""}-${student.room || ""}`
             } else {
               studentData.displayRoom = student.room || ""
             }
 
-            // Add hostel name for display
             studentData.hostel = profile?.hostelId.name || "N/A"
 
             return studentData
@@ -153,11 +146,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       return
     }
 
-    // Validate data before update
     let hasError = false
     let errorMessage = ""
 
-    // For unit-based hostels, check if unit is provided when room is updated
     if (hostelType === "unit-based") {
       const invalidRecords = parsedData.filter((student) => student.room && !student.unit)
       if (invalidRecords.length > 0) {
@@ -170,8 +161,6 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       setError(errorMessage)
       return
     }
-
-    console.log("Updating data:", parsedData)
 
     const isSuccess = await onUpdate(parsedData)
     if (isSuccess) {
