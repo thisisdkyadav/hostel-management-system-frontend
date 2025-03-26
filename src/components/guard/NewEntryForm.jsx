@@ -65,29 +65,29 @@ const NewEntryForm = ({ onAddEntry }) => {
           <>
             <div className="col-span-2">
               <label className="text-xs font-medium text-gray-700">Unit</label>
-              <input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="101" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
+              <input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="Unit" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
             </div>
 
             <div className="col-span-2">
               <label className="text-xs font-medium text-gray-700">Room</label>
-              <input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="A" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
+              <input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
             </div>
 
             <div className="col-span-2">
               <label className="text-xs font-medium text-gray-700">Bed #</label>
-              <input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="2" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
+              <input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
             </div>
           </>
         ) : (
           <>
             <div className="col-span-4">
               <label className="text-xs font-medium text-gray-700">Room Number</label>
-              <input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room number" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
+              <input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room Number" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
             </div>
 
             <div className="col-span-2">
               <label className="text-xs font-medium text-gray-700">Bed #</label>
-              <input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="2" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
+              <input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" className="w-full px-2 py-1 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-1 focus:ring-[#1360AB] focus:outline-none" required />
             </div>
           </>
         )}

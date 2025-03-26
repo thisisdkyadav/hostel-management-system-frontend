@@ -418,6 +418,34 @@ export const securityApi = {
 
     return response.json()
   },
+
+  deleteStudentEntry: async (entryId) => {
+    const response = await fetch(`${baseUrl}/security/entries/${entryId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete student entry")
+    }
+
+    return response.json()
+  },
+
+  deleteVisitor: async (visitorId) => {
+    const response = await fetch(`${baseUrl}/security/visitors/${visitorId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete visitor")
+    }
+
+    return response.json()
+  },
 }
 
 export const maintenanceApi = {
@@ -1008,6 +1036,21 @@ export const hostelApi = {
 
     return response.json()
   },
+
+  updateRoomAllocations: async (allocationData) => {
+    const response = await fetch(`${baseUrl}/hostel/update-allocations`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(allocationData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update room allocations")
+    }
+
+    return response.json()
+  },
 }
 
 export const statsApi = {
@@ -1147,30 +1190,30 @@ export const alertApi = {
       method: "POST",
       ...fetchOptions,
       body: JSON.stringify({ alertType, triggeredBy }),
-    });
+    })
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to send alert");
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to send alert")
     }
 
-    return response.json();
+    return response.json()
   },
 
   getAlerts: async (userId) => {
     const response = await fetch(`${baseUrl}/alerts/${userId}`, {
       method: "GET",
       ...fetchOptions,
-    });
+    })
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to fetch alerts");
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch alerts")
     }
 
-    return response.json();
+    return response.json()
   },
-};
+}
 
 export default {
   auth: authApi,

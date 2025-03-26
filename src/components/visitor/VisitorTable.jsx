@@ -3,7 +3,7 @@ import { FaEdit } from "react-icons/fa"
 import StatusBadge from "../common/StatusBadge"
 import EditVisitorModal from "./EditVisitorModal"
 
-const VisitorTable = ({ visitors, onUpdateVisitor }) => {
+const VisitorTable = ({ visitors, onUpdateVisitor, onDeleteVisitor, refresh }) => {
   const [selectedVisitor, setSelectedVisitor] = useState(null)
   const [showEditModal, setShowEditModal] = useState(false)
 
@@ -127,7 +127,7 @@ const VisitorTable = ({ visitors, onUpdateVisitor }) => {
         </div>
         {visitors.length === 0 && <div className="text-center py-8 text-gray-500">No visitors to display</div>}
       </div>
-      {showEditModal && selectedVisitor && <EditVisitorModal visitor={selectedVisitor} onClose={handleCloseModal} onSave={handleSaveVisitor} />}
+      {showEditModal && selectedVisitor && <EditVisitorModal visitor={selectedVisitor} onClose={handleCloseModal} onSave={handleSaveVisitor} onDelete={onDeleteVisitor} refresh={refresh} />}
     </>
   )
 }

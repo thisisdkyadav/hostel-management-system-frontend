@@ -3,8 +3,7 @@ import Button from "../common/Button"
 import { securityApi } from "../../services/apiService"
 import Modal from "../common/Modal"
 
-const EditVisitorModal = ({ visitor, onClose, onSave }) => {
-  // Using the structure from the API data
+const EditVisitorModal = ({ visitor, onClose, refresh }) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -19,7 +18,6 @@ const EditVisitorModal = ({ visitor, onClose, onSave }) => {
 
   useEffect(() => {
     if (visitor) {
-      // Extract date and time from DateTime if available
       let date = ""
       let time = ""
 
@@ -50,7 +48,6 @@ const EditVisitorModal = ({ visitor, onClose, onSave }) => {
     setLoading(true)
     setError(null)
 
-    // Combine date and time into DateTime
     const dateTime = formData.date && formData.time ? new Date(`${formData.date}T${formData.time}`).toISOString() : new Date().toISOString()
 
     const updatedVisitor = {
@@ -68,11 +65,35 @@ const EditVisitorModal = ({ visitor, onClose, onSave }) => {
         setError("Failed to update visitor details.")
         return
       }
-      if (onSave) onSave(updatedVisitor)
+      if (onClose) onClose()
+      if (refresh) refresh()
       onClose()
     } catch (error) {
       setError("An error occurred while updating visitor details.")
       console.error("Error updating visitor:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this visitor?")
+    if (!confirmDelete) return
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await securityApi.deleteVisitor(visitor._id)
+      if (!response) {
+        setError("Failed to delete visitor.")
+        return
+      }
+      if (refresh) refresh()
+      onClose()
+    } catch (error) {
+      setError("An error occurred while deleting visitor.")
+      console.error("Error deleting visitor:", error)
     } finally {
       setLoading(false)
     }
@@ -177,21 +198,34 @@ const EditVisitorModal = ({ visitor, onClose, onSave }) => {
           </div>
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-end space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3 pt-4 mt-5 border-t border-gray-100">
-          <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-
-          <Button type="submit" variant="primary" className={loading ? "opacity-75 cursor-not-allowed" : ""} disabled={loading}>
+        <div className="flex flex-col-reverse sm:flex-row justify-between space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3 pt-4 mt-5 border-t border-gray-100">
+          <Button type="button" variant="danger" onClick={handleDelete} className={loading ? "opacity-75 cursor-not-allowed" : ""} disabled={loading}>
             {loading ? (
               <>
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                Updating...
+                Deleting...
               </>
             ) : (
-              "Save Changes"
+              "Delete Visitor"
             )}
           </Button>
+
+          <div className="flex gap-2">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button type="submit" variant="primary" className={loading ? "opacity-75 cursor-not-allowed" : ""} disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                  Updating...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </Modal>

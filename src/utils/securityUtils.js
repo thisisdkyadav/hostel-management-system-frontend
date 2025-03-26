@@ -11,7 +11,7 @@ export const filterVisitors = (visitors, filterStatus, filterDate, searchTerm) =
     }
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
-      return visitor.name.toLowerCase().includes(searchLower) || visitor.phone.includes(searchLower) || visitor.roomNumber.toLowerCase().includes(searchLower)
+      return visitor?.name?.toLowerCase().includes(searchLower) || visitor?.phone?.includes(searchLower) || visitor?.roomNumber?.toLowerCase().includes(searchLower)
     }
 
     return true

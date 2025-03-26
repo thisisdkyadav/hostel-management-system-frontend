@@ -31,7 +31,7 @@ const SecurityProvider = ({ children }) => {
     fetchVisitors()
   }, [])
 
-  const value = { securityInfo, setSecurityInfo, visitors, setVisitors }
+  const value = { securityInfo, setSecurityInfo, visitors, setVisitors, fetchVisitors }
 
   return <SecurityContext.Provider value={value}>{children}</SecurityContext.Provider>
 }

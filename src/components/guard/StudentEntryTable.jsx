@@ -38,6 +38,16 @@ const StudentEntryTable = ({ entries, refresh }) => {
     }
   }
 
+  const handleDeleteEntry = async (entryId) => {
+    try {
+      await securityApi.deleteStudentEntry(entryId)
+      refresh()
+    } catch (error) {
+      console.error("Error deleting entry:", error)
+      alert("Failed to delete student entry.")
+    }
+  }
+
   const formatDateTime = (dateTimeString) => {
     console.log(dateTimeString, "Date Time String")
 
@@ -114,7 +124,7 @@ const StudentEntryTable = ({ entries, refresh }) => {
           </table>
         </div>
       </div>
-      {showEditModal && selectedEntry && <EditStudentEntryModal entry={selectedEntry} onClose={handleCloseModal} onSave={handleSaveEntry} />}
+      {showEditModal && selectedEntry && <EditStudentEntryModal entry={selectedEntry} onClose={handleCloseModal} onSave={handleSaveEntry} onDelete={handleDeleteEntry} />}
     </>
   )
 }

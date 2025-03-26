@@ -1,7 +1,10 @@
 import React, { useState } from "react"
 import Button from "../common/Button"
+import { useSecurity } from "../../contexts/SecurityProvider"
 
 const VisitorForm = ({ onAddVisitor }) => {
+  const { fetchVisitors } = useSecurity()
+
   const [visitorData, setVisitorData] = useState({
     name: "",
     phone: "",
@@ -31,6 +34,7 @@ const VisitorForm = ({ onAddVisitor }) => {
     e.preventDefault()
     const isSuccess = await onAddVisitor(visitorData)
     if (isSuccess) {
+      fetchVisitors()
       alert("Visitor added successfully!")
       handleReset()
     } else {

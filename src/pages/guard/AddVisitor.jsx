@@ -5,7 +5,7 @@ import { securityApi } from "../../services/apiService"
 import { useSecurity } from "../../contexts/SecurityProvider"
 
 const AddVisitor = () => {
-  const { visitors = [] } = useSecurity()
+  const { visitors = [], fetchVisitors } = useSecurity()
 
   const handleAddVisitor = async (newVisitor) => {
     try {
@@ -72,7 +72,7 @@ const AddVisitor = () => {
         </div>
       </div>
 
-      <VisitorTable visitors={visitors} onUpdateVisitor={handleUpdateVisitor} />
+      <VisitorTable visitors={visitors} onUpdateVisitor={handleUpdateVisitor} refresh={fetchVisitors} />
     </div>
   )
 }
