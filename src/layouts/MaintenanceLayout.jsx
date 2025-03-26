@@ -21,7 +21,7 @@ const MaintenanceLayout = () => {
   }
 
   const navItems = [
-    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/warden" },
+    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/maintenance" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
 
