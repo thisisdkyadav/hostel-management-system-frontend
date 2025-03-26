@@ -153,7 +153,7 @@ const Complaints = () => {
         <div className="w-full sm:w-auto overflow-x-auto pb-2">
           <FilterTabs tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
         </div>
-        <SearchBar value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search complaints..." className="w-full sm:w-64 md:w-72" />
+        {/* <SearchBar value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search complaints..." className="w-full sm:w-64 md:w-72" /> */}
       </div>
 
       {showFilters && (
