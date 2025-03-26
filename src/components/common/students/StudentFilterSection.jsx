@@ -44,8 +44,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, ye
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Unit/Block</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} disabled={!filters.hostelId}>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Unit</label>
+            {/* <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} disabled={!filters.hostelId}>
               <option value="">All Units</option>
               {units
                 .filter((unit) => !filters.hostelId || unit.hostelId === filters.hostelId)
@@ -54,7 +54,15 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, ye
                     {unit.name}
                   </option>
                 ))}
-            </select>
+            </select> */}
+            <input
+              type="text"
+              placeholder="Unit number"
+              className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
+              value={filters.unitNumber}
+              onChange={(e) => updateFilter("unitNumber", e.target.value)}
+              // disabled={!filters.hostelId}
+            />
           </div>
 
           <div>
