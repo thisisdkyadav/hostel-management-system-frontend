@@ -174,7 +174,12 @@ const Header = () => {
           </div>
         </div>
 
-        <div className={`md:hidden flex flex-col space-y-2 pt-2 pb-3 bg-[#1360AB] border-t border-blue-400 overflow-hidden transition-all duration-300 ${isOpen ? "max-h-96" : "max-h-0"}`}>
+        <div className={`md:hidden flex flex-col space-y-2  pb-3 bg-[#1360AB] border-t border-blue-400 overflow-hidden transition-all duration-300 ${isOpen ? "max-h-96 overflow-y-auto" : "max-h-0"}`}>
+        {!user && (
+    <Link to="/login" className="block text-center py-2 bg-[#1360AB] text-white rounded-md mx-4 hover:bg-[#0d4b86] transition-colors">
+      Login
+    </Link>
+  )}
           <a href="https://www.iiti.ac.in/page/about-us" className="block text-center py-2 hover:bg-blue-700 transition-colors">
             About
           </a>
