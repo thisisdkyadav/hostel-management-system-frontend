@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { HiAnnotation, HiUser, HiCalendar, HiClock, HiEye } from "react-icons/hi"
-import { wardenApi } from "../../../services/apiService"
+import { wardenApi } from "../services/apiService"
 
 const FeedbackCard = ({ feedback, refresh }) => {
   const [isUpdating, setIsUpdating] = useState(false)

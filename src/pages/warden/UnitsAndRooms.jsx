@@ -45,12 +45,11 @@ const UnitsAndRooms = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(10)
 
-  // Filters
   const [filters, setFilters] = useState({
     hostelId: "",
     floorNumber: "",
-    occupancyStatus: "", // "full", "partial", "empty"
-    roomType: "", // "single", "double", "triple", etc.
+    occupancyStatus: "",
+    roomType: "",
     searchTerm: "",
   })
 
@@ -210,6 +209,8 @@ const UnitsAndRooms = () => {
       fetchRooms()
     }
     setShowAllocateModal(false)
+    setShowRoomDetail(false)
+    setSelectedRoom(null)
   }
 
   const handleUpdateSuccess = () => {
