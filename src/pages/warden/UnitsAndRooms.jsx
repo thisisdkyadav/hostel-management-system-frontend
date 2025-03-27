@@ -280,7 +280,7 @@ const UnitsAndRooms = () => {
 
               {(hostelType === "room-only" || (hostelType === "unit-based" && currentView === "rooms")) && (
                 <>
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-gray-600 mb-1.5">Occupancy Status</label>
                     <select value={filters.occupancyStatus} onChange={(e) => setFilters({ ...filters, occupancyStatus: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
                       <option value="">All Statuses</option>
@@ -310,7 +310,7 @@ const UnitsAndRooms = () => {
                       <option value="3">3rd Floor</option>
                       <option value="4">4th Floor</option>
                     </select>
-                  </div>
+                  </div> */}
                 </>
               )}
             </div>
