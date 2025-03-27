@@ -10,8 +10,8 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "My App",
-        short_name: "App",
+        name: "Hostel Management System - IIT Indore",
+        short_name: "HMS - IIT Indore",
         start_url: "/",
         display: "standalone",
         background_color: "#ffffff",
