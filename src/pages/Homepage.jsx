@@ -41,7 +41,7 @@ const HomePage = () => {
           title: "Contact Support",
           description: "Get help with your account",
           icon: <FaTools className="w-6 h-6" />,
-          link: "/contact",
+          link: "/",
           color: "bg-purple-100 text-purple-600",
         },
       ]
@@ -54,7 +54,7 @@ const HomePage = () => {
             title: "Dashboard",
             description: "View your dashboard details",
             icon: <MdDashboard className="w-6 h-6" />,
-            link: "/student/dashboard",
+            link: "/student",
             color: "bg-blue-100 text-blue-600",
           },
           {
@@ -71,7 +71,7 @@ const HomePage = () => {
             title: "Dashboard",
             description: "Administrative overview",
             icon: <MdDashboard className="w-6 h-6" />,
-            link: "/admin/dashboard",
+            link: "/admin",
             color: "bg-indigo-100 text-indigo-600",
           },
           {
