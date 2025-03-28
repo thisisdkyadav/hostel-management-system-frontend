@@ -13,14 +13,16 @@ const HomePage = () => {
   const { user, getHomeRoute, isStandalone } = useAuth()
   const navigate = useNavigate()
 
-  // Use useEffect to handle navigation
   useEffect(() => {
     if (isStandalone) {
-      navigate("/login")
+      if (user) {
+        navigate(getHomeRoute())
+      } else {
+        navigate("/login")
+      }
     }
   }, [isStandalone, navigate])
 
-  // Show loading or message while redirecting
   if (isStandalone) {
     return <LoadingScreen />
   }
