@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react"
 import { Navigate, useLocation } from "react-router-dom"
 import { authApi } from "../services/apiService"
+import LoadingScreen from "../components/common/LoadingScreen"
 
 export const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
@@ -31,19 +32,26 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [starting, setStarting] = useState(true)
   const [error, setError] = useState(null)
+  const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setStarting(true)
         const userData = await authApi.verify()
         setUser(userData)
       } catch (err) {
         console.error("Auth verification failed", err)
       } finally {
         setLoading(false)
+        setStarting(false)
       }
     }
+
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
+    setIsStandalone(standalone)
 
     checkAuth()
   }, [])
@@ -116,6 +124,11 @@ export const AuthProvider = ({ children }) => {
     loginWithGoogle,
     logout,
     getHomeRoute,
+    isStandalone,
+  }
+
+  if (starting) {
+    return <LoadingScreen />
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
