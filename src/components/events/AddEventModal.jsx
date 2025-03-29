@@ -1,17 +1,18 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../services/apiService"
-import { useWarden } from "../../contexts/WardenProvider"
 import Modal from "../common/Modal"
-import { FaCalendarAlt, FaClipboardList } from "react-icons/fa"
+import { FaCalendarAlt, FaClipboardList, FaBuilding } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
+import { useGlobal } from "../../contexts/GlobalProvider"
 
 const AddEventModal = ({ show, onClose, onEventAdded }) => {
-  const { profile } = useWarden()
+  const { hostelList } = useGlobal()
 
   const [formData, setFormData] = useState({
     eventName: "",
     description: "",
     dateAndTime: new Date().toISOString().slice(0, 16),
+    hostelId: "all",
   })
 
   const handleChange = (e) => {
@@ -21,19 +22,19 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(profile?.hostelId._id, "hostelId")
 
-    const { eventName, description, dateAndTime } = formData
+    const { eventName, description, dateAndTime, hostelId } = formData
     if (!eventName || !description || !dateAndTime) {
       alert("Please fill in all fields.")
       return
     }
-    if (!profile?.hostelId._id) {
-      alert("Hostel ID is required.")
-      return
-    }
 
-    const eventData = { ...formData, hostelId: profile?.hostelId._id }
+    const eventData = {
+      eventName,
+      description,
+      dateAndTime,
+      ...(hostelId !== "all" && { hostelId }),
+    }
 
     try {
       const newEvent = await eventsApi.addEvent(eventData)
@@ -55,13 +56,6 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
   return (
     <Modal title="Add New Event" onClose={onClose} width={600}>
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* <div className="bg-blue-50 p-4 rounded-lg mb-4">
-          <div className="flex items-center text-blue-800">
-            <FaCalendarAlt className="mr-2" />
-            <h4 className="font-medium">Event Information</h4>
-          </div>
-        </div> */}
-
         <div className="space-y-4">
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">Event Name</label>
@@ -70,6 +64,23 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
                 <FaClipboardList />
               </div>
               <input type="text" name="eventName" value={formData.eventName} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter event name" required />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Hostel</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaBuilding />
+              </div>
+              <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" required>
+                <option value="all">All Hostels</option>
+                {hostelList?.map((hostel) => (
+                  <option key={hostel._id} value={hostel._id}>
+                    {hostel.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

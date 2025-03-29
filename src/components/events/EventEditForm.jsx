@@ -1,13 +1,17 @@
 import React, { useState } from "react"
-import { FaCalendarAlt, FaSave } from "react-icons/fa"
+import { FaCalendarAlt, FaSave, FaBuilding } from "react-icons/fa"
 import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
+import { useGlobal } from "../../contexts/GlobalProvider"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
+  const { hostelList } = useGlobal()
+
   const [formData, setFormData] = useState({
     eventName: event.eventName,
     description: event.description,
     dateAndTime: event.dateAndTime.slice(0, 16),
+    hostelId: event.hostelId || "all",
   })
 
   const handleChange = (e) => {
@@ -20,10 +24,17 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSave({
+
+    const updatedEvent = {
       ...event,
       ...formData,
-    })
+    }
+
+    if (updatedEvent.hostelId === "all") {
+      delete updatedEvent.hostelId
+    }
+
+    onSave(updatedEvent)
   }
 
   const handleDelete = () => {
@@ -49,6 +60,23 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Date and Time</label>
             <input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaBuilding />
+              </div>
+              <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-2.5 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]">
+                <option value="all">All Hostels</option>
+                {hostelList?.map((hostel) => (
+                  <option key={hostel._id} value={hostel._id}>
+                    {hostel.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div>
