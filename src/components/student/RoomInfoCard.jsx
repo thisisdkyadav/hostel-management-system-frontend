@@ -42,6 +42,7 @@ const RoomInfoCard = ({ roomData }) => {
               <div key={roommate.rollNumber} className="flex items-center text-xs bg-gray-50 px-2 py-1 rounded-lg">
                 {roommate.avatar ? <img src={roommate.avatar} alt={roommate.name} className="w-5 h-5 rounded-full mr-1" /> : <div className="w-5 h-5 rounded-full bg-blue-100 text-[#1360AB] flex items-center justify-center text-[10px] mr-1">{getOccupantInitials(roommate.name)}</div>}
                 <span className="truncate max-w-[100px]">{roommate.name}</span>
+                <span className="text-gray-400 ml-1">({roommate.rollNumber})</span>
               </div>
             ))}
           </div>
