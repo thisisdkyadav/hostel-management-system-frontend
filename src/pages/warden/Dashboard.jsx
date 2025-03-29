@@ -15,7 +15,7 @@ import EventsChart from "../../components/charts/EventsChart"
 import LostFoundChart from "../../components/charts/LostFoundChart"
 
 const DashboardWarden = () => {
-  const { profile } = useWarden()
+  const { profile, isAssociateWarden } = useWarden()
 
   if (!profile) {
     return (
@@ -37,7 +37,6 @@ const DashboardWarden = () => {
       try {
         setLoading(true)
 
-        // Fetch all stats in parallel
         const [lostAndFoundData, eventsData, visitorData, roomChangeRequestData] = await Promise.all([statsApi.getLostAndFoundStats(), statsApi.getEventStats(profile.hostelId._id), statsApi.getVisitorStats(profile.hostelId._id), statsApi.getRoomChangeRequestsStats(profile.hostelId._id)])
 
         setLostFoundStats(lostAndFoundData)
@@ -183,8 +182,7 @@ const DashboardWarden = () => {
 
   return (
     <div className="p-4 md:p-6">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Warden Dashboard</h1>
-
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">{isAssociateWarden ? "Associate Warden" : "Warden"} Dashboard</h1>
       <div className="space-y-8">
         <section>
           <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">

@@ -296,6 +296,25 @@ export const wardenApi = {
   },
 }
 
+export const associateWardenApi = {
+  getProfile: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/warden/associate-warden/profile`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch associate warden profile")
+      }
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching associate warden profile:", error)
+      throw error
+    }
+  },
+}
+
 export const securityApi = {
   getSecurityInfo: async () => {
     const response = await fetch(`${baseUrl}/security`, {

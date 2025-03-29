@@ -9,7 +9,9 @@ import EmptyState from "../common/EmptyState"
 import { useWarden } from "../../contexts/WardenProvider"
 
 const WardenProfile = () => {
-  const { profile, fetchProfile } = useWarden()
+  const { profile, fetchProfile, isAssociateWarden } = useWarden()
+
+  console.log("profile", profile)
 
   const [wardenData, setWardenData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -56,7 +58,7 @@ const WardenProfile = () => {
 
   return (
     <div>
-      <ProfileHeader user={wardenData} role="Warden" subtitle={wardenData.hostel || "No hostel assigned"} />
+      <ProfileHeader user={wardenData} role={isAssociateWarden ? "Associate Warden" : "Warden"} subtitle={wardenData.hostel || "No hostel assigned"} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         <div>
