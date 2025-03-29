@@ -28,7 +28,7 @@ const WardenLayout = () => {
     { name: "Students", icon: FaUsers, section: "main", path: "/warden/students" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/warden/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/warden/events" },
-    { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/warden/room-change-requests" },
+    // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/warden/room-change-requests" },
     { name: "Visitors", icon: FaUserTie, section: "main", path: "/warden/visitors" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/warden/complaints" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/warden/feedbacks" },
