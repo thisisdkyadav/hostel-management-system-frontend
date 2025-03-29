@@ -25,6 +25,7 @@ const AdminLayout = () => {
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/admin" },
     { name: "Hostels", icon: FaBuilding, section: "main", path: "/admin/hostels" },
     { name: "Wardens", icon: FaUserTie, section: "main", path: "/admin/wardens" },
+    { name: "Associate Wardens", icon: FaUserTie, section: "main", path: "/admin/associate-wardens" },
     { name: "Students", icon: FaUsers, section: "main", path: "/admin/students" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
     { name: "Security", icon: FaShieldAlt, section: "main", path: "/admin/security" },

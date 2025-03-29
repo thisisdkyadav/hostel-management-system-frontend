@@ -3,7 +3,9 @@ import { FiUser, FiMail, FiPhone, FiLock, FiCalendar } from "react-icons/fi"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 
-const AddWardenModal = ({ show, onClose, onAdd }) => {
+const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
+  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,14 +23,14 @@ const AddWardenModal = ({ show, onClose, onAdd }) => {
     e.preventDefault()
 
     try {
-      const response = await adminApi.addWarden(formData)
+      const response = staffType === "warden" ? await adminApi.addWarden(formData) : await adminApi.addAssociateWarden(formData)
 
       if (!response) {
-        alert("Failed to add warden. Please try again.")
+        alert(`Failed to add ${staffTitle.toLowerCase()}. Please try again.`)
         return
       }
       onAdd()
-      alert("Warden added successfully!")
+      alert(`${staffTitle} added successfully!`)
 
       setFormData({
         name: "",
@@ -40,21 +42,15 @@ const AddWardenModal = ({ show, onClose, onAdd }) => {
 
       onClose()
     } catch (error) {
-      console.error("Error adding warden:", error)
-      alert("Failed to add warden. Please try again.")
+      console.error(`Error adding ${staffTitle.toLowerCase()}:`, error)
+      alert(`Failed to add ${staffTitle.toLowerCase()}. Please try again.`)
     }
   }
 
   if (!show) return null
 
-  const handleCloseModal = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose()
-    }
-  }
-
   return (
-    <Modal title="Add New Warden" onClose={onClose} width={500}>
+    <Modal title={`Add New ${staffTitle}`} onClose={onClose} width={500}>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="bg-blue-50 p-4 rounded-lg mb-4">
           <div className="flex items-center text-blue-800">
@@ -120,7 +116,7 @@ const AddWardenModal = ({ show, onClose, onAdd }) => {
             Cancel
           </button>
           <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow">
-            Add Warden
+            Add {staffTitle}
           </button>
         </div>
       </form>

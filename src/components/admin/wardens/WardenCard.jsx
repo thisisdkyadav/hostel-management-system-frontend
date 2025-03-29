@@ -4,10 +4,10 @@ import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
 import { useAdmin } from "../../../contexts/AdminProvider"
 
-const WardenCard = ({ warden, onUpdate, onDelete }) => {
+const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
-
   const [showEditForm, setShowEditForm] = useState(false)
+  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
 
   const getHostelName = (hostelId) => {
     const hostel = hostelList?.find((hostel) => hostel._id === hostelId)
@@ -34,15 +34,14 @@ const WardenCard = ({ warden, onUpdate, onDelete }) => {
   const serviceYears = calculateServiceYears(warden.joinDate)
   const statusColor = getStatusColor(warden.status)
 
-  const handleSave = (updatedWarden) => {
-    onUpdate(updatedWarden)
+  const handleSave = () => {
+    onUpdate()
     setShowEditForm(false)
   }
 
   return (
     <>
       <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
-        {/* Status indicator */}
         <div className={`absolute top-0 right-0 w-16 h-16`}>
           <div className={`absolute rotate-45 transform origin-bottom-right ${statusColor.bg} text-white text-xs font-medium py-1 right-[-6px] top-[-2px] w-24 text-center`}>{warden.status === "assigned" ? "Assigned" : "Unassigned"}</div>
         </div>
@@ -101,13 +100,13 @@ const WardenCard = ({ warden, onUpdate, onDelete }) => {
             })}
           </div>
 
-          <button onClick={() => setShowEditForm(true)} className="flex items-center justify-center p-2.5 bg-blue-50 text-[#1360AB] rounded-lg hover:bg-blue-100 transition-all duration-200" aria-label="Edit warden">
+          <button onClick={() => setShowEditForm(true)} className="flex items-center justify-center p-2.5 bg-blue-50 text-[#1360AB] rounded-lg hover:bg-blue-100 transition-all duration-200" aria-label={`Edit ${staffTitle.toLowerCase()}`}>
             <FaEdit className="text-sm" />
           </button>
         </div>
       </div>
 
-      {showEditForm && <EditWardenForm warden={warden} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={onDelete} />}
+      {showEditForm && <EditWardenForm warden={warden} staffType={staffType} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={onDelete} />}
     </>
   )
 }

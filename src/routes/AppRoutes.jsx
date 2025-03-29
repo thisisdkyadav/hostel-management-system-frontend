@@ -48,6 +48,7 @@ import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
 import StudentFeedback from "../pages/student/Feedback.jsx"
 import Feedbacks from "../pages/warden/Feedbacks.jsx"
 import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
+import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -136,6 +137,7 @@ const AppRoutes = () => {
         <Route index element={<AdminDashboard />} />
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="wardens" element={<AdminWarden />} />
+        <Route path="associate-wardens" element={<AdminAssociateWardens />} />
         <Route path="students" element={<Students />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />

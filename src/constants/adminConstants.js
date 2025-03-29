@@ -33,3 +33,9 @@ export const MAINTENANCE_FILTER_TABS = [
   { label: "Internet", value: "Internet", color: "[#1360AB]" },
   { label: "Other", value: "Other", color: "[#1360AB]" },
 ]
+
+export const ASSOCIATE_WARDEN_FILTER_TABS = [
+  { id: "all", label: "All", count: null },
+  { id: "assigned", label: "Assigned", count: null },
+  { id: "unassigned", label: "Unassigned", count: null },
+]

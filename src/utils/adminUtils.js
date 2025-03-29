@@ -9,6 +9,10 @@ export const filterWardens = (wardens, filterStatus, searchTerm) => {
     })
 }
 
+export const filterAssociateWardens = (associateWardens, status, searchTerm) => {
+  return filterWardens(associateWardens, status, searchTerm)
+}
+
 export const filterStudents = (students, selectedHostel, selectedYear, selectedDepartment, selectedStatus, selectedGender, searchTerm, sortField, sortDirection) => {
   if (!students) return []
   return students

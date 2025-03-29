@@ -4,8 +4,9 @@ import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
 
-const EditWardenForm = ({ warden, onClose, onSave, onDelete }) => {
+const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useAdmin()
+  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
 
   const [formData, setFormData] = useState({
     phone: warden.phone || "",
@@ -24,46 +25,48 @@ const EditWardenForm = ({ warden, onClose, onSave, onDelete }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const message = await adminApi.updateWarden(warden.id, formData)
+      const message = staffType === "warden" ? await adminApi.updateWarden(warden.id, formData) : await adminApi.updateAssociateWarden(warden.id, formData)
+
       if (!message) {
-        alert("Failed to update warden. Please try again.")
+        alert(`Failed to update ${staffTitle.toLowerCase()}. Please try again.`)
         return
       }
-      alert("Warden updated successfully!")
+      alert(`${staffTitle} updated successfully!`)
       if (onSave) onSave()
       onClose()
     } catch (error) {
-      console.error("Failed to update warden:", error)
-      alert("Failed to update warden. Please try again.")
+      console.error(`Failed to update ${staffTitle.toLowerCase()}:`, error)
+      alert(`Failed to update ${staffTitle.toLowerCase()}. Please try again.`)
     }
   }
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this warden?")
+    const confirmDelete = window.confirm(`Are you sure you want to delete this ${staffTitle.toLowerCase()}?`)
     if (confirmDelete) {
       try {
-        const message = await adminApi.deleteWarden(warden.id)
+        const message = staffType === "warden" ? await adminApi.deleteWarden(warden.id) : await adminApi.deleteAssociateWarden(warden.id)
+
         if (!message) {
-          alert("Failed to delete warden. Please try again.")
+          alert(`Failed to delete ${staffTitle.toLowerCase()}. Please try again.`)
           return
         }
-        alert("Warden deleted successfully!")
+        alert(`${staffTitle} deleted successfully!`)
         if (onDelete) onDelete()
         onClose()
       } catch (error) {
-        console.error("Failed to delete warden:", error)
-        alert("Failed to delete warden. Please try again.")
+        console.error(`Failed to delete ${staffTitle.toLowerCase()}:`, error)
+        alert(`Failed to delete ${staffTitle.toLowerCase()}. Please try again.`)
       }
     }
   }
 
   return (
-    <Modal title={`Edit Warden: ${warden.name}`} onClose={onClose} width={500}>
+    <Modal title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={500}>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="bg-blue-50 p-4 rounded-lg mb-4">
           <div className="flex items-center text-blue-800">
             <FaBuilding className="mr-2" />
-            <h4 className="font-medium">Warden Information</h4>
+            <h4 className="font-medium">{staffTitle} Information</h4>
           </div>
         </div>
 
@@ -103,7 +106,7 @@ const EditWardenForm = ({ warden, onClose, onSave, onDelete }) => {
 
         <div className="flex flex-col-reverse sm:flex-row justify-between pt-5 mt-6 border-t border-gray-100">
           <button type="button" onClick={handleDelete} className="mt-3 sm:mt-0 px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all flex items-center justify-center">
-            <FaTrash className="mr-2" /> Delete Warden
+            <FaTrash className="mr-2" /> Delete {staffTitle}
           </button>
 
           <button type="submit" className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow flex items-center justify-center">

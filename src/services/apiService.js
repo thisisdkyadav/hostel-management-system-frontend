@@ -609,6 +609,10 @@ export const adminApi = {
       throw new Error(errorData.message || "Failed to update warden")
     }
 
+    const data = await response.json()
+    console.log("Added warden:", data)
+    return data
+
     return response.json()
   },
   deleteWarden: async (wardenId) => {
@@ -763,6 +767,82 @@ export const adminApi = {
     }
 
     return response.json()
+  },
+
+  getAllAssociateWardens: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/associate-wardens`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch associate wardens")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching associate wardens:", error)
+      throw error
+    }
+  },
+
+  addAssociateWarden: async (data) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/associate-warden`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to add associate warden")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error adding associate warden:", error)
+      throw error
+    }
+  },
+
+  updateAssociateWarden: async (id, data) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/associate-warden/${id}`, {
+        method: "PUT",
+        ...fetchOptions,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update associate warden")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating associate warden:", error)
+      throw error
+    }
+  },
+
+  deleteAssociateWarden: async (id) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/associate-warden/${id}`, {
+        method: "DELETE",
+        ...fetchOptions,
+      })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to delete associate warden")
+      }
+      return response.json()
+    } catch (error) {
+      console.error("Error deleting associate warden:", error)
+      throw error
+    }
   },
 }
 
