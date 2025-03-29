@@ -18,7 +18,7 @@ import { studentApi } from "../services/apiService"
 const Students = () => {
   const { user } = useAuth()
   const { hostelList = [], unitList = [] } = useGlobal()
-  const hostels = hostelList
+  const hostels = ["Admin"].includes(user.role) ? hostelList : []
   const units = unitList?.map((unit) => ({ id: unit.id, name: unit.name })) || []
 
   const [showFilters, setShowFilters] = useState(true)
@@ -159,7 +159,7 @@ const Students = () => {
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
 
-          {["Warden", "Associate Warden"].includes(user?.role) && (
+          {["Admin"].includes(user?.role) && (
             <>
               <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowImportModal(true)}>
                 <FaFileImport className="mr-2" /> Import
@@ -234,8 +234,8 @@ const Students = () => {
 
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
-      {["Warden", "Associate Warden"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
-      {["Warden", "Associate Warden"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
+      {["Admin"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
+      {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
     </div>
   )
 }

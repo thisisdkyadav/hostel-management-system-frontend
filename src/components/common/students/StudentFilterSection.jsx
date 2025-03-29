@@ -31,17 +31,19 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
-              <option value="">All Hostels</option>
-              {hostels.map((hostel, index) => (
-                <option key={index} value={hostel._id || hostel.id}>
-                  {hostel.name || hostel}
-                </option>
-              ))}
-            </select>
-          </div>
+          {hostels.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
+              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
+                <option value="">All Hostels</option>
+                {hostels.map((hostel, index) => (
+                  <option key={index} value={hostel._id || hostel.id}>
+                    {hostel.name || hostel}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Unit</label>

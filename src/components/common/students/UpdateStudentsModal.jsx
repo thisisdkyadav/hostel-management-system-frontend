@@ -2,14 +2,10 @@ import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
-import { useWarden } from "../../../contexts/WardenProvider"
 import Modal from "../../common/Modal"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
-  const { profile } = useWarden()
-  const hostelId = profile?.hostelId._id || null
-
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -20,8 +16,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  // Remove room, unit, and bedNumber from available fields
-  const availableFields = ["name", "email", "phone", "password", "profilePic", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone"]
+  const availableFields = ["name", "email", "phone", "password", "profilePic", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
 
   const handleFileUpload = (e) => {
@@ -101,7 +96,6 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           const parsedData = results.data.map((student, index) => {
             const studentData = {
               rollNumber: student.rollNumber,
-              hostelId: hostelId,
             }
 
             availableFields.forEach((field) => {
@@ -113,9 +107,6 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 }
               }
             })
-
-            // Add hostel name for display in the table
-            studentData.hostel = profile?.hostelId.name || "N/A"
 
             return studentData
           })
@@ -233,6 +224,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 </li>
                 <li>
                   <span className="font-medium">guardianPhone:</span> Number
+                </li>
+                <li>
+                  <span className="font-medium">guardianEmail:</span> Email
                 </li>
               </ul>
             </div>

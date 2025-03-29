@@ -20,7 +20,6 @@ const Complaints = () => {
   const { hostelList = [] } = useGlobal()
   const hostels = hostelList
 
-  // Combine all filters into a single state object
   const [filters, setFilters] = useState({
     status: "all",
     priority: "all",
@@ -31,14 +30,12 @@ const Complaints = () => {
     limit: 10,
   })
 
-  // UI state
   const [showFilters, setShowFilters] = useState(false)
   const [selectedComplaint, setSelectedComplaint] = useState(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [viewMode, setViewMode] = useState("list")
   const [showCraftComplaint, setShowCraftComplaint] = useState(false)
 
-  // Data state
   const [complaints, setComplaints] = useState([])
   const [loading, setLoading] = useState(false)
   const [totalItems, setTotalItems] = useState(0)
@@ -54,7 +51,6 @@ const Complaints = () => {
 
   const paginate = (pageNumber) => {
     setFilters((prev) => ({ ...prev, page: pageNumber }))
-    // Scroll to top when changing pages
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -62,7 +58,6 @@ const Complaints = () => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
-      // Reset page to 1 whenever a filter changes
       page: key !== "page" ? 1 : prev.page,
     }))
   }
@@ -75,7 +70,7 @@ const Complaints = () => {
       hostelId: "all",
       searchTerm: "",
       page: 1,
-      limit: filters.limit, // Keep the current limit
+      limit: filters.limit,
     })
   }
 

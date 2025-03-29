@@ -119,6 +119,8 @@ export const studentApi = {
   },
 
   getStudentDetails: async (userID) => {
+    console.log("Fetching student details for userID:", userID)
+
     const response = await fetch(`${baseUrl}/student/profile/details/${userID}`, {
       method: "GET",
       ...fetchOptions,
