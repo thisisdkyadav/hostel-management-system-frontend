@@ -74,6 +74,7 @@ const StudentProfile = ({ user }) => {
           <ProfileCard title="Emergency Contact">
             <ProfileInfo label="Guardian Name" value={studentData.guardian} icon={FiUser} />
             <ProfileInfo label="Guardian Phone" value={studentData.guardianPhone} icon={FiPhone} />
+            <ProfileInfo label="Guardian Email" value={studentData.guardianEmail} icon={FiMail} />
           </ProfileCard>
         </div>
       </div>

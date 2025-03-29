@@ -36,7 +36,7 @@ export const useStudents = (options = {}) => {
       const response = await studentApi.getStudents(queryString)
       setStudents(response?.data || [])
       setTotalCount(response?.pagination?.total || 0)
-      setTotalPages(response?.pagination?.pages || Math.ceil(response?.pagination?.total / pagination.perPage) || 0)
+      setTotalPages(Math.ceil(response?.pagination?.total / pagination.perPage) || 0)
       return response
     } catch (err) {
       setError(err.message || "Failed to fetch students")

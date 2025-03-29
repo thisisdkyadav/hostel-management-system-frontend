@@ -183,23 +183,31 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <span className="text-gray-600 text-sm">Guardian Phone:</span>
                     <span className="font-medium text-sm">{studentDetails.guardianPhone || "N/A"}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 text-sm">Guardian Email:</span>
+                    <span className="font-medium text-sm">{studentDetails.guardianEmail || "N/A"}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="mt-6 flex justify-end space-x-4 pt-4 border-t border-gray-100">
-              {/* mailto button */}
+              {!isImport && (
+                <>
+                  <a href={`mailto:${studentDetails.guardianEmail}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                    Email Guardian
+                  </a>
+                  <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                    Email Student
+                  </a>
+                  <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                    Edit Student
+                  </button>
+                </>
+              )}
               <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
                 Close
               </button>
-              <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                Email Student
-              </a>
-              {!isImport && (
-                <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                  Edit Student
-                </button>
-              )}
             </div>
           </>
         )}
