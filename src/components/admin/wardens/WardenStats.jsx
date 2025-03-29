@@ -2,43 +2,34 @@ import StatCards from "../../common/StatCards"
 import { FaUsers } from "react-icons/fa"
 import { MdVerified } from "react-icons/md"
 import { FaBuilding } from "react-icons/fa"
-import { BsCalendarCheck } from "react-icons/bs"
 
-const WardenStats = ({ wardens }) => {
+const WardenStats = ({ wardens, staffType = "warden" }) => {
+  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
   const totalWardens = wardens.length
   const assignedWardens = wardens.filter((w) => w.status === "assigned").length
   const unassignedWardens = wardens.filter((w) => w.status === "unassigned").length
 
-  // Calculate average service years
-  const calculateServiceYears = (joinDate) => {
-    const start = new Date(joinDate)
-    const now = new Date()
-    return Math.floor((now - start) / (365.25 * 24 * 60 * 60 * 1000))
-  }
-
-  const averageExperience = Math.round(wardens.reduce((acc, warden) => acc + calculateServiceYears(warden.joinDate), 0) / wardens.length || 0)
-
   const statsData = [
     {
-      title: "Total Wardens",
+      title: `Total ${staffTitle}s`,
       value: totalWardens,
-      subtitle: "Managing faculty members",
+      subtitle: staffType === "warden" ? "Managing faculty members" : "Supporting faculty members",
       icon: <FaUsers className="text-2xl" />,
       color: "#1360AB",
     },
     {
-      title: "Assigned Wardens",
+      title: "Assigned",
       value: assignedWardens,
       subtitle: "Currently assigned",
       icon: <MdVerified className="text-2xl" />,
-      color: "#22c55e", // green-500
+      color: "#22c55e",
     },
     {
       title: "Unassigned",
       value: unassignedWardens,
       subtitle: "Available to assign",
       icon: <FaBuilding className="text-2xl" />,
-      color: "#f97316", // orange-500
+      color: "#f97316",
     },
   ]
 
