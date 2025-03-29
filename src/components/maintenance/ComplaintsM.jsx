@@ -297,7 +297,14 @@ const ComplaintsM = () => {
       )}
 
       {/* Complaint Detail Modal */}
-      <ComplaintDetailModal showModal={showModal} selectedComplaint={selectedComplaint} onClose={() => setShowModal(false)} changeStatus={changeStatus} categoryBg={categoryBg} statusColor={statusColor} priorityColor={priorityColor} />
+      {showModal && (
+        <ComplaintDetailModal 
+          selectedComplaint={selectedComplaint} 
+          setShowDetailModal={setShowModal}
+          refreshComplaints={fetchComplaints}
+          show={showModal} 
+        />
+      )}
     </div>
   )
 }
