@@ -18,7 +18,7 @@ import { useAuth } from "../contexts/AuthProvider"
 const Complaints = () => {
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
-  const hostels = hostelList
+  const hostels = ["Admin"].includes(user?.role) ? hostelList : []
 
   const [filters, setFilters] = useState({
     status: "all",
@@ -163,17 +163,19 @@ const Complaints = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
-              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
-                <option value="all">All Hostels</option>
-                {hostels.map((hostel, index) => (
-                  <option key={index} value={hostel._id}>
-                    {hostel.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {hostels.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
+                <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
+                  <option value="all">All Hostels</option>
+                  {hostels.map((hostel, index) => (
+                    <option key={index} value={hostel._id}>
+                      {hostel.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5">Category</label>
