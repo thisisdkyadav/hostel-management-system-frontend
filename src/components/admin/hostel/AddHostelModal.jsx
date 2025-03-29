@@ -9,7 +9,6 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
     name: "",
     gender: "Boys",
     type: "unit-based",
-    location: "",
   })
 
   const handleChange = (e) => {
@@ -37,7 +36,6 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
       name: "",
       gender: "Boys",
       type: "unit-based",
-      location: "",
     })
   }
 
@@ -73,11 +71,6 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
                 <option value="room-only">Room-only</option>
               </select>
             </div>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Location</label>
-            <input type="text" name="location" value={formData.location} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter hostel location" />
           </div>
         </div>
 
