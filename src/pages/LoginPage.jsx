@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import IITI_Logo from "../assets/logos/IITILogo.png"
 import { useAuth } from "../contexts/AuthProvider"
 import LoginWithGoogle from "../components/LoginWithGoogle"
 
@@ -67,7 +66,7 @@ const LoginPage = () => {
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-gray-100 to-blue-200 p-4">
       <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-[0_10px_40px_rgba(19,96,171,0.15)] w-full max-w-md transition-all duration-300 border border-gray-100">
         <div className="flex flex-col items-center">
-          <img src={IITI_Logo} className="h-20 sm:h-28 mb-4 sm:mb-6 transition-all duration-300" alt="IIT Logo" />
+          <img src="/IITILogo.png" className="h-20 sm:h-28 mb-4 sm:mb-6 transition-all duration-300" alt="IIT Logo" />
           <h1 className="text-2xl font-bold text-gray-800 mb-6">Hostel Management System</h1>
         </div>
 

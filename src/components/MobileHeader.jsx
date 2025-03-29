@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { useNavigate } from "react-router-dom" // Add this import
-import IITI_Logo from "../assets/logos/IITILogo.png"
+import { useNavigate } from "react-router-dom"
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -31,7 +30,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
       </button>
 
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
-        <img src={IITI_Logo} alt="IIT Indore Logo" className="h-10 w-auto object-contain" />
+        <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-10 w-auto object-contain" />
       </div>
 
       <div className="relative" ref={dropdownRef}>
