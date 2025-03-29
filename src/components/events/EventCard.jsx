@@ -94,7 +94,7 @@ const EventCard = ({ event, refresh }) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-        {["Admin", "Warden", "Security"].includes(user.role) && (
+        {["Admin", "Warden", "Associate Warden", "Security"].includes(user.role) && (
           <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
             <FaEdit className="mr-2" /> Edit
           </button>

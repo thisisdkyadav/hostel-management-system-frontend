@@ -100,6 +100,8 @@ export const AuthProvider = ({ children }) => {
   const getHomeRoute = () => {
     if (!user) return "/login"
 
+    console.log("user role", user.role)
+
     switch (user.role) {
       case "Student":
         return "/student"
@@ -111,6 +113,8 @@ export const AuthProvider = ({ children }) => {
         return "/admin"
       case "Maintenance Staff":
         return "/maintenance"
+      case "Associate Warden":
+        return "/associate-warden"
       default:
         return "/login"
     }

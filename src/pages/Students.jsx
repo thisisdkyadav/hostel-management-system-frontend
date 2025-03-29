@@ -159,7 +159,7 @@ const Students = () => {
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
 
-          {["Warden"].includes(user?.role) && (
+          {["Warden", "Associate Warden"].includes(user?.role) && (
             <>
               <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowImportModal(true)}>
                 <FaFileImport className="mr-2" /> Import
@@ -234,8 +234,8 @@ const Students = () => {
 
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
-      {["Warden"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
-      {["Warden"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
+      {["Warden", "Associate Warden"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
+      {["Warden", "Associate Warden"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
     </div>
   )
 }

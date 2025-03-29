@@ -60,7 +60,7 @@ const Feedbacks = () => {
     }
   }, [profile])
 
-  if (user?.role !== "Warden") {
+  if (!["Warden", "Associate Warden"].includes(user?.role)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
         <div className="bg-white rounded-xl shadow-md p-6 md:p-8 max-w-md w-full border border-red-100">

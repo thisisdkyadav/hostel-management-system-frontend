@@ -57,6 +57,8 @@ const LoginPage = () => {
         return "/admin"
       case "Maintenance Staff":
         return "/maintenance"
+      case "Associate Warden":
+        return "/associate-warden"
       default:
         return "/login"
     }

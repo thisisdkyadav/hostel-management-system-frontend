@@ -49,6 +49,7 @@ import StudentFeedback from "../pages/student/Feedback.jsx"
 import Feedbacks from "../pages/warden/Feedbacks.jsx"
 import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
+import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -93,6 +94,26 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={["Warden"]}>
             <WardenLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<WardenDashboard />} />
+        <Route path="complaints" element={<Complaint />} />
+        <Route path="students" element={<Students />} />
+        <Route path="visitors" element={<Visitors />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="events" element={<Events />} />
+        <Route path="room-change-requests" element={<RoomChangeRequests />} />
+        <Route path="units-and-rooms" element={<UnitsAndRooms />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="feedbacks" element={<Feedbacks />} />
+      </Route>
+
+      <Route
+        path="/associate-warden"
+        element={
+          <ProtectedRoute allowedRoles={["Associate Warden"]}>
+            <AssociateWardenLayout />
           </ProtectedRoute>
         }
       >
