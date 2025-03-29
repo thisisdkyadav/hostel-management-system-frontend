@@ -62,7 +62,7 @@ const Events = () => {
       <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Events</h1>
-          {["Warden", "Associate Warden"].includes(user?.role) && (
+          {["Admin"].includes(user?.role) && (
             <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
               <FaPlus className="mr-2" /> Add Event
             </button>
@@ -87,7 +87,7 @@ const Events = () => {
         {filteredEvents.length === 0 && <NoResults icon={<FaCalendarAlt className="text-gray-300 text-3xl" />} message="No events found" suggestion="Try changing your search or filter criteria" />}
       </div>
 
-      {["Warden", "Associate Warden"].includes(user?.role) && <AddEventModal show={showAddModal} onClose={() => setShowAddModal(false)} onEventAdded={fetchEvents} />}
+      {["Admin"].includes(user?.role) && <AddEventModal show={showAddModal} onClose={() => setShowAddModal(false)} onEventAdded={fetchEvents} />}
     </>
   )
 }
