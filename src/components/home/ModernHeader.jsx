@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FiMenu, FiX, FiChevronDown, FiLogOut, FiUser, FiHome } from "react-icons/fi"
-import IITI_Logo from "../../assets/logos/IITILogo.png"
 
 const ModernHeader = () => {
   const { user, getHomeRoute, logout } = useAuth()
@@ -78,7 +77,7 @@ const ModernHeader = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <img src={IITI_Logo} alt="IIT Indore Logo" className="h-10 md:h-12" />
+            <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-10 md:h-12" />
             <div className="text-gray-800">
               <h1 className="text-sm md:text-base font-bold">IIT INDORE</h1>
               <p className="text-xs md:text-sm">Halls of Residence</p>
