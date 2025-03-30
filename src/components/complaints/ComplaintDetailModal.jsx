@@ -46,8 +46,8 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
               <FaUserCircle className="mr-2" /> Reported By
             </h4>
             <div className="flex items-center">
-              {selectedComplaint.reportedBy?.image ? (
-                <img src={selectedComplaint.reportedBy.image} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
+              {selectedComplaint.reportedBy?.profileImage ? (
+                <img src={selectedComplaint.reportedBy.profileImage} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
               ) : (
                 <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-4">{selectedComplaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}

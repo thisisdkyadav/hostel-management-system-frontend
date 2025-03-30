@@ -105,7 +105,7 @@ const Settings = () => {
                     </div>
                     <div className='flex items-center justify-center gap-1'>
                         <div>
-                            <img src={student.imageURL != undefined ? student.imageURL : userr} className='w-12 h-12 rounded-full' alt="userImg" />
+                            <img src={student.profileImageURL != undefined ? student.profileImageURL : userr} className='w-12 h-12 rounded-full' alt="userImg" />
                         </div>
                         <p className='!px-2 font-semibold'>{student.userId.name}</p>
 

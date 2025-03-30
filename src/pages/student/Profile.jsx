@@ -52,9 +52,8 @@ const Profile = () => {
 
       <div className="absolute left-[17%] top-[17%] flex flex-row gap-8 w-[75%]">
         <div className="flex flex-col gap-8 bg-white shadow-lg p-6 rounded-xl w-[60%]">
-          {/* ...existing profile code... */}
           <div className="flex items-center gap-5">
-            <img src={student.profilePic || userImg} className="rounded-full w-32 h-32 object-cover border-2 border-gray-300" alt="Profile" onError={(e) => (e.target.src = userImg)} />
+            <img src={student.profileImage || userImg} className="rounded-full w-32 h-32 object-cover border-2 border-gray-300" alt="Profile" onError={(e) => (e.target.src = userImg)} />
             <div className="text-black flex flex-col gap-2">
               <p className="text-2xl font-bold">Name: {student.userId.name}</p>
               <p className="text-md">Email: {student.userId.email}</p>

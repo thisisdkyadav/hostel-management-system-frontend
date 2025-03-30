@@ -48,8 +48,8 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
 
         <div className="flex flex-col md:flex-row md:items-center">
           <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
-            {warden.profilePic ? (
-              <img src={warden.profilePic} alt={warden.name} className="w-16 h-16 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
+            {warden.profileImage ? (
+              <img src={warden.profileImage} alt={warden.name} className="w-16 h-16 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
             ) : (
               <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center border-2 border-[#1360AB]">
                 <FaUserTie className="text-[#1360AB] text-2xl" />

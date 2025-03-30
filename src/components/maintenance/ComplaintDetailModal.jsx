@@ -1,48 +1,38 @@
-import React, { useState, useCallback } from "react";
-import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaTimes } from "react-icons/fa";
-import { getStatusColor, getPriorityColor } from "../../utils/adminUtils";
-import Modal from "../common/Modal";
-import { maintenanceApi } from "../../services/apiService";
+import React, { useState, useCallback } from "react"
+import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaTimes } from "react-icons/fa"
+import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
+import Modal from "../common/Modal"
+import { maintenanceApi } from "../../services/apiService"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, refreshComplaints, show }) => {
-  if (!selectedComplaint || !show) return null;
+  if (!selectedComplaint || !show) return null
 
-  const [newStatus, setNewStatus] = useState(selectedComplaint.status);
-  const [updating, setUpdating] = useState(false);
+  const [newStatus, setNewStatus] = useState(selectedComplaint.status)
+  const [updating, setUpdating] = useState(false)
 
   const handleClose = useCallback(() => {
-    setShowDetailModal(false);
-  }, [setShowDetailModal]);
+    setShowDetailModal(false)
+  }, [setShowDetailModal])
 
   const handleStatusUpdate = async (status) => {
     try {
-      setUpdating(true);
-      await maintenanceApi.updateComplaintStatus(selectedComplaint.id, status);
-      refreshComplaints && refreshComplaints();
+      setUpdating(true)
+      await maintenanceApi.updateComplaintStatus(selectedComplaint.id, status)
+      refreshComplaints && refreshComplaints()
     } catch (error) {
-      console.error("Error updating complaint status:", error);
+      console.error("Error updating complaint status:", error)
     } finally {
-      setUpdating(false);
+      setUpdating(false)
     }
-  };
+  }
 
   return (
-    <Modal 
-      title="Complaint Details" 
-      onClose={handleClose}
-      width={800}
-      show={show}
-    >
+    <Modal title="Complaint Details" onClose={handleClose} width={800} show={show}>
       {/* Cross button to close dialog */}
-      <button 
-        onClick={handleClose}
-        type="button"
-        aria-label="Close"
-        className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer z-50 rounded-full hover:bg-gray-100"
-      >
+      <button onClick={handleClose} type="button" aria-label="Close" className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer z-50 rounded-full hover:bg-gray-100">
         <FaTimes size={20} />
       </button>
-      
+
       <div className="space-y-6">
         {/* Header with Complaint ID and Title */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-3 border-b border-gray-100">
@@ -51,15 +41,9 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, refreshCo
             <h2 className="text-xl font-bold text-gray-800 mt-1">{selectedComplaint.title}</h2>
           </div>
           <div className="flex items-center space-x-3 mt-3 sm:mt-0">
-            <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(newStatus)}`}>
-              {newStatus}
-            </span>
-            <span className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(selectedComplaint.priority)}`}>
-              {selectedComplaint.priority}
-            </span>
-            <span className="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">
-              {selectedComplaint.category}
-            </span>
+            <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(newStatus)}`}>{newStatus}</span>
+            <span className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(selectedComplaint.priority)}`}>{selectedComplaint.priority}</span>
+            <span className="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">{selectedComplaint.category}</span>
           </div>
         </div>
 
@@ -86,16 +70,10 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, refreshCo
               <FaUserCircle className="mr-2" /> Reported By
             </h4>
             <div className="flex items-center">
-              {selectedComplaint.reportedBy?.image ? (
-                <img 
-                  src={selectedComplaint.reportedBy.image} 
-                  alt={selectedComplaint.reportedBy.name} 
-                  className="h-12 w-12 rounded-full object-cover mr-4" 
-                />
+              {selectedComplaint.reportedBy?.profileImage ? (
+                <img src={selectedComplaint.reportedBy.profileImage} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
               ) : (
-                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-4">
-                  {selectedComplaint.reportedBy?.name?.charAt(0) || "U"}
-                </div>
+                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-4">{selectedComplaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}
               <div>
                 <div className="font-medium">{selectedComplaint.reportedBy?.name}</div>
@@ -111,9 +89,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, refreshCo
           <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
             <FaClipboardList className="mr-2" /> Description
           </h4>
-          <div className="bg-gray-50 p-5 rounded-xl text-gray-700">
-            {selectedComplaint.description}
-          </div>
+          <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{selectedComplaint.description}</div>
         </div>
 
         {/* Resolution Notes */}
@@ -121,36 +97,26 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, refreshCo
           <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
             <FaInfoCircle className="mr-2" /> Resolution Notes
           </h4>
-          {selectedComplaint.resolutionNotes ? (
-            <div className="bg-gray-50 p-5 rounded-xl text-gray-700">
-              {selectedComplaint.resolutionNotes}
-            </div>
-          ) : (
-            <div className="bg-gray-50 p-5 rounded-xl text-gray-500 italic">
-              No resolution notes yet.
-            </div>
-          )}
+          {selectedComplaint.resolutionNotes ? <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{selectedComplaint.resolutionNotes}</div> : <div className="bg-gray-50 p-5 rounded-xl text-gray-500 italic">No resolution notes yet.</div>}
         </div>
 
         {/* Timestamps */}
         <div className="flex flex-wrap justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
           <div>Created: {new Date(selectedComplaint.createdDate).toLocaleString()}</div>
-          {selectedComplaint.lastUpdated !== selectedComplaint.createdDate && (
-            <div>Last Updated: {new Date(selectedComplaint.lastUpdated).toLocaleString()}</div>
-          )}
+          {selectedComplaint.lastUpdated !== selectedComplaint.createdDate && <div>Last Updated: {new Date(selectedComplaint.lastUpdated).toLocaleString()}</div>}
         </div>
 
         {/* Update Status Section - without update button */}
         <div className="pt-4 border-t border-gray-100">
           <h4 className="text-sm font-medium text-[#1360AB] mb-2">Update Complaint Status</h4>
           <div className="flex items-center">
-            <select 
+            <select
               className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
               value={newStatus}
               onChange={(e) => {
-                const updatedStatus = e.target.value;
-                setNewStatus(updatedStatus);
-                handleStatusUpdate(updatedStatus);
+                const updatedStatus = e.target.value
+                setNewStatus(updatedStatus)
+                handleStatusUpdate(updatedStatus)
               }}
             >
               <option value="Pending">Pending</option>
@@ -161,7 +127,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, refreshCo
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ComplaintDetailModal;
+export default ComplaintDetailModal
