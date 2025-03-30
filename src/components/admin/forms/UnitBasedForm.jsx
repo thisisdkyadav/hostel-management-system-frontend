@@ -31,7 +31,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
     const { name, value } = e.target
     if (["floors", "defaultUnitsPerFloor", "defaultRoomsPerUnit", "standardCapacity"].includes(name)) {
       setUnitConfig((prev) => {
-        const updated = { ...prev, [name]: parseInt(value) || 0 }
+        const updated = { ...prev, [name]: parseInt(value) }
         updateFormDataWithConfig(updated)
         return updated
       })
@@ -41,7 +41,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         setUnitConfig((prev) => {
           const updated = {
             ...prev,
-            unitsPerFloor: { ...prev.unitsPerFloor, [floor]: parseInt(value) || 0 },
+            unitsPerFloor: { ...prev.unitsPerFloor, [floor]: parseInt(value) },
           }
           updateFormDataWithConfig(updated)
           return updated
@@ -193,7 +193,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
           </div>
 
           <div className="mb-4">
-            <h5 className="text-gray-700 mb-2">Units per Floor:</h5>
+            <h5 className="text-gray-700 mb-2">Floor wise Units:</h5>
             {Array.from({ length: unitConfig.floors }, (_, i) => {
               const floor = i + 1
               return (
