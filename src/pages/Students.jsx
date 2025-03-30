@@ -13,7 +13,8 @@ import Pagination from "../components/common/Pagination"
 import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
-import { studentApi } from "../services/apiService"
+import { studentApi, hostelApi } from "../services/apiService"
+import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
 
 const Students = () => {
   const { user } = useAuth()
@@ -27,6 +28,7 @@ const Students = () => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
+  const [showAllocateModal, setShowAllocateModal] = useState(false)
 
   const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
     perPage: 10,
@@ -68,6 +70,30 @@ const Students = () => {
       return true
     } catch (error) {
       alert(`An error occurred: ${error.message}`)
+      return false
+    }
+  }
+
+  const handleUpdateAllocations = async (allocations, hostelId) => {
+    try {
+      const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
+      console.log("Update allocations response:", response)
+      if (response.success) {
+        refreshStudents()
+        const errors = response.errors || []
+        if (errors.length > 0) {
+          alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")}`)
+        } else {
+          alert("Allocations updated successfully")
+        }
+        setShowAllocateModal(false)
+        return true
+      } else {
+        alert("Failed to update allocations")
+        return false
+      }
+    } catch (error) {
+      alert("An error occurred while updating allocations")
       return false
     }
   }
@@ -167,6 +193,9 @@ const Students = () => {
               <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowUpdateModal(true)}>
                 <FaEdit className="mr-2" /> Bulk Update
               </button>
+              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowAllocateModal(true)}>
+                <FaFileImport className="mr-2" /> Update Allocations
+              </button>
             </>
           )}
 
@@ -236,6 +265,7 @@ const Students = () => {
 
       {["Admin"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
       {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
+      {["Admin"].includes(user?.role) && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
     </div>
   )
 }
