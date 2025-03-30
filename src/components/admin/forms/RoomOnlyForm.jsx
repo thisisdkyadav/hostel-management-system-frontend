@@ -17,7 +17,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
     const { name, value } = e.target
     if (["floors", "defaultRoomsPerFloor", "standardCapacity"].includes(name)) {
       setRoomConfig((prev) => {
-        const updated = { ...prev, [name]: parseInt(value) || 0 }
+        const updated = { ...prev, [name]: parseInt(value) }
         updateFormDataWithConfig(updated)
         return updated
       })

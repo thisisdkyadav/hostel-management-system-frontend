@@ -1138,8 +1138,8 @@ export const hostelApi = {
     return response.json()
   },
 
-  updateRoomAllocations: async (allocationData) => {
-    const response = await fetch(`${baseUrl}/hostel/update-allocations`, {
+  updateRoomAllocations: async (allocationData, hostelId) => {
+    const response = await fetch(`${baseUrl}/hostel/update-allocations/${hostelId}`, {
       method: "PUT",
       ...fetchOptions,
       body: JSON.stringify(allocationData),
