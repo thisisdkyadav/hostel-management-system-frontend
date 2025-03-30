@@ -3,7 +3,7 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import Modal from "../common/Modal";
 import { studentApi } from "../../services/apiService";
 
-const VisitorRequestForm = ({ student }) => {
+const VisitorRequestForm = ({ student, isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
     numberOfVisitors: 1,
     visitorNames: [""],
@@ -15,7 +15,6 @@ const VisitorRequestForm = ({ student }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,9 +69,6 @@ const VisitorRequestForm = ({ student }) => {
 
   return (
     <>
-      <button className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center" onClick={() => setIsOpen(true)}>
-        Request Visitor Entry
-      </button>
       {isOpen && (
         <Modal title="Visitor Request Form" onClose={() => setIsOpen(false)} width={550}>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -90,7 +86,7 @@ const VisitorRequestForm = ({ student }) => {
                   type="number"
                   name="numberOfVisitors"
                   min="1"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.numberOfVisitors}
                   onChange={handleNumberOfVisitorsChange}
                   required
@@ -102,7 +98,7 @@ const VisitorRequestForm = ({ student }) => {
                   <label className="block text-gray-700 text-sm font-medium mb-2">Visitor Name {index + 1}</label>
                   <input
                     type="text"
-                    className="w-full p-3 border border-gray-300 rounded-lg"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                     value={name}
                     onChange={(e) => handleVisitorNameChange(index, e.target.value)}
                     required
@@ -111,11 +107,11 @@ const VisitorRequestForm = ({ student }) => {
               ))}
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Visitor Contact</label>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Visitor Contact Number</label>
                 <input
                   type="text"
                   name="visitorContact"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.visitorContact}
                   onChange={handleChange}
                   required
@@ -123,11 +119,11 @@ const VisitorRequestForm = ({ student }) => {
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Visitor Email</label>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Visitor Email Id</label>
                 <input
                   type="email"
                   name="visitorEmail"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.visitorEmail}
                   onChange={handleChange}
                   required
@@ -139,7 +135,7 @@ const VisitorRequestForm = ({ student }) => {
                 <input
                   type="text"
                   name="relationWithStudent"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.relationWithStudent}
                   onChange={handleChange}
                   required
@@ -150,7 +146,7 @@ const VisitorRequestForm = ({ student }) => {
                 <label className="block text-gray-700 text-sm font-medium mb-2">Visit Reason</label>
                 <textarea
                   name="visitReason"
-                  className="w-full p-3 border border-gray-300 rounded-lg resize-none h-32"
+                  className="w-full p-3 border border-gray-300 rounded-lg resize-none h-32 focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.visitReason}
                   onChange={handleChange}
                   required
@@ -162,7 +158,7 @@ const VisitorRequestForm = ({ student }) => {
                 <input
                   type="date"
                   name="visitDate"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.visitDate}
                   onChange={handleChange}
                   required
