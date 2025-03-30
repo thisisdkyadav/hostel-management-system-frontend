@@ -9,6 +9,11 @@ const ComplaintItemM = ({
   statusColor,
   priorityColor
 }) => {
+  // Use hostel and roomNumber if available; fallback to complaint.location
+  const locationInfo = complaint.hostel 
+    ? `Hostel: ${complaint.hostel}, Room: ${complaint.roomNumber || 'N/A'}`
+    : `Location: ${complaint.location}`;
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
       <div className="flex flex-col sm:flex-row justify-between gap-3">
@@ -18,7 +23,7 @@ const ComplaintItemM = ({
               {complaint.category}
             </span>
             <span className="text-gray-500 text-sm">
-              {new Date(complaint.date).toLocaleDateString()}
+              {new Date(complaint.createdDate).toLocaleDateString()}
             </span>
             <span className="flex items-center">
               <span className={`inline-block w-2 h-2 rounded-full mr-1 ${priorityColor[complaint.priority]}`}></span>
@@ -30,7 +35,7 @@ const ComplaintItemM = ({
           <p className="text-sm text-gray-600 line-clamp-2 mb-2">{complaint.description}</p>
           
           <div className="text-sm text-gray-500">
-            Location: {complaint.location}
+            {locationInfo}
           </div>
         </div>
         
