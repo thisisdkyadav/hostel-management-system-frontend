@@ -15,6 +15,7 @@ import RoomStats from "../../components/wardens/RoomStats"
 import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
+import AccessDenied from "../../components/common/AccessDenied"
 
 const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()
@@ -270,6 +271,10 @@ const UnitsAndRooms = () => {
 
   if (!currentHostel) {
     return <div className="flex justify-center items-center h-screen">Hostel not found</div>
+  }
+
+  if (user.hostel && user.hostel._id !== currentHostel?._id) {
+    return <AccessDenied />
   }
 
   return (
