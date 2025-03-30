@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
-import { FaBuilding, FaUserTie, FaUser, FaLocationArrow } from "react-icons/fa"
-import { FaLocationDot } from "react-icons/fa6"
+import { FaBuilding, FaUserTie, FaUser } from "react-icons/fa"
 
 const EditHostelModal = ({ hostel, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
-    location: "",
   })
 
   const [errors, setErrors] = useState({})
@@ -18,7 +16,6 @@ const EditHostelModal = ({ hostel, onClose, onSave }) => {
       setFormData({
         name: hostel.name || "",
         gender: hostel.gender || "",
-        location: hostel.location || "",
       })
     }
   }, [hostel])
@@ -58,7 +55,6 @@ const EditHostelModal = ({ hostel, onClose, onSave }) => {
         ...hostel,
         name: formData.name,
         gender: formData.gender,
-        location: formData.location,
       })
 
       onClose()
@@ -123,16 +119,6 @@ const EditHostelModal = ({ hostel, onClose, onSave }) => {
             </div>
           </div>
           {errors.gender && <p className="mt-1.5 text-sm text-red-600">{errors.gender}</p>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
-              <FaLocationDot className="h-5 w-5" />
-            </div>
-            <input type="text" name="location" value={formData.location} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 focus:ring-blue-100 rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]" placeholder="Enter location" />
-          </div>
         </div>
 
         <div className="pt-4 border-t border-gray-100 flex flex-col-reverse sm:flex-row sm:justify-between items-center gap-3">

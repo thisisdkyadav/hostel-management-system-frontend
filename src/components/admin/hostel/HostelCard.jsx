@@ -3,7 +3,6 @@ import { FaBuilding, FaEdit, FaEye, FaTools, FaUserTie } from "react-icons/fa"
 import { MdMeetingRoom } from "react-icons/md"
 import { BsThreeDotsVertical } from "react-icons/bs"
 import EditHostelModal from "./EditHostelModal"
-import { FaLocationDot } from "react-icons/fa6"
 import { Link } from "react-router-dom"
 
 const HostelCard = ({ hostel, onUpdate }) => {
@@ -49,10 +48,6 @@ const HostelCard = ({ hostel, onUpdate }) => {
               <span className="text-xs md:text-sm">
                 {hostel.totalRooms} Rooms ({hostel.vacantRooms} vacant)
               </span>
-            </div>
-            <div className="flex items-center">
-              <FaLocationDot className="text-gray-500 mr-2 text-sm" />
-              <span className="text-xs md:text-sm">{hostel.location}</span>
             </div>
             <div className="flex items-center">
               <FaTools className="text-gray-500 mr-2 text-sm" />
