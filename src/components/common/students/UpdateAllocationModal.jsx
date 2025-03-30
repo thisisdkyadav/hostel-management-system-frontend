@@ -1,15 +1,18 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
-import StudentTableView from "../common/students/StudentTableView"
+import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
-import { useWarden } from "../../contexts/WardenProvider"
-import Modal from "../common/Modal"
-import StudentDetailModal from "../common/students/StudentDetailModal"
+
+import { useGlobal } from "../../../contexts/GlobalProvider"
+import Modal from "../Modal"
+import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
-  const { profile } = useWarden()
-  const hostelId = profile?.hostelId._id || null
-  const hostelType = profile?.hostelId.type || null
+  const { hostelList } = useGlobal()
+
+  const [selectedHostel, setSelectedHostel] = useState(null)
+  const hostelId = selectedHostel?._id || null
+  const hostelType = selectedHostel?.type || null
 
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -21,7 +24,6 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  // Only allocation fields
   const baseRequiredFields = ["rollNumber", "room", "bedNumber"]
   const requiredFields = hostelType === "unit-based" ? [...baseRequiredFields, "unit"] : baseRequiredFields
 
@@ -37,7 +39,19 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     }
   }
 
+  const handleHostelChange = (e) => {
+    const hostelId = e.target.value
+    const selected = hostelList.find((hostel) => hostel._id === hostelId)
+    setSelectedHostel(selected)
+    setError("")
+  }
+
   const generateCsvTemplate = () => {
+    if (!selectedHostel) {
+      setError("Please select a hostel first")
+      return
+    }
+
     const headers = requiredFields
     const csvContent = headers.join(",")
 
@@ -57,6 +71,12 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
   const handleDrop = (e) => {
     e.preventDefault()
+
+    if (!selectedHostel) {
+      setError("Please select a hostel first")
+      return
+    }
+
     const file = e.dataTransfer.files[0]
     if (file) {
       if (file.type !== "text/csv") {
@@ -69,6 +89,11 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   }
 
   const parseCSV = (file) => {
+    if (!selectedHostel) {
+      setError("Please select a hostel first")
+      return
+    }
+
     setIsLoading(true)
     setError("")
 
@@ -94,7 +119,6 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
           const parsedData = results.data.map((student, index) => {
             const studentData = {
-              hostelId: hostelId,
               rollNumber: student.rollNumber,
               room: student.room,
               bedNumber: student.bedNumber,
@@ -107,8 +131,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               studentData.displayRoom = student.room || ""
             }
 
-            // Add hostel name for display in the table
-            studentData.hostel = profile?.hostelId.name || "N/A"
+            studentData.hostel = selectedHostel.name || "N/A"
 
             return studentData
           })
@@ -129,6 +152,11 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   }
 
   const handleAllocate = async () => {
+    if (!selectedHostel) {
+      setError("Please select a hostel first")
+      return
+    }
+
     if (parsedData.length === 0) {
       setError("No data to allocate")
       return
@@ -153,7 +181,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     setIsAllocating(true)
 
     try {
-      const isSuccess = await onAllocate(parsedData)
+      const isSuccess = await onAllocate(parsedData, hostelId)
       if (isSuccess) {
         onClose(false)
         resetForm()
@@ -181,41 +209,62 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
     <Modal title="Update Room Allocations" onClose={onClose} width={900}>
       {step === 1 && (
         <div className="space-y-5">
-          <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-            <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
-            <p className="mt-3 text-xs text-gray-500">
-              <strong>Required fields:</strong> {requiredFields.join(", ")}
-            </p>
-            <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+          {/* Add hostel selection dropdown */}
+          <div className="mb-4">
+            <label htmlFor="hostel-select" className="block text-sm font-medium text-gray-700 mb-1">
+              Select Hostel
+            </label>
+            <select id="hostel-select" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" value={selectedHostel?._id || ""} onChange={handleHostelChange}>
+              <option value="">-- Select a hostel --</option>
+              {hostelList.map((hostel) => (
+                <option key={hostel._id} value={hostel._id}>
+                  {hostel.name} ({hostel.type})
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="flex flex-col items-center">
-            <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
-              <FaFileDownload className="mr-1" />
-              Download CSV Template
-            </button>
+          {selectedHostel ? (
+            <>
+              <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
+                <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
+                <p className="mt-3 text-xs text-gray-500">
+                  <strong>Required fields:</strong> {requiredFields.join(", ")}
+                </p>
+                <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+              </div>
 
-            <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
-              <p className="font-medium mb-1">Field Input Types:</p>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
-                <li>
-                  <span className="font-medium">rollNumber:</span> String (Required)
-                </li>
-                <li>
-                  <span className="font-medium">room:</span> String/Number (Required)
-                </li>
-                <li>
-                  <span className="font-medium">bedNumber:</span> Number (Required)
-                </li>
-                {hostelType === "unit-based" && (
-                  <li>
-                    <span className="font-medium">unit:</span> String (Required)
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
+              <div className="flex flex-col items-center">
+                <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
+                  <FaFileDownload className="mr-1" />
+                  Download CSV Template
+                </button>
+
+                <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
+                  <p className="font-medium mb-1">Field Input Types:</p>
+                  <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <li>
+                      <span className="font-medium">rollNumber:</span> String (Required)
+                    </li>
+                    <li>
+                      <span className="font-medium">room:</span> String/Number (Required)
+                    </li>
+                    <li>
+                      <span className="font-medium">bedNumber:</span> Number (Required)
+                    </li>
+                    {hostelType === "unit-based" && (
+                      <li>
+                        <span className="font-medium">unit:</span> String (Required)
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="py-8 text-center text-gray-500">Please select a hostel to continue with room allocation</div>
+          )}
 
           {csvFile && (
             <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
@@ -248,7 +297,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       {step === 2 && (
         <div className="space-y-5">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-800">Preview Room Allocations</h3>
+            <h3 className="text-lg font-medium text-gray-800">Preview Room Allocations - {selectedHostel?.name}</h3>
             <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} room allocations found in CSV</div>
           </div>
 
