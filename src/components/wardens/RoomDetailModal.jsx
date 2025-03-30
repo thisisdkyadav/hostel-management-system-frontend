@@ -2,8 +2,10 @@ import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../services/apiService"
 import Modal from "../common/Modal"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
 
   const handleRemoveStudent = async (allocationId) => {
@@ -104,15 +106,16 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
 
         <div className="mt-4">
           <button onClick={handleToggleStatus} disabled={loading} className={`flex items-center px-4 py-2.5 rounded-lg transition-colors ${room.status === "Inactive" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-red-50 text-red-700 hover:bg-red-100"}`}>
-            {room.status === "Inactive" ? (
-              <>
-                <FaToggleOff className="mr-2" /> Activate Room
-              </>
-            ) : (
-              <>
-                <FaToggleOn className="mr-2" /> Mark as Inactive
-              </>
-            )}
+            {["Admin"].includes(user.role) &&
+              (room.status === "Inactive" ? (
+                <>
+                  <FaToggleOff className="mr-2" /> Activate Room
+                </>
+              ) : (
+                <>
+                  <FaToggleOn className="mr-2" /> Mark as Inactive
+                </>
+              ))}
           </button>
         </div>
 
@@ -121,7 +124,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
             <h3 className="text-lg font-medium flex items-center">
               <FaUserAlt className="mr-2 text-[#1360AB]" /> Allocated Students
             </h3>
-            {room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
+            {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
               <button onClick={onAllocate} className="flex items-center text-sm bg-green-50 text-green-700 px-4 py-2 rounded-lg hover:bg-green-100 transition-colors">
                 <FaUserPlus className="mr-2" /> Allocate Student
               </button>
@@ -143,7 +146,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Roll Number</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Bed Number</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Department</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>
+                      {["Admin"].includes(user.role) && <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -165,9 +168,11 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden lg:table-cell">{student.bedNumber}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden md:table-cell">{student.department}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                          <button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} className="text-red-600 hover:bg-red-50 p-2 rounded-full transition-colors" title="Remove from Room">
-                            <FaTrash />
-                          </button>
+                          {["Admin"].includes(user.role) && (
+                            <button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} className="text-red-600 hover:bg-red-50 p-2 rounded-full transition-colors" title="Remove from Room">
+                              <FaTrash />
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}

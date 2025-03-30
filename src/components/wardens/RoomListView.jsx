@@ -1,8 +1,11 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaEye, FaToggleOn } from "react-icons/fa"
 import RoomCard from "./RoomCard"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
+  const { user } = useAuth()
+
   return (
     <>
       {viewMode === "table" ? (
@@ -67,7 +70,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
                         <button onClick={() => onRoomClick(room)} className="text-[#1360AB] hover:bg-blue-50 p-2 rounded-full transition-colors" aria-label="View details">
                           <FaEye className="h-4 w-4" />
                         </button>
-                        {room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
+                        {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation()

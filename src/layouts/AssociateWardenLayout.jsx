@@ -24,7 +24,7 @@ const AssociateWardenLayout = () => {
 
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/associate-warden" },
-    { name: "Units and Rooms", icon: FaBuilding, section: "main", path: "/associate-warden/units-and-rooms" },
+    { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/associate-warden/hostels/${user?.hostel?.name}`, pathPattern: "^/associate-warden/hostels(/.*)?$" },
     { name: "Students", icon: FaUsers, section: "main", path: "/associate-warden/students" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/associate-warden/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/associate-warden/events" },

@@ -9,7 +9,7 @@ import RoomChangeForm from "../../components/students/RoomChangeForm"
 const Profile = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [student, setStudent] = useState(null)
-  const [error, setError] = useState(null) // Handle errors
+  const [error, setError] = useState(null)
 
   const { user } = useAuth()
   const userId = user?._id

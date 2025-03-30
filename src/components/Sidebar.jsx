@@ -10,7 +10,13 @@ const Sidebar = ({ navItems }) => {
   const location = useLocation()
 
   useEffect(() => {
-    const currentItem = navItems.find((item) => location.pathname === item.path || (location.pathname === "/" && item.path === "/Dashboard"))
+    const currentItem = navItems.find((item) => {
+      if (location.pathname === item.path) return true
+      if (item.pathPattern && new RegExp(item.pathPattern).test(location.pathname)) return true
+      if (location.pathname === "/" && item.path === "/Dashboard") return true
+
+      return false
+    })
 
     if (currentItem) {
       setActive(currentItem.name)

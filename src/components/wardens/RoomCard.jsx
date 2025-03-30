@@ -1,7 +1,10 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaUserGraduate } from "react-icons/fa"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const RoomCard = ({ room, onClick, onAllocate }) => {
+  const { user } = useAuth()
+
   const occupancyPercentage = room.capacity ? Math.round(((room.currentOccupancy || 0) / room.capacity) * 100) : 0
 
   const getStatusBadge = () => {
@@ -88,7 +91,7 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
           View Details
         </button>
 
-        {room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
+        {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
           <button
             onClick={(e) => {
               e.stopPropagation()
