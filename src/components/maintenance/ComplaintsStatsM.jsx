@@ -1,10 +1,41 @@
-import React from 'react';
-const ComplaintsStatsM = ({ stats }) => {
+import React, { useState, useEffect } from 'react';
+import { maintenanceApi } from "../../services/apiService";
+
+const ComplaintsStatsM = ({ filter }) => {
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    resolved: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Build params based on the provided filter
+        const params = {};
+        // If a filter is provided and isn't "all", add the category filter
+        if (filter && filter !== "all") {
+          params.category = filter;
+        }
+        // You can add more filtering fields if needed:
+        // if (otherFilter) { params.other = otherFilter }
+        const queryString = new URLSearchParams(params).toString();
+        const statsData = await maintenanceApi.getStats(queryString);
+        setStats(statsData);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, [filter]);
+
   const safeStats = {
     total: stats?.total || 0,
     pending: stats?.pending || 0,
     inProgress: stats?.inProgress || 0,
-    resolved: stats?.resolved || 0
+    resolved: stats?.resolved || 0,
   };
 
   return (

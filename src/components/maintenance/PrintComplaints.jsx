@@ -36,6 +36,12 @@ const PrintComplaints = ({ complaints }) => {
     printComplaintsData(filteredForPrint);
   };
 
+  // Function to compute location info as shown in ComplaintItemM
+  const getLocationInfo = (complaint) =>
+    complaint.hostel
+      ? `Hostel: ${complaint.hostel}, Room: ${complaint.roomNumber || "N/A"}`
+      : `Location: ${complaint.location}`;
+
   // Function to print only the provided complaints data
   const printComplaintsData = (complaintsData) => {
     const printWindow = window.open('', '', 'height=600,width=800');
@@ -58,30 +64,26 @@ const PrintComplaints = ({ complaints }) => {
     printWindow.document.write('<table>');
     printWindow.document.write('<thead><tr>' +
       '<th>ID</th>' +
+      '<th>Date</th>' +
       '<th>Title</th>' +
       '<th>Description</th>' +
-      '<th>Location</th>' +
+      '<th>Location Info</th>' +
       '<th>Category</th>' +
       '<th>Status</th>' +
-      '<th>Complaintee Name</th>' +
-      '<th>Room</th>' +
-      '<th>Hostel Name</th>' +
-      '<th>Phone Number</th>' +
+      '<th>Priority</th>' +
       '</tr></thead>');
     printWindow.document.write('<tbody>');
     complaintsData.forEach(complaint => {
       printWindow.document.write(
         `<tr>
           <td>${complaint.id}</td>
+          <td>${new Date(complaint.date).toLocaleDateString()}</td>
           <td>${complaint.title}</td>
           <td>${complaint.description}</td>
-          <td>${complaint.location}</td>
+          <td>${getLocationInfo(complaint)}</td>
           <td>${complaint.category}</td>
           <td>${complaint.status}</td>
-          <td>${complaint.complainteeName || "N/A"}</td>
-          <td>${complaint.room || "N/A"}</td>
-          <td>${complaint.hostelName || "N/A"}</td>
-          <td>${complaint.phoneNumber || "N/A"}</td>
+          <td>${complaint.priority}</td>
         </tr>`
       );
     });

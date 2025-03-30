@@ -1,11 +1,14 @@
-import React, { useState } from "react"
-
-import ComplaintsM from "../../components/maintenance/ComplaintsM"
-import { FaUser, FaBars } from "react-icons/fa"
-import { useAuth } from "../../contexts/AuthProvider"
+import React, { useState } from "react";
+import ComplaintsM from "../../components/maintenance/ComplaintsM";
+import FilterTabs from "../../components/common/FilterTabs";
+import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants";
+import { FaUser } from "react-icons/fa";
+import { useAuth } from "../../contexts/AuthProvider";
 
 const MDashboard = () => {
-  const { user } = useAuth()
+  const { user } = useAuth();
+  // Set default active tab as "all"
+  const [activeTab, setActiveTab] = useState("all");
 
   return (
     <div className="w-full flex-1 p-4 md:p-6 mt-12 md:mt-0">
@@ -21,11 +24,17 @@ const MDashboard = () => {
         </button>
       </header>
 
+      {/* Filter Tabs for Maintenance complaints */}
+      <div className="my-4">
+        <FilterTabs tabs={MAINTENANCE_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+
       <div className="pr-0 md:pr-6">
-        <ComplaintsM />
+        {/* Pass the active tab (e.g., filter) to ComplaintsM if needed */}
+        <ComplaintsM filterTab={activeTab} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MDashboard
+export default MDashboard;
