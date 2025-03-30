@@ -12,7 +12,7 @@ import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import SearchBar from "../../components/common/SearchBar"
 import { useWarden } from "../../contexts/WardenProvider"
 import RoomStats from "../../components/wardens/RoomStats"
-import UpdateAllocationModal from "../../components/wardens/UpdateAllocationModal"
+import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
 
 const UnitsAndRooms = () => {
   const { profile } = useWarden()
