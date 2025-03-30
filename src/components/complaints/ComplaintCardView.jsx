@@ -39,8 +39,8 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
 
           <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
             <div className="flex items-center">
-              {complaint.reportedBy?.image ? (
-                <img src={complaint.reportedBy.image} alt={complaint.reportedBy.name} className="h-8 w-8 rounded-full object-cover mr-2" />
+              {complaint.reportedBy?.profileImage ? (
+                <img src={complaint.reportedBy.profileImage} alt={complaint.reportedBy.name} className="h-8 w-8 rounded-full object-cover mr-2" />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-2">{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}

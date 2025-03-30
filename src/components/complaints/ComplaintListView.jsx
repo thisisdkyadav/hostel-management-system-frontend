@@ -42,8 +42,8 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
                 <td className="px-4 py-3 whitespace-nowrap hidden md:table-cell">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-8 w-8">
-                      {complaint.reportedBy?.image ? (
-                        <img className="h-8 w-8 rounded-full object-cover" src={complaint.reportedBy.image} alt="" />
+                      {complaint.reportedBy?.profileImage ? (
+                        <img className="h-8 w-8 rounded-full object-cover" src={complaint.reportedBy.profileImage} alt="" />
                       ) : (
                         <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium">{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
                       )}
