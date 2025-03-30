@@ -4,6 +4,7 @@ import { MdMeetingRoom } from "react-icons/md"
 import { BsThreeDotsVertical } from "react-icons/bs"
 import EditHostelModal from "./EditHostelModal"
 import { FaLocationDot } from "react-icons/fa6"
+import { Link } from "react-router-dom"
 
 const HostelCard = ({ hostel, onUpdate }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -77,6 +78,9 @@ const HostelCard = ({ hostel, onUpdate }) => {
           <button className="flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 w-full" onClick={() => setShowEditModal(true)}>
             <FaEdit className="mr-2" /> Edit Details
           </button>
+          <Link to={`/admin/hostels/${hostel.name}`} className="flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 w-full">
+            <FaEye className="mr-2" /> View Details
+          </Link>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { FaBuilding, FaDoorOpen, FaFileImport } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../../services/apiService"
@@ -10,40 +11,35 @@ import RoomListView from "../../components/wardens/RoomListView"
 import RoomDetailModal from "../../components/wardens/RoomDetailModal"
 import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import SearchBar from "../../components/common/SearchBar"
-import { useWarden } from "../../contexts/WardenProvider"
 import RoomStats from "../../components/wardens/RoomStats"
 import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
+import { useGlobal } from "../../contexts/GlobalProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const UnitsAndRooms = () => {
-  const { profile } = useWarden()
+  const { user, getHomeRoute } = useAuth()
+  const navigate = useNavigate()
+  const { hostelList } = useGlobal()
+  const { hostelName: encodedHostelName, unitNumber } = useParams()
+  const hostelName = decodeURIComponent(encodedHostelName)
+  const currentHostel = hostelList?.find((hostel) => hostel.name.toLowerCase() === hostelName.toLowerCase())
 
-  if (!profile) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>
-  }
-
-  const hostelType = profile.hostelId?.type || "unit-based" // "unit-based" or "room-only"
-
-  // View state
   const [viewMode, setViewMode] = useState("table")
-  const [currentView, setCurrentView] = useState(hostelType === "room-only" ? "rooms" : "units") // "units" or "rooms"
-  const [showFilters, setShowFilters] = useState(true)
-
-  // Data state
+  const [loading, setLoading] = useState(false)
   const [units, setUnits] = useState([])
   const [rooms, setRooms] = useState([])
   const [totalItems, setTotalItems] = useState(0)
-  const [loading, setLoading] = useState(false)
   const [selectedUnit, setSelectedUnit] = useState(null)
   const [selectedRoom, setSelectedRoom] = useState(null)
-
-  // Modal state
   const [showRoomDetail, setShowRoomDetail] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
-
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(10)
+  const [showFilters, setShowFilters] = useState(true)
+  const hostelType = currentHostel?.type || "unit-based"
+
+  const currentView = unitNumber ? "rooms" : hostelType === "room-only" ? "rooms" : "units"
 
   const [filters, setFilters] = useState({
     hostelId: "",
@@ -52,6 +48,8 @@ const UnitsAndRooms = () => {
     roomType: "",
     searchTerm: "",
   })
+
+  const hostelId = currentHostel?._id || null
 
   const resetFilters = () => {
     setFilters({
@@ -67,7 +65,7 @@ const UnitsAndRooms = () => {
   const fetchUnits = async () => {
     try {
       setLoading(true)
-      const response = await hostelApi.getUnits(profile.hostelId._id)
+      const response = await hostelApi.getUnits(hostelId)
       console.log("Units response:", response)
 
       let filteredUnits = response || []
@@ -77,6 +75,13 @@ const UnitsAndRooms = () => {
 
       setUnits(filteredUnits)
       setTotalItems(filteredUnits.length || 0)
+
+      if (unitNumber && filteredUnits.length > 0) {
+        const unit = filteredUnits.find((u) => u.unitNumber === unitNumber)
+        if (unit) {
+          setSelectedUnit(unit)
+        }
+      }
     } catch (error) {
       console.error("Error fetching units:", error)
     } finally {
@@ -90,14 +95,12 @@ const UnitsAndRooms = () => {
       let response
 
       if (hostelType === "unit-based" && unitId) {
-        // Fetch rooms for a specific unit
         response = await hostelApi.getRoomsByUnit(unitId)
       } else {
-        // Fetch all rooms for room-only hostel with pagination
         const queryParams = {
           page: currentPage,
           limit: itemsPerPage,
-          hostelId: profile.hostelId._id,
+          hostelId: hostelId,
           ...buildRoomFilterParams(),
         }
         response = await hostelApi.getRooms(queryParams)
@@ -107,7 +110,6 @@ const UnitsAndRooms = () => {
 
       let filteredRooms = response?.data || []
 
-      // Apply client-side filtering if needed for unit-based hostels
       if (hostelType === "unit-based" && filters.searchTerm) {
         filteredRooms = filteredRooms.filter((room) => room.roomNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
       }
@@ -121,7 +123,6 @@ const UnitsAndRooms = () => {
     }
   }
 
-  // Build query parameters for room filtering
   const buildRoomFilterParams = () => {
     const params = {}
 
@@ -146,27 +147,29 @@ const UnitsAndRooms = () => {
 
   const fetchData = () => {
     if (hostelType === "unit-based") {
-      if (currentView === "units") {
-        fetchUnits()
-      } else if (currentView === "rooms" && selectedUnit) {
-        fetchRooms(selectedUnit.id)
+      fetchUnits()
+
+      if (currentView === "rooms" && unitNumber) {
+        const unitObj = units.find((u) => u.unitNumber === unitNumber)
+        if (unitObj) {
+          fetchRooms(unitObj.id)
+        }
       }
     } else {
-      // Room-only hostel
       fetchRooms()
     }
   }
 
-  const handleUpdateAllocations = async (allocations) => {
+  const handleUpdateAllocations = async (allocations, hostelId) => {
     try {
       setLoading(true)
-      const response = await hostelApi.updateRoomAllocations(allocations)
+      const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
       console.log("Update allocations response:", response)
       if (response.success) {
         setShowAllocateModal(false)
-        fetchUnits()
-        setCurrentView("units")
-        setSelectedUnit(null)
+        const navigateTo = `${getHomeRoute()}/hostels/${encodedHostelName}`
+        navigate(navigateTo)
+
         const errors = response.errors || []
         if (errors.length > 0) {
           alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")}`)
@@ -187,9 +190,7 @@ const UnitsAndRooms = () => {
   }
 
   const handleUnitClick = (unit) => {
-    setSelectedUnit(unit)
-    setCurrentView("rooms")
-    fetchRooms(unit.id)
+    navigate(`${getHomeRoute()}/hostels/${encodedHostelName}/units/${unit.unitNumber}`)
   }
 
   const handleRoomClick = (room) => {
@@ -203,8 +204,11 @@ const UnitsAndRooms = () => {
   }
 
   const handleAllocationSuccess = () => {
-    if (hostelType === "unit-based" && selectedUnit) {
-      fetchRooms(selectedUnit.id)
+    if (unitNumber) {
+      const unitObj = units.find((u) => u.unitNumber === unitNumber)
+      if (unitObj) {
+        fetchRooms(unitObj.id)
+      }
     } else {
       fetchRooms()
     }
@@ -219,8 +223,7 @@ const UnitsAndRooms = () => {
   }
 
   const goBackToUnits = () => {
-    setCurrentView("units")
-    setSelectedUnit(null)
+    navigate(`${getHomeRoute()}/hostels/${encodedHostelName}`)
   }
 
   const paginate = (pageNumber) => {
@@ -229,20 +232,52 @@ const UnitsAndRooms = () => {
 
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
-  // Update data when relevant states change
   useEffect(() => {
-    fetchData()
-  }, [currentPage, currentView, filters, profile, hostelType])
+    if (hostelId) {
+      if (currentView === "units" || (currentView === "rooms" && !unitNumber)) {
+        fetchUnits()
+      }
 
-  // Reset to page 1 when filters change
+      if (currentView === "rooms") {
+        if (unitNumber) {
+          fetchUnits().then(() => {
+            const unitObj = units.find((u) => u.unitNumber === unitNumber)
+            if (unitObj) {
+              setSelectedUnit(unitObj)
+              fetchRooms(unitObj.id)
+            }
+          })
+        } else if (hostelType === "room-only") {
+          fetchRooms()
+        }
+      }
+    }
+  }, [currentPage, unitNumber, hostelId, hostelType])
+
   useEffect(() => {
     setCurrentPage(1)
   }, [filters])
 
+  useEffect(() => {
+    if (units.length > 0 && unitNumber) {
+      const unitObj = units.find((u) => u.unitNumber === unitNumber)
+      if (unitObj) {
+        setSelectedUnit(unitObj)
+        fetchRooms(unitObj.id)
+      }
+    }
+  }, [units, unitNumber])
+
+  if (!currentHostel) {
+    return <div className="flex justify-center items-center h-screen">Hostel not found</div>
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">{hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || "Selected Unit"}`) : "Room Management"}</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">
+          {currentHostel.name}: {hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || unitNumber || "Selected Unit"}`) : "Room Management"}
+        </h1>
         <div className="flex flex-wrap gap-2">
           {hostelType === "unit-based" && currentView === "rooms" && (
             <button onClick={goBackToUnits} className="flex items-center px-3 py-2 text-gray-700 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
@@ -250,9 +285,17 @@ const UnitsAndRooms = () => {
             </button>
           )}
 
-          <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowUploadModal(true)}>
-            <FaFileImport className="mr-2" /> Update Allocations
-          </button>
+          {["Admin"].includes(user.role) && (
+            <Link to="/admin/hostels" className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700">
+              <FaBuilding className="mr-2" /> Back to Hostels
+            </Link>
+          )}
+
+          {["Admin"].includes(user.role) && (
+            <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowUploadModal(true)}>
+              <FaFileImport className="mr-2" /> Update Allocations
+            </button>
+          )}
 
           <button className="flex items-center px-3 py-2 bg-white rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
             {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
@@ -277,42 +320,6 @@ const UnitsAndRooms = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full" />
-
-              {(hostelType === "room-only" || (hostelType === "unit-based" && currentView === "rooms")) && (
-                <>
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Occupancy Status</label>
-                    <select value={filters.occupancyStatus} onChange={(e) => setFilters({ ...filters, occupancyStatus: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
-                      <option value="">All Statuses</option>
-                      <option value="full">Full</option>
-                      <option value="partial">Partially Occupied</option>
-                      <option value="empty">Empty</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Room Type</label>
-                    <select value={filters.roomType} onChange={(e) => setFilters({ ...filters, roomType: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
-                      <option value="">All Types</option>
-                      <option value="single">Single</option>
-                      <option value="double">Double</option>
-                      <option value="triple">Triple</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Floor</label>
-                    <select value={filters.floorNumber} onChange={(e) => setFilters({ ...filters, floorNumber: e.target.value })} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
-                      <option value="">All Floors</option>
-                      <option value="0">Ground Floor</option>
-                      <option value="1">1st Floor</option>
-                      <option value="2">2nd Floor</option>
-                      <option value="3">3rd Floor</option>
-                      <option value="4">4th Floor</option>
-                    </select>
-                  </div> */}
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -364,7 +371,6 @@ const UnitsAndRooms = () => {
         </>
       )}
 
-      {/* Pagination - only show for room-only hostels or when total exceeds itemsPerPage */}
       {(hostelType === "room-only" || (hostelType === "unit-based" && totalItems > itemsPerPage)) && (
         <div className="mt-6">
           <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />

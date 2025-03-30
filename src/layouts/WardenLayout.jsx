@@ -2,13 +2,15 @@ import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
 import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
-import WardenProvider from "../contexts/WardenProvider"
+import WardenProvider, { useWarden } from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import { HiAnnotation } from "react-icons/hi"
 
 const WardenLayout = () => {
   const navigate = useNavigate()
-  const { logout } = useAuth ? useAuth() : { logout: () => {} }
+  const { user, logout } = useAuth()
+
+  console.log("User in WardenLayout:", user) // Debugging line;
 
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?")
@@ -24,7 +26,7 @@ const WardenLayout = () => {
 
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/warden" },
-    { name: "Units and Rooms", icon: FaBuilding, section: "main", path: "/warden/units-and-rooms" },
+    { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/warden/hostels/${user?.hostel?.name}`, pathPattern: "^/warden/hostels(/.*)?$" },
     { name: "Students", icon: FaUsers, section: "main", path: "/warden/students" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/warden/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/warden/events" },

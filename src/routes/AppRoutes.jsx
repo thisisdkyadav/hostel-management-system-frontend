@@ -98,13 +98,14 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<WardenDashboard />} />
+        <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
+        <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<Visitors />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
-        <Route path="units-and-rooms" element={<UnitsAndRooms />} />
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
@@ -118,13 +119,14 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<WardenDashboard />} />
+        <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
+        <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<Visitors />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="room-change-requests" element={<RoomChangeRequests />} />
-        <Route path="units-and-rooms" element={<UnitsAndRooms />} />
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
@@ -157,6 +159,8 @@ const AppRoutes = () => {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="hostels" element={<AdminHostels />} />
+        <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
+        <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="wardens" element={<AdminWarden />} />
         <Route path="associate-wardens" element={<AdminAssociateWardens />} />
         <Route path="students" element={<Students />} />
