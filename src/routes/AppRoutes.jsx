@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import StudentDashboard from "../pages/student/Dashboard.jsx"
 import StudentProfile from "../pages/student/Profile"
 import Settings from "../pages/student/Settings.jsx"
+import VisitorRequests from "../pages/VisitorRequests.jsx"
 // -------------------------student ends here ----------------------------------
 
 //--------------------------------below is maintenance---------------------
@@ -79,6 +80,7 @@ const AppRoutes = () => {
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="notifications" element={<NotificationCenter />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="visitors" element={<VisitorRequests />} />
       </Route>
 
       {/* Routes for Maintenance related pages*/}
@@ -170,7 +172,7 @@ const AppRoutes = () => {
         <Route path="students" element={<Students />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />
-        {/* <Route path="visitor" element={<VisitorRequest />} /> */}
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="update-password" element={<UpdatePassword />} />

@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBell } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBell, FaUserFriends } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import { useAuth } from "../contexts/AuthProvider"
 import { HiAnnotation } from "react-icons/hi"
@@ -26,6 +26,7 @@ const StudentLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/student/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },
+    { name: "Visitors", icon: FaUserFriends, section: "main", path: "/student/visitors" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
     { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },

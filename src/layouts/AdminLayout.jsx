@@ -30,7 +30,7 @@ const AdminLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
     { name: "Security", icon: FaShieldAlt, section: "main", path: "/admin/security" },
     { name: "Maintenance Staff", icon: FaTools, section: "main", path: "/admin/maintenance" },
-    { name: "Visitor Accomodation", icon: FaExchangeAlt, section: "main", path: "/admin/visitor" },
+    { name: "Visitor Accomodation", icon: FaExchangeAlt, section: "main", path: "/admin/visitors" },
     { name: "Notifications", icon: FaBell, section: "main", path: "/admin/notifications" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/admin/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/admin/events" },
