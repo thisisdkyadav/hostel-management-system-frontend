@@ -50,6 +50,7 @@ import Feedbacks from "../pages/warden/Feedbacks.jsx"
 import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
+import NotificationCenter from "../pages/NotificationCenter"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -75,7 +76,7 @@ const AppRoutes = () => {
         <Route path="events" element={<Events />} />
         <Route path="feedback" element={<StudentFeedback />} />
         <Route path="feedbacks" element={<Feedbacks />} />
-
+        <Route path="notifications" element={<NotificationCenter />} />
         <Route path="settings" element={<Settings />} />
       </Route>
 
@@ -173,6 +174,7 @@ const AppRoutes = () => {
         <Route path="update-password" element={<UpdatePassword />} />
         <Route path="profile" element={<Profile />} />
         <Route path="maintenance" element={<MaintenanceStaff />} />
+        <Route path="notifications" element={<NotificationCenter />} />
       </Route>
     </Routes>
   )
