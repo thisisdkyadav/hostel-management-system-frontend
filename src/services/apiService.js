@@ -1,13 +1,4 @@
-const fetchOptions = {
-  credentials: "include",
-  headers: {
-    "Content-Type": "application/json",
-  },
-}
-
-// const baseUrl = "https://hostel-management-system-backend-and4hrevaag3f5gs.centralindia-01.azurewebsites.net/api"
-const baseUrl = "http://localhost:5000/api"
-// const baseUrl = "https://9m64jhxk-5000.inc1.devtunnels.ms/api"
+import { baseUrl, fetchOptions } from "../constants/appConstants"
 
 export const authApi = {
   verify: async () => {
@@ -221,21 +212,6 @@ export const studentApi = {
 
     return response.json()
   },
-
-  submitFeedback: async (title, description) => {
-    const response = await fetch(`${baseUrl}/feedback/add`, {
-      method: "POST",
-      ...fetchOptions,
-      body: JSON.stringify({ title, description }),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || "Failed to submit feedback")
-    }
-
-    return response.json()
-  },
 }
 
 export const wardenApi = {
@@ -263,35 +239,6 @@ export const wardenApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to update warden profile")
-    }
-
-    return response.json()
-  },
-
-  getFeedbacks: async (hostelId) => {
-    const response = await fetch(`${baseUrl}/feedback/all/${hostelId}`, {
-      method: "GET",
-      ...fetchOptions,
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || "Failed to fetch feedbacks")
-    }
-
-    return response.json()
-  },
-
-  updateFeedbackStatus: async (feedbackId, status) => {
-    const response = await fetch(`${baseUrl}/feedback/update-status/${feedbackId}`, {
-      method: "PUT",
-      ...fetchOptions,
-      body: JSON.stringify({ status }),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || "Failed to update feedback status")
     }
 
     return response.json()
@@ -1310,6 +1257,23 @@ export const alertApi = {
     if (!response.ok) {
       const errorData = await response.json()
       throw new Error(errorData.message || "Failed to fetch alerts")
+    }
+
+    return response.json()
+  },
+}
+
+export const uploadApi = {
+  uploadProfileImage: async (imageData, userId) => {
+    const response = await fetch(`${baseUrl}/upload/profile/${userId}`, {
+      method: "POST",
+      credentials: "include",
+      body: imageData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to upload profile image")
     }
 
     return response.json()

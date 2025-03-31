@@ -1,7 +1,6 @@
 import React from "react"
 
 const ProfileAvatar = ({ user, size = "medium" }) => {
-  // Get initials from name
   const getInitials = (name) => {
     if (!name) return ""
     return name
@@ -12,23 +11,20 @@ const ProfileAvatar = ({ user, size = "medium" }) => {
       .slice(0, 2)
   }
 
-  // Size classes
   const sizeClasses = {
     small: "w-10 h-10 text-sm",
     medium: "w-16 h-16 text-lg",
     large: "w-24 h-24 text-2xl",
   }
 
-  // If user has an avatar, use it, otherwise use a placeholder
-  if (user?.avatarUrl) {
+  if (user?.profileImage) {
     return (
       <div className={`${sizeClasses[size]} rounded-full overflow-hidden bg-gray-200 flex-shrink-0`}>
-        <img src={user.avatarUrl} alt={`${user.name}'s avatar`} className="w-full h-full object-cover" />
+        <img src={user.profileImage} alt={`${user.name}'s avatar`} className="w-full h-full object-cover" />
       </div>
     )
   }
 
-  // Generate a color based on the user's name
   const getColorClass = (name) => {
     if (!name) return "bg-blue-100 text-[#1360AB]"
 

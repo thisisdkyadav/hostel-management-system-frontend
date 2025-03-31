@@ -75,6 +75,8 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="feedback" element={<StudentFeedback />} />
+        <Route path="feedbacks" element={<Feedbacks />} />
+
         <Route path="settings" element={<Settings />} />
       </Route>
 

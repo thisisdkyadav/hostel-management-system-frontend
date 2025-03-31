@@ -26,7 +26,7 @@ const StudentLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/student/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },
-    { name: "Feedback", icon: HiAnnotation, section: "main", path: "/student/feedback" },
+    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

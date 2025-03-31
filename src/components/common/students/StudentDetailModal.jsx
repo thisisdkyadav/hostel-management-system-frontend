@@ -30,7 +30,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       setStudentDetails({
         ...selectedStudent,
-        image: selectedStudent.image || "",
+        image: selectedStudent.profileImage || "",
         rollNumber: selectedStudent.rollNumber || "",
         department: selectedStudent.department || "",
         degree: selectedStudent.degree || "",
@@ -70,8 +70,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <>
             <div className="bg-gradient-to-r from-blue-50 to-white p-5 rounded-xl mb-6 shadow-sm">
               <div className="flex flex-col md:flex-row items-center md:items-start">
-                {studentDetails.image ? (
-                  <img src={studentDetails.image} alt={studentDetails.name || "Student"} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md mb-4 md:mb-0" />
+                {studentDetails.profileImage ? (
+                  <img src={studentDetails.profileImage} alt={studentDetails.name || "Student"} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md mb-4 md:mb-0" />
                 ) : (
                   <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md mb-4 md:mb-0">
                     <FaUserGraduate className="h-12 w-12 text-[#1360AB]" />
