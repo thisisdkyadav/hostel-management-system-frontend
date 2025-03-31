@@ -154,9 +154,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                       <tr key={student.id || index} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                              <FaUserAlt className="text-gray-500" />
-                            </div>
+                            <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">{student.profileImage ? <img src={student.profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" /> : <FaUserAlt className="text-gray-500" />}</div>
                             <div className="ml-3">
                               <div className="text-sm font-medium text-gray-900">{student.name}</div>
                               <div className="text-xs text-gray-500 sm:hidden">{student.rollNumber}</div>

@@ -16,7 +16,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  const availableFields = ["name", "email", "phone", "password", "profilePic", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
+  const availableFields = ["name", "email", "phone", "password", "profileImage", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["name", "email", "rollNumber"]
 
   const handleFileUpload = (e) => {

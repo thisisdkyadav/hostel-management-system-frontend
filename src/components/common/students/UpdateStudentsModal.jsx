@@ -16,7 +16,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
 
-  const availableFields = ["name", "email", "phone", "password", "profilePic", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
+  const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
 
   const handleFileUpload = (e) => {

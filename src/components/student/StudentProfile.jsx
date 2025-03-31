@@ -7,9 +7,7 @@ const StudentProfile = ({ profile }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col md:flex-row items-center">
       <div className="mb-4 md:mb-0 md:mr-6">
-        <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-[#1360AB] text-2xl">
-          <FaUser />
-        </div>
+        <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-[#1360AB] text-2xl">{profile.profileImage ? <img src={profile.profileImage} alt="Profile" className="w-full h-full rounded-full object-cover" /> : <FaUser />}</div>
       </div>
 
       <div className="flex-1 text-center md:text-left">
