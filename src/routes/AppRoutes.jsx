@@ -31,6 +31,7 @@ import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
 import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
+// import VisitorRequest from "../pages/admin/VisitorRequest"
 // import AdminStudents from "../pages/admin/Students"
 // import AdminComplaints from "../pages/admin/Complaints"
 import SecurityLogins from "../pages/admin/SecurityLogins"
@@ -166,6 +167,7 @@ const AppRoutes = () => {
         <Route path="students" element={<Students />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />
+        {/* <Route path="visitor" element={<VisitorRequest />} /> */}
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="update-password" element={<UpdatePassword />} />
