@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
 import Modal from "../common/Modal";
-import { studentApi } from "../../services/apiService";
+import { submitVisitorRequest } from "../../services/studentService";
 
 const VisitorRequestForm = ({ student, isOpen, setIsOpen }) => {
+  // Calculate minimum selectable date (today + 2 days)
+  const today = new Date();
+  const minDate = new Date(today);
+  minDate.setDate(today.getDate() + 2);
+  const minDateString = minDate.toISOString().split('T')[0];
+
   const [formData, setFormData] = useState({
     numberOfVisitors: 1,
     visitorNames: [""],
@@ -38,7 +44,7 @@ const VisitorRequestForm = ({ student, isOpen, setIsOpen }) => {
     setFormData((prev) => ({
       ...prev,
       numberOfVisitors: value,
-      visitorNames: Array(value).fill(""),
+      visitorNames: Array(value||0).fill(""),
     }));
   };
 
@@ -47,9 +53,20 @@ const VisitorRequestForm = ({ student, isOpen, setIsOpen }) => {
     setLoading(true);
     setError(null);
 
+    // Validate date is at least 2 days in future
+    const selectedDate = new Date(formData.visitDate);
+    const minValidDate = new Date();
+    minValidDate.setDate(minValidDate.getDate() + 2);
+    
+    if (selectedDate < minValidDate) {
+      setError("Please select a date at least 2 days from today");
+      setLoading(false);
+      return;
+    }
+
     try {
-      await studentApi.submitVisitorRequest({ ...formData, studentId: student._id });
-      alert("Visitor request submitted successfully!");
+      await submitVisitorRequest({ ...formData, studentId: student._id });
+      alert('Form submitted successfully!');
       setIsOpen(false);
       setFormData({
         numberOfVisitors: 1,
@@ -161,8 +178,12 @@ const VisitorRequestForm = ({ student, isOpen, setIsOpen }) => {
                   className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
                   value={formData.visitDate}
                   onChange={handleChange}
+                  min={minDateString}
                   required
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  Please select a date at least 2 days from today
+                </p>
               </div>
             </div>
 
