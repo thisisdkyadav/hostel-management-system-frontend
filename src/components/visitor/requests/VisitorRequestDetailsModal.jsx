@@ -297,7 +297,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         )}
 
         {/* Room Allocation Form (for Warden) */}
-        {user.role === "Warden" && request.status === "Approved" && showAllocationForm && (
+        {request.status === "Approved" && showAllocationForm && (
           <RoomAllocationForm isUnitBased={isUnitBased} allocatedRooms={allocatedRooms} onRoomChange={handleRoomChange} onAddRoom={addRoomField} onRemoveRoom={removeRoomField} onCancel={() => setShowAllocationForm(false)} onSubmit={handleAllocateRooms} />
         )}
 
