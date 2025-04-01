@@ -63,8 +63,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.login(credentials)
       setUser(data.user)
-      const publicKey = data.publicKey
-      localStorage.setItem("publicKey", publicKey)
+      const aesKey = data.user.aesKey
+      localStorage.setItem("publicKey", aesKey)
       return data.user
     } catch (err) {
       setError(err.message || "Login failed")
@@ -80,8 +80,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authApi.loginWithGoogle(token)
       setUser(data.user)
-      const publicKey = data.publicKey
-      localStorage.setItem("publicKey", publicKey)
+      const aesKey = data.user.aesKey
+      localStorage.setItem("publicKey", aesKey)
       return data.user
     } catch (err) {
       setError(err.message || "Login failed")
