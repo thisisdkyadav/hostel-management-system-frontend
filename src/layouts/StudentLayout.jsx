@@ -29,6 +29,7 @@ const StudentLayout = () => {
     { name: "Visitors", icon: FaUserFriends, section: "main", path: "/student/visitors" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
     { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications" },
+    { name: "Security", icon: FaUser, section: "main", path: "/student/security" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

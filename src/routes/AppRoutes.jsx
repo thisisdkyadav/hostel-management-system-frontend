@@ -53,6 +53,7 @@ import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
 import NotificationCenter from "../pages/NotificationCenter"
+import Security from "../pages/student/security.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -81,6 +82,7 @@ const AppRoutes = () => {
         <Route path="notifications" element={<NotificationCenter />} />
         <Route path="settings" element={<Settings />} />
         <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="security" element={<Security />} />
       </Route>
 
       {/* Routes for Maintenance related pages*/}
