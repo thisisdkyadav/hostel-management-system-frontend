@@ -1,9 +1,8 @@
-// frontend/src/components/QRCodeGenerator.js
 import React, { useState, useEffect } from "react"
 import { QRCodeSVG } from "qrcode.react"
-import CryptoJS from "crypto-js"
 import { useAuth } from "../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaDownload, FaInfoCircle } from "react-icons/fa"
+import forge from "node-forge"
 
 const QRCodeGenerator = () => {
   const { user } = useAuth()
@@ -47,6 +46,18 @@ const QRCodeGenerator = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
+  const encryptData = (aesKey, data) => {
+    const key = forge.util.hexToBytes(aesKey)
+    const iv = forge.random.getBytesSync(16)
+
+    const cipher = forge.cipher.createCipher("AES-CBC", key)
+    cipher.start({ iv })
+    cipher.update(forge.util.createBuffer(data, "utf8"))
+    cipher.finish()
+
+    return forge.util.encode64(iv) + ":" + forge.util.encode64(cipher.output.getBytes())
+  }
+
   const generateQR = () => {
     if (!publicKey) {
       alert("Public key not found. Please contact the administrator.")
@@ -58,13 +69,13 @@ const QRCodeGenerator = () => {
     const expiryMinutes = 5
     const expiryMs = Date.now() + expiryMinutes * 60 * 1000
 
-    const data = JSON.stringify({
-      userId: user.email,
-      expiry: expiryMs,
-    })
-
-    const encryptedData = CryptoJS.AES.encrypt(data, publicKey).toString()
-    setQrData(encryptedData)
+    const encryptedData = encryptData(publicKey, expiryMs)
+    const qrData = {
+      e: user.email,
+      d: encryptedData,
+    }
+    const qrDataString = JSON.stringify(qrData)
+    setQrData(qrDataString)
     setShowQR(true)
     setLoading(false)
     setExpiryTime(expiryMs)
