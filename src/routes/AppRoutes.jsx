@@ -131,10 +131,10 @@ const AppRoutes = () => {
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
-        <Route path="visitors" element={<Visitors />} />
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
-        <Route path="room-change-requests" element={<RoomChangeRequests />} />
+        {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
