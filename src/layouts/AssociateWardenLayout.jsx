@@ -8,7 +8,7 @@ import { HiAnnotation } from "react-icons/hi"
 
 const AssociateWardenLayout = () => {
   const navigate = useNavigate()
-  const { logout } = useAuth ? useAuth() : { logout: () => {} }
+  const { logout, user } = useAuth()
 
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?")
@@ -28,7 +28,7 @@ const AssociateWardenLayout = () => {
     { name: "Students", icon: FaUsers, section: "main", path: "/associate-warden/students" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/associate-warden/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/associate-warden/events" },
-    { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/associate-warden/room-change-requests" },
+    // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/associate-warden/room-change-requests" },
     { name: "Visitors", icon: FaUserTie, section: "main", path: "/associate-warden/visitors" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/associate-warden/complaints" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/associate-warden/feedbacks" },

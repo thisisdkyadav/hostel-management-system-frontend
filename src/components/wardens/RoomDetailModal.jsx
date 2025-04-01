@@ -104,20 +104,21 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
           </div>
         </div>
 
-        <div className="mt-4">
-          <button onClick={handleToggleStatus} disabled={loading} className={`flex items-center px-4 py-2.5 rounded-lg transition-colors ${room.status === "Inactive" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-red-50 text-red-700 hover:bg-red-100"}`}>
-            {["Admin"].includes(user.role) &&
+        {["Admin"].includes(user.role) && (
+          <div className="mt-4">
+            <button onClick={handleToggleStatus} disabled={loading} className={`flex items-center px-4 py-2.5 rounded-lg transition-colors ${room.status === "Inactive" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-red-50 text-red-700 hover:bg-red-100"}`}>
               (room.status === "Inactive" ? (
-                <>
-                  <FaToggleOff className="mr-2" /> Activate Room
-                </>
+              <>
+                <FaToggleOff className="mr-2" /> Activate Room
+              </>
               ) : (
-                <>
-                  <FaToggleOn className="mr-2" /> Mark as Inactive
-                </>
-              ))}
-          </button>
-        </div>
+              <>
+                <FaToggleOn className="mr-2" /> Mark as Inactive
+              </>
+              ))
+            </button>
+          </div>
+        )}
 
         <div className="mt-6">
           <div className="flex justify-between items-center mb-4">
