@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import StudentDashboard from "../pages/student/Dashboard.jsx"
 import StudentProfile from "../pages/student/Profile"
 import Settings from "../pages/student/Settings.jsx"
+import VisitorRequests from "../pages/VisitorRequests.jsx"
 // -------------------------student ends here ----------------------------------
 
 //--------------------------------below is maintenance---------------------
@@ -51,6 +52,8 @@ import Feedbacks from "../pages/warden/Feedbacks.jsx"
 import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
+import NotificationCenter from "../pages/NotificationCenter"
+import Security from "../pages/student/security.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -76,8 +79,10 @@ const AppRoutes = () => {
         <Route path="events" element={<Events />} />
         <Route path="feedback" element={<StudentFeedback />} />
         <Route path="feedbacks" element={<Feedbacks />} />
-
+        <Route path="notifications" element={<NotificationCenter />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="security" element={<Security />} />
       </Route>
 
       {/* Routes for Maintenance related pages*/}
@@ -105,7 +110,7 @@ const AppRoutes = () => {
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
-        <Route path="visitors" element={<Visitors />} />
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
@@ -145,7 +150,7 @@ const AppRoutes = () => {
       >
         <Route index element={<GuardDashboard />} />
         <Route path="visitors/add" element={<AddVisitor />} />
-        <Route path="visitors" element={<Visitors />} />
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
         <Route path="add-entry" element={<AddStudentEntry />} />
@@ -169,12 +174,13 @@ const AppRoutes = () => {
         <Route path="students" element={<Students />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />
-        {/* <Route path="visitor" element={<VisitorRequest />} /> */}
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="update-password" element={<UpdatePassword />} />
         <Route path="profile" element={<Profile />} />
         <Route path="maintenance" element={<MaintenanceStaff />} />
+        <Route path="notifications" element={<NotificationCenter />} />
       </Route>
     </Routes>
   )
