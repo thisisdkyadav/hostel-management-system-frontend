@@ -11,14 +11,14 @@ import ComplaintsSummary from "../../components/student/ComplaintsSummary"
 import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
-import VisitorRequestForm from "../../components/students/VisitorRequestForm" // Import the form directly
+// import VisitorRequestForm from "../../components/students/VisitorRequestForm" // Import the form directly
 
 const Dashboard = () => {
   const { user } = useAuth()
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [isVisitorFormOpen, setIsVisitorFormOpen] = useState(false) // Modal state
+  // const [isVisitorFormOpen, setIsVisitorFormOpen] = useState(false) // Modal state
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -62,12 +62,12 @@ const Dashboard = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Student Dashboard</h1>
 
-        <button className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors" onClick={() => setIsVisitorFormOpen(true)}>
+        {/* <button className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors" onClick={() => setIsVisitorFormOpen(true)}>
           Request Accommodation
-        </button>
+        </button> */}
       </div>
 
-      <VisitorRequestForm student={user} isOpen={isVisitorFormOpen} setIsOpen={setIsVisitorFormOpen} />
+      {/* <VisitorRequestForm student={user} isOpen={isVisitorFormOpen} setIsOpen={setIsVisitorFormOpen} /> */}
 
       <section className="mb-6">
         <StudentProfile profile={dashboardData.profile} />

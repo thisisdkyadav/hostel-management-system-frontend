@@ -23,7 +23,29 @@ export const visitorApi = {
     }
   },
 
-  // Get All Visitor Requests
+  // Get All Visitor Requests (Essential data only for table view)
+  getVisitorRequestsSummary: async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/visitor/requests/summary`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch visitor requests summary")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error fetching visitor requests summary:", error)
+      throw error
+    }
+  },
+
+  // Get All Visitor Requests (Full data - legacy method)
   getVisitorRequests: async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/visitor/requests`, {
@@ -41,6 +63,28 @@ export const visitorApi = {
       return await response.json()
     } catch (error) {
       console.error("Error fetching visitor requests:", error)
+      throw error
+    }
+  },
+
+  // Get Single Visitor Request by ID (Full details)
+  getVisitorRequestById: async (requestId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch visitor request details")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error fetching visitor request details:", error)
       throw error
     }
   },
@@ -244,6 +288,99 @@ export const visitorApi = {
       return await response.json()
     } catch (error) {
       console.error("Error rejecting visitor request:", error)
+      throw error
+    }
+  },
+
+  // Allocate Room to Visitor Request
+  allocateRooms: async (requestId, allocationData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/allocate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ allocationData }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to fetch students")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error allocating room to visitor request:", error)
+      throw error
+    }
+  },
+
+  // Security Check-in Visitor
+  checkInVisitor: async (requestId, checkInData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/checkin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(checkInData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to check-in visitor")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error checking in visitor:", error)
+      throw error
+    }
+  },
+
+  // Security Check-out Visitor
+  checkOutVisitor: async (requestId, checkOutData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(checkOutData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to check-out visitor")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error checking out visitor:", error)
+      throw error
+    }
+  },
+
+  // Update Check-in/Check-out Times
+  updateCheckTimes: async (requestId, checkData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/update-check-times`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(checkData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to update check times")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error updating check times:", error)
       throw error
     }
   },

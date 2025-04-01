@@ -21,18 +21,26 @@ const VisitorRequests = () => {
   const [showManageProfilesModal, setShowManageProfilesModal] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [statusFilter, setStatusFilter] = useState("all")
+  const [allocationFilter, setAllocationFilter] = useState("all") // new filter for allocation status
 
   const fetchVisitorData = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      // In a real implementation, these would be API calls to get visitor requests and profiles
-      const requests = await visitorApi.getVisitorRequests()
-      const profiles = await visitorApi.getVisitorProfiles()
+      // Get summarized data for the request table
+      const requests = await visitorApi.getVisitorRequestsSummary()
 
-      console.log("Visitor Requests:", requests)
-      console.log("Visitor Profiles:", profiles)
+      // Only fetch profiles for students
+      let profiles = []
+      if (user.role === "Student") {
+        profiles = await visitorApi.getVisitorProfiles()
+      }
+
+      console.log("Visitor Requests Summary:", requests)
+      if (user.role === "Student") {
+        console.log("Visitor Profiles:", profiles)
+      }
 
       setVisitorRequests(requests.data || [])
       setVisitorProfiles(profiles.data || [])
@@ -76,8 +84,18 @@ const VisitorRequests = () => {
   }
 
   const filteredRequests = visitorRequests.filter((request) => {
-    if (statusFilter === "all") return true
-    return request.status.toLowerCase() === statusFilter.toLowerCase()
+    // Filter by status
+    if (statusFilter !== "all" && request.status.toLowerCase() !== statusFilter.toLowerCase()) {
+      return false
+    }
+
+    // Filter by allocation status (for wardens)
+    if (user.role === "Warden" && allocationFilter !== "all") {
+      if (allocationFilter === "allocated" && !request.isAllocated) return false
+      if (allocationFilter === "unallocated" && request.isAllocated) return false
+    }
+
+    return true
   })
 
   if (loading) {
@@ -97,7 +115,7 @@ const VisitorRequests = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Visitor Requests</h1>
-            <p className="text-gray-500 text-sm mt-1">Manage your visitor accommodation requests</p>
+            <p className="text-gray-500 text-sm mt-1">{user.role === "Warden" ? "Manage visitor accommodation requests for your hostel" : "Manage your visitor accommodation requests"}</p>
           </div>
         </div>
 
@@ -123,21 +141,52 @@ const VisitorRequests = () => {
 
       {showFilters && (
         <div className="bg-white p-4 rounded-xl shadow-sm mb-6">
-          <div className="flex items-center gap-4">
-            <h3 className="font-medium text-gray-700">Filter by Status:</h3>
-            <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
-              {["all", "pending", "approved", "rejected"].map((status) => (
-                <button key={status} onClick={() => setStatusFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${statusFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </button>
-              ))}
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div>
+              <h3 className="font-medium text-gray-700 mb-2">Filter by Status:</h3>
+              <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                {user.role === "Warden"
+                  ? ["all", "approved"].map((status) => (
+                      <button key={status} onClick={() => setStatusFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${statusFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+                      </button>
+                    ))
+                  : ["all", "pending", "approved", "rejected"].map((status) => (
+                      <button key={status} onClick={() => setStatusFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${statusFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+                      </button>
+                    ))}
+              </div>
             </div>
+
+            {user.role === "Warden" && (
+              <div>
+                <h3 className="font-medium text-gray-700 mb-2">Filter by Allocation:</h3>
+                <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                  {["all", "allocated", "unallocated"].map((status) => (
+                    <button key={status} onClick={() => setAllocationFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${allocationFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                      {status.charAt(0).toUpperCase() + status.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {visitorRequests.length === 0 ? (
-        <EmptyState icon={() => <FaUserFriends className="text-gray-400" size={48} />} title="No Visitor Requests" message="You haven't made any visitor accommodation requests yet. Create a new request to get started." buttonText="Create Request" buttonAction={() => setShowAddRequestModal(true)} />
+        <EmptyState
+          icon={() => <FaUserFriends className="text-gray-400" size={48} />}
+          title={user.role === "Warden" ? "No Visitor Requests" : "No Visitor Requests"}
+          message={user.role === "Warden" ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
+          buttonText={user.role === "Student" ? "Create Request" : null}
+          buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
+        />
+      ) : filteredRequests.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+          <p className="text-gray-500">No requests found matching your filters.</p>
+        </div>
       ) : (
         <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />
       )}

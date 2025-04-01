@@ -108,7 +108,7 @@ const AppRoutes = () => {
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
-        <Route path="visitors" element={<Visitors />} />
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
@@ -148,7 +148,7 @@ const AppRoutes = () => {
       >
         <Route index element={<GuardDashboard />} />
         <Route path="visitors/add" element={<AddVisitor />} />
-        <Route path="visitors" element={<Visitors />} />
+        <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
         <Route path="add-entry" element={<AddStudentEntry />} />

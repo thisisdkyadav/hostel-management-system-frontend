@@ -1,43 +1,121 @@
-import React, { useState } from "react"
-import { FaUser, FaCalendarAlt, FaInfoCircle, FaBuilding, FaMapMarkerAlt } from "react-icons/fa"
+import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
 import { visitorApi } from "../../../services/visitorApi"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 
-const VisitorRequestDetailsModal = ({ isOpen, onClose, request, onRefresh }) => {
+// Import smaller components
+import StatusBadge from "./details/StatusBadge"
+import VisitInformation from "./details/VisitInformation"
+import AccommodationDetails from "./details/AccommodationDetails"
+import VisitReason from "./details/VisitReason"
+import VisitorInformation from "./details/VisitorInformation"
+import SecurityCheck from "./details/SecurityCheck"
+import RoomAllocationForm from "./details/RoomAllocationForm"
+import ApprovalForm from "./details/ApprovalForm"
+import RejectionForm from "./details/RejectionForm"
+import ActionButtons from "./details/ActionButtons"
+import CheckInOutForm from "./details/CheckInOutForm"
+import EditVisitorRequestModal from "./EditVisitorRequestModal"
+
+const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
+  const [request, setRequest] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [selectedHostel, setSelectedHostel] = useState("")
   const [rejectionReason, setRejectionReason] = useState("")
   const [showRejectForm, setShowRejectForm] = useState(false)
   const [showApproveForm, setShowApproveForm] = useState(false)
 
-  if (!isOpen || !request) return null
+  const [showAllocationForm, setShowAllocationForm] = useState(false)
+  const [isUnitBased, setIsUnitBased] = useState(false)
+  const [allocatedRooms, setAllocatedRooms] = useState([])
+  const [currentHostel, setCurrentHostel] = useState(null)
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
+  // New states for Security functionality
+  const [showCheckInForm, setShowCheckInForm] = useState(false)
+  const [showCheckOutForm, setShowCheckOutForm] = useState(false)
+  const [processingAction, setProcessingAction] = useState(false)
 
-  const getStatusColor = (status) => {
-    const statusColors = {
-      pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      approved: "bg-green-100 text-green-800 border-green-200",
-      rejected: "bg-red-100 text-red-800 border-red-200",
-      completed: "bg-blue-100 text-blue-800 border-blue-200",
+  const [showEditModal, setShowEditModal] = useState(false)
+
+  // Fetch request details from API
+  const fetchRequestDetails = async () => {
+    if (!requestId) return
+
+    setLoading(true)
+    try {
+      const response = await visitorApi.getVisitorRequestById(requestId)
+      setRequest(response.data)
+    } catch (error) {
+      console.error("Error fetching request details:", error)
+    } finally {
+      setLoading(false)
     }
-    return statusColors[status.toLowerCase()] || statusColors.pending
   }
 
+  // Effect to fetch data when modal opens
+  useEffect(() => {
+    if (isOpen && requestId) {
+      fetchRequestDetails()
+    } else {
+      setRequest(null)
+      setLoading(false)
+    }
+  }, [isOpen, requestId])
+
+  // Initialize forms and room allocation based on request data
+  useEffect(() => {
+    if (user.role === "Warden" && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
+      setShowAllocationForm(true)
+    } else {
+      setShowAllocationForm(false)
+    }
+
+    // Initialize room allocation form
+    if (request?.hostelId) {
+      // Find the hostel in the list to determine if it's unit-based
+      const hostel = hostelList.find((h) => h._id === request.hostelId || h.name === request.hostelId)
+      if (hostel) {
+        setCurrentHostel(hostel)
+        setIsUnitBased(hostel.type === "unit-based" || false)
+      }
+    }
+
+    // Initialize allocated rooms if they exist
+    if (request?.allocatedRooms && request.allocatedRooms.length > 0) {
+      setAllocatedRooms(request.allocatedRooms)
+    } else {
+      // Start with one empty room entry
+      setAllocatedRooms([isUnitBased ? ["", ""] : [""]])
+    }
+  }, [request, user.role, hostelList])
+
+  if (!isOpen) return null
+
+  // Room allocation handlers
+  const addRoomField = () => {
+    setAllocatedRooms([...allocatedRooms, isUnitBased ? ["", ""] : [""]])
+  }
+
+  const removeRoomField = (index) => {
+    const updatedRooms = [...allocatedRooms]
+    updatedRooms.splice(index, 1)
+    setAllocatedRooms(updatedRooms)
+  }
+
+  const handleRoomChange = (index, fieldIndex, value) => {
+    const updatedRooms = [...allocatedRooms]
+    updatedRooms[index][fieldIndex] = value
+    setAllocatedRooms(updatedRooms)
+  }
+
+  // API action handlers
   const handleCancelRequest = async () => {
     if (window.confirm("Are you sure you want to cancel this visitor request?")) {
       try {
-        await visitorApi.cancelVisitorRequest(request._id)
+        await visitorApi.cancelVisitorRequest(requestId)
         onRefresh()
         onClose()
       } catch (error) {
@@ -54,7 +132,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, request, onRefresh }) => 
     }
 
     try {
-      await visitorApi.approveVisitorRequest(request._id, selectedHostel)
+      await visitorApi.approveVisitorRequest(requestId, selectedHostel)
       onRefresh()
       onClose()
     } catch (error) {
@@ -65,7 +143,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, request, onRefresh }) => 
 
   const handleRejectRequest = async () => {
     try {
-      await visitorApi.rejectVisitorRequest(request._id, rejectionReason)
+      await visitorApi.rejectVisitorRequest(requestId, rejectionReason)
       onRefresh()
       onClose()
     } catch (error) {
@@ -74,6 +152,70 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, request, onRefresh }) => 
     }
   }
 
+  const handleAllocateRooms = async () => {
+    // Validate rooms
+    const isValid = allocatedRooms.every((room) => (isUnitBased ? room[0].trim() !== "" && room[1].trim() !== "" : room[0].trim() !== ""))
+
+    if (!isValid) {
+      alert("Please fill in all room details")
+      return
+    }
+
+    try {
+      await visitorApi.allocateRooms(requestId, allocatedRooms)
+      onRefresh()
+      onClose()
+    } catch (error) {
+      console.error("Error allocating rooms:", error)
+      alert(error.message || "Failed to allocate rooms. Please try again.")
+    }
+  }
+
+  // Security handlers (new)
+  const handleCheckIn = async (checkInData) => {
+    setProcessingAction(true)
+    try {
+      await visitorApi.checkInVisitor(requestId, checkInData)
+      await fetchRequestDetails()
+      setShowCheckInForm(false)
+    } catch (error) {
+      console.error("Error checking in visitor:", error)
+      alert("Failed to check in visitor. Please try again.")
+    } finally {
+      setProcessingAction(false)
+    }
+  }
+
+  const handleCheckOut = async (checkOutData) => {
+    setProcessingAction(true)
+    try {
+      await visitorApi.checkOutVisitor(requestId, checkOutData)
+      await fetchRequestDetails()
+      setShowCheckOutForm(false)
+    } catch (error) {
+      console.error("Error checking out visitor:", error)
+      alert("Failed to check out visitor. Please try again.")
+    } finally {
+      setProcessingAction(false)
+    }
+  }
+
+  const handleUpdateCheckTimes = async (checkData) => {
+    setProcessingAction(true)
+    try {
+      await visitorApi.updateCheckTimes(requestId, checkData)
+      await fetchRequestDetails()
+      setShowCheckInForm(false)
+      setShowCheckOutForm(false)
+    } catch (error) {
+      console.error("Error updating check times:", error)
+      alert("Failed to update check times. Please try again.")
+    } finally {
+      setProcessingAction(false)
+    }
+  }
+
+  // UI toggle handlers
   const toggleApproveForm = () => {
     setShowApproveForm(!showApproveForm)
     setShowRejectForm(false)
@@ -84,204 +226,118 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, request, onRefresh }) => 
     setShowApproveForm(false)
   }
 
+  const toggleCheckInForm = () => {
+    setShowCheckInForm(!showCheckInForm)
+    setShowCheckOutForm(false)
+  }
+
+  const toggleCheckOutForm = () => {
+    setShowCheckOutForm(!showCheckOutForm)
+    setShowCheckInForm(false)
+  }
+
+  // Function to get visitor names for the check-in/out form
+  const getVisitorInfo = () => {
+    if (!request.visitors || request.visitors.length === 0) return "No visitors listed"
+
+    return request.visitors.map((visitor) => `${visitor.name} (${visitor.idType}: ${visitor.idNumber})`).join(", ")
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <Modal title="Visitor Request Details" onClose={onClose} width={650}>
+        <div className="flex justify-center items-center h-64">
+          <div className="relative w-16 h-16">
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+          </div>
+        </div>
+      </Modal>
+    )
+  }
+
+  // No request data
+  if (!request) {
+    return (
+      <Modal title="Visitor Request Details" onClose={onClose} width={650}>
+        <div className="p-8 text-center">
+          <p className="text-gray-500">No request details found.</p>
+        </div>
+      </Modal>
+    )
+  }
+
+  // Main render with request data
   return (
     <Modal title="Visitor Request Details" onClose={onClose} width={650}>
       <div className="space-y-6">
-        {/* Request Status */}
-        <div className={`p-4 rounded-lg border ${getStatusColor(request.status)}`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <FaInfoCircle className="mr-2" />
-              <span className="font-medium">Status: {request.status.charAt(0).toUpperCase() + request.status.slice(1)}</span>
-            </div>
-            <div className="text-sm">Request ID: #{request._id?.substring(0, 8)}</div>
-          </div>
-          {request.status === "rejected" && request.rejectionReason && (
-            <div className="mt-2 text-sm">
-              <span className="font-medium">Reason for rejection:</span> {request.rejectionReason}
-            </div>
-          )}
-          {request.status === "approved" && (
-            <div className="mt-2 text-sm">
-              <span className="font-medium">Approved on:</span> {formatDate(request.approvedAt || new Date())}
-            </div>
-          )}
-        </div>
+        {/* Status Badge */}
+        {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
 
-        {/* Request Details */}
+        {/* Visit Information and Accommodation Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-              <FaCalendarAlt className="mr-2 text-[#1360AB]" /> Visit Information
-            </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600 text-sm">From Date:</span>
-                <span className="font-medium text-sm">{formatDate(request.fromDate)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 text-sm">To Date:</span>
-                <span className="font-medium text-sm">{formatDate(request.toDate)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 text-sm">Duration:</span>
-                <span className="font-medium text-sm">{Math.ceil((new Date(request.toDate) - new Date(request.fromDate)) / (1000 * 60 * 60 * 24))} days</span>
-              </div>
-            </div>
-          </div>
+          <VisitInformation fromDate={request.fromDate} toDate={request.toDate} />
 
-          {request.status === "approved" && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-                <FaBuilding className="mr-2 text-[#1360AB]" /> Accommodation Details
-              </h3>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm">Hostel:</span>
-                  <span className="font-medium text-sm">{request.hostelAssigned || "Not assigned yet"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm">Room Number:</span>
-                  <span className="font-medium text-sm">{request.roomAssigned || "Not assigned yet"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm">Room Type:</span>
-                  <span className="font-medium text-sm">{request.roomType || "Standard"}</span>
-                </div>
-              </div>
-            </div>
-          )}
+          {request.status === "Approved" && <AccommodationDetails hostelName={request.hostelName} allocatedRooms={request.allocatedRooms} />}
         </div>
 
         {/* Reason for Visit */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-700 mb-3">Reason for Visit</h3>
-          <p className="text-sm text-gray-600">{request.reason}</p>
-        </div>
+        <VisitReason reason={request.reason} />
 
-        {/* Visitors List */}
-        <div>
-          <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-            <FaUser className="mr-2 text-[#1360AB]" /> Visitor Information
-          </h3>
-          <div className="space-y-3">
-            {request.visitors.map((visitor, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                  <div className="mb-2 sm:mb-0">
-                    <h4 className="font-medium text-gray-800">{visitor.name}</h4>
-                    <p className="text-sm text-gray-600">Relation: {visitor.relation}</p>
-                  </div>
-                  <div className="flex flex-col items-start sm:items-end">
-                    <span className="text-sm text-gray-600">{visitor.phone}</span>
-                    <span className="text-sm text-gray-600">{visitor.email}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Visitors Information */}
+        <VisitorInformation visitors={request.visitors} />
 
         {/* Security Check-in/out (if applicable) */}
-        {request.status === "approved" && request.checkInTime && (
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-              <FaMapMarkerAlt className="mr-2 text-[#1360AB]" /> Security Check
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <span className="text-gray-600 text-sm block">Check-in:</span>
-                <span className="font-medium">{new Date(request.checkInTime).toLocaleString()}</span>
-              </div>
-              {request.checkOutTime && (
-                <div>
-                  <span className="text-gray-600 text-sm block">Check-out:</span>
-                  <span className="font-medium">{new Date(request.checkOutTime).toLocaleString()}</span>
-                </div>
-              )}
-            </div>
-          </div>
+        {request.status === "Approved" && request.checkInTime && <SecurityCheck checkInTime={request.checkInTime} checkOutTime={request.checkOutTime} />}
+
+        {/* Security Check-in Form (for Security/Guard) */}
+        {user.role === "Security" && request.status === "Approved" && request.allocatedRooms && request.allocatedRooms.length > 0 && showCheckInForm && (
+          <CheckInOutForm requestId={requestId} visitorInfo={getVisitorInfo()} checkInTime={request.checkInTime} checkOutTime={request.checkOutTime} onCheckIn={handleCheckIn} onCheckOut={handleCheckOut} onUpdateTimes={handleUpdateCheckTimes} onCancel={() => setShowCheckInForm(false)} />
+        )}
+
+        {/* Room Allocation Form (for Warden) */}
+        {user.role === "Warden" && request.status === "Approved" && showAllocationForm && (
+          <RoomAllocationForm isUnitBased={isUnitBased} allocatedRooms={allocatedRooms} onRoomChange={handleRoomChange} onAddRoom={addRoomField} onRemoveRoom={removeRoomField} onCancel={() => setShowAllocationForm(false)} onSubmit={handleAllocateRooms} />
         )}
 
         {/* Approve Form (for Admin) */}
-        {["Admin"].includes(user.role) && request.status.toLowerCase() === "pending" && showApproveForm && (
-          <div className="bg-green-50 border border-green-100 p-4 rounded-lg animate-fadeIn">
-            <h3 className="font-medium text-green-800 mb-3">Approve Visitor Request</h3>
-            <div className="mb-3">
-              <label htmlFor="hostel-select" className="block text-sm font-medium text-gray-700 mb-1">
-                Assign Hostel <span className="text-red-500">*</span>
-              </label>
-              <select id="hostel-select" value={selectedHostel} onChange={(e) => setSelectedHostel(e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
-                <option value="">Select a hostel</option>
-                {hostelList.map((hostel) => (
-                  <option key={hostel._id} value={hostel._id}>
-                    {hostel.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <button onClick={() => setShowApproveForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                Cancel
-              </button>
-              <button onClick={handleApproveRequest} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                Confirm Approval
-              </button>
-            </div>
-          </div>
-        )}
+        {["Admin"].includes(user.role) && request.status === "Pending" && showApproveForm && <ApprovalForm selectedHostel={selectedHostel} onHostelChange={setSelectedHostel} onCancel={() => setShowApproveForm(false)} onSubmit={handleApproveRequest} hostelList={hostelList} />}
 
         {/* Reject Form (for Admin) */}
-        {["Admin"].includes(user.role) && request.status.toLowerCase() === "pending" && showRejectForm && (
-          <div className="bg-red-50 border border-red-100 p-4 rounded-lg animate-fadeIn">
-            <h3 className="font-medium text-red-800 mb-3">Reject Visitor Request</h3>
-            <div className="mb-3">
-              <label htmlFor="rejection-reason" className="block text-sm font-medium text-gray-700 mb-1">
-                Reason for Rejection (Optional)
-              </label>
-              <textarea
-                id="rejection-reason"
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                rows="3"
-                placeholder="Please provide an optional reason for rejection"
-              ></textarea>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <button onClick={() => setShowRejectForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                Cancel
-              </button>
-              <button onClick={handleRejectRequest} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                Confirm Rejection
-              </button>
-            </div>
-          </div>
-        )}
+        {["Admin"].includes(user.role) && request.status === "Pending" && showRejectForm && <RejectionForm rejectionReason={rejectionReason} onReasonChange={setRejectionReason} onCancel={() => setShowRejectForm(false)} onSubmit={handleRejectRequest} />}
 
-        {/* Actions */}
-        <div className="flex justify-end mt-6 pt-4 border-t border-gray-100">
-          {["Student"].includes(user.role) && request.status.toLowerCase() === "pending" && (
-            <button onClick={handleCancelRequest} className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors mr-3">
-              Cancel Request
-            </button>
-          )}
-          {/* Admin action buttons */}
-          {["Admin"].includes(user.role) && request.status.toLowerCase() === "pending" && (
-            <>
-              <button onClick={toggleApproveForm} className={`px-4 py-2 rounded-lg mr-3 transition-colors ${showApproveForm ? "bg-green-600 text-white" : "bg-green-100 text-green-700 hover:bg-green-200"}`}>
-                {showApproveForm ? "Hide Approval Form" : "Approve Request"}
-              </button>
-              <button onClick={toggleRejectForm} className={`px-4 py-2 rounded-lg mr-3 transition-colors ${showRejectForm ? "bg-red-600 text-white" : "bg-red-100 text-red-700 hover:bg-red-200"}`}>
-                {showRejectForm ? "Hide Rejection Form" : "Reject Request"}
-              </button>
-            </>
-          )}
-          <button onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-            Close
-          </button>
-        </div>
+        {/* Action Buttons */}
+        <ActionButtons
+          userRole={user.role}
+          requestStatus={request.status}
+          onClose={onClose}
+          onCancelRequest={handleCancelRequest}
+          onEditRequest={() => setShowEditModal(true)}
+          onShowApproveForm={toggleApproveForm}
+          onShowRejectForm={toggleRejectForm}
+          showApproveForm={showApproveForm}
+          showRejectForm={showRejectForm}
+          onShowAllocationForm={() => setShowAllocationForm(true)}
+          hasAllocatedRooms={request.allocatedRooms && request.allocatedRooms.length > 0}
+          // Security-specific props
+          onShowCheckInForm={toggleCheckInForm}
+          onShowCheckOutForm={toggleCheckOutForm}
+          showCheckInForm={showCheckInForm}
+          isCheckInForm={!request.checkInTime}
+          isCheckOutForm={request.checkInTime && !request.checkOutTime}
+          isCheckTimes={request.checkInTime && request.checkOutTime}
+        />
       </div>
+
+      <EditVisitorRequestModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+        }}
+        request={request}
+        onRefresh={onRefresh}
+      />
     </Modal>
   )
 }
