@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FaEye, FaTimes, FaEdit } from "react-icons/fa"
+import { FaEye, FaTimes, FaEdit, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/fa"
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import EditVisitorRequestModal from "./EditVisitorRequestModal"
 import { visitorApi } from "../../../services/visitorApi"
@@ -7,30 +7,49 @@ import { useAuth } from "../../../contexts/AuthProvider"
 
 const StatusBadge = ({ status }) => {
   const statusMap = {
-    pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
-    approved: { color: "bg-green-100 text-green-800", label: "Approved" },
-    rejected: { color: "bg-red-100 text-red-800", label: "Rejected" },
-    completed: { color: "bg-blue-100 text-blue-800", label: "Completed" },
+    Pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
+    Approved: { color: "bg-green-100 text-green-800", label: "Approved" },
+    Rejected: { color: "bg-red-100 text-red-800", label: "Rejected" },
+    Completed: { color: "bg-blue-100 text-blue-800", label: "Completed" },
   }
 
-  const { color, label } = statusMap[status.toLowerCase()] || statusMap.pending
+  const { color, label } = statusMap[status] || statusMap.Pending
 
   return <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>
 }
 
+const AllocationBadge = ({ request }) => {
+  const isAllocated = request.isAllocated
+
+  return isAllocated ? <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Allocated</span> : <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Unallocated</span>
+}
+
+const CheckInOutBadge = ({ request }) => {
+  const hasCheckedIn = request.checkInTime
+  const hasCheckedOut = request.checkOutTime
+
+  if (hasCheckedOut) {
+    return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Checked Out</span>
+  } else if (hasCheckedIn) {
+    return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Checked In</span>
+  } else {
+    return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Not Checked</span>
+  }
+}
+
 const VisitorRequestTable = ({ requests, onRefresh }) => {
   const { user } = useAuth()
-  const [selectedRequest, setSelectedRequest] = useState(null)
+  const [selectedRequestId, setSelectedRequestId] = useState(null)
   const [showDetails, setShowDetails] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
 
   const handleViewDetails = (request) => {
-    setSelectedRequest(request)
+    setSelectedRequestId(request._id)
     setShowDetails(true)
   }
 
   const handleEditRequest = (request) => {
-    setSelectedRequest(request)
+    setSelectedRequestId(request._id)
     setShowEditModal(true)
   }
 
@@ -85,6 +104,9 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {user.role === "Security" ? "Check Status" : "Allocation"}
+                </th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -98,9 +120,9 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {request.visitors.length} visitor{request.visitors.length !== 1 ? "s" : ""}
+                      {request.visitorCount} visitor{request.visitorCount !== 1 ? "s" : ""}
                     </div>
-                    <div className="text-xs text-gray-500">{request.visitors.map((v) => v.name).join(", ")}</div>
+                    <div className="text-xs text-gray-500">{request.visitorNames}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{formatDate(request.fromDate)}</div>
@@ -111,12 +133,40 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={request.status} />
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">{user.role === "Security" ? <CheckInOutBadge request={request} /> : <AllocationBadge request={request} />}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button onClick={() => handleViewDetails(request)} className="text-[#1360AB] hover:text-blue-700 p-1 rounded-full transition-colors" title="View details">
                       <FaEye className="h-4 w-4" />
                     </button>
 
-                    {["Student"].includes(user.role) && request.status.toLowerCase() === "pending" && (
+                    {user.role === "Warden" && request.status === "Approved" && !request.isAllocated && (
+                      <button onClick={() => handleViewDetails(request)} className="text-green-500 hover:text-green-700 p-1 rounded-full transition-colors ml-2" title="Allocate rooms">
+                        <FaHome className="h-4 w-4" />
+                      </button>
+                    )}
+
+                    {/* Security check-in/check-out action buttons */}
+                    {user.role === "Security" && request.status === "Approved" && request.isAllocated && (
+                      <>
+                        {!request.checkInTime && (
+                          <button onClick={() => handleViewDetails(request)} className="text-blue-500 hover:text-blue-700 p-1 rounded-full transition-colors ml-2" title="Check in visitor">
+                            <FaSignInAlt className="h-4 w-4" />
+                          </button>
+                        )}
+                        {request.checkInTime && !request.checkOutTime && (
+                          <button onClick={() => handleViewDetails(request)} className="text-green-500 hover:text-green-700 p-1 rounded-full transition-colors ml-2" title="Check out visitor">
+                            <FaSignOutAlt className="h-4 w-4" />
+                          </button>
+                        )}
+                        {request.checkInTime && (
+                          <button onClick={() => handleViewDetails(request)} className="text-yellow-500 hover:text-yellow-700 p-1 rounded-full transition-colors ml-2" title="Edit check times">
+                            <FaClock className="h-4 w-4" />
+                          </button>
+                        )}
+                      </>
+                    )}
+
+                    {["Student"].includes(user.role) && request.status === "Pending" && (
                       <>
                         <button onClick={() => handleEditRequest(request)} className="text-amber-500 hover:text-amber-700 p-1 rounded-full transition-colors ml-2" title="Edit request">
                           <FaEdit className="h-4 w-4" />
@@ -134,11 +184,27 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
         </div>
       </div>
 
-      {selectedRequest && (
+      {selectedRequestId && (
         <>
-          <VisitorRequestDetailsModal isOpen={showDetails} onClose={() => setShowDetails(false)} request={selectedRequest} onRefresh={onRefresh} />
+          <VisitorRequestDetailsModal
+            isOpen={showDetails}
+            onClose={() => {
+              setShowDetails(false)
+              setSelectedRequestId(null)
+            }}
+            requestId={selectedRequestId}
+            onRefresh={onRefresh}
+          />
 
-          <EditVisitorRequestModal isOpen={showEditModal} onClose={() => setShowEditModal(false)} request={selectedRequest} onRefresh={onRefresh} />
+          {/* <EditVisitorRequestModal
+            isOpen={showEditModal}
+            onClose={() => {
+              setShowEditModal(false)
+              setSelectedRequestId(null)
+            }}
+            requestId={selectedRequestId}
+            onRefresh={onRefresh}
+          /> */}
         </>
       )}
     </>
