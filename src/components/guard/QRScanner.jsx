@@ -60,12 +60,14 @@ const QRScanner = ({ onScanSuccess }) => {
       }
 
       setLoading(true)
+      stopScanner()
 
       const email = data.e
       const encryptedData = data.d
       const response = await securityApi.verifyQRCode(email, encryptedData)
       const studentProfile = response.studentProfile
       const lastCheckInOut = response.lastCheckInOut
+
 
       setScannedStudent(studentProfile)
       setLoading(false)
