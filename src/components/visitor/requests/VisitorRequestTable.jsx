@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { FaEye, FaTimes, FaEdit, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/fa"
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
-import EditVisitorRequestModal from "./EditVisitorRequestModal"
 import { visitorApi } from "../../../services/visitorApi"
 import { useAuth } from "../../../contexts/AuthProvider"
 
@@ -90,7 +89,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             <thead className="bg-gray-50">
               <tr>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Request ID
+                  Request ID and student details
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Visitors
@@ -116,7 +115,22 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
               {requests.map((request) => (
                 <tr key={request._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">#{request._id.substring(0, 8)}</div>
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <span className="text-xs text-gray-500 mb-1 block">#{request._id.substring(0, 8)}</span>
+                        <div className="flex items-center">
+                          {request.studentProfileImage ? (
+                            <img className="h-10 w-10 rounded-full object-cover" src={request.studentProfileImage} alt={request.studentName} />
+                          ) : (
+                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">{request.studentName?.charAt(0) || "?"}</div>
+                          )}
+                          <div className="ml-3">
+                            <div className="text-sm font-medium text-gray-900">{request.studentName || "N/A"}</div>
+                            <div className="text-xs text-gray-500">{request.studentEmail || "No email"}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
@@ -165,17 +179,6 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                         )}
                       </>
                     )}
-
-                    {["Student"].includes(user.role) && request.status === "Pending" && (
-                      <>
-                        <button onClick={() => handleEditRequest(request)} className="text-amber-500 hover:text-amber-700 p-1 rounded-full transition-colors ml-2" title="Edit request">
-                          <FaEdit className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => handleCancelRequest(request._id)} className="text-red-500 hover:text-red-700 p-1 rounded-full transition-colors ml-2" title="Cancel request">
-                          <FaTimes className="h-4 w-4" />
-                        </button>
-                      </>
-                    )}
                   </td>
                 </tr>
               ))}
@@ -195,16 +198,6 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             requestId={selectedRequestId}
             onRefresh={onRefresh}
           />
-
-          {/* <EditVisitorRequestModal
-            isOpen={showEditModal}
-            onClose={() => {
-              setShowEditModal(false)
-              setSelectedRequestId(null)
-            }}
-            requestId={selectedRequestId}
-            onRefresh={onRefresh}
-          /> */}
         </>
       )}
     </>
