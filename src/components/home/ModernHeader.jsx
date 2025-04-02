@@ -13,17 +13,17 @@ const ModernHeader = () => {
   const profileRef = useRef(null)
 
   const navItems = [
-    { label: "Home", path: "/" },
+    
     {
       label: "Resources",
       submenu: [
         { label: "Academic Calendar", path: "https://academic.iiti.ac.in/Document/2025/2024-25_Academic%20Calendar_Updated%20-%2029-1-2025.pdf" },
         { label: "Hostel Rules", path: "https://academic.iiti.ac.in/New_student/Hall%20of%20Residence%20Rules%20&%20Decl.pdf" },
-        { label: "Mess Schedule", path: "/" },
-        { label: "Complaint Forms", path: "/" },
+        { label: "Dining Rules", path: "/" },
+        { label: "Menu", path: "/" },
       ],
     },
-    { label: "Announcements", path: "/" },
+    
     { label: "Contact", path: "/" },
   ]
 
