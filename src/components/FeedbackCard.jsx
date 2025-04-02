@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { HiAnnotation, HiUser, HiCalendar, HiClock, HiEye, HiReply, HiTrash, HiPencilAlt } from "react-icons/hi"
+import { HiAnnotation, HiUser, HiCalendar, HiClock, HiEye, HiReply, HiTrash, HiPencilAlt, HiMail } from "react-icons/hi"
 import { feedbackApi } from "../services/feedbackApi"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
@@ -129,17 +129,30 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
             <span className="text-xs text-gray-500">ID: {feedback._id.substring(0, 8)}</span>
           </div>
         </div>
-        <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>
+        {!isStudentView && (
+          <div className="flex items-center">
+            {feedback.userId.profileImage ? (
+              <img src={feedback.userId.profileImage} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                <HiUser className="text-[#1360AB]" size={20} />
+              </div>
+            )}
+            <div className="mr-2">
+              <p className="text-sm font-medium text-gray-800">{feedback.userId.name}</p>
+              <p className="text-xs text-gray-600 flex items-center">
+                <HiMail className="mr-1" size={12} />
+                {feedback.userId.email}
+              </p>
+            </div>
+            <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>
+          </div>
+        )}
+        {isStudentView && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
       </div>
 
       <div className="mt-4 space-y-3">
         <div className="flex items-center flex-wrap">
-          {!isStudentView && (
-            <div className="flex items-center mr-4 mb-1">
-              <HiUser className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-              <span className="text-sm text-gray-700">{feedback.userId.name}</span>
-            </div>
-          )}
           <div className="flex items-center mr-4 mb-1">
             <HiCalendar className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
             <span className="text-sm text-gray-700">{formatDate(feedback.createdAt)}</span>
