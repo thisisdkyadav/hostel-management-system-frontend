@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
-import { FaQrcode, FaTimes, FaUser, FaIdCard, FaEnvelope, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
+import { FaQrcode, FaTimes } from "react-icons/fa"
 import { securityApi } from "../../services/securityApi"
+import ScannedStudentInfo from "./ScannedStudentInfo"
 
 const QRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -200,80 +201,7 @@ const QRScanner = ({ onRefresh }) => {
 
       {scannedStudent && !loading && (
         <div className="mt-4" ref={studentInfoRef}>
-          <div className="bg-green-50 p-3 rounded-lg border-l-4 border-green-500 mb-4">
-            <p className="text-green-700 font-medium">Student verified successfully!</p>
-          </div>
-
-          <div className="bg-gray-50 rounded-lg p-5">
-            <h3 className="font-bold text-lg text-gray-800 mb-4 flex items-center">
-              <FaUser className="mr-2 text-[#1360AB]" />
-              {scannedStudent.name}
-            </h3>
-
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <FaIdCard className="text-[#1360AB] mr-3 w-5" />
-                <div>
-                  <p className="text-xs text-gray-500">Roll Number</p>
-                  <p className="text-sm font-medium">{scannedStudent.rollNumber}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center">
-                <FaEnvelope className="text-[#1360AB] mr-3 w-5" />
-                <div>
-                  <p className="text-xs text-gray-500">Email</p>
-                  <p className="text-sm font-medium">{scannedStudent.email}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center">
-                <FaBuilding className="text-[#1360AB] mr-3 w-5" />
-                <div>
-                  <p className="text-xs text-gray-500">Hostel & Room</p>
-                  <p className="text-sm font-medium">
-                    {scannedStudent.hostel}, Room {scannedStudent.room}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {lastCheckInOut && (
-              <div className="mt-4 pt-3 border-t border-gray-200">
-                <h4 className="font-medium text-gray-700 mb-2">Last {lastCheckInOut.status}</h4>
-                <div className="bg-blue-50 p-3 rounded-md">
-                  <div className="flex items-center mb-2">
-                    <FaCalendarAlt className="text-[#1360AB] mr-2" />
-                    <span className="text-sm">{formatDate(lastCheckInOut.dateAndTime)}</span>
-                    <FaClock className="text-[#1360AB] ml-3 mr-2" />
-                    <span className="text-sm">{formatTime(lastCheckInOut.dateAndTime)}</span>
-                  </div>
-                  <div className="flex items-center">
-                    {lastCheckInOut.status === "Checked In" ? <FaSignInAlt className="text-green-600 mr-2" /> : <FaSignOutAlt className="text-orange-600 mr-2" />}
-                    <span className="text-sm font-medium">{lastCheckInOut.status}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="mt-5 pt-4 border-t border-gray-200 flex space-x-3">
-              <button onClick={handleReset} className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center">
-                <FaTimes className="mr-2" /> Reset
-              </button>
-
-              <button onClick={recordEntry} disabled={recordingEntry} className="flex-1 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors flex items-center justify-center disabled:bg-blue-300 disabled:cursor-not-allowed">
-                {getNextStatus() === "Checked In" ? (
-                  <>
-                    <FaSignInAlt className="mr-2" /> Check In
-                  </>
-                ) : (
-                  <>
-                    <FaSignOutAlt className="mr-2" /> Check Out
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
+          <ScannedStudentInfo student={scannedStudent} lastCheckInOut={lastCheckInOut} onReset={handleReset} onRecordEntry={recordEntry} recordingEntry={recordingEntry} getNextStatus={getNextStatus} />
         </div>
       )}
     </div>
