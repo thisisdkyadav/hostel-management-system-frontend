@@ -7,50 +7,24 @@ import Modal from "../common/Modal"
 
 const ComplaintForm = ({ isOpen, setIsOpen }) => {
   const { user } = useAuth()
-  const [hostelList, setHostelList] = useState([])
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
-    hostelId: "",
-    room: "",
-    unit: "",
     attachments: "",
     priority: "",
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  useEffect(() => {
-    const fetchHostels = async () => {
-      try {
-        const data = await adminApi.getHostelList()
-        setHostelList(data)
-      } catch (error) {
-        console.error("Error fetching hostel list:", error)
-      }
-    }
-    fetchHostels()
-  }, [])
-
   if (!isOpen) return null
 
   const handleChange = (e) => {
     const { name, value } = e.target
 
-    if (name === "hostel") {
-      const selectedHostel = hostelList.find((h) => h.name === value)
-      setFormData((prev) => ({
-        ...prev,
-        hostel: value,
-        hostelId: selectedHostel ? selectedHostel._id : "",
-      }))
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }))
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
   const handleSubmit = async (e) => {
@@ -64,9 +38,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         title: formData.title,
         description: formData.description,
         category: formData.category,
-        hostelId: formData.hostelId,
-        room: formData.room,
-        unit: formData.unit,
         attachments: formData.attachments,
         priority: formData.priority,
       }
@@ -78,9 +49,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         title: "",
         description: "",
         category: "",
-        hostelId: "",
-        room: "",
-        unit: "",
         attachments: "",
         priority: "",
       })
@@ -153,7 +121,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">Hostel</label>
             <div className="relative">
               <div className="absolute left-3 top-3 text-gray-400">
@@ -170,9 +138,9 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
                 ))}
               </select>
             </div>
-          </div>
+          </div> */}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 text-sm font-medium mb-2">Unit</label>
               <input type="text" name="unit" placeholder="Unit" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.unit} onChange={handleChange} />
@@ -182,7 +150,7 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
               <label className="block text-gray-700 text-sm font-medium mb-2">Room Number</label>
               <input type="text" name="room" placeholder="Room number" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.room} onChange={handleChange} required />
             </div>
-          </div>
+          </div> */}
 
           {/* <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">Attachment URL (optional)</label>
