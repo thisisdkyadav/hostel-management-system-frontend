@@ -181,6 +181,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="maintenance" element={<MaintenanceStaff />} />
         <Route path="notifications" element={<NotificationCenter />} />
+        <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
     </Routes>
   )

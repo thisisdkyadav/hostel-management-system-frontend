@@ -4,6 +4,7 @@ import { FaTools, FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers
 import { MdSpaceDashboard } from "react-icons/md"
 import AdminProvider from "../contexts/AdminProvider"
 import { useAuth } from "../contexts/AuthProvider"
+import { HiAnnotation } from "react-icons/hi"
 
 const AdminLayout = () => {
   const navigate = useNavigate()
@@ -30,6 +31,7 @@ const AdminLayout = () => {
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/admin/events" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/admin/lost-and-found" },
+    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/admin/feedbacks" },
     { name: "Wardens", icon: FaUserTie, section: "main", path: "/admin/wardens" },
     { name: "Associate Wardens", icon: FaUserTie, section: "main", path: "/admin/associate-wardens" },
     { name: "Security", icon: FaShieldAlt, section: "main", path: "/admin/security" },
