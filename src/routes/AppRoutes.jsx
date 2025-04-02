@@ -53,7 +53,7 @@ import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
 import NotificationCenter from "../pages/NotificationCenter"
-import Security from "../pages/student/security.jsx"
+import Security from "../pages/student/Security.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
