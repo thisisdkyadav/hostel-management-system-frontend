@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect, use } from "react"
-import { Navigate, useLocation } from "react-router-dom"
+import { Navigate, useLocation, useSearchParams } from "react-router-dom"
 import { authApi } from "../services/apiService"
 import LoadingScreen from "../components/common/LoadingScreen"
 import useNetworkStatus from "../hooks/useNetworkStatus"
@@ -142,6 +142,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null)
       }
       setLoading(false)
+      setStarting(false)
     }
   }, [isOnline])
 
