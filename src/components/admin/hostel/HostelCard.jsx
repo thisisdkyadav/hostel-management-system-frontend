@@ -6,6 +6,8 @@ import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 
 const HostelCard = ({ hostel, onUpdate }) => {
+  console.log("HostelCard", hostel)
+
   const [showEditModal, setShowEditModal] = useState(false)
 
   const getTypeColor = (gender) => {
