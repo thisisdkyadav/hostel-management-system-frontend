@@ -17,6 +17,7 @@ import RejectionForm from "./details/RejectionForm"
 import ActionButtons from "./details/ActionButtons"
 import CheckInOutForm from "./details/CheckInOutForm"
 import EditVisitorRequestModal from "./EditVisitorRequestModal"
+import StudentDetails from "./details/StudentDetails"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
   const { user } = useAuth()
@@ -274,6 +275,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       <div className="space-y-6">
         {/* Status Badge */}
         {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
+
+        {/* student details */}
+        <StudentDetails studentName={request.studentName} studentEmail={request.studentEmail} studentProfileImage={request.studentProfileImage} />
 
         {/* Visit Information and Accommodation Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
