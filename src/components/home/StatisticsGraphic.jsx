@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { MdMeetingRoom, MdPeople, MdSecurity, MdDashboard } from "react-icons/md"
-import { FaClipboardCheck, FaTools } from "react-icons/fa"
+import { FaClipboardCheck, FaTools, FaUserClock } from "react-icons/fa"
 import { HiOutlineDocumentReport } from "react-icons/hi"
+import { FiBell, FiUsers } from "react-icons/fi"
 
 const StatisticsGraphic = () => {
   const [activeCard, setActiveCard] = useState(null)
@@ -9,105 +10,123 @@ const StatisticsGraphic = () => {
   // Core hostel management features
   const features = [
     {
-      icon: <MdMeetingRoom />,
-      color: "#3B82F6",
+      icon: <MdMeetingRoom className="text-xl md:text-2xl" />,
+      color: "#3B82F6", // Blue
       label: "Room Management",
-      description: "Allocate and manage hostel rooms",
+      description: "Allocate and manage hostel rooms efficiently",
     },
     {
-      icon: <MdPeople />,
-      color: "#8B5CF6",
+      icon: <FiUsers className="text-xl md:text-2xl" />,
+      color: "#8B5CF6", // Purple
       label: "Student Management",
-      description: "Track student information",
+      description: "Track student information and history",
     },
     {
-      icon: <HiOutlineDocumentReport />,
-      color: "#EF4444",
+      icon: <HiOutlineDocumentReport className="text-xl md:text-2xl" />,
+      color: "#EF4444", // Red
       label: "Complaints",
-      description: "Process and resolve issues",
+      description: "Process and resolve student issues quickly",
     },
     {
-      icon: <FaClipboardCheck />,
-      color: "#10B981",
+      icon: <FaClipboardCheck className="text-xl md:text-2xl" />,
+      color: "#10B981", // Green
       label: "Approvals",
-      description: "Handle student requests",
+      description: "Streamline student request approvals",
     },
     {
-      icon: <MdSecurity />,
-      color: "#F59E0B",
+      icon: <MdSecurity className="text-xl md:text-2xl" />,
+      color: "#F59E0B", // Amber
       label: "Security",
-      description: "Manage entries and visitors",
+      description: "Ensure campus safety and security",
     },
     {
-      icon: <FaTools />,
-      color: "#6B7280",
+      icon: <FaTools className="text-xl md:text-2xl" />,
+      color: "#6B7280", // Gray
       label: "Maintenance",
-      description: "Track repair requests",
+      description: "Manage repair tasks and requests",
     },
     {
-      icon: <FaClipboardCheck />,
-      color: "#F97316",
+      icon: <FiBell className="text-xl md:text-2xl" />,
+      color: "#F97316", // Orange
       label: "Notifications",
-      description: "Send alerts and updates to students",
+      description: "Real-time alerts for all residents",
     },
     {
-      icon: <FaTools />,
-      color: "#9333EA",
-      label: "Maintenance Requests",
-      description: "Log and manage maintenance issues",
+      icon: <MdDashboard className="text-xl md:text-2xl" />,
+      color: "#9333EA", // Indigo
+      label: "Dashboard",
+      description: "Monitor all hostel activities",
     },
     {
-      icon: <MdSecurity />,
-      color: "#14B8A6",
+      icon: <FaUserClock className="text-xl md:text-2xl" />,
+      color: "#14B8A6", // Teal
       label: "Visitor Management",
-      description: "Track visitor check-ins and check-outs",
+      description: "Track and manage campus visitors",
     },
   ]
 
   return (
     <div className="text-gray-800">
-      {/* <h3 className="text-xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Hostel Management System</h3> */}
-
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 md:gap-4">
         {features.map((feature, index) => (
           <div
             key={index}
-            className="relative aspect-square flex flex-col items-center justify-center rounded-lg transition-all duration-300 overflow-hidden group"
+            className="relative flex flex-col items-center justify-center rounded-xl transition-all duration-300 overflow-hidden group hover:shadow-md"
             style={{
               backgroundColor: `${feature.color}15`,
-              borderLeft: `3px solid ${feature.color}`,
+              borderBottom: `3px solid ${feature.color}`,
+              aspectRatio: "1/1",
             }}
             onMouseEnter={() => setActiveCard(index)}
             onMouseLeave={() => setActiveCard(null)}
           >
-            {/* Top corner accent */}
+            {/* Improved background patterns */}
             <div
               className="absolute top-0 right-0 w-16 h-16 -translate-y-8 translate-x-8 group-hover:translate-y-0 group-hover:translate-x-0 transition-transform duration-500"
               style={{
-                background: `linear-gradient(135deg, ${feature.color}30, ${feature.color}00)`,
+                background: `radial-gradient(circle, ${feature.color}30 0%, ${feature.color}00 70%)`,
                 borderRadius: "50%",
               }}
             />
 
-            {/* Icon wrapper */}
-            <div className="w-10 h-10 rounded flex items-center justify-center group-hover:scale-110 transition-all duration-300" style={{ color: feature.color }}>
-              <div className="text-xl">{feature.icon}</div>
+            <div
+              className="absolute bottom-0 left-0 w-12 h-12 translate-y-6 -translate-x-6 group-hover:translate-y-0 group-hover:translate-x-0 transition-transform duration-500"
+              style={{
+                background: `radial-gradient(circle, ${feature.color}30 0%, ${feature.color}00 70%)`,
+                borderRadius: "50%",
+              }}
+            />
+
+            {/* Improved icon wrapper with pulsing animation on hover */}
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-md"
+              style={{
+                color: feature.color,
+                background: `linear-gradient(135deg, ${feature.color}25, ${feature.color}10)`,
+              }}
+            >
+              {feature.icon}
+              {activeCard === index && <div className="absolute w-full h-full animate-ping rounded-full opacity-30" style={{ backgroundColor: feature.color }}></div>}
             </div>
 
-            {/* Label */}
-            <div className="mt-2 text-xs font-medium text-center leading-tight">{feature.label}</div>
+            {/* Improved label with subtle animation */}
+            <div className="mt-3 text-xs font-medium text-center leading-tight px-1 transition-all duration-300 group-hover:font-semibold" style={{ color: activeCard === index ? feature.color : "inherit" }}>
+              {feature.label}
+            </div>
 
-            {/* Description overlay */}
-            <div className="absolute inset-0 flex items-center justify-center p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-b" style={{ background: `linear-gradient(180deg, ${feature.color}95, ${feature.color}BB)` }}>
-              <p className="text-white text-xs text-center">{feature.description}</p>
+            {/* Improved description overlay with blur effect */}
+            <div
+              className="absolute inset-0 flex items-center justify-center p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm"
+              style={{
+                background: `linear-gradient(180deg, ${feature.color}95, ${feature.color}A0)`,
+                transform: activeCard === index ? "scale(1)" : "scale(0.9)",
+              }}
+            >
+              <p className="text-white text-xs text-center font-medium">{feature.description}</p>
             </div>
           </div>
         ))}
       </div>
-
-      {/* <div className="text-center mt-6">
-        <p className="text-sm text-gray-600 max-w-xs mx-auto">Modern hostel management solution for streamlined administration</p>
-      </div> */}
     </div>
   )
 }
