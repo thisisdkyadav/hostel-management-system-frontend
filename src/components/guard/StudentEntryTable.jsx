@@ -49,8 +49,6 @@ const StudentEntryTable = ({ entries, refresh }) => {
   }
 
   const formatDateTime = (dateTimeString) => {
-    console.log(dateTimeString, "Date Time String")
-
     const dateTime = new Date(dateTimeString)
     return {
       date: dateTime.toLocaleDateString(),
