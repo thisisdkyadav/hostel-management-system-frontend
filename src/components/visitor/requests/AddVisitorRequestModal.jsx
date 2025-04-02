@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt } from "react-icons/fa"
 import Modal from "../../common/Modal"
 
-const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles }) => {
+const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {
   const [formData, setFormData] = useState({
     selectedVisitorIds: [],
     reason: "",
@@ -12,10 +12,9 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles }) 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  // Calculate minimum selectable date (today + 2 days)
   const today = new Date()
   const minDate = new Date(today)
-  minDate.setDate(today.getDate() + 2)
+  minDate.setDate(today.getDate() + 1)
   const minDateString = minDate.toISOString().split("T")[0]
 
   const handleChange = (e) => {
@@ -75,7 +74,6 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles }) 
     setError(null)
 
     try {
-      // Get the full visitor objects for selected IDs
       const selectedVisitors = visitorProfiles.filter((profile) => formData.selectedVisitorIds.includes(profile._id))
 
       const requestData = {
@@ -120,7 +118,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles }) 
         <div>
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-medium text-gray-700">Select Visitors</h3>
-            <button type="button" onClick={() => onClose()} className="text-sm text-[#1360AB] hover:text-blue-700 flex items-center">
+            <button type="button" onClick={handleAddProfile} className="text-sm text-[#1360AB] hover:text-blue-700 flex items-center">
               <FaPlus size={12} className="mr-1" /> Add New Profile
             </button>
           </div>

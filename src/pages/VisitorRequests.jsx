@@ -21,17 +21,15 @@ const VisitorRequests = () => {
   const [showManageProfilesModal, setShowManageProfilesModal] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
   const [statusFilter, setStatusFilter] = useState("all")
-  const [allocationFilter, setAllocationFilter] = useState("all") // new filter for allocation status
+  const [allocationFilter, setAllocationFilter] = useState("all")
 
   const fetchVisitorData = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      // Get summarized data for the request table
       const requests = await visitorApi.getVisitorRequestsSummary()
 
-      // Only fetch profiles for students
       let profiles = []
       if (user.role === "Student") {
         profiles = await visitorApi.getVisitorProfiles()
@@ -83,13 +81,17 @@ const VisitorRequests = () => {
     }
   }
 
+  const handleAddProfileFromRequest = async (profileData) => {
+    setShowAddProfileModal(true)
+    setShowAddRequestModal(false)
+    setShowManageProfilesModal(false)
+  }
+
   const filteredRequests = visitorRequests.filter((request) => {
-    // Filter by status
     if (statusFilter !== "all" && request.status.toLowerCase() !== statusFilter.toLowerCase()) {
       return false
     }
 
-    // Filter by allocation status (for wardens)
     if (user.role === "Warden" && allocationFilter !== "all") {
       if (allocationFilter === "allocated" && !request.isAllocated) return false
       if (allocationFilter === "unallocated" && request.isAllocated) return false
@@ -193,7 +195,7 @@ const VisitorRequests = () => {
 
       {showAddProfileModal && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
 
-      {showAddRequestModal && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} />}
+      {showAddRequestModal && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
 
       {showManageProfilesModal && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
     </div>
