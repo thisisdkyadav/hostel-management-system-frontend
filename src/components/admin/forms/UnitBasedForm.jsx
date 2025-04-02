@@ -199,7 +199,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               return (
                 <div key={floor} className="mb-2">
                   <label className="block text-gray-700 text-sm mb-1">{`Floor ${floor}`}</label>
-                  <input type="number" name={`floor-${floor}`} value={unitConfig.unitsPerFloor[floor] || unitConfig.defaultUnitsPerFloor} onChange={handleChange} min="1" className="w-full p-2 border border-gray-300 rounded-lg" />
+                  <input type="number" name={`floor-${floor}`} value={unitConfig.unitsPerFloor[floor] || ""} onChange={handleChange} min="1" className="w-full p-2 border border-gray-300 rounded-lg" />
                 </div>
               )
             })}
