@@ -212,6 +212,21 @@ export const studentApi = {
 
     return response.json()
   },
+
+  getStudentComplaints: async (userId, queries) => {
+    const queryParams = new URLSearchParams(queries).toString()
+    const response = await fetch(`${baseUrl}/complaint/student/complaints/${userId}?${queryParams}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student complaints")
+    }
+
+    return response.json()
+  },
 }
 
 export const wardenApi = {

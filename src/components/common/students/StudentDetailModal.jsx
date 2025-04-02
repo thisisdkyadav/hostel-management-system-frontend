@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react"
-import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding } from "react-icons/fa"
+import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments } from "react-icons/fa"
 import { studentApi } from "../../../services/apiService"
+import { visitorApi } from "../../../services/visitorApi"
+import { securityApi } from "../../../services/securityApi"
+import { feedbackApi } from "../../../services/feedbackApi"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 
@@ -10,6 +13,19 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [activeTab, setActiveTab] = useState("profile")
+
+  // Data for different tabs
+  const [complaints, setComplaints] = useState([])
+  const [accessRecords, setAccessRecords] = useState([])
+  const [visitorRequests, setVisitorRequests] = useState([])
+  const [feedbacks, setFeedbacks] = useState([])
+
+  // Loading states for different tabs
+  const [loadingComplaints, setLoadingComplaints] = useState(false)
+  const [loadingAccessRecords, setLoadingAccessRecords] = useState(false)
+  const [loadingVisitorRequests, setLoadingVisitorRequests] = useState(false)
+  const [loadingFeedbacks, setLoadingFeedbacks] = useState(false)
 
   const fetchStudentDetails = async () => {
     try {
@@ -21,6 +37,64 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       console.error("Error fetching student details:", error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchStudentComplaints = async () => {
+    if (activeTab !== "complaints" || !selectedStudent?.userId) return
+    try {
+      setLoadingComplaints(true)
+      const response = await studentApi.getStudentComplaints(selectedStudent.userId, { limit: 10 })
+      setComplaints(response.data || [])
+    } catch (error) {
+      console.error("Error fetching student complaints:", error)
+      setComplaints([])
+    } finally {
+      setLoadingComplaints(false)
+    }
+  }
+
+  const fetchStudentAccessHistory = async () => {
+    if (activeTab !== "access" || !selectedStudent?.userId) return
+    try {
+      setLoadingAccessRecords(true)
+      const response = await securityApi.getStudentEntries({ userId: selectedStudent.userId, limit: 10 })
+      setAccessRecords(response.studentEntries || [])
+    } catch (error) {
+      console.error("Error fetching student access records:", error)
+      setAccessRecords([])
+    } finally {
+      setLoadingAccessRecords(false)
+    }
+  }
+
+  const fetchStudentVisitorRequests = async () => {
+    if (activeTab !== "visitors" || !selectedStudent?.userId) return
+    try {
+      setLoadingVisitorRequests(true)
+      const response = await visitorApi.getStudentVisitorRequests(selectedStudent.userId)
+      console.log("Visitor Requests:", response)
+
+      setVisitorRequests(response.data || [])
+    } catch (error) {
+      console.error("Error fetching student visitor requests:", error)
+      setVisitorRequests([])
+    } finally {
+      setLoadingVisitorRequests(false)
+    }
+  }
+
+  const fetchStudentFeedbacks = async () => {
+    if (activeTab !== "feedback" || !selectedStudent?.userId) return
+    try {
+      setLoadingFeedbacks(true)
+      const response = await feedbackApi.getStudentFeedbacks(selectedStudent.userId)
+      setFeedbacks(response.feedbacks || [])
+    } catch (error) {
+      console.error("Error fetching student feedbacks:", error)
+      setFeedbacks([])
+    } finally {
+      setLoadingFeedbacks(false)
     }
   }
 
@@ -47,6 +121,28 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     }
   }, [selectedStudent?.userId])
 
+  // Fetch data for active tab
+  useEffect(() => {
+    if (!isImport && selectedStudent?.userId) {
+      switch (activeTab) {
+        case "complaints":
+          fetchStudentComplaints()
+          break
+        case "access":
+          fetchStudentAccessHistory()
+          break
+        case "visitors":
+          fetchStudentVisitorRequests()
+          break
+        case "feedback":
+          fetchStudentFeedbacks()
+          break
+        default:
+          break
+      }
+    }
+  }, [activeTab, selectedStudent?.userId])
+
   if (!selectedStudent) return null
 
   const formatDate = (dateString) => {
@@ -58,17 +154,21 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     })
   }
 
-  return (
-    <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={800}>
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
-            </div>
-          </div>
-        ) : (
+  const formatDateTime = (dateTimeString) => {
+    if (!dateTimeString) return "N/A"
+    return new Date(dateTimeString).toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "profile":
+        return (
           <>
             <div className="bg-gradient-to-r from-blue-50 to-white p-5 rounded-xl mb-6 shadow-sm">
               <div className="flex flex-col md:flex-row items-center md:items-start">
@@ -192,6 +292,232 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 </div>
               </div>
             </div>
+          </>
+        )
+      case "complaints":
+        return (
+          <div className="bg-white">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Complaints History</h3>
+            {loadingComplaints ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              </div>
+            ) : complaints.length === 0 ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
+                <FaClipboardList className="mx-auto text-gray-300 mb-2 text-4xl" />
+                <p className="text-gray-500">No complaints found for this student</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {complaints.map((complaint) => (
+                      <tr key={complaint._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(complaint.createdAt)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{complaint.title}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{complaint.category}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${complaint.status === "Pending" ? "bg-yellow-100 text-yellow-800" : complaint.status === "In Progress" ? "bg-blue-100 text-blue-800" : complaint.status === "Resolved" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                          >
+                            {complaint.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )
+      case "access":
+        return (
+          <div className="bg-white">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Access History</h3>
+            {loadingAccessRecords ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              </div>
+            ) : accessRecords.length === 0 ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
+                <FaHistory className="mx-auto text-gray-300 mb-2 text-4xl" />
+                <p className="text-gray-500">No access records found for this student</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recorded By</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {accessRecords.map((record) => (
+                      <tr key={record._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDateTime(record.dateAndTime)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${record.status === "Checked In" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}
+                          >
+                            {record.status === "Checked In" ? "Checked In" : "Checked Out"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.recordedBy || "System"}</td>
+                        <td className="px-6 py-4 text-sm text-gray-500">{record.notes || "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )
+      case "visitors":
+        return (
+          <div className="bg-white">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Visitor Requests</h3>
+            {loadingVisitorRequests ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              </div>
+            ) : visitorRequests.length === 0 ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
+                <FaUserFriends className="mx-auto text-gray-300 mb-2 text-4xl" />
+                <p className="text-gray-500">No visitor requests found for this student</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitors</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {visitorRequests.map((request) => (
+                      <tr key={request._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(request.createdAt)}</td>
+                        <td className="px-6 py-4 text-sm text-gray-900">{request.visitors && request.visitors.length > 0 ? request.visitors.map((v) => v.name).join(", ") : request.visitorNames || "-"}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(request.fromDate)} to {formatDate(request.toDate)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${request.status === "Pending" ? "bg-yellow-100 text-yellow-800" : request.status === "Approved" ? "bg-green-100 text-green-800" : request.status === "Completed" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"}`}
+                          >
+                            {request.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )
+      case "feedback":
+        return (
+          <div className="bg-white">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Feedback History</h3>
+            {loadingFeedbacks ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              </div>
+            ) : feedbacks.length === 0 ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
+                <FaComments className="mx-auto text-gray-300 mb-2 text-4xl" />
+                <p className="text-gray-500">No feedback found for this student</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {feedbacks.map((feedback) => (
+                  <div key={feedback._id} className="bg-gray-50 p-4 rounded-lg">
+                    <div className="flex justify-between mb-2">
+                      <h4 className="font-medium text-gray-800">{feedback.title}</h4>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                        ${feedback.status === "Pending" ? "bg-yellow-100 text-yellow-800" : feedback.status === "Resolved" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}
+                      >
+                        {feedback.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">{feedback.description}</p>
+                    <div className="text-xs text-gray-500 flex justify-between">
+                      <span>Submitted on: {formatDate(feedback.createdAt)}</span>
+                      {feedback.reply && <span className="text-green-600">Replied: Yes</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      default:
+        return null
+    }
+  }
+
+  return (
+    <>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={800}>
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="relative w-16 h-16">
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Tabs Navigation */}
+            {!isImport && (
+              <div className="border-b border-gray-200 mb-6">
+                <nav className="flex -mb-px space-x-8">
+                  <button onClick={() => setActiveTab("profile")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "profile" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaUserGraduate className="mr-2" />
+                    Profile
+                  </button>
+                  <button onClick={() => setActiveTab("complaints")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "complaints" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaClipboardList className="mr-2" />
+                    Complaints
+                  </button>
+                  <button onClick={() => setActiveTab("access")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "access" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaHistory className="mr-2" />
+                    Access History
+                  </button>
+                  <button onClick={() => setActiveTab("visitors")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "visitors" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaUserFriends className="mr-2" />
+                    Visitors
+                  </button>
+                  <button onClick={() => setActiveTab("feedback")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "feedback" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaComments className="mr-2" />
+                    Feedback
+                  </button>
+                </nav>
+              </div>
+            )}
+
+            {/* Tab Content */}
+            {renderTabContent()}
 
             <div className="mt-6 flex justify-end space-x-4 pt-4 border-t border-gray-100">
               {!isImport && (

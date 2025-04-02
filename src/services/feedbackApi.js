@@ -88,4 +88,18 @@ export const feedbackApi = {
 
     return response.json()
   },
+
+  getStudentFeedbacks: async (studentId) => {
+    const response = await fetch(`${baseUrl}/feedback/student/${studentId}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student feedbacks")
+    }
+
+    return response.json()
+  },
 }
