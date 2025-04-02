@@ -10,6 +10,7 @@ import ComplaintListView from "../components/complaints/ComplaintListView"
 import ComplaintCardView from "../components/complaints/ComplaintCardView"
 import ComplaintForm from "../components/students/ComplaintForm"
 import Pagination from "../components/common/Pagination"
+import Button from "../components/common/Button" // Import Button component
 import { COMPLAINT_FILTER_TABS } from "../constants/adminConstants"
 import { adminApi } from "../services/apiService"
 import { useGlobal } from "../contexts/GlobalProvider"
@@ -112,32 +113,44 @@ const Complaints = () => {
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Complaints Management</h1>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-3 py-2 rounded-xl ${showFilters ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 border border-gray-200"}`}>
-            <FaFilter className="mr-2" /> Filters
-          </button>
+          <Button onClick={() => setShowFilters(!showFilters)} variant={showFilters ? "primary" : "white"} size="small" icon={<FaFilter />}>
+            Filters
+          </Button>
 
-          <div className="flex border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-            <button onClick={() => setViewMode("list")} className={`px-3 py-2 flex items-center justify-center ${viewMode === "list" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700"}`} aria-label="List view">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <button onClick={() => setViewMode("cards")} className={`px-3 py-2 flex items-center justify-center ${viewMode === "cards" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700"}`} aria-label="Card view">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                />
-              </svg>
-            </button>
+          <div className="flex border-0 rounded-lg overflow-hidden shadow-sm">
+            <Button
+              onClick={() => setViewMode("list")}
+              variant={viewMode === "list" ? "primary" : "white"}
+              size="small"
+              className="rounded-none"
+              icon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              }
+            ></Button>
+            <Button
+              onClick={() => setViewMode("cards")}
+              variant={viewMode === "cards" ? "primary" : "white"}
+              size="small"
+              className="rounded-none"
+              icon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                  />
+                </svg>
+              }
+            ></Button>
           </div>
 
           {["Student"].includes(user?.role) && (
-            <button onClick={() => setShowCraftComplaint(true)} className="flex items-center px-4 py-2 bg-[#1360AB] text-white rounded-xl shadow-md hover:bg-[#0d4b86] transition-colors">
-              <FaPlus className="mr-2" /> Create Complaint
-            </button>
+            <Button onClick={() => setShowCraftComplaint(true)} variant="primary" size="small" icon={<FaPlus />}>
+              Create Complaint
+            </Button>
           )}
         </div>
       </header>
@@ -157,9 +170,9 @@ const Complaints = () => {
             <h3 className="font-bold text-gray-700 flex items-center mb-2 sm:mb-0">
               <FaFilter className="mr-2 text-[#1360AB]" /> Advanced Filters
             </h3>
-            <button onClick={resetFilters} className="text-sm text-gray-500 hover:text-[#1360AB] flex items-center px-2 py-1 hover:bg-gray-50 rounded-md transition-colors">
-              <MdClearAll className="mr-1" /> Reset Filters
-            </button>
+            <Button onClick={resetFilters} variant="outline" size="small" className="text-gray-500 hover:text-[#1360AB]" icon={<MdClearAll />}>
+              Reset Filters
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
