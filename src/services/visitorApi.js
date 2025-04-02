@@ -23,7 +23,6 @@ export const visitorApi = {
     }
   },
 
-  // Get All Visitor Requests (Essential data only for table view)
   getVisitorRequestsSummary: async () => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/summary`, {
@@ -45,7 +44,6 @@ export const visitorApi = {
     }
   },
 
-  // Get All Visitor Requests (Full data - legacy method)
   getVisitorRequests: async () => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests`, {
@@ -67,7 +65,6 @@ export const visitorApi = {
     }
   },
 
-  // Get Single Visitor Request by ID (Full details)
   getVisitorRequestById: async (requestId) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}`, {
@@ -89,7 +86,6 @@ export const visitorApi = {
     }
   },
 
-  // Get All Visitor Profiles
   getVisitorProfiles: async () => {
     try {
       const response = await fetch(`${baseUrl}/visitor/profiles`, {
@@ -111,7 +107,6 @@ export const visitorApi = {
     }
   },
 
-  // Add Visitor Profile
   addVisitorProfile: async (profileData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/profiles`, {
@@ -134,7 +129,6 @@ export const visitorApi = {
     }
   },
 
-  // Add Visitor Request
   addVisitorRequest: async (requestData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests`, {
@@ -157,7 +151,6 @@ export const visitorApi = {
     }
   },
 
-  // Update Visitor Request
   updateVisitorRequest: async (requestId, requestData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}`, {
@@ -180,7 +173,6 @@ export const visitorApi = {
     }
   },
 
-  // Cancel Visitor Request
   cancelVisitorRequest: async (requestId) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}`, {
@@ -202,7 +194,6 @@ export const visitorApi = {
     }
   },
 
-  // Update Visitor Profile
   updateVisitorProfile: async (profileId, profileData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/profiles/${profileId}`, {
@@ -225,7 +216,6 @@ export const visitorApi = {
     }
   },
 
-  // Delete Visitor Profile
   deleteVisitorProfile: async (profileId) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/profiles/${profileId}`, {
@@ -247,7 +237,6 @@ export const visitorApi = {
     }
   },
 
-  // Approve Visitor Request
   approveVisitorRequest: async (requestId, hostelId) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/approve`, {
@@ -269,7 +258,7 @@ export const visitorApi = {
       throw error
     }
   },
-  // Reject Visitor Request
+
   rejectVisitorRequest: async (requestId, reason) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/reject`, {
@@ -292,7 +281,6 @@ export const visitorApi = {
     }
   },
 
-  // Allocate Room to Visitor Request
   allocateRooms: async (requestId, allocationData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/allocate`, {
@@ -316,7 +304,6 @@ export const visitorApi = {
     }
   },
 
-  // Security Check-in Visitor
   checkInVisitor: async (requestId, checkInData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/checkin`, {
@@ -339,7 +326,6 @@ export const visitorApi = {
     }
   },
 
-  // Security Check-out Visitor
   checkOutVisitor: async (requestId, checkOutData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/checkout`, {
@@ -362,7 +348,6 @@ export const visitorApi = {
     }
   },
 
-  // Update Check-in/Check-out Times
   updateCheckTimes: async (requestId, checkData) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/update-check-times`, {
@@ -385,5 +370,24 @@ export const visitorApi = {
     }
   },
 
-  //
+  getStudentVisitorRequests: async (studentId) => {
+    try {
+      const response = await fetch(`${baseUrl}/visitor/requests/student/${studentId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch student visitor requests")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error fetching student visitor requests:", error)
+      throw error
+    }
+  },
 }
