@@ -116,3 +116,47 @@ body {
 .animate-loading-bar {
   animation: loading-bar 2s ease-in-out infinite;
 }
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 1200ms linear;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 15px rgba(19, 96, 171, 0.7);
+}
