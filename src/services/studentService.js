@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5000/api"
+import { baseUrl } from "../constants/appConstants"
 
 export const fetchStudentProfile = async (userId) => {
   if (!userId) {
@@ -8,7 +8,7 @@ export const fetchStudentProfile = async (userId) => {
   console.log("userId is: ", userId)
 
   try {
-    const response = await fetch(`${API_BASE_URL}/student/profile/${userId}`, {
+    const response = await fetch(`${baseUrl}/student/profile/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const submitComplaint = async (complaintData) => {
   try {
     console.log(complaintData)
 
-    const response = await fetch(`${API_BASE_URL}/complaint/student/complaints`, {
+    const response = await fetch(`${baseUrl}/complaint/student/complaints`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export const updateProfile = async (userId, profileData) => {
   try {
     console.log("profile data is: ", profileData)
 
-    const response = await fetch(`${API_BASE_URL}/student/profile/update/${userId}`, {
+    const response = await fetch(`${baseUrl}/student/profile/update/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

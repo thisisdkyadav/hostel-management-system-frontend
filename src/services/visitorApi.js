@@ -1,9 +1,9 @@
-const API_BASE_URL = "http://localhost:5000/api"
+import { baseUrl } from "../constants/appConstants"
 
 export const visitorApi = {
   submitVisitorRequest: async (visitorData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/submit`, {
+      const response = await fetch(`${baseUrl}/visitor/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export const visitorApi = {
   // Get All Visitor Requests (Essential data only for table view)
   getVisitorRequestsSummary: async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/summary`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/summary`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export const visitorApi = {
   // Get All Visitor Requests (Full data - legacy method)
   getVisitorRequests: async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests`, {
+      const response = await fetch(`${baseUrl}/visitor/requests`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export const visitorApi = {
   // Get Single Visitor Request by ID (Full details)
   getVisitorRequestById: async (requestId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export const visitorApi = {
   // Get All Visitor Profiles
   getVisitorProfiles: async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/profiles`, {
+      const response = await fetch(`${baseUrl}/visitor/profiles`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export const visitorApi = {
   // Add Visitor Profile
   addVisitorProfile: async (profileData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/profiles`, {
+      const response = await fetch(`${baseUrl}/visitor/profiles`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +137,7 @@ export const visitorApi = {
   // Add Visitor Request
   addVisitorRequest: async (requestData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests`, {
+      const response = await fetch(`${baseUrl}/visitor/requests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,7 +160,7 @@ export const visitorApi = {
   // Update Visitor Request
   updateVisitorRequest: async (requestId, requestData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +183,7 @@ export const visitorApi = {
   // Cancel Visitor Request
   cancelVisitorRequest: async (requestId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -205,7 +205,7 @@ export const visitorApi = {
   // Update Visitor Profile
   updateVisitorProfile: async (profileId, profileData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/profiles/${profileId}`, {
+      const response = await fetch(`${baseUrl}/visitor/profiles/${profileId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -228,7 +228,7 @@ export const visitorApi = {
   // Delete Visitor Profile
   deleteVisitorProfile: async (profileId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/profiles/${profileId}`, {
+      const response = await fetch(`${baseUrl}/visitor/profiles/${profileId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -250,7 +250,7 @@ export const visitorApi = {
   // Approve Visitor Request
   approveVisitorRequest: async (requestId, hostelId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/approve`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/approve`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -272,7 +272,7 @@ export const visitorApi = {
   // Reject Visitor Request
   rejectVisitorRequest: async (requestId, reason) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/reject`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/reject`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -295,7 +295,7 @@ export const visitorApi = {
   // Allocate Room to Visitor Request
   allocateRooms: async (requestId, allocationData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/allocate`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/allocate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -319,7 +319,7 @@ export const visitorApi = {
   // Security Check-in Visitor
   checkInVisitor: async (requestId, checkInData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/checkin`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/checkin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -342,7 +342,7 @@ export const visitorApi = {
   // Security Check-out Visitor
   checkOutVisitor: async (requestId, checkOutData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/checkout`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -365,7 +365,7 @@ export const visitorApi = {
   // Update Check-in/Check-out Times
   updateCheckTimes: async (requestId, checkData) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/visitor/requests/${requestId}/update-check-times`, {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/update-check-times`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
