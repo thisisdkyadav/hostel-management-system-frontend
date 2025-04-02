@@ -81,19 +81,6 @@ const QRCodeGenerator = () => {
     setExpiryTime(expiryMs)
   }
 
-  const downloadQR = () => {
-    const canvas = document.getElementById("qr-code-canvas")
-    if (!canvas) return
-
-    const url = canvas.toDataURL("image/png")
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `qr-code-${new Date().toISOString().slice(0, 10)}.png`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
       <div className="flex items-center mb-4">
@@ -105,7 +92,7 @@ const QRCodeGenerator = () => {
 
       <div className="bg-blue-50 p-4 rounded-lg mb-5 flex items-start">
         <FaInfoCircle className="text-[#1360AB] mt-0.5 mr-2 flex-shrink-0" />
-        <p className="text-sm text-gray-700">This QR code acts as your digital ID for Check-In and Check-Out. Security personnel will scan this code to verify your identity. For security reasons, each code expires after 5 minutes.</p>
+        <p className="text-sm text-gray-700">This QR code acts as your digital ID. Security personnel will scan this code to verify your identity. For security reasons, each code expires after 5 minutes.</p>
       </div>
 
       {!showQR ? (
@@ -134,12 +121,9 @@ const QRCodeGenerator = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3 w-full mt-4">
+          <div className="grid grid-cols-1 gap-3 w-full mt-4">
             <button onClick={generateQR} className="py-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
               <FaSyncAlt className="mr-2" /> Refresh
-            </button>
-            <button onClick={downloadQR} className="py-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
-              <FaDownload className="mr-2" /> Download
             </button>
           </div>
         </div>
