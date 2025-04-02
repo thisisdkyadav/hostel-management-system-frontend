@@ -165,4 +165,19 @@ export const securityApi = {
 
     return response.json()
   },
+
+  addStudentEntryWithEmail: async (entryData) => {
+    const response = await fetch(`${baseUrl}/security/entries/email`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(entryData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to add student entry with email")
+    }
+
+    return response.json()
+  },
 }
