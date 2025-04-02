@@ -5,8 +5,7 @@ import { MdMeetingRoom, MdOutlineNotificationsActive, MdSecurity, MdPeople, MdDa
 import { HiOutlineDocumentReport } from "react-icons/hi"
 import { useAuth } from "../contexts/AuthProvider"
 import ModernHeader from "../components/home/ModernHeader"
-import QuickAccessCard from "../components/home/QuickAccessCard"
-import StatisticsGraphic from "../components/home/StatisticsGraphic" // New component
+import StatisticsGraphic from "../components/home/StatisticsGraphic"
 import LoadingScreen from "../components/common/LoadingScreen"
 
 const HomePage = () => {
@@ -178,7 +177,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-gray-50">
       <ModernHeader />
 
-      <section className="relative bg-gradient-to-r from-sky-50 to-blue-100 py-16 lg:py-20">
+      <section className="relative bg-gradient-to-r from-sky-50 to-blue-100 py-16 lg:py-20 min-h-screen flex items-center justify-center">
         <div className="w-full max-w-screen-xl px-6 md:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-between pt-8 mx-auto" style={{ margin: "0 auto" }}>
           <div className="lg:w-1/2 text-center lg:text-left">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
@@ -211,7 +210,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      <section className="py-12 bg-white">
+      {/* <section className="py-12 bg-white">
         <div className="w-full max-w-screen-xl px-6 md:px-8 lg:px-12 mx-auto" style={{ margin: "0 auto" }}>
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Quick Access</h2>
@@ -224,7 +223,7 @@ const HomePage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }

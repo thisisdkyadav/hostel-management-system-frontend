@@ -44,11 +44,29 @@ const StatisticsGraphic = () => {
       label: "Maintenance",
       description: "Track repair requests",
     },
+    {
+      icon: <FaClipboardCheck />,
+      color: "#F97316",
+      label: "Notifications",
+      description: "Send alerts and updates to students",
+    },
+    {
+      icon: <FaTools />,
+      color: "#9333EA",
+      label: "Maintenance Requests",
+      description: "Log and manage maintenance issues",
+    },
+    {
+      icon: <MdSecurity />,
+      color: "#14B8A6",
+      label: "Visitor Management",
+      description: "Track visitor check-ins and check-outs",
+    },
   ]
 
   return (
     <div className="text-gray-800">
-      <h3 className="text-xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Hostel Management System</h3>
+      {/* <h3 className="text-xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Hostel Management System</h3> */}
 
       <div className="grid grid-cols-3 gap-3">
         {features.map((feature, index) => (
@@ -87,9 +105,9 @@ const StatisticsGraphic = () => {
         ))}
       </div>
 
-      <div className="text-center mt-6">
+      {/* <div className="text-center mt-6">
         <p className="text-sm text-gray-600 max-w-xs mx-auto">Modern hostel management solution for streamlined administration</p>
-      </div>
+      </div> */}
     </div>
   )
 }
