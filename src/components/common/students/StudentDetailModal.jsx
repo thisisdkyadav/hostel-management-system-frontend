@@ -5,6 +5,8 @@ import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
+  console.log("Selected Student:", selectedStudent)
+
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -23,7 +25,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   }
 
   useEffect(() => {
-    if (selectedStudent?.id && !isImport) {
+    if (selectedStudent?.userId && !isImport) {
       fetchStudentDetails()
     } else if (isImport) {
       console.log("Selected Student for Import:", selectedStudent)
@@ -43,7 +45,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       })
       setLoading(false)
     }
-  }, [selectedStudent?.id])
+  }, [selectedStudent?.userId])
 
   if (!selectedStudent) return null
 
