@@ -1,7 +1,8 @@
-import { createContext, useState, useContext, useEffect } from "react"
+import { createContext, useState, useContext, useEffect, use } from "react"
 import { Navigate, useLocation } from "react-router-dom"
 import { authApi } from "../services/apiService"
 import LoadingScreen from "../components/common/LoadingScreen"
+import useNetworkStatus from "../hooks/useNetworkStatus"
 
 export const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
@@ -30,6 +31,7 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 }
 
 export const AuthProvider = ({ children }) => {
+  const isOnline = useNetworkStatus()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState(true)
@@ -125,6 +127,14 @@ export const AuthProvider = ({ children }) => {
         return "/login"
     }
   }
+
+  useEffect(() => {
+    if (isOnline) {
+      console.log("Online")
+    } else {
+      console.log("Offline")
+    }
+  }, [isOnline])
 
   const value = {
     user,

@@ -202,7 +202,7 @@ const HomePage = () => {
 
           <div className="lg:w-1/2 mt-10 lg:mt-0 flex justify-center lg:justify-end">
             <div className="relative w-full max-w-md">
-              <div className="rounded-xl overflow-hidden shadow-lg bg-white p-6 backdrop-blur-sm bg-white/90">
+              <div className="rounded-xl overflow-hidden shadow-lg p-6 backdrop-blur-sm bg-white/90">
                 <StatisticsGraphic />
               </div>
             </div>
