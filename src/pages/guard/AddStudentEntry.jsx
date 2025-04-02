@@ -8,7 +8,7 @@ import { useSecurity } from "../../contexts/SecurityProvider"
 
 const AddStudentEntry = () => {
   const { securityInfo } = useSecurity()
-  const [activeTab, setActiveTab] = useState("manual")
+  const [activeTab, setActiveTab] = useState("qr")
   const [entries, setEntries] = useState([])
   const [scannedStudent, setScannedStudent] = useState(null)
 
