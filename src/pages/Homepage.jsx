@@ -1,8 +1,6 @@
 import React, { useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { FaArrowRight, FaClipboardCheck, FaTools, FaCalendarAlt, FaFileAlt, FaUtensils } from "react-icons/fa"
-import { MdMeetingRoom, MdOutlineNotificationsActive, MdSecurity, MdPeople, MdDashboard } from "react-icons/md"
-import { HiOutlineDocumentReport } from "react-icons/hi"
+import { FaArrowRight } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 import ModernHeader from "../components/home/ModernHeader"
 import StatisticsGraphic from "../components/home/StatisticsGraphic"
@@ -26,204 +24,70 @@ const HomePage = () => {
     return <LoadingScreen />
   }
 
-  const getQuickAccessLinks = () => {
-    if (!user) {
-      return [
-        {
-          title: "Login",
-          description: "Access your account",
-          icon: <MdDashboard className="w-6 h-6" />,
-          link: "/login",
-          color: "bg-sky-100 text-sky-600",
-        },
-        {
-          title: "Contact Support",
-          description: "Get help with your account",
-          icon: <FaTools className="w-6 h-6" />,
-          link: "/",
-          color: "bg-purple-100 text-purple-600",
-        },
-      ]
-    }
-
-    switch (user.role) {
-      case "Student":
-        return [
-          {
-            title: "Dashboard",
-            description: "View your dashboard details",
-            icon: <MdDashboard className="w-6 h-6" />,
-            link: "/student",
-            color: "bg-blue-100 text-blue-600",
-          },
-          {
-            title: "Complaints",
-            description: "Submit and track complaints",
-            icon: <HiOutlineDocumentReport className="w-6 h-6" />,
-            link: "/student/complaints",
-            color: "bg-rose-100 text-rose-600",
-          },
-        ]
-      case "Admin":
-        return [
-          {
-            title: "Dashboard",
-            description: "Administrative overview",
-            icon: <MdDashboard className="w-6 h-6" />,
-            link: "/admin",
-            color: "bg-indigo-100 text-indigo-600",
-          },
-          {
-            title: "Students Management",
-            description: "Manage system users",
-            icon: <MdPeople className="w-6 h-6" />,
-            link: "/admin/students",
-            color: "bg-purple-100 text-purple-600",
-          },
-        ]
-      case "Warden":
-        return [
-          {
-            title: "Dashboard",
-            description: "Warden overview",
-            icon: <MdDashboard className="w-6 h-6" />,
-            link: "/warden",
-            color: "bg-blue-100 text-blue-600",
-          },
-          {
-            title: "Student Management",
-            description: "View and manage students",
-            icon: <MdPeople className="w-6 h-6" />,
-            link: "/warden/students",
-            color: "bg-indigo-100 text-indigo-600",
-          },
-          {
-            title: "Complaints",
-            description: "Submit and track complaints",
-            icon: <HiOutlineDocumentReport className="w-6 h-6" />,
-            link: "/warden/complaints",
-            color: "bg-rose-100 text-rose-600",
-          },
-          {
-            title: "Approve Requests",
-            description: "Review pending requests",
-            icon: <FaClipboardCheck className="w-6 h-6" />,
-            link: "/warden/room-change-requests",
-            color: "bg-green-100 text-green-600",
-          },
-        ]
-      case "Maintenance Staff":
-        return [
-          {
-            title: "Dashboard",
-            description: "View maintenance tasks",
-            icon: <FaTools className="w-6 h-6" />,
-            link: "/maintenance",
-            color: "bg-blue-100 text-blue-600",
-          },
-        ]
-      case "Security":
-        return [
-          {
-            title: "Dashboard",
-            description: "Security overview",
-            icon: <MdDashboard className="w-6 h-6" />,
-            link: "/guard",
-            color: "bg-blue-100 text-blue-600",
-          },
-          {
-            title: "Check-in/out Logs",
-            description: "View entry and exit records",
-            icon: <MdSecurity className="w-6 h-6" />,
-            link: "/guard/entries",
-            color: "bg-blue-100 text-blue-600",
-          },
-          {
-            title: "Visitor Management",
-            description: "Record and track visitors",
-            icon: <MdPeople className="w-6 h-6" />,
-            link: "/guard/visitors",
-            color: "bg-purple-100 text-purple-600",
-          },
-          {
-            title: "Lost and Found",
-            description: "Report lost items",
-            icon: <FaClipboardCheck className="w-6 h-6" />,
-            link: "/guard/lost-and-found",
-            color: "bg-rose-100 text-rose-600",
-          },
-        ]
-      default:
-        return [
-          {
-            title: "Dashboard",
-            description: "Go to your dashboard",
-            icon: <MdDashboard className="w-6 h-6" />,
-            link: getHomeRoute(),
-            color: "bg-blue-100 text-blue-600",
-          },
-          {
-            title: "Profile",
-            description: "Manage your profile",
-            icon: <MdPeople className="w-6 h-6" />,
-            link: `${getHomeRoute()}/profile`,
-            color: "bg-indigo-100 text-indigo-600",
-          },
-        ]
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <ModernHeader />
 
-      <section className="relative bg-gradient-to-r from-sky-50 to-blue-100 py-16 lg:py-20 min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-screen-xl px-6 md:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-between pt-8 mx-auto" style={{ margin: "0 auto" }}>
+      {/* Hero Section - Enhanced */}
+      <section className="relative bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-100 pt-24 pb-16 lg:py-28 min-h-[100vh] flex items-center">
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Enhanced background elements with animation */}
+          <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-blue-100/50 to-transparent"></div>
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-indigo-200/30 to-transparent rounded-full transform translate-x-1/4 translate-y-1/4"></div>
+          <div className="absolute top-40 left-20 w-96 h-96 bg-gradient-to-br from-blue-200/20 to-transparent rounded-full animate-pulse"></div>
+          <div className="absolute top-1/4 right-1/4 w-40 h-40 bg-blue-400/5 rounded-full animate-pulse"></div>
+          {/* New decorative elements */}
+          <div className="absolute bottom-1/3 left-1/3 w-16 h-16 bg-indigo-300/10 rounded-full animate-bounce"></div>
+          <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-blue-300/10 rounded-full animate-pulse"></div>
+        </div>
+
+        <div className="w-full max-w-screen-xl px-6 md:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-between mx-auto relative z-10">
           <div className="lg:w-1/2 text-center lg:text-left">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              IIT Indore
-              <span className="block text-blue-600 mt-2">Hostel Management System</span>
+            {/* Enhanced badge with animation */}
+            <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 text-blue-600 text-sm font-semibold mb-6 animate-fadeIn backdrop-blur-sm border border-blue-200/50 shadow-sm hover:shadow-md transition-all duration-300">IIT Indore Campus Life</div>
+
+            {/* Enhanced heading with better animation */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-4 animate-slideUp">
+              Welcome to
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mt-1 hover:from-indigo-600 hover:to-blue-600 transition-colors duration-500">Hostel Management System</span>
             </h1>
-            <p className="text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0">Access all hostel services and resources in one place. Manage your accommodation, requests, and stay informed about important updates.</p>
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+
+            {/* Enhanced description with better animation */}
+            <p className="text-gray-600 text-lg mb-8 max-w-xl mx-auto lg:mx-0 animate-fadeIn leading-relaxed">Access all hostel services and resources in one place. Manage your accommodation, requests, and stay informed about important updates.</p>
+
+            {/* Enhanced CTA button with more interactive hover effect */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 animate-fadeIn">
               {user ? (
-                <Link to={getHomeRoute()} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md flex items-center">
+                <Link to={getHomeRoute()} className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-lg flex items-center">
                   Go to Dashboard
-                  <FaArrowRight className="ml-2" />
+                  <FaArrowRight className="ml-2 transform transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               ) : (
-                <Link to="/login" className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md flex items-center">
-                  Login
-                  <FaArrowRight className="ml-2" />
+                <Link to="/login" className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-lg flex items-center">
+                  Login Now
+                  <FaArrowRight className="ml-2 transform transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               )}
             </div>
           </div>
 
-          <div className="lg:w-1/2 mt-10 lg:mt-0 flex justify-center lg:justify-end">
+          {/* Enhanced Statistics Graphic wrapper with better animations */}
+          <div className="lg:w-1/2 mt-12 lg:mt-0 flex justify-center lg:justify-end animate-fadeIn">
             <div className="relative w-full max-w-md">
-              <div className="rounded-xl overflow-hidden shadow-lg p-6 backdrop-blur-sm bg-white/90">
+              {/* Enhanced decorative elements */}
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-200/50 rounded-full z-0 animate-pulse"></div>
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-indigo-200/50 rounded-full z-0 animate-pulse"></div>
+              <div className="absolute top-1/2 -left-8 w-16 h-16 bg-blue-300/30 rounded-full z-0 animate-bounce"></div>
+              <div className="absolute top-1/4 -right-6 w-12 h-12 bg-indigo-300/30 rounded-full z-0 animate-bounce"></div>
+
+              {/* Enhanced card with better hover effect */}
+              <div className="rounded-xl overflow-hidden shadow-2xl p-6 backdrop-blur-sm bg-white/90 relative z-10 transition-all duration-500 border border-blue-100/80 hover:border-blue-200/90 hover:shadow-2xl hover:-translate-y-1">
                 <StatisticsGraphic />
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* <section className="py-12 bg-white">
-        <div className="w-full max-w-screen-xl px-6 md:px-8 lg:px-12 mx-auto" style={{ margin: "0 auto" }}>
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Quick Access</h2>
-            <p className="text-gray-600">Shortcuts to frequently used services</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {getQuickAccessLinks().map((link, index) => (
-              <QuickAccessCard key={index} {...link} />
-            ))}
-          </div>
-        </div>
-      </section> */}
     </div>
   )
 }

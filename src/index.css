@@ -5,18 +5,68 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+/* Moved Tailwind Config Animations & Settings from tailwind.config.js */
+
+/* fadeIn Animation - updated with transform from config */
 @keyframes fadeIn {
-  from {
+  0% {
     opacity: 0;
+    transform: translateY(-10px);
   }
-  to {
+  100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.2s ease-in-out;
 }
+
+/* slideUp Animation */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out;
+}
+
+/* pulse Animation */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Additional Tailwind Settings */
+
+/* Radial Gradient Background */
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+/* Backdrop Blur XS */
+.backdrop-blur-xs {
+  backdrop-filter: blur(2px);
+}
+
+/* ...existing code... */
 
 @keyframes pulse-slow {
   0%,
