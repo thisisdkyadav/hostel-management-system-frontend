@@ -153,7 +153,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                       <FaEye className="h-4 w-4" />
                     </button>
 
-                    {user.role === "Warden" && request.status === "Approved" && !request.isAllocated && (
+                    {["Warden", "Associate Warden"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
                       <button onClick={() => handleViewDetails(request)} className="text-green-500 hover:text-green-700 p-1 rounded-full transition-colors ml-2" title="Allocate rooms">
                         <FaHome className="h-4 w-4" />
                       </button>
