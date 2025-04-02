@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { useAuth } from "../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaDownload, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
+import Button from "./common/Button"
 
 const QRCodeGenerator = () => {
   const { user } = useAuth()
@@ -96,18 +97,9 @@ const QRCodeGenerator = () => {
       </div>
 
       {!showQR ? (
-        <button onClick={generateQR} disabled={loading} className="w-full py-3 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm hover:shadow-md disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center">
-          {loading ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Generating...
-            </>
-          ) : (
-            <>
-              <FaQrcode className="mr-2" /> Generate QR Code
-            </>
-          )}
-        </button>
+        <Button onClick={generateQR} isLoading={loading} variant="primary" fullWidth icon={<FaQrcode />}>
+          Generate QR Code
+        </Button>
       ) : (
         <div className="flex flex-col items-center">
           <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 inline-block">
@@ -122,9 +114,11 @@ const QRCodeGenerator = () => {
           )}
 
           <div className="grid grid-cols-1 gap-3 w-full mt-4">
-            <button onClick={generateQR} className="py-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
-              <FaSyncAlt className="mr-2" /> Refresh
-            </button>
+            <div className="grid grid-cols-1 gap-3 w-full mt-4">
+              <Button onClick={generateQR} variant="secondary" icon={<FaSyncAlt />}>
+                Refresh
+              </Button>
+            </div>
           </div>
         </div>
       )}
