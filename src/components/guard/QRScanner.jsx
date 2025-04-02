@@ -1,14 +1,17 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
-import { FaQrcode, FaTimes, FaUser, FaIdCard, FaEnvelope, FaBuilding } from "react-icons/fa"
+import { FaQrcode, FaTimes, FaUser, FaIdCard, FaEnvelope, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { securityApi } from "../../services/securityApi"
 
-const QRScanner = ({ onScanSuccess }) => {
+const QRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
   const [error, setError] = useState("")
   const [scannedStudent, setScannedStudent] = useState(null)
+  const [lastCheckInOut, setLastCheckInOut] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [recordingEntry, setRecordingEntry] = useState(false)
   const scannerRef = useRef(null)
+  const lastProcessedEmailRef = useRef(null)
 
   useEffect(() => {
     return () => {
@@ -22,6 +25,8 @@ const QRScanner = ({ onScanSuccess }) => {
     setScanning(true)
     setError("")
     setScannedStudent(null)
+    setLastCheckInOut(null)
+    lastProcessedEmailRef.current = null
 
     const config = {
       fps: 10,
@@ -31,7 +36,7 @@ const QRScanner = ({ onScanSuccess }) => {
 
     scannerRef.current = new Html5Qrcode("qr-reader")
 
-    scannerRef.current.start({ facingMode: "environment" }, config, handleScanSuccess, handleScanError).catch((err) => {
+    scannerRef.current.start({ facingMode: "environment" }, config, onScanSuccess, handleScanError).catch((err) => {
       setError("Failed to start camera: " + err.message)
       setScanning(false)
     })
@@ -51,6 +56,10 @@ const QRScanner = ({ onScanSuccess }) => {
     }
   }
 
+  const onScanSuccess = async (decodedText) => {
+    handleScanSuccess(decodedText)
+  }
+
   const handleScanSuccess = async (decodedText) => {
     try {
       const data = JSON.parse(decodedText)
@@ -59,17 +68,21 @@ const QRScanner = ({ onScanSuccess }) => {
         return
       }
 
-      setLoading(true)
-      stopScanner()
-
       const email = data.e
       const encryptedData = data.d
-      const response = await securityApi.verifyQRCode(email, encryptedData)
-      const studentProfile = response.studentProfile
-      const lastCheckInOut = response.lastCheckInOut
+      setError("")
+      console.log(email, lastProcessedEmailRef.current, "email and scannedStudent")
 
+      if (lastProcessedEmailRef.current === email) return
+
+      setLoading(true)
+      const response = await securityApi.verifyQRCode(email, encryptedData)
+      const studentProfile = response.studentProfile || null
+      const lastCheckInOut = response.lastCheckInOut || null
 
       setScannedStudent(studentProfile)
+      setLastCheckInOut(lastCheckInOut)
+      lastProcessedEmailRef.current = email
       setLoading(false)
 
       if (onScanSuccess) {
@@ -88,7 +101,58 @@ const QRScanner = ({ onScanSuccess }) => {
 
   const handleReset = () => {
     setScannedStudent(null)
+    setLastCheckInOut(null)
     setError("")
+    lastProcessedEmailRef.current = null
+  }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A"
+    const date = new Date(dateString)
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
+
+  const formatTime = (dateString) => {
+    if (!dateString) return ""
+    const date = new Date(dateString)
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  const getNextStatus = () => {
+    if (!lastCheckInOut) return "Checked In"
+    return lastCheckInOut.status === "Checked In" ? "Checked Out" : "Checked In"
+  }
+
+  const recordEntry = async () => {
+    if (!scannedStudent) return
+
+    try {
+      setRecordingEntry(true)
+      setError("")
+
+      const status = getNextStatus()
+
+      await securityApi.addStudentEntryWithEmail({
+        email: scannedStudent.email,
+        status: status,
+      })
+
+      const response = await securityApi.verifyQRCode(scannedStudent.email, "refresh-only")
+      setLastCheckInOut(response.lastCheckInOut || null)
+      onRefresh()
+      setRecordingEntry(false)
+    } catch (error) {
+      setError("Failed to record entry: " + error.message)
+      setRecordingEntry(false)
+      console.error("Entry recording error:", error)
+    }
   }
 
   return (
@@ -169,20 +233,39 @@ const QRScanner = ({ onScanSuccess }) => {
               </div>
             </div>
 
+            {lastCheckInOut && (
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <h4 className="font-medium text-gray-700 mb-2">Last {lastCheckInOut.status}</h4>
+                <div className="bg-blue-50 p-3 rounded-md">
+                  <div className="flex items-center mb-2">
+                    <FaCalendarAlt className="text-[#1360AB] mr-2" />
+                    <span className="text-sm">{formatDate(lastCheckInOut.dateAndTime)}</span>
+                    <FaClock className="text-[#1360AB] ml-3 mr-2" />
+                    <span className="text-sm">{formatTime(lastCheckInOut.dateAndTime)}</span>
+                  </div>
+                  <div className="flex items-center">
+                    {lastCheckInOut.status === "Checked In" ? <FaSignInAlt className="text-green-600 mr-2" /> : <FaSignOutAlt className="text-orange-600 mr-2" />}
+                    <span className="text-sm font-medium">{lastCheckInOut.status}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="mt-5 pt-4 border-t border-gray-200 flex space-x-3">
               <button onClick={handleReset} className="flex-1 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center">
                 <FaTimes className="mr-2" /> Reset
               </button>
 
-              <button
-                onClick={() => {
-                  // Here you would typically record the entry/exit
-                  // For now, just reset the scanner
-                  handleReset()
-                }}
-                className="flex-1 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors flex items-center justify-center"
-              >
-                <FaQrcode className="mr-2" /> Record Entry
+              <button onClick={recordEntry} disabled={recordingEntry} className="flex-1 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors flex items-center justify-center disabled:bg-blue-300 disabled:cursor-not-allowed">
+                {getNextStatus() === "Checked In" ? (
+                  <>
+                    <FaSignInAlt className="mr-2" /> Check In
+                  </>
+                ) : (
+                  <>
+                    <FaSignOutAlt className="mr-2" /> Check Out
+                  </>
+                )}
               </button>
             </div>
           </div>

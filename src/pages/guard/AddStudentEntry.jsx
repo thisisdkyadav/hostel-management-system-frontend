@@ -55,7 +55,7 @@ const AddStudentEntry = () => {
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Student Entry Management</h1>
           <p className="text-gray-600">Record student check-ins and check-outs using the form or QR scanner.</p>
         </div>
-
+        {/* 
         <div className="mb-6 bg-blue-50 p-4 rounded-lg border-l-4 border-[#1360AB] flex items-start">
           <FaInfoCircle className="text-[#1360AB] mt-0.5 mr-3 flex-shrink-0" />
           <div>
@@ -65,7 +65,7 @@ const AddStudentEntry = () => {
               <li>Manually enter student details</li>
             </ul>
           </div>
-        </div>
+        </div> */}
 
         {/* Tabs */}
         <div className="flex mb-6 bg-white p-1 rounded-lg shadow-sm">
@@ -80,7 +80,7 @@ const AddStudentEntry = () => {
         {/* Content based on active tab */}
         <div className="mb-8">
           {activeTab === "qr" ? (
-            <QRScanner onScanSuccess={handleQRScanSuccess} />
+            <QRScanner onScanSuccess={handleQRScanSuccess} onRefresh={fetchRecentEntries} />
           ) : (
             <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
               <div className="flex items-center mb-4">
