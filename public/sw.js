@@ -7,11 +7,7 @@ self.addEventListener("activate", (event) => {
 })
 
 // Listen for fetch events and send network status
-self.addEventListener("fetch", (event) => {
-  if (!navigator.onLine) {
-    event.respondWith(new Response("You are offline"))
-  }
-})
+self.addEventListener("fetch", (event) => {})
 
 // Listen for messages from React app
 self.addEventListener("message", (event) => {

@@ -38,25 +38,19 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null)
   const [isStandalone, setIsStandalone] = useState(false)
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        setStarting(true)
-        const userData = await authApi.verify()
-        setUser(userData)
-      } catch (err) {
-        console.error("Auth verification failed", err)
-      } finally {
-        setLoading(false)
-        setStarting(false)
-      }
+  const checkAuth = async () => {
+    try {
+      setStarting(true)
+      const userData = await authApi.verify()
+      setUser(userData)
+      localStorage.setItem("user", JSON.stringify(userData))
+    } catch (err) {
+      console.error("Auth verification failed", err)
+    } finally {
+      setLoading(false)
+      setStarting(false)
     }
-
-    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
-    setIsStandalone(standalone)
-
-    checkAuth()
-  }, [])
+  }
 
   const login = async (credentials) => {
     setLoading(true)
@@ -67,6 +61,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user)
       const aesKey = data.user.aesKey
       localStorage.setItem("publicKey", aesKey)
+      localStorage.setItem("user", JSON.stringify(data.user))
       return data.user
     } catch (err) {
       setError(err.message || "Login failed")
@@ -84,6 +79,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user)
       const aesKey = data.user.aesKey
       localStorage.setItem("publicKey", aesKey)
+      localStorage.setItem("user", JSON.stringify(data.user))
       return data.user
     } catch (err) {
       setError(err.message || "Login failed")
@@ -129,10 +125,23 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
+    setIsStandalone(standalone)
+
     if (isOnline) {
       console.log("Online")
+      checkAuth()
     } else {
       console.log("Offline")
+      const storedUser = localStorage.getItem("user")
+      console.log("Stored user", storedUser)
+
+      if (storedUser) {
+        setUser(JSON.parse(storedUser))
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
     }
   }, [isOnline])
 
@@ -145,6 +154,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     getHomeRoute,
     isStandalone,
+    isOnline,
   }
 
   if (starting) {
