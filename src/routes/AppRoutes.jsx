@@ -148,12 +148,12 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<GuardDashboard />} />
-        <Route path="visitors/add" element={<AddVisitor />} />
+        {/* <Route index element={<GuardDashboard />} /> */}
+        <Route index element={<AddStudentEntry />} />
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
-        <Route path="add-entry" element={<AddStudentEntry />} />
+        {/* <Route path="add-entry" element={<AddStudentEntry />} /> */}
       </Route>
 
       {/* Routes for admin related pages */}

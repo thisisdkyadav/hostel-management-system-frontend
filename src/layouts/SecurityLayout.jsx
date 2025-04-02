@@ -22,10 +22,11 @@ const SecurityLayout = () => {
   }
 
   const navItems = [
-    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/guard" },
-    { name: "Add Student Entry", icon: FaUserPlus, section: "main", path: "/guard/add-entry" },
+    // { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/guard" },
+    { name: "Add Student Entry", icon: FaUserPlus, section: "main", path: "/guard" },
+    // { name: "Add Student Entry", icon: FaUserPlus, section: "main", path: "/guard/add-entry" },
     { name: "Student Entries", icon: FaUserClock, section: "main", path: "/guard/entries" },
-    { name: "Add Visitors", icon: FaUserPlus, section: "main", path: "/guard/visitors/add" },
+    // { name: "Add Visitors", icon: FaUserPlus, section: "main", path: "/guard/visitors/add" },
     { name: "Visitors", icon: FaUsers, section: "main", path: "/guard/visitors" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/guard/lost-and-found" },
     // { name: "Alerts", icon: FaExclamationTriangle, section: "main", path: "/guard/alerts", isAlert: true },

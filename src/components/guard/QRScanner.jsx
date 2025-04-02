@@ -12,6 +12,7 @@ const QRScanner = ({ onRefresh }) => {
   const [recordingEntry, setRecordingEntry] = useState(false)
   const scannerRef = useRef(null)
   const lastProcessedEmailRef = useRef(null)
+  const studentInfoRef = useRef(null)
 
   useEffect(() => {
     return () => {
@@ -20,6 +21,12 @@ const QRScanner = ({ onRefresh }) => {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (scannedStudent && studentInfoRef.current) {
+      studentInfoRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [scannedStudent])
 
   const startScanner = () => {
     setScanning(true)
@@ -143,10 +150,8 @@ const QRScanner = ({ onRefresh }) => {
         email: scannedStudent.email,
         status: status,
       })
-
-      const response = await securityApi.verifyQRCode(scannedStudent.email, "refresh-only")
-      setLastCheckInOut(response.lastCheckInOut || null)
       onRefresh()
+      handleReset()
       setRecordingEntry(false)
     } catch (error) {
       setError("Failed to record entry: " + error.message)
@@ -194,7 +199,7 @@ const QRScanner = ({ onRefresh }) => {
       )}
 
       {scannedStudent && !loading && (
-        <div className="mt-4">
+        <div className="mt-4" ref={studentInfoRef}>
           <div className="bg-green-50 p-3 rounded-lg border-l-4 border-green-500 mb-4">
             <p className="text-green-700 font-medium">Student verified successfully!</p>
           </div>
