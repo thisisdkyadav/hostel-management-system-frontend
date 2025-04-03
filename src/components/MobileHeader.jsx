@@ -30,7 +30,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
       </button>
 
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
-        <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-10 w-auto object-contain" />
+        <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-8 w-auto object-contain" />
       </div>
 
       <div className="relative" ref={dropdownRef}>

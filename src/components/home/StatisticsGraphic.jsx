@@ -71,62 +71,113 @@ const StatisticsGraphic = () => {
         {features.map((feature, index) => (
           <div
             key={index}
-            className="relative flex flex-col items-center justify-center rounded-xl transition-all duration-300 overflow-hidden group hover:shadow-md"
+            className="relative flex flex-col items-center justify-center rounded-xl transition-all duration-300 overflow-hidden group hover:shadow-lg"
             style={{
-              backgroundColor: `${feature.color}15`,
+              backgroundColor: `${feature.color}08`,
               borderBottom: `3px solid ${feature.color}`,
               aspectRatio: "1/1",
+              perspective: "1000px",
             }}
             onMouseEnter={() => setActiveCard(index)}
             onMouseLeave={() => setActiveCard(null)}
           >
-            {/* Improved background patterns */}
+            {/* Enhanced geometric patterns with better visibility */}
             <div
-              className="absolute top-0 right-0 w-16 h-16 -translate-y-8 translate-x-8 group-hover:translate-y-0 group-hover:translate-x-0 transition-transform duration-500"
+              className="absolute inset-0 opacity-50 overflow-hidden"
               style={{
-                background: `radial-gradient(circle, ${feature.color}30 0%, ${feature.color}00 70%)`,
-                borderRadius: "50%",
+                background: `linear-gradient(135deg, ${feature.color}20, transparent)`,
               }}
-            />
+            >
+              {/* Top-right shape - made larger and more visible */}
+              <div
+                className="absolute -right-6 -top-6 w-32 h-32 rotate-12 transform group-hover:rotate-45 transition-transform duration-700 ease-out"
+                style={{
+                  background: `linear-gradient(135deg, ${feature.color}40, ${feature.color}10)`,
+                  borderRadius: "38% 62% 63% 37% / 41% 44% 56% 59%",
+                  boxShadow: `0 0 20px 0 ${feature.color}30`,
+                }}
+              />
 
-            <div
-              className="absolute bottom-0 left-0 w-12 h-12 translate-y-6 -translate-x-6 group-hover:translate-y-0 group-hover:translate-x-0 transition-transform duration-500"
-              style={{
-                background: `radial-gradient(circle, ${feature.color}30 0%, ${feature.color}00 70%)`,
-                borderRadius: "50%",
-              }}
-            />
+              {/* Bottom-left shape - made larger and more visible */}
+              <div
+                className="absolute -left-3 -bottom-3 w-24 h-24 -rotate-12 transform group-hover:-rotate-45 transition-transform duration-700 ease-out"
+                style={{
+                  background: `linear-gradient(135deg, ${feature.color}35, ${feature.color}10)`,
+                  borderRadius: "38% 62% 63% 37% / 41% 44% 56% 59%",
+                  boxShadow: `0 0 15px 0 ${feature.color}25`,
+                }}
+              />
 
-            {/* Improved icon wrapper with pulsing animation on hover */}
+              {/* Additional center decoration */}
+              <div
+                className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500"
+                style={{
+                  backgroundImage: `radial-gradient(circle at 50% 50%, ${feature.color}40 0%, transparent 70%)`,
+                }}
+              />
+            </div>
+
+            {/* Simplified icon with ping animation */}
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300 group-hover:shadow-md"
+              className="w-11 h-11 rounded-full flex items-center justify-center transform transition-all duration-300 ease-out"
               style={{
                 color: feature.color,
-                background: `linear-gradient(135deg, ${feature.color}25, ${feature.color}10)`,
+                background: `linear-gradient(135deg, ${feature.color}35, ${feature.color}15)`,
+                boxShadow: activeCard === index ? `0 8px 12px -2px ${feature.color}30` : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                transform: activeCard === index ? "scale(1.1)" : "scale(1)",
               }}
             >
               {feature.icon}
-              {activeCard === index && <div className="absolute w-full h-full animate-ping rounded-full opacity-30" style={{ backgroundColor: feature.color }}></div>}
+              {activeCard === index && <div className="absolute w-full h-full rounded-full animate-ping opacity-30" style={{ backgroundColor: feature.color }} />}
             </div>
 
-            {/* Improved label with subtle animation */}
-            <div className="mt-3 text-xs font-medium text-center leading-tight px-1 transition-all duration-300 group-hover:font-semibold" style={{ color: activeCard === index ? feature.color : "inherit" }}>
+            {/* Simplified label */}
+            <div
+              className="mt-3 text-xs font-medium text-center leading-tight px-2 transition-all duration-300 group-hover:font-semibold"
+              style={{
+                color: activeCard === index ? feature.color : "inherit",
+              }}
+            >
               {feature.label}
             </div>
 
-            {/* Improved description overlay with blur effect */}
+            {/* Simplified description overlay */}
             <div
-              className="absolute inset-0 flex items-center justify-center p-3 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm"
+              className="absolute inset-0 flex items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-all duration-400 backdrop-blur-sm"
               style={{
-                background: `linear-gradient(180deg, ${feature.color}95, ${feature.color}A0)`,
-                transform: activeCard === index ? "scale(1)" : "scale(0.9)",
+                background: `linear-gradient(145deg, ${feature.color}85, ${feature.color}95)`,
+                transform: activeCard === index ? "scale(1)" : "scale(0.95)",
               }}
             >
               <p className="text-white text-xs text-center font-medium">{feature.description}</p>
             </div>
+
+            {/* Glowing border effect on active */}
+            {activeCard === index && (
+              <div
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                style={{
+                  boxShadow: `inset 0 0 0 2px ${feature.color}60`,
+                  animation: "pulse 2s infinite",
+                }}
+              />
+            )}
           </div>
         ))}
       </div>
+
+      {/* Add keyframe animations using style tag */}
+      <style jsx>{`
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 0.5;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   )
 }
