@@ -150,20 +150,20 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
             <p className="text-xs text-gray-500 mt-1">Notifications will be shown to students until this date</p>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700 text-sm font-medium mb-2">Target Recipients</label>
             <select disabled name="targetType" value="all" className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed text-gray-700">
-              <option value="all">All Students</option>
-              {/* Other target options are commented out for now
+              <option value="all">All Students</option> */}
+          {/* Other target options are commented out for now
               <option value="hostel">By Hostel</option>
               <option value="department">By Department</option>
               <option value="degree">By Degree</option>
               <option value="admission_year">By Admission Year</option>
               <option value="specific">Specific Students</option>
               */}
-            </select>
+          {/* </select>
             <p className="text-xs text-gray-500 mt-1">Currently only "All Students" option is available</p>
-          </div>
+          </div> */}
 
           <div className="pt-4 border-t border-gray-100">
             <div className="flex justify-end space-x-4">
