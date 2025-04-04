@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { FaEye, FaEnvelope } from "react-icons/fa"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
+import BaseTable from "../common/table/BaseTable"
 
 const NotificationTable = ({ notifications, onResendEmail }) => {
   const [selectedNotification, setSelectedNotification] = useState(null)
@@ -48,7 +49,6 @@ const NotificationTable = ({ notifications, onResendEmail }) => {
   //       return null
   //   }
   // }
-
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), "MMM dd, yyyy")
@@ -57,60 +57,43 @@ const NotificationTable = ({ notifications, onResendEmail }) => {
     }
   }
 
+  const columns = [
+    {
+      header: "Title",
+      key: "title",
+      render: (notification) => (
+        <div className="flex items-start flex-col">
+          <div className="text-sm font-medium text-gray-900 mb-1">{notification.title}</div>
+        </div>
+      ),
+    },
+    {
+      header: "Created",
+      key: "createdAt",
+      render: (notification) => <span className="text-sm text-gray-500">{formatDate(notification.createdAt)}</span>,
+    },
+    {
+      header: "Expires",
+      key: "expiryDate",
+      render: (notification) => <span className="text-sm text-gray-500">{formatDate(notification.expiryDate)}</span>,
+    },
+    {
+      header: "Actions",
+      key: "actions",
+      align: "right",
+      render: (notification) => (
+        <div className="flex justify-end space-x-2">
+          <button onClick={() => handleViewNotification(notification)} className="text-blue-600 hover:text-blue-900 p-1" title="View">
+            <FaEye />
+          </button>
+        </div>
+      ),
+    },
+  ]
+
   return (
     <>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Title
-                {/* & Status */}
-              </th>
-              {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Target
-              </th> */}
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Expires
-              </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {notifications.map((notification) => (
-              <tr key={notification._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-start flex-col">
-                    <div className="text-sm font-medium text-gray-900 mb-1">{notification.title}</div>
-                    {/* {getStatusBadge(notification.status)} */}
-                  </div>
-                </td>
-                {/* <td className="px-6 py-4 whitespace-nowrap">{getTargetTypeBadge(notification)}</td> */}
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(notification.createdAt)}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(notification.expiryDate)}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <button onClick={() => handleViewNotification(notification)} className="text-blue-600 hover:text-blue-900 p-1" title="View">
-                      <FaEye />
-                    </button>
-
-                    {/* {notification.status === "sent" && (
-                      <button onClick={() => onResendEmail(notification._id)} className="text-green-600 hover:text-green-900 p-1" title="Resend Email">
-                        <FaEnvelope />
-                      </button>
-                    )} */}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <BaseTable columns={columns} data={notifications} emptyMessage="No notifications to display" />
 
       {showViewModal && <ViewNotificationModal isOpen={showViewModal} onClose={() => setShowViewModal(false)} notification={selectedNotification} />}
     </>
