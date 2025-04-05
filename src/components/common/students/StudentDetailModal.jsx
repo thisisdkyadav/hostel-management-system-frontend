@@ -6,6 +6,7 @@ import { securityApi } from "../../../services/securityApi"
 import { feedbackApi } from "../../../services/feedbackApi"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
+import DisCoActions from "./DisCoActions"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   console.log("Selected Student:", selectedStudent)
@@ -471,6 +472,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             )}
           </div>
         )
+      case "disco":
+        return <DisCoActions userId={selectedStudent.userId} />
       default:
         return null
     }
@@ -511,6 +514,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <button onClick={() => setActiveTab("feedback")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "feedback" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaComments className="mr-2" />
                     Feedback
+                  </button>
+                  <button onClick={() => setActiveTab("disco")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "disco" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaUserFriends className="mr-2" />
+                    DisCo Actions
                   </button>
                 </nav>
               </div>
