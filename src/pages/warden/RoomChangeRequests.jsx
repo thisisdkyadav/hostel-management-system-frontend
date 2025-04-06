@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaExchangeAlt, FaBed, FaUserGraduate } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
-import { hostelApi } from "../../services/apiService"
+import { hostelApi } from "../../services/hostelApi"
 import { useWarden } from "../../contexts/WardenProvider"
 import Pagination from "../../components/common/Pagination"
 import NoResults from "../../components/common/NoResults"

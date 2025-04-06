@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaExchangeAlt, FaCheck, FaTimes, FaInfoCircle, FaBed, FaUser } from "react-icons/fa"
-import { hostelApi } from "../../../services/apiService"
+import { hostelApi } from "../../../services/hostelApi"
 import BedSelectionComponent from "../BedSelectionComponent"
 import Modal from "../../common/Modal"
 
