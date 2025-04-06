@@ -71,8 +71,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 500) {
-            setError("Free accounts are limited to 500 records. Please upgrade or reduce your data.")
+          if (results.data.length > 900) {
+            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
             setIsLoading(false)
             return
           }
