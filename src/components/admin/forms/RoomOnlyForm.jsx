@@ -66,7 +66,6 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
         rooms.push({
           roomNumber,
           capacity: standardCapacity,
-          status: "Active",
         })
       }
     }
@@ -81,7 +80,6 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
       return {
         roomNumber: room.roomNumber || "",
         capacity: parseInt(room.capacity) || 1,
-        status: ["Active", "Inactive"].includes(room.status) ? room.status : "Active",
       }
     })
 
@@ -93,7 +91,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
     }))
   }
 
-  const requiredFields = ["roomNumber", "capacity", "status"]
+  const requiredFields = ["roomNumber", "capacity"]
   const templateInstructions = (
     <div>
       <p className="font-medium mb-1">Field Input Types:</p>
@@ -103,9 +101,6 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
         </li>
         <li>
           <span className="font-medium">capacity:</span> Number
-        </li>
-        <li>
-          <span className="font-medium">status:</span> "Active" or "Inactive"
         </li>
       </ul>
     </div>
@@ -174,7 +169,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
         </>
       ) : (
         <div className="space-y-6">
-          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="room_only_template.csv" templateHeaders={["roomNumber", "capacity", "status"]} instructionText={templateInstructions} />
+          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="room_only_template.csv" templateHeaders={["roomNumber", "capacity"]} instructionText={templateInstructions} />
 
           {parsedCsvData.length > 0 && (
             <div className="mt-4">
