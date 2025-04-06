@@ -256,7 +256,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         </>
       ) : (
         <div className="space-y-6">
-          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity", "status"]} instructionText={templateInstructions} />
+          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity", "status"]} instructionText={templateInstructions} maxRecords={900} />
 
           {parsedCsvData.length > 0 && (
             <div className="mt-4">
