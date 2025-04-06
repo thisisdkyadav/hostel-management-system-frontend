@@ -84,9 +84,7 @@ export const studentApi = {
 
     if (!response.ok) {
       const errorData = await response.json()
-      console.log("Error importing students:", errorData)
-
-      throw new Error(errorData.message || "Failed to import students")
+      throw new Error(errorData.error || "Failed to import students")
     }
 
     return response.json()
@@ -1306,7 +1304,7 @@ export default {
 }
 
 export const addDisCoAction = async (data) => {
-  console.log("Function called");
+  console.log("Function called")
   const response = await fetch(`${baseUrl}/disco/add`, {
     method: "POST",
     headers: {
@@ -1314,29 +1312,28 @@ export const addDisCoAction = async (data) => {
     },
     credentials: "include",
     body: JSON.stringify(data),
-  });
+  })
 
-  const resData = await response.json();
-  console.log("Raw response:", resData); 
+  const resData = await response.json()
+  console.log("Raw response:", resData)
 
   if (!response.ok) {
-    throw new Error(resData.message || "Failed to add DisCo action");
+    throw new Error(resData.message || "Failed to add DisCo action")
   }
 
-  return resData; 
-};
+  return resData
+}
 export const getDisCoActionsByStudent = async (studentId) => {
   const response = await fetch(`${baseUrl}/disco/${studentId}`, {
     method: "GET",
     credentials: "include",
-  });
+  })
 
-  const data = await response.json();
+  const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch DisCo actions");
+    throw new Error(data.message || "Failed to fetch DisCo actions")
   }
 
-  return data; // contains `actions` array
-};
-
+  return data // contains `actions` array
+}

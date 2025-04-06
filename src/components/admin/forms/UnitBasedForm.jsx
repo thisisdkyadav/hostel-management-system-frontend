@@ -103,7 +103,6 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             unitNumber,
             roomNumber: roomLetter,
             capacity: standardCapacity,
-            status: "Active",
           })
         }
       }
@@ -122,7 +121,6 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         unitNumber: room.unitNumber || "",
         roomNumber: (room.roomNumber || "").toUpperCase(),
         capacity: parseInt(room.capacity) || 1,
-        status: ["Active", "Inactive"].includes(room.status) ? room.status : "Active",
       }
     })
 
@@ -142,7 +140,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
     }))
   }
 
-  const requiredFields = ["unitNumber", "roomNumber", "capacity", "status"]
+  const requiredFields = ["unitNumber", "roomNumber", "capacity"]
   const templateInstructions = (
     <div>
       <p className="font-medium mb-1">Field Input Types:</p>
@@ -155,9 +153,6 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         </li>
         <li>
           <span className="font-medium">capacity:</span> Number
-        </li>
-        <li>
-          <span className="font-medium">status:</span> "Active" or "Inactive"
         </li>
       </ul>
     </div>
@@ -256,7 +251,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         </>
       ) : (
         <div className="space-y-6">
-          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity", "status"]} instructionText={templateInstructions} maxRecords={900} />
+          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity"]} instructionText={templateInstructions} maxRecords={900} />
 
           {parsedCsvData.length > 0 && (
             <div className="mt-4">

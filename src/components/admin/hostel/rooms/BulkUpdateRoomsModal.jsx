@@ -17,8 +17,8 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
     const processedData = data.map((room) => ({
       unitNumber: isUnitBased ? room.unitNumber || "" : undefined,
       roomNumber: (room.roomNumber || "").toString(),
-      capacity: parseInt(room.capacity) || 1,
-      status: ["Active", "Inactive"].includes(room.status) ? room.status : "Active",
+      capacity: room.capacity ? parseInt(room.capacity) : undefined,
+      status: ["Active", "Inactive"].includes(room.status) ? room.status : undefined,
     }))
 
     setParsedCsvData(processedData)
@@ -58,7 +58,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
     }
   }
 
-  const requiredFields = [...(isUnitBased ? ["unitNumber"] : []), "roomNumber", "capacity", "status"]
+  const requiredFields = [...(isUnitBased ? ["unitNumber"] : []), "roomNumber"]
 
   const templateInstructions = (
     <div>
@@ -66,19 +66,22 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
       <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
         {isUnitBased && (
           <li>
-            <span className="font-medium">unitNumber:</span> String (e.g., 101)
+            <span className="font-medium">unitNumber:</span> String (e.g., 101) <span className="text-red-600">*</span>
           </li>
         )}
         <li>
-          <span className="font-medium">roomNumber:</span> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"}
+          <span className="font-medium">roomNumber:</span> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"} <span className="text-red-600">*</span>
         </li>
         <li>
-          <span className="font-medium">capacity:</span> Number
+          <span className="font-medium">capacity:</span> Number (optional)
         </li>
         <li>
-          <span className="font-medium">status:</span> "Active" or "Inactive"
+          <span className="font-medium">status:</span> "Active" or "Inactive" (optional)
         </li>
       </ul>
+      <p className="text-xs mt-2">
+        <span className="text-red-600">*</span> Required fields
+      </p>
     </div>
   )
 
