@@ -13,7 +13,8 @@ import Pagination from "../components/common/Pagination"
 import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
-import { studentApi, hostelApi } from "../services/apiService"
+import { studentApi } from "../services/apiService"
+import { hostelApi } from "../services/hostelApi"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
 
 const Students = () => {
