@@ -1337,3 +1337,24 @@ export const getDisCoActionsByStudent = async (studentId) => {
 
   return data // contains `actions` array
 }
+  return data; 
+};
+
+export const updateDisCoAction = async (disCoId,data) => {
+  const response = await fetch(`${baseUrl}/disco/update/${disCoId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  const resData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(resData.message || "Failed to update DisCo action");
+  }
+
+  return resData;
+};

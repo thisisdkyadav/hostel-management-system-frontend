@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react"
-import { addDisCoAction,getDisCoActionsByStudent} from "../../../services/apiService.js"
+import React, { useEffect, useState, useRef } from "react"
+import { addDisCoAction,getDisCoActionsByStudent,updateDisCoAction} from "../../../services/apiService.js"
+
 
 const DisCoActions = ({ userId }) => {
   const [actions, setActions] = useState([])
@@ -11,6 +12,14 @@ const DisCoActions = ({ userId }) => {
     remarks: "",
   })
   const [loading, setLoading] = useState(false)
+  const [editingId, setEditingId] = useState(null);
+  const dateInputRef = useRef(null);
+
+const handleFocus = () => {
+  if (dateInputRef.current?.showPicker) {
+    dateInputRef.current.showPicker(); 
+  }
+};
   
   const fetchDisCoActions = async () => {
     try {
@@ -29,6 +38,7 @@ const DisCoActions = ({ userId }) => {
 
 
 
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -36,28 +46,49 @@ const DisCoActions = ({ userId }) => {
       [name]: value,
     }))
   }
+  const handleEdit = (action) => {
+    setFormData({
+      reason: action.reason,
+      actionTaken: action.actionTaken,
+      date: action.date.split("T")[0], 
+      remarks: action.remarks || "",
+    });
+    setEditingId(action._id);
+    setShowForm(true);
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
-      await addDisCoAction({ ...formData, studentId: userId })
+      if (editingId) {
+       
+        await updateDisCoAction(editingId, { ...formData });
+        alert("DisCo action updated successfully!");
+      } else {
+       
+        await addDisCoAction({ ...formData, studentId: userId });
+        alert("DisCo action added successfully!");
+      }
+  
+      setEditingId(null);
       setFormData({
         reason: "",
         actionTaken: "",
         date: "",
         remarks: "",
-      })
-      setShowForm(false)
-      alert("DisCo action added successfully!")
+      });
+      setShowForm(false);
+      
       fetchDisCoActions();
     } catch (err) {
-      console.error("Failed to add DisCo action:", err)
-      alert("Failed to add DisCo action. Please try again.")
+      console.error("Failed to submit DisCo action:", err);
+      alert("Failed to submit DisCo action. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+  
 
   return (
     <div className="px-4 ">
@@ -99,15 +130,17 @@ const DisCoActions = ({ userId }) => {
           </div>
 
           <div className="mb-2">
-            <label className="block mb-1 text-gray-700 font-medium">Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              className="w-full border border-gray-300 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-300 p-2 rounded-lg outline-none"
-            />
-          </div>
+      <label className="block mb-1 text-gray-700 font-medium">Date</label>
+      <input
+        ref={dateInputRef}
+        type="date"
+        name="date"
+        value={formData.date}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        className="w-full border border-gray-300 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-300 p-2 rounded-lg outline-none"
+      />
+    </div>
 
           <div className="mb-4 mt-3">
             <label className="block mb-1 text-gray-700 font-medium">Remarks (Optional)</label>
@@ -124,7 +157,13 @@ const DisCoActions = ({ userId }) => {
             disabled={loading}
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
-            {loading ? "Submitting..." : "Submit"}
+           {loading
+  ? editingId
+    ? "Saving..."
+    : "Submitting..."
+  : editingId
+  ? "Save Changes"
+  : "Submit"}
           </button>
         </form>
       )}
@@ -137,7 +176,7 @@ const DisCoActions = ({ userId }) => {
         ) : (
           <ul className="space-y-3 bg-gray-50">
             {actions.map((action) => (
-         <li key={action._id} className=" border bg-gray-50 border-gray-200 shadow p-5 rounded-xl hover:shadow-md transition-all">
+         <li key={action._id} className=" border bg-gray-50 border-gray-200 shadow px-5 pt-4 rounded-xl hover:shadow-md transition-all">
          <div className="flex items-center justify-between mb-2">
          <p className="text-sm text-gray-700">
              <span className="font-semibold text-gray-800">Action Taken:</span> {action.actionTaken}
@@ -145,11 +184,22 @@ const DisCoActions = ({ userId }) => {
            <span className="text-sm text-gray-800">{new Date(action.date).toLocaleDateString()}</span>
          </div>
        
-         <div className="mb-2">
-           <p className="text-sm text-gray-700">
-             <span className="font-semibold text-gray-800">Reason:</span> {action.reason}
-           </p>
-         </div>
+         <div className=" mt-3 mb-2 flex justify-between items-start">
+  <p className="text-sm text-gray-700">
+    <span className="font-semibold text-gray-800">Reason:</span> {action.reason}
+  </p>
+  {editingId !== action._id && (
+  <button
+    className="bg-[#1360AB] text-white px-3 py-1 mb-2 rounded-lg hover:bg-blue-500 text-sm"
+    onClick={() => handleEdit(action)}
+  >
+    Edit
+  </button>
+)}
+
+
+</div>
+
        
          {action.remarks && (
     <div>
