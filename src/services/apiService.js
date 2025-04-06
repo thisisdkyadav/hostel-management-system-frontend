@@ -1304,3 +1304,39 @@ export default {
   admin: adminApi,
   alert: alertApi,
 }
+
+export const addDisCoAction = async (data) => {
+  console.log("Function called");
+  const response = await fetch(`${baseUrl}/disco/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(data),
+  });
+
+  const resData = await response.json();
+  console.log("Raw response:", resData); 
+
+  if (!response.ok) {
+    throw new Error(resData.message || "Failed to add DisCo action");
+  }
+
+  return resData; 
+};
+export const getDisCoActionsByStudent = async (studentId) => {
+  const response = await fetch(`${baseUrl}/disco/${studentId}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch DisCo actions");
+  }
+
+  return data; // contains `actions` array
+};
+
