@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FaEdit, FaCalendarAlt, FaBuilding } from "react-icons/fa"
+import { FaEdit, FaCalendarAlt, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
 import EventEditForm from "./EventEditForm"
 import { eventsApi } from "../../services/apiService"
@@ -87,10 +87,16 @@ const EventCard = ({ event, refresh }) => {
             <BsClock className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
             <span className="text-sm text-gray-700">{time}</span>
           </div>
-          <div className="flex items-center mb-1">
+          <div className="flex items-center mr-4 mb-1">
             <FaBuilding className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
             <span className="text-sm text-gray-700 font-medium">{event.hostel?.name || "All Hostels"}</span>
           </div>
+          {event.gender && (
+            <div className="flex items-center mb-1">
+              <FaUserFriends className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
+              <span className="text-sm text-gray-700 font-medium">{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</span>
+            </div>
+          )}
         </div>
         <div className="bg-gray-50 p-3 rounded-lg min-h-[80px]">
           <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>

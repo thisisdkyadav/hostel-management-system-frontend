@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../services/apiService"
 import Modal from "../common/Modal"
-import { FaCalendarAlt, FaClipboardList, FaBuilding } from "react-icons/fa"
+import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 
@@ -13,6 +13,7 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
     description: "",
     dateAndTime: new Date().toISOString().slice(0, 16),
     hostelId: "all",
+    gender: "all",
   })
 
   const handleChange = (e) => {
@@ -23,7 +24,7 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const { eventName, description, dateAndTime, hostelId } = formData
+    const { eventName, description, dateAndTime, hostelId, gender } = formData
     if (!eventName || !description || !dateAndTime) {
       alert("Please fill in all fields.")
       return
@@ -34,6 +35,7 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
       description,
       dateAndTime,
       ...(hostelId !== "all" && { hostelId }),
+      ...(gender !== "all" ? { gender } : { gender: null }),
     }
 
     try {
@@ -80,6 +82,21 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
                     {hostel.name}
                   </option>
                 ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Gender</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaUserFriends />
+              </div>
+              <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" required>
+                <option value="all">All Genders</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
           </div>
