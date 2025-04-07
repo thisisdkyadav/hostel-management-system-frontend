@@ -94,9 +94,9 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
               </div>
               <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" required>
                 <option value="all">All Genders</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
             </div>
           </div>

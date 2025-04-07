@@ -92,9 +92,9 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
               </div>
               <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-2.5 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]">
                 <option value="all">All Genders</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
             </div>
           </div>
