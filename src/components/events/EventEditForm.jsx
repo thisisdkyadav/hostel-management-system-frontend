@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FaCalendarAlt, FaSave, FaBuilding } from "react-icons/fa"
+import { FaCalendarAlt, FaSave, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
@@ -12,6 +12,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
     description: event.description,
     dateAndTime: event.dateAndTime.slice(0, 16),
     hostelId: event.hostelId || "all",
+    gender: event.gender || "all",
   })
 
   const handleChange = (e) => {
@@ -32,6 +33,10 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
 
     if (updatedEvent.hostelId === "all") {
       delete updatedEvent.hostelId
+    }
+
+    if (updatedEvent.gender === "all") {
+      updatedEvent.gender = null
     }
 
     onSave(updatedEvent)
@@ -75,6 +80,21 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
                     {hostel.name}
                   </option>
                 ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Gender</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaUserFriends />
+              </div>
+              <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-2.5 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]">
+                <option value="all">All Genders</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
           </div>
