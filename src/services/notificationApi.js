@@ -51,4 +51,15 @@ export const notificationApi = {
   //       throw error
   //     }
   //   },
+
+  getActiveNotificationsCount: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/notification/active-count`, fetchOptions)
+      if (!response.ok) throw new Error("Failed to fetch notifications count")
+      return await response.json()
+    } catch (error) {
+      console.error("Error fetching notifications count:", error)
+      throw error
+    }
+  },
 }

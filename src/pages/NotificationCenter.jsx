@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaBell, FaPlus, FaFileExport, FaFilter, FaExclamationTriangle } from "react-icons/fa"
-import { useGlobal } from "../contexts/GlobalProvider"
+import { FaBell, FaPlus, FaFilter } from "react-icons/fa"
 import NotificationStats from "../components/notifications/NotificationStats"
 import NotificationTable from "../components/notifications/NotificationTable"
 import NotificationFilterSection from "../components/notifications/NotificationFilterSection"
@@ -26,9 +25,11 @@ const NotificationCenter = () => {
   })
 
   const [filters, setFilters] = useState({
-    status: "all",
-    type: "all",
     expiryStatus: "all",
+    hostelId: "all",
+    degree: "all",
+    department: "all",
+    gender: "all",
     searchTerm: "",
     page: 1,
     limit: 10,
@@ -52,16 +53,24 @@ const NotificationCenter = () => {
         limit: filters.limit,
       })
 
-      if (filters.status !== "all") {
-        queryParams.append("status", filters.status)
-      }
-
-      if (filters.type !== "all") {
-        queryParams.append("type", filters.type)
-      }
-
       if (filters.expiryStatus !== "all") {
         queryParams.append("expiryStatus", filters.expiryStatus)
+      }
+
+      if (filters.hostelId !== "all") {
+        queryParams.append("hostelId", filters.hostelId)
+      }
+
+      if (filters.degree !== "all") {
+        queryParams.append("degree", filters.degree)
+      }
+
+      if (filters.department !== "all") {
+        queryParams.append("department", filters.department)
+      }
+
+      if (filters.gender !== "all") {
+        queryParams.append("gender", filters.gender)
       }
 
       if (filters.searchTerm) {
@@ -91,8 +100,6 @@ const NotificationCenter = () => {
   }
 
   useEffect(() => {
-    console.log("Filters changed:", filters)
-
     fetchNotifications()
   }, [filters])
 
@@ -106,9 +113,11 @@ const NotificationCenter = () => {
 
   const resetFilters = () => {
     setFilters({
-      status: "all",
-      type: "all",
       expiryStatus: "all",
+      hostelId: "all",
+      degree: "all",
+      department: "all",
+      gender: "all",
       searchTerm: "",
       page: 1,
       limit: filters.limit,
@@ -140,15 +149,17 @@ const NotificationCenter = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {/* <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
-            <FaFilter className="mr-2" />
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button> */}
-
           {["Admin"].includes(user.role) && (
-            <button onClick={() => setShowCreateModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl shadow-sm hover:bg-[#0d4d8a] transition-colors">
-              <FaPlus className="mr-2" /> Create Notification
-            </button>
+            <>
+              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
+                <FaFilter className="mr-2" />
+                {showFilters ? "Hide Filters" : "Show Filters"}
+              </button>
+
+              <button onClick={() => setShowCreateModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl shadow-sm hover:bg-[#0d4d8a] transition-colors">
+                <FaPlus className="mr-2" /> Create Notification
+              </button>
+            </>
           )}
         </div>
       </header>

@@ -4,10 +4,14 @@ import { FaUser, FaClipboardList, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBell,
 import { MdSpaceDashboard } from "react-icons/md"
 import { useAuth } from "../contexts/AuthProvider"
 import { HiAnnotation } from "react-icons/hi"
+import { useEffect, useState } from "react"
+import { notificationApi } from "../services/notificationApi"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
   const { logout } = useAuth ? useAuth() : { logout: () => {} }
+
+  const [notificationsCount, setNotificationsCount] = useState(0)
 
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?")
@@ -21,6 +25,19 @@ const StudentLayout = () => {
     }
   }
 
+  useEffect(() => {
+    const fetchNotificationsCount = async () => {
+      try {
+        const data = await notificationApi.getActiveNotificationsCount()
+        setNotificationsCount(data.activeCount || 0)
+      } catch (error) {
+        console.error("Failed to fetch notifications count:", error)
+      }
+    }
+
+    fetchNotificationsCount()
+  }, [])
+
   const navItems = [
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/student" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
@@ -28,7 +45,7 @@ const StudentLayout = () => {
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },
     { name: "Visitors", icon: FaUserFriends, section: "main", path: "/student/visitors" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
-    { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications" },
+    { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications", badge: notificationsCount },
     { name: "Security", icon: FaUser, section: "main", path: "/student/security" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
