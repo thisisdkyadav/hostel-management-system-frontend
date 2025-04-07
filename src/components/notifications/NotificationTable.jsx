@@ -1,10 +1,10 @@
 import React, { useState } from "react"
-import { FaEye, FaEnvelope } from "react-icons/fa"
+import { FaEye } from "react-icons/fa"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
 import BaseTable from "../common/table/BaseTable"
 
-const NotificationTable = ({ notifications, onResendEmail }) => {
+const NotificationTable = ({ notifications, onRefresh }) => {
   const [selectedNotification, setSelectedNotification] = useState(null)
   const [showViewModal, setShowViewModal] = useState(false)
 
@@ -13,48 +13,34 @@ const NotificationTable = ({ notifications, onResendEmail }) => {
     setShowViewModal(true)
   }
 
-  // const getStatusBadge = (status) => {
-  //   switch (status) {
-  //     case "sent":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Sent</span>
-  //     case "draft":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Draft</span>
-  //     case "cancelled":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Cancelled</span>
-  //     default:
-  //       return null
-  //   }
-  // }
-
-  // const getTargetTypeBadge = (notification) => {
-  //   const { targetType, targets } = notification
-  //   switch (targetType) {
-  //     case "all":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">All Students</span>
-  //     case "hostel":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">{targets.hostelIds?.length || 0} Hostels</span>
-  //     case "department":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{targets.departments?.length || 0} Departments</span>
-  //     case "degree":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">{targets.degrees?.length || 0} Degrees</span>
-  //     case "admission_year":
-  //       return (
-  //         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-  //           Years {targets.admissionYearStart} - {targets.admissionYearEnd}
-  //         </span>
-  //       )
-  //     case "specific":
-  //       return <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{targets.specific?.length || 0} Specific Students</span>
-  //     default:
-  //       return null
-  //   }
-  // }
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), "MMM dd, yyyy")
     } catch (error) {
       return "Invalid date"
     }
+  }
+
+  const getTargetAudience = (notification) => {
+    const targets = []
+
+    if (notification.hostelId) {
+      targets.push(`Hostel: ${notification.hostelId.name}`)
+    }
+
+    if (notification.department) {
+      targets.push(`Dept: ${notification.department}`)
+    }
+
+    if (notification.degree) {
+      targets.push(`${notification.degree}`)
+    }
+
+    if (notification.gender) {
+      targets.push(`${notification.gender}`)
+    }
+
+    return targets.length > 0 ? targets.join(", ") : "All Students"
   }
 
   const columns = [
@@ -64,6 +50,7 @@ const NotificationTable = ({ notifications, onResendEmail }) => {
       render: (notification) => (
         <div className="flex items-start flex-col">
           <div className="text-sm font-medium text-gray-900 mb-1">{notification.title}</div>
+          <div className="text-xs text-gray-500">{getTargetAudience(notification)}</div>
         </div>
       ),
     },
