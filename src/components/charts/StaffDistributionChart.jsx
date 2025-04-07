@@ -1,12 +1,11 @@
 import React from "react"
 import { Bar } from "react-chartjs-2"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js"
-import ChartCard from "./ChartCard"
-import { FaUsers } from "react-icons/fa"
+import { FaUserTie } from "react-icons/fa"
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-const StaffDistributionChart = ({ wardenStats, securityStats, maintenanceStats }) => {
+const StaffDistributionChart = ({ wardenStats, securityStats, maintenanceStats, subtitle }) => {
   const data = {
     labels: ["Wardens", "Security", "Maintenance"],
     datasets: [
@@ -37,9 +36,15 @@ const StaffDistributionChart = ({ wardenStats, securityStats, maintenanceStats }
   }
 
   return (
-    <ChartCard title="Staff Distribution Overview" icon={<FaUsers />}>
-      <Bar data={data} options={options} />
-    </ChartCard>
+    <div>
+      <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+        <FaUserTie className="mr-2 text-purple-500" /> Staff Distribution
+      </h2>
+      <div className="h-64">
+        <Bar data={data} options={options} />
+      </div>
+      {subtitle}
+    </div>
   )
 }
 

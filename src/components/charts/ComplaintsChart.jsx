@@ -1,12 +1,11 @@
 import React from "react"
 import { Doughnut } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
-import ChartCard from "./ChartCard"
 import { FiSettings } from "react-icons/fi"
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-const ComplaintsChart = ({ complaintsStats }) => {
+const ComplaintsChart = ({ complaintsStats, subtitle }) => {
   const data = {
     labels: ["Pending", "In Process", "Resolved"],
     datasets: [
@@ -44,9 +43,15 @@ const ComplaintsChart = ({ complaintsStats }) => {
   }
 
   return (
-    <ChartCard title="Complaints Status Distribution" icon={<FiSettings />}>
-      <Doughnut data={data} options={options} />
-    </ChartCard>
+    <div>
+      <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+        <FiSettings className="mr-2 text-pink-500" /> Complaints Status
+      </h2>
+      <div className="h-64">
+        <Doughnut data={data} options={options} />
+      </div>
+      {subtitle}
+    </div>
   )
 }
 

@@ -1,12 +1,11 @@
 import React from "react"
 import { Pie } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
-import ChartCard from "./ChartCard"
 import { FaTools } from "react-icons/fa"
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-const MaintenanceBreakdownChart = ({ maintenanceStats }) => {
+const MaintenanceBreakdownChart = ({ maintenanceStats, subtitle }) => {
   const data = {
     labels: ["Plumbing", "Electrical", "Cleanliness", "Internet", "Civil"],
     datasets: [
@@ -43,9 +42,15 @@ const MaintenanceBreakdownChart = ({ maintenanceStats }) => {
   }
 
   return (
-    <ChartCard title="Maintenance Staff Breakdown" icon={<FaTools />}>
-      <Pie data={data} options={options} />
-    </ChartCard>
+    <div>
+      <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+        <FaTools className="mr-2 text-green-500" /> Maintenance Team Breakdown
+      </h2>
+      <div className="h-64">
+        <Pie data={data} options={options} />
+      </div>
+      {subtitle}
+    </div>
   )
 }
 
