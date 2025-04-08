@@ -20,10 +20,12 @@ import AccessDenied from "../../components/common/AccessDenied"
 const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()
   const navigate = useNavigate()
-  const { hostelList } = useGlobal()
+  const { hostelList, fetchHostelList } = useGlobal()
+  console.log("Hostel List:", hostelList)
+
   const { hostelName: encodedHostelName, unitNumber } = useParams()
   const hostelName = decodeURIComponent(encodedHostelName)
-  const currentHostel = hostelList?.find((hostel) => hostel.name.toLowerCase() === hostelName.toLowerCase())
+  // const currentHostel = hostelList?.find((hostel) => hostel.name.toLowerCase() === hostelName.toLowerCase())
 
   const [viewMode, setViewMode] = useState("table")
   const [loading, setLoading] = useState(false)
@@ -38,6 +40,7 @@ const UnitsAndRooms = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(10)
   const [showFilters, setShowFilters] = useState(true)
+  const [currentHostel, setCurrentHostel] = useState(null)
   const hostelType = currentHostel?.type || "unit-based"
 
   const currentView = unitNumber ? "rooms" : hostelType === "room-only" ? "rooms" : "units"
@@ -268,6 +271,18 @@ const UnitsAndRooms = () => {
       }
     }
   }, [units, unitNumber])
+
+  useEffect(() => {
+    if (hostelList) {
+      setCurrentHostel(hostelList?.find((hostel) => hostel.name.toLowerCase() === hostelName.toLowerCase()))
+    }
+  }, [hostelList])
+
+  useEffect(() => {
+    if (!currentHostel) {
+      fetchHostelList()
+    }
+  }, [currentHostel, fetchHostelList])
 
   if (!currentHostel) {
     return <div className="flex justify-center items-center h-screen">Hostel not found</div>
