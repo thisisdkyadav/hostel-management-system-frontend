@@ -56,7 +56,7 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
             {notification.hostelId && (
               <div className="flex items-center bg-gray-50 rounded-lg p-3">
                 <FaBuilding className="text-blue-500 mr-2" />
-                <span className="text-sm">Hostel: {notification.hostelId}</span>
+                <span className="text-sm">Hostel: {notification.hostelId.name}</span>
               </div>
             )}
 
