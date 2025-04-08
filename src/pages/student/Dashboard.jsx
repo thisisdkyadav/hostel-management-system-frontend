@@ -113,24 +113,25 @@ const Dashboard = () => {
         <DashboardStats stats={dashboardData.stats} />
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
+        {/* Left sidebar - takes 2 columns */}
+        <div className="lg:col-span-2 space-y-4">
           <RoomInfoCard roomData={dashboardData.roomInfo} />
           <LostFoundSummary lostAndFoundStats={dashboardData.stats.lostAndFound} />
-
-          {/* Desktop QR Code */}
-          <div className="hidden md:block">
-            <QRCodeGenerator />
-          </div>
         </div>
 
-        <div className="lg:col-span-2 space-y-6">
+        {/* Middle section - Complaints takes 2 columns */}
+        <div className="lg:col-span-2 space-y-4">
           <ComplaintsSummary complaints={dashboardData.activeComplaints} />
+        </div>
+
+        {/* Right section - Events takes 2 columns */}
+        <div className="lg:col-span-2 space-y-4">
           <EventsCalendar events={dashboardData.upcomingEvents} />
         </div>
       </div>
 
-      {/* Floating Mobile QR Button */}
+      {/* Only keep the mobile QR button and modal */}
       <button onClick={() => setShowQRModal(true)} className="fixed bottom-6 right-6 md:hidden bg-[#1360AB] rounded-full p-4 shadow-lg hover:bg-[#0d4b86] transition-all duration-300 z-10">
         <FaQrcode className="text-white text-2xl" />
       </button>
