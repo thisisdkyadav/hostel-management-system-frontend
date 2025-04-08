@@ -176,7 +176,7 @@ const Dashboard = () => {
         </div>
 
         {/* Staff assignment summary - spans full width */}
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 xl:col-span-2">
+        {/* <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 xl:col-span-2">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
             <FaUsers className="mr-2 text-blue-500" /> Staff Assignment Status
           </h2>
@@ -185,7 +185,7 @@ const Dashboard = () => {
             <AssignmentCard title="Security Staff" total={securityStats?.total || 0} assigned={securityStats?.assigned || 0} icon={<MdSecurity className="text-amber-600" />} gradientFrom="#FEF3C7" gradientTo="#FDE68A" />
             <AssignmentCard title="Maintenance Staff" total={maintenanceStats?.total || 0} assigned={maintenanceStats?.total - (maintenanceStats?.unassigned || 0)} icon={<FaTools className="text-emerald-600" />} gradientFrom="#DCFCE7" gradientTo="#86EFAC" />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )
@@ -201,43 +201,43 @@ const StatInfo = ({ label, value, color, isBold = false }) => (
   </div>
 )
 
-const AssignmentCard = ({ title, total, assigned, icon, gradientFrom, gradientTo }) => {
-  const percentage = total > 0 ? Math.round((assigned / total) * 100) : 0
+// const AssignmentCard = ({ title, total, assigned, icon, gradientFrom, gradientTo }) => {
+//   const percentage = total > 0 ? Math.round((assigned / total) * 100) : 0
 
-  return (
-    <div className="relative overflow-hidden rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ background: `linear-gradient(145deg, ${gradientFrom}, ${gradientTo})` }}>
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-gray-700 font-medium">{title}</h3>
-          <p className="text-gray-600 text-sm">Assignment Status</p>
-        </div>
-        <div className="p-2 bg-white bg-opacity-70 rounded-lg">{icon}</div>
-      </div>
+//   return (
+//     <div className="relative overflow-hidden rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ background: `linear-gradient(145deg, ${gradientFrom}, ${gradientTo})` }}>
+//       <div className="flex justify-between items-start mb-4">
+//         <div>
+//           <h3 className="text-gray-700 font-medium">{title}</h3>
+//           <p className="text-gray-600 text-sm">Assignment Status</p>
+//         </div>
+//         <div className="p-2 bg-white bg-opacity-70 rounded-lg">{icon}</div>
+//       </div>
 
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="text-gray-600 text-xs">Assigned</p>
-          <p className="text-2xl font-bold text-gray-800">
-            {assigned} / {total}
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-gray-600 text-xs">Utilization</p>
-          <p className="text-2xl font-bold text-gray-800">{percentage}%</p>
-        </div>
-      </div>
+//       <div className="flex items-end justify-between">
+//         <div>
+//           <p className="text-gray-600 text-xs">Assigned</p>
+//           <p className="text-2xl font-bold text-gray-800">
+//             {assigned} / {total}
+//           </p>
+//         </div>
+//         <div className="text-right">
+//           <p className="text-gray-600 text-xs">Utilization</p>
+//           <p className="text-2xl font-bold text-gray-800">{percentage}%</p>
+//         </div>
+//       </div>
 
-      <div className="mt-3 bg-white bg-opacity-50 h-2 rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full"
-          style={{
-            width: `${percentage}%`,
-            background: "rgba(0,0,0,0.2)",
-          }}
-        />
-      </div>
-    </div>
-  )
-}
+//       <div className="mt-3 bg-white bg-opacity-50 h-2 rounded-full overflow-hidden">
+//         <div
+//           className="h-full rounded-full"
+//           style={{
+//             width: `${percentage}%`,
+//             background: "rgba(0,0,0,0.2)",
+//           }}
+//         />
+//       </div>
+//     </div>
+//   )
+// }
 
 export default Dashboard
