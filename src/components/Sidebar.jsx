@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
+import { useAuth } from "../contexts/AuthProvider"
+import { FaUserCircle } from "react-icons/fa"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -8,6 +10,7 @@ const Sidebar = ({ navItems }) => {
   const [isMobile, setIsMobile] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuth()
 
   useEffect(() => {
     const currentItem = navItems.find((item) => {
@@ -55,7 +58,45 @@ const Sidebar = ({ navItems }) => {
   const renderNavItem = (item) => {
     const isActiveItem = active === item.name
     const isLogout = item.name === "Logout"
+    const isProfile = item.name === "Profile"
 
+    // Special case for Profile tab
+    if (isProfile && isOpen && user) {
+      return (
+        <li
+          key={item.name}
+          onClick={() => handleNavigation(item)}
+          className={`
+            group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer
+            ${isActiveItem ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
+          `}
+        >
+          <div className={`flex items-center px-4 py-3 ${isActiveItem ? "" : "hover:text-[#1360AB]"}`}>
+            <div className="min-w-10 h-10 rounded-full flex items-center justify-center overflow-hidden mr-3">
+              {user.profileImage ? (
+                <img src={user.profileImage} alt={`${user.name}'s profile`} className="w-10 h-10 rounded-full object-cover" />
+              ) : user.name?.charAt(0).toUpperCase() ? (
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActiveItem ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}`}>
+                  <span className="font-semibold">{user.name.charAt(0).toUpperCase()}</span>
+                </div>
+              ) : (
+                <FaUserCircle className={`text-2xl ${isActiveItem ? "text-white" : "text-[#1360AB]"}`} />
+              )}
+            </div>
+
+            <div className="flex flex-col justify-center overflow-hidden">
+              <span className={`text-sm font-medium truncate ${isActiveItem ? "text-white" : ""}`}>{user.name || "User"}</span>
+              {user.email && <span className={`text-xs truncate ${isActiveItem ? "text-blue-100" : "text-gray-500"}`}>{user.email}</span>}
+              {user.role && <span className={`text-xs truncate ${isActiveItem ? "text-blue-200" : "text-gray-400"}`}>{user.role}</span>}
+            </div>
+          </div>
+
+          {isActiveItem && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
+        </li>
+      )
+    }
+
+    // Regular nav items rendering
     return (
       <li
         key={item.name}

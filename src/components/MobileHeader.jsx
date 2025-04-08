@@ -44,7 +44,13 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
           `}
           aria-label="User menu"
         >
-          {user?.name?.charAt(0).toUpperCase() ? <span className="text-white font-semibold">{user.name.charAt(0).toUpperCase()}</span> : <FaUserCircle className="text-white text-lg" />}
+          {user?.profileImage ? (
+            <img src={user.profileImage} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
+          ) : user?.name?.charAt(0).toUpperCase() ? (
+            <span className="text-white font-semibold">{user.name.charAt(0).toUpperCase()}</span>
+          ) : (
+            <FaUserCircle className="text-white text-lg" />
+          )}
         </button>
 
         {dropdownOpen && (
