@@ -30,6 +30,7 @@ const UnitsAndRooms = () => {
   const [viewMode, setViewMode] = useState("table")
   const [loading, setLoading] = useState(false)
   const [units, setUnits] = useState([])
+  const [allUnits, setAllUnits] = useState([])
   const [rooms, setRooms] = useState([])
   const [totalItems, setTotalItems] = useState(0)
   const [selectedUnit, setSelectedUnit] = useState(null)
@@ -51,6 +52,11 @@ const UnitsAndRooms = () => {
     occupancyStatus: "",
     roomType: "",
     searchTerm: "",
+    minCapacity: "",
+    maxCapacity: "",
+    minOccupancy: "",
+    maxOccupancy: "",
+    showEmptyUnitsOnly: false,
   })
 
   const hostelId = currentHostel?._id || null
@@ -62,8 +68,15 @@ const UnitsAndRooms = () => {
       occupancyStatus: "",
       roomType: "",
       searchTerm: "",
+      minCapacity: "",
+      maxCapacity: "",
+      minOccupancy: "",
+      maxOccupancy: "",
+      showEmptyUnitsOnly: false,
     })
-    fetchData()
+    if (currentView === "rooms" || hostelType === "room-only") {
+      fetchData()
+    }
   }
 
   const fetchUnits = async () => {
@@ -71,23 +84,18 @@ const UnitsAndRooms = () => {
       setLoading(true)
       const response = await hostelApi.getUnits(hostelId)
       console.log("Units response:", response)
+      const fetchedUnits = response || []
+      setAllUnits(fetchedUnits)
 
-      let filteredUnits = response || []
-      if (filters.searchTerm) {
-        filteredUnits = filteredUnits.filter((unit) => unit.unitNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
-      }
-
-      setUnits(filteredUnits)
-      setTotalItems(filteredUnits.length || 0)
-
-      if (unitNumber && filteredUnits.length > 0) {
-        const unit = filteredUnits.find((u) => u.unitNumber === unitNumber)
+      if (unitNumber && fetchedUnits.length > 0) {
+        const unit = fetchedUnits.find((u) => u.unitNumber === unitNumber)
         if (unit) {
           setSelectedUnit(unit)
         }
       }
     } catch (error) {
       console.error("Error fetching units:", error)
+      setAllUnits([])
     } finally {
       setLoading(false)
     }
@@ -238,39 +246,43 @@ const UnitsAndRooms = () => {
 
   useEffect(() => {
     if (hostelId) {
-      if (currentView === "units" || (currentView === "rooms" && !unitNumber)) {
-        fetchUnits()
-      }
-
-      if (currentView === "rooms") {
+      if (currentView === "units") {
+        if (allUnits.length === 0) {
+          fetchUnits()
+        }
+      } else if (currentView === "rooms") {
         if (unitNumber) {
-          fetchUnits().then(() => {
-            const unitObj = units.find((u) => u.unitNumber === unitNumber)
+          const findUnitAndFetchRooms = async () => {
+            let unitsToSearch = allUnits
+            if (unitsToSearch.length === 0) {
+              setLoading(true)
+              const unitResponse = await hostelApi.getUnits(hostelId)
+              unitsToSearch = unitResponse || []
+              setAllUnits(unitsToSearch)
+              setLoading(false)
+            }
+
+            const unitObj = unitsToSearch.find((u) => u.unitNumber === unitNumber)
             if (unitObj) {
               setSelectedUnit(unitObj)
               fetchRooms(unitObj.id)
+            } else {
+              console.warn(`Unit ${unitNumber} not found in hostel ${hostelName}`)
+              setRooms([])
+              setTotalItems(0)
             }
-          })
+          }
+          findUnitAndFetchRooms()
         } else if (hostelType === "room-only") {
           fetchRooms()
         }
       }
     }
-  }, [currentPage, unitNumber, hostelId, hostelType])
+  }, [currentPage, unitNumber, hostelId, hostelType, currentView])
 
   useEffect(() => {
     setCurrentPage(1)
   }, [filters])
-
-  useEffect(() => {
-    if (units.length > 0 && unitNumber) {
-      const unitObj = units.find((u) => u.unitNumber === unitNumber)
-      if (unitObj) {
-        setSelectedUnit(unitObj)
-        fetchRooms(unitObj.id)
-      }
-    }
-  }, [units, unitNumber])
 
   useEffect(() => {
     if (hostelList) {
@@ -283,6 +295,30 @@ const UnitsAndRooms = () => {
       fetchHostelList()
     }
   }, [currentHostel, fetchHostelList])
+
+  useEffect(() => {
+    if (currentView === "units") {
+      let filtered = [...allUnits]
+
+      filtered = filtered.filter((unit) => {
+        const capacity = unit.capacity ?? 0
+        const occupancy = unit.occupancy ?? 0
+        const meetsMinCapacity = filters.minCapacity === "" || capacity >= parseInt(filters.minCapacity, 10)
+        const meetsMaxCapacity = filters.maxCapacity === "" || capacity <= parseInt(filters.maxCapacity, 10)
+        const meetsMinOccupancy = filters.minOccupancy === "" || occupancy >= parseInt(filters.minOccupancy, 10)
+        const meetsMaxOccupancy = filters.maxOccupancy === "" || occupancy <= parseInt(filters.maxOccupancy, 10)
+        const meetsEmptyOnly = !filters.showEmptyUnitsOnly || occupancy === 0
+        return meetsMinCapacity && meetsMaxCapacity && meetsMinOccupancy && meetsMaxOccupancy && meetsEmptyOnly
+      })
+
+      if (filters.searchTerm) {
+        filtered = filtered.filter((unit) => unit.unitNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
+      }
+
+      setUnits(filtered)
+      setTotalItems(filtered.length || 0)
+    }
+  }, [allUnits, filters, currentView])
 
   if (!currentHostel) {
     return <div className="flex justify-center items-center h-screen">Hostel not found</div>
@@ -338,8 +374,51 @@ const UnitsAndRooms = () => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
+
+              {hostelType === "unit-based" && currentView === "units" && (
+                <>
+                  <div className="flex flex-col">
+                    <label htmlFor="minCapacity" className="text-xs font-medium text-gray-500 mb-1">
+                      Min Capacity
+                    </label>
+                    <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="maxCapacity" className="text-xs font-medium text-gray-500 mb-1">
+                      Max Capacity
+                    </label>
+                    <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="minOccupancy" className="text-xs font-medium text-gray-500 mb-1">
+                      Min Occupancy
+                    </label>
+                    <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="maxOccupancy" className="text-xs font-medium text-gray-500 mb-1">
+                      Max Occupancy
+                    </label>
+                    <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+
+                  <div className="flex items-center pt-4 sm:pt-0 sm:items-end sm:pb-1">
+                    <input type="checkbox" id="showEmptyUnitsOnly" checked={filters.showEmptyUnitsOnly} onChange={(e) => setFilters({ ...filters, showEmptyUnitsOnly: e.target.checked })} className="h-4 w-4 text-[#1360AB] focus:ring-[#1360AB] border-gray-300 rounded mr-2" />
+                    <label htmlFor="showEmptyUnitsOnly" className="text-sm font-medium text-gray-700">
+                      Show Empty Units Only
+                    </label>
+                  </div>
+                </>
+              )}
+
+              {(hostelType === "room-only" || (hostelType === "unit-based" && currentView === "rooms")) && (
+                <>
+                  <div className="text-sm text-gray-500 italic col-span-full lg:col-span-3">Room filters (floor, type, status) will go here when viewing rooms.</div>
+                </>
+              )}
             </div>
           </div>
         </div>
