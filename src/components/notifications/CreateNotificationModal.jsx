@@ -8,21 +8,20 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   const { hostelList } = useGlobal()
   console.log(hostelList, "Hostel List from Global Context")
 
-  // hostelList is an array of objects with id and name properties
-  // Example: [{ id: "hostel1", name: "Hostel 1" }, { id: "hostel2", name: "Hostel 2" }]
-
   if (!isOpen) return null
 
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [departmentInput, setDepartmentInput] = useState("")
+  const [degreeInput, setDegreeInput] = useState("")
   const [formData, setFormData] = useState({
     title: "",
     message: "",
     type: "announcement",
-    hostelId: "",
-    degree: "",
-    department: "",
+    hostelIds: [],
+    degrees: [],
+    departments: [],
     gender: "",
     expiryDate: "",
   })
@@ -36,17 +35,37 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
     }))
   }, [])
 
-  const getHostelNameById = (id) => {
-    const hostel = hostelList.find((hostel) => hostel._id === id)
-    return hostel ? hostel.name : ""
+  const getHostelNamesByIds = (ids) => {
+    return ids
+      .map((id) => {
+        const hostel = hostelList.find((hostel) => hostel._id === id)
+        return hostel ? hostel.name : id
+      })
+      .join(", ")
   }
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    const { name, value, type, checked } = e.target
+
+    if (name === "hostelIds" && type === "checkbox") {
+      setFormData((prev) => {
+        const currentHostelIds = prev.hostelIds || []
+        if (checked) {
+          return { ...prev, hostelIds: [...currentHostelIds, value] }
+        } else {
+          return { ...prev, hostelIds: currentHostelIds.filter((id) => id !== value) }
+        }
+      })
+    } else if (name === "departmentsInput") {
+      setDepartmentInput(value)
+    } else if (name === "degreesInput") {
+      setDegreeInput(value)
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+    }
   }
 
   const validateForm = () => {
@@ -63,13 +82,30 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
     return true
   }
 
+  const parseInputToArray = (inputString) => {
+    return inputString
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item !== "")
+  }
+
   const moveToStep2 = () => {
     if (!validateForm()) return
+
+    setFormData((prev) => ({
+      ...prev,
+      departments: parseInputToArray(departmentInput),
+      degrees: parseInputToArray(degreeInput),
+    }))
+
     setStep(2)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const finalDepartments = parseInputToArray(departmentInput)
+    const finalDegrees = parseInputToArray(degreeInput)
 
     try {
       setLoading(true)
@@ -82,9 +118,9 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
         expiryDate: formData.expiryDate,
       }
 
-      if (formData.hostelId) payload.hostelId = formData.hostelId
-      if (formData.degree) payload.degree = formData.degree
-      if (formData.department) payload.department = formData.department
+      if (formData.hostelIds.length > 0) payload.hostelId = formData.hostelIds
+      if (finalDegrees.length > 0) payload.degree = finalDegrees
+      if (finalDepartments.length > 0) payload.department = finalDepartments
       if (formData.gender) payload.gender = formData.gender
 
       const response = await notificationApi.createNotification(payload)
@@ -110,12 +146,14 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
       title: "",
       message: "",
       type: "announcement",
-      hostelId: "",
-      degree: "",
-      department: "",
+      hostelIds: [],
+      degrees: [],
+      departments: [],
       gender: "",
       expiryDate: date.toISOString().split("T")[0],
     })
+    setDepartmentInput("")
+    setDegreeInput("")
     setStep(1)
     setError(null)
   }
@@ -160,33 +198,41 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Hostel</label>
-                <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all">
-                  <option value="">All Hostels</option>
-                  {hostelList &&
+                <label className="block text-gray-700 text-sm font-medium mb-2">Hostel(s)</label>
+                <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3 space-y-2 bg-white">
+                  {hostelList && hostelList.length > 0 ? (
                     hostelList.map((hostel) => (
-                      <option key={hostel._id} value={hostel._id}>
-                        {hostel.name}
-                      </option>
-                    ))}
-                </select>
+                      <div key={hostel._id} className="flex items-center">
+                        <input type="checkbox" id={`hostel-${hostel._id}`} name="hostelIds" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} className="h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB]" />
+                        <label htmlFor={`hostel-${hostel._id}`} className="ml-2 block text-sm text-gray-900">
+                          {hostel.name}
+                        </label>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500">No hostels available.</p>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Select one or more hostels</p>
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Department</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formData.department}
+                <label className="block text-gray-700 text-sm font-medium mb-2">Department(s)</label>
+                <textarea
+                  name="departmentsInput"
+                  value={departmentInput}
                   onChange={handleChange}
+                  rows={3}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all"
-                  placeholder="Enter department (leave empty for all)"
+                  placeholder="Enter departments, separated by commas"
                 />
+                <p className="text-xs text-gray-500 mt-1">e.g., CSE, ECE, ME</p>
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Degree</label>
-                <input type="text" name="degree" value={formData.degree} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter degree (leave empty for all)" />
+                <label className="block text-gray-700 text-sm font-medium mb-2">Degree(s)</label>
+                <textarea name="degreesInput" value={degreeInput} onChange={handleChange} rows={3} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter degrees, separated by commas" />
+                <p className="text-xs text-gray-500 mt-1">e.g., BTech, MTech</p>
               </div>
 
               <div>
@@ -249,26 +295,26 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           <div className="bg-gray-50 p-5 rounded-xl">
             <h3 className="font-medium text-gray-800 mb-3">Target Recipients</h3>
             <div className="space-y-2">
-              {!formData.hostelId && !formData.department && !formData.degree && !formData.gender ? (
+              {!formData.hostelIds?.length && !formData.departments?.length && !formData.degrees?.length && !formData.gender ? (
                 <p className="text-gray-700">All Students</p>
               ) : (
                 <>
-                  {formData.hostelId && (
+                  {formData.hostelIds.length > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Hostel:</span>
-                      <span className="font-medium">{getHostelNameById(formData.hostelId)}</span>
+                      <span className="text-gray-500">Hostel(s):</span>
+                      <span className="font-medium text-right">{getHostelNamesByIds(formData.hostelIds)}</span>
                     </div>
                   )}
-                  {formData.department && (
+                  {formData.departments.length > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Department:</span>
-                      <span className="font-medium">{formData.department}</span>
+                      <span className="text-gray-500">Department(s):</span>
+                      <span className="font-medium text-right">{formData.departments.join(", ")}</span>
                     </div>
                   )}
-                  {formData.degree && (
+                  {formData.degrees.length > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Degree:</span>
-                      <span className="font-medium">{formData.degree}</span>
+                      <span className="text-gray-500">Degree(s):</span>
+                      <span className="font-medium text-right">{formData.degrees.join(", ")}</span>
                     </div>
                   )}
                   {formData.gender && (

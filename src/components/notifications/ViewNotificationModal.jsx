@@ -52,36 +52,48 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
         <div className="border-t border-gray-100 pt-4">
           <h3 className="text-sm font-medium text-gray-700 mb-3">Target Audience</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {notification.hostelId && (
-              <div className="flex items-center bg-gray-50 rounded-lg p-3">
-                <FaBuilding className="text-blue-500 mr-2" />
-                <span className="text-sm">Hostel: {notification.hostelId.name}</span>
+          <div className="space-y-3">
+            {notification.hostelId && notification.hostelId.length > 0 ? (
+              <div className="flex items-start bg-gray-50 rounded-lg p-3">
+                <FaBuilding className="text-blue-500 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <span className="text-sm font-medium">Hostels:</span>
+                  <span className="text-sm ml-1">{notification.hostelId.map((h) => h.name).join(", ")}</span>
+                </div>
               </div>
-            )}
+            ) : null}
 
-            {notification.department && (
-              <div className="flex items-center bg-gray-50 rounded-lg p-3">
-                <FaGraduationCap className="text-indigo-500 mr-2" />
-                <span className="text-sm">Department: {notification.department}</span>
+            {notification.department && notification.department.length > 0 ? (
+              <div className="flex items-start bg-gray-50 rounded-lg p-3">
+                <FaGraduationCap className="text-indigo-500 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <span className="text-sm font-medium">Departments:</span>
+                  <span className="text-sm ml-1">{notification.department.join(", ")}</span>
+                </div>
               </div>
-            )}
+            ) : null}
 
-            {notification.degree && (
-              <div className="flex items-center bg-gray-50 rounded-lg p-3">
-                <FaUserAlt className="text-purple-500 mr-2" />
-                <span className="text-sm">Degree: {notification.degree}</span>
+            {notification.degree && notification.degree.length > 0 ? (
+              <div className="flex items-start bg-gray-50 rounded-lg p-3">
+                <FaUserAlt className="text-purple-500 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <span className="text-sm font-medium">Degrees:</span>
+                  <span className="text-sm ml-1">{notification.degree.join(", ")}</span>
+                </div>
               </div>
-            )}
+            ) : null}
 
-            {notification.gender && (
-              <div className="flex items-center bg-gray-50 rounded-lg p-3">
-                <FaVenusMars className="text-pink-500 mr-2" />
-                <span className="text-sm">Gender: {notification.gender}</span>
+            {notification.gender ? (
+              <div className="flex items-start bg-gray-50 rounded-lg p-3">
+                <FaVenusMars className="text-pink-500 mr-3 mt-1 flex-shrink-0" />
+                <div>
+                  <span className="text-sm font-medium">Gender:</span>
+                  <span className="text-sm ml-1">{notification.gender}</span>
+                </div>
               </div>
-            )}
+            ) : null}
 
-            {!notification.hostelId && !notification.department && !notification.degree && !notification.gender && (
+            {!notification.hostelId?.length && !notification.department?.length && !notification.degree?.length && !notification.gender && (
               <div className="flex items-center bg-gray-50 rounded-lg p-3">
                 <FaUserAlt className="text-gray-500 mr-2" />
                 <span className="text-sm">All Students</span>
