@@ -24,23 +24,24 @@ const NotificationTable = ({ notifications, onRefresh }) => {
   const getTargetAudience = (notification) => {
     const targets = []
 
-    if (notification.hostelId) {
-      targets.push(`Hostel: ${notification.hostelId.name}`)
+    if (notification.hostelId && notification.hostelId.length > 0) {
+      // Assuming hostelId is an array of objects like { _id: '...', name: '...' }
+      targets.push(`Hostels: ${notification.hostelId.map((h) => h.name).join(", ")}`)
     }
 
-    if (notification.department) {
-      targets.push(`Dept: ${notification.department}`)
+    if (notification.department && notification.department.length > 0) {
+      targets.push(`Depts: ${notification.department.join(", ")}`)
     }
 
-    if (notification.degree) {
-      targets.push(`${notification.degree}`)
+    if (notification.degree && notification.degree.length > 0) {
+      targets.push(`Degrees: ${notification.degree.join(", ")}`)
     }
 
     if (notification.gender) {
-      targets.push(`${notification.gender}`)
+      targets.push(`Gender: ${notification.gender}`)
     }
 
-    return targets.length > 0 ? targets.join(", ") : "All Students"
+    return targets.length > 0 ? targets.join(" | ") : "All Students"
   }
 
   const columns = [
