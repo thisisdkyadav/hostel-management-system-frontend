@@ -1,12 +1,31 @@
-# React + Vite
+# Hostel Management System - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+The frontend is built using React, Tailwind CSS, React Context API, and React Router. It provides the user interface for students, wardens, security, and administrators to interact with the hostel management system.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technology Stack
 
-## Expanding the ESLint configuration
+- **Framework/Library:** React.js
+- **Styling:** Tailwind CSS
+- **State Management:** React Context API
+- **Routing:** React Router
+- **API Communication:** Fetch API
+- **Build Tool:** Vite
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+1.  **Clone the repository:** `git clone https://github.com/thisisdkyadav/hostel-management-system-frontend`
+2.  **Navigate to the frontend directory:** `cd hostel-management-system-frontend`
+3.  **Install dependencies:** `npm i`
+4.  **Run the development server:** `npm run dev`
+
+## Documentation Structure
+
+Detailed technical documentation for the frontend codebase can be found in the [`docs/`](./docs/README.md) directory. This documentation mirrors the structure of the `/src` directory.
+
+- [**Source Code Documentation (`/docs/src`)**](./docs/src/README.md): Detailed documentation for components, contexts, pages, services, hooks, and utilities.
+
+## Navigation
+
+Use the links within the documentation files (`.md` and `README.md`) located inside the `docs/` directory to navigate through the documentation. The structure is designed to be intuitive based on the project's source code layout.
