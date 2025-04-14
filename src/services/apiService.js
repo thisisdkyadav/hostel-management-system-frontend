@@ -256,6 +256,21 @@ export const wardenApi = {
 
     return response.json()
   },
+
+  setActiveHostel: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/warden/active-hostel`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ hostelId }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update active hostel")
+    }
+
+    return response.json()
+  },
 }
 
 export const associateWardenApi = {
@@ -274,6 +289,21 @@ export const associateWardenApi = {
       console.error("Error fetching associate warden profile:", error)
       throw error
     }
+  },
+
+  setActiveHostel: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/warden/associate-warden/active-hostel`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ hostelId }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update active hostel for associate warden")
+    }
+
+    return response.json()
   },
 }
 

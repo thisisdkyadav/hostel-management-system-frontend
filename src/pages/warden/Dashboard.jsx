@@ -16,7 +16,6 @@ const DashboardWarden = () => {
 
   const [lostFoundStats, setLostFoundStats] = useState(null)
   const [eventStats, setEventStats] = useState(null)
-  const [roomChangeStats, setRoomChangeStats] = useState(null)
   const [visitorStats, setVisitorStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -26,11 +25,10 @@ const DashboardWarden = () => {
       try {
         setLoading(true)
 
-        const [lostAndFoundData, eventsData, visitorData, roomChangeRequestData] = await Promise.all([statsApi.getLostAndFoundStats(), statsApi.getEventStats(profile?.hostelId?._id), statsApi.getVisitorStats(profile?.hostelId?._id), statsApi.getRoomChangeRequestsStats(profile?.hostelId?._id)])
+        const [lostAndFoundData, eventsData, visitorData] = await Promise.all([statsApi.getLostAndFoundStats(), statsApi.getEventStats(profile?.hostelId?._id), statsApi.getVisitorStats(profile?.hostelId?._id)])
 
         setLostFoundStats(lostAndFoundData)
         setEventStats(eventsData)
-        setRoomChangeStats(roomChangeRequestData)
         setVisitorStats(visitorData)
       } catch (err) {
         console.error("Error fetching stats:", err)
@@ -98,13 +96,6 @@ const DashboardWarden = () => {
       icon: <BiCalendarEvent />,
       color: "#6366F1",
     },
-    {
-      title: "Room Changes",
-      value: roomChangeStats?.total || 0,
-      subtitle: `${roomChangeStats?.pending || 0} Pending`,
-      icon: <MdChangeCircle />,
-      color: "#EC4899",
-    },
   ]
 
   return (
@@ -122,7 +113,7 @@ const DashboardWarden = () => {
 
       {/* Key metrics cards */}
       <div className="mb-6">
-        <StatCards stats={keyStats} columns={4} />
+        <StatCards stats={keyStats} columns={3} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">

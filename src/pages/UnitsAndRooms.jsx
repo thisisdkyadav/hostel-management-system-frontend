@@ -16,12 +16,13 @@ import UpdateAllocationModal from "../components/common/students/UpdateAllocatio
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
+import { useWarden } from "../contexts/WardenProvider"
 
 const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()
   const navigate = useNavigate()
   const { hostelList, fetchHostelList } = useGlobal()
-  console.log("Hostel List:", hostelList)
+  const wardenProfile = ["Warden", "Associate Warden"].includes(user?.role) ? useWarden()?.profile : null
 
   const { hostelName: encodedHostelName, unitNumber } = useParams()
   const hostelName = decodeURIComponent(encodedHostelName)
@@ -291,6 +292,18 @@ const UnitsAndRooms = () => {
   }, [hostelList])
 
   useEffect(() => {
+    if (wardenProfile) {
+      const activeHostel = wardenProfile.activeHostelId?.name
+      if (activeHostel && currentHostel) {
+        if (activeHostel !== currentHostel) {
+          const navigateTo = `${getHomeRoute()}/hostels/${activeHostel}`
+          navigate(navigateTo)
+        }
+      }
+    }
+  }, [wardenProfile, currentHostel])
+
+  useEffect(() => {
     if (!currentHostel) {
       fetchHostelList()
     }
@@ -324,7 +337,7 @@ const UnitsAndRooms = () => {
     return <div className="flex justify-center items-center h-screen">Hostel not found</div>
   }
 
-  if (user.hostel && user.hostel._id !== currentHostel?._id) {
+  if (wardenProfile?.hostelIds > 0 && wardenProfile.hostelIds.includes(currentHostel._id)) {
     return <AccessDenied />
   }
 

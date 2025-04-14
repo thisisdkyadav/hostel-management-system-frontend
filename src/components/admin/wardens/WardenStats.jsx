@@ -6,8 +6,8 @@ import { FaBuilding } from "react-icons/fa"
 const WardenStats = ({ wardens, staffType = "warden" }) => {
   const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
   const totalWardens = wardens.length
-  const assignedWardens = wardens.filter((w) => w.status === "assigned").length
-  const unassignedWardens = wardens.filter((w) => w.status === "unassigned").length
+  const assignedWardens = wardens.filter((w) => w.hostelIds && w.hostelIds.length > 0).length
+  const unassignedWardens = totalWardens - assignedWardens
 
   const statsData = [
     {
