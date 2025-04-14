@@ -237,7 +237,7 @@ export const visitorApi = {
     }
   },
 
-  approveVisitorRequest: async (requestId, hostelId) => {
+  approveVisitorRequest: async (requestId, hostelId, amount) => {
     try {
       const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/approve`, {
         method: "POST",
@@ -245,7 +245,7 @@ export const visitorApi = {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ hostelId }),
+        body: JSON.stringify({ hostelId, amount }),
       })
 
       if (!response.ok) {

@@ -28,6 +28,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   const [rejectionReason, setRejectionReason] = useState("")
   const [showRejectForm, setShowRejectForm] = useState(false)
   const [showApproveForm, setShowApproveForm] = useState(false)
+  const [paymentAmount, setPaymentAmount] = useState("")
 
   const [showAllocationForm, setShowAllocationForm] = useState(false)
   const [isUnitBased, setIsUnitBased] = useState(false)
@@ -48,6 +49,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     setLoading(true)
     try {
       const response = await visitorApi.getVisitorRequestById(requestId)
+      console.log("Fetched request details:", response.data)
+
       setRequest(response.data)
     } catch (error) {
       console.error("Error fetching request details:", error)
@@ -63,6 +66,15 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     } else {
       setRequest(null)
       setLoading(false)
+      setSelectedHostel("")
+      setRejectionReason("")
+      setShowRejectForm(false)
+      setShowApproveForm(false)
+      setPaymentAmount("")
+      setShowAllocationForm(false)
+      setAllocatedRooms([])
+      setShowCheckInForm(false)
+      setShowCheckOutForm(false)
     }
   }, [isOpen, requestId])
 
@@ -133,7 +145,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     }
 
     try {
-      await visitorApi.approveVisitorRequest(requestId, selectedHostel)
+      const amountToSend = paymentAmount.trim() !== "" ? Number(paymentAmount) : null
+      await visitorApi.approveVisitorRequest(requestId, selectedHostel, amountToSend)
       onRefresh()
       onClose()
     } catch (error) {
@@ -220,6 +233,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   const toggleApproveForm = () => {
     setShowApproveForm(!showApproveForm)
     setShowRejectForm(false)
+    if (showApproveForm) {
+      setPaymentAmount("")
+    }
   }
 
   const toggleRejectForm = () => {
@@ -292,6 +308,24 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {/* Visitors Information */}
         <VisitorInformation visitors={request.visitors} />
 
+        {/* Payment Status */}
+        {request.paymentStatus && (
+          <div className="text-sm mb-2">
+            <span className="font-semibold text-gray-700 mr-2">Payment Status:</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${request.paymentStatus === "paid" ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}`}>{request.paymentStatus === "paid" ? "Paid" : "Pending"}</span>
+          </div>
+        )}
+
+        {/* Payment Link (Student only) */}
+        {user.role === "Student" && request.paymentLink && (
+          <div className="text-sm">
+            <span className="font-semibold text-blue-700 mr-2">Payment Link:</span>
+            <a href={request.paymentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+              {request.paymentLink}
+            </a>
+          </div>
+        )}
+
         {/* Security Check-in/out (if applicable) */}
         {request.status === "Approved" && request.checkInTime && <SecurityCheck checkInTime={request.checkInTime} checkOutTime={request.checkOutTime} />}
 
@@ -306,7 +340,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         )}
 
         {/* Approve Form (for Admin) */}
-        {["Admin"].includes(user.role) && request.status === "Pending" && showApproveForm && <ApprovalForm selectedHostel={selectedHostel} onHostelChange={setSelectedHostel} onCancel={() => setShowApproveForm(false)} onSubmit={handleApproveRequest} hostelList={hostelList} />}
+        {["Admin"].includes(user.role) && request.status === "Pending" && showApproveForm && (
+          <ApprovalForm selectedHostel={selectedHostel} onHostelChange={setSelectedHostel} paymentAmount={paymentAmount} onPaymentAmountChange={setPaymentAmount} onCancel={() => setShowApproveForm(false)} onSubmit={handleApproveRequest} hostelList={hostelList} />
+        )}
 
         {/* Reject Form (for Admin) */}
         {["Admin"].includes(user.role) && request.status === "Pending" && showRejectForm && <RejectionForm rejectionReason={rejectionReason} onReasonChange={setRejectionReason} onCancel={() => setShowRejectForm(false)} onSubmit={handleRejectRequest} />}
