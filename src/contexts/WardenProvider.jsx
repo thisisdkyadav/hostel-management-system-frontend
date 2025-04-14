@@ -50,7 +50,11 @@ const WardenProvider = ({ children }) => {
     loading,
   }
 
-  return <WardenContext.Provider value={value}>{children}</WardenContext.Provider>
+  return (
+    <WardenContext.Provider value={value}>
+      <div key={profile?.activeHostelId?._id}>{children}</div>
+    </WardenContext.Provider>
+  )
 }
 
 export default WardenProvider

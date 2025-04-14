@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
@@ -10,22 +10,49 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
 
   const [formData, setFormData] = useState({
     phone: warden.phone || "",
-    hostelId: warden.hostelId || "",
+    hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
     joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
   })
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      phone: warden.phone || "",
+      hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
+      joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
     }))
+  }, [warden])
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
+
+    if (name === "hostelIds") {
+      const hostelId = value
+      setFormData((prev) => {
+        const currentHostelIds = prev.hostelIds || []
+        if (checked) {
+          return { ...prev, hostelIds: [...new Set([...currentHostelIds, hostelId])] }
+        } else {
+          return { ...prev, hostelIds: currentHostelIds.filter((id) => id !== hostelId) }
+        }
+      })
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }))
+    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const message = staffType === "warden" ? await adminApi.updateWarden(warden.id, formData) : await adminApi.updateAssociateWarden(warden.id, formData)
+      const payload = {
+        phone: formData.phone,
+        hostelIds: formData.hostelIds,
+        joinDate: formData.joinDate,
+      }
+      const message = staffType === "warden" ? await adminApi.updateWarden(warden.id, payload) : await adminApi.updateAssociateWarden(warden.id, payload)
 
       if (!message) {
         alert(`Failed to update ${staffTitle.toLowerCase()}. Please try again.`)
@@ -82,15 +109,21 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Hostel Assignment</label>
-            <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white">
-              <option value="">Select a hostel</option>
-              {hostelList.map((hostel) => (
-                <option key={hostel._id} value={hostel._id}>
-                  {hostel.name}
-                </option>
-              ))}
-            </select>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Hostel Assignments</label>
+            <div className="mt-2 space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+              {hostelList.length > 0 ? (
+                hostelList.map((hostel) => (
+                  <div key={hostel._id} className="flex items-center">
+                    <input id={`hostel-${hostel._id}`} name="hostelIds" type="checkbox" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} className="h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB]" />
+                    <label htmlFor={`hostel-${hostel._id}`} className="ml-3 block text-sm text-gray-700">
+                      {hostel.name}
+                    </label>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">No hostels available.</p>
+              )}
+            </div>
           </div>
 
           <div>

@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react"
+import { act, useEffect, useRef, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
-import { FaUserCircle } from "react-icons/fa"
+import { wardenApi, associateWardenApi } from "../services/apiService"
+import { FaUserCircle, FaBuilding } from "react-icons/fa"
+import { CgSpinner } from "react-icons/cg"
+import { useWarden } from "../contexts/WardenProvider"
+import { set } from "date-fns"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -11,6 +15,36 @@ const Sidebar = ({ navItems }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
+  const [isUpdatingHostel, setIsUpdatingHostel] = useState(false)
+  const [assignedHostels, setAssignedHostels] = useState([])
+  const [activeHostelId, setActiveHostelId] = useState(null)
+  const prevHostelIdRef = useRef(null)
+
+  const wardenContext = useWarden()
+  const fetchProfile = wardenContext?.fetchProfile
+
+  const isWardenRole = user?.role === "Warden" || user?.role === "Associate Warden"
+
+  useEffect(() => {
+    if (isWardenRole) {
+      const profileData = wardenContext?.profile || user
+      const hostels = profileData?.hostels || profileData?.hostelIds || []
+      const currentActiveId = profileData?.activeHostelId?._id || profileData?.activeHostelId || user?.hostel?._id
+
+      setAssignedHostels(hostels)
+      setActiveHostelId(currentActiveId)
+    } else {
+      setAssignedHostels([])
+      setActiveHostelId(null)
+    }
+  }, [user, wardenContext?.profile, isWardenRole])
+
+  useEffect(() => {
+    console.log("Active hostel ID changed:", activeHostelId)
+    return () => {
+      console.log("Cleanup for active hostel ID effect")
+    }
+  }, [activeHostelId])
 
   useEffect(() => {
     const currentItem = navItems.find((item) => {
@@ -55,12 +89,40 @@ const Sidebar = ({ navItems }) => {
     }
   }
 
+  const handleHostelChange = async (event) => {
+    const newHostelId = event.target.value
+    if (!newHostelId || newHostelId === activeHostelId) {
+      return
+    }
+
+    setIsUpdatingHostel(true)
+    try {
+      if (user?.role === "Warden") {
+        await wardenApi.setActiveHostel(newHostelId)
+      } else if (user?.role === "Associate Warden") {
+        await associateWardenApi.setActiveHostel(newHostelId)
+      }
+
+      if (fetchProfile) {
+        await fetchProfile()
+      } else {
+        console.warn("fetchProfile function not available from context.")
+        alert("Active hostel updated (manual refresh might be needed).")
+      }
+    } catch (error) {
+      console.error("Failed to update active hostel:", error)
+      alert(`Error updating active hostel: ${error.message}`)
+      event.target.value = activeHostelId
+    } finally {
+      setIsUpdatingHostel(false)
+    }
+  }
+
   const renderNavItem = (item) => {
     const isActiveItem = active === item.name
     const isLogout = item.name === "Logout"
     const isProfile = item.name === "Profile"
 
-    // Special case for Profile tab
     if (isProfile && isOpen && user) {
       return (
         <li
@@ -96,7 +158,6 @@ const Sidebar = ({ navItems }) => {
       )
     }
 
-    // Regular nav items rendering
     return (
       <li
         key={item.name}
@@ -169,6 +230,47 @@ const Sidebar = ({ navItems }) => {
           <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
             <ul className="space-y-1">{mainNavItems.map(renderNavItem)}</ul>
           </div>
+          {isWardenRole && isOpen && assignedHostels.length > 0 && (
+            <div className="p-3 border-t border-gray-100">
+              <label htmlFor="activeHostelSelect" className="block text-xs font-medium text-gray-500 mb-1.5 px-1">
+                Active Hostel
+              </label>
+              <div className="relative">
+                <select
+                  id="activeHostelSelect"
+                  value={activeHostelId || ""}
+                  onChange={handleHostelChange}
+                  disabled={isUpdatingHostel}
+                  className="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB] bg-gray-50 appearance-none pr-8 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {!activeHostelId && assignedHostels.length > 0 && (
+                    <option value="" disabled>
+                      Select Active Hostel
+                    </option>
+                  )}
+                  {assignedHostels.map((hostel) => {
+                    const hostelId = typeof hostel === "string" ? hostel : hostel?._id
+                    const hostelName = typeof hostel === "string" ? `Hostel (${hostelId.slice(-4)})` : hostel?.name || "Unknown Hostel"
+                    if (!hostelId) return null
+                    return (
+                      <option key={hostelId} value={hostelId}>
+                        {hostelName}
+                      </option>
+                    )
+                  })}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  {isUpdatingHostel ? (
+                    <CgSpinner className="animate-spin text-gray-500" />
+                  ) : (
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                    </svg>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="p-3 border-t border-gray-100">
             <ul className="space-y-1">{bottomNavItems.map(renderNavItem)}</ul>
