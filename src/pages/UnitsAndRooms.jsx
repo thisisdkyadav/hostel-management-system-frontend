@@ -33,6 +33,7 @@ const UnitsAndRooms = () => {
   const [units, setUnits] = useState([])
   const [allUnits, setAllUnits] = useState([])
   const [rooms, setRooms] = useState([])
+  const [allRooms, setAllRooms] = useState([])
   const [totalItems, setTotalItems] = useState(0)
   const [selectedUnit, setSelectedUnit] = useState(null)
   const [selectedRoom, setSelectedRoom] = useState(null)
@@ -49,15 +50,12 @@ const UnitsAndRooms = () => {
 
   const [filters, setFilters] = useState({
     hostelId: "",
-    floorNumber: "",
-    occupancyStatus: "",
-    roomType: "",
     searchTerm: "",
     minCapacity: "",
     maxCapacity: "",
     minOccupancy: "",
     maxOccupancy: "",
-    showEmptyUnitsOnly: false,
+    showEmptyOnly: false,
   })
 
   const hostelId = currentHostel?._id || null
@@ -65,19 +63,13 @@ const UnitsAndRooms = () => {
   const resetFilters = () => {
     setFilters({
       hostelId: "",
-      floorNumber: "",
-      occupancyStatus: "",
-      roomType: "",
       searchTerm: "",
       minCapacity: "",
       maxCapacity: "",
       minOccupancy: "",
       maxOccupancy: "",
-      showEmptyUnitsOnly: false,
+      showEmptyOnly: false,
     })
-    if (currentView === "rooms" || hostelType === "room-only") {
-      fetchData()
-    }
   }
 
   const fetchUnits = async () => {
@@ -108,54 +100,25 @@ const UnitsAndRooms = () => {
       let response
 
       if (hostelType === "unit-based" && unitId) {
+        // Fetch rooms for a specific unit
         response = await hostelApi.getRoomsByUnit(unitId)
       } else {
+        // Fetch all rooms for the hostel without filters
         const queryParams = {
-          page: currentPage,
-          limit: itemsPerPage,
           hostelId: hostelId,
-          ...buildRoomFilterParams(),
         }
         response = await hostelApi.getRooms(queryParams)
       }
 
       console.log("Rooms response:", response)
-
-      let filteredRooms = response?.data || []
-
-      if (hostelType === "unit-based" && filters.searchTerm) {
-        filteredRooms = filteredRooms.filter((room) => room.roomNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
-      }
-
-      setRooms(filteredRooms)
-      setTotalItems(response?.meta?.total || filteredRooms.length || 0)
+      const fetchedRooms = response?.data || []
+      setAllRooms(fetchedRooms)
     } catch (error) {
       console.error("Error fetching rooms:", error)
+      setAllRooms([])
     } finally {
       setLoading(false)
     }
-  }
-
-  const buildRoomFilterParams = () => {
-    const params = {}
-
-    if (filters.searchTerm) {
-      params.search = filters.searchTerm
-    }
-
-    if (filters.floorNumber) {
-      params.floorNumber = filters.floorNumber
-    }
-
-    if (filters.roomType) {
-      params.roomType = filters.roomType
-    }
-
-    if (filters.occupancyStatus) {
-      params.occupancyStatus = filters.occupancyStatus
-    }
-
-    return params
   }
 
   const fetchData = () => {
@@ -203,6 +166,16 @@ const UnitsAndRooms = () => {
   }
 
   const handleUnitClick = (unit) => {
+    // Reset filters when navigating from units to rooms
+    setFilters({
+      ...filters,
+      searchTerm: "",
+      minCapacity: "",
+      maxCapacity: "",
+      minOccupancy: "",
+      maxOccupancy: "",
+      showEmptyOnly: false,
+    })
     navigate(`${getHomeRoute()}/hostels/${encodedHostelName}/units/${unit.unitNumber}`)
   }
 
@@ -243,7 +216,23 @@ const UnitsAndRooms = () => {
     setCurrentPage(pageNumber)
   }
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const filterRooms = () => {
+    let filtered = [...allRooms]
+
+    // For now only use searchTerm for rooms
+    if (filters.searchTerm) {
+      filtered = filtered.filter((room) => room.roomNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
+    }
+
+    return filtered
+  }
+
+  // Get paginated rooms
+  const getPaginatedRooms = (allFilteredRooms) => {
+    const indexOfLastItem = currentPage * itemsPerPage
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage
+    return allFilteredRooms.slice(indexOfFirstItem, indexOfLastItem)
+  }
 
   useEffect(() => {
     if (hostelId) {
@@ -269,6 +258,7 @@ const UnitsAndRooms = () => {
               fetchRooms(unitObj.id)
             } else {
               console.warn(`Unit ${unitNumber} not found in hostel ${hostelName}`)
+              setAllRooms([])
               setRooms([])
               setTotalItems(0)
             }
@@ -279,7 +269,63 @@ const UnitsAndRooms = () => {
         }
       }
     }
-  }, [currentPage, unitNumber, hostelId, hostelType, currentView])
+  }, [unitNumber, hostelId, hostelType, currentView])
+
+  // Apply filters and pagination whenever filters, currentPage, or allRooms change
+  useEffect(() => {
+    if (currentView === "rooms") {
+      const filteredRooms = filterRooms()
+      setTotalItems(filteredRooms.length)
+      setRooms(getPaginatedRooms(filteredRooms))
+    }
+  }, [filters, currentPage, allRooms, currentView])
+
+  // Apply filters for units
+  useEffect(() => {
+    if (currentView === "units") {
+      let filtered = [...allUnits]
+
+      filtered = filtered.filter((unit) => {
+        const capacity = parseInt(unit.capacity) || 0
+        const occupancy = parseInt(unit.occupancy) || 0
+
+        let meetsMinCapacity = true
+        let meetsMaxCapacity = true
+        let meetsMinOccupancy = true
+        let meetsMaxOccupancy = true
+        let meetsEmptyOnly = true
+
+        if (filters.minCapacity && !isNaN(parseInt(filters.minCapacity))) {
+          meetsMinCapacity = capacity >= parseInt(filters.minCapacity)
+        }
+
+        if (filters.maxCapacity && !isNaN(parseInt(filters.maxCapacity))) {
+          meetsMaxCapacity = capacity <= parseInt(filters.maxCapacity)
+        }
+
+        if (filters.minOccupancy && !isNaN(parseInt(filters.minOccupancy))) {
+          meetsMinOccupancy = occupancy >= parseInt(filters.minOccupancy)
+        }
+
+        if (filters.maxOccupancy && !isNaN(parseInt(filters.maxOccupancy))) {
+          meetsMaxOccupancy = occupancy <= parseInt(filters.maxOccupancy)
+        }
+
+        if (filters.showEmptyOnly) {
+          meetsEmptyOnly = occupancy === 0
+        }
+
+        return meetsMinCapacity && meetsMaxCapacity && meetsMinOccupancy && meetsMaxOccupancy && meetsEmptyOnly
+      })
+
+      if (filters.searchTerm) {
+        filtered = filtered.filter((unit) => unit.unitNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
+      }
+
+      setUnits(filtered)
+      setTotalItems(filtered.length || 0)
+    }
+  }, [allUnits, filters, currentView])
 
   useEffect(() => {
     setCurrentPage(1)
@@ -309,30 +355,6 @@ const UnitsAndRooms = () => {
     }
   }, [currentHostel, fetchHostelList])
 
-  useEffect(() => {
-    if (currentView === "units") {
-      let filtered = [...allUnits]
-
-      filtered = filtered.filter((unit) => {
-        const capacity = unit.capacity ?? 0
-        const occupancy = unit.occupancy ?? 0
-        const meetsMinCapacity = filters.minCapacity === "" || capacity >= parseInt(filters.minCapacity, 10)
-        const meetsMaxCapacity = filters.maxCapacity === "" || capacity <= parseInt(filters.maxCapacity, 10)
-        const meetsMinOccupancy = filters.minOccupancy === "" || occupancy >= parseInt(filters.minOccupancy, 10)
-        const meetsMaxOccupancy = filters.maxOccupancy === "" || occupancy <= parseInt(filters.maxOccupancy, 10)
-        const meetsEmptyOnly = !filters.showEmptyUnitsOnly || occupancy === 0
-        return meetsMinCapacity && meetsMaxCapacity && meetsMinOccupancy && meetsMaxOccupancy && meetsEmptyOnly
-      })
-
-      if (filters.searchTerm) {
-        filtered = filtered.filter((unit) => unit.unitNumber?.toLowerCase().includes(filters.searchTerm.toLowerCase()))
-      }
-
-      setUnits(filtered)
-      setTotalItems(filtered.length || 0)
-    }
-  }, [allUnits, filters, currentView])
-
   if (!currentHostel) {
     return <div className="flex justify-center items-center h-screen">Hostel not found</div>
   }
@@ -340,6 +362,8 @@ const UnitsAndRooms = () => {
   if (wardenProfile?.hostelIds > 0 && wardenProfile.hostelIds.includes(currentHostel._id)) {
     return <AccessDenied />
   }
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
@@ -390,6 +414,7 @@ const UnitsAndRooms = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
 
+              {/* Only show all filters for units view */}
               {hostelType === "unit-based" && currentView === "units" && (
                 <>
                   <div className="flex flex-col">
@@ -419,19 +444,53 @@ const UnitsAndRooms = () => {
                   </div>
 
                   <div className="flex items-center pt-4 sm:pt-0 sm:items-end sm:pb-1">
-                    <input type="checkbox" id="showEmptyUnitsOnly" checked={filters.showEmptyUnitsOnly} onChange={(e) => setFilters({ ...filters, showEmptyUnitsOnly: e.target.checked })} className="h-4 w-4 text-[#1360AB] focus:ring-[#1360AB] border-gray-300 rounded mr-2" />
-                    <label htmlFor="showEmptyUnitsOnly" className="text-sm font-medium text-gray-700">
+                    <input type="checkbox" id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} className="h-4 w-4 text-[#1360AB] focus:ring-[#1360AB] border-gray-300 rounded mr-2" />
+                    <label htmlFor="showEmptyOnly" className="text-sm font-medium text-gray-700">
                       Show Empty Units Only
                     </label>
                   </div>
                 </>
               )}
 
+              {/* Comment out room filters except search term */}
+              {/* 
               {(hostelType === "room-only" || (hostelType === "unit-based" && currentView === "rooms")) && (
                 <>
-                  <div className="text-sm text-gray-500 italic col-span-full lg:col-span-3">Room filters (floor, type, status) will go here when viewing rooms.</div>
+                  <div className="flex flex-col">
+                    <label htmlFor="minCapacity" className="text-xs font-medium text-gray-500 mb-1">
+                      Min Capacity
+                    </label>
+                    <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="maxCapacity" className="text-xs font-medium text-gray-500 mb-1">
+                      Max Capacity
+                    </label>
+                    <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="minOccupancy" className="text-xs font-medium text-gray-500 mb-1">
+                      Min Occupancy
+                    </label>
+                    <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+                  <div className="flex flex-col">
+                    <label htmlFor="maxOccupancy" className="text-xs font-medium text-gray-500 mb-1">
+                      Max Occupancy
+                    </label>
+                    <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                  </div>
+
+                  <div className="flex items-center pt-4 sm:pt-0 sm:items-end sm:pb-1">
+                    <input type="checkbox" id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} className="h-4 w-4 text-[#1360AB] focus:ring-[#1360AB] border-gray-300 rounded mr-2" />
+                    <label htmlFor="showEmptyOnly" className="text-sm font-medium text-gray-700">
+                      Show Empty Rooms Only
+                    </label>
+                  </div>
                 </>
               )}
+              */}
             </div>
           </div>
         </div>
@@ -440,7 +499,7 @@ const UnitsAndRooms = () => {
       <div className="mt-6 flex justify-between items-center">
         <div className="text-sm text-gray-600">
           Showing <span className="font-semibold">{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</span> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
-          {hostelType === "room-only" && totalItems > 0 && ` of ${totalItems} total`}
+          {totalItems > 0 && ` of ${totalItems} total`}
         </div>
         <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
           <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg transition-all ${viewMode === "table" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Table view">
@@ -483,7 +542,7 @@ const UnitsAndRooms = () => {
         </>
       )}
 
-      {(hostelType === "room-only" || (hostelType === "unit-based" && totalItems > itemsPerPage)) && (
+      {totalPages > 1 && (
         <div className="mt-6">
           <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
         </div>
