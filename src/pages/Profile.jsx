@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import StudentProfile from "../components/profile/StudentProfile"
 import WardenProfile from "../components/profile/WardenProfile"
 import AdminProfile from "../components/profile/AdminProfile"
+import SuperAdminProfile from "../components/profile/SuperAdminProfile"
 
 const Profile = () => {
   const { user } = useAuth()
@@ -19,6 +20,8 @@ const Profile = () => {
         return <WardenProfile user={user} activeTab={activeTab} />
       case "Admin":
         return <AdminProfile user={user} activeTab={activeTab} />
+      case "Super Admin":
+        return <SuperAdminProfile user={user} activeTab={activeTab} />
       default:
         return <div>No profile data available</div>
     }

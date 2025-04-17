@@ -55,6 +55,12 @@ import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
 import NotificationCenter from "../pages/NotificationCenter"
 import Security from "../pages/student/Security.jsx"
 
+// import related to super admin
+import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
+import SuperAdminDashboard from "../pages/superadmin/Dashboard.jsx"
+import AdminManagement from "../pages/superadmin/AdminManagement.jsx"
+import ApiKeyManagement from "../pages/superadmin/ApiKeyManagement.jsx"
+
 const AppRoutes = () => {
   const { user } = useAuth()
 
@@ -62,6 +68,21 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<LoginPage />} />
+
+      {/* Routes for Super Admin related pages */}
+      <Route
+        path="/super-admin"
+        element={
+          <ProtectedRoute allowedRoles={["Super Admin"]}>
+            <SuperAdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<SuperAdminDashboard />} />
+        <Route path="admins" element={<AdminManagement />} />
+        <Route path="api-keys" element={<ApiKeyManagement />} />
+        <Route path="profile" element={<Profile />} />
+      </Route>
 
       <Route
         path="/student"
