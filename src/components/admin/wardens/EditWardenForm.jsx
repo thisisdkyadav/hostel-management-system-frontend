@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt } from "react-icons/fa"
+import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
+import ImageUploadModal from "../../common/ImageUploadModal"
 
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useAdmin()
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     phone: warden.phone || "",
     hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
     joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
+    profileImage: warden.profileImage || "",
   })
 
   useEffect(() => {
@@ -20,6 +24,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
       phone: warden.phone || "",
       hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
       joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
+      profileImage: warden.profileImage || "",
     }))
   }, [warden])
 
@@ -44,6 +49,13 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     }
   }
 
+  const handleImageUpload = (imageUrl) => {
+    setFormData((prev) => ({
+      ...prev,
+      profileImage: imageUrl,
+    }))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -51,6 +63,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         phone: formData.phone,
         hostelIds: formData.hostelIds,
         joinDate: formData.joinDate,
+        profileImage: formData.profileImage,
       }
       const message = staffType === "warden" ? await adminApi.updateWarden(warden.id, payload) : staffType === "associateWarden" ? await adminApi.updateAssociateWarden(warden.id, payload) : await adminApi.updateHostelSupervisor(warden.id, payload)
 
@@ -96,6 +109,24 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             <h4 className="font-medium">{staffTitle} Information</h4>
           </div>
         </div>
+
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative h-24 w-24 rounded-full mb-2">
+            {formData.profileImage ? (
+              <img src={formData.profileImage} alt={warden.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+            ) : (
+              <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
+                <FaBuilding className="h-12 w-12 text-[#1360AB]" />
+              </div>
+            )}
+            <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 bg-[#1360AB] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#0F4C81] transition-colors">
+              <HiCamera className="w-4 h-4" />
+            </div>
+          </div>
+          <span className="text-sm text-gray-500">Click the camera icon to change profile photo</span>
+        </div>
+
+        {isImageModalOpen && <ImageUploadModal userId={warden.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
         <div className="space-y-4">
           <div>

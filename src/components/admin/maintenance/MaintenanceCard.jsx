@@ -49,8 +49,14 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         </div>
 
         <div className="flex items-center">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#1360AB] flex items-center justify-center text-[#ffffff] text-xl mr-4">
-            <FaUserCog />
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mr-4 overflow-hidden">
+            {staff.profileImage ? (
+              <img src={staff.profileImage} alt={staff.name} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-[#1360AB] flex items-center justify-center text-[#ffffff] text-xl">
+                <FaUserCog />
+              </div>
+            )}
           </div>
           <div>
             <h3 className="font-bold text-gray-800 text-lg">{staff.name}</h3>
