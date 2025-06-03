@@ -4,7 +4,7 @@ import { MdVerified } from "react-icons/md"
 import { FaBuilding } from "react-icons/fa"
 
 const WardenStats = ({ wardens, staffType = "warden" }) => {
-  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
   const totalWardens = wardens.length
   const assignedWardens = wardens.filter((w) => w.hostelIds && w.hostelIds.length > 0).length
   const unassignedWardens = totalWardens - assignedWardens
@@ -13,7 +13,7 @@ const WardenStats = ({ wardens, staffType = "warden" }) => {
     {
       title: `Total ${staffTitle}s`,
       value: totalWardens,
-      subtitle: staffType === "warden" ? "Managing faculty members" : "Supporting faculty members",
+      subtitle: staffType === "warden" ? "Managing faculty members" : staffType === "associateWarden" ? "Supporting faculty members" : "Supervising staff members",
       icon: <FaUsers className="text-2xl" />,
       color: "#1360AB",
     },

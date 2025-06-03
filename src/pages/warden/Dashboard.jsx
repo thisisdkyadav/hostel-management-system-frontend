@@ -10,9 +10,11 @@ import { useWarden } from "../../contexts/WardenProvider"
 import VisitorStatsChart from "../../components/charts/VisitorStatsChart"
 import EventsChart from "../../components/charts/EventsChart"
 import LostFoundChart from "../../components/charts/LostFoundChart"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const DashboardWarden = () => {
-  const { profile, isAssociateWarden } = useWarden()
+  const { profile, isAssociateWardenOrSupervisor } = useWarden()
+  const { user: authUser } = useAuth()
 
   const [lostFoundStats, setLostFoundStats] = useState(null)
   const [eventStats, setEventStats] = useState(null)
@@ -103,7 +105,9 @@ const DashboardWarden = () => {
       <header className="flex justify-between items-center bg-white rounded-xl shadow-sm px-6 py-4 mb-6">
         <div className="flex items-center">
           <MdDashboard className="text-blue-600 text-2xl mr-3" />
-          <h1 className="text-2xl font-bold text-gray-800">{isAssociateWarden ? "Associate Warden" : "Warden"} Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-800">
+            {authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : isAssociateWardenOrSupervisor ? "Associate Warden" : "Warden"} Dashboard
+          </h1>
         </div>
         <div className="flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg">
           <FaUser className="w-4 h-4" />

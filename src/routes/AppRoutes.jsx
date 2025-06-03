@@ -54,6 +54,8 @@ import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
 import NotificationCenter from "../pages/NotificationCenter"
 import Security from "../pages/student/Security.jsx"
+import HostelSupervisorLayout from "../layouts/HostelSupervisorLayout.jsx"
+import AdminHostelSupervisors from "../pages/admin/HostelSupervisors.jsx"
 
 // import related to super admin
 import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
@@ -160,6 +162,27 @@ const AppRoutes = () => {
         <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
 
+      {/* Routes for Hostel Supervisor related pages */}
+      <Route
+        path="/hostel-supervisor"
+        element={
+          <ProtectedRoute allowedRoles={["Hostel Supervisor"]}>
+            <HostelSupervisorLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<WardenDashboard />} />
+        <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
+        <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
+        <Route path="complaints" element={<Complaint />} />
+        <Route path="students" element={<Students />} />
+        <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="events" element={<Events />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="feedbacks" element={<Feedbacks />} />
+      </Route>
+
       {/* Routes for Guard related pages */}
       <Route
         path="/guard"
@@ -192,6 +215,7 @@ const AppRoutes = () => {
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="wardens" element={<AdminWarden />} />
         <Route path="associate-wardens" element={<AdminAssociateWardens />} />
+        <Route path="hostel-supervisors" element={<AdminHostelSupervisors />} />
         <Route path="students" element={<Students />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />

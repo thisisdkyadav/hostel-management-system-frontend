@@ -22,7 +22,7 @@ const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()
   const navigate = useNavigate()
   const { hostelList, fetchHostelList } = useGlobal()
-  const wardenProfile = ["Warden", "Associate Warden"].includes(user?.role) ? useWarden()?.profile : null
+  const wardenProfile = ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) ? useWarden()?.profile : null
 
   const { hostelName: encodedHostelName, unitNumber } = useParams()
   const hostelName = decodeURIComponent(encodedHostelName)
@@ -359,7 +359,7 @@ const UnitsAndRooms = () => {
     return <div className="flex justify-center items-center h-screen">Hostel not found</div>
   }
 
-  if (wardenProfile?.hostelIds > 0 && wardenProfile.hostelIds.includes(currentHostel._id)) {
+  if (wardenProfile?.hostelIds > 0 && !wardenProfile.hostelIds.includes(currentHostel._id)) {
     return <AccessDenied />
   }
 

@@ -12,7 +12,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
 
   const handleStudentClick = (userId) => {
     if (!userId) return
-    if (!["Admin", "Warden", "Associate Warden"].includes(user.role)) return
+    if (!["Admin", "Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)) return
     setSelectedStudent({ userId })
     setShowStudentDetail(true)
   }

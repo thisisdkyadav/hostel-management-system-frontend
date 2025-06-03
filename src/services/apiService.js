@@ -307,6 +307,40 @@ export const associateWardenApi = {
   },
 }
 
+export const hostelSupervisorApi = {
+  getProfile: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/warden/hostel-supervisor/profile`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch hostel supervisor profile")
+      }
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching hostel supervisor profile:", error)
+      throw error
+    }
+  },
+
+  setActiveHostel: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/warden/hostel-supervisor/active-hostel`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ hostelId }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update active hostel for hostel supervisor")
+    }
+
+    return response.json()
+  },
+}
+
 export const securityApi = {
   getSecurityInfo: async () => {
     const response = await fetch(`${baseUrl}/security`, {
@@ -456,6 +490,82 @@ export const securityApi = {
     }
 
     return response.json()
+  },
+
+  getAllHostelSupervisors: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisors`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch hostel supervisors")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching hostel supervisors:", error)
+      throw error
+    }
+  },
+
+  addHostelSupervisor: async (data) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisor`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to add hostel supervisor")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error adding hostel supervisor:", error)
+      throw error
+    }
+  },
+
+  updateHostelSupervisor: async (id, data) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisor/${id}`, {
+        method: "PUT",
+        ...fetchOptions,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update hostel supervisor")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating hostel supervisor:", error)
+      throw error
+    }
+  },
+
+  deleteHostelSupervisor: async (id) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisor/${id}`, {
+        method: "DELETE",
+        ...fetchOptions,
+      })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to delete hostel supervisor")
+      }
+      return response.json()
+    } catch (error) {
+      console.error("Error deleting hostel supervisor:", error)
+      throw error
+    }
   },
 }
 
@@ -852,6 +962,84 @@ export const adminApi = {
       return response.json()
     } catch (error) {
       console.error("Error deleting associate warden:", error)
+      throw error
+    }
+  },
+
+  getAllHostelSupervisors: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisors`, {
+        method: "GET",
+        ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch hostel supervisors")
+    }
+
+    return response.json()
+    } catch (error) {
+      console.error("Error fetching hostel supervisors:", error)
+      throw error
+    }
+  },
+
+  addHostelSupervisor: async (data) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisor`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to add hostel supervisor")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error adding hostel supervisor:", error)
+      throw error
+    }
+  },
+
+  updateHostelSupervisor: async (id, data) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisor/${id}`, {
+        method: "PUT",
+        ...fetchOptions,
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update hostel supervisor")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating hostel supervisor:", error)
+      throw error
+    }
+  },
+
+  deleteHostelSupervisor: async (id) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/hostel-supervisor/${id}`, {
+        method: "DELETE",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to delete hostel supervisor")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error deleting hostel supervisor:", error)
       throw error
     }
   },
@@ -1331,6 +1519,8 @@ export default {
   maintenance: maintenanceApi,
   admin: adminApi,
   alert: alertApi,
+  associateWarden: associateWardenApi,
+  hostelSupervisor: hostelSupervisorApi,
 }
 
 export const addDisCoAction = async (data) => {

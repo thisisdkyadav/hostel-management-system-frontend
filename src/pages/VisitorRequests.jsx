@@ -92,7 +92,7 @@ const VisitorRequests = () => {
       return false
     }
 
-    if (["Warden", "Associate Warden"].includes(user.role) && allocationFilter !== "all") {
+    if (["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && allocationFilter !== "all") {
       if (allocationFilter === "allocated" && !request.isAllocated) return false
       if (allocationFilter === "unallocated" && request.isAllocated) return false
     }
@@ -117,7 +117,7 @@ const VisitorRequests = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Visitor Requests</h1>
-            <p className="text-gray-500 text-sm mt-1">{["Warden", "Associate Warden"].includes(user.role) ? "Manage visitor accommodation requests for your hostel" : "Manage your visitor accommodation requests"}</p>
+            <p className="text-gray-500 text-sm mt-1">{["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "Manage visitor accommodation requests for your hostel" : "Manage your visitor accommodation requests"}</p>
           </div>
         </div>
 
@@ -147,7 +147,7 @@ const VisitorRequests = () => {
             <div>
               <h3 className="font-medium text-gray-700 mb-2">Filter by Status:</h3>
               <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
-                {["Warden", "Associate Warden"].includes(user.role)
+                {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
                   ? ["all", "approved"].map((status) => (
                       <button key={status} onClick={() => setStatusFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${statusFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
                         {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
@@ -161,7 +161,7 @@ const VisitorRequests = () => {
               </div>
             </div>
 
-            {["Warden", "Associate Warden"].includes(user.role) && (
+            {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
               <div>
                 <h3 className="font-medium text-gray-700 mb-2">Filter by Allocation:</h3>
                 <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
@@ -180,8 +180,8 @@ const VisitorRequests = () => {
       {visitorRequests.length === 0 ? (
         <EmptyState
           icon={() => <FaUserFriends className="text-gray-400" size={48} />}
-          title={["Warden", "Associate Warden"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
-          message={["Warden", "Associate Warden"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
+          title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
+          message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven\'t made any visitor accommodation requests yet. Create a new request to get started."}
           buttonText={user.role === "Student" ? "Create Request" : null}
           buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
         />

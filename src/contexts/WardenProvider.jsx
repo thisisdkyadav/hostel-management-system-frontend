@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { adminApi, wardenApi, associateWardenApi } from "../services/apiService"
+import { adminApi, wardenApi, associateWardenApi, hostelSupervisorApi } from "../services/apiService"
 import { useAuth } from "./AuthProvider"
 
 const WardenContext = createContext(null)
@@ -11,7 +11,7 @@ const WardenProvider = ({ children }) => {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const isAssociateWarden = user?.role === "Associate Warden"
+  const isAssociateWardenOrSupervisor = user?.role === "Associate Warden" || user?.role === "Hostel Supervisor"
 
   const fetchHostelList = async () => {
     try {
@@ -24,13 +24,13 @@ const WardenProvider = ({ children }) => {
 
   const fetchProfile = async () => {
     try {
-      const api = isAssociateWarden ? associateWardenApi : wardenApi
+      const api = user?.role === "Associate Warden" ? associateWardenApi : user?.role === "Hostel Supervisor" ? hostelSupervisorApi : wardenApi
       const data = await api.getProfile()
 
-      console.log(data, isAssociateWarden ? "Associate Warden Profile from API" : "Warden Profile from API")
+      console.log(data, user?.role === "Associate Warden" ? "Associate Warden Profile from API" : user?.role === "Hostel Supervisor" ? "Hostel Supervisor Profile from API" : "Warden Profile from API")
       setProfile(data)
     } catch (error) {
-      console.error(`Error fetching ${isAssociateWarden ? "associate warden" : "warden"} profile:`, error)
+      console.error(`Error fetching ${user?.role === "Associate Warden" ? "associate warden" : user?.role === "Hostel Supervisor" ? "hostel supervisor" : "warden"} profile:`, error)
     } finally {
       setLoading(false)
     }
@@ -39,14 +39,14 @@ const WardenProvider = ({ children }) => {
   useEffect(() => {
     fetchHostelList()
     fetchProfile()
-  }, [isAssociateWarden])
+  }, [user?.role])
 
   const value = {
     hostelList,
     fetchHostelList,
     profile,
     fetchProfile,
-    isAssociateWarden,
+    isAssociateWardenOrSupervisor,
     loading,
   }
 

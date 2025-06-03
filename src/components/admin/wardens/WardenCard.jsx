@@ -7,7 +7,7 @@ import { useAdmin } from "../../../contexts/AdminProvider"
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
   const [showEditForm, setShowEditForm] = useState(false)
-  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
 
   const getAssignedHostelNames = () => {
     if (!warden.hostelIds || warden.hostelIds.length === 0) {

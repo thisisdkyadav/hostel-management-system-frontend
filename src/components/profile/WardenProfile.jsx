@@ -7,9 +7,11 @@ import LoadingState from "../common/LoadingState"
 import ErrorState from "../common/ErrorState"
 import EmptyState from "../common/EmptyState"
 import { useWarden } from "../../contexts/WardenProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const WardenProfile = () => {
-  const { profile, fetchProfile, isAssociateWarden } = useWarden()
+  const { profile, fetchProfile, isAssociateWardenOrSupervisor } = useWarden()
+  const { user: authUser } = useAuth()
 
   console.log("profile", profile)
 
@@ -56,9 +58,11 @@ const WardenProfile = () => {
     return <EmptyState icon={FiUser} title="Profile Not Found" message="We couldn't find your profile information. Please contact the administrator if this issue persists." />
   }
 
+  const roleDisplay = authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : authUser?.role === "Associate Warden" ? "Associate Warden" : "Warden"
+
   return (
     <div>
-      <ProfileHeader user={wardenData} role={isAssociateWarden ? "Associate Warden" : "Warden"} subtitle={wardenData.hostel || "No hostel assigned"} />
+      <ProfileHeader user={wardenData} role={roleDisplay} subtitle={wardenData.hostel || "No hostel assigned"} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         <div>

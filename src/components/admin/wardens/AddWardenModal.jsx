@@ -4,7 +4,7 @@ import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
-  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
 
   const [formData, setFormData] = useState({
     name: "",
@@ -23,7 +23,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
     e.preventDefault()
 
     try {
-      const response = staffType === "warden" ? await adminApi.addWarden(formData) : await adminApi.addAssociateWarden(formData)
+      const response = staffType === "warden" ? await adminApi.addWarden(formData) : staffType === "associateWarden" ? await adminApi.addAssociateWarden(formData) : await adminApi.addHostelSupervisor(formData)
 
       if (!response) {
         alert(`Failed to add ${staffTitle.toLowerCase()}. Please try again.`)

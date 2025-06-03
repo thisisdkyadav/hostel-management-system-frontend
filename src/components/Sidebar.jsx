@@ -2,7 +2,7 @@ import { act, useEffect, useRef, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
-import { wardenApi, associateWardenApi } from "../services/apiService"
+import { wardenApi, associateWardenApi, hostelSupervisorApi } from "../services/apiService"
 import { FaUserCircle, FaBuilding } from "react-icons/fa"
 import { CgSpinner } from "react-icons/cg"
 import { useWarden } from "../contexts/WardenProvider"
@@ -23,7 +23,7 @@ const Sidebar = ({ navItems }) => {
   const wardenContext = useWarden()
   const fetchProfile = wardenContext?.fetchProfile
 
-  const isWardenRole = user?.role === "Warden" || user?.role === "Associate Warden"
+  const isWardenRole = user?.role === "Warden" || user?.role === "Associate Warden" || user?.role === "Hostel Supervisor"
 
   useEffect(() => {
     if (isWardenRole) {
@@ -101,6 +101,8 @@ const Sidebar = ({ navItems }) => {
         await wardenApi.setActiveHostel(newHostelId)
       } else if (user?.role === "Associate Warden") {
         await associateWardenApi.setActiveHostel(newHostelId)
+      } else if (user?.role === "Hostel Supervisor") {
+        await hostelSupervisorApi.setActiveHostel(newHostelId)
       }
 
       if (fetchProfile) {
