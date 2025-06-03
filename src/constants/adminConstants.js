@@ -1,5 +1,5 @@
 export const WARDEN_FILTER_TABS = [
-  { label: "All Wardens", value: "all", color: "[#1360AB]" },
+  { label: "All", value: "all", color: "[#1360AB]" },
   { label: "Assigned", value: "assigned", color: "[#1360AB]" },
   { label: "Unassigned", value: "unassigned", color: "[#1360AB]" },
 ]
