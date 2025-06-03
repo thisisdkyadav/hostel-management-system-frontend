@@ -68,12 +68,9 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
 
       setUploaded(true)
 
-      // Wait for confirmation message to be seen
-      setTimeout(() => {
         onImageUpload(imageUrl)
         handleReset()
         onClose()
-      }, 1500)
     } catch (error) {
       console.error("Error uploading image:", error)
     } finally {
