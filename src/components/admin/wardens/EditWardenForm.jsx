@@ -6,7 +6,7 @@ import Modal from "../../common/Modal"
 
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useAdmin()
-  const staffTitle = staffType === "warden" ? "Warden" : "Associate Warden"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
 
   const [formData, setFormData] = useState({
     phone: warden.phone || "",
@@ -52,7 +52,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         hostelIds: formData.hostelIds,
         joinDate: formData.joinDate,
       }
-      const message = staffType === "warden" ? await adminApi.updateWarden(warden.id, payload) : await adminApi.updateAssociateWarden(warden.id, payload)
+      const message = staffType === "warden" ? await adminApi.updateWarden(warden.id, payload) : staffType === "associateWarden" ? await adminApi.updateAssociateWarden(warden.id, payload) : await adminApi.updateHostelSupervisor(warden.id, payload)
 
       if (!message) {
         alert(`Failed to update ${staffTitle.toLowerCase()}. Please try again.`)
@@ -71,7 +71,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     const confirmDelete = window.confirm(`Are you sure you want to delete this ${staffTitle.toLowerCase()}?`)
     if (confirmDelete) {
       try {
-        const message = staffType === "warden" ? await adminApi.deleteWarden(warden.id) : await adminApi.deleteAssociateWarden(warden.id)
+        const message = staffType === "warden" ? await adminApi.deleteWarden(warden.id) : staffType === "associateWarden" ? await adminApi.deleteAssociateWarden(warden.id) : await adminApi.deleteHostelSupervisor(warden.id)
 
         if (!message) {
           alert(`Failed to delete ${staffTitle.toLowerCase()}. Please try again.`)

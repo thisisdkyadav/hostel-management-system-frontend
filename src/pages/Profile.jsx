@@ -18,6 +18,8 @@ const Profile = () => {
         return <WardenProfile user={user} activeTab={activeTab} />
       case "Associate Warden":
         return <WardenProfile user={user} activeTab={activeTab} />
+      case "Hostel Supervisor":
+        return <WardenProfile user={user} activeTab={activeTab} />
       case "Admin":
         return <AdminProfile user={user} activeTab={activeTab} />
       case "Super Admin":

@@ -13,6 +13,8 @@ import { useAdmin } from "../../../contexts/AdminProvider"
 
 const StaffManagement = ({ staffType = "warden" }) => {
   const isWarden = staffType === "warden"
+  const isAssociateWarden = staffType === "associateWarden"
+  const isHostelSupervisor = staffType === "hostelSupervisor"
 
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
@@ -21,11 +23,11 @@ const StaffManagement = ({ staffType = "warden" }) => {
 
   const filteredStaff = filterWardens(staffList, filterStatus, searchTerm)
 
-  const staffTitle = isWarden ? "Warden" : "Associate Warden"
+  const staffTitle = isWarden ? "Warden" : isAssociateWarden ? "Associate Warden" : "Hostel Supervisor"
 
   const fetchStaff = async () => {
     try {
-      const response = isWarden ? await adminApi.getAllWardens() : await adminApi.getAllAssociateWardens()
+      const response = isWarden ? await adminApi.getAllWardens() : isAssociateWarden ? await adminApi.getAllAssociateWardens() : await adminApi.getAllHostelSupervisors()
       setStaffList(response || [])
     } catch (error) {
       console.error(`Error fetching ${staffTitle.toLowerCase()}s:`, error)

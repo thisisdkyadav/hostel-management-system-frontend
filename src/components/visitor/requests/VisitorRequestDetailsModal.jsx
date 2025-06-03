@@ -80,7 +80,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
   // Initialize forms and room allocation based on request data
   useEffect(() => {
-    if (["Warden", "Associate Warden"].includes(user.role) && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
+    if (["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
       setShowAllocationForm(true)
     } else {
       setShowAllocationForm(false)
@@ -335,7 +335,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         )}
 
         {/* Room Allocation Form (for Warden) */}
-        {["Warden", "Associate Warden"].includes(user.role) && request.status === "Approved" && showAllocationForm && (
+        {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && showAllocationForm && (
           <RoomAllocationForm isUnitBased={isUnitBased} allocatedRooms={allocatedRooms} onRoomChange={handleRoomChange} onAddRoom={addRoomField} onRemoveRoom={removeRoomField} onCancel={() => setShowAllocationForm(false)} onSubmit={handleAllocateRooms} />
         )}
 
