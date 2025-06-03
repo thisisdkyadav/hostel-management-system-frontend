@@ -1,18 +1,22 @@
 import React, { useState } from "react"
 import { FaTrash, FaSave, FaTools, FaExclamationTriangle, FaPhone } from "react-icons/fa"
+import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
+import ImageUploadModal from "../../common/ImageUploadModal"
 
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
 
 const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     name: staff.name || "",
     category: staff.category || "",
     phone: staff.phone || "",
+    profileImage: staff.profileImage || "",
   })
 
   const handleChange = (e) => {
@@ -20,6 +24,13 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }))
+  }
+
+  const handleImageUpload = (imageUrl) => {
+    setFormData((prev) => ({
+      ...prev,
+      profileImage: imageUrl,
     }))
   }
 
@@ -80,6 +91,24 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
             <p>{error}</p>
           </div>
         )}
+
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative h-24 w-24 rounded-full mb-2">
+            {formData.profileImage ? (
+              <img src={formData.profileImage} alt={formData.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+            ) : (
+              <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
+                <FaTools className="h-12 w-12 text-[#1360AB]" />
+              </div>
+            )}
+            <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 bg-[#1360AB] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#0F4C81] transition-colors">
+              <HiCamera className="w-4 h-4" />
+            </div>
+          </div>
+          <span className="text-sm text-gray-500">Click the camera icon to change profile photo</span>
+        </div>
+
+        {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Staff Name</label>
