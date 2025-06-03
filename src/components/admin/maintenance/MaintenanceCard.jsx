@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog } from "react-icons/fa"
+import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog, FaPhone } from "react-icons/fa"
 import EditMaintenanceForm from "./EditMaintenanceForm"
 
 const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
@@ -67,6 +67,13 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
               <FaEnvelope className="text-[#1360AB] text-xs" />
             </div>
             <span className="text-sm text-gray-700 truncate">{staff.email}</span>
+          </div>
+          
+          <div className="flex items-center">
+            <div className="w-7 h-7 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
+              <FaPhone className="text-[#1360AB] text-xs" />
+            </div>
+            <span className="text-sm text-gray-700 truncate">{staff.phone || "Not provided"}</span>
           </div>
         </div>
 

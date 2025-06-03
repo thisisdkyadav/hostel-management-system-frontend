@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FaTrash, FaSave, FaTools, FaExclamationTriangle } from "react-icons/fa"
+import { FaTrash, FaSave, FaTools, FaExclamationTriangle, FaPhone } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 
@@ -12,6 +12,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
   const [formData, setFormData] = useState({
     name: staff.name || "",
     category: staff.category || "",
+    phone: staff.phone || "",
   })
 
   const handleChange = (e) => {
@@ -83,6 +84,16 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Staff Name</label>
           <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="Enter staff name" required />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+          <div className="relative">
+            <div className="absolute left-3 top-3 text-gray-400">
+              <FaPhone />
+            </div>
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="+91 9876543210" />
+          </div>
         </div>
 
         <div>

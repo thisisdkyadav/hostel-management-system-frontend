@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FiUser, FiMail, FiLock, FiTool } from "react-icons/fi"
+import { FiUser, FiMail, FiLock, FiTool, FiPhone } from "react-icons/fi"
 import { FaExclamationTriangle } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
@@ -15,6 +15,7 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
     email: "",
     password: "",
     category: "",
+    phone: "",
   })
 
   const handleChange = (e) => {
@@ -43,6 +44,7 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
         email: "",
         password: "",
         category: "",
+        phone: "",
       })
 
       if (onSuccess) onSuccess()
@@ -84,6 +86,16 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
               <FiMail />
             </div>
             <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="maintenance@example.com" required />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Phone Number</label>
+          <div className="relative">
+            <div className="absolute left-3 top-3 text-gray-400">
+              <FiPhone />
+            </div>
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="+91 9876543210" />
           </div>
         </div>
 
