@@ -8,7 +8,7 @@ import VisitorRequests from "../pages/VisitorRequests.jsx"
 // -------------------------student ends here ----------------------------------
 
 //--------------------------------below is maintenance---------------------
-import MDashboard from "../pages/maintainance/MDashboard"
+import MaintenancePage from "../pages/maintainance/MaintenancePage"
 
 // -------------------------maintenance ends here ----------------------------------
 import Complaint from "../pages/Complaints.jsx"
@@ -117,7 +117,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<MDashboard />} />
+        <Route index element={<MaintenancePage />} />
       </Route>
 
       <Route

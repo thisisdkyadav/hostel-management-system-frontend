@@ -8,11 +8,21 @@ import ComplaintDetailModal from "../../components/maintenance/ComplaintDetailMo
 import ComplaintsHeader from "../../components/complaints/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
+import PrintComplaints from "../../components/maintenance/PrintComplaints"
+import FilterTabs from "../../components/common/FilterTabs"
 
-const MDashboard = () => {
+// Define maintenance status filter tabs
+const MAINTENANCE_STATUS_TABS = [
+  { label: "All", value: "all", color: "[#1360AB]" },
+  { label: "Pending", value: "Pending", color: "amber-500" },
+  { label: "In Progress", value: "In Progress", color: "blue-500" },
+  { label: "Resolved", value: "Resolved", color: "green-500" },
+]
+
+const MaintenancePage = () => {
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
-  const hostels = ["Admin", "Maintenance"].includes(user?.role) ? hostelList : []
+  const hostels = ["Admin", "Maintenance Staff"].includes(user?.role) ? hostelList : []
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
   const priorities = ["Low", "Medium", "High", "Urgent"]
 
@@ -97,18 +107,23 @@ const MDashboard = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <ComplaintsHeader 
-        showFilters={showFilters} 
-        setShowFilters={setShowFilters} 
-        viewMode={viewMode} 
-        setViewMode={setViewMode} 
-        showCraftComplaint={false}
-        setShowCraftComplaint={() => {}}
-        userRole={user?.role}
-        title="Maintenance Dashboard"
-      />
+      <div className="flex justify-between items-center">
+        <ComplaintsHeader 
+          showFilters={showFilters} 
+          setShowFilters={setShowFilters} 
+          viewMode={viewMode} 
+          setViewMode={setViewMode} 
+          showCraftComplaint={false}
+          setShowCraftComplaint={() => {}}
+          userRole={user?.role}
+          title="Maintenance Dashboard"
+        />
+        <div className="ml-2">
+          <PrintComplaints complaints={complaints} />
+        </div>
+      </div>
 
-      <ComplaintsStatsM />
+      <ComplaintsStatsM filter={filters.category !== "all" ? filters.category : null} />
 
       {showFilters && (
         <ComplaintsFilterPanel 
@@ -121,13 +136,30 @@ const MDashboard = () => {
         />
       )}
 
+      <div className="mt-6 bg-white p-4 rounded-lg shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="w-full sm:w-auto">
+            <p className="text-sm text-gray-500 mb-2">Filter by Status:</p>
+            <div className="overflow-x-auto pb-2">
+              <FilterTabs tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+            </div>
+          </div>
+          <div className="w-full sm:w-auto">
+            <p className="text-sm text-gray-500 mb-2">Filter by Category:</p>
+            <div className="overflow-x-auto pb-2">
+              <FilterTabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <ComplaintsContent 
         loading={loading} 
         complaints={complaints} 
         viewMode={viewMode} 
         filters={filters} 
-        totalPages={totalPages} 
-        COMPLAINT_FILTER_TABS={MAINTENANCE_FILTER_TABS} 
+        totalPages={totalPages}
+        COMPLAINT_FILTER_TABS={[]}
         updateFilter={updateFilter} 
         onViewDetails={viewComplaintDetails} 
         paginate={paginate} 
@@ -138,12 +170,10 @@ const MDashboard = () => {
           selectedComplaint={selectedComplaint} 
           setShowDetailModal={setShowDetailModal} 
           onUpdate={fetchComplaints}
-          show={showDetailModal}
-          refreshComplaints={fetchComplaints}
         />
       )}
     </div>
   )
 }
 
-export default MDashboard
+export default MaintenancePage 
