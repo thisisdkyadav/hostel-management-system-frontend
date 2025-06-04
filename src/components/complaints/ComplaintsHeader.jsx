@@ -1,6 +1,6 @@
 import Button from "../common/Button"
 import { FaFilter, FaPlus, FaList, FaTh, FaClipboardList } from "react-icons/fa"
-
+import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole }) => {
   return (
     <header className="mb-6 transition-all duration-300">
@@ -26,7 +26,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
             </Button>
           </div>
 
-          {["Student"].includes(userRole) && (
+          {WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
             <Button onClick={() => setShowCraftComplaint(true)} variant="primary" size="small" icon={<FaPlus className="mr-2 transform transition-transform group-hover:rotate-90 duration-200" />} className="hover:shadow-md transition-all duration-300 group">
               Create Complaint
             </Button>

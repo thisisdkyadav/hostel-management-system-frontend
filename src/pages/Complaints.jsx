@@ -9,7 +9,7 @@ import ComplaintForm from "../components/students/ComplaintForm"
 import ComplaintsHeader from "../components/complaints/ComplaintsHeader"
 import ComplaintsFilterPanel from "../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../components/complaints/ComplaintsContent"
-
+import { WHO_CAN_CREATE_COMPLAINT } from "../constants/complaintConstants"
 const Complaints = () => {
   const { user } = useAuth()
   const { hostelList = [] } = useGlobal()
@@ -109,7 +109,7 @@ const Complaints = () => {
 
       {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onUpdate={fetchComplaints} />}
 
-      {showCraftComplaint && ["Student"].includes(user?.role) && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} onSuccess={fetchComplaints} />}
+      {showCraftComplaint && WHO_CAN_CREATE_COMPLAINT.includes(user?.role) && <ComplaintForm isOpen={showCraftComplaint} setIsOpen={setShowCraftComplaint} onSuccess={fetchComplaints} />}
     </div>
   )
 }
