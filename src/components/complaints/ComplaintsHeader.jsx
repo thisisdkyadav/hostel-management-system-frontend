@@ -1,7 +1,8 @@
 import Button from "../common/Button"
 import { FaFilter, FaPlus, FaList, FaTh, FaClipboardList } from "react-icons/fa"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
-const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole }) => {
+
+const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole, title = "Complaints Management" }) => {
   return (
     <header className="mb-6 transition-all duration-300">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -9,7 +10,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
           <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB] flex-shrink-0">
             <FaClipboardList size={22} />
           </div>
-          <h1 className="text-xl font-bold text-gray-800">Complaints Management</h1>
+          <h1 className="text-xl font-bold text-gray-800">{title}</h1>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">

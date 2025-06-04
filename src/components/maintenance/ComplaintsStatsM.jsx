@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa";
+import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md";
+import { TbProgressCheck } from "react-icons/tb";
+import StatCards from "../common/StatCards";
 import { maintenanceApi } from "../../services/apiService";
 
 const ComplaintsStatsM = ({ filter }) => {
@@ -12,14 +16,10 @@ const ComplaintsStatsM = ({ filter }) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Build params based on the provided filter
         const params = {};
-        // If a filter is provided and isn't "all", add the category filter
         if (filter && filter !== "all") {
           params.category = filter;
         }
-        // You can add more filtering fields if needed:
-        // if (otherFilter) { params.other = otherFilter }
         const queryString = new URLSearchParams(params).toString();
         const statsData = await maintenanceApi.getStats(queryString);
         setStats(statsData);
@@ -38,29 +38,42 @@ const ComplaintsStatsM = ({ filter }) => {
     resolved: stats?.resolved || 0,
   };
 
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mb-6">
-      <div className="bg-white p-3 md:p-4 rounded-[12px] shadow-sm">
-        <p className="text-sm text-gray-500 mb-1">Total</p>
-        <p className="text-xl md:text-2xl lg:text-3xl font-bold">{safeStats.total}</p>
-      </div>
-      
-      <div className="bg-white p-3 md:p-4 rounded-[12px] shadow-sm">
-        <p className="text-sm text-gray-500 mb-1">Pending</p>
-        <p className="text-xl md:text-2xl lg:text-3xl font-bold text-amber-500">{safeStats.pending}</p>
-      </div>
-      
-      <div className="bg-white p-3 md:p-4 rounded-[12px] shadow-sm">
-        <p className="text-sm text-gray-500 mb-1">In Progress</p>
-        <p className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-500">{safeStats.inProgress}</p>
-      </div>
-      
-      <div className="bg-white p-3 md:p-4 rounded-[12px] shadow-sm">
-        <p className="text-sm text-gray-500 mb-1">Resolved</p>
-        <p className="text-xl md:text-2xl lg:text-3xl font-bold text-green-500">{safeStats.resolved}</p>
-      </div>
-    </div>
-  );
+  const statsData = [
+    {
+      title: "Total",
+      value: safeStats.total,
+      subtitle: "Complaints",
+      icon: <FaClipboardList className="text-2xl" />,
+      color: "#1360AB",
+      iconColor: "text-[#1360AB]",
+    },
+    {
+      title: "Pending",
+      value: safeStats.pending,
+      subtitle: "Pending Review",
+      icon: <MdOutlineWatchLater className="text-2xl" />,
+      color: "#3b82f6",
+      iconColor: "text-blue-500",
+    },
+    {
+      title: "In Progress",
+      value: safeStats.inProgress,
+      subtitle: "Being Handled",
+      icon: <TbProgressCheck className="text-2xl" />,
+      color: "#eab308", // yellow-500
+      iconColor: "text-yellow-500",
+    },
+    {
+      title: "Resolved",
+      value: safeStats.resolved,
+      subtitle: "Fixed Issues",
+      icon: <FaRegCheckCircle className="text-2xl" />,
+      color: "#22c55e", // green-500
+      iconColor: "text-green-500",
+    },
+  ];
+
+  return <StatCards stats={statsData} />;
 };
 
 export default ComplaintsStatsM;
