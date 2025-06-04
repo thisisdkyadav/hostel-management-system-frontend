@@ -54,8 +54,12 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       className: "hidden sm:table-cell",
       render: (complaint) => (
         <div className="flex flex-col">
-          <div className="font-medium text-sm">{complaint.hostel}</div>
-          <div className="text-xs text-gray-500">Room {complaint.roomNumber}</div>
+          <div className="font-medium text-sm truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
+          {complaint.roomNumber ? (
+            <div className="text-xs text-gray-500">Room {complaint.roomNumber}</div>
+          ) : complaint.hostel ? (
+            <div className="text-xs text-gray-500 truncate max-w-[150px]">{complaint.location}</div>
+          ) : null}
         </div>
       ),
     },

@@ -30,14 +30,23 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
               <FaMapMarkerAlt className="mr-2" /> Location Details
             </h4>
             <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Hostel:</span>
-                <span className="font-medium">{selectedComplaint.hostel}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Room Number:</span>
-                <span className="font-medium">{selectedComplaint.roomNumber}</span>
-              </div>
+              {selectedComplaint.hostel && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Hostel:</span>
+                  <span className="font-medium">{selectedComplaint.hostel}</span>
+                </div>
+              )}
+              {selectedComplaint.roomNumber && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Room Number:</span>
+                  <span className="font-medium">{selectedComplaint.roomNumber}</span>
+                </div>
+              )}
+              {selectedComplaint.location && (
+                <div className="flex justify-between">
+                  <span className="break-words">{selectedComplaint.location}</span>
+                </div>
+              )}
             </div>
           </div>
 
