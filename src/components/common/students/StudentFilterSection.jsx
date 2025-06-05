@@ -80,14 +80,15 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Degree</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)}>
+            {/* <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)}>
               <option value="">All Degrees</option>
               {degrees.map((degree, index) => (
                 <option key={index} value={degree}>
                   {degree}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <input type="text" placeholder="Degree" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)} />
           </div>
 
           <div>
