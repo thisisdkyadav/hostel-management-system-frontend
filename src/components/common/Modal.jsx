@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
 
-const Modal = ({ title, children, onClose, width }) => {
+const Modal = ({ title, children, onClose, width, autoWidth }) => {
   const modalRef = useRef(null)
 
   useEffect(() => {
@@ -30,10 +30,13 @@ const Modal = ({ title, children, onClose, width }) => {
           bg-white rounded-2xl shadow-2xl 
           overflow-hidden
           animate-fadeIn
-          w-full max-h-[90vh]
+          ${autoWidth ? "w-auto" : "w-full"} max-h-[90vh]
           ${width ? `max-w-[${width}px]` : "max-w-2xl"}
         `}
-        style={{ width: width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%" }}
+        style={{
+          width: autoWidth ? "auto" : width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%",
+          maxWidth: autoWidth ? "90vw" : undefined,
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 z-10 bg-white px-6 py-4 flex justify-between items-center border-b border-gray-100">

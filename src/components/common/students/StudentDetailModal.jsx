@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments } from "react-icons/fa"
+import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers } from "react-icons/fa"
 import { studentApi } from "../../../services/apiService"
 import { visitorApi } from "../../../services/visitorApi"
 import { securityApi } from "../../../services/securityApi"
@@ -7,6 +7,7 @@ import { feedbackApi } from "../../../services/feedbackApi"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
+import FamilyDetails from "./FamilyDetails"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   console.log("Selected Student:", selectedStudent)
@@ -295,6 +296,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             </div>
           </>
         )
+
+      case "family":
+        return <FamilyDetails userId={selectedStudent.userId} />
+
       case "complaints":
         return (
           <div className="bg-white">
@@ -481,7 +486,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   return (
     <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={800}>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={920}>
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">
@@ -518,6 +523,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <button onClick={() => setActiveTab("disco")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "disco" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaUserFriends className="mr-2" />
                     DisCo Actions
+                  </button>
+                  <button onClick={() => setActiveTab("family")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "family" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaUsers className="mr-2" />
+                    Family
                   </button>
                 </nav>
               </div>
