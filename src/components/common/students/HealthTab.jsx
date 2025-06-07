@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { FaPlus, FaHeartbeat, FaHospital, FaMedkit, FaEye, FaEdit, FaCalendarCheck } from "react-icons/fa"
+import { FaPlus, FaHeartbeat, FaHospital, FaMedkit, FaEye, FaEdit, FaCalendarCheck, FaCog } from "react-icons/fa"
 import { healthApi } from "../../../services/healthApi"
+import { Link } from "react-router-dom"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 
@@ -195,11 +196,16 @@ const HealthTab = ({ userId }) => {
             <FaHeartbeat className="text-[#1360AB] mr-2" />
             Health Information
           </h3>
-          {!editHealthData && (
-            <button onClick={() => setEditHealthData(true)} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
-              <FaEdit className="mr-1" /> Edit
-            </button>
-          )}
+          <div className="flex space-x-2">
+            <Link to="/admin/others" className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors flex items-center">
+              <FaCog className="mr-1" /> Manage Providers
+            </Link>
+            {!editHealthData && (
+              <button onClick={() => setEditHealthData(true)} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
+                <FaEdit className="mr-1" /> Edit
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
