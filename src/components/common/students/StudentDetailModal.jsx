@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers } from "react-icons/fa"
+import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers, FaHeartbeat } from "react-icons/fa"
 import { studentApi } from "../../../services/apiService"
 import { visitorApi } from "../../../services/visitorApi"
 import { securityApi } from "../../../services/securityApi"
@@ -8,6 +8,7 @@ import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
 import FamilyDetails from "./FamilyDetails"
+import HealthTab from "./HealthTab"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   console.log("Selected Student:", selectedStudent)
@@ -479,6 +480,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         )
       case "disco":
         return <DisCoActions userId={selectedStudent.userId} />
+      case "health":
+        return <HealthTab userId={selectedStudent.userId} />
       default:
         return null
     }
@@ -486,7 +489,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   return (
     <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={920}>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1020}>
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">
@@ -499,7 +502,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {/* Tabs Navigation */}
             {!isImport && (
               <div className="border-b border-gray-200 mb-6">
-                <nav className="flex -mb-px space-x-8">
+                <nav className="flex -mb-px space-x-8 overflow-x-auto">
                   <button onClick={() => setActiveTab("profile")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "profile" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaUserGraduate className="mr-2" />
                     Profile
@@ -527,6 +530,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <button onClick={() => setActiveTab("family")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "family" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaUsers className="mr-2" />
                     Family
+                  </button>
+                  <button onClick={() => setActiveTab("health")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "health" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaHeartbeat className="mr-2" />
+                    Health
                   </button>
                 </nav>
               </div>

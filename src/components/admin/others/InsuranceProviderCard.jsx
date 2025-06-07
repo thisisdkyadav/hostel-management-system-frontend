@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash } from "react-icons/fa"
+import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCalendarAlt } from "react-icons/fa"
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
 
@@ -21,6 +21,13 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
         setIsDeleting(false)
       }
     }
+  }
+
+  // Format date to display in a more readable format
+  const formatDate = (dateString) => {
+    if (!dateString) return "Not specified"
+    const date = new Date(dateString)
+    return date.toLocaleDateString()
   }
 
   return (
@@ -55,6 +62,14 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
           <div className="flex items-start">
             <FaMapMarkerAlt className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
             <span className="text-gray-600">{provider.address}</span>
+          </div>
+          <div className="flex items-start">
+            <FaCalendarAlt className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
+            <div className="text-gray-600">
+              <span>
+                Valid: {formatDate(provider.startDate)} - {formatDate(provider.endDate)}
+              </span>
+            </div>
           </div>
         </div>
       </div>

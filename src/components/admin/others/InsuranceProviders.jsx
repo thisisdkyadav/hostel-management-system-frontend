@@ -1,17 +1,10 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
-import FilterTabs from "../../common/FilterTabs"
 import SearchBar from "../../common/SearchBar"
 import NoResults from "../../common/NoResults"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
-
-const INSURANCE_FILTER_TABS = [
-  { label: "All", value: "all" },
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
-]
 
 const filterInsuranceProviders = (providers, filterStatus, searchTerm) => {
   return providers
@@ -22,7 +15,14 @@ const filterInsuranceProviders = (providers, filterStatus, searchTerm) => {
     .filter((provider) => {
       if (!searchTerm) return true
       const term = searchTerm.toLowerCase()
-      return provider.name.toLowerCase().includes(term) || provider.email.toLowerCase().includes(term) || provider.phone.toLowerCase().includes(term) || provider.address.toLowerCase().includes(term)
+      return (
+        provider.name.toLowerCase().includes(term) ||
+        provider.email.toLowerCase().includes(term) ||
+        provider.phone.toLowerCase().includes(term) ||
+        provider.address.toLowerCase().includes(term) ||
+        (provider.startDate && provider.startDate.includes(term)) ||
+        (provider.endDate && provider.endDate.includes(term))
+      )
     })
 }
 
@@ -67,7 +67,7 @@ const InsuranceProviders = () => {
         {/* <div className="w-full sm:w-auto overflow-x-auto pb-2">
           <FilterTabs tabs={INSURANCE_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
         </div> */}
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search providers by name, email, or phone" className="w-full sm:w-64 md:w-72" />
+        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search providers by name, email, phone or dates" className="w-full sm:w-64 md:w-72" />
       </div>
 
       {loading ? (

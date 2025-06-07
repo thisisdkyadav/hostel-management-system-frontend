@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa"
+import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
 
@@ -9,6 +9,8 @@ const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
     email: "",
     phone: "",
     address: "",
+    startDate: "",
+    endDate: "",
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -36,6 +38,8 @@ const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
         email: "",
         phone: "",
         address: "",
+        startDate: "",
+        endDate: "",
       })
 
       if (onSuccess) onSuccess()
@@ -82,6 +86,27 @@ const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
               <FaPhone />
             </div>
             <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="+91 9876543210" required />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaCalendarAlt />
+              </div>
+              <input type="date" name="startDate" value={formData.startDate} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" required />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FaCalendarAlt />
+              </div>
+              <input type="date" name="endDate" value={formData.endDate} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" required />
+            </div>
           </div>
         </div>
 
