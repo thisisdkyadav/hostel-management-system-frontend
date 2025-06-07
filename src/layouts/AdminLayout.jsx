@@ -37,6 +37,7 @@ const AdminLayout = () => {
     { name: "Hostel Supervisors", icon: FaUserTie, section: "main", path: "/admin/hostel-supervisors" },
     { name: "Security", icon: FaShieldAlt, section: "main", path: "/admin/security" },
     { name: "Maintenance Staff", icon: FaTools, section: "main", path: "/admin/maintenance" },
+    { name: "Others", icon: FaUserTie, section: "main", path: "/admin/others" },
     { name: "Update Password", icon: FaCog, section: "main", path: "/admin/update-password" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/admin/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
