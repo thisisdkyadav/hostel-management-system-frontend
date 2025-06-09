@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/AuthProvider"
 import LoginWithGoogle from "../components/LoginWithGoogle"
+import SSOLoginButton from "../components/SSOLoginButton"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -52,6 +53,8 @@ const LoginPage = () => {
       case "Warden":
         return "/warden"
       case "Security":
+        return "/guard"
+      case "Hostel Gate":
         return "/guard"
       case "Admin":
         return "/admin"
@@ -130,7 +133,11 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <LoginWithGoogle callback={handleGoogleCallback} className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 hover:shadow-md transition-all flex items-center justify-center" />
+        <div className="space-y-3">
+          <LoginWithGoogle callback={handleGoogleCallback} className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 hover:shadow-md transition-all flex items-center justify-center" />
+
+          <SSOLoginButton buttonText="Login with Student Affairs Portal" className="w-full" />
+        </div>
 
         <p className="text-center text-gray-600 mt-6 text-sm cursor-pointer hover:text-[#1360AB]" onClick={handleForgotPassword}>
           Forgot your password?
