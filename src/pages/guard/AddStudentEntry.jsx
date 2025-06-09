@@ -4,10 +4,10 @@ import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import { securityApi } from "../../services/apiService"
 import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
-import { useSecurity } from "../../contexts/SecurityProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const AddStudentEntry = () => {
-  const { securityInfo } = useSecurity()
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState("qr")
   const [entries, setEntries] = useState([])
   const [scannedStudent, setScannedStudent] = useState(null)
@@ -30,7 +30,7 @@ const AddStudentEntry = () => {
     try {
       const entryToAdd = {
         ...newEntry,
-        hostelId: securityInfo?.hostelId?._id,
+        hostelId: user?.hostel?._id,
       }
 
       const response = await securityApi.addStudentEntry(entryToAdd)

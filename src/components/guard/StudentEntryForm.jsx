@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import Button from "../common/Button"
-import { useSecurity } from "../../contexts/SecurityProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 
 const StudentEntryForm = ({ onAddEntry }) => {
-  const { securityInfo } = useSecurity()
+  const { user } = useAuth()
+  const hostelType = user?.hostel?.type
 
   const [entryData, setEntryData] = useState({
     unit: "",
@@ -83,7 +84,7 @@ const StudentEntryForm = ({ onAddEntry }) => {
             <input type="text" name="studentName" value={entryData.studentName} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
           </div>
 
-          {securityInfo?.hostelType === "unit-based" && (
+          {hostelType === "unit-based" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
               <input type="text" name="unit" value={entryData.unit} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />

@@ -1,9 +1,11 @@
 import React, { useState } from "react"
 import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import { useSecurity } from "../../contexts/SecurityProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const NewEntryForm = ({ onAddEntry }) => {
-  const { securityInfo } = useSecurity()
+  const { user } = useAuth()
+
+  const hostelType = user?.hostel?.type
 
   const [formData, setFormData] = useState({
     unit: "",
@@ -26,7 +28,7 @@ const NewEntryForm = ({ onAddEntry }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const isUnitBased = securityInfo?.hostelType === "unit-based"
+    const isUnitBased = hostelType === "unit-based"
     const isFormValid = isUnitBased ? formData.unit && formData.room && formData.bed : formData.room && formData.bed
 
     if (isFormValid) {
@@ -61,7 +63,7 @@ const NewEntryForm = ({ onAddEntry }) => {
       </div>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-2">
-        {securityInfo?.hostelType === "unit-based" ? (
+        {hostelType === "unit-based" ? (
           <>
             <div className="col-span-2">
               <label className="text-xs font-medium text-gray-700">Unit</label>
