@@ -2,10 +2,11 @@ import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import Button from "../common/Button"
 import Modal from "../common/Modal"
-import { useSecurity } from "../../contexts/SecurityProvider"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
-  const { securityInfo } = useSecurity()
+  const { user } = useAuth()
+  const hostelType = user?.hostel?.type
 
   const [formData, setFormData] = useState({
     ...entry,
@@ -69,7 +70,7 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
             <input type="text" name="studentName" value={formData.userId.name} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
           </div>
 
-          {securityInfo?.hostelType === "unit-based" && (
+          {hostelType === "unit-based" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
               <input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" />

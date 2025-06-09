@@ -68,7 +68,7 @@ const ActionButtons = ({
       )}
 
       {/* Security/Guard actions for approved requests */}
-      {userRole === "Security" && isApproved && (
+      {["Security", "Hostel Gate"].includes(userRole) && isApproved && (
         <>
           <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
             Close
@@ -99,7 +99,10 @@ const ActionButtons = ({
       )}
 
       {/* Default close button for other cases */}
-      {((userRole !== "Admin" && userRole !== "Warden" && userRole !== "Associate Warden" && userRole !== "Hostel Supervisor" && userRole !== "Security") || (userRole === "Admin" && !isPending) || (["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) || (userRole === "Security" && !isApproved)) && (
+      {((userRole !== "Admin" && userRole !== "Warden" && userRole !== "Associate Warden" && userRole !== "Hostel Supervisor" && userRole !== "Security" && userRole !== "Hostel Gate") ||
+        (userRole === "Admin" && !isPending) ||
+        (["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
+        (["Security", "Hostel Gate"].includes(userRole) && !isApproved)) && (
         <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
           Close
         </button>

@@ -96,9 +96,9 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       render: (request) => <StatusBadge status={request.status} />,
     },
     {
-      header: user.role === "Security" ? "Check Status" : "Allocation",
+      header: ["Security", "Hostel Gate"].includes(user.role) ? "Check Status" : "Allocation",
       key: "checkStatus",
-      render: (request) => (user.role === "Security" ? <CheckInOutBadge request={request} /> : <AllocationBadge request={request} />),
+      render: (request) => (["Security", "Hostel Gate"].includes(user.role) ? <CheckInOutBadge request={request} /> : <AllocationBadge request={request} />),
     },
     {
       header: "Actions",
@@ -116,7 +116,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             </button>
           )}
 
-          {user.role === "Security" && request.status === "Approved" && request.isAllocated && (
+          {["Security", "Hostel Gate"].includes(user.role) && request.status === "Approved" && request.isAllocated && (
             <>
               {!request.checkInTime && (
                 <button onClick={() => handleViewDetails(request)} className="text-blue-500 hover:text-blue-700 p-1 rounded-full transition-colors" title="Check in visitor">
