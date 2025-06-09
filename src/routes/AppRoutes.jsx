@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
 //--------------------------------below is student---------------------
 import StudentDashboard from "../pages/student/Dashboard.jsx"
-import StudentProfile from "../pages/student/Profile"
 import Settings from "../pages/student/Settings.jsx"
 import VisitorRequests from "../pages/VisitorRequests.jsx"
 // -------------------------student ends here ----------------------------------
@@ -23,9 +22,9 @@ import WardenDashboard from "../pages/warden/Dashboard.jsx"
 // import Students from "../pages/warden/Students"
 
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
-import GuardDashboard from "../pages/guard/Dashboard"
-import AddVisitor from "../pages/guard/AddVisitor"
-import Visitors from "../pages/Visitors"
+// import GuardDashboard from "../pages/guard/Dashboard"
+// import AddVisitor from "../pages/guard/AddVisitor"
+// import Visitors from "../pages/Visitors"
 
 // import related to admin
 import AdminLayout from "../layouts/AdminLayout"
