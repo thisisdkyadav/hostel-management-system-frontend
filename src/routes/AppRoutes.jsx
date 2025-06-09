@@ -62,6 +62,7 @@ import SuperAdminDashboard from "../pages/superadmin/Dashboard.jsx"
 import AdminManagement from "../pages/superadmin/AdminManagement.jsx"
 import ApiKeyManagement from "../pages/superadmin/ApiKeyManagement.jsx"
 import Others from "../pages/admin/Others.jsx"
+import SSOLogin from "../pages/SSOLogin.jsx"
 const AppRoutes = () => {
   const { user } = useAuth()
 
@@ -186,7 +187,7 @@ const AppRoutes = () => {
       <Route
         path="/guard"
         element={
-          <ProtectedRoute allowedRoles={["Security"]}>
+          <ProtectedRoute allowedRoles={["Security", "Hostel Gate"]}>
             <SecurityLayout />
           </ProtectedRoute>
         }
@@ -228,6 +229,8 @@ const AppRoutes = () => {
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="others" element={<Others />} />
       </Route>
+
+      <Route path="/sso" element={<SSOLogin />} />
     </Routes>
   )
 }

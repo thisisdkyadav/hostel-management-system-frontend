@@ -89,6 +89,24 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const loginWithSSO = async (token) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const data = await authApi.verifySSOToken(token)
+      setUser(data.user)
+      const aesKey = data.user.aesKey
+      localStorage.setItem("publicKey", aesKey)
+      localStorage.setItem("user", JSON.stringify(data.user))
+      return data.user
+    } catch (err) {
+      setError(err.message || "SSO login failed")
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const logout = async () => {
     try {
       await authApi.logout()
@@ -112,6 +130,8 @@ export const AuthProvider = ({ children }) => {
       case "Warden":
         return "/warden"
       case "Security":
+        return "/guard"
+      case "Hostel Gate":
         return "/guard"
       case "Admin":
         return "/admin"
@@ -150,12 +170,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isOnline])
 
+  useEffect(() => {
+    console.log("User", user)
+  }, [user])
+
   const value = {
     user,
     loading,
     error,
     login,
     loginWithGoogle,
+    loginWithSSO,
     logout,
     getHomeRoute,
     isStandalone,

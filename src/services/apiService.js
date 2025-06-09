@@ -45,6 +45,21 @@ export const authApi = {
     return response.json()
   },
 
+  verifySSOToken: async (token) => {
+    const response = await fetch(`${baseUrl}/auth/verify-sso-token`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ token }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "SSO verification failed")
+    }
+
+    return response.json()
+  },
+
   logout: async () => {
     const response = await fetch(`${baseUrl}/auth/logout`, {
       method: "GET",
@@ -971,14 +986,14 @@ export const adminApi = {
       const response = await fetch(`${baseUrl}/admin/hostel-supervisors`, {
         method: "GET",
         ...fetchOptions,
-    })
+      })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || "Failed to fetch hostel supervisors")
-    }
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch hostel supervisors")
+      }
 
-    return response.json()
+      return response.json()
     } catch (error) {
       console.error("Error fetching hostel supervisors:", error)
       throw error
