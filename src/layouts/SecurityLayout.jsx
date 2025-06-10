@@ -2,7 +2,6 @@ import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
 import { FaSignOutAlt, FaExclamationTriangle, FaSearch, FaUserPlus, FaClipboardList, FaUserClock, FaUsers } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
-import SecurityProvider from "../contexts/SecurityProvider"
 import { useAuth } from "../contexts/AuthProvider"
 
 const SecurityLayout = () => {
@@ -34,14 +33,12 @@ const SecurityLayout = () => {
   ]
 
   return (
-    <SecurityProvider>
-      <div className="flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50 min-h-screen">
-        <Sidebar navItems={navItems} />
-        <div className="flex-1 h-screen overflow-auto pt-16 md:pt-0">
-          <Outlet />
-        </div>
+    <div className="flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50 min-h-screen">
+      <Sidebar navItems={navItems} />
+      <div className="flex-1 h-screen overflow-auto pt-16 md:pt-0">
+        <Outlet />
       </div>
-    </SecurityProvider>
+    </div>
   )
 }
 

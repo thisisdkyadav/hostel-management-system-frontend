@@ -55,7 +55,7 @@ const LoginPage = () => {
       case "Security":
         return "/guard"
       case "Hostel Gate":
-        return "/guard"
+        return "/hostel-gate"
       case "Admin":
         return "/admin"
       case "Super Admin":
