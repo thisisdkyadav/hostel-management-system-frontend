@@ -200,6 +200,21 @@ const AppRoutes = () => {
         {/* <Route path="add-entry" element={<AddStudentEntry />} /> */}
       </Route>
 
+      {/* Routes for Hostel Gate related pages */}
+      <Route
+        path="/hostel-gate"
+        element={
+          <ProtectedRoute allowedRoles={["Hostel Gate"]}>
+            <SecurityLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AddStudentEntry />} />
+        <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="lost-and-found" element={<LostAndFound />} />
+        <Route path="entries" element={<StudentEntries />} />
+      </Route>
+
       {/* Routes for admin related pages */}
       <Route
         path="/admin"
