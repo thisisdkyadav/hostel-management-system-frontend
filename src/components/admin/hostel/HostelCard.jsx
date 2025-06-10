@@ -1,14 +1,16 @@
 import React, { useState } from "react"
-import { FaBuilding, FaEdit, FaEye, FaTools, FaUserTie } from "react-icons/fa"
+import { FaBuilding, FaEdit, FaEye, FaTools, FaUserTie, FaDoorOpen, FaClipboardList } from "react-icons/fa"
 import { MdMeetingRoom } from "react-icons/md"
 import { BsThreeDotsVertical } from "react-icons/bs"
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
+import HostelDetailsModal from "./HostelDetailsModal"
 
 const HostelCard = ({ hostel, onUpdate }) => {
   console.log("HostelCard", hostel)
 
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const getTypeColor = (gender) => {
     if (gender === "Boys") return "bg-blue-100 text-blue-600"
@@ -71,17 +73,23 @@ const HostelCard = ({ hostel, onUpdate }) => {
           </div>
         </div>
 
-        <div className="mt-5 flex flex-col sm:flex-row gap-2 sm:gap-4 sm:justify-between">
-          <button className="flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 w-full" onClick={() => setShowEditModal(true)}>
-            <FaEdit className="mr-2" /> Edit Details
+        <div className="mt-5 flex flex-col gap-2 sm:gap-4 sm:justify-between">
+          <div className="flex gap-2">
+            <button className="flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300" onClick={() => setShowEditModal(true)}>
+              <FaEdit className="mr-2" /> Edit Details
+            </button>
+            <Link to={`/admin/hostels/${hostel.name}`} className="flex-1 flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+              <FaDoorOpen className="mr-2" /> View {hostel.type === "room-only" ? "Rooms" : "Units"}
+            </Link>
+          </div>
+          <button onClick={() => setShowDetailsModal(true)} className="flex-1 flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <FaClipboardList className="mr-2" /> View Details
           </button>
-          <Link to={`/admin/hostels/${hostel.name}`} className="flex items-center justify-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 w-full">
-            <FaEye className="mr-2" /> View Details
-          </Link>
         </div>
       </div>
 
       {showEditModal && <EditHostelModal hostel={hostel} onClose={() => setShowEditModal(false)} onSave={handleSaveHostel} />}
+      {showDetailsModal && <HostelDetailsModal hostel={hostel} onClose={() => setShowDetailsModal(false)} />}
     </>
   )
 }

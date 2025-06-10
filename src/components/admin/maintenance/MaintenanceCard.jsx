@@ -1,9 +1,11 @@
 import React, { useState } from "react"
-import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog, FaPhone } from "react-icons/fa"
+import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog, FaPhone, FaEye } from "react-icons/fa"
 import EditMaintenanceForm from "./EditMaintenanceForm"
+import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 
 const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const getCategoryIcon = (category) => {
     switch (category) {
@@ -74,7 +76,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
             </div>
             <span className="text-sm text-gray-700 truncate">{staff.email}</span>
           </div>
-          
+
           <div className="flex items-center">
             <div className="w-7 h-7 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
               <FaPhone className="text-[#1360AB] text-xs" />
@@ -83,15 +85,18 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
           </div>
         </div>
 
-        <div className="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center">
-          <span className="text-xs text-gray-500">Created {new Date(staff.createdAt || Date.now()).toLocaleDateString()}</span>
-          <button onClick={() => setShowEditForm(true)} className="p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center">
+        <div className="mt-5 pt-4 border-t border-gray-100 flex gap-2">
+          <button onClick={() => setShowDetailsModal(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
+            <FaEye className="mr-1" /> <span className="text-sm">View Details</span>
+          </button>
+          <button onClick={() => setShowEditForm(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
             <FaEdit className="mr-1" /> <span className="text-sm">Edit</span>
           </button>
         </div>
       </div>
 
       {showEditForm && <EditMaintenanceForm staff={staff} onClose={() => setShowEditForm(false)} onUpdate={onUpdate} onDelete={onDelete} />}
+      {showDetailsModal && <MaintenanceStaffDetailsModal staff={staff} onClose={() => setShowDetailsModal(false)} />}
     </>
   )
 }

@@ -1,11 +1,13 @@
 import React, { useState } from "react"
-import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle } from "react-icons/fa"
+import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye } from "react-icons/fa"
 import EditSecurityForm from "./EditSecurityForm"
+import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useAdmin } from "../../../contexts/AdminProvider"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
   const [showEditForm, setShowEditForm] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const getHostelName = (hostelId) => {
     const hostel = hostelList?.find((hostel) => hostel._id === hostelId)
@@ -60,15 +62,18 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
           </div>
         </div>
 
-        <div className="mt-5 pt-4 border-t border-gray-100 flex justify-between items-center">
-          <span className="text-xs text-gray-500">Created {new Date(security.createdAt || Date.now()).toLocaleDateString()}</span>
-          <button onClick={() => setShowEditForm(true)} className="p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center">
+        <div className="mt-5 pt-4 border-t border-gray-100 flex gap-2">
+          <button onClick={() => setShowDetailsModal(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
+            <FaEye className="mr-1" /> <span className="text-sm">View Details</span>
+          </button>
+          <button onClick={() => setShowEditForm(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
             <FaEdit className="mr-1" /> <span className="text-sm">Edit</span>
           </button>
         </div>
       </div>
 
       {showEditForm && <EditSecurityForm security={security} onClose={() => setShowEditForm(false)} onUpdate={onUpdate} onDelete={onDelete} />}
+      {showDetailsModal && <SecurityStaffDetailsModal staff={security} onClose={() => setShowDetailsModal(false)} />}
     </>
   )
 }
