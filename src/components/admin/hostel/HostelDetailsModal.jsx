@@ -43,7 +43,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
       }
 
       // Add hostel ID filter
-      filters.hostelId = hostel._id
+      filters.hostelId = hostel.id
 
       // Add pagination
       filters.page = currentPage
