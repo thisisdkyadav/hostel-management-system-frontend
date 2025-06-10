@@ -507,6 +507,53 @@ export const securityApi = {
     return response.json()
   },
 
+  verifyQRCode: async (qrData) => {
+    const response = await fetch(`${baseUrl}/staff/verify-qr`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(qrData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to verify QR code")
+    }
+
+    return response.json()
+  },
+
+  recordStaffAttendance: async (attendanceData) => {
+    const response = await fetch(`${baseUrl}/staff/attendance/record`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(attendanceData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to record staff attendance")
+    }
+
+    return response.json()
+  },
+
+  getStaffAttendanceRecords: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString()
+    const url = `${baseUrl}/staff/attendance/records${queryParams ? `?${queryParams}` : ""}`
+
+    const response = await fetch(url, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch staff attendance records")
+    }
+
+    return response.json()
+  },
+
   getAllHostelSupervisors: async () => {
     try {
       const response = await fetch(`${baseUrl}/admin/hostel-supervisors`, {

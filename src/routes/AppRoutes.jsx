@@ -8,6 +8,7 @@ import VisitorRequests from "../pages/VisitorRequests.jsx"
 
 //--------------------------------below is maintenance---------------------
 import MaintenancePage from "../pages/maintainance/MaintenancePage"
+import MaintenanceAttendance from "../pages/maintainance/Attendance.jsx"
 
 // -------------------------maintenance ends here ----------------------------------
 import Complaint from "../pages/Complaints.jsx"
@@ -63,6 +64,9 @@ import AdminManagement from "../pages/superadmin/AdminManagement.jsx"
 import ApiKeyManagement from "../pages/superadmin/ApiKeyManagement.jsx"
 import Others from "../pages/admin/Others.jsx"
 import SSOLogin from "../pages/SSOLogin.jsx"
+import Attendance from "../pages/guard/Attendance.jsx"
+import HostelGateAttendance from "../pages/guard/HostelGateAttendance.jsx"
+
 const AppRoutes = () => {
   const { user } = useAuth()
 
@@ -118,6 +122,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<MaintenancePage />} />
+        <Route path="attendance" element={<MaintenanceAttendance />} />
       </Route>
 
       <Route
@@ -197,6 +202,7 @@ const AppRoutes = () => {
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
+        <Route path="attendance" element={<Attendance />} />
         {/* <Route path="add-entry" element={<AddStudentEntry />} /> */}
       </Route>
 
@@ -213,6 +219,7 @@ const AppRoutes = () => {
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
+        <Route path="attendance" element={<HostelGateAttendance />} />
       </Route>
 
       {/* Routes for admin related pages */}
