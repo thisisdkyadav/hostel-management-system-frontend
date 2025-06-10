@@ -136,7 +136,7 @@ const LoginPage = () => {
         <div className="space-y-3">
           <LoginWithGoogle callback={handleGoogleCallback} className="w-full bg-white text-gray-700 border border-gray-300 py-3 rounded-lg font-medium hover:bg-gray-50 hover:shadow-md transition-all flex items-center justify-center" />
 
-          <SSOLoginButton buttonText="Login with Student Affairs Portal" className="w-full" />
+          {/* <SSOLoginButton buttonText="Login with Student Affairs Portal" className="w-full" /> */}
         </div>
 
         <p className="text-center text-gray-600 mt-6 text-sm cursor-pointer hover:text-[#1360AB]" onClick={handleForgotPassword}>
