@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -26,6 +26,7 @@ const HostelSupervisorLayout = () => {
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/hostel-supervisor" },
     { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/hostel-supervisor/hostels/${user?.hostel?.name}`, pathPattern: "^/hostel-supervisor/hostels(/.*)?$" },
     { name: "Students", icon: FaUsers, section: "main", path: "/hostel-supervisor/students" },
+    { name: "Student Inventory", icon: FaBoxes, section: "main", path: "/hostel-supervisor/student-inventory" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/hostel-supervisor/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/hostel-supervisor/events" },
     // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/hostel-supervisor/room-change-requests" },
@@ -48,4 +49,4 @@ const HostelSupervisorLayout = () => {
   )
 }
 
-export default HostelSupervisorLayout 
+export default HostelSupervisorLayout
