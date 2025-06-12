@@ -3,8 +3,11 @@ import { HiAnnotation, HiUser, HiCalendar, HiClock, HiEye, HiReply, HiTrash, HiP
 import { feedbackApi } from "../services/feedbackApi"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
+import { useAuth } from "../contexts/AuthProvider"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
+  const { canAccess } = useAuth()
+
   const [isUpdating, setIsUpdating] = useState(false)
   const [status, setStatus] = useState(feedback.status)
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false)
@@ -129,7 +132,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
             <span className="text-xs text-gray-500">ID: {feedback._id.substring(0, 8)}</span>
           </div>
         </div>
-        {!isStudentView && (
+        {!isStudentView && canAccess("feedback", "view") && (
           <div className="flex items-center">
             {feedback.userId.profileImage ? (
               <img src={feedback.userId.profileImage} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
@@ -148,7 +151,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
             <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>
           </div>
         )}
-        {isStudentView && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
+        {isStudentView && canAccess("feedback", "view") && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
       </div>
 
       <div className="mt-4 space-y-3">
@@ -180,7 +183,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end space-x-3">
-        {!isStudentView && status === "Pending" && !feedback.reply && (
+        {!isStudentView && canAccess("feedback", "react") && status === "Pending" && !feedback.reply && (
           <>
             <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b87] transition-all duration-300">
               <HiReply className="mr-2" /> Reply
@@ -200,7 +203,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
           </>
         )}
 
-        {!isStudentView && status === "Seen" && (
+        {!isStudentView && canAccess("feedback", "react") && status === "Seen" && (
           <>
             <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
               <HiReply className="mr-2" /> {feedback.reply ? "Edit Reply" : "Add Reply"}
@@ -220,7 +223,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
           </>
         )}
 
-        {isStudentView && isPending && (
+        {isStudentView && canAccess("feedback", "react") && isPending && (
           <>
             <button onClick={() => setIsEditModalOpen(true)} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
               <HiPencilAlt className="mr-2" /> Edit

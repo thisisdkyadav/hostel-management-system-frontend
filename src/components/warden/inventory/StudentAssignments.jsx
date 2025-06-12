@@ -6,7 +6,7 @@ import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const StudentAssignments = () => {
-  const { user } = useAuth()
+  const { user, canAccess } = useAuth()
   const [studentInventory, setStudentInventory] = useState([])
   const [totalPages, setTotalPages] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
@@ -252,16 +252,18 @@ const StudentAssignments = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-3">
-                        <button onClick={() => handleViewEditItem(item)} className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all" title="View/Edit Details">
-                          <FaEdit />
-                        </button>
-                        {item.status === "Issued" && (
-                          <button onClick={() => handleReturnItem(item)} className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition-all" title="Return Item">
-                            <FaUndo />
+                      {canAccess("student_inventory", "edit") && (
+                        <div className="flex items-center space-x-3">
+                          <button onClick={() => handleViewEditItem(item)} className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all" title="View/Edit Details">
+                            <FaEdit />
                           </button>
-                        )}
-                      </div>
+                          {item.status === "Issued" && (
+                            <button onClick={() => handleReturnItem(item)} className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition-all" title="Return Item">
+                              <FaUndo />
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
 
-const Modal = ({ title, children, onClose, width, autoWidth }) => {
+const Modal = ({ title, children, onClose, width, autoWidth, minHeight }) => {
   const modalRef = useRef(null)
 
   useEffect(() => {
@@ -46,7 +46,9 @@ const Modal = ({ title, children, onClose, width, autoWidth }) => {
           </button>
         </div>
 
-        <div className="px-6 py-5 overflow-y-auto max-h-[calc(90vh-120px)]">{children}</div>
+        <div className="px-6 py-5 overflow-y-auto max-h-[calc(90vh-120px)]" style={{ minHeight: minHeight ? `${minHeight}px` : undefined }}>
+          {children}
+        </div>
       </div>
     </div>,
     document.body

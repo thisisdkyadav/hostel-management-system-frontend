@@ -13,7 +13,7 @@ import HealthTab from "./HealthTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
-  const { user } = useAuth()
+  const { user, canAccess } = useAuth()
   console.log("Selected Student:", selectedStudent)
 
   const [studentDetails, setStudentDetails] = useState({})
@@ -539,7 +539,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <div className="bg-white">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-700">Student Inventory</h3>
-              {user && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+              {user && canAccess("student_inventory", "create") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                 <button onClick={handleOpenAssignInventory} className="flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-1.5 px-3 rounded-lg transition-colors text-sm">
                   <FaPlus size={14} /> Assign Item
                 </button>
@@ -565,7 +565,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
-                      {user && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>}
+                      {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -587,7 +587,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-gray-600">{item.condition}</td>
-                        {user && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+                        {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center space-x-3">
                               <button
@@ -771,7 +771,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   return (
     <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1020}>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1150} minHeight={1000}>
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">
@@ -837,9 +837,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
                     Email Student
                   </a>
-                  <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                    Edit Student
-                  </button>
+                  {canAccess("students_info", "edit") && (
+                    <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                      Edit Student
+                    </button>
+                  )}
                 </>
               )}
               <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">

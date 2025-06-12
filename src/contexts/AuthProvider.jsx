@@ -148,6 +148,19 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const canAccess = (resource, action) => {
+    if (!user) return false
+    // for now this is only used for Warden, Associate Warden, Hostel Supervisor
+    // if user have any other role, they will have all permissions
+    if (user.role !== "Warden" && user.role !== "Associate Warden" && user.role !== "Hostel Supervisor") {
+      return true
+    }
+    const permissions = user.permissions || {}
+    const resourcePermissions = permissions[resource] || {}
+    const hasAccess = resourcePermissions[action] || false
+    return hasAccess
+  }
+
   useEffect(() => {
     const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
     setIsStandalone(standalone)
@@ -185,6 +198,7 @@ export const AuthProvider = ({ children }) => {
     getHomeRoute,
     isStandalone,
     isOnline,
+    canAccess,
   }
 
   if (starting) {

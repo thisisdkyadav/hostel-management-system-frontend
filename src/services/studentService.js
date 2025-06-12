@@ -29,30 +29,6 @@ export const fetchStudentProfile = async (userId) => {
   }
 }
 
-export const submitComplaint = async (complaintData) => {
-  try {
-    console.log(complaintData)
-
-    const response = await fetch(`${baseUrl}/complaint/student/complaints`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(complaintData),
-    })
-
-    if (!response.ok) {
-      throw new Error("Failed to submit complaint")
-    }
-
-    return await response.json()
-  } catch (error) {
-    console.error("Error submitting complaint:", error)
-    throw error
-  }
-}
-
 export const updateProfile = async (userId, profileData) => {
   try {
     console.log("profile data is: ", profileData)

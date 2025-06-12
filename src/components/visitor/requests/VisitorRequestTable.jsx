@@ -31,7 +31,7 @@ const CheckInOutBadge = ({ request }) => {
 }
 
 const VisitorRequestTable = ({ requests, onRefresh }) => {
-  const { user } = useAuth()
+  const { user, canAccess } = useAuth()
   const [selectedRequestId, setSelectedRequestId] = useState(null)
   const [showDetails, setShowDetails] = useState(false)
 
@@ -110,7 +110,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             <FaEye className="h-4 w-4" />
           </button>
 
-          {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
+          {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
             <button onClick={() => handleViewDetails(request)} className="text-green-500 hover:text-green-700 p-1 rounded-full transition-colors" title="Allocate rooms">
               <FaHome className="h-4 w-4" />
             </button>

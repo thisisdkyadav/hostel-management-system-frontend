@@ -3,8 +3,10 @@ import { adminApi } from "../../../services/adminApi"
 import { FaPlus } from "react-icons/fa"
 import Button from "../../common/Button"
 import FamilyMemberModal from "./FamilyMemberModal"
+import { useAuth } from "../../../contexts/AuthProvider"
 
 const FamilyDetails = ({ userId }) => {
+  const { canAccess } = useAuth()
   const [familyDetails, setFamilyDetails] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -80,9 +82,11 @@ const FamilyDetails = ({ userId }) => {
     <div className="">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold text-gray-700">Family Information</h3>
-        <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
-          Add Family Member
-        </Button>
+        {canAccess("students_info", "create") && (
+          <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
+            Add Family Member
+          </Button>
+        )}
       </div>
 
       {familyDetails && familyDetails.length > 0 ? (
@@ -94,9 +98,11 @@ const FamilyDetails = ({ userId }) => {
                   <h4 className="text-md font-semibold text-gray-800">{member.name}</h4>
                   <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">{member.relationship}</span>
                 </div>
-                <button onClick={() => handleEditClick(member)} className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors">
-                  Edit
-                </button>
+                {canAccess("students_info", "edit") && (
+                  <button onClick={() => handleEditClick(member)} className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors">
+                    Edit
+                  </button>
+                )}
               </div>
 
               <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">

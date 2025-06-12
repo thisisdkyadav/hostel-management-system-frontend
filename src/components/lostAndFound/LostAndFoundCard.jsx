@@ -8,7 +8,7 @@ import { lostAndFoundApi } from "../../services/apiService"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const LostAndFoundCard = ({ item, refresh }) => {
-  const { user } = useAuth()
+  const { user, canAccess } = useAuth()
 
   const [isEditing, setIsEditing] = useState(false)
 
@@ -94,7 +94,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
       </div>
 
       <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-        {["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
+        {user && canAccess("lost_and_found", "edit") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
           <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
             <FaEdit className="mr-2" /> Edit
           </button>

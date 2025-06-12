@@ -20,7 +20,7 @@ import EditVisitorRequestModal from "./EditVisitorRequestModal"
 import StudentDetails from "./details/StudentDetails"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
-  const { user } = useAuth()
+  const { user, canAccess } = useAuth()
   const { hostelList = [] } = useGlobal()
   const [request, setRequest] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -80,7 +80,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
   // Initialize forms and room allocation based on request data
   useEffect(() => {
-    if (["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
+    if (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
       setShowAllocationForm(true)
     } else {
       setShowAllocationForm(false)
@@ -335,7 +335,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         )}
 
         {/* Room Allocation Form (for Warden) */}
-        {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && showAllocationForm && (
+        {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && showAllocationForm && (
           <RoomAllocationForm isUnitBased={isUnitBased} allocatedRooms={allocatedRooms} onRoomChange={handleRoomChange} onAddRoom={addRoomField} onRemoveRoom={removeRoomField} onCancel={() => setShowAllocationForm(false)} onSubmit={handleAllocateRooms} />
         )}
 
