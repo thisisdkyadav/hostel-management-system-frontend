@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react"
-import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers, FaHeartbeat } from "react-icons/fa"
+import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers, FaHeartbeat, FaBoxes, FaPlus, FaEdit, FaTrash, FaUndo } from "react-icons/fa"
 import { studentApi } from "../../../services/apiService"
 import { visitorApi } from "../../../services/visitorApi"
 import { securityApi } from "../../../services/securityApi"
 import { feedbackApi } from "../../../services/feedbackApi"
+import { inventoryApi } from "../../../services/inventoryApi"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
 import FamilyDetails from "./FamilyDetails"
 import HealthTab from "./HealthTab"
+import { useAuth } from "../../../contexts/AuthProvider"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
+  const { user } = useAuth()
   console.log("Selected Student:", selectedStudent)
 
   const [studentDetails, setStudentDetails] = useState({})
@@ -23,12 +26,29 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [accessRecords, setAccessRecords] = useState([])
   const [visitorRequests, setVisitorRequests] = useState([])
   const [feedbacks, setFeedbacks] = useState([])
+  const [studentInventory, setStudentInventory] = useState([])
 
   // Loading states for different tabs
   const [loadingComplaints, setLoadingComplaints] = useState(false)
   const [loadingAccessRecords, setLoadingAccessRecords] = useState(false)
   const [loadingVisitorRequests, setLoadingVisitorRequests] = useState(false)
   const [loadingFeedbacks, setLoadingFeedbacks] = useState(false)
+  const [loadingInventory, setLoadingInventory] = useState(false)
+
+  // Inventory state
+  const [showInventoryModal, setShowInventoryModal] = useState(false)
+  const [inventoryModalType, setInventoryModalType] = useState("") // 'assign', 'edit'
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null)
+  const [availableInventory, setAvailableInventory] = useState([])
+  const [inventoryFormData, setInventoryFormData] = useState({
+    studentProfileId: "",
+    hostelInventoryId: "",
+    itemTypeId: "",
+    count: 1,
+    status: "Issued",
+    condition: "Good",
+    notes: "",
+  })
 
   const fetchStudentDetails = async () => {
     try {
@@ -101,6 +121,32 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     }
   }
 
+  const fetchStudentInventory = async () => {
+    if (activeTab !== "inventory" || !selectedStudent?._id) return
+    try {
+      setLoadingInventory(true)
+      const response = await inventoryApi.getStudentInventoryByStudentId(selectedStudent._id)
+      setStudentInventory(response || [])
+    } catch (error) {
+      console.error("Error fetching student inventory:", error)
+      setStudentInventory([])
+    } finally {
+      setLoadingInventory(false)
+    }
+  }
+
+  const fetchAvailableInventory = async () => {
+    if (!showInventoryModal || !selectedStudent?._id) return
+    try {
+      const response = await inventoryApi.getAllHostelInventory({ limit: 100 })
+      // Filter to only show items with available count > 0
+      setAvailableInventory(response.data.filter((item) => item.availableCount > 0))
+    } catch (error) {
+      console.error("Error fetching available inventory:", error)
+      setAvailableInventory([])
+    }
+  }
+
   useEffect(() => {
     if (selectedStudent?.userId && !isImport) {
       fetchStudentDetails()
@@ -140,11 +186,21 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         case "feedback":
           fetchStudentFeedbacks()
           break
+        case "inventory":
+          fetchStudentInventory()
+          break
         default:
           break
       }
     }
   }, [activeTab, selectedStudent?.userId])
+
+  // Fetch available inventory when modal opens
+  useEffect(() => {
+    if (showInventoryModal) {
+      fetchAvailableInventory()
+    }
+  }, [showInventoryModal])
 
   if (!selectedStudent) return null
 
@@ -478,12 +534,238 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             )}
           </div>
         )
+      case "inventory":
+        return (
+          <div className="bg-white">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-700">Student Inventory</h3>
+              {user && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+                <button onClick={handleOpenAssignInventory} className="flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-1.5 px-3 rounded-lg transition-colors text-sm">
+                  <FaPlus size={14} /> Assign Item
+                </button>
+              )}
+            </div>
+
+            {loadingInventory ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              </div>
+            ) : studentInventory.length === 0 ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
+                <FaBoxes className="mx-auto text-gray-300 mb-2 text-4xl" />
+                <p className="text-gray-500">No inventory items assigned to this student</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Count</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
+                      {user && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>}
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {studentInventory.map((item) => (
+                      <tr key={item._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
+                              <FaBoxes className="text-[#1360AB]" />
+                            </div>
+                            <span className="font-medium text-gray-800">{item.itemTypeId.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{item.count}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{formatDate(item.issueDate)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${item.status === "Issued" ? "bg-green-100 text-green-800" : item.status === "Damaged" ? "bg-red-100 text-red-800" : item.status === "Lost" ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-800"}`}>
+                            {item.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{item.condition}</td>
+                        {user && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-3">
+                              <button
+                                onClick={() => {
+                                  setSelectedInventoryItem(item)
+                                  setInventoryFormData({
+                                    studentProfileId: selectedStudent._id,
+                                    hostelInventoryId: item.hostelInventoryId,
+                                    itemTypeId: item.itemTypeId._id,
+                                    count: item.count,
+                                    status: item.status,
+                                    condition: item.condition,
+                                    notes: item.notes || "",
+                                  })
+                                  setInventoryModalType("edit")
+                                  setShowInventoryModal(true)
+                                }}
+                                className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all"
+                                title="View/Edit Item"
+                              >
+                                <FaEdit />
+                              </button>
+                              {item.status === "Issued" && (
+                                <button
+                                  onClick={() => {
+                                    setSelectedInventoryItem(item)
+                                    setInventoryFormData({
+                                      studentProfileId: selectedStudent._id,
+                                      hostelInventoryId: item.hostelInventoryId,
+                                      itemTypeId: item.itemTypeId._id,
+                                      count: item.count,
+                                      status: item.status,
+                                      condition: item.condition,
+                                      notes: "",
+                                    })
+                                    setInventoryModalType("return")
+                                    setShowInventoryModal(true)
+                                  }}
+                                  className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition-all"
+                                  title="Return Item"
+                                >
+                                  <FaUndo />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )
       case "disco":
         return <DisCoActions userId={selectedStudent.userId} />
       case "health":
         return <HealthTab userId={selectedStudent.userId} />
       default:
         return null
+    }
+  }
+
+  // Handle view item
+  const handleViewItem = (item) => {
+    setSelectedInventoryItem(item)
+    setInventoryFormData({
+      studentProfileId: selectedStudent._id,
+      hostelInventoryId: item.hostelInventoryId,
+      itemTypeId: item.itemTypeId._id,
+      count: item.count,
+      status: item.status,
+      condition: item.condition,
+      notes: item.notes || "",
+    })
+    setInventoryModalType("view")
+    setShowInventoryModal(true)
+  }
+
+  // Handle opening inventory assignment modal
+  const handleOpenAssignInventory = () => {
+    setInventoryFormData({
+      studentProfileId: selectedStudent._id,
+      hostelInventoryId: "",
+      itemTypeId: "",
+      count: 1,
+      status: "Issued",
+      condition: "Good",
+      notes: "",
+    })
+    setInventoryModalType("assign")
+    setShowInventoryModal(true)
+  }
+
+  // Handle inventory form submission
+  const handleInventorySubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      if (inventoryModalType === "assign") {
+        await inventoryApi.assignInventoryToStudent(inventoryFormData)
+      } else if (inventoryModalType === "edit") {
+        await inventoryApi.updateStudentInventoryStatus(selectedInventoryItem._id, {
+          status: inventoryFormData.status,
+          condition: inventoryFormData.condition,
+          notes: inventoryFormData.notes,
+        })
+      }
+      closeInventoryModal()
+      fetchStudentInventory()
+    } catch (err) {
+      console.error("Error with inventory action:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Handle returning inventory item
+  const handleReturnInventory = async () => {
+    if (!window.confirm("Are you sure you want to return this item?")) return
+
+    setLoading(true)
+    try {
+      await inventoryApi.returnStudentInventory(selectedInventoryItem._id, {
+        condition: inventoryFormData.condition,
+        notes: inventoryFormData.notes || "Item returned",
+      })
+      closeInventoryModal()
+      fetchStudentInventory()
+    } catch (err) {
+      console.error("Error returning inventory item:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Close inventory modal
+  const closeInventoryModal = () => {
+    setShowInventoryModal(false)
+    setSelectedInventoryItem(null)
+    setInventoryFormData({
+      studentProfileId: selectedStudent._id,
+      hostelInventoryId: "",
+      itemTypeId: "",
+      count: 1,
+      status: "Issued",
+      condition: "Good",
+      notes: "",
+    })
+  }
+
+  // Get max count for selected inventory
+  const getMaxCount = () => {
+    if (!inventoryFormData.hostelInventoryId) return 1
+    const selectedInventory = availableInventory.find((item) => item._id === inventoryFormData.hostelInventoryId)
+    return selectedInventory ? selectedInventory.availableCount : 1
+  }
+
+  // Handle inventory form change
+  const handleInventoryFormChange = (e) => {
+    const { name, value } = e.target
+
+    if (name === "hostelInventoryId") {
+      const selectedInventory = availableInventory.find((item) => item._id === value)
+      if (selectedInventory) {
+        setInventoryFormData((prev) => ({
+          ...prev,
+          [name]: value,
+          itemTypeId: selectedInventory.itemTypeId._id,
+        }))
+      }
+    } else {
+      setInventoryFormData((prev) => ({
+        ...prev,
+        [name]: name === "count" ? Math.max(1, parseInt(value) || 1) : value,
+      }))
     }
   }
 
@@ -522,6 +804,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <button onClick={() => setActiveTab("feedback")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "feedback" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaComments className="mr-2" />
                     Feedback
+                  </button>
+                  <button onClick={() => setActiveTab("inventory")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "inventory" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaBoxes className="mr-2" />
+                    Inventory
                   </button>
                   <button onClick={() => setActiveTab("disco")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "disco" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaUserFriends className="mr-2" />
@@ -574,6 +860,112 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             if (onUpdate) onUpdate()
           }}
         />
+      )}
+
+      {/* Inventory Modal */}
+      {showInventoryModal && (
+        <Modal title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"} onClose={closeInventoryModal}>
+          <form onSubmit={handleInventorySubmit} className="space-y-4">
+            {/* Item details for edit/return modals */}
+            {(inventoryModalType === "edit" || inventoryModalType === "return") && selectedInventoryItem && (
+              <div className="bg-gray-50 p-4 rounded-lg mb-4">
+                <div className="flex items-center mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
+                    <FaBoxes className="text-[#1360AB]" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900">{selectedInventoryItem.itemTypeId.name}</h3>
+                    <div className="flex space-x-2 text-sm">
+                      <span className="text-gray-500">Qty: {selectedInventoryItem.count}</span>
+                      <span className="text-gray-500">•</span>
+                      <span className="text-gray-500">Issued: {formatDate(selectedInventoryItem.issueDate)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Item selection - only for assign */}
+            {inventoryModalType === "assign" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Item</label>
+                <select name="hostelInventoryId" value={inventoryFormData.hostelInventoryId} onChange={handleInventoryFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+                  <option value="">Select Item</option>
+                  {availableInventory.map((item) => (
+                    <option key={item._id} value={item._id}>
+                      {item.itemTypeId.name} - Available: {item.availableCount}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Count - only for assign */}
+            {inventoryModalType === "assign" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Count</label>
+                <input type="number" name="count" value={inventoryFormData.count} onChange={handleInventoryFormChange} min="1" max={getMaxCount()} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required />
+                {inventoryFormData.hostelInventoryId && <p className="text-xs text-gray-500 mt-1">Maximum available: {getMaxCount()}</p>}
+              </div>
+            )}
+
+            {/* Status - only for edit */}
+            {inventoryModalType === "edit" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" value={inventoryFormData.status} onChange={handleInventoryFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+                  <option value="Issued">Issued</option>
+                  <option value="Damaged">Damaged</option>
+                  <option value="Lost">Lost</option>
+                </select>
+              </div>
+            )}
+
+            {/* Condition - for all modes */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Condition</label>
+              <select name="condition" value={inventoryFormData.condition} onChange={handleInventoryFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+              </select>
+            </div>
+
+            {/* Notes - for all modes */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <textarea
+                name="notes"
+                value={inventoryFormData.notes}
+                onChange={handleInventoryFormChange}
+                rows="3"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]"
+                placeholder={inventoryModalType === "assign" ? "Any additional notes..." : inventoryModalType === "edit" ? "Update notes..." : "Notes about returned item..."}
+              ></textarea>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button type="button" onClick={closeInventoryModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                Cancel
+              </button>
+
+              {/* Return button - only for return mode */}
+              {inventoryModalType === "return" && (
+                <button type="button" onClick={handleReturnInventory} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
+                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Return Item"}
+                </button>
+              )}
+
+              {/* Submit button - only for assign and edit modes */}
+              {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
+                <button type="submit" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
+                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
+                </button>
+              )}
+            </div>
+          </form>
+        </Modal>
       )}
     </>
   )

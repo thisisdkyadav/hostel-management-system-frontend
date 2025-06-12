@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider, { useWarden } from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -28,6 +28,7 @@ const WardenLayout = () => {
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/warden" },
     { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/warden/hostels/${user?.hostel?.name}`, pathPattern: "^/warden/hostels(/.*)?$" },
     { name: "Students", icon: FaUsers, section: "main", path: "/warden/students" },
+    { name: "Student Inventory", icon: FaBoxes, section: "main", path: "/warden/student-inventory" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/warden/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/warden/events" },
     // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/warden/room-change-requests" },

@@ -66,6 +66,8 @@ import Others from "../pages/admin/Others.jsx"
 import SSOLogin from "../pages/SSOLogin.jsx"
 import Attendance from "../pages/guard/Attendance.jsx"
 import HostelGateAttendance from "../pages/guard/HostelGateAttendance.jsx"
+import Inventory from "../pages/admin/Inventory.jsx"
+import StudentInventory from "../pages/warden/StudentInventory.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -141,6 +143,7 @@ const AppRoutes = () => {
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
+        <Route path="student-inventory" element={<StudentInventory />} />
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
@@ -162,6 +165,7 @@ const AppRoutes = () => {
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
+        <Route path="student-inventory" element={<StudentInventory />} />
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
@@ -184,29 +188,28 @@ const AppRoutes = () => {
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
+        <Route path="student-inventory" element={<StudentInventory />} />
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
       </Route>
 
-      {/* Routes for Guard related pages */}
+      {/* Routes for security related pages */}
       <Route
         path="/guard"
         element={
-          <ProtectedRoute allowedRoles={["Security", "Hostel Gate"]}>
+          <ProtectedRoute allowedRoles={["Security Guard"]}>
             <SecurityLayout />
           </ProtectedRoute>
         }
       >
-        {/* <Route index element={<GuardDashboard />} /> */}
         <Route index element={<AddStudentEntry />} />
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
         <Route path="attendance" element={<Attendance />} />
-        {/* <Route path="add-entry" element={<AddStudentEntry />} /> */}
       </Route>
 
-      {/* Routes for Hostel Gate related pages */}
+      {/* Routes for hostel gate related pages */}
       <Route
         path="/hostel-gate"
         element={
@@ -239,6 +242,7 @@ const AppRoutes = () => {
         <Route path="associate-wardens" element={<AdminAssociateWardens />} />
         <Route path="hostel-supervisors" element={<AdminHostelSupervisors />} />
         <Route path="students" element={<Students />} />
+        <Route path="inventory" element={<Inventory />} />
         <Route path="complaints" element={<Complaint />} />
         <Route path="security" element={<SecurityLogins />} />
         <Route path="visitors" element={<VisitorRequests />} />
