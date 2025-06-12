@@ -32,6 +32,9 @@ export default defineConfig({
       // devOptions: {
       //   enabled: true, // Enables PWA in development mode
       // },
+      workbox: {
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // Increase to 3MB
+      },
     }),
   ],
   base: "/", // Ensures relative paths for assets
