@@ -4,8 +4,9 @@ import { healthApi } from "../../../services/healthApi"
 import { Link } from "react-router-dom"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
-
+import { useAuth } from "../../../contexts/AuthProvider"
 const HealthTab = ({ userId }) => {
+  const { user, canAccess } = useAuth()
   const [healthData, setHealthData] = useState(null)
   const [insuranceClaims, setInsuranceClaims] = useState([])
   const [insuranceProviders, setInsuranceProviders] = useState([])
@@ -197,10 +198,12 @@ const HealthTab = ({ userId }) => {
             Health Information
           </h3>
           <div className="flex space-x-2">
-            <Link to="/admin/others" className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors flex items-center">
-              <FaCog className="mr-1" /> Manage Providers
-            </Link>
-            {!editHealthData && (
+            {user.role === "Admin" && (
+              <Link to="/admin/others" className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors flex items-center">
+                <FaCog className="mr-1" /> Manage Providers
+              </Link>
+            )}
+            {canAccess("students_info", "edit") && !editHealthData && (
               <button onClick={() => setEditHealthData(true)} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
                 <FaEdit className="mr-1" /> Edit
               </button>
@@ -308,9 +311,11 @@ const HealthTab = ({ userId }) => {
             <FaMedkit className="text-[#1360AB] mr-2" />
             Insurance Claims
           </h3>
-          <button onClick={handleAddClaim} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
-            <FaPlus className="mr-1" /> Add Claim
-          </button>
+          {canAccess("students_info", "edit") && (
+            <button onClick={handleAddClaim} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
+              <FaPlus className="mr-1" /> Add Claim
+            </button>
+          )}
         </div>
 
         {loadingClaims ? (

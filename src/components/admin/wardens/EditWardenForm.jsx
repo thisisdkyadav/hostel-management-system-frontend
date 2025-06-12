@@ -168,6 +168,21 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     }
   }
 
+  /**
+   * only permissions listed below can be changed by admin
+   * other permissions will only show default permissions
+   * in future, we can allow more permissions to be changed by admin
+   */
+  const currentAllowedChanges = {
+    students_info: ["edit"],
+    student_inventory: ["edit", "create"],
+    lost_and_found: ["edit", "create"],
+    events: [],
+    visitors: ["react"],
+    complaints: ["create"],
+    feedback: ["react"],
+  }
+
   const resources = [
     { id: "students_info", label: "Student Information" },
     { id: "student_inventory", label: "Student Inventory" },
@@ -282,6 +297,16 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                 </button>
               </div>
               <p className="text-sm text-gray-600 mt-1">Configure what {warden.name} can access and modify in the system.</p>
+              <div className="mt-3 flex items-center text-xs text-gray-500">
+                <span className="flex items-center mr-4">
+                  <span className="w-3 h-3 bg-gray-200 rounded-sm mr-1"></span>
+                  Locked (system default)
+                </span>
+                <span className="flex items-center">
+                  <span className="w-3 h-3 bg-white border border-gray-300 rounded-sm mr-1"></span>
+                  Configurable
+                </span>
+              </div>
             </div>
 
             {isLoading && !permissions ? (
@@ -305,7 +330,13 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                         <td className="p-3 text-sm text-gray-700 font-medium">{resource.label}</td>
                         {actions.map((action) => (
                           <td key={`${resource.id}-${action.id}`} className="p-3 text-center">
-                            <input type="checkbox" checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)} className="h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB]" />
+                            <input
+                              type="checkbox"
+                              checked={permissions[resource.id]?.[action.id] || false}
+                              onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
+                              className={`h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB] ${!currentAllowedChanges[resource.id]?.includes(action.id) ? "opacity-60 bg-gray-100" : ""}`}
+                              disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
+                            />
                           </td>
                         ))}
                       </tr>

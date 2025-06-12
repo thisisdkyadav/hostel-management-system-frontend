@@ -1,4 +1,5 @@
 import React from "react"
+import { useAuth } from "../../../../contexts/AuthProvider"
 
 const ActionButtons = ({
   userRole,
@@ -20,6 +21,7 @@ const ActionButtons = ({
   isCheckOutForm,
   isCheckTimes,
 }) => {
+  const { user, canAccess } = useAuth()
   const isPending = requestStatus === "Pending"
   const isApproved = requestStatus === "Approved"
   const isRejected = requestStatus === "Rejected"
@@ -54,7 +56,7 @@ const ActionButtons = ({
       )}
 
       {/* Warden actions for approved requests */}
-      {["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && isApproved && (
+      {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && isApproved && (
         <>
           <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
             Close
@@ -101,7 +103,7 @@ const ActionButtons = ({
       {/* Default close button for other cases */}
       {((userRole !== "Admin" && userRole !== "Warden" && userRole !== "Associate Warden" && userRole !== "Hostel Supervisor" && userRole !== "Security" && userRole !== "Hostel Gate") ||
         (userRole === "Admin" && !isPending) ||
-        (["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
+        (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
         (["Security", "Hostel Gate"].includes(userRole) && !isApproved)) && (
         <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
           Close

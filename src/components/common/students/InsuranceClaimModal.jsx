@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
 import Modal from "../Modal"
+import { useAuth } from "../../../contexts/AuthProvider"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
+  const { canAccess } = useAuth()
   const [isEditing, setIsEditing] = useState(isNew)
   const [formData, setFormData] = useState({
     insuranceProvider: "",
@@ -159,12 +161,16 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
       </div>
 
       <div className="flex justify-end space-x-3 mt-6">
-        <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-          <FaEdit className="mr-2" /> Edit Claim
-        </button>
-        <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
-          <FaTrash className="mr-2" /> Delete Claim
-        </button>
+        {canAccess("students_info", "edit") && (
+          <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+            <FaEdit className="mr-2" /> Edit Claim
+          </button>
+        )}
+        {canAccess("students_info", "edit") && (
+          <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
+            <FaTrash className="mr-2" /> Delete Claim
+          </button>
+        )}
         <button onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
           Close
         </button>

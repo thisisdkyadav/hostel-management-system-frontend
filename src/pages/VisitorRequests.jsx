@@ -11,7 +11,7 @@ import ErrorState from "../components/common/ErrorState"
 import EmptyState from "../components/common/EmptyState"
 
 const VisitorRequests = () => {
-  const { user } = useAuth()
+  const { user, canAccess } = useAuth()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [visitorRequests, setVisitorRequests] = useState([])
@@ -92,7 +92,7 @@ const VisitorRequests = () => {
       return false
     }
 
-    if (["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && allocationFilter !== "all") {
+    if (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && allocationFilter !== "all") {
       if (allocationFilter === "allocated" && !request.isAllocated) return false
       if (allocationFilter === "unallocated" && request.isAllocated) return false
     }
@@ -181,7 +181,7 @@ const VisitorRequests = () => {
         <EmptyState
           icon={() => <FaUserFriends className="text-gray-400" size={48} />}
           title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
-          message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven\'t made any visitor accommodation requests yet. Create a new request to get started."}
+          message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
           buttonText={user.role === "Student" ? "Create Request" : null}
           buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
         />

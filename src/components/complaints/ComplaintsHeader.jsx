@@ -1,8 +1,10 @@
 import Button from "../common/Button"
 import { FaFilter, FaPlus, FaList, FaTh, FaClipboardList } from "react-icons/fa"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
+import { useAuth } from "../../contexts/AuthProvider"
 
 const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole, title = "Complaints Management" }) => {
+  const { canAccess } = useAuth()
   return (
     <header className="mb-6 transition-all duration-300">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -27,7 +29,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
             </Button>
           </div>
 
-          {WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
+          {canAccess("complaints", "create") && WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
             <Button onClick={() => setShowCraftComplaint(true)} variant="primary" size="small" icon={<FaPlus className="mr-2 transform transition-transform group-hover:rotate-90 duration-200" />} className="hover:shadow-md transition-all duration-300 group">
               Create Complaint
             </Button>
