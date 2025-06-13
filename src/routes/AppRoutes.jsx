@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import StudentDashboard from "../pages/student/Dashboard.jsx"
 import Settings from "../pages/student/Settings.jsx"
 import VisitorRequests from "../pages/VisitorRequests.jsx"
+import IDCard from "../pages/student/IDCard.jsx"
 // -------------------------student ends here ----------------------------------
 
 //--------------------------------below is maintenance---------------------
@@ -112,6 +113,7 @@ const AppRoutes = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="security" element={<Security />} />
+        <Route path="id-card" element={<IDCard />} />
       </Route>
 
       {/* Routes for Maintenance related pages*/}
