@@ -197,16 +197,16 @@ const AppRoutes = () => {
       <Route
         path="/guard"
         element={
-          <ProtectedRoute allowedRoles={["Security Guard"]}>
+          <ProtectedRoute allowedRoles={["Security"]}>
             <SecurityLayout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<AddStudentEntry />} />
-        <Route path="visitors" element={<VisitorRequests />} />
+        {/* <Route index element={<AddStudentEntry />} /> */}
+        {/* <Route path="visitors" element={<VisitorRequests />} /> */}
+        <Route index element={<Attendance />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
-        <Route path="entries" element={<StudentEntries />} />
-        <Route path="attendance" element={<Attendance />} />
+        {/* <Route path="entries" element={<StudentEntries />} /> */}
       </Route>
 
       {/* Routes for hostel gate related pages */}
