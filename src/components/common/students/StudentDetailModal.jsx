@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react"
-import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers, FaHeartbeat, FaBoxes, FaPlus, FaEdit, FaTrash, FaUndo } from "react-icons/fa"
+import React, { useState, useEffect, useRef } from "react"
+import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers, FaHeartbeat, FaBoxes, FaPlus, FaEdit, FaTrash, FaUndo, FaIdCard, FaExpand } from "react-icons/fa"
 import { studentApi } from "../../../services/apiService"
 import { visitorApi } from "../../../services/visitorApi"
 import { securityApi } from "../../../services/securityApi"
 import { feedbackApi } from "../../../services/feedbackApi"
 import { inventoryApi } from "../../../services/inventoryApi"
+import { IDcardApi } from "../../../services/IDcardApi"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
@@ -27,6 +28,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [visitorRequests, setVisitorRequests] = useState([])
   const [feedbacks, setFeedbacks] = useState([])
   const [studentInventory, setStudentInventory] = useState([])
+  const [idCardData, setIdCardData] = useState({ front: null, back: null })
 
   // Loading states for different tabs
   const [loadingComplaints, setLoadingComplaints] = useState(false)
@@ -34,6 +36,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [loadingVisitorRequests, setLoadingVisitorRequests] = useState(false)
   const [loadingFeedbacks, setLoadingFeedbacks] = useState(false)
   const [loadingInventory, setLoadingInventory] = useState(false)
+  const [loadingIdCard, setLoadingIdCard] = useState(false)
 
   // Inventory state
   const [showInventoryModal, setShowInventoryModal] = useState(false)
@@ -121,6 +124,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     }
   }
 
+  const fetchStudentIdCard = async () => {
+    if (activeTab !== "idcard" || !selectedStudent?.userId) return
+    try {
+      setLoadingIdCard(true)
+      const data = await IDcardApi.getIDcard(selectedStudent.userId)
+      setIdCardData(data)
+    } catch (error) {
+      console.error("Error fetching student ID card:", error)
+      setIdCardData({ front: null, back: null })
+    } finally {
+      setLoadingIdCard(false)
+    }
+  }
+
   const fetchStudentInventory = async () => {
     if (activeTab !== "inventory" || !selectedStudent?._id) return
     try {
@@ -188,6 +205,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           break
         case "inventory":
           fetchStudentInventory()
+          break
+        case "idcard":
+          fetchStudentIdCard()
           break
         default:
           break
@@ -643,6 +663,71 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             )}
           </div>
         )
+      case "idcard":
+        return (
+          <div className="bg-white">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Student ID Card</h3>
+
+            {loadingIdCard ? (
+              <div className="flex justify-center py-10">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              </div>
+            ) : !idCardData.front && !idCardData.back ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg">
+                <FaIdCard className="mx-auto text-gray-300 mb-2 text-4xl" />
+                <p className="text-gray-500">No ID card images found for this student</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Front ID Card */}
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-gray-200">
+                  <h4 className="text-base font-semibold text-gray-700 mb-3">ID Card Front</h4>
+                  {idCardData.front ? (
+                    <div className="relative w-full">
+                      <div className="overflow-hidden rounded-lg max-h-[280px] flex items-center justify-center border border-gray-200">
+                        <img src={idCardData.front} alt="ID Card Front" className="object-contain w-full max-h-[280px]" />
+                      </div>
+
+                      <div className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-sm">
+                        <a href={idCardData.front} target="_blank" rel="noopener noreferrer" className="text-[#1360AB]">
+                          <FaExpand size={14} />
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 bg-gray-100 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300">
+                      <FaIdCard className="text-gray-300 mb-2 text-4xl" />
+                      <p className="text-gray-500 text-sm">Front side not uploaded</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Back ID Card */}
+                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-gray-200">
+                  <h4 className="text-base font-semibold text-gray-700 mb-3">ID Card Back</h4>
+                  {idCardData.back ? (
+                    <div className="relative w-full">
+                      <div className="overflow-hidden rounded-lg max-h-[280px] flex items-center justify-center border border-gray-200">
+                        <img src={idCardData.back} alt="ID Card Back" className="object-contain w-full max-h-[280px]" />
+                      </div>
+
+                      <div className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-sm">
+                        <a href={idCardData.back} target="_blank" rel="noopener noreferrer" className="text-[#1360AB]">
+                          <FaExpand size={14} />
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-48 bg-gray-100 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300">
+                      <FaIdCard className="text-gray-300 mb-2 text-4xl" />
+                      <p className="text-gray-500 text-sm">Back side not uploaded</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )
       case "disco":
         return <DisCoActions userId={selectedStudent.userId} />
       case "health":
@@ -808,6 +893,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <button onClick={() => setActiveTab("inventory")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "inventory" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaBoxes className="mr-2" />
                     Inventory
+                  </button>
+                  <button onClick={() => setActiveTab("idcard")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "idcard" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                    <FaIdCard className="mr-2" />
+                    ID Card
                   </button>
                   <button onClick={() => setActiveTab("disco")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "disco" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
                     <FaUserFriends className="mr-2" />
