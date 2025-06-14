@@ -1,243 +1,597 @@
 import React, { useState, useEffect } from "react"
-import { FaUser, FaUsers, FaUserTie, FaUserShield, FaBuilding, FaTools } from "react-icons/fa"
-import { MdSecurity, MdDashboard } from "react-icons/md"
-import { BiError } from "react-icons/bi"
+import { FaUser, FaUsers, FaCalendarAlt, FaExclamationCircle } from "react-icons/fa"
+import { BiBuildings } from "react-icons/bi"
 import { TbBuildingCommunity } from "react-icons/tb"
-import { FiSettings } from "react-icons/fi"
+import { MdDashboard, MdOutlineEvent, MdNotifications } from "react-icons/md"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useAuth } from "../../contexts/AuthProvider"
-import { statsApi } from "../../services/apiService"
-import StatCards, { StatCard } from "../../components/common/StatCards"
-import ComplaintsChart from "../../components/charts/ComplaintsChart"
-import HostelOccupancyChart from "../../components/charts/HostelOccupancyChart"
-import StaffDistributionChart from "../../components/charts/StaffDistributionChart"
-import MaintenanceBreakdownChart from "../../components/charts/MaintenanceBreakdownChart"
+import { dashboardApi } from "../../services/dashboardApi"
+
+// Chart components
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement } from "chart.js"
+import { Bar, Doughnut } from "react-chartjs-2"
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement)
+
+// Enhanced shimmer loader components
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
+
+// Shimmer with blurred preview for charts
+const ChartShimmer = ({ height, className = "" }) => (
+  <div className={`relative overflow-hidden rounded-lg ${className}`} style={{ height }}>
+    <div className="absolute inset-0 bg-gray-100 backdrop-blur-sm"></div>
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-400 animate-spin"></div>
+    </div>
+    <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-200 to-transparent"></div>
+    <div className="absolute inset-0 animate-pulse opacity-20 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"></div>
+  </div>
+)
+
+// Shimmer for tables
+const TableShimmer = ({ rows = 4, className = "" }) => (
+  <div className={`overflow-hidden rounded-lg ${className}`}>
+    <div className="bg-gray-50 py-2 px-4 flex">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="flex-1 px-2">
+          <ShimmerLoader height="1rem" className="mb-1" />
+        </div>
+      ))}
+    </div>
+
+    {[...Array(rows)].map((_, i) => (
+      <div key={i} className={`flex py-2 px-4 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+        {[...Array(4)].map((_, j) => (
+          <div key={j} className="flex-1 px-2">
+            <ShimmerLoader height="0.8rem" width={j === 0 ? "80%" : "50%"} className="mx-auto" />
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+)
+
+// Shimmer for stat cards
+const StatCardShimmer = ({ className = "" }) => (
+  <div className={`rounded-lg border-l-4 border-gray-300 bg-gray-50 p-4 ${className}`}>
+    <div className="absolute right-2 top-2">
+      <ShimmerLoader height="1rem" width="2rem" />
+    </div>
+    <div className="flex justify-center items-center h-full">
+      <ShimmerLoader height="2.5rem" width="50%" className="mx-auto" />
+    </div>
+  </div>
+)
+
+// Shimmer for event cards
+const EventCardShimmer = ({ count = 3, className = "" }) => (
+  <div className={`space-y-3 ${className}`}>
+    {[...Array(count)].map((_, i) => (
+      <div key={i} className="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300">
+        <ShimmerLoader height="1rem" width="70%" className="mb-3" />
+        <div className="flex justify-between">
+          <ShimmerLoader height="0.8rem" width="40%" />
+          <ShimmerLoader height="0.8rem" width="25%" />
+        </div>
+        <ShimmerLoader height="0.7rem" width="50%" className="mt-2" />
+      </div>
+    ))}
+  </div>
+)
 
 const Dashboard = () => {
   const { user } = useAuth()
-  const [complaintsStats, setComplaintsStats] = useState(null)
-  const [hostelStats, setHostelStats] = useState(null)
-  const [wardenStats, setWardenStats] = useState(null)
-  const [securityStats, setSecurityStats] = useState(null)
-  const [maintenanceStats, setMaintenanceStats] = useState(null)
+  const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [currentDate] = useState(new Date())
+  const [studentView, setStudentView] = useState("degree") // Default to degree view
+  const [normalizedView, setNormalizedView] = useState(false)
 
   useEffect(() => {
-    const fetchAllStats = async () => {
+    const fetchDashboardData = async () => {
       try {
         setLoading(true)
-
-        const [complaintsData, hostelData, wardenData, securityData, maintenanceData] = await Promise.all([statsApi.getComplaintsStats(), statsApi.getHostelStats(), statsApi.getWardenStats(), statsApi.getSecurityStats(), statsApi.getMaintenanceStaffStats()])
-
-        setComplaintsStats(complaintsData)
-        setHostelStats(hostelData)
-        setWardenStats(wardenData)
-        setSecurityStats(securityData)
-        setMaintenanceStats(maintenanceData)
+        const response = await dashboardApi.getAdminDashboardData()
+        setDashboardData(response.data)
+        setLoading(false)
+        // Using dummy data for now
+        // setTimeout(() => {
+        //   setDashboardData(getDummyData())
+        //   setLoading(false)
+        // }, 1200) // Simulate API delay
       } catch (err) {
-        console.error("Error fetching stats:", err)
+        console.error("Error fetching dashboard data:", err)
         setError("Failed to load dashboard statistics")
-      } finally {
         setLoading(false)
       }
     }
 
-    fetchAllStats()
+    fetchDashboardData()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin mb-3" />
-          <div className="text-xl text-gray-600">Loading dashboard data...</div>
-        </div>
-      </div>
-    )
-  }
+  // Dummy data generator
+  const getDummyData = () => ({
+    students: {
+      branchWise: [
+        { branch: "CSE", boys: 210, girls: 190, total: 400 },
+        { branch: "ECE", boys: 180, girls: 160, total: 340 },
+        { branch: "ME", boys: 230, girls: 70, total: 300 },
+        { branch: "CE", boys: 150, girls: 90, total: 240 },
+        { branch: "EE", boys: 120, girls: 80, total: 200 },
+      ],
+      degreeWise: [
+        { degree: "B.Tech", boys: 650, girls: 450, total: 1100 },
+        { degree: "M.Tech", boys: 140, girls: 90, total: 230 },
+        { degree: "PhD", boys: 80, girls: 40, total: 120 },
+        { degree: "MBA", boys: 20, girls: 10, total: 30 },
+      ],
+      totalBoys: 890,
+      totalGirls: 590,
+      grandTotal: 1480,
+    },
+    hostels: [
+      { name: "BH-1", totalRooms: 200, occupied: 190, vacant: 10, totalCapacity: 400, currentOccupancy: 380, vacantCapacity: 20 },
+      { name: "BH-2", totalRooms: 200, occupied: 185, vacant: 15, totalCapacity: 400, currentOccupancy: 370, vacantCapacity: 30 },
+      { name: "GH-1", totalRooms: 150, occupied: 140, vacant: 10, totalCapacity: 300, currentOccupancy: 280, vacantCapacity: 20 },
+      { name: "GH-2", totalRooms: 150, occupied: 135, vacant: 15, totalCapacity: 300, currentOccupancy: 270, vacantCapacity: 30 },
+    ],
+    events: [
+      { id: 1, title: "Hostel Day", date: "2023-08-15", time: "10:00 AM", location: "Main Auditorium" },
+      { id: 2, title: "Cultural Night", date: "2023-08-20", time: "6:00 PM", location: "Open Air Theatre" },
+      { id: 3, title: "Sports Tournament", date: "2023-08-25", time: "9:00 AM", location: "Sports Complex" },
+      { id: 4, title: "Alumni Meet", date: "2023-09-05", time: "11:00 AM", location: "Conference Hall" },
+    ],
+    complaints: {
+      total: 42,
+      pending: 12,
+      inProgress: 18,
+      resolved: 12,
+      resolvedToday: 5,
+      byCategory: {
+        plumbing: 15,
+        electrical: 10,
+        furniture: 8,
+        cleaning: 5,
+        other: 4,
+      },
+      recentComplaints: [
+        { id: 1, title: "Water leakage in room", category: "Plumbing", status: "Pending", date: "2023-08-02" },
+        { id: 2, title: "Fan not working", category: "Electrical", status: "In Progress", date: "2023-08-01" },
+        { id: 3, title: "Broken chair", category: "Furniture", status: "Pending", date: "2023-07-30" },
+      ],
+    },
+  })
 
-  if (error) {
-    return (
-      <div className="px-10 py-6 flex-1 text-red-500 flex items-center justify-center">
-        <BiError className="mr-2 text-2xl" /> {error}
-      </div>
-    )
+  // Format date for header
+  const formatHeaderDate = () => {
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+    return currentDate.toLocaleDateString(undefined, options)
   }
-
-  // Key statistics data
-  const keyStats = [
-    {
-      title: "Hostels",
-      value: hostelStats?.totalHostels || 0,
-      subtitle: `${hostelStats?.occupancyRate || 0}% Occupancy Rate`,
-      icon: <TbBuildingCommunity />,
-      color: "#6366F1",
-    },
-    {
-      title: "Total Rooms",
-      value: hostelStats?.totalRooms || 0,
-      subtitle: `${hostelStats?.availableRooms || 0} Available`,
-      icon: <FaBuilding />,
-      color: "#3B82F6",
-    },
-    {
-      title: "Total Complaints",
-      value: complaintsStats?.total || 0,
-      subtitle: `${complaintsStats?.resolved || 0} Resolved`,
-      icon: <FiSettings />,
-      color: "#EC4899",
-    },
-    {
-      title: "Staff Members",
-      value: (wardenStats?.total || 0) + (securityStats?.total || 0) + (maintenanceStats?.total || 0),
-      subtitle: "Total Personnel",
-      icon: <FaUsers />,
-      color: "#8B5CF6",
-    },
-  ]
 
   return (
-    <div className="px-10 py-6 flex-1 bg-gray-50">
-      <header className="flex justify-between items-center bg-white rounded-xl shadow-sm px-6 py-4 mb-6">
-        <div className="flex items-center">
+    <div className="px-6 py-6 flex-1 bg-gray-50">
+      <header className="flex flex-col md:flex-row md:justify-between md:items-center bg-white rounded-xl shadow-sm p-6 mb-6">
+        <div className="flex items-center mb-4 md:mb-0">
           <MdDashboard className="text-blue-600 text-2xl mr-3" />
-          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p className="text-sm text-gray-500">{formatHeaderDate()}</p>
+          </div>
         </div>
-        <button className="flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors">
-          <FaUser className="w-4 h-4" />
-          <span className="font-medium">{user?.name}</span>
-        </button>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {loading ? (
+            <>
+              <ShimmerLoader height="2rem" width="10rem" className="rounded-lg" />
+              <ShimmerLoader height="2rem" width="10rem" className="rounded-lg" />
+            </>
+          ) : (
+            <>
+              <div className="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg">
+                <MdNotifications className="mr-2" />
+                <span>
+                  <span className="font-semibold">{dashboardData?.complaints?.pending || 0}</span> pending complaints
+                </span>
+              </div>
+              <div className="flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg">
+                <FaCalendarAlt className="mr-2" />
+                <span>
+                  <span className="font-semibold">{dashboardData?.events?.length || 0}</span> upcoming events
+                </span>
+              </div>
+            </>
+          )}
+        </div>
       </header>
 
-      {/* Key metrics cards */}
-      <div className="mb-6">
-        <StatCards stats={keyStats} columns={4} />
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* First row of charts */}
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <HostelOccupancyChart
-            hostelStats={hostelStats}
-            subtitle={
-              <div className="grid grid-cols-2 sm:grid-cols-4 mt-3 gap-4 text-center">
-                <StatInfo label="Total Hostels" value={hostelStats?.totalHostels || 0} color="#6366F1" />
-                <StatInfo label="Total Rooms" value={hostelStats?.totalRooms || 0} color="#8B5CF6" />
-                <StatInfo label="Available" value={hostelStats?.availableRooms || 0} color="#22C55E" />
-                <StatInfo label="Occupied" value={(hostelStats?.totalRooms || 0) - (hostelStats?.availableRooms || 0)} color="#3B82F6" />
+      {/* Main dashboard grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        {/* Student data card */}
+        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem]">
+          {loading ? (
+            <div className="h-full flex flex-col">
+              <div className="flex justify-between items-center mb-4">
+                <ShimmerLoader height="1.5rem" width="60%" />
+                <ShimmerLoader height="1.5rem" width="20%" className="rounded-full" />
               </div>
-            }
-          />
+              <ChartShimmer height="calc(100% - 6rem)" />
+              <div className="mt-4 grid grid-cols-3 gap-4">
+                <ShimmerLoader height="3rem" className="rounded-lg" />
+                <ShimmerLoader height="3rem" className="rounded-lg" />
+                <ShimmerLoader height="3rem" className="rounded-lg" />
+              </div>
+            </div>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="h-full flex flex-col">
+              <h2 className="flex justify-between items-center text-lg font-semibold text-gray-700 mb-4">
+                <div className="flex items-center">
+                  <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
+                </div>
+
+                <div className="flex items-center">
+                  {/* View type toggle (normalized vs absolute) */}
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs">
+                    <button onClick={() => setNormalizedView(false)} className={`px-2 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-500 text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                      Absolute
+                    </button>
+                    <button onClick={() => setNormalizedView(true)} className={`px-2 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-500 text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                      Normalized
+                    </button>
+                  </div>
+
+                  {/* Branch/Degree toggle hidden for now */}
+                  {/* 
+                  <div className="ml-2 flex items-center bg-gray-100 rounded-full p-1 text-sm">
+                    <button
+                      onClick={() => setStudentView('branch')}
+                      className={`px-3 py-1 rounded-full transition-all duration-200 ${
+                        studentView === 'branch' 
+                          ? 'bg-blue-500 text-white shadow-sm' 
+                          : 'text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Branch
+                    </button>
+                    <button
+                      onClick={() => setStudentView('degree')}
+                      className={`px-3 py-1 rounded-full transition-all duration-200 ${
+                        studentView === 'degree' 
+                          ? 'bg-blue-500 text-white shadow-sm' 
+                          : 'text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      Degree
+                    </button>
+                  </div>
+                  */}
+                </div>
+              </h2>
+
+              <div className="flex-1 flex flex-col">
+                {/* Always use degree-wise chart */}
+                <div className="h-3/4">
+                  <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} />
+                </div>
+
+                {/* Summary totals */}
+                <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+                  <div className="bg-blue-50 p-2 rounded-lg">
+                    <p className="text-xs text-gray-500">Total Boys</p>
+                    <p className="text-lg font-bold text-blue-600">{dashboardData?.students?.totalBoys}</p>
+                  </div>
+                  <div className="bg-pink-50 p-2 rounded-lg">
+                    <p className="text-xs text-gray-500">Total Girls</p>
+                    <p className="text-lg font-bold text-pink-600">{dashboardData?.students?.totalGirls}</p>
+                  </div>
+                  <div className="bg-indigo-50 p-2 rounded-lg">
+                    <p className="text-xs text-gray-500">Grand Total</p>
+                    <p className="text-lg font-bold text-indigo-600">{dashboardData?.students?.grandTotal}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <ComplaintsChart
-            complaintsStats={complaintsStats}
-            subtitle={
-              <div className="grid grid-cols-3 mt-3 gap-4 text-center">
-                <StatInfo label="Pending" value={complaintsStats?.pending || 0} color="#F59E0B" />
-                <StatInfo label="In Process" value={complaintsStats?.inProgress || 0} color="#EC4899" />
-                <StatInfo label="Resolved" value={complaintsStats?.resolved || 0} color="#10B981" />
+        {/* Hostel occupancy card */}
+        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem]">
+          {loading ? (
+            <div className="h-full flex flex-col">
+              <ShimmerLoader height="1.5rem" width="60%" className="mb-4" />
+              <div className="flex-1 grid grid-cols-3 gap-4">
+                <div className="flex items-center justify-center">
+                  <ChartShimmer height="140px" width="140px" className="rounded-full" />
+                </div>
+                <div className="col-span-2">
+                  <TableShimmer rows={4} className="h-[16rem]" />
+                </div>
               </div>
-            }
-          />
+            </div>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="h-full flex flex-col">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+                <TbBuildingCommunity className="mr-2 text-blue-600" /> Hostel Occupancy Overview
+              </h2>
+
+              <div className="flex-1 grid grid-cols-3 gap-4">
+                {/* Hostel distribution chart - reduced size */}
+                <div className="flex items-center justify-center">
+                  <div className="w-full max-w-[120px]">
+                    <HostelOccupancyChart data={dashboardData?.hostels} />
+                  </div>
+                </div>
+
+                {/* Hostel details table - increased width */}
+                <div className="col-span-2 overflow-hidden">
+                  {/* <div className="text-xs text-gray-500 font-medium mb-2">Detailed Occupancy Information</div> */}
+                  <div className="overflow-x-auto max-h-[20rem] scrollbar-thin scrollbar-thumb-gray-300">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50 sticky top-0">
+                        <tr>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-500 text-left">Hostel</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Capacity</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Occupancy</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Vacancy</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {dashboardData?.hostels?.map((hostel, index) => (
+                          <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                            <td className="px-4 py-2 text-sm text-gray-800">{hostel.name}</td>
+                            <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalCapacity}</td>
+                            <td className="px-4 py-2 text-sm text-blue-600 text-center font-medium">{hostel.currentOccupancy}</td>
+                            <td className="px-4 py-2 text-sm text-emerald-600 text-center font-medium">{hostel.vacantCapacity}</td>
+                          </tr>
+                        ))}
+                        <tr className="bg-gray-50 font-medium">
+                          <td className="px-4 py-2 text-sm text-gray-800">Total</td>
+                          <td className="px-4 py-2 text-sm text-gray-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalCapacity, 0)}</td>
+                          <td className="px-4 py-2 text-sm text-blue-700 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0)}</td>
+                          <td className="px-4 py-2 text-sm text-emerald-700 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Second row of charts */}
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <StaffDistributionChart
-            wardenStats={wardenStats}
-            securityStats={securityStats}
-            maintenanceStats={maintenanceStats}
-            subtitle={
-              <div className="grid grid-cols-3 mt-3 gap-4 text-center">
-                <StatInfo label="Wardens" value={wardenStats?.total || 0} color="#6366F1" />
-                <StatInfo label="Security" value={securityStats?.total || 0} color="#3B82F6" />
-                <StatInfo label="Maintenance" value={maintenanceStats?.total || 0} color="#10B981" />
+        {/* Complaints summary card */}
+        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-[20rem]">
+          {loading ? (
+            <div className="h-full flex flex-col">
+              <ShimmerLoader height="1.5rem" width="60%" className="mb-6" />
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                <StatCardShimmer className="relative h-24" />
+                <StatCardShimmer className="relative h-24" />
+                <StatCardShimmer className="relative h-24" />
               </div>
-            }
-          />
+              <ShimmerLoader height="4rem" className="rounded-lg mt-auto" />
+            </div>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="h-full flex flex-col">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+                <FaExclamationCircle className="mr-2 text-amber-500" /> Complaints Overview
+              </h2>
+
+              <div className="flex-1 flex flex-col justify-center">
+                {/* Simplified complaints stats with bigger numbers */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border-l-4 border-amber-400 p-4 flex flex-col items-center justify-center">
+                    <div className="absolute right-0 top-0 bg-amber-400 text-white text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
+                    <p className="text-4xl font-bold text-amber-600 mt-2">{dashboardData?.complaints?.pending}</p>
+                  </div>
+
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-400 p-4 flex flex-col items-center justify-center">
+                    <div className="absolute right-0 top-0 bg-blue-400 text-white text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
+                    <p className="text-4xl font-bold text-blue-600 mt-2">{dashboardData?.complaints?.inProgress}</p>
+                  </div>
+
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-400 p-4 flex flex-col items-center justify-center">
+                    <div className="absolute right-0 top-0 bg-green-400 text-white text-xs px-2 py-0.5 rounded-bl-md">Resolved Today</div>
+                    <p className="text-4xl font-bold text-green-600 mt-2">{dashboardData?.complaints?.resolvedToday}</p>
+                  </div>
+                </div>
+
+                {/* Total complaints indicator */}
+                <div className="bg-gray-50 p-4 rounded-lg text-center">
+                  <span className="text-gray-600">Total Active Complaints</span>
+                  <p className="text-2xl font-bold text-gray-800">{dashboardData?.complaints?.pending + dashboardData?.complaints?.inProgress}</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <MaintenanceBreakdownChart
-            maintenanceStats={maintenanceStats}
-            subtitle={
-              <div className="grid grid-cols-3 sm:grid-cols-5 mt-3 gap-2 text-center">
-                <StatInfo label="Plumbing" value={maintenanceStats?.plumbing || 0} color="#0EA5E9" />
-                <StatInfo label="Electrical" value={maintenanceStats?.electrical || 0} color="#F59E0B" />
-                <StatInfo label="Cleaning" value={maintenanceStats?.cleanliness || 0} color="#10B981" />
-                <StatInfo label="Internet" value={maintenanceStats?.internet || 0} color="#8B5CF6" />
-                <StatInfo label="Civil" value={maintenanceStats?.civil || 0} color="#6B7280" />
+        {/* Upcoming events card */}
+        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-[20rem]">
+          {loading ? (
+            <div className="h-full flex flex-col">
+              <ShimmerLoader height="1.5rem" width="60%" className="mb-4" />
+              <div className="flex-1 overflow-hidden">
+                <EventCardShimmer count={3} />
               </div>
-            }
-          />
-        </div>
+            </div>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="h-full flex flex-col">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+                <MdOutlineEvent className="mr-2 text-purple-600" /> Upcoming Events
+              </h2>
 
-        {/* Staff assignment summary - spans full width */}
-        {/* <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 xl:col-span-2">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-            <FaUsers className="mr-2 text-blue-500" /> Staff Assignment Status
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <AssignmentCard title="Wardens" total={wardenStats?.total || 0} assigned={wardenStats?.assigned || 0} icon={<FaUserTie className="text-purple-600" />} gradientFrom="#EEF2FF" gradientTo="#C7D2FE" />
-            <AssignmentCard title="Security Staff" total={securityStats?.total || 0} assigned={securityStats?.assigned || 0} icon={<MdSecurity className="text-amber-600" />} gradientFrom="#FEF3C7" gradientTo="#FDE68A" />
-            <AssignmentCard title="Maintenance Staff" total={maintenanceStats?.total || 0} assigned={maintenanceStats?.total - (maintenanceStats?.unassigned || 0)} icon={<FaTools className="text-emerald-600" />} gradientFrom="#DCFCE7" gradientTo="#86EFAC" />
-          </div>
-        </div> */}
+              <div className="flex-1 overflow-hidden">
+                <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300">
+                  {dashboardData?.events?.map((event) => (
+                    <div key={event.id} className="mb-3 bg-purple-50 p-3 rounded-lg border-l-4 border-purple-400 hover:shadow-sm transition-all">
+                      <h3 className="font-medium text-purple-900">{event.title}</h3>
+                      <div className="flex justify-between items-center mt-2 text-sm">
+                        <div className="flex items-center text-gray-600">
+                          <FaCalendarAlt className="mr-1 text-xs" />
+                          {formatDate(event.date)}
+                        </div>
+                        <div className="text-gray-600">{event.time}</div>
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">{event.location}</div>
+                    </div>
+                  ))}
+
+                  {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-gray-500">No upcoming events</div>}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
-// Helper component
-const StatInfo = ({ label, value, color, isBold = false }) => (
-  <div className="flex flex-col items-center">
-    <p className="text-gray-500 text-xs">{label}</p>
-    <p className={`text-lg ${isBold ? "font-bold" : "font-medium"}`} style={{ color }}>
-      {value}
-    </p>
-  </div>
-)
+// Helper function for date formatting
+const formatDate = (dateString) => {
+  const options = { month: "short", day: "numeric", year: "numeric" }
+  return new Date(dateString).toLocaleDateString(undefined, options)
+}
 
-// const AssignmentCard = ({ title, total, assigned, icon, gradientFrom, gradientTo }) => {
-//   const percentage = total > 0 ? Math.round((assigned / total) * 100) : 0
+// Chart components
+const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
+  // Prepare data for absolute or normalized view
+  let labels = data?.degreeWise?.map((item) => item.degree) || []
+  let boysData, girlsData
 
-//   return (
-//     <div className="relative overflow-hidden rounded-xl p-5 hover:shadow-md transition-all duration-300" style={{ background: `linear-gradient(145deg, ${gradientFrom}, ${gradientTo})` }}>
-//       <div className="flex justify-between items-start mb-4">
-//         <div>
-//           <h3 className="text-gray-700 font-medium">{title}</h3>
-//           <p className="text-gray-600 text-sm">Assignment Status</p>
-//         </div>
-//         <div className="p-2 bg-white bg-opacity-70 rounded-lg">{icon}</div>
-//       </div>
+  if (normalized) {
+    // For normalized view, convert to percentages
+    boysData =
+      data?.degreeWise?.map((item) => {
+        const total = item.boys + item.girls
+        return total > 0 ? Math.round((item.boys / total) * 100) : 0
+      }) || []
 
-//       <div className="flex items-end justify-between">
-//         <div>
-//           <p className="text-gray-600 text-xs">Assigned</p>
-//           <p className="text-2xl font-bold text-gray-800">
-//             {assigned} / {total}
-//           </p>
-//         </div>
-//         <div className="text-right">
-//           <p className="text-gray-600 text-xs">Utilization</p>
-//           <p className="text-2xl font-bold text-gray-800">{percentage}%</p>
-//         </div>
-//       </div>
+    girlsData =
+      data?.degreeWise?.map((item) => {
+        const total = item.boys + item.girls
+        return total > 0 ? Math.round((item.girls / total) * 100) : 0
+      }) || []
+  } else {
+    // For absolute view, use raw numbers
+    boysData = data?.degreeWise?.map((item) => item.boys) || []
+    girlsData = data?.degreeWise?.map((item) => item.girls) || []
+  }
 
-//       <div className="mt-3 bg-white bg-opacity-50 h-2 rounded-full overflow-hidden">
-//         <div
-//           className="h-full rounded-full"
-//           style={{
-//             width: `${percentage}%`,
-//             background: "rgba(0,0,0,0.2)",
-//           }}
-//         />
-//       </div>
-//     </div>
-//   )
-// }
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: normalized ? "Boys %" : "Boys",
+        data: boysData,
+        backgroundColor: "#3B82F6",
+        barThickness: 20,
+      },
+      {
+        label: normalized ? "Girls %" : "Girls",
+        data: girlsData,
+        backgroundColor: "#EC4899",
+        barThickness: 20,
+      },
+    ],
+  }
+
+  // Find max value to set appropriate scale
+  const allValues = [...boysData, ...girlsData]
+  const maxValue = allValues.length > 0 ? Math.max(...allValues) : 100
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            return `${context.dataset.label}: ${context.raw}${normalized ? "%" : ""}`
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0,
+          callback: function (value) {
+            return value + (normalized ? "%" : "")
+          },
+        },
+        // Set y-axis scale based on view type
+        suggestedMax: normalized ? 100 : Math.ceil(maxValue * 1.1),
+      },
+    },
+    minBarLength: 10,
+  }
+
+  return <Bar data={chartData} options={options} />
+}
+
+const HostelOccupancyChart = ({ data }) => {
+  const chartData = {
+    labels: ["Occupied", "Vacant"],
+    datasets: [
+      {
+        data: [data?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0), data?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)],
+        backgroundColor: ["#3B82F6", "#22C55E"],
+        borderColor: ["#ffffff", "#ffffff"],
+        borderWidth: 2,
+      },
+    ],
+  }
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "65%",
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          usePointStyle: true,
+          padding: 8,
+          boxWidth: 8,
+          boxHeight: 8,
+          font: {
+            size: 10,
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const total = context.dataset.data.reduce((a, b) => a + b, 0)
+            const value = context.raw
+            const percentage = Math.round((value / total) * 100)
+            return `${context.label}: ${percentage}%`
+          },
+        },
+      },
+    },
+  }
+
+  return <Doughnut data={chartData} options={options} />
+}
 
 export default Dashboard
