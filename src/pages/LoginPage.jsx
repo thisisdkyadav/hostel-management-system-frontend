@@ -185,8 +185,8 @@ const LoginPage = () => {
           </div>
 
           {/* Google Login */}
-          <div className="space-y-4 relative z-10">
-            <LoginWithGoogle callback={handleGoogleCallback} className="group w-full bg-white/90 text-gray-700 border border-gray-200 py-3.5 rounded-xl font-medium hover:bg-gray-50/90 hover:border-gray-300 hover:shadow-lg transition-all flex items-center justify-center relative overflow-hidden" />
+          <div className="w-full relative z-10">
+            <LoginWithGoogle callback={handleGoogleCallback} />
           </div>
 
           {/* Forgot Password */}
