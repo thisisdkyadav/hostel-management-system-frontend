@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../services/apiService"
+import { dashboardApi } from "../../services/dashboardApi"
 import StatCards from "../../components/common/StatCards"
 import { BiError, BiCalendarEvent } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
@@ -11,6 +12,10 @@ import VisitorStatsChart from "../../components/charts/VisitorStatsChart"
 import EventsChart from "../../components/charts/EventsChart"
 import LostFoundChart from "../../components/charts/LostFoundChart"
 import { useAuth } from "../../contexts/AuthProvider"
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend } from "chart.js"
+import { Bar } from "react-chartjs-2"
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend)
 
 const DashboardWarden = () => {
   const { profile, isAssociateWardenOrSupervisor } = useWarden()
@@ -19,6 +24,8 @@ const DashboardWarden = () => {
   const [lostFoundStats, setLostFoundStats] = useState(null)
   const [eventStats, setEventStats] = useState(null)
   const [visitorStats, setVisitorStats] = useState(null)
+  const [studentStats, setStudentStats] = useState(null)
+  const [normalizedView, setNormalizedView] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -27,11 +34,12 @@ const DashboardWarden = () => {
       try {
         setLoading(true)
 
-        const [lostAndFoundData, eventsData, visitorData] = await Promise.all([statsApi.getLostAndFoundStats(), statsApi.getEventStats(profile?.hostelId?._id), statsApi.getVisitorStats(profile?.hostelId?._id)])
+        const [lostAndFoundData, eventsData, visitorData, studentData] = await Promise.all([statsApi.getLostAndFoundStats(), statsApi.getEventStats(profile?.hostelId?._id), statsApi.getVisitorStats(profile?.hostelId?._id), dashboardApi.getStudentStatistics()])
 
         setLostFoundStats(lostAndFoundData)
         setEventStats(eventsData)
         setVisitorStats(visitorData)
+        setStudentStats({ students: studentData.data })
       } catch (err) {
         console.error("Error fetching stats:", err)
         setError("Failed to load dashboard statistics")
@@ -78,6 +86,13 @@ const DashboardWarden = () => {
   // Key statistics data
   const keyStats = [
     {
+      title: "Total Students",
+      value: studentStats?.students?.grandTotal || 0,
+      subtitle: `${studentStats?.students?.totalBoys || 0} Boys, ${studentStats?.students?.totalGirls || 0} Girls`,
+      icon: <FaUsers />,
+      color: "#6366F1",
+    },
+    {
       title: "Total Visitors",
       value: visitorStats?.total || 0,
       subtitle: `${visitorStats?.today || 0} Today`,
@@ -85,18 +100,11 @@ const DashboardWarden = () => {
       color: "#3B82F6",
     },
     {
-      title: "Lost & Found Items",
-      value: lostFoundStats?.total || 0,
-      subtitle: `${lostFoundStats?.active || 0} Active Items`,
-      icon: <FiSearch />,
-      color: "#F59E0B",
-    },
-    {
       title: "Events",
       value: eventStats?.total || 0,
       subtitle: `${eventStats?.upcoming || 0} Upcoming`,
       icon: <BiCalendarEvent />,
-      color: "#6366F1",
+      color: "#F59E0B",
     },
   ]
 
@@ -105,9 +113,7 @@ const DashboardWarden = () => {
       <header className="flex justify-between items-center bg-white rounded-xl shadow-sm px-6 py-4 mb-6">
         <div className="flex items-center">
           <MdDashboard className="text-blue-600 text-2xl mr-3" />
-          <h1 className="text-2xl font-bold text-gray-800">
-            {authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : isAssociateWardenOrSupervisor ? "Associate Warden" : "Warden"} Dashboard
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-800">{authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : isAssociateWardenOrSupervisor ? "Associate Warden" : "Warden"} Dashboard</h1>
         </div>
         <div className="flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg">
           <FaUser className="w-4 h-4" />
@@ -118,6 +124,53 @@ const DashboardWarden = () => {
       {/* Key metrics cards */}
       <div className="mb-6">
         <StatCards stats={keyStats} columns={3} />
+      </div>
+
+      {/* Student distribution section */}
+      <div className="mb-6 bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-700 flex items-center">
+            <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
+          </h2>
+
+          <div className="flex items-center">
+            <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs">
+              <button onClick={() => setNormalizedView(false)} className={`px-2 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-500 text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                Absolute
+              </button>
+              <button onClick={() => setNormalizedView(true)} className={`px-2 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-500 text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                Normalized
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-64">
+          {studentStats ? (
+            <DegreeWiseStudentsChart data={studentStats?.students} normalized={normalizedView} />
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin" />
+            </div>
+          )}
+        </div>
+
+        {studentStats && (
+          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+            <div className="bg-blue-50 p-2 rounded-lg">
+              <p className="text-xs text-gray-500">Total Boys</p>
+              <p className="text-lg font-bold text-blue-600">{studentStats?.students?.totalBoys || 0}</p>
+            </div>
+            <div className="bg-pink-50 p-2 rounded-lg">
+              <p className="text-xs text-gray-500">Total Girls</p>
+              <p className="text-lg font-bold text-pink-600">{studentStats?.students?.totalGirls || 0}</p>
+            </div>
+            <div className="bg-indigo-50 p-2 rounded-lg">
+              <p className="text-xs text-gray-500">Grand Total</p>
+              <p className="text-lg font-bold text-indigo-600">{studentStats?.students?.grandTotal || 0}</p>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -161,5 +214,91 @@ const StatInfo = ({ label, value, color, isBold = false }) => (
     </p>
   </div>
 )
+
+// Chart component for degree-wise student distribution
+const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
+  // Prepare data for absolute or normalized view
+  let labels = data?.degreeWise?.map((item) => item.degree) || []
+  let boysData, girlsData
+
+  if (normalized) {
+    // For normalized view, convert to percentages
+    boysData =
+      data?.degreeWise?.map((item) => {
+        const total = item.boys + item.girls
+        return total > 0 ? Math.round((item.boys / total) * 100) : 0
+      }) || []
+
+    girlsData =
+      data?.degreeWise?.map((item) => {
+        const total = item.boys + item.girls
+        return total > 0 ? Math.round((item.girls / total) * 100) : 0
+      }) || []
+  } else {
+    // For absolute view, use raw numbers
+    boysData = data?.degreeWise?.map((item) => item.boys) || []
+    girlsData = data?.degreeWise?.map((item) => item.girls) || []
+  }
+
+  const chartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: normalized ? "Boys %" : "Boys",
+        data: boysData,
+        backgroundColor: "#3B82F6",
+        barThickness: 20,
+      },
+      {
+        label: normalized ? "Girls %" : "Girls",
+        data: girlsData,
+        backgroundColor: "#EC4899",
+        barThickness: 20,
+      },
+    ],
+  }
+
+  // Find max value to set appropriate scale
+  const allValues = [...boysData, ...girlsData]
+  const maxValue = allValues.length > 0 ? Math.max(...allValues) : 100
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            return `${context.dataset.label}: ${context.raw}${normalized ? "%" : ""}`
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0,
+          callback: function (value) {
+            return value + (normalized ? "%" : "")
+          },
+        },
+        // Set y-axis scale based on view type
+        suggestedMax: normalized ? 100 : Math.ceil(maxValue * 1.1),
+      },
+    },
+    minBarLength: 10,
+  }
+
+  return <Bar data={chartData} options={options} />
+}
 
 export default DashboardWarden
