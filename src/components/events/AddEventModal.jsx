@@ -4,6 +4,7 @@ import Modal from "../common/Modal"
 import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
+import { getCurrentDateTimeForInput, toISOString } from "../../utils/dateUtils"
 
 const AddEventModal = ({ show, onClose, onEventAdded }) => {
   const { hostelList } = useGlobal()
@@ -11,7 +12,7 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
   const [formData, setFormData] = useState({
     eventName: "",
     description: "",
-    dateAndTime: new Date().toISOString().slice(0, 16),
+    dateAndTime: getCurrentDateTimeForInput(),
     hostelId: "all",
     gender: "all",
   })
@@ -33,7 +34,7 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
     const eventData = {
       eventName,
       description,
-      dateAndTime,
+      dateAndTime: toISOString(dateAndTime),
       ...(hostelId !== "all" && { hostelId }),
       ...(gender !== "all" ? { gender } : { gender: null }),
     }
