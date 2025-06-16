@@ -16,6 +16,8 @@ import Complaint from "../pages/Complaints.jsx"
 import Students from "../pages/Students"
 import Events from "../pages/Events.jsx"
 import Homepage from "../pages/Homepage.jsx"
+import AboutPage from "../pages/AboutPage.jsx"
+import ContactPage from "../pages/ContactPage.jsx"
 
 // import related to warden
 import WardenLayout from "../layouts/WardenLayout.jsx"
@@ -77,6 +79,8 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
 
       {/* Routes for Super Admin related pages */}
       <Route

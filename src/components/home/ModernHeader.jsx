@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
-import { FiMenu, FiX, FiChevronDown, FiLogOut, FiUser, FiHome, FiBook, FiPhone, FiInfo } from "react-icons/fi"
+import { FiMenu, FiX, FiChevronDown, FiLogOut, FiUser, FiHome, FiPhone, FiInfo, FiCode, FiBook, FiExternalLink } from "react-icons/fi"
 
 const ModernHeader = () => {
   const { user, getHomeRoute, logout } = useAuth()
@@ -11,8 +11,11 @@ const ModernHeader = () => {
   const [activeDropdown, setActiveDropdown] = useState(null)
   const dropdownRef = useRef(null)
   const profileRef = useRef(null)
+  const location = useLocation()
+  const isAboutPage = location.pathname === "/about"
 
-  const navItems = [
+  // Different nav items based on current page
+  const homeNavItems = [
     {
       label: "Resources",
       icon: <FiBook className="mr-2" />,
@@ -23,9 +26,16 @@ const ModernHeader = () => {
         { label: "Menu", path: "/" },
       ],
     },
-    { label: "Contact", icon: <FiPhone className="mr-2" />, path: "/" },
-    { label: "About", icon: <FiInfo className="mr-2" />, path: "/" },
+    { label: "Contact", icon: <FiPhone className="mr-2" />, path: "/contact" },
+    { label: "About", icon: <FiInfo className="mr-2" />, path: "/about" },
   ]
+
+  const aboutNavItems = [
+    { label: "Home", icon: <FiHome className="mr-2" />, path: "/" },
+    { label: "Dev Team", icon: <FiCode className="mr-2" />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
+  ]
+
+  const navItems = isAboutPage ? aboutNavItems : homeNavItems
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,7 +117,7 @@ const ModernHeader = () => {
                           {item.submenu.map((subItem, subIndex) => (
                             <a
                               key={subIndex}
-                              href={subItem.path.startsWith("/") ? subItem.path : subItem.path}
+                              href={subItem.path}
                               target={subItem.path.startsWith("http") ? "_blank" : undefined}
                               rel={subItem.path.startsWith("http") ? "noopener noreferrer" : undefined}
                               className="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1"
@@ -119,6 +129,12 @@ const ModernHeader = () => {
                       </div>
                     )}
                   </>
+                ) : item.isExternal ? (
+                  <a href={item.path} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 flex items-center">
+                    {item.icon}
+                    {item.label}
+                    <FiExternalLink className="ml-1.5 w-3.5 h-3.5" />
+                  </a>
                 ) : (
                   <Link to={item.path} className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 flex items-center">
                     {item.icon}
@@ -205,7 +221,7 @@ const ModernHeader = () => {
                       {item.submenu.map((subItem, subIndex) => (
                         <a
                           key={subIndex}
-                          href={subItem.path.startsWith("/") ? subItem.path : subItem.path}
+                          href={subItem.path}
                           target={subItem.path.startsWith("http") ? "_blank" : undefined}
                           rel={subItem.path.startsWith("http") ? "noopener noreferrer" : undefined}
                           className="block py-2 px-3 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
@@ -217,6 +233,12 @@ const ModernHeader = () => {
                     </div>
                   </div>
                 </>
+              ) : item.isExternal ? (
+                <a href={item.path} target="_blank" rel="noopener noreferrer" className="flex items-center w-full px-3 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>
+                  {item.icon}
+                  {item.label}
+                  <FiExternalLink className="ml-1.5 w-3.5 h-3.5" />
+                </a>
               ) : (
                 <Link to={item.path} className="flex items-center w-full px-3 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors font-medium" onClick={() => setIsMenuOpen(false)}>
                   {item.icon}
