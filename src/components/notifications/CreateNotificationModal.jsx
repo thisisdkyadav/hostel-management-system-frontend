@@ -6,7 +6,6 @@ import { useGlobal } from "../../contexts/GlobalProvider"
 
 const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   const { hostelList } = useGlobal()
-  console.log(hostelList, "Hostel List from Global Context")
 
   if (!isOpen) return null
 

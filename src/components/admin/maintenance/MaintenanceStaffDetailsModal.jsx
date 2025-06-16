@@ -7,7 +7,6 @@ import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
 const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
-  console.log("staff", staff)
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [attendanceRecords, setAttendanceRecords] = useState([])

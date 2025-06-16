@@ -76,8 +76,6 @@ export const hostelApi = {
   },
 
   getRoomChangeRequests: async (hostelId, filters = {}) => {
-    console.log("Fetching room change requests for hostel:", hostelId, "with filters:", filters)
-
     const queryParams = new URLSearchParams(filters).toString()
     const url = `${baseUrl}/hostel/room-change-requests/${hostelId}${queryParams ? `?${queryParams}` : ""}`
 

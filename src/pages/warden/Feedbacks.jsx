@@ -44,7 +44,6 @@ const Feedbacks = () => {
     try {
       setIsLoading(true)
       const response = await feedbackApi.getFeedbacks()
-      console.log("Feedbacks response:", response)
 
       setFeedbacks(response.feedbacks || [])
     } catch (error) {

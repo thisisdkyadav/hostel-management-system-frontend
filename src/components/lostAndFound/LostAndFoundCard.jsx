@@ -32,8 +32,6 @@ const LostAndFoundCard = ({ item, refresh }) => {
   }
 
   const handleSaveEdit = async (updatedItem) => {
-    console.log(updatedItem)
-
     try {
       const response = await lostAndFoundApi.updateLostItem(updatedItem._id, updatedItem)
       if (response.success) {
@@ -49,8 +47,6 @@ const LostAndFoundCard = ({ item, refresh }) => {
   }
 
   const handleDelete = async (itemId) => {
-    console.log(itemId)
-
     try {
       const response = await lostAndFoundApi.deleteLostItem(itemId)
       if (response.success) {

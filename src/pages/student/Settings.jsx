@@ -29,7 +29,6 @@ const Settings = () => {
     const newProfile = await updateProfile(userId, formData)
     userId = null
     userId = newProfile.userId
-    console.log("new userId is: ", userId)
     alert("Profile updated successfully!")
     setIsOpenProfile(false)
     window.location.reload()
@@ -46,8 +45,6 @@ const Settings = () => {
       })
     }
   }, [userId])
-
-  console.log("student is: ", student)
 
   if (error) {
     return (

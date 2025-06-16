@@ -65,7 +65,6 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       const response = await eventsApi.getAllEvents()
-      console.log("response is: ", response)
       setEvents(response.events || [])
     } catch (error) {
       console.error("Error fetching events:", error)

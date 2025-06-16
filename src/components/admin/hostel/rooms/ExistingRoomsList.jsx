@@ -29,11 +29,8 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const fetchRooms = async () => {
     try {
       setIsLoading(true)
-      console.log("Fetching rooms for hostel:", hostel.id)
 
       const response = await hostelApi.getRoomsForEdit(hostel.id)
-      console.log("Fetched rooms:", response)
-
       if (response?.success) {
         setRooms(response.data)
         setFilteredRooms(response.data)

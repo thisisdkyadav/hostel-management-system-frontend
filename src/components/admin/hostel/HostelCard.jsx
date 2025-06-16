@@ -7,8 +7,6 @@ import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
 
 const HostelCard = ({ hostel, onUpdate }) => {
-  console.log("HostelCard", hostel)
-
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 

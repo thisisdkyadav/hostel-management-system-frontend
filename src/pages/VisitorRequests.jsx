@@ -35,11 +35,6 @@ const VisitorRequests = () => {
         profiles = await visitorApi.getVisitorProfiles()
       }
 
-      console.log("Visitor Requests Summary:", requests)
-      if (user.role === "Student") {
-        console.log("Visitor Profiles:", profiles)
-      }
-
       setVisitorRequests(requests.data || [])
       setVisitorProfiles(profiles.data || [])
     } catch (err) {

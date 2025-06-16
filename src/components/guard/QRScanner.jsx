@@ -79,7 +79,6 @@ const QRScanner = ({ onRefresh }) => {
       const email = data.e
       const encryptedData = data.d
       setError("")
-      console.log(email, lastProcessedEmailRef.current, "email and scannedStudent")
 
       if (lastProcessedEmailRef.current === email) return
 
@@ -103,9 +102,7 @@ const QRScanner = ({ onRefresh }) => {
     }
   }
 
-  const handleScanError = (err) => {
-    console.log("Scan error:", err)
-  }
+  const handleScanError = (err) => {}
 
   const handleReset = () => {
     setScannedStudent(null)

@@ -12,7 +12,6 @@ const EventCard = ({ event, refresh }) => {
   const [isEditing, setIsEditing] = useState(false)
 
   const isEventUpcoming = isUpcoming(event.dateAndTime)
-  console.log("event is: ", event)
   const { date, time } = formatDateTime(event.dateAndTime)
 
   const handleEditClick = () => {

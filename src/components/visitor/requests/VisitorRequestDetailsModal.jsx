@@ -49,7 +49,6 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     setLoading(true)
     try {
       const response = await visitorApi.getVisitorRequestById(requestId)
-      console.log("Fetched request details:", response.data)
 
       setRequest(response.data)
     } catch (error) {

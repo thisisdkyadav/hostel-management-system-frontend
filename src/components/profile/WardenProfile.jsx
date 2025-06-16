@@ -13,8 +13,6 @@ const WardenProfile = () => {
   const { profile, fetchProfile, isAssociateWardenOrSupervisor } = useWarden()
   const { user: authUser } = useAuth()
 
-  console.log("profile", profile)
-
   const [wardenData, setWardenData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)

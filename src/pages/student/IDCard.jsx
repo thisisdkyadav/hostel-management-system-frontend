@@ -17,7 +17,6 @@ const IDCard = () => {
     const fetchIDCard = async () => {
       try {
         setLoading(true)
-        console.log(user._id)
         const data = await IDcardApi.getIDcard(user._id)
         setIdCardData(data)
       } catch (err) {

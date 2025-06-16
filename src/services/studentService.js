@@ -5,7 +5,6 @@ export const fetchStudentProfile = async (userId) => {
     console.error("Error: User ID is undefined!")
     return { error: true, message: "User ID is required" }
   }
-  console.log("userId is: ", userId)
 
   try {
     const response = await fetch(`${baseUrl}/student/profile/${userId}`, {
@@ -31,8 +30,6 @@ export const fetchStudentProfile = async (userId) => {
 
 export const updateProfile = async (userId, profileData) => {
   try {
-    console.log("profile data is: ", profileData)
-
     const response = await fetch(`${baseUrl}/student/profile/update/${userId}`, {
       method: "PUT",
       headers: {

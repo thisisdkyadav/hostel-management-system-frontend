@@ -10,8 +10,6 @@ const WardenLayout = () => {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
-  console.log("User in WardenLayout:", user) // Debugging line;
-
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?")
     if (!confirmLogout) return

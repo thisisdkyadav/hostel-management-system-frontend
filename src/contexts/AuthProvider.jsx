@@ -122,8 +122,6 @@ export const AuthProvider = ({ children }) => {
   const getHomeRoute = () => {
     if (!user) return "/login"
 
-    console.log("user role", user.role)
-
     switch (user.role) {
       case "Student":
         return "/student"
@@ -166,12 +164,9 @@ export const AuthProvider = ({ children }) => {
     setIsStandalone(standalone)
 
     if (isOnline) {
-      console.log("Online")
       checkAuth()
     } else {
-      console.log("Offline")
       const storedUser = localStorage.getItem("user")
-      console.log("Stored user", storedUser)
 
       if (storedUser) {
         setUser(JSON.parse(storedUser))
@@ -183,9 +178,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isOnline])
 
-  useEffect(() => {
-    console.log("User", user)
-  }, [user])
+  useEffect(() => {}, [user])
 
   const value = {
     user,

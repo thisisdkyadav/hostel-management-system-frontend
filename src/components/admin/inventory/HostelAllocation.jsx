@@ -7,7 +7,6 @@ import { useGlobal } from "../../../contexts/GlobalProvider"
 
 const HostelAllocation = () => {
   const { hostelList } = useGlobal()
-  console.log("hostelList", hostelList)
 
   const [hostelInventory, setHostelInventory] = useState([])
   const [totalPages, setTotalPages] = useState(1)

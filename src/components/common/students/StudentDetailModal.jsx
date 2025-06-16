@@ -16,7 +16,6 @@ import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()
-  console.log("Selected Student:", selectedStudent)
 
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
@@ -58,7 +57,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     try {
       setLoading(true)
       const response = await studentApi.getStudentDetails(selectedStudent.userId)
-      console.log("Student Details:", response.data)
       setStudentDetails(response.data)
     } catch (error) {
       console.error("Error fetching student details:", error)
@@ -100,7 +98,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     try {
       setLoadingVisitorRequests(true)
       const response = await visitorApi.getStudentVisitorRequests(selectedStudent.userId)
-      console.log("Visitor Requests:", response)
 
       setVisitorRequests(response.data || [])
     } catch (error) {
@@ -169,8 +166,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     if (selectedStudent?.userId && !isImport) {
       fetchStudentDetails()
     } else if (isImport) {
-      console.log("Selected Student for Import:", selectedStudent)
-
       setStudentDetails({
         ...selectedStudent,
         image: selectedStudent.profileImage || "",
