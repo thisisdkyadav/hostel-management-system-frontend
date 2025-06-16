@@ -76,7 +76,6 @@ const UnitsAndRooms = () => {
     try {
       setLoading(true)
       const response = await hostelApi.getUnits(hostelId)
-      console.log("Units response:", response)
       const fetchedUnits = response || []
       setAllUnits(fetchedUnits)
 
@@ -110,7 +109,6 @@ const UnitsAndRooms = () => {
         response = await hostelApi.getRooms(queryParams)
       }
 
-      console.log("Rooms response:", response)
       const fetchedRooms = response?.data || []
       setAllRooms(fetchedRooms)
     } catch (error) {
@@ -140,7 +138,6 @@ const UnitsAndRooms = () => {
     try {
       setLoading(true)
       const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
-      console.log("Update allocations response:", response)
       if (response.success) {
         setShowAllocateModal(false)
         const navigateTo = `${getHomeRoute()}/hostels/${encodedHostelName}`

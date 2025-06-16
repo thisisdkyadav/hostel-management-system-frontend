@@ -15,7 +15,6 @@ const AddStudentEntry = () => {
   const fetchRecentEntries = async () => {
     try {
       const data = await securityApi.getRecentStudentEntries()
-      console.log(data, "Recent Entries from API")
       setEntries(data)
     } catch (error) {
       console.error("Error fetching recent entries:", error)

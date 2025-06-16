@@ -21,7 +21,6 @@ const Hostels = () => {
   const fetchHostels = async () => {
     try {
       const response = await adminApi.getAllHostels()
-      console.log("Fetched hostels:", response.data)
 
       setHostels(response || [])
     } catch (error) {

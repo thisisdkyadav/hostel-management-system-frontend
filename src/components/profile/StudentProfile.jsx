@@ -19,7 +19,6 @@ const StudentProfile = ({ user }) => {
       setError(null)
 
       const response = await studentApi.getStudent()
-      console.log("Student data:", response)
       setStudentData(response.data)
     } catch (error) {
       console.error("Error fetching student data:", error)

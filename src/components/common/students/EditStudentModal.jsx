@@ -14,8 +14,6 @@ const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
   }, [studentData])
 
   const handleSubmit = async (updatedData) => {
-    console.log("Updated Data:", updatedData)
-
     try {
       setLoading(true)
       await studentApi.updateStudent(studentData.userId, updatedData)

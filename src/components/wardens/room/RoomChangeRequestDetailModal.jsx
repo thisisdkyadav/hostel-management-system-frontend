@@ -23,7 +23,6 @@ const RoomChangeRequestDetailModal = ({ requestId, onClose, onUpdate }) => {
       setLoading(true)
       // Replace with actual API call
       const response = await hostelApi.getRoomChangeRequestById(requestId)
-      console.log("Fetched request details:", response)
 
       setRequest(response)
       setRequestedRoomDetails(response.requestedRoom)

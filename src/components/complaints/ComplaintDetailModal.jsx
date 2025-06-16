@@ -4,8 +4,6 @@ import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
 import { getMediaUrl } from "../../utils/mediaUtils"
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
-  console.log(selectedComplaint)
-
   if (!selectedComplaint) return null
 
   return (

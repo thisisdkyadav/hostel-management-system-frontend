@@ -78,7 +78,6 @@ const Students = () => {
   const handleUpdateAllocations = async (allocations, hostelId) => {
     try {
       const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
-      console.log("Update allocations response:", response)
       if (response.success) {
         refreshStudents()
         const errors = response.errors || []
@@ -109,8 +108,6 @@ const Students = () => {
   const fetchFullStudentDetails = async (userIds) => {
     try {
       const response = await studentApi.getStudentsByIds(userIds)
-      console.log("Fetched student details:", response)
-
       return response.data
     } catch (error) {
       console.error("Error fetching student details:", error)

@@ -30,8 +30,6 @@ export const authApi = {
   },
 
   loginWithGoogle: async (token) => {
-    console.log("Google token:", token)
-
     const response = await fetch(`${baseUrl}/auth/google`, {
       method: "POST",
       ...fetchOptions,
@@ -123,8 +121,6 @@ export const studentApi = {
   },
 
   getStudentDetails: async (userID) => {
-    console.log("Fetching student details for userID:", userID)
-
     const response = await fetch(`${baseUrl}/student/profile/details/${userID}`, {
       method: "GET",
       ...fetchOptions,
@@ -1202,7 +1198,6 @@ export const hostelApi = {
 
     if (!response.ok) {
       const errorData = await response.json()
-      console.log("Error allocating room:", errorData)
 
       throw new Error(errorData.message || "Failed to allocate room")
     }
@@ -1240,8 +1235,6 @@ export const hostelApi = {
   },
 
   getRoomChangeRequests: async (hostelId, filters = {}) => {
-    console.log("Fetching room change requests for hostel:", hostelId, "with filters:", filters)
-
     const queryParams = new URLSearchParams(filters).toString()
     const url = `${baseUrl}/hostel/room-change-requests/${hostelId}${queryParams ? `?${queryParams}` : ""}`
 
@@ -1525,7 +1518,6 @@ export default {
 }
 
 export const addDisCoAction = async (data) => {
-  console.log("Function called")
   const response = await fetch(`${baseUrl}/disco/add`, {
     method: "POST",
     headers: {

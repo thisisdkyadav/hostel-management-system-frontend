@@ -135,10 +135,6 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
     setIsLoading(true)
 
     try {
-      // Replace with actual API call including units data
-      console.log("Adding rooms:", roomsToAdd)
-      if (isUnitBased) console.log("Adding units:", unitsToAdd)
-
       const response = await hostelApi.addRooms(hostel.id, {
         rooms: roomsToAdd,
         units: isUnitBased ? unitsToAdd : undefined,

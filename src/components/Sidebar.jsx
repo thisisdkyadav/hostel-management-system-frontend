@@ -40,13 +40,6 @@ const Sidebar = ({ navItems }) => {
   }, [user, wardenContext?.profile, isWardenRole])
 
   useEffect(() => {
-    console.log("Active hostel ID changed:", activeHostelId)
-    return () => {
-      console.log("Cleanup for active hostel ID effect")
-    }
-  }, [activeHostelId])
-
-  useEffect(() => {
     const currentItem = navItems.find((item) => {
       if (location.pathname === item.path) return true
       if (item.pathPattern && new RegExp(item.pathPattern).test(location.pathname)) return true

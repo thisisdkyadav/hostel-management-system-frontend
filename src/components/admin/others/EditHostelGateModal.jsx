@@ -55,7 +55,6 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
     if (window.confirm("Are you sure you want to delete this hostel gate login?")) {
       try {
         setLoading(true)
-        console.log(gate.hostelId._id)
 
         await hostelGateApi.deleteHostelGate(gate.hostelId._id)
         alert("Hostel gate login deleted successfully!")

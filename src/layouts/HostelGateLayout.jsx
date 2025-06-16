@@ -9,8 +9,6 @@ const HostelGateLayout = () => {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
-  console.log("User in HostelGateLayout:", user)
-
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?")
     if (!confirmLogout) return

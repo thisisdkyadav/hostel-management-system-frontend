@@ -30,9 +30,6 @@ const LostAndFound = () => {
   const fetchLostItems = async () => {
     try {
       const response = await lostAndFoundApi.getAllLostItems()
-
-      console.log("Fetched lost items:", response.lostAndFoundItems)
-
       setLostItems(response.lostAndFoundItems || [])
     } catch (error) {
       console.error("Error fetching lost items:", error)
