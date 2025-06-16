@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog, FaPhone, FaEye } from "react-icons/fa"
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
-
+import { getMediaUrl } from "../../../utils/mediaUtils"
 const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
@@ -53,7 +53,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         <div className="flex items-center">
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mr-4 overflow-hidden">
             {staff.profileImage ? (
-              <img src={staff.profileImage} alt={staff.name} className="w-full h-full object-cover" />
+              <img src={getMediaUrl(staff.profileImage)} alt={staff.name} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-[#1360AB] flex items-center justify-center text-[#ffffff] text-xl">
                 <FaUserCog />

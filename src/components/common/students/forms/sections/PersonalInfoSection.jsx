@@ -3,7 +3,7 @@ import { FaUserGraduate } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import FormField from "../../../FormField"
 import ImageUploadModal from "../../../ImageUploadModal"
-
+import { getMediaUrl } from "../../../../utils/mediaUtils"
 const PersonalInfoSection = ({ data, onChange }) => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
 
@@ -26,7 +26,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
       <div className="flex flex-col items-center mb-6">
         <div className="relative h-24 w-24 rounded-full mb-2">
           {data.profileImage ? (
-            <img src={data.profileImage} alt={data.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+            <img src={getMediaUrl(data.profileImage)} alt={data.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
           ) : (
             <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
               <FaUserGraduate className="h-12 w-12 text-[#1360AB]" />

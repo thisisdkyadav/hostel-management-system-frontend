@@ -1,6 +1,6 @@
 import React from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "N/A"
@@ -32,7 +32,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
         <div className="md:w-1/3">
           <div className="aspect-square w-full max-w-[250px] mx-auto rounded-full overflow-hidden bg-gray-100">
             {student.profileImage ? (
-              <img src={student.profileImage} alt={student.name} className="w-full h-full object-cover" />
+              <img src={getMediaUrl(student.profileImage)} alt={student.name} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-blue-50">
                 <FaUser className="text-[#1360AB] w-1/3 h-1/3" />

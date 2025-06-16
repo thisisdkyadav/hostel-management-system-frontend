@@ -6,7 +6,7 @@ import { accessControlApi } from "../../../services/accessControlApi"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
 import ImageUploadModal from "../../common/ImageUploadModal"
-
+import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useAdmin()
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
@@ -227,7 +227,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             <div className="flex flex-col items-center mb-6">
               <div className="relative h-24 w-24 rounded-full mb-2">
                 {formData.profileImage ? (
-                  <img src={formData.profileImage} alt={warden.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+                  <img src={getMediaUrl(formData.profileImage)} alt={warden.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
                 ) : (
                   <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
                     <FaBuilding className="h-12 w-12 text-[#1360AB]" />

@@ -2,7 +2,7 @@ import React from "react"
 import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle } from "react-icons/fa"
 import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
   console.log(selectedComplaint)
 
@@ -56,7 +56,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal }) => {
             </h4>
             <div className="flex items-center">
               {selectedComplaint.reportedBy?.profileImage ? (
-                <img src={selectedComplaint.reportedBy.profileImage} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
+                <img src={getMediaUrl(selectedComplaint.reportedBy.profileImage)} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
               ) : (
                 <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-4">{selectedComplaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}

@@ -4,7 +4,7 @@ import { IDcardApi } from "../../services/IDcardApi"
 import { HiCamera, HiInformationCircle } from "react-icons/hi"
 import Button from "../../components/common/Button"
 import IDCardUploadModal from "../../components/IDCardUploadModal"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const IDCard = () => {
   const { user } = useAuth()
   const [idCardData, setIdCardData] = useState({ front: null, back: null })
@@ -55,7 +55,7 @@ const IDCard = () => {
         <div className="flex flex-col items-center justify-center">
           {imageUrl ? (
             <div className="relative mb-4 w-full">
-              <img src={imageUrl} alt={`ID Card ${title}`} className="w-full h-auto rounded-lg border border-gray-200 shadow-sm" />
+              <img src={getMediaUrl(imageUrl)} alt={`ID Card ${title}`} className="w-full h-auto rounded-lg border border-gray-200 shadow-sm" />
               <button onClick={() => handleUploadClick(side)} className="absolute bottom-3 right-3 bg-[#1360AB] text-white p-2 rounded-full hover:bg-[#0F4C81] transition-colors shadow-md">
                 <HiCamera className="w-5 h-5" />
               </button>

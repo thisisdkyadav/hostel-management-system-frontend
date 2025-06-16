@@ -1,14 +1,14 @@
 import React from "react"
 import { IoMdSchool } from "react-icons/io"
 import { FaBuilding, FaEnvelope, FaIdCard, FaEye } from "react-icons/fa"
-
+import { getMediaUrl } from "../../../utils/mediaUtils"
 const StudentCard = ({ student, onClick }) => {
   return (
     <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 overflow-hidden" onClick={onClick}>
       <div className="flex justify-between items-start">
         <div className="flex items-center">
           {student.profileImage ? (
-            <img src={student.profileImage} alt={student.name} className="h-14 w-14 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
+            <img src={getMediaUrl(student.profileImage)} alt={student.name} className="h-14 w-14 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
           ) : (
             <div className="h-14 w-14 rounded-full bg-blue-50 flex items-center justify-center border-2 border-[#1360AB]">
               <IoMdSchool className="text-[#1360AB] text-xl" />

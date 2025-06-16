@@ -1,7 +1,7 @@
 import { FaBuilding, FaEye } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -40,7 +40,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
           <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
             <div className="flex items-center">
               {complaint.reportedBy?.profileImage ? (
-                <img src={complaint.reportedBy.profileImage} alt={complaint.reportedBy.name} className="h-8 w-8 rounded-full object-cover mr-2" />
+                <img src={getMediaUrl(complaint.reportedBy.profileImage)} alt={complaint.reportedBy.name} className="h-8 w-8 rounded-full object-cover mr-2" />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-2">{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}

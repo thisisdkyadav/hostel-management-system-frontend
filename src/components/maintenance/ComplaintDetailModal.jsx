@@ -3,7 +3,7 @@ import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle } from "rea
 import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
 import { maintenanceApi } from "../../services/apiService"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onUpdate, show = true }) => {
   const [newStatus, setNewStatus] = useState(selectedComplaint?.status || "Pending")
   const [updating, setUpdating] = useState(false)
@@ -70,7 +70,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onUpdate,
             </h4>
             <div className="flex items-center">
               {selectedComplaint.reportedBy?.profileImage ? (
-                <img src={selectedComplaint.reportedBy.profileImage} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
+                <img src={getMediaUrl(selectedComplaint.reportedBy.profileImage)} alt={selectedComplaint.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
               ) : (
                 <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-4">{selectedComplaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}
