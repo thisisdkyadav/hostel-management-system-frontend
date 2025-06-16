@@ -3,6 +3,7 @@ import { FaCalendarAlt, FaSave, FaBuilding, FaUserFriends } from "react-icons/fa
 import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
+import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   const { hostelList } = useGlobal()
@@ -10,7 +11,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   const [formData, setFormData] = useState({
     eventName: event.eventName,
     description: event.description,
-    dateAndTime: event.dateAndTime.slice(0, 16),
+    dateAndTime: formatDateTimeForInput(event.dateAndTime),
     hostelId: event.hostelId || "all",
     gender: event.gender || "all",
   })
@@ -29,6 +30,7 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
     const updatedEvent = {
       ...event,
       ...formData,
+      dateAndTime: toISOString(formData.dateAndTime),
     }
 
     if (updatedEvent.hostelId === "all") {

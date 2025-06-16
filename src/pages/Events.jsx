@@ -8,6 +8,7 @@ import EventCard from "../components/events/EventCard"
 import AddEventModal from "../components/events/AddEventModal"
 import { useAuth } from "../contexts/AuthProvider"
 import { eventsApi } from "../services/apiService"
+import { isUpcoming } from "../utils/dateUtils"
 
 const EVENT_FILTER_TABS = [
   { label: "All Events", value: "all", color: "[#1360AB]" },
@@ -21,15 +22,32 @@ const filterEvents = (events, filter, searchTerm) => {
   let filtered = events
 
   if (filter === "upcoming") {
-    filtered = events.filter((event) => new Date(event.dateAndTime) > now)
+    filtered = events.filter((event) => isUpcoming(event.dateAndTime))
   } else if (filter === "past") {
-    filtered = events.filter((event) => new Date(event.dateAndTime) < now)
+    filtered = events.filter((event) => !isUpcoming(event.dateAndTime))
   }
 
   if (searchTerm) {
     const term = searchTerm.toLowerCase()
     filtered = filtered.filter((event) => event.eventName.toLowerCase().includes(term) || event.description.toLowerCase().includes(term))
   }
+
+  // Sort events: upcoming by closest date first, past by most recent first
+  filtered.sort((a, b) => {
+    const dateA = new Date(a.dateAndTime)
+    const dateB = new Date(b.dateAndTime)
+
+    if (filter === "upcoming") {
+      return dateA - dateB // Closest upcoming events first
+    } else if (filter === "past") {
+      return dateB - dateA // Most recent past events first
+    } else {
+      // For "all" tab - upcoming first, then past (most recent first)
+      if (isUpcoming(a.dateAndTime) && !isUpcoming(b.dateAndTime)) return -1
+      if (!isUpcoming(a.dateAndTime) && isUpcoming(b.dateAndTime)) return 1
+      return dateA > dateB ? 1 : -1
+    }
+  })
 
   return filtered
 }
@@ -47,6 +65,7 @@ const Events = () => {
   const fetchEvents = async () => {
     try {
       const response = await eventsApi.getAllEvents()
+      console.log("response is: ", response)
       setEvents(response.events || [])
     } catch (error) {
       console.error("Error fetching events:", error)

@@ -4,21 +4,15 @@ import { BsClock } from "react-icons/bs"
 import EventEditForm from "./EventEditForm"
 import { eventsApi } from "../../services/apiService"
 import { useAuth } from "../../contexts/AuthProvider"
+import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 
 const EventCard = ({ event, refresh }) => {
   const { user } = useAuth()
 
   const [isEditing, setIsEditing] = useState(false)
 
-  const formatDateTime = (dateTimeString) => {
-    const dateTime = new Date(dateTimeString)
-    return {
-      date: dateTime.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
-      time: dateTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-    }
-  }
-
-  const isUpcoming = new Date(event.dateAndTime) > new Date()
+  const isEventUpcoming = isUpcoming(event.dateAndTime)
+  console.log("event is: ", event)
   const { date, time } = formatDateTime(event.dateAndTime)
 
   const handleEditClick = () => {
@@ -66,7 +60,7 @@ const EventCard = ({ event, refresh }) => {
     <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
       <div className="flex justify-between items-start">
         <div className="flex items-center">
-          <div className={`p-2.5 mr-3 rounded-xl ${isUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>
+          <div className={`p-2.5 mr-3 rounded-xl ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>
             <FaCalendarAlt size={20} />
           </div>
           <div>
@@ -74,7 +68,7 @@ const EventCard = ({ event, refresh }) => {
             <span className="text-xs text-gray-500">ID: {event._id.substring(0, 8)}</span>
           </div>
         </div>
-        <span className={`text-xs px-2.5 py-1 rounded-full ${isUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>{isUpcoming ? "Upcoming" : "Past"}</span>
+        <span className={`text-xs px-2.5 py-1 rounded-full ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
       </div>
 
       <div className="mt-4 space-y-3">
