@@ -4,7 +4,7 @@ import StudentDetailModal from "../common/students/StudentDetailModal"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useState } from "react"
 import BaseTable from "../common/table/BaseTable"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const ComplaintListView = ({ complaints, onViewDetails }) => {
   const { user } = useAuth()
   const [showStudentDetail, setShowStudentDetail] = useState(false)
@@ -36,7 +36,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
         <div onClick={() => handleStudentClick(complaint.reportedBy?.id)} className="flex items-center cursor-pointer">
           <div className="flex-shrink-0 h-8 w-8">
             {complaint.reportedBy?.profileImage ? (
-              <img className="h-8 w-8 rounded-full object-cover" src={complaint.reportedBy.profileImage} alt="" />
+              <img className="h-8 w-8 rounded-full object-cover" src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
             ) : (
               <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium">{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
             )}
@@ -55,11 +55,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       render: (complaint) => (
         <div className="flex flex-col">
           <div className="font-medium text-sm truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
-          {complaint.roomNumber ? (
-            <div className="text-xs text-gray-500">Room {complaint.roomNumber}</div>
-          ) : complaint.hostel ? (
-            <div className="text-xs text-gray-500 truncate max-w-[150px]">{complaint.location}</div>
-          ) : null}
+          {complaint.roomNumber ? <div className="text-xs text-gray-500">Room {complaint.roomNumber}</div> : complaint.hostel ? <div className="text-xs text-gray-500 truncate max-w-[150px]">{complaint.location}</div> : null}
         </div>
       ),
     },

@@ -6,7 +6,7 @@ import { wardenApi, associateWardenApi, hostelSupervisorApi } from "../services/
 import { FaUserCircle, FaBuilding } from "react-icons/fa"
 import { CgSpinner } from "react-icons/cg"
 import { useWarden } from "../contexts/WardenProvider"
-import { set } from "date-fns"
+import { getMediaUrl } from "../utils/mediaUtils"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -138,7 +138,7 @@ const Sidebar = ({ navItems }) => {
           <div className={`flex items-center px-4 py-3 ${isActiveItem ? "" : "hover:text-[#1360AB]"}`}>
             <div className="min-w-10 h-10 rounded-full flex items-center justify-center overflow-hidden mr-3">
               {user.profileImage ? (
-                <img src={user.profileImage} alt={`${user.name}'s profile`} className="w-10 h-10 rounded-full object-cover" />
+                <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-10 h-10 rounded-full object-cover" />
               ) : user.name?.charAt(0).toUpperCase() ? (
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActiveItem ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}`}>
                   <span className="font-semibold">{user.name.charAt(0).toUpperCase()}</span>

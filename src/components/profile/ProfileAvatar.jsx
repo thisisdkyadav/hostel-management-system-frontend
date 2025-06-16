@@ -1,5 +1,5 @@
 import React from "react"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const ProfileAvatar = ({ user, size = "medium" }) => {
   const getInitials = (name) => {
     if (!name) return ""
@@ -20,7 +20,7 @@ const ProfileAvatar = ({ user, size = "medium" }) => {
   if (user?.profileImage) {
     return (
       <div className={`${sizeClasses[size]} rounded-full overflow-hidden bg-gray-200 flex-shrink-0`}>
-        <img src={user.profileImage} alt={`${user.name}'s avatar`} className="w-full h-full object-cover" />
+        <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s avatar`} className="w-full h-full object-cover" />
       </div>
     )
   }

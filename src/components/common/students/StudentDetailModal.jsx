@@ -12,6 +12,7 @@ import DisCoActions from "./DisCoActions"
 import FamilyDetails from "./FamilyDetails"
 import HealthTab from "./HealthTab"
 import { useAuth } from "../../../contexts/AuthProvider"
+import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()
@@ -252,7 +253,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <div className="bg-gradient-to-r from-blue-50 to-white p-5 rounded-xl mb-6 shadow-sm">
               <div className="flex flex-col md:flex-row items-center md:items-start">
                 {studentDetails.profileImage ? (
-                  <img src={studentDetails.profileImage} alt={studentDetails.name || "Student"} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md mb-4 md:mb-0" />
+                  <img src={getMediaUrl(studentDetails.profileImage)} alt={studentDetails.name || "Student"} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md mb-4 md:mb-0" />
                 ) : (
                   <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md mb-4 md:mb-0">
                     <FaUserGraduate className="h-12 w-12 text-[#1360AB]" />
@@ -685,7 +686,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   {idCardData.front ? (
                     <div className="relative w-full">
                       <div className="overflow-hidden rounded-lg max-h-[280px] flex items-center justify-center border border-gray-200">
-                        <img src={idCardData.front} alt="ID Card Front" className="object-contain w-full max-h-[280px]" />
+                        <img src={getMediaUrl(idCardData.front)} alt="ID Card Front" className="object-contain w-full max-h-[280px]" />
                       </div>
 
                       <div className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-sm">
@@ -708,7 +709,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   {idCardData.back ? (
                     <div className="relative w-full">
                       <div className="overflow-hidden rounded-lg max-h-[280px] flex items-center justify-center border border-gray-200">
-                        <img src={idCardData.back} alt="ID Card Back" className="object-contain w-full max-h-[280px]" />
+                        <img src={getMediaUrl(idCardData.back)} alt="ID Card Back" className="object-contain w-full max-h-[280px]" />
                       </div>
 
                       <div className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-sm">

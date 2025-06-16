@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
+import { getMediaUrl } from "../utils/mediaUtils"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) => {
   const navigate = useNavigate() // Add this line
@@ -45,7 +46,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
           aria-label="User menu"
         >
           {user?.profileImage ? (
-            <img src={user.profileImage} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
+            <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
           ) : user?.name?.charAt(0).toUpperCase() ? (
             <span className="text-white font-semibold">{user.name.charAt(0).toUpperCase()}</span>
           ) : (

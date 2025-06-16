@@ -1,7 +1,7 @@
 import React from "react"
 import { BsDoorOpenFill } from "react-icons/bs"
 import { FaUserFriends } from "react-icons/fa"
-
+import { getMediaUrl } from "../../utils/mediaUtils"
 const RoomInfoCard = ({ roomData }) => {
   if (!roomData) return null
 
@@ -38,7 +38,7 @@ const RoomInfoCard = ({ roomData }) => {
           <div className="flex flex-wrap gap-1.5">
             {roomData.roommates.map((roommate) => (
               <div key={roommate.rollNumber} className="flex items-center text-xs bg-gray-50 px-1.5 py-0.5 rounded-md">
-                {roommate.avatar ? <img src={roommate.avatar} alt={roommate.name} className="w-4 h-4 rounded-full mr-1" /> : <div className="w-4 h-4 rounded-full bg-blue-100 text-[#1360AB] flex items-center justify-center text-[9px] mr-1">{getOccupantInitials(roommate.name)}</div>}
+                {roommate.avatar ? <img src={getMediaUrl(roommate.avatar)} alt={roommate.name} className="w-4 h-4 rounded-full mr-1" /> : <div className="w-4 h-4 rounded-full bg-blue-100 text-[#1360AB] flex items-center justify-center text-[9px] mr-1">{getOccupantInitials(roommate.name)}</div>}
                 <span className="truncate max-w-[80px]">{roommate.name}</span>
               </div>
             ))}

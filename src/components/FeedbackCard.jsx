@@ -4,6 +4,7 @@ import { feedbackApi } from "../services/feedbackApi"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { useAuth } from "../contexts/AuthProvider"
+import { getMediaUrl } from "../utils/mediaUtils"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   const { canAccess } = useAuth()
@@ -135,7 +136,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
         {!isStudentView && canAccess("feedback", "view") && (
           <div className="flex items-center">
             {feedback.userId.profileImage ? (
-              <img src={feedback.userId.profileImage} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
+              <img src={getMediaUrl(feedback.userId.profileImage)} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
                 <HiUser className="text-[#1360AB]" size={20} />

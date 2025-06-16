@@ -4,7 +4,7 @@ import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { visitorApi } from "../../../services/visitorApi"
 import { useAuth } from "../../../contexts/AuthProvider"
 import BaseTable from "../../common/table/BaseTable"
-
+import { getMediaUrl } from "../../../utils/mediaUtils"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
@@ -55,7 +55,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             <span className="text-xs text-gray-500 mb-1 block">#{request._id.substring(0, 8)}</span>
             <div className="flex items-center">
               {request.studentProfileImage ? (
-                <img className="h-10 w-10 rounded-full object-cover" src={request.studentProfileImage} alt={request.studentName} />
+                <img className="h-10 w-10 rounded-full object-cover" src={getMediaUrl(request.studentProfileImage)} alt={request.studentName} />
               ) : (
                 <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">{request.studentName?.charAt(0) || "?"}</div>
               )}
