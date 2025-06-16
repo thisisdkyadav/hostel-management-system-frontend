@@ -28,7 +28,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight }) => {
         ref={modalRef}
         className={`
           bg-white rounded-2xl shadow-2xl 
-          overflow-hidden
+          overflow-auto
           animate-fadeIn
           ${autoWidth ? "w-auto" : "w-full"} max-h-[90vh]
           ${width ? `max-w-[${width}px]` : "max-w-2xl"}
