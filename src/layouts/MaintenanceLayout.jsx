@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaSignOutAlt, FaTools, FaClipboardList, FaQrcode } from "react-icons/fa"
+import { FaSignOutAlt, FaTools, FaClipboardList, FaQrcode, FaTasks } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -22,6 +22,7 @@ const MaintenanceLayout = () => {
 
   const navItems = [
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/maintenance" },
+    { name: "My Tasks", icon: FaTasks, section: "main", path: "/maintenance/my-tasks" },
     { name: "Attendance", icon: FaQrcode, section: "main", path: "/maintenance/attendance" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

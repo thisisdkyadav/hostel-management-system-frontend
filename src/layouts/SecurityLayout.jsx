@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaSignOutAlt, FaExclamationTriangle, FaSearch, FaUserPlus, FaClipboardList, FaUserClock, FaUsers, FaQrcode } from "react-icons/fa"
+import { FaSignOutAlt, FaExclamationTriangle, FaSearch, FaUserPlus, FaClipboardList, FaUserClock, FaUsers, FaQrcode, FaTasks } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -26,6 +26,7 @@ const SecurityLayout = () => {
     { name: "Student Entries", icon: FaUserClock, section: "main", path: "/hostel-gate/entries" },
     { name: "Attendance", icon: FaQrcode, section: "main", path: "/hostel-gate/attendance" },
     { name: "Visitors", icon: FaUsers, section: "main", path: "/hostel-gate/visitors" },
+    { name: "My Tasks", icon: FaTasks, section: "main", path: "/hostel-gate/my-tasks" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/hostel-gate/lost-and-found" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
@@ -35,6 +36,7 @@ const SecurityLayout = () => {
     // { name: "Student Entries", icon: FaUserClock, section: "main", path: "/guard/entries" },
     { name: "Attendance", icon: FaQrcode, section: "main", path: "/guard" },
     // { name: "Visitors", icon: FaUsers, section: "main", path: "/guard/visitors" },
+    { name: "My Tasks", icon: FaTasks, section: "main", path: "/guard/my-tasks" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/guard/lost-and-found" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

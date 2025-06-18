@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes, FaTasks } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -27,6 +27,7 @@ const AssociateWardenLayout = () => {
     { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/associate-warden/hostels/${user?.hostel?.name}`, pathPattern: "^/associate-warden/hostels(/.*)?$" },
     { name: "Students", icon: FaUsers, section: "main", path: "/associate-warden/students" },
     { name: "Student Inventory", icon: FaBoxes, section: "main", path: "/associate-warden/student-inventory" },
+    { name: "My Tasks", icon: FaTasks, section: "main", path: "/associate-warden/my-tasks" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/associate-warden/lost-and-found" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/associate-warden/events" },
     // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/associate-warden/room-change-requests" },

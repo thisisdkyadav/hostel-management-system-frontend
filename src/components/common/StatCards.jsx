@@ -24,6 +24,13 @@ export const StatCard = ({ title, value, subtitle, icon, color = "#1360AB" }) =>
   )
 }
 
+/**
+ * A reusable component to display statistics in cards
+ *
+ * @param {Object} props
+ * @param {Array} props.stats - Array of stat objects with title, value, subtitle, icon, and color
+ * @param {number} props.columns - Number of columns for the grid (default: 4)
+ */
 const StatCards = ({ stats, columns = 4 }) => {
   const getGridClass = () => {
     // Show 2 cards per row by default, 1 card only on tiny screens (<480px)
