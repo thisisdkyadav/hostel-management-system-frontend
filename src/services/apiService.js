@@ -90,6 +90,34 @@ export const authApi = {
 
     return response.json()
   },
+
+  getUserDevices: async () => {
+    const response = await fetch(`${baseUrl}/auth/user/devices`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch user devices")
+    }
+
+    return response.json()
+  },
+
+  logoutFromDevice: async (sessionId) => {
+    const response = await fetch(`${baseUrl}/auth/user/devices/logout/${sessionId}`, {
+      method: "POST",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to logout from device")
+    }
+
+    return response.json()
+  },
 }
 
 export const studentApi = {
