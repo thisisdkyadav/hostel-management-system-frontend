@@ -61,6 +61,26 @@ export const userApi = {
       throw error
     }
   },
+
+  bulkUpdatePasswords: async (passwordUpdates) => {
+    try {
+      const response = await fetch(`${baseUrl}/users/bulk-password-update`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify({ passwordUpdates }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update passwords")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating passwords in bulk:", error)
+      throw error
+    }
+  },
 }
 
 export default userApi

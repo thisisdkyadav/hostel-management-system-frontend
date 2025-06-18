@@ -865,6 +865,36 @@ export const adminApi = {
     return response.json()
   },
 
+  bulkUpdatePasswords: async (passwordUpdates) => {
+    const response = await fetch(`${baseUrl}/users/bulk-password-update`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ passwordUpdates }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update passwords")
+    }
+
+    return response.json()
+  },
+
+  removePasswordsByRole: async (role) => {
+    const response = await fetch(`${baseUrl}/users/remove-passwords-by-role`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ role }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to remove passwords")
+    }
+
+    return response.json()
+  },
+
   getAllMaintenanceStaff: async () => {
     const response = await fetch(`${baseUrl}/admin/maintenance`, {
       method: "GET",
