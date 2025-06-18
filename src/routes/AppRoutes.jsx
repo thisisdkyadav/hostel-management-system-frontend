@@ -71,6 +71,8 @@ import Attendance from "../pages/guard/Attendance.jsx"
 import HostelGateAttendance from "../pages/guard/HostelGateAttendance.jsx"
 import Inventory from "../pages/admin/Inventory.jsx"
 import StudentInventory from "../pages/warden/StudentInventory.jsx"
+import TaskManagement from "../pages/admin/TaskManagement.jsx"
+import MyTasks from "../pages/MyTasks.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -131,6 +133,7 @@ const AppRoutes = () => {
       >
         <Route index element={<MaintenancePage />} />
         <Route path="attendance" element={<MaintenanceAttendance />} />
+        <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
       <Route
@@ -153,6 +156,7 @@ const AppRoutes = () => {
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
+        <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
       <Route
@@ -175,6 +179,7 @@ const AppRoutes = () => {
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
+        <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
       {/* Routes for Hostel Supervisor related pages */}
@@ -197,6 +202,7 @@ const AppRoutes = () => {
         <Route path="student-inventory" element={<StudentInventory />} />
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
+        <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
       {/* Routes for security related pages */}
@@ -213,6 +219,7 @@ const AppRoutes = () => {
         <Route index element={<Attendance />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         {/* <Route path="entries" element={<StudentEntries />} /> */}
+        <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
       {/* Routes for hostel gate related pages */}
@@ -229,6 +236,7 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
         <Route path="attendance" element={<HostelGateAttendance />} />
+        <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
       {/* Routes for admin related pages */}
@@ -260,6 +268,7 @@ const AppRoutes = () => {
         <Route path="notifications" element={<NotificationCenter />} />
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="others" element={<Others />} />
+        <Route path="task-management" element={<TaskManagement />} />
       </Route>
 
       <Route path="/sso" element={<SSOLogin />} />

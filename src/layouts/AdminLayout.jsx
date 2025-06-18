@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaTools, FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaShieldAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBell, FaBoxes } from "react-icons/fa"
+import { FaTools, FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaShieldAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBell, FaBoxes, FaTasks } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import AdminProvider from "../contexts/AdminProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -28,6 +28,7 @@ const AdminLayout = () => {
     { name: "Students", icon: FaUsers, section: "main", path: "/admin/students" },
     { name: "Inventory", icon: FaBoxes, section: "main", path: "/admin/inventory" },
     { name: "Notifications", icon: FaBell, section: "main", path: "/admin/notifications" },
+    { name: "Task Management", icon: FaTasks, section: "main", path: "/admin/task-management" },
     { name: "Visitor Accomodation", icon: FaExchangeAlt, section: "main", path: "/admin/visitors" },
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/admin/events" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
