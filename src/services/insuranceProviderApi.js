@@ -60,4 +60,19 @@ export const insuranceProviderApi = {
 
     return response.json()
   },
+
+  updateBulkStudentInsurance: async (data) => {
+    const response = await fetch(`${baseUrl}${route}/insurance-providers/bulk-student-update`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update bulk student insurance")
+    }
+
+    return response.json()
+  },
 }

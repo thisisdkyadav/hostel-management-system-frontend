@@ -1,10 +1,12 @@
 import { useState } from "react"
-import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCalendarAlt } from "react-icons/fa"
+import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCalendarAlt, FaUsers } from "react-icons/fa"
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
+import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showBulkUpdateModal, setShowBulkUpdateModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
@@ -20,6 +22,18 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
       } finally {
         setIsDeleting(false)
       }
+    }
+  }
+
+  const handleBulkUpdate = async (data) => {
+    try {
+      await insuranceProviderApi.updateBulkStudentInsurance(data)
+      alert("Student insurance details updated successfully!")
+      return true
+    } catch (error) {
+      console.error("Error updating student insurance details:", error)
+      alert("Failed to update student insurance details. Please try again.")
+      return false
     }
   }
 
@@ -72,9 +86,16 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
             </div>
           </div>
         </div>
+
+        <div className="mt-6 pt-4 border-t border-gray-100">
+          <button onClick={() => setShowBulkUpdateModal(true)} className="w-full py-2.5 px-4 bg-blue-50 hover:bg-blue-100 text-[#1360AB] rounded-lg transition-colors flex items-center justify-center font-medium">
+            <FaUsers className="mr-2" /> Update Student Insurance Details
+          </button>
+        </div>
       </div>
 
       {showEditModal && <EditInsuranceProviderModal show={showEditModal} provider={provider} onClose={() => setShowEditModal(false)} onUpdate={onUpdate} />}
+      {showBulkUpdateModal && <BulkStudentInsuranceModal isOpen={showBulkUpdateModal} onClose={() => setShowBulkUpdateModal(false)} onUpdate={handleBulkUpdate} providerId={provider.id} providerName={provider.name} />}
     </>
   )
 }
