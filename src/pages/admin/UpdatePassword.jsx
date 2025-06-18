@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { HiKey } from "react-icons/hi"
+import { HiKey, HiUpload, HiTrash } from "react-icons/hi"
 import UpdatePasswordForm from "../../components/admin/password/UpdatePasswordForm"
+import BulkPasswordUpdateModal from "../../components/admin/password/BulkPasswordUpdateModal"
+import RemovePasswordsByRoleModal from "../../components/admin/password/RemovePasswordsByRoleModal"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/apiService"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
@@ -8,7 +10,13 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 const UpdatePassword = () => {
   const { user } = useAuth()
   const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [showBulkModal, setShowBulkModal] = useState(false)
+  const [showRemoveByRoleModal, setShowRemoveByRoleModal] = useState(false)
   const [updatedEmail, setUpdatedEmail] = useState("")
+  const [bulkUpdateResults, setBulkUpdateResults] = useState(null)
+  const [bulkSuccessModalOpen, setBulkSuccessModalOpen] = useState(false)
+  const [removeByRoleResults, setRemoveByRoleResults] = useState(null)
+  const [removeByRoleSuccessModalOpen, setRemoveByRoleSuccessModalOpen] = useState(false)
 
   if (user?.role !== "Admin") {
     return (
@@ -35,6 +43,43 @@ const UpdatePassword = () => {
     } catch (error) {
       console.error("Error updating password:", error)
       alert("An error occurred while updating the password. Please try again.")
+    }
+  }
+
+  const handleBulkPasswordUpdate = async (passwordUpdates) => {
+    try {
+      const response = await adminApi.bulkUpdatePasswords(passwordUpdates)
+
+      if (response) {
+        setBulkUpdateResults(response.results)
+        setBulkSuccessModalOpen(true)
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error("Error in bulk password update:", error)
+      alert("An error occurred during bulk password update. Please try again.")
+      return false
+    }
+  }
+
+  const handleRemovePasswordsByRole = async (role) => {
+    try {
+      const response = await adminApi.removePasswordsByRole(role)
+
+      if (response) {
+        setRemoveByRoleResults({
+          role,
+          count: response.count,
+          message: response.message,
+        })
+        setRemoveByRoleSuccessModalOpen(true)
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error("Error removing passwords by role:", error)
+      throw error
     }
   }
 
@@ -71,6 +116,17 @@ const UpdatePassword = () => {
             <p className="text-gray-500 text-sm mt-1 max-w-xl">Reset password for any user in the system. They'll use this new password for their next login.</p>
           </div>
         </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button onClick={() => setShowRemoveByRoleModal(true)} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-sm flex items-center">
+            <HiTrash className="mr-2" />
+            Remove by Role
+          </button>
+          <button onClick={() => setShowBulkModal(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm flex items-center">
+            <HiUpload className="mr-2" />
+            Bulk Update
+          </button>
+        </div>
       </header>
 
       <div className="max-w-2xl mx-auto">
@@ -97,6 +153,7 @@ const UpdatePassword = () => {
         </div>
       </div>
 
+      {/* Single Password Update Success Modal */}
       {showSuccessModal && (
         <CommonSuccessModal
           show={showSuccessModal}
@@ -106,6 +163,40 @@ const UpdatePassword = () => {
           infoText={updatedEmail}
           infoIcon={HiKey}
           buttonText="Done"
+        />
+      )}
+
+      {/* Bulk Password Update Modal */}
+      <BulkPasswordUpdateModal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)} onUpdate={handleBulkPasswordUpdate} />
+
+      {/* Remove Passwords by Role Modal */}
+      <RemovePasswordsByRoleModal isOpen={showRemoveByRoleModal} onClose={() => setShowRemoveByRoleModal(false)} onRemove={handleRemovePasswordsByRole} />
+
+      {/* Bulk Update Success Modal */}
+      {bulkSuccessModalOpen && bulkUpdateResults && (
+        <CommonSuccessModal
+          show={bulkSuccessModalOpen}
+          onClose={() => setBulkSuccessModalOpen(false)}
+          title="Bulk Password Update Completed"
+          message={`Successfully updated ${bulkUpdateResults.successful.length} user passwords. ${bulkUpdateResults.failed.length > 0 ? `Failed to update ${bulkUpdateResults.failed.length} users.` : ""}`}
+          infoText={`${bulkUpdateResults.successful.length} updates successful, ${bulkUpdateResults.failed.length} failed`}
+          infoIcon={HiKey}
+          buttonText="Done"
+          width={600}
+        />
+      )}
+
+      {/* Remove by Role Success Modal */}
+      {removeByRoleSuccessModalOpen && removeByRoleResults && (
+        <CommonSuccessModal
+          show={removeByRoleSuccessModalOpen}
+          onClose={() => setRemoveByRoleSuccessModalOpen(false)}
+          title="Passwords Removed by Role"
+          message={removeByRoleResults.message}
+          infoText={`${removeByRoleResults.count} users with role: ${removeByRoleResults.role}`}
+          infoIcon={HiTrash}
+          buttonText="Done"
+          width={600}
         />
       )}
     </div>
