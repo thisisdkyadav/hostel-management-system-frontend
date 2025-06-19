@@ -1,7 +1,7 @@
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"
 import { FcGoogle } from "react-icons/fc"
 
-const clientId = "38247354372-kfedg2ftoq2m6a32qq3qq9bggoamcg4a.apps.googleusercontent.com"
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 function LoginWithGoogle({ callback, className }) {
   // Custom button renderer for GoogleLogin
