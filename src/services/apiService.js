@@ -1633,6 +1633,22 @@ export const updateDisCoAction = async (disCoId, data) => {
   return resData
 }
 
+// delete DisCo action
+export const deleteDisCoAction = async (disCoId) => {
+  const response = await fetch(`${baseUrl}/disco/${disCoId}`, {
+    method: "DELETE",
+    credentials: "include",
+  })
+
+  const resData = await response.json()
+
+  if (!response.ok) {
+    throw new Error(resData.message || "Failed to delete DisCo action")
+  }
+
+  return resData
+}
+
 // export { adminApi, taskApi }
 
 // export { adminApi, taskApi, userApi }
