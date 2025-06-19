@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { FiSave, FiUser, FiCalendar, FiMap, FiPhone } from "react-icons/fi"
-import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera } from "react-icons/hi"
+import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers } from "react-icons/fi"
+import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers } from "react-icons/hi"
 import Modal from "../common/Modal"
 import { studentProfileApi } from "../../services/apiService"
 import ImageUploadModal from "../common/ImageUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import StudentFamilyDetails from "./StudentFamilyDetails"
 
 const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentData }) => {
   const [loading, setLoading] = useState(true)
@@ -13,6 +14,8 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   const [editableData, setEditableData] = useState({})
   const [editableFields, setEditableFields] = useState([])
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState("profile")
+  const [canManageFamilyMembers, setCanManageFamilyMembers] = useState(false)
 
   useEffect(() => {
     const fetchEditableFields = async () => {
@@ -22,6 +25,11 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
         setEditableFields(response.editableFields || [])
         setEditableData(response.data || {})
+
+        // Check if family members management is allowed
+        if (response.editableFields?.includes("familyMembers")) {
+          setCanManageFamilyMembers(true)
+        }
       } catch (error) {
         console.error("Error fetching editable fields:", error)
         setError("Failed to load editable profile data")
@@ -172,60 +180,88 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
         <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" disabled={saving}>
           Cancel
         </button>
-        <button type="submit" form="edit-profile-form" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center" disabled={saving}>
-          {saving ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
-              Saving...
-            </>
-          ) : (
-            <>
-              <FiSave className="mr-2" size={16} />
-              Save Changes
-            </>
-          )}
-        </button>
+        {activeTab === "profile" && (
+          <button type="submit" form="edit-profile-form" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center" disabled={saving}>
+            {saving ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                Saving...
+              </>
+            ) : (
+              <>
+                <FiSave className="mr-2" size={16} />
+                Save Changes
+              </>
+            )}
+          </button>
+        )}
       </div>
     )
   }
 
+  const getTabs = () => {
+    const tabs = [{ id: "profile", name: "Profile Info", icon: <FiUser /> }]
+
+    if (canManageFamilyMembers) {
+      tabs.push({ id: "family", name: "Family Members", icon: <FiUsers /> })
+    }
+
+    return tabs
+  }
+
+  const renderTabContent = () => {
+    if (loading) {
+      return (
+        <div className="flex justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-[#1360AB]"></div>
+        </div>
+      )
+    }
+
+    if (error) {
+      return (
+        <div className="bg-red-50 text-red-700 p-4 rounded-md mb-4">
+          <p>{error}</p>
+        </div>
+      )
+    }
+
+    if (activeTab === "profile") {
+      return (
+        <form id="edit-profile-form" onSubmit={handleSubmit}>
+          {editableFields.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="bg-yellow-50 text-yellow-700 p-4 rounded-md">
+                <p>You don't have permission to edit any profile fields. Contact an administrator for assistance.</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="bg-blue-50 text-blue-700 p-4 rounded-md mb-6">
+                <p className="text-sm">You can edit the following fields in your profile. Any changes will be saved once you submit the form.</p>
+              </div>
+
+              <div className="space-y-2">
+                {editableFields.includes("profileImage") && renderField("profileImage")}
+                {editableFields.includes("name") && renderField("name")}
+                {editableFields.includes("gender") && renderField("gender")}
+                {editableFields.includes("dateOfBirth") && renderField("dateOfBirth", "date")}
+                {editableFields.includes("phone") && renderField("phone", "tel")}
+                {editableFields.includes("address") && renderField("address")}
+              </div>
+            </>
+          )}
+        </form>
+      )
+    } else if (activeTab === "family" && canManageFamilyMembers) {
+      return <StudentFamilyDetails userId={userId} editable={true} />
+    }
+  }
+
   return (
     <>
-      <Modal title="Edit Profile" onClose={onClose} width={600} footer={renderFooter()}>
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-[#1360AB]"></div>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 text-red-700 p-4 rounded-md mb-4">
-            <p>{error}</p>
-          </div>
-        ) : (
-          <form id="edit-profile-form" onSubmit={handleSubmit}>
-            {editableFields.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="bg-yellow-50 text-yellow-700 p-4 rounded-md">
-                  <p>You don't have permission to edit any profile fields. Contact an administrator for assistance.</p>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="bg-blue-50 text-blue-700 p-4 rounded-md mb-6">
-                  <p className="text-sm">You can edit the following fields in your profile. Any changes will be saved once you submit the form.</p>
-                </div>
-
-                <div className="space-y-2">
-                  {editableFields.includes("profileImage") && renderField("profileImage")}
-                  {editableFields.includes("name") && renderField("name")}
-                  {editableFields.includes("gender") && renderField("gender")}
-                  {editableFields.includes("dateOfBirth") && renderField("dateOfBirth", "date")}
-                  {editableFields.includes("phone") && renderField("phone", "tel")}
-                  {editableFields.includes("address") && renderField("address")}
-                </div>
-              </>
-            )}
-          </form>
-        )}
+      <Modal title="Edit Profile" onClose={onClose} width={700} footer={renderFooter()} tabs={getTabs()} activeTab={activeTab} onTabChange={setActiveTab}>
+        {renderTabContent()}
       </Modal>
 
       {isImageModalOpen && <ImageUploadModal userId={userId} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}

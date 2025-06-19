@@ -8,6 +8,7 @@ import LoadingState from "../common/LoadingState"
 import EmptyState from "../common/EmptyState"
 import { studentApi, studentProfileApi } from "../../services/apiService"
 import StudentEditProfileModal from "./StudentEditProfileModal"
+import StudentFamilyDetails from "./StudentFamilyDetails"
 
 const StudentProfile = ({ user }) => {
   const [studentData, setStudentData] = useState(null)
@@ -74,6 +75,9 @@ const StudentProfile = ({ user }) => {
             <ProfileInfo label="Department" value={studentData.department} icon={FiBook} />
             <ProfileInfo label="Degree" value={studentData.degree} icon={FiBookmark} />
             <ProfileInfo label="Year" value={studentData.year} icon={FiUser} />
+          </ProfileCard>
+          <ProfileCard title="Family Members">
+            <StudentFamilyDetails userId={studentData.userId || user.id} editable={false} />
           </ProfileCard>
         </div>
 
