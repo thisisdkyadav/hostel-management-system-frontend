@@ -1,33 +1,29 @@
-import React, { useEffect, useState, useRef } from "react"
-import { addDisCoAction, getDisCoActionsByStudent, updateDisCoAction } from "../../../services/apiService.js"
+import React, { useEffect, useState } from "react"
+import { addDisCoAction, getDisCoActionsByStudent, updateDisCoAction, deleteDisCoAction } from "../../../services/apiService.js"
 import { useAuth } from "../../../contexts/AuthProvider"
+import { FaPlus } from "react-icons/fa"
+import Button from "../../common/Button"
+import DisCoActionModal from "./DisCoActionModal"
 
 const DisCoActions = ({ userId }) => {
   const { canAccess } = useAuth()
   const [actions, setActions] = useState([])
-  const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({
-    reason: "",
-    actionTaken: "",
-    date: "",
-    remarks: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [editingId, setEditingId] = useState(null)
-  const dateInputRef = useRef(null)
-
-  const handleFocus = () => {
-    if (dateInputRef.current?.showPicker) {
-      dateInputRef.current.showPicker()
-    }
-  }
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentAction, setCurrentAction] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const fetchDisCoActions = async () => {
     try {
+      setLoading(true)
       const res = await getDisCoActionsByStudent(userId)
       setActions(res.actions)
     } catch (err) {
+      setError(err)
       console.error("Failed to fetch DisCo actions:", err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -37,131 +33,103 @@ const DisCoActions = ({ userId }) => {
     }
   }, [userId])
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-  const handleEdit = (action) => {
-    setFormData({
-      reason: action.reason,
-      actionTaken: action.actionTaken,
-      date: action.date.split("T")[0],
-      remarks: action.remarks || "",
-    })
-    setEditingId(action._id)
-    setShowForm(true)
+  const handleAddClick = () => {
+    setCurrentAction(null)
+    setIsEditing(false)
+    setIsModalOpen(true)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+  const handleEditClick = (action) => {
+    setCurrentAction(action)
+    setIsEditing(true)
+    setIsModalOpen(true)
+  }
+
+  const handleDeleteClick = async (actionId) => {
     try {
-      if (editingId) {
-        await updateDisCoAction(editingId, { ...formData })
-        alert("DisCo action updated successfully!")
-      } else {
-        await addDisCoAction({ ...formData, studentId: userId })
-        alert("DisCo action added successfully!")
-      }
-
-      setEditingId(null)
-      setFormData({
-        reason: "",
-        actionTaken: "",
-        date: "",
-        remarks: "",
-      })
-      setShowForm(false)
-
-      fetchDisCoActions()
-    } catch (err) {
-      console.error("Failed to submit DisCo action:", err)
-      alert("Failed to submit DisCo action. Please try again.")
-    } finally {
-      setLoading(false)
+      await deleteDisCoAction(actionId)
+      fetchDisCoActions() // Refresh the list
+    } catch (error) {
+      console.error("Error deleting disciplinary action:", error)
+      alert("Failed to delete disciplinary action")
     }
   }
 
+  const handleModalSubmit = async (formData) => {
+    try {
+      if (isEditing) {
+        await updateDisCoAction(currentAction._id, { ...formData })
+      } else {
+        await addDisCoAction({ ...formData, studentId: userId })
+      }
+      fetchDisCoActions() // Refresh the list
+      setIsModalOpen(false)
+    } catch (error) {
+      console.error("Error saving disciplinary action:", error)
+      alert("Failed to save disciplinary action")
+    }
+  }
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center p-8">
+        <div className="w-8 h-8 border-4 border-t-[#1360AB] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+      </div>
+    )
+  if (error) return <div className="p-4 bg-red-50 text-red-600 rounded-lg">Error: {error.message}</div>
+
   return (
-    <div className="px-4 ">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg text-gray-700 font-semibold">Disciplinary Actions</h2>
+    <div className="px-4">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg text-gray-700 font-semibold">Disciplinary Actions</h3>
         {canAccess("students_info", "create") && (
-          <button className="bg-[#1360AB] text-white px-4 py-2 mb-2 rounded-lg hover:bg-blue-500" onClick={() => setShowForm(!showForm)}>
-            {showForm ? "Cancel" : "Add"}
-          </button>
+          <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
+            Add DisCo Action
+          </Button>
         )}
       </div>
 
-      {showForm && (
-        <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded mb-6">
-          <div className="mb-2">
-            <label className="block mb-1 text-gray-700 font-medium">Action Taken</label>
-            <input type="text" name="actionTaken" value={formData.actionTaken} onChange={handleChange} required className="w-full border border-gray-300 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-300 p-2 rounded-lg outline-none" />
-          </div>
-          <div className="mb-2">
-            <label className="block mb-1 text-gray-700 font-medium">Reason</label>
-            <input type="text" name="reason" value={formData.reason} onChange={handleChange} required className="w-full border border-gray-300 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-300 p-2 rounded-lg outline-none" />
-          </div>
+      {actions.length === 0 ? (
+        <div className="bg-gray-50 p-8 text-center rounded-lg border border-gray-200">
+          <p className="text-gray-600">No disciplinary actions found.</p>
+          {canAccess("students_info", "create") && (
+            <Button variant="secondary" size="small" className="mt-3" onClick={handleAddClick}>
+              Add DisCo Action
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4">
+          {actions.map((action) => (
+            <div key={action._id} className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <h4 className="text-md font-semibold text-gray-800">{action.actionTaken}</h4>
+                  <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">{new Date(action.date).toLocaleDateString()}</span>
+                </div>
+                {canAccess("students_info", "edit") && (
+                  <button onClick={() => handleEditClick(action)} className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors">
+                    Edit
+                  </button>
+                )}
+              </div>
 
-          <div className="mb-2">
-            <label className="block mb-1 text-gray-700 font-medium">Date</label>
-            <input ref={dateInputRef} type="date" name="date" value={formData.date} onChange={handleChange} onFocus={handleFocus} className="w-full border border-gray-300 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-300 p-2 rounded-lg outline-none" />
-          </div>
-
-          <div className="mb-4 mt-3">
-            <label className="block mb-1 text-gray-700 font-medium">Remarks (Optional)</label>
-            <textarea name="remarks" value={formData.remarks} onChange={handleChange} className="w-full h-25 border border-gray-300 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-300 p-2 rounded-lg outline-none resize-none" />
-          </div>
-
-          <button type="submit" disabled={loading} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-            {loading ? (editingId ? "Saving..." : "Submitting...") : editingId ? "Save Changes" : "Submit"}
-          </button>
-        </form>
+              <div className="mt-3">
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold text-gray-800">Reason:</span> {action.reason}
+                </p>
+                {action.remarks && (
+                  <p className="text-sm text-gray-700 mt-2">
+                    <span className="font-semibold text-gray-800">Remarks:</span> {action.remarks}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      <div>
-        {actions.length === 0 ? (
-          <div className="bg-gray-50 h-34 flex items-center justify-center">
-            <p className="text-gray-500">No DisCo actions found.</p>
-          </div>
-        ) : (
-          <ul className="space-y-3 bg-gray-50">
-            {actions.map((action) => (
-              <li key={action._id} className=" border bg-gray-50 border-gray-200 shadow px-5 pt-4 rounded-xl hover:shadow-md transition-all">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold text-gray-800">Action Taken:</span> {action.actionTaken}
-                  </p>
-                  <span className="text-sm text-gray-800">{new Date(action.date).toLocaleDateString()}</span>
-                </div>
-
-                <div className=" mt-3 mb-2 flex justify-between items-start">
-                  <p className="text-sm text-gray-700">
-                    <span className="font-semibold text-gray-800">Reason:</span> {action.reason}
-                  </p>
-                  {canAccess("students_info", "edit") && editingId !== action._id && (
-                    <button className="bg-[#1360AB] text-white px-3 py-1 mb-2 rounded-lg hover:bg-blue-500 text-sm" onClick={() => handleEdit(action)}>
-                      Edit
-                    </button>
-                  )}
-                </div>
-
-                {action.remarks && (
-                  <div>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-semibold text-gray-800">Remarks:</span> {action.remarks}
-                    </p>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {isModalOpen && <DisCoActionModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleModalSubmit} initialData={currentAction} isEditing={isEditing} onDelete={isEditing ? handleDeleteClick : null} />}
     </div>
   )
 }
