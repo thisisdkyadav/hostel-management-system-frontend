@@ -17,6 +17,65 @@ import { studentApi } from "../services/apiService"
 import { hostelApi } from "../services/hostelApi"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
 
+// Shimmer loader components
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
+
+const TableRowShimmer = () => (
+  <div className="flex py-3 px-4 border-b border-gray-100">
+    {[...Array(5)].map((_, i) => (
+      <div key={i} className="flex-1 px-2">
+        <ShimmerLoader height="1rem" width={i === 0 ? "80%" : "60%"} />
+      </div>
+    ))}
+  </div>
+)
+
+const TableShimmer = ({ rows = 10 }) => (
+  <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="bg-gray-50 py-3 px-4 flex border-b border-gray-200">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex-1 px-2">
+          <ShimmerLoader height="1rem" className="w-full max-w-[100px]" />
+        </div>
+      ))}
+    </div>
+    {[...Array(rows)].map((_, i) => (
+      <TableRowShimmer key={i} />
+    ))}
+  </div>
+)
+
+const CardShimmer = () => (
+  <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
+    <div className="flex items-center mb-4">
+      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 animate-pulse mr-3"></div>
+      <div className="flex-1">
+        <ShimmerLoader height="1.2rem" width="70%" className="mb-2" />
+        <ShimmerLoader height="0.9rem" width="50%" />
+      </div>
+    </div>
+    <div className="space-y-2">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="flex justify-between">
+          <ShimmerLoader height="0.8rem" width="40%" />
+          <ShimmerLoader height="0.8rem" width="30%" />
+        </div>
+      ))}
+    </div>
+    <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+      <ShimmerLoader height="2rem" width="30%" className="rounded-md" />
+    </div>
+  </div>
+)
+
+const CardsGridShimmer = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    {[...Array(6)].map((_, i) => (
+      <CardShimmer key={i} />
+    ))}
+  </div>
+)
+
 const Students = () => {
   const { user } = useAuth()
   const { hostelList = [], unitList = [] } = useGlobal()
@@ -233,12 +292,11 @@ const Students = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
-          </div>
-        </div>
+        viewMode === "table" ? (
+          <TableShimmer rows={pagination.pageSize || 10} />
+        ) : (
+          <CardsGridShimmer />
+        )
       ) : (
         <>
           <div className="mt-4">
