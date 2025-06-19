@@ -41,6 +41,7 @@ const AdminLayout = () => {
     { name: "Maintenance Staff", icon: FaTools, section: "main", path: "/admin/maintenance" },
     { name: "Others", icon: FaUserTie, section: "main", path: "/admin/others" },
     { name: "Update Password", icon: FaCog, section: "main", path: "/admin/update-password" },
+    { name: "Settings", icon: FaCog, section: "main", path: "/admin/settings" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/admin/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

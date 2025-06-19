@@ -4,6 +4,7 @@ import { baseUrl, fetchOptions } from "../constants/appConstants"
 // import { userApi } from "./userApi"
 // import { adminApi } from "./adminApi"
 // import { taskApi } from "./taskApi"
+import { studentProfileApi } from "./studentProfileApi"
 
 export const authApi = {
   verify: async () => {
@@ -1652,3 +1653,5 @@ export const deleteDisCoAction = async (disCoId) => {
 // export { adminApi, taskApi }
 
 // export { adminApi, taskApi, userApi }
+
+export { studentProfileApi }
