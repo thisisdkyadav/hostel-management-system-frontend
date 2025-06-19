@@ -53,6 +53,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     notes: "",
   })
 
+  // Define tabs for modal
+  const modalTabs = [
+    { id: "profile", name: "Profile", icon: <FaUserGraduate /> },
+    { id: "complaints", name: "Complaints", icon: <FaClipboardList /> },
+    { id: "access", name: "Access History", icon: <FaHistory /> },
+    { id: "visitors", name: "Visitors", icon: <FaUserFriends /> },
+    { id: "feedback", name: "Feedback", icon: <FaComments /> },
+    { id: "inventory", name: "Inventory", icon: <FaBoxes /> },
+    { id: "idcard", name: "ID Card", icon: <FaIdCard /> },
+    { id: "disco", name: "DisCo Actions", icon: <FaUserFriends /> },
+    { id: "family", name: "Family", icon: <FaUsers /> },
+    { id: "health", name: "Health", icon: <FaHeartbeat /> },
+  ]
+
   const fetchStudentDetails = async () => {
     try {
       setLoading(true)
@@ -850,9 +864,37 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     }
   }
 
+  // Define render footer function
+  const renderFooter = () => {
+    if (loading) return null
+
+    return (
+      <div className="flex justify-end space-x-4">
+        {!isImport && (
+          <>
+            <a href={`mailto:${studentDetails.guardianEmail}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+              Email Guardian
+            </a>
+            <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+              Email Student
+            </a>
+            {canAccess("students_info", "edit") && (
+              <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+                Edit Student
+              </button>
+            )}
+          </>
+        )}
+        <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          Close
+        </button>
+      </div>
+    )
+  }
+
   return (
     <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1150} minHeight={1000}>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1200} tabs={!isImport ? modalTabs : null} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={!isImport} footer={renderFooter()} fullHeight={true}>
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">
@@ -862,77 +904,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           </div>
         ) : (
           <>
-            {/* Tabs Navigation */}
-            {!isImport && (
-              <div className="border-b border-gray-200 mb-6">
-                <nav className="flex -mb-px space-x-8 overflow-x-auto">
-                  <button onClick={() => setActiveTab("profile")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "profile" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaUserGraduate className="mr-2" />
-                    Profile
-                  </button>
-                  <button onClick={() => setActiveTab("complaints")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "complaints" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaClipboardList className="mr-2" />
-                    Complaints
-                  </button>
-                  <button onClick={() => setActiveTab("access")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "access" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaHistory className="mr-2" />
-                    Access History
-                  </button>
-                  <button onClick={() => setActiveTab("visitors")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "visitors" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaUserFriends className="mr-2" />
-                    Visitors
-                  </button>
-                  <button onClick={() => setActiveTab("feedback")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "feedback" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaComments className="mr-2" />
-                    Feedback
-                  </button>
-                  <button onClick={() => setActiveTab("inventory")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "inventory" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaBoxes className="mr-2" />
-                    Inventory
-                  </button>
-                  <button onClick={() => setActiveTab("idcard")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "idcard" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaIdCard className="mr-2" />
-                    ID Card
-                  </button>
-                  <button onClick={() => setActiveTab("disco")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "disco" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaUserFriends className="mr-2" />
-                    DisCo Actions
-                  </button>
-                  <button onClick={() => setActiveTab("family")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "family" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaUsers className="mr-2" />
-                    Family
-                  </button>
-                  <button onClick={() => setActiveTab("health")} className={`py-3 px-1 border-b-2 font-medium text-sm flex items-center ${activeTab === "health" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-                    <FaHeartbeat className="mr-2" />
-                    Health
-                  </button>
-                </nav>
-              </div>
-            )}
-
             {/* Tab Content */}
             {renderTabContent()}
-
-            <div className="mt-6 flex justify-end space-x-4 pt-4 border-t border-gray-100">
-              {!isImport && (
-                <>
-                  <a href={`mailto:${studentDetails.guardianEmail}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                    Email Guardian
-                  </a>
-                  <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                    Email Student
-                  </a>
-                  {canAccess("students_info", "edit") && (
-                    <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
-                      Edit Student
-                    </button>
-                  )}
-                </>
-              )}
-              <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                Close
-              </button>
-            </div>
           </>
         )}
       </Modal>
@@ -951,8 +924,32 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       {/* Inventory Modal */}
       {showInventoryModal && (
-        <Modal title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"} onClose={closeInventoryModal}>
-          <form onSubmit={handleInventorySubmit} className="space-y-4">
+        <Modal
+          title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"}
+          onClose={closeInventoryModal}
+          footer={
+            <div className="flex justify-end gap-3">
+              <button type="button" onClick={closeInventoryModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                Cancel
+              </button>
+
+              {/* Return button - only for return mode */}
+              {inventoryModalType === "return" && (
+                <button type="button" onClick={handleReturnInventory} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
+                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Return Item"}
+                </button>
+              )}
+
+              {/* Submit button - only for assign and edit modes */}
+              {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
+                <button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
+                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
+                </button>
+              )}
+            </div>
+          }
+        >
+          <form id="inventory-form" onSubmit={handleInventorySubmit} className="space-y-4">
             {/* Item details for edit/return modals */}
             {(inventoryModalType === "edit" || inventoryModalType === "return") && selectedInventoryItem && (
               <div className="bg-gray-50 p-4 rounded-lg mb-4">
@@ -1030,26 +1027,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]"
                 placeholder={inventoryModalType === "assign" ? "Any additional notes..." : inventoryModalType === "edit" ? "Update notes..." : "Notes about returned item..."}
               ></textarea>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-2">
-              <button type="button" onClick={closeInventoryModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                Cancel
-              </button>
-
-              {/* Return button - only for return mode */}
-              {inventoryModalType === "return" && (
-                <button type="button" onClick={handleReturnInventory} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Return Item"}
-                </button>
-              )}
-
-              {/* Submit button - only for assign and edit modes */}
-              {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
-                <button type="submit" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
-                </button>
-              )}
             </div>
           </form>
         </Modal>
