@@ -30,4 +30,19 @@ export const dashboardApi = {
 
     return response.json()
   },
+
+  getStudentCount: async () => {
+    const route = "/dashboard/student-count"
+    const response = await fetch(`${baseUrl}${route}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch student count")
+    }
+
+    return response.json()
+  },
 }

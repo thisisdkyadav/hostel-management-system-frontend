@@ -203,7 +203,7 @@ const Students = () => {
         </div>
       </header>
 
-      <StudentStats students={students} totalCount={totalCount} />
+      <StudentStats />
 
       {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} />}
 
