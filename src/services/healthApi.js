@@ -145,4 +145,24 @@ export const healthApi = {
       throw error
     }
   },
+
+  updateBulkStudentHealth: async (healthData) => {
+    try {
+      const response = await fetch(`${baseUrl}${route}/student/health/bulk-update`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(healthData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update student health")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating student health:", error)
+      throw error
+    }
+  },
 }

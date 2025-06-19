@@ -79,6 +79,26 @@ export const adminApi = {
     }
   },
 
+  updateBulkFamilyMembers: async (familyMembersData) => {
+    try {
+      const response = await fetch(`${baseUrl}/family/bulk-update`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(familyMembersData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update bulk family members")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating bulk family members:", error)
+      throw error
+    }
+  },
+
   addHostelGate: async (hostelGateData) => {
     try {
       const response = await fetch(`${baseUrl}/admin/hostel-gate`, {
