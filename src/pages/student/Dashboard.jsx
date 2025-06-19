@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { studentApi } from "../../services/apiService"
-import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { BiError } from "react-icons/bi"
 import { FaQrcode } from "react-icons/fa"
 import OfflineBanner from "../../components/common/OfflineBanner"
@@ -15,6 +14,51 @@ import QRCodeGenerator from "../../components/QRCodeGenerator"
 import Modal from "../../components/common/Modal"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
+
+// Enhanced shimmer loader components
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
+
+// Shimmer with blurred preview for cards
+const CardShimmer = ({ height, className = "" }) => (
+  <div className={`relative overflow-hidden rounded-lg ${className}`} style={{ height }}>
+    <div className="absolute inset-0 bg-gray-100 backdrop-blur-sm"></div>
+    <div className="absolute inset-0 flex items-center justify-center">
+      <ShimmerLoader height="70%" width="90%" className="rounded-lg" />
+    </div>
+    <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-200 to-transparent"></div>
+    <div className="absolute inset-0 animate-pulse opacity-20 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"></div>
+  </div>
+)
+
+// Shimmer for profile card
+const ProfileShimmer = () => (
+  <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+    <div className="flex flex-col md:flex-row gap-4">
+      <ShimmerLoader height="120px" width="120px" className="rounded-full" />
+      <div className="flex-1 space-y-4">
+        <ShimmerLoader height="2rem" width="60%" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ShimmerLoader height="1.5rem" width="80%" />
+          <ShimmerLoader height="1.5rem" width="70%" />
+          <ShimmerLoader height="1.5rem" width="60%" />
+          <ShimmerLoader height="1.5rem" width="75%" />
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
+// Shimmer for stats cards
+const StatsShimmer = () => (
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="bg-white rounded-xl shadow-sm p-4">
+        <ShimmerLoader height="1rem" width="60%" className="mb-2" />
+        <ShimmerLoader height="2rem" width="40%" />
+      </div>
+    ))}
+  </div>
+)
 
 const Dashboard = () => {
   const { user, isOnline } = useAuth()
@@ -76,10 +120,28 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="p-6 h-full flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin mb-3" />
-          <div className="text-xl text-gray-600">Loading dashboard data...</div>
+      <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+        <div className="flex items-center justify-between mb-6">
+          <ShimmerLoader height="2rem" width="12rem" />
+          <ShimmerLoader height="2.5rem" width="8rem" className="rounded-lg md:hidden" />
+        </div>
+
+        <ProfileShimmer />
+        <StatsShimmer />
+
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
+          <div className="lg:col-span-2 space-y-4">
+            <CardShimmer height="12rem" className="mb-4" />
+            <CardShimmer height="12rem" />
+          </div>
+
+          <div className="lg:col-span-2 space-y-4">
+            <CardShimmer height="24rem" />
+          </div>
+
+          <div className="lg:col-span-2 space-y-4">
+            <CardShimmer height="24rem" />
+          </div>
         </div>
       </div>
     )
