@@ -39,11 +39,11 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
             <span className="font-medium">Reason for rejection:</span> {rejectionReason}
           </div>
         )}
-        {status === "Approved" && (
+        {/* {status === "Approved" && (
           <div className="mt-2 text-sm">
             <span className="font-medium">Approved on:</span> {formatDate(approvedAt || new Date())}
           </div>
-        )}
+        )} */}
       </div>
     </>
   )
