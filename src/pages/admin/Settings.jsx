@@ -20,6 +20,7 @@ const Settings = () => {
     { field: "dateOfBirth", label: "Date of Birth" },
     { field: "address", label: "Address" },
     { field: "gender", label: "Gender" },
+    { field: "familyMembers", label: "Family Members" },
   ]
 
   useEffect(() => {
@@ -111,7 +112,7 @@ const Settings = () => {
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
