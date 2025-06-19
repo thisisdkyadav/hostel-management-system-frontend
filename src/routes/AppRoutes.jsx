@@ -59,6 +59,7 @@ import NotificationCenter from "../pages/NotificationCenter"
 import Security from "../pages/student/Security.jsx"
 import HostelSupervisorLayout from "../layouts/HostelSupervisorLayout.jsx"
 import AdminHostelSupervisors from "../pages/admin/HostelSupervisors.jsx"
+import AdminSettings from "../pages/admin/Settings"
 
 // import related to super admin
 import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
@@ -263,6 +264,7 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="update-password" element={<UpdatePassword />} />
+        <Route path="settings" element={<AdminSettings />} />
         <Route path="profile" element={<Profile />} />
         <Route path="maintenance" element={<MaintenanceStaff />} />
         <Route path="notifications" element={<NotificationCenter />} />
