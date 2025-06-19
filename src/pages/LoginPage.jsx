@@ -185,18 +185,8 @@ const LoginPage = () => {
               </button>
             </form>
 
-            {/* Divider */}
-            {/* <div className="relative my-6 sm:my-8">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-xs sm:text-sm">
-                <span className="px-3 bg-white/80 text-gray-500 backdrop-blur-sm">Or continue with</span>
-              </div>
-            </div> */}
-
             {/* Google Login */}
-            <div className="w-full relative z-10 mt-3 sm:mt-6">
+            <div className="w-full relative z-10 mt-6 sm:mt-8 flex justify-center">
               <LoginWithGoogle callback={handleGoogleCallback} />
             </div>
 

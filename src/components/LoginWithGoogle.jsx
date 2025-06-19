@@ -6,21 +6,15 @@ const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 function LoginWithGoogle({ callback, className }) {
   // Custom button renderer for GoogleLogin
   const customButton = ({ onClick, disabled }) => (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`group flex items-center justify-center gap-3 w-full bg-white/90 text-gray-700 border border-gray-200 py-3.5 px-6 rounded-xl font-medium hover:bg-gray-50/90 hover:border-gray-300 hover:shadow-lg transition-all duration-300 relative overflow-hidden ${className || ""}`}
-      style={{ width: "100%" }}
-    >
-      <span className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+    <button onClick={onClick} disabled={disabled} className={`flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-300 ${className || ""}`} style={{ minWidth: "240px" }}>
       <FcGoogle className="text-xl" />
-      <span className="relative">Continue with Google</span>
+      <span>Continue with Google</span>
     </button>
   )
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <div className="w-full">
+      <div className="flex justify-center items-center">
         <GoogleLogin
           onSuccess={async (tokenResponse) => {
             const token = tokenResponse.credential
