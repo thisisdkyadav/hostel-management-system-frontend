@@ -5,6 +5,20 @@ import StatCards from "../StatCards"
 import { useEffect, useState } from "react"
 import { dashboardApi } from "../../../services/dashboardApi"
 
+// Shimmer loader component for stats
+const StatCardShimmer = () => (
+  <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-gray-200 relative overflow-hidden">
+    <div className="animate-pulse flex flex-col">
+      <div className="h-5 w-24 bg-gray-200 rounded mb-2"></div>
+      <div className="h-8 w-16 bg-gray-300 rounded mb-2"></div>
+      <div className="h-4 w-32 bg-gray-200 rounded"></div>
+    </div>
+    <div className="absolute right-4 top-4">
+      <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+    </div>
+  </div>
+)
+
 const StudentStats = () => {
   const [studentCounts, setStudentCounts] = useState({
     total: 0,
@@ -61,8 +75,10 @@ const StudentStats = () => {
   ]
 
   return loading ? (
-    <div className="w-full h-24 flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-t-[#1360AB] rounded-full animate-spin"></div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <StatCardShimmer />
+      <StatCardShimmer />
+      <StatCardShimmer />
     </div>
   ) : (
     <StatCards stats={statsData} columns={3} />
