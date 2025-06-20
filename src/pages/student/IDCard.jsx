@@ -92,7 +92,10 @@ const IDCard = () => {
 
       <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start">
         <HiInformationCircle className="text-[#1360AB] mt-0.5 mr-2 flex-shrink-0" size={20} />
-        <p className="text-sm text-gray-700">Please upload clear images of both sides of your student ID card. These images will be used for verification purposes by hostel staff and security personnel.</p>
+        <div className="text-sm text-gray-700">
+          <p>Please upload clear images of both sides of your student ID card. These images will be used for verification purposes by hostel staff and security personnel.</p>
+          <p className="mt-2 font-medium">Maximum file size: 1MB per image</p>
+        </div>
       </div>
 
       {loading ? (
