@@ -1,7 +1,7 @@
 import React, { useState, useCallback, use } from "react"
 import Cropper from "react-easy-crop"
 import Modal from "./Modal"
-import { HiCheckCircle, HiUpload, HiX } from "react-icons/hi"
+import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi } from "../../services/apiService"
 
 const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
@@ -11,14 +11,25 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
   const [zoom, setZoom] = useState(1)
   const [uploading, setUploading] = useState(false)
   const [uploaded, setUploaded] = useState(false)
+  const [error, setError] = useState("")
+  const MAX_FILE_SIZE = 500 * 1024 // 500KB in bytes
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0]
+
+      // Check file size
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`File size exceeds 500KB limit. Your file is ${(file.size / 1024).toFixed(2)}KB.`)
+        return
+      }
+
+      setError("") // Clear any previous errors
       const reader = new FileReader()
       reader.onload = () => {
         setImage(reader.result)
       }
-      reader.readAsDataURL(e.target.files[0])
+      reader.readAsDataURL(file)
     }
   }
 
@@ -59,6 +70,13 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
 
       const croppedImage = await getCroppedImg(image, croppedAreaPixels)
 
+      // Check if cropped image exceeds size limit
+      if (croppedImage.size > MAX_FILE_SIZE) {
+        setError(`Cropped image exceeds 500KB limit. Try reducing zoom or using a smaller image.`)
+        setUploading(false)
+        return
+      }
+
       const formData = new FormData()
       formData.append("image", croppedImage, "profile.jpg")
 
@@ -68,11 +86,12 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
 
       setUploaded(true)
 
-        onImageUpload(imageUrl)
-        handleReset()
-        onClose()
+      onImageUpload(imageUrl)
+      handleReset()
+      onClose()
     } catch (error) {
       console.error("Error uploading image:", error)
+      setError("Failed to upload image. Please try again.")
     } finally {
       setUploading(false)
     }
@@ -84,11 +103,19 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
     setZoom(1)
     setCrop({ x: 0, y: 0 })
     setUploaded(false)
+    setError("")
   }
 
   return (
     <Modal title="Upload Profile Picture" onClose={onClose} width={600}>
       <div className="space-y-5">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start">
+            <HiExclamation className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {!image ? (
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
             <div className="space-y-4">
@@ -98,6 +125,7 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
               <div>
                 <p className="text-gray-700 mb-2">Drag and drop an image or click to browse</p>
                 <p className="text-gray-500 text-sm">Recommended: Square image of at least 300x300 pixels</p>
+                <p className="text-gray-500 text-sm font-medium">Maximum file size: 500KB</p>
               </div>
               <label className="inline-block">
                 <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />

@@ -114,9 +114,12 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
             <div className="relative h-20 w-20 rounded-full overflow-hidden mr-4">
               <img src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} alt="Profile" className="h-20 w-20 object-cover" />
             </div>
-            <button type="button" onClick={() => setIsImageModalOpen(true)} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-md text-sm font-medium hover:bg-blue-200 transition-colors">
-              Change Photo
-            </button>
+            <div>
+              <button type="button" onClick={() => setIsImageModalOpen(true)} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-md text-sm font-medium hover:bg-blue-200 transition-colors">
+                Change Photo
+              </button>
+              <p className="text-xs text-gray-500 mt-1">Maximum file size: 500KB</p>
+            </div>
           </div>
         </div>
       )
