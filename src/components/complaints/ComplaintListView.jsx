@@ -1,21 +1,10 @@
-import { FaEye } from "react-icons/fa"
 import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
-import StudentDetailModal from "../common/students/StudentDetailModal"
 import { useAuth } from "../../contexts/AuthProvider"
-import { useState } from "react"
 import BaseTable from "../common/table/BaseTable"
 import { getMediaUrl } from "../../utils/mediaUtils"
+
 const ComplaintListView = ({ complaints, onViewDetails }) => {
   const { user } = useAuth()
-  const [showStudentDetail, setShowStudentDetail] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState(null)
-
-  const handleStudentClick = (userId) => {
-    if (!userId) return
-    if (!["Admin", "Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)) return
-    setSelectedStudent({ userId })
-    setShowStudentDetail(true)
-  }
 
   const columns = [
     {
@@ -33,7 +22,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       key: "reportedBy",
       className: "hidden md:table-cell",
       render: (complaint) => (
-        <div onClick={() => handleStudentClick(complaint.reportedBy?.id)} className="flex items-center cursor-pointer">
+        <div className="flex items-center">
           <div className="flex-shrink-0 h-8 w-8">
             {complaint.reportedBy?.profileImage ? (
               <img className="h-8 w-8 rounded-full object-cover" src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
@@ -75,31 +64,9 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       className: "hidden lg:table-cell",
       render: (complaint) => <span className={`px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${getPriorityColor(complaint.priority)}`}>{complaint.priority}</span>,
     },
-    {
-      header: "Actions",
-      key: "actions",
-      align: "right",
-      render: (complaint) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onViewDetails(complaint)
-          }}
-          className="text-[#1360AB] hover:bg-blue-50 p-2 rounded-full transition-colors"
-          aria-label="View details"
-        >
-          <FaEye className="h-4 w-4" />
-        </button>
-      ),
-    },
   ]
 
-  return (
-    <>
-      <BaseTable columns={columns} data={complaints} emptyMessage="No complaints to display" />
-      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={() => {}} />}
-    </>
-  )
+  return <BaseTable columns={columns} data={complaints} emptyMessage="No complaints to display" onRowClick={onViewDetails} />
 }
 
 export default ComplaintListView

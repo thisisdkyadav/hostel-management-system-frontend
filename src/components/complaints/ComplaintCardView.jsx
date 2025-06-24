@@ -1,4 +1,4 @@
-import { FaBuilding, FaEye } from "react-icons/fa"
+import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -6,7 +6,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
       {complaints.map((complaint) => (
-        <div key={complaint.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+        <div key={complaint.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 cursor-pointer" onClick={() => onViewDetails(complaint)}>
           <div className="flex justify-between items-start">
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">{complaint.id?.substring(0, 8)}</span>
@@ -37,7 +37,7 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
             <span className="text-xs text-gray-500">{getTimeSince(complaint.createdDate)}</span>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
+          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center">
             <div className="flex items-center">
               {complaint.reportedBy?.profileImage ? (
                 <img src={getMediaUrl(complaint.reportedBy.profileImage)} alt={complaint.reportedBy.name} className="h-8 w-8 rounded-full object-cover mr-2" />
@@ -49,10 +49,6 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
                 <div className="text-xs text-gray-500">Reporter</div>
               </div>
             </div>
-
-            <button className="flex items-center px-3 py-1.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg text-sm hover:bg-[#1360AB] hover:text-white transition-colors" onClick={() => onViewDetails(complaint)}>
-              <FaEye className="mr-1.5" /> Details
-            </button>
           </div>
         </div>
       ))}
