@@ -14,16 +14,23 @@ const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
-  const { logout, user } = useAuth ? useAuth() : { logout: () => {}, user: null }
-  const { isPwaMobile, isStandalone } = usePwaMobile()
+  const { logout, user } = useAuth()
+  const { isPwaMobile, isMobile, isStandalone } = usePwaMobile()
   const [layoutPreference, setLayoutPreference] = useState("sidebar") // Default to sidebar
   const [notificationsCount, setNotificationsCount] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   // Load layout preference from localStorage
   useEffect(() => {
-    const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
-    if (savedPreference) {
-      setLayoutPreference(savedPreference)
+    try {
+      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
+      if (savedPreference && (savedPreference === "sidebar" || savedPreference === "bottombar")) {
+        setLayoutPreference(savedPreference)
+      }
+      setLoading(false)
+    } catch (error) {
+      console.error("Error loading layout preference:", error)
+      setLoading(false)
     }
   }, [])
 
@@ -102,8 +109,24 @@ const StudentLayout = () => {
     }
   }
 
+  // If still loading, don't render anything yet to avoid flashing
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>
+  }
+
   // Determine which layout to show based on preferences and device
-  const showBottomBar = isPwaMobile && user?.role === "Student" && (layoutPreference === "bottombar" || !isStandalone)
+  // Use a safer approach to determine layout
+  let showBottomBar = false
+
+  if (user && user.role === "Student" && isMobile) {
+    if (isStandalone) {
+      // For installed PWA, respect user preference
+      showBottomBar = layoutPreference === "bottombar"
+    } else if (isPwaMobile) {
+      // For mobile browser PWA view, always use bottom bar
+      showBottomBar = true
+    }
+  }
 
   const showSidebar = !showBottomBar
 

@@ -7,6 +7,7 @@ const usePwaMobile = () => {
   const [isPwaMobile, setIsPwaMobile] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
 
+  // Set up standalone detection
   useEffect(() => {
     // Check if the app is in standalone mode (PWA installed)
     const checkStandalone = () => {
@@ -23,25 +24,12 @@ const usePwaMobile = () => {
       }
     }
 
-    // Check if the device is mobile based on screen width
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 768
-      setIsMobile(mobile)
-      setIsPwaMobile(isStandalone && mobile)
-    }
-
-    // Initial checks
     checkStandalone()
-    checkMobile()
-
-    // Add event listeners for changes
-    window.addEventListener("resize", checkMobile)
 
     // Listen for display mode changes
     const mediaQuery = window.matchMedia("(display-mode: standalone)")
     const handleDisplayModeChange = (e) => {
       setIsStandalone(e.matches)
-      checkMobile()
     }
 
     if (mediaQuery.addEventListener) {
@@ -52,14 +40,30 @@ const usePwaMobile = () => {
     }
 
     return () => {
-      window.removeEventListener("resize", checkMobile)
       if (mediaQuery.removeEventListener) {
         mediaQuery.removeEventListener("change", handleDisplayModeChange)
       } else if (mediaQuery.removeListener) {
         mediaQuery.removeListener(handleDisplayModeChange)
       }
     }
-  }, [authStandalone, isStandalone])
+  }, [authStandalone]) // Only depend on authStandalone
+
+  // Set up mobile detection in a separate effect
+  useEffect(() => {
+    // Check if the device is mobile based on screen width
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setIsPwaMobile(isStandalone && mobile)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [isStandalone]) // Only depend on isStandalone
 
   return { isPwaMobile, isMobile, isStandalone }
 }

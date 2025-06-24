@@ -5,16 +5,30 @@ import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
 
+const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
+
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) => {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { isPwaMobile } = usePwaMobile()
-
+  const [layoutPreference, setLayoutPreference] = useState("sidebar")
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
 
-  // Hide the mobile header completely if we're in PWA mobile mode for students
-  if (isPwaMobile && user?.role === "Student") {
+  // Load layout preference
+  useEffect(() => {
+    try {
+      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
+      if (savedPreference) {
+        setLayoutPreference(savedPreference)
+      }
+    } catch (error) {
+      console.error("Error loading layout preference:", error)
+    }
+  }, [])
+
+  // Hide the mobile header completely if we're in PWA mobile mode for students with bottombar preference
+  if (isPwaMobile && user?.role === "Student" && layoutPreference === "bottombar") {
     return null
   }
 
@@ -30,6 +44,9 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
+
+  // Safety check - if bottomNavItems is not provided, use an empty array
+  const safeBottomNavItems = bottomNavItems || []
 
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white z-40 flex items-center justify-between px-4 border-b border-gray-100 shadow-sm">
@@ -63,11 +80,11 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
 
         {dropdownOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 py-1 border border-gray-100 animate-fadeIn">
-            {bottomNavItems.map((item) => (
+            {safeBottomNavItems.map((item) => (
               <div
                 key={item.name}
                 onClick={() => {
-                  handleNavigation(item)
+                  if (handleNavigation) handleNavigation(item)
                   setDropdownOpen(false)
                 }}
                 className={`
