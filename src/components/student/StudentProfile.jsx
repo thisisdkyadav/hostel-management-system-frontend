@@ -23,7 +23,7 @@ const StudentProfile = ({ profile }) => {
       </div>
 
       <div className="mt-4 md:mt-0 flex space-x-2">
-        <div className="bg-blue-50 px-3 py-1 rounded-full text-xs text-[#1360AB]">{profile.year} Year</div>
+        {/* <div className="bg-blue-50 px-3 py-1 rounded-full text-xs text-[#1360AB]">{profile.year} Year</div> */}
         <div className="bg-green-50 px-3 py-1 rounded-full text-xs text-green-600">{profile.hostelName}</div>
       </div>
     </div>
