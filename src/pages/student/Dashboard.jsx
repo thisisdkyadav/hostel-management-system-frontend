@@ -157,13 +157,6 @@ const Dashboard = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1 relative">
-      {/* <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Student Dashboard</h1>
-        <button onClick={() => setShowQRModal(true)} className="flex items-center gap-2 text-white bg-[#1360AB] px-3 py-2 rounded-lg shadow-sm hover:bg-[#0d4b86] transition-all duration-300 md:hidden">
-          <FaQrcode /> Quick Access
-        </button>
-      </div> */}
-
       {/* Offline notification banner */}
       {isOfflineData && <OfflineBanner message="You are currently offline. Viewing cached dashboard data." className="mb-4" />}
 
