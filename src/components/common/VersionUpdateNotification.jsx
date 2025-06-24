@@ -3,6 +3,9 @@ import useVersionCheck from "../../hooks/useVersionCheck"
 import Toast from "./Toast"
 
 const VersionUpdateNotification = () => {
+  // Temporarily disabled due to issues
+  return null
+
   const { updateAvailable, handleUpdate } = useVersionCheck()
   const [showToast, setShowToast] = useState(false)
 
