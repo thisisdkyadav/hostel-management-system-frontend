@@ -4,6 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { MdInventory } from "react-icons/md"
 import { formatDate } from "../../utils/formatters"
 import LostAndFoundEditForm from "./LostAndFoundEditForm"
+import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../services/apiService"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -11,6 +12,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
   const { user, canAccess } = useAuth()
 
   const [isEditing, setIsEditing] = useState(false)
+  const [showDetailModal, setShowDetailModal] = useState(false)
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -23,7 +25,8 @@ const LostAndFoundCard = ({ item, refresh }) => {
     }
   }
 
-  const handleEditClick = () => {
+  const handleEditClick = (e) => {
+    e.stopPropagation()
     setIsEditing(true)
   }
 
@@ -60,43 +63,51 @@ const LostAndFoundCard = ({ item, refresh }) => {
     }
   }
 
+  const handleCardClick = () => {
+    setShowDetailModal(true)
+  }
+
   if (isEditing) {
     return <LostAndFoundEditForm item={item} onCancel={handleCancelEdit} onSave={handleSaveEdit} onDelete={handleDelete} />
   }
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-      <div className="flex justify-between items-start">
-        <div className="flex items-center">
-          <div className={`p-2.5 mr-3 rounded-lg ${getStatusColor(item.status)}`}>
-            <MdInventory size={20} />
+    <>
+      <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 cursor-pointer" onClick={handleCardClick}>
+        <div className="flex justify-between items-start">
+          <div className="flex items-center">
+            <div className={`p-2.5 mr-3 rounded-lg ${getStatusColor(item.status)}`}>
+              <MdInventory size={20} />
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{item.itemName}</h3>
+              <span className="text-xs text-gray-500">ID: {item._id.substring(0, 8)}</span>
+            </div>
           </div>
-          <div>
-            <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{item.itemName}</h3>
-            <span className="text-xs text-gray-500">ID: {item._id.substring(0, 8)}</span>
+          <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center">
+            <BsCalendarDate className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
+            <span className="text-sm text-gray-700">{formatDate(item.dateFound)}</span>
+          </div>
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <p className="text-sm text-gray-700 line-clamp-3">{item.description}</p>
           </div>
         </div>
-        <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
+
+        <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+          {user && canAccess("lost_and_found", "edit") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
+            <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+              <FaEdit className="mr-2" /> Edit
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="mt-4 space-y-3">
-        <div className="flex items-center">
-          <BsCalendarDate className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-          <span className="text-sm text-gray-700">{formatDate(item.dateFound)}</span>
-        </div>
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm text-gray-700 line-clamp-3">{item.description}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-        {user && canAccess("lost_and_found", "edit") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
-          <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
-            <FaEdit className="mr-2" /> Edit
-          </button>
-        )}
-      </div>
-    </div>
+      {showDetailModal && <LostAndFoundDetailModal selectedItem={item} setShowDetailModal={setShowDetailModal} />}
+    </>
   )
 }
 
