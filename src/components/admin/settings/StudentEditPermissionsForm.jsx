@@ -9,6 +9,9 @@ const getFieldDescription = (field) => {
     address: "Allow students to change their address information.",
     gender: "Allow students to update their gender information.",
     familyMembers: "Allow students to add, edit, and manage their family members.",
+    phone: "Allow students to update their phone number.",
+    emergencyContact: "Allow students to update their emergency contact information.",
+    bloodGroup: "Allow students to update their blood group information.",
   }
 
   return descriptions[field] || `Allow students to edit their ${field}.`
@@ -22,6 +25,9 @@ const getFieldIcon = (field) => {
     address: "🏠",
     gender: "⚧️",
     familyMembers: "👪",
+    phone: "📞",
+    emergencyContact: "🚨",
+    bloodGroup: "🩸",
   }
 
   return icons[field] || "✏️"
