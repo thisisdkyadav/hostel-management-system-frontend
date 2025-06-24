@@ -18,25 +18,9 @@ const AcademicInfoSection = ({ data, onChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField label="Department" name="department" type="text" value={data.department || ""} onChange={handleChange} />
 
-        <FormField
-          label="Degree"
-          name="degree"
-          type="select"
-          value={data.degree || ""}
-          onChange={handleChange}
-          options={[
-            { value: "", label: "Select Degree" },
-            { value: "B.Tech", label: "B.Tech" },
-            { value: "M.Tech", label: "M.Tech" },
-            { value: "PhD", label: "PhD" },
-            { value: "BSc", label: "BSc" },
-            { value: "MSc", label: "MSc" },
-            { value: "BBA", label: "BBA" },
-            { value: "MBA", label: "MBA" },
-          ]}
-        />
+        <FormField label="Degree" name="degree" type="text" value={data.degree || ""} onChange={handleChange} />
 
-        <FormField label="Admission Date" name="admissionDate" type="date" value={data.admissionDate ? new Date(data.admissionDate).toISOString().split("T")[0] : ""} onChange={handleChange} />
+        <FormField label="Admission Date" name="admissionDate" type="date" value={data.admissionDate ? (data.admissionDate instanceof Date ? data.admissionDate.toISOString().split("T")[0] : new Date(data.admissionDate).toISOString().split("T")[0]) : ""} onChange={handleChange} />
       </div>
     </div>
   )
