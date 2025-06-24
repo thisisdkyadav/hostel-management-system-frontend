@@ -14,20 +14,29 @@ const ProfileHeader = ({ user, role, subtitle }) => {
 
   // Load layout preference from localStorage on component mount
   useEffect(() => {
-    const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
-    if (savedPreference) {
-      setLayoutPreference(savedPreference)
+    try {
+      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
+      if (savedPreference && (savedPreference === "sidebar" || savedPreference === "bottombar")) {
+        setLayoutPreference(savedPreference)
+      }
+    } catch (error) {
+      console.error("Error loading layout preference:", error)
     }
   }, [])
 
   // Toggle layout preference and save to localStorage
   const toggleLayout = () => {
-    const newPreference = layoutPreference === "sidebar" ? "bottombar" : "sidebar"
-    setLayoutPreference(newPreference)
-    localStorage.setItem(LAYOUT_PREFERENCE_KEY, newPreference)
+    try {
+      const newPreference = layoutPreference === "sidebar" ? "bottombar" : "sidebar"
+      setLayoutPreference(newPreference)
+      localStorage.setItem(LAYOUT_PREFERENCE_KEY, newPreference)
 
-    // Show notification that requires app restart
-    alert("Layout preference saved. Please restart the app to apply changes.")
+      // Show notification that requires app restart
+      alert("Layout preference saved. Please restart the app to apply changes.")
+    } catch (error) {
+      console.error("Error saving layout preference:", error)
+      alert("Failed to save layout preference. Please try again.")
+    }
   }
 
   // Only show layout toggle for students in PWA mode

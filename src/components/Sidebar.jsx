@@ -1,4 +1,4 @@
-import { act, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
@@ -8,6 +8,8 @@ import { CgSpinner } from "react-icons/cg"
 import { useWarden } from "../contexts/WardenProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
+
+const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -21,19 +23,32 @@ const Sidebar = ({ navItems }) => {
   const [assignedHostels, setAssignedHostels] = useState([])
   const [activeHostelId, setActiveHostelId] = useState(null)
   const prevHostelIdRef = useRef(null)
+  const [layoutPreference, setLayoutPreference] = useState("sidebar")
 
   const wardenContext = useWarden()
   const fetchProfile = wardenContext?.fetchProfile
 
   const isWardenRole = user?.role === "Warden" || user?.role === "Associate Warden" || user?.role === "Hostel Supervisor"
 
-  // Skip sidebar rendering for student PWA in mobile mode
-  if (isPwaMobile && user?.role === "Student") {
+  // Load layout preference
+  useEffect(() => {
+    try {
+      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
+      if (savedPreference) {
+        setLayoutPreference(savedPreference)
+      }
+    } catch (error) {
+      console.error("Error loading layout preference:", error)
+    }
+  }, [])
+
+  // Skip sidebar rendering for student PWA in mobile mode with bottombar preference
+  if (user?.role === "Student" && isPwaMobile && layoutPreference === "bottombar") {
     return null
   }
 
   useEffect(() => {
-    if (isWardenRole) {
+    if (isWardenRole && wardenContext) {
       const profileData = wardenContext?.profile || user
       const hostels = profileData?.hostels || profileData?.hostelIds || []
       const currentActiveId = profileData?.activeHostelId?._id || profileData?.activeHostelId || user?.hostel?._id
@@ -44,10 +59,10 @@ const Sidebar = ({ navItems }) => {
       setAssignedHostels([])
       setActiveHostelId(null)
     }
-  }, [user, wardenContext?.profile, isWardenRole])
+  }, [user, wardenContext?.profile, isWardenRole, wardenContext])
 
   useEffect(() => {
-    const currentItem = navItems.find((item) => {
+    const currentItem = navItems?.find((item) => {
       if (location.pathname === item.path) return true
       if (item.pathPattern && new RegExp(item.pathPattern).test(location.pathname)) return true
       if (location.pathname === "/" && item.path === "/Dashboard") return true
@@ -72,6 +87,11 @@ const Sidebar = ({ navItems }) => {
 
     return () => window.removeEventListener("resize", handleResize)
   }, [])
+
+  // Safety check - if navItems is not provided, return null
+  if (!navItems || !Array.isArray(navItems) || navItems.length === 0) {
+    return null
+  }
 
   const mainNavItems = navItems.filter((item) => item.section === "main")
   const bottomNavItems = navItems.filter((item) => item.section === "bottom")
@@ -232,7 +252,7 @@ const Sidebar = ({ navItems }) => {
           <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
             <ul className="space-y-1">{mainNavItems.map(renderNavItem)}</ul>
           </div>
-          {isWardenRole && isOpen && assignedHostels.length > 0 && (
+          {isWardenRole && isOpen && assignedHostels && assignedHostels.length > 0 && (
             <div className="p-3 border-t border-gray-100">
               <label htmlFor="activeHostelSelect" className="block text-xs font-medium text-gray-500 mb-1.5 px-1">
                 Active Hostel
@@ -252,7 +272,7 @@ const Sidebar = ({ navItems }) => {
                   )}
                   {assignedHostels.map((hostel) => {
                     const hostelId = typeof hostel === "string" ? hostel : hostel?._id
-                    const hostelName = typeof hostel === "string" ? `Hostel (${hostelId.slice(-4)})` : hostel?.name || "Unknown Hostel"
+                    const hostelName = typeof hostel === "string" ? `Hostel (${hostelId?.slice(-4) || "Unknown"})` : hostel?.name || "Unknown Hostel"
                     if (!hostelId) return null
                     return (
                       <option key={hostelId} value={hostelId}>
