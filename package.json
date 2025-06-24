@@ -1,11 +1,11 @@
 {
   "name": "hostel-management",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/generate-meta.js && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
