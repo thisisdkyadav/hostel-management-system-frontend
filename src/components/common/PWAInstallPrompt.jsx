@@ -15,6 +15,11 @@ const PWAInstallPrompt = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   }
 
+  // Check if the app is running in standalone mode (installed PWA)
+  const checkIsStandalone = () => {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || document.referrer.includes("android-app://") || window.matchMedia("(display-mode: fullscreen)").matches || window.matchMedia("(display-mode: minimal-ui)").matches
+  }
+
   useEffect(() => {
     // Check if user has previously dismissed the prompt
     const hasDismissed = localStorage.getItem("pwa-prompt-dismissed")
@@ -23,14 +28,21 @@ const PWAInstallPrompt = () => {
       return // Don't show any prompts if user dismissed them
     }
 
-    // Check if the app is already in standalone mode (installed)
-    const isAppInstalled = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone || document.referrer.includes("android-app://")
+    // Check if we're already running as an installed app
+    const isRunningStandalone = checkIsStandalone()
+    setIsStandalone(isRunningStandalone)
 
-    setIsStandalone(isAppInstalled)
+    // If we're already in standalone mode, don't show any prompts
+    if (isRunningStandalone) {
+      return
+    }
 
     // Check if device is iOS
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
     setIsIOS(iOS)
+
+    // Check if the app has been installed (but we're viewing in browser)
+    const hasBeenInstalled = localStorage.getItem("pwa-installed") === "true"
 
     // Handle installation prompt for non-iOS devices
     const handleBeforeInstallPrompt = (e) => {
@@ -39,19 +51,19 @@ const PWAInstallPrompt = () => {
       // Stash the event so it can be triggered later
       setDeferredPrompt(e)
 
-      // Only show install prompt if we're on a mobile device and not already installed
-      if (isMobileDevice() && !isAppInstalled) {
+      // Only show install prompt if we're on a mobile device and not in standalone mode
+      if (isMobileDevice() && !isRunningStandalone && !hasBeenInstalled) {
         setShowInstallPrompt(true)
       }
     }
 
     // For iOS devices, show the installation prompt if not already installed
-    if (iOS && !isAppInstalled && isMobileDevice()) {
+    if (iOS && !isRunningStandalone && !hasBeenInstalled && isMobileDevice()) {
       setShowInstallPrompt(true)
     }
 
     // If app is installed but opened in browser, show open app prompt
-    if (isAppInstalled && !isStandalone && isMobileDevice()) {
+    if (hasBeenInstalled && !isRunningStandalone && isMobileDevice()) {
       setShowOpenAppPrompt(true)
     }
 
@@ -64,8 +76,22 @@ const PWAInstallPrompt = () => {
       window.deferredPrompt = null
     }
 
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia("(display-mode: standalone)")
+    const handleDisplayModeChange = (e) => {
+      if (e.matches) {
+        // We're now in standalone mode
+        setIsStandalone(true)
+        setShowInstallPrompt(false)
+        setShowOpenAppPrompt(false)
+      }
+    }
+
+    mediaQuery.addEventListener("change", handleDisplayModeChange)
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt)
+      mediaQuery.removeEventListener("change", handleDisplayModeChange)
     }
   }, [])
 
@@ -105,7 +131,8 @@ const PWAInstallPrompt = () => {
     setDismissed(true)
   }
 
-  if (dismissed || (!showInstallPrompt && !showOpenAppPrompt)) {
+  // Don't show any prompts if we're already in standalone mode
+  if (isStandalone || dismissed || (!showInstallPrompt && !showOpenAppPrompt)) {
     return null
   }
 
