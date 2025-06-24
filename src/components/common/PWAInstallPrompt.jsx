@@ -3,8 +3,10 @@ import { IoCloseOutline } from "react-icons/io5"
 import { IoLogoApple, IoLogoAndroid } from "react-icons/io"
 
 const PWAInstallPrompt = () => {
+  // Temporarily disabled due to issues
+  return null
+
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
-  const [showOpenAppPrompt, setShowOpenAppPrompt] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
@@ -41,9 +43,6 @@ const PWAInstallPrompt = () => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
     setIsIOS(iOS)
 
-    // Check if the app has been installed (but we're viewing in browser)
-    const hasBeenInstalled = localStorage.getItem("pwa-installed") === "true"
-
     // Handle installation prompt for non-iOS devices
     const handleBeforeInstallPrompt = (e) => {
       // Prevent Chrome 67+ from automatically showing the prompt
@@ -52,19 +51,14 @@ const PWAInstallPrompt = () => {
       setDeferredPrompt(e)
 
       // Only show install prompt if we're on a mobile device and not in standalone mode
-      if (isMobileDevice() && !isRunningStandalone && !hasBeenInstalled) {
+      if (isMobileDevice() && !isRunningStandalone) {
         setShowInstallPrompt(true)
       }
     }
 
     // For iOS devices, show the installation prompt if not already installed
-    if (iOS && !isRunningStandalone && !hasBeenInstalled && isMobileDevice()) {
+    if (iOS && !isRunningStandalone && isMobileDevice()) {
       setShowInstallPrompt(true)
-    }
-
-    // If app is installed but opened in browser, show open app prompt
-    if (hasBeenInstalled && !isRunningStandalone && isMobileDevice()) {
-      setShowOpenAppPrompt(true)
     }
 
     // Add event listener for install prompt
@@ -83,7 +77,6 @@ const PWAInstallPrompt = () => {
         // We're now in standalone mode
         setIsStandalone(true)
         setShowInstallPrompt(false)
-        setShowOpenAppPrompt(false)
       }
     }
 
@@ -126,33 +119,13 @@ const PWAInstallPrompt = () => {
 
   const dismissPrompt = () => {
     setShowInstallPrompt(false)
-    setShowOpenAppPrompt(false)
     localStorage.setItem("pwa-prompt-dismissed", "true")
     setDismissed(true)
   }
 
   // Don't show any prompts if we're already in standalone mode
-  if (isStandalone || dismissed || (!showInstallPrompt && !showOpenAppPrompt)) {
+  if (isStandalone || dismissed || !showInstallPrompt) {
     return null
-  }
-
-  if (showOpenAppPrompt) {
-    return (
-      <div className="fixed bottom-20 left-4 right-4 bg-white/90 backdrop-blur-lg rounded-xl shadow-lg z-50 p-4 border border-blue-100/50 animate-slideUp">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-800 mb-1">Open in App</h3>
-            <p className="text-sm text-gray-600 mb-3">You have this app installed. Would you like to open it?</p>
-            <button onClick={() => (window.location.href = window.location.href)} className="bg-[#1360AB] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-              Open App
-            </button>
-          </div>
-          <button onClick={dismissPrompt} className="p-1 text-gray-500 hover:text-gray-700">
-            <IoCloseOutline size={24} />
-          </button>
-        </div>
-      </div>
-    )
   }
 
   if (showInstallPrompt) {
