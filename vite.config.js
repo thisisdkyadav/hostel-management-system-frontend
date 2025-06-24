@@ -2,6 +2,33 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
 import { VitePWA } from "vite-plugin-pwa"
+import fs from "fs"
+import path from "path"
+
+// Custom plugin to copy meta.json to dist folder
+const copyMetaJson = () => {
+  return {
+    name: "copy-meta-json",
+    writeBundle() {
+      const publicPath = path.resolve("public/meta.json")
+      const distPath = path.resolve("dist/meta.json")
+
+      if (fs.existsSync(publicPath)) {
+        fs.copyFileSync(publicPath, distPath)
+        console.log("Copied meta.json to dist folder")
+      } else {
+        // Create a default meta.json if it doesn't exist
+        const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"))
+        const metaContent = {
+          version: packageJson.version || "0.0.0",
+          buildTimestamp: new Date().toISOString(),
+        }
+        fs.writeFileSync(distPath, JSON.stringify(metaContent, null, 2))
+        console.log("Created default meta.json in dist folder")
+      }
+    },
+  }
+}
 
 export default defineConfig({
   plugins: [
@@ -36,6 +63,7 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // Increase to 3MB
       },
     }),
+    copyMetaJson(),
   ],
   base: "/", // Ensures relative paths for assets
 })
