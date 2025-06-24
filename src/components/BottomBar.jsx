@@ -57,8 +57,8 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bottom-bar-glass border-t border-blue-100/50 z-50 pb-safe shadow-lg">
-      <div className="flex h-14">
+    <div className="fixed bottom-0 left-0 right-0 bg-white/70 backdrop-blur-lg border-t border-blue-100/50 z-50 pb-safe shadow-lg">
+      <div className="flex h-16">
         {mainButtons.map((item) => (
           <button
             key={item.name || `nav-item-${Math.random()}`}
@@ -70,8 +70,8 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
           >
             <div
               className={`
-              relative p-1 rounded-full transition-all duration-200
-              ${isActive(item) ? "bg-blue-100/70" : "hover:bg-gray-100/70"}
+              relative p-1.5 rounded-full transition-all duration-200
+              ${isActive(item) ? "bg-blue-100/80" : "hover:bg-gray-100/80"}
             `}
             >
               {item.icon && (
@@ -107,20 +107,20 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
             <div
               className={`
               relative p-0.5 rounded-full transition-all duration-200
-              ${dropdownOpen ? "bg-blue-100/70" : "hover:bg-gray-100/70"}
+              ${dropdownOpen ? "bg-blue-100/80" : "hover:bg-gray-100/80"}
             `}
             >
               <div
                 className={`
-                w-7 h-7 rounded-full flex items-center justify-center overflow-hidden
+                w-8 h-8 rounded-full flex items-center justify-center overflow-hidden
                 ${dropdownOpen ? "border-2 border-[#1360AB]" : "border border-gray-200"}
                 shadow-sm
               `}
               >
                 {user?.profileImage ? (
-                  <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-7 h-7 rounded-full object-cover" />
+                  <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
                 ) : user?.name?.charAt(0).toUpperCase() ? (
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center bg-gradient-to-br from-[#1360AB] to-blue-700 text-white">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br from-[#1360AB] to-blue-700 text-white">
                     <span className="text-xs font-semibold">{user?.name?.charAt(0).toUpperCase()}</span>
                   </div>
                 ) : (
@@ -141,10 +141,10 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
           {dropdownOpen && (
             <>
               <div className="fixed inset-0 bg-black/30 z-40 animate-fadeIn" onClick={() => setDropdownOpen(false)}></div>
-              <div className="fixed bottom-14 inset-x-0 bg-white/95 backdrop-blur-md rounded-t-2xl shadow-xl z-50 py-2 border border-gray-200 bottom-menu-slide-up max-h-[70vh] overflow-y-auto">
-                <div className="flex justify-between items-center px-5 pb-2 mb-1 border-b border-gray-100">
+              <div className="fixed bottom-16 inset-x-0 bg-white/90 backdrop-blur-xl rounded-t-2xl shadow-xl z-50 py-3 border border-gray-200/70 bottom-menu-slide-up max-h-[70vh] overflow-y-auto">
+                <div className="flex justify-between items-center px-5 pb-2 mb-2 border-b border-gray-100">
                   <h3 className="font-medium text-gray-800 text-sm">Menu</h3>
-                  <button onClick={() => setDropdownOpen(false)} className="p-1 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors">
+                  <button onClick={() => setDropdownOpen(false)} className="p-1.5 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 text-gray-500">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -156,15 +156,15 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
                       key={item.name || `hidden-nav-${Math.random()}`}
                       onClick={() => safeHandleNavigation(item)}
                       className={`
-                        flex items-center px-5 py-3 text-sm cursor-pointer transition-all duration-200
+                        flex items-center px-5 py-3.5 text-sm cursor-pointer transition-all duration-200
                         ${item.name === "Logout" ? "text-red-500 hover:bg-red-50 active:bg-red-100" : "text-gray-700 hover:bg-[#1360AB]/10 active:bg-[#1360AB]/20 hover:text-[#1360AB]"}
                       `}
                     >
                       {item.icon && (
                         <div
                           className={`
-                          p-2 rounded-full mr-3 flex items-center justify-center
-                          ${item.name === "Logout" ? "bg-red-100" : "bg-blue-100/70"}
+                          p-2.5 rounded-full mr-4 flex items-center justify-center
+                          ${item.name === "Logout" ? "bg-red-100" : "bg-blue-100/80"}
                         `}
                         >
                           <item.icon
@@ -176,7 +176,7 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
                         </div>
                       )}
                       <span className="font-medium">{item.name || ""}</span>
-                      {item.badge > 0 && <div className="ml-auto min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-semibold flex items-center justify-center shadow-sm">{item.badge > 99 ? "99+" : item.badge}</div>}
+                      {item.badge > 0 && <div className="ml-auto min-w-5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-semibold flex items-center justify-center shadow-sm">{item.badge > 99 ? "99+" : item.badge}</div>}
                     </div>
                   ))}
                 </div>
