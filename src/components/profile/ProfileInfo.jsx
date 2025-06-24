@@ -15,7 +15,7 @@ const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
             </div>
           )}
         </div>
-        <p className="font-medium text-gray-800 mt-0.5">{value || "Not provided"}</p>
+        <p className="font-medium text-gray-800 mt-0.5">{value || "N/A"}</p>
       </div>
     </div>
   )

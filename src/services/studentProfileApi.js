@@ -92,4 +92,17 @@ export const studentProfileApi = {
     }
     return response.json()
   },
+
+  // get health details
+  getHealthDetails: async () => {
+    const response = await fetch(`${baseUrl}/student-profile/health`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch health details")
+    }
+    return response.json()
+  },
 }

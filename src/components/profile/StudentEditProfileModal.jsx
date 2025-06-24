@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers } from "react-icons/fi"
-import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers } from "react-icons/hi"
+import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
+import { FaUserShield } from "react-icons/fa"
+import { GiDroplets } from "react-icons/gi"
 import Modal from "../common/Modal"
 import { studentProfileApi } from "../../services/apiService"
 import ImageUploadModal from "../common/ImageUploadModal"
@@ -60,7 +62,25 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
     try {
       setSaving(true)
-      await studentProfileApi.updateProfile(editableData)
+
+      // Create a copy of the data to modify
+      const dataToSubmit = { ...editableData }
+
+      // If emergency contact fields exist, structure them as a nested object
+      if (editableFields.includes("emergencyContact")) {
+        dataToSubmit.emergencyContact = {
+          guardian: editableData.guardian || "",
+          guardianPhone: editableData.guardianPhone || "",
+          guardianEmail: editableData.guardianEmail || "",
+        }
+
+        // Remove individual fields to avoid duplication
+        delete dataToSubmit.guardian
+        delete dataToSubmit.guardianPhone
+        delete dataToSubmit.guardianEmail
+      }
+
+      await studentProfileApi.updateProfile(dataToSubmit)
       onUpdate()
     } catch (error) {
       console.error("Error updating profile:", error)
@@ -71,6 +91,7 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   }
 
   const renderField = (field, type = "text") => {
+    console.log(field)
     const fieldConfig = {
       profileImage: {
         label: "Profile Image",
@@ -95,6 +116,22 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
       gender: {
         label: "Gender",
         icon: <HiUser className="text-blue-600" size={20} />,
+      },
+      bloodGroup: {
+        label: "Blood Group",
+        icon: <GiDroplets className="text-blue-600" size={20} />,
+      },
+      guardian: {
+        label: "Guardian Name",
+        icon: <FaUserShield className="text-blue-600" size={20} />,
+      },
+      guardianPhone: {
+        label: "Guardian Phone",
+        icon: <HiPhone className="text-blue-600" size={20} />,
+      },
+      guardianEmail: {
+        label: "Guardian Email",
+        icon: <HiMail className="text-blue-600" size={20} />,
       },
     }
 
@@ -137,6 +174,28 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
+          </select>
+        </div>
+      )
+    }
+
+    if (field === "bloodGroup") {
+      return (
+        <div key={field} className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+            {config.icon}
+            <span className="ml-2">{config.label}</span>
+          </label>
+          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="">Select Blood Group</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
           </select>
         </div>
       )
@@ -249,8 +308,20 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
                 {editableFields.includes("name") && renderField("name")}
                 {editableFields.includes("gender") && renderField("gender")}
                 {editableFields.includes("dateOfBirth") && renderField("dateOfBirth", "date")}
+                {editableFields.includes("bloodGroup") && renderField("bloodGroup")}
                 {editableFields.includes("phone") && renderField("phone", "tel")}
                 {editableFields.includes("address") && renderField("address")}
+
+                {editableFields.includes("emergencyContact") && (
+                  <>
+                    <div className="mt-6 mb-4 border-t pt-4">
+                      <h3 className="text-md font-medium text-gray-800 mb-3">Emergency Contact Information</h3>
+                    </div>
+                    {renderField("guardian")}
+                    {renderField("guardianPhone", "tel")}
+                    {renderField("guardianEmail", "email")}
+                  </>
+                )}
               </div>
             </>
           )}
@@ -263,7 +334,7 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
   return (
     <>
-      <Modal title="Edit Profile" onClose={onClose} width={700} footer={renderFooter()} tabs={getTabs()} activeTab={activeTab} onTabChange={setActiveTab}>
+      <Modal title="Edit Profile" onClose={onClose} width={700} footer={renderFooter()} tabs={getTabs()} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={true}>
         {renderTabContent()}
       </Modal>
 
