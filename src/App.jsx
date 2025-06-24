@@ -3,6 +3,7 @@ import { AuthProvider } from "./contexts/AuthProvider"
 import AppRoutes from "./routes/AppRoutes"
 import GlobalProvider from "./contexts/GlobalProvider"
 import VersionUpdateNotification from "./components/common/VersionUpdateNotification"
+import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <GlobalProvider>
           <AppRoutes />
           <VersionUpdateNotification />
+          <PWAInstallPrompt />
         </GlobalProvider>
       </AuthProvider>
     </BrowserRouter>
