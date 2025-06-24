@@ -3,13 +3,20 @@ import { useNavigate } from "react-router-dom"
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
+import usePwaMobile from "../hooks/usePwaMobile"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) => {
-  const navigate = useNavigate() // Add this line
+  const navigate = useNavigate()
   const { user } = useAuth()
+  const { isPwaMobile } = usePwaMobile()
 
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
+
+  // Hide the mobile header completely if we're in PWA mobile mode for students
+  if (isPwaMobile && user?.role === "Student") {
+    return null
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
