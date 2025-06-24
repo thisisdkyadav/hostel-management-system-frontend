@@ -15,6 +15,7 @@ import Modal from "../../components/common/Modal"
 import usePwaMobile from "../../hooks/usePwaMobile"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
+const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
 // Enhanced shimmer loader components
 const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
@@ -70,53 +71,87 @@ const Dashboard = () => {
   const [isOfflineData, setIsOfflineData] = useState(false)
   const [showQRModal, setShowQRModal] = useState(false)
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true)
-        if (isOnline) {
-          try {
-            const response = await studentApi.getStudentDashboard()
-            const data = response.data
-            localStorage.setItem(
-              DASHBOARD_CACHE_KEY,
-              JSON.stringify({
-                data,
-                timestamp: new Date().toISOString(),
-              })
-            )
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true)
 
-            setDashboardData(data)
-            setIsOfflineData(false)
-          } catch (err) {
-            console.error("Error fetching dashboard data:", err)
-            const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
-            if (cachedData) {
-              const { data } = JSON.parse(cachedData)
-              setDashboardData(data)
-              setIsOfflineData(true)
-            } else {
-              setError("Failed to load dashboard data")
-            }
-          }
-        } else {
+      if (isOnline) {
+        try {
+          const response = await studentApi.getStudentDashboard()
+          const data = response.data
+
+          // Store in cache with timestamp
+          localStorage.setItem(
+            DASHBOARD_CACHE_KEY,
+            JSON.stringify({
+              data,
+              timestamp: new Date().toISOString(),
+            })
+          )
+
+          setDashboardData(data)
+          setIsOfflineData(false)
+          setError(null)
+        } catch (err) {
+          console.error("Error fetching dashboard data:", err)
           const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+
           if (cachedData) {
             const { data } = JSON.parse(cachedData)
             setDashboardData(data)
             setIsOfflineData(true)
           } else {
-            setError("You are offline and no cached data is available")
+            setError("Failed to load dashboard data")
           }
         }
-      } catch (err) {
-        console.error("Error in dashboard data handling:", err)
-        setError("Failed to load dashboard data")
-      } finally {
+      } else {
+        const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+
+        if (cachedData) {
+          const { data } = JSON.parse(cachedData)
+          setDashboardData(data)
+          setIsOfflineData(true)
+        } else {
+          setError("You are offline and no cached data is available")
+        }
+      }
+    } catch (err) {
+      console.error("Error in dashboard data handling:", err)
+      setError("Failed to load dashboard data")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Check if cache is expired
+  const isCacheExpired = (timestamp) => {
+    if (!timestamp) return true
+    const cachedTime = new Date(timestamp).getTime()
+    const currentTime = new Date().getTime()
+    return currentTime - cachedTime > CACHE_EXPIRY_TIME
+  }
+
+  useEffect(() => {
+    // Check for cached data first
+    const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+
+    if (cachedData) {
+      const { data, timestamp } = JSON.parse(cachedData)
+
+      // If cache is not expired or offline, use cached data immediately
+      if (!isCacheExpired(timestamp) || !isOnline) {
+        setDashboardData(data)
+        setIsOfflineData(!isOnline)
         setLoading(false)
+
+        // If online and cache not expired, no need to fetch again
+        if (isOnline && !isCacheExpired(timestamp)) {
+          return
+        }
       }
     }
 
+    // Fetch fresh data if online or no valid cache
     fetchDashboardData()
   }, [isOnline])
 
@@ -151,8 +186,15 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="p-6 text-red-500 flex items-center justify-center">
-        <BiError className="mr-2 text-2xl" /> {error}
+      <div className="p-6 flex flex-col items-center justify-center h-full">
+        <div className="bg-white rounded-xl shadow-sm p-6 max-w-md w-full text-center">
+          <BiError className="mx-auto text-red-500 text-5xl mb-4" />
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Unable to Load Dashboard</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button onClick={fetchDashboardData} className="bg-[#1360AB] text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+            Try Again
+          </button>
+        </div>
       </div>
     )
   }
@@ -160,7 +202,7 @@ const Dashboard = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1 relative">
       {/* Offline notification banner */}
-      {isOfflineData && <OfflineBanner message="You are currently offline. Viewing cached dashboard data." className="mb-4" />}
+      {isOfflineData && <OfflineBanner message="You're offline. Viewing cached dashboard data." className="mb-4" showDismiss={true} />}
 
       <section className="mb-6">
         <StudentProfile profile={dashboardData.profile} />

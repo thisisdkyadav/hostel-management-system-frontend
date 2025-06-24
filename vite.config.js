@@ -35,32 +35,110 @@ export default defineConfig({
     tailwindcss(),
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "Hostel Management System - IIT Indore",
-        short_name: "HMS - IIT Indore",
+        short_name: "HMS - IITI",
+        description: "Hostel Management System for IIT Indore students and staff",
         start_url: "/",
         display: "standalone",
+        orientation: "portrait",
         background_color: "#ffffff",
-        theme_color: "#000000",
+        theme_color: "#1360AB",
+        categories: ["education", "productivity"],
         icons: [
           {
             src: "/IITILogo.png",
             sizes: "192x192",
             type: "image/png",
+            purpose: "any maskable",
           },
           {
             src: "/IITILogo.png",
             sizes: "512x512",
             type: "image/png",
+            purpose: "any maskable",
+          },
+          {
+            src: "/apple-touch-icon.png",
+            sizes: "180x180",
+            type: "image/png",
+            purpose: "apple touch icon",
+          },
+        ],
+        related_applications: [],
+        prefer_related_applications: false,
+        shortcuts: [
+          {
+            name: "Dashboard",
+            short_name: "Dashboard",
+            url: "/student",
+            description: "View your dashboard",
           },
         ],
       },
-      // devOptions: {
-      //   enabled: true, // Enables PWA in development mode
-      // },
+      devOptions: {
+        enabled: true, // Enable PWA in development mode for testing
+        type: "module",
+        navigateFallback: "index.html",
+      },
       workbox: {
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // Increase to 3MB
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,webp}"],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "google-fonts-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "gstatic-fonts-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "images-cache",
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/api\..*\/api\/.*/i,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "api-cache",
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60, // 1 hour
+              },
+              networkTimeoutSeconds: 10,
+            },
+          },
+        ],
       },
     }),
     copyMetaJson(),

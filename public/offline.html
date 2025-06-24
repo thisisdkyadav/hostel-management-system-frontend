@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - HMS IIT Indore</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f9fafb;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 90%;
+            width: 400px;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1360AB;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: #4b5563;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #1360AB;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0d4b86;
+        }
+
+        .offline-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #1360AB;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="offline-icon">📶</div>
+        <h1>You're Offline</h1>
+        <p>It seems you're not connected to the internet. Please check your connection and try again.</p>
+        <p>Some features of the Hostel Management System are available offline if you've previously accessed them.</p>
+        <a href="/" class="btn">Try Again</a>
+    </div>
+    <script>
+        // Check if we're back online
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+
+        // Add event listener to the button
+        document.querySelector('.btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.reload();
+        });
+    </script>
+</body>
+
+</html>
