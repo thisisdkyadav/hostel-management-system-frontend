@@ -71,7 +71,7 @@ const StudentProfile = ({ user }) => {
   return (
     <div>
       <div className="flex justify-between items-start">
-        <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree} | ${studentData.year}`} />
+        <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree}`} />
 
         <button onClick={() => setIsEditModalOpen(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center">
           <FiEdit2 className="mr-2" size={16} />
