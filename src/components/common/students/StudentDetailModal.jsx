@@ -363,7 +363,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
                   <FaMapMarkerAlt className="text-[#1360AB] mr-2 flex-shrink-0" />
-                  <h4 className="text-sm font-semibold text-[#1360AB]">Guardian Information</h4>
+                  <h4 className="text-sm font-semibold text-[#1360AB]">Emergency Contact</h4>
                 </div>
                 <div className="space-y-2.5">
                   <div className="flex justify-between">
