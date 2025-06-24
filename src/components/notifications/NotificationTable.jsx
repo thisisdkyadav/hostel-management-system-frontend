@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { FaEye } from "react-icons/fa"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
 import BaseTable from "../common/table/BaseTable"
@@ -65,23 +64,11 @@ const NotificationTable = ({ notifications, onRefresh }) => {
       key: "expiryDate",
       render: (notification) => <span className="text-sm text-gray-500">{formatDate(notification.expiryDate)}</span>,
     },
-    {
-      header: "Actions",
-      key: "actions",
-      align: "right",
-      render: (notification) => (
-        <div className="flex justify-end space-x-2">
-          <button onClick={() => handleViewNotification(notification)} className="text-blue-600 hover:text-blue-900 p-1" title="View">
-            <FaEye />
-          </button>
-        </div>
-      ),
-    },
   ]
 
   return (
     <>
-      <BaseTable columns={columns} data={notifications} emptyMessage="No notifications to display" />
+      <BaseTable columns={columns} data={notifications} emptyMessage="No notifications to display" onRowClick={handleViewNotification} />
 
       {showViewModal && <ViewNotificationModal isOpen={showViewModal} onClose={() => setShowViewModal(false)} notification={selectedNotification} />}
     </>
