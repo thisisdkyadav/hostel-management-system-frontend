@@ -90,9 +90,9 @@ const StudentProfile = ({ user }) => {
             <ProfileInfo label="Gender" value={studentData.gender} icon={FiUser} />
           </ProfileCard>
           <ProfileCard title="Academic Information">
-            <ProfileInfo label="Department" value={studentData.department} icon={FiBook} />
+            {studentData.department && <ProfileInfo label="Department" value={studentData.department} icon={FiBook} />}
             <ProfileInfo label="Degree" value={studentData.degree} icon={FiBookmark} />
-            {studentData.degree && <ProfileInfo label="Year" value={studentData.year} icon={FiUser} />}
+            {/* {studentData.degree && <ProfileInfo label="Year" value={studentData.year} icon={FiUser} />} */}
           </ProfileCard>
           <ProfileCard title="Family Members">
             <StudentFamilyDetails userId={studentData.userId || user.id} editable={false} />
