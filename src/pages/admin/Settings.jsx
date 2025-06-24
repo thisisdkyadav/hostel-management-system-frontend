@@ -21,6 +21,9 @@ const Settings = () => {
     { field: "address", label: "Address" },
     { field: "gender", label: "Gender" },
     { field: "familyMembers", label: "Family Members" },
+    { field: "phone", label: "Phone" },
+    { field: "emergencyContact", label: "Emergency Contact" },
+    { field: "bloodGroup", label: "Blood Group" },
   ]
 
   useEffect(() => {
