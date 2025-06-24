@@ -189,3 +189,92 @@ body {
     }
   }
 }
+
+/* Bottom bar styling for PWA */
+.pwa-bottom-padding {
+  padding-bottom: 4rem !important; /* 16px for the bottom bar */
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom)) !important; /* Add safe area padding for iOS */
+}
+
+@media (display-mode: standalone) {
+  .pwa-container {
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+  }
+}
+
+/* Safe area padding for iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Animation for dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+/* Bottom bar menu animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.bottom-menu-slide-up {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+/* Ping animation for active bottom bar items */
+@keyframes ping {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Active indicator for bottom bar */
+.bottom-bar-active-indicator {
+  position: relative;
+}
+
+.bottom-bar-active-indicator::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+  height: 3px;
+  background-color: #1360ab;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Bottom bar glass effect */
+.bottom-bar-glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.8);
+}

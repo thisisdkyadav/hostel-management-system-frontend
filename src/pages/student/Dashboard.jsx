@@ -12,6 +12,7 @@ import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
 import Modal from "../../components/common/Modal"
+import usePwaMobile from "../../hooks/usePwaMobile"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
 
@@ -62,6 +63,7 @@ const StatsShimmer = () => (
 
 const Dashboard = () => {
   const { user, isOnline } = useAuth()
+  const { isPwaMobile } = usePwaMobile()
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -187,7 +189,13 @@ const Dashboard = () => {
       </div>
 
       {/* Only keep the mobile QR button and modal */}
-      <button onClick={() => setShowQRModal(true)} className="fixed bottom-6 right-6 md:hidden bg-[#1360AB] rounded-full p-4 shadow-lg hover:bg-[#0d4b86] transition-all duration-300 z-10">
+      <button
+        onClick={() => setShowQRModal(true)}
+        className={`
+          fixed md:hidden bg-[#1360AB] rounded-full p-4 shadow-lg hover:bg-[#0d4b86] transition-all duration-300 z-10
+          ${isPwaMobile ? "bottom-20" : "bottom-6"} right-6
+        `}
+      >
         <FaQrcode className="text-white text-2xl" />
       </button>
 

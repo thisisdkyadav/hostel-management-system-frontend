@@ -7,6 +7,7 @@ import { FaUserCircle, FaBuilding } from "react-icons/fa"
 import { CgSpinner } from "react-icons/cg"
 import { useWarden } from "../contexts/WardenProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
+import usePwaMobile from "../hooks/usePwaMobile"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -15,6 +16,7 @@ const Sidebar = ({ navItems }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
+  const { isPwaMobile } = usePwaMobile()
   const [isUpdatingHostel, setIsUpdatingHostel] = useState(false)
   const [assignedHostels, setAssignedHostels] = useState([])
   const [activeHostelId, setActiveHostelId] = useState(null)
@@ -24,6 +26,11 @@ const Sidebar = ({ navItems }) => {
   const fetchProfile = wardenContext?.fetchProfile
 
   const isWardenRole = user?.role === "Warden" || user?.role === "Associate Warden" || user?.role === "Hostel Supervisor"
+
+  // Skip sidebar rendering for student PWA in mobile mode
+  if (isPwaMobile && user?.role === "Student") {
+    return null
+  }
 
   useEffect(() => {
     if (isWardenRole) {
