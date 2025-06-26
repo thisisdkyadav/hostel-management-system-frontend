@@ -94,6 +94,17 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Status</label>
+            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.status} onChange={(e) => updateFilter("status", e.target.value)}>
+              <option value="Active">Active</option>
+              <option value="Graduated">Graduated</option>
+              <option value="Dropped">Dropped</option>
+              <option value="Inactive">Inactive</option>
+              <option value="">All Statuses</option>
+            </select>
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Allocation Status</label>
             <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hasAllocation} onChange={(e) => updateFilter("hasAllocation", e.target.value)}>
               <option value="">All Students</option>

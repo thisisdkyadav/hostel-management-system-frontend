@@ -12,6 +12,7 @@ export const useStudents = (options = {}) => {
 
   const [filters, setFilters] = useState({
     ...DEFAULT_FILTERS,
+    status: "Active",
     ...initialFilters,
   })
 

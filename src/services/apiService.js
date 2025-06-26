@@ -119,6 +119,20 @@ export const authApi = {
 
     return response.json()
   },
+
+  redirectToWellness: async () => {
+    const response = await fetch(`${baseUrl}/sso/redirect?redirectTo=https://wellness.iitb.ac.in`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to redirect to wellness")
+    }
+
+    return response.json()
+  },
 }
 
 export const studentApi = {

@@ -227,6 +227,26 @@ export const adminApi = {
       throw error
     }
   },
+
+  bulkUpdateStudentsStatus: async (rollNumbers, status) => {
+    try {
+      const response = await fetch(`${baseUrl}/student/profiles/status`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify({ rollNumbers, status }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to bulk update student status")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error bulk updating student status:", error)
+      throw error
+    }
+  },
 }
 
 export default adminApi
