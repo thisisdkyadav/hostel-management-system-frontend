@@ -24,6 +24,7 @@ const Settings = () => {
     { field: "phone", label: "Phone" },
     { field: "emergencyContact", label: "Emergency Contact" },
     { field: "bloodGroup", label: "Blood Group" },
+    { field: "admissionDate", label: "Admission Date" },
   ]
 
   useEffect(() => {
