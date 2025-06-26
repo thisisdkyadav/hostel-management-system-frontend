@@ -97,51 +97,15 @@ const MDashboard = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <ComplaintsHeader 
-        showFilters={showFilters} 
-        setShowFilters={setShowFilters} 
-        viewMode={viewMode} 
-        setViewMode={setViewMode} 
-        showCraftComplaint={false}
-        setShowCraftComplaint={() => {}}
-        userRole={user?.role}
-        title="Maintenance Dashboard"
-      />
+      <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={false} setShowCraftComplaint={() => {}} userRole={user?.role} title="Maintenance Dashboard" />
 
       <ComplaintsStatsM />
 
-      {showFilters && (
-        <ComplaintsFilterPanel 
-          filters={filters} 
-          updateFilter={updateFilter} 
-          resetFilters={resetFilters} 
-          hostels={hostels} 
-          categories={categories} 
-          priorities={priorities} 
-        />
-      )}
+      {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} priorities={priorities} />}
 
-      <ComplaintsContent 
-        loading={loading} 
-        complaints={complaints} 
-        viewMode={viewMode} 
-        filters={filters} 
-        totalPages={totalPages} 
-        COMPLAINT_FILTER_TABS={MAINTENANCE_FILTER_TABS} 
-        updateFilter={updateFilter} 
-        onViewDetails={viewComplaintDetails} 
-        paginate={paginate} 
-      />
+      <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={MAINTENANCE_FILTER_TABS} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
 
-      {showDetailModal && selectedComplaint && (
-        <ComplaintDetailModal 
-          selectedComplaint={selectedComplaint} 
-          setShowDetailModal={setShowDetailModal} 
-          onUpdate={fetchComplaints}
-          show={showDetailModal}
-          refreshComplaints={fetchComplaints}
-        />
-      )}
+      {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onUpdate={fetchComplaints} />}
     </div>
   )
 }
