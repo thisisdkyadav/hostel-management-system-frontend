@@ -1,5 +1,31 @@
 import React, { useState, useEffect, useRef } from "react"
-import { FaEnvelope, FaPhone, FaUserGraduate, FaCalendarAlt, FaMapMarkerAlt, FaBuilding, FaClipboardList, FaHistory, FaUserFriends, FaComments, FaUsers, FaHeartbeat, FaBoxes, FaPlus, FaEdit, FaTrash, FaUndo, FaIdCard, FaExpand } from "react-icons/fa"
+import {
+  FaEnvelope,
+  FaPhone,
+  FaUserGraduate,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaBuilding,
+  FaClipboardList,
+  FaHistory,
+  FaUserFriends,
+  FaComments,
+  FaUsers,
+  FaHeartbeat,
+  FaBoxes,
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaUndo,
+  FaIdCard,
+  FaExpand,
+  FaRegClock,
+  FaCheck,
+  FaTimes,
+  FaUserCheck,
+  FaUserSlash,
+  FaUserClock,
+} from "react-icons/fa"
 import { studentApi } from "../../../services/apiService"
 import { visitorApi } from "../../../services/visitorApi"
 import { securityApi } from "../../../services/securityApi"
@@ -269,7 +295,33 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   </div>
                 )}
                 <div className="md:ml-6 flex-1 text-center md:text-left">
-                  <h3 className="text-2xl font-bold text-gray-800">{studentDetails.name || "N/A"}</h3>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <h3 className="text-2xl font-bold text-gray-800">{studentDetails.name || "N/A"}</h3>
+                    {studentDetails.status && (
+                      <div className="mt-2 md:mt-0 flex justify-center md:justify-start">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm flex items-center ${
+                            studentDetails.status === "Active"
+                              ? "bg-green-100 text-green-800 border border-green-200"
+                              : studentDetails.status === "Graduated"
+                              ? "bg-blue-100 text-blue-800 border border-blue-200"
+                              : studentDetails.status === "Dropped"
+                              ? "bg-red-100 text-red-800 border border-red-200"
+                              : studentDetails.status === "Inactive"
+                              ? "bg-gray-100 text-gray-800 border border-gray-200"
+                              : "bg-purple-100 text-purple-800 border border-purple-200"
+                          }`}
+                        >
+                          {studentDetails.status === "Active" && <FaUserCheck className="mr-1" />}
+                          {studentDetails.status === "Graduated" && <FaUserGraduate className="mr-1" />}
+                          {studentDetails.status === "Dropped" && <FaUserSlash className="mr-1" />}
+                          {studentDetails.status === "Inactive" && <FaUserClock className="mr-1" />}
+                          {!["Active", "Graduated", "Dropped", "Inactive"].includes(studentDetails.status) && <FaUserGraduate className="mr-1" />}
+                          {studentDetails.status || "Active"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                   <p className="text-gray-500 mb-2 font-mono">{studentDetails.rollNumber || "N/A"}</p>
 
                   <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">

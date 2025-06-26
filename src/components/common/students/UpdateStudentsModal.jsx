@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash } from "react-icons/fa"
+import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
@@ -23,6 +23,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [familyData, setFamilyData] = useState([])
   const [deleteExistingFamily, setDeleteExistingFamily] = useState(false)
   const [uploadStatus, setUploadStatus] = useState("")
+  const [statusData, setStatusData] = useState([])
+  const [selectedStatus, setSelectedStatus] = useState("Active")
 
   const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
@@ -169,6 +171,20 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setFamilyData(data)
   }
 
+  const handleStatusDataParsed = (data) => {
+    // Validate required fields
+    const invalidEntries = data.filter((item) => !item.rollNumber)
+
+    if (invalidEntries.length > 0) {
+      setError("All entries must have a rollNumber field")
+      return
+    }
+
+    setError("")
+    setStatusData(data)
+    setUploadStatus(`${data.length} students will have their status updated to ${selectedStatus}`)
+  }
+
   const handleUpdate = async () => {
     if (activeTab === "basic" && parsedData.length === 0) {
       setError("No data to update")
@@ -182,6 +198,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     if (activeTab === "family" && familyData.length === 0) {
       setError("No family data to update")
+      return
+    }
+
+    if (activeTab === "status" && statusData.length === 0) {
+      setError("No students selected for status update")
       return
     }
 
@@ -212,6 +233,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         }
 
         isSuccess = await adminApi.updateBulkFamilyMembers(formattedFamilyData)
+      } else if (activeTab === "status") {
+        // Use the adminApi to update student statuses
+        const rollNumbers = statusData.map((student) => student.rollNumber)
+        isSuccess = await adminApi.bulkUpdateStudentsStatus(rollNumbers, selectedStatus)
       }
 
       if (isSuccess) {
@@ -230,6 +255,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setParsedData([])
     setHealthData([])
     setFamilyData([])
+    setStatusData([])
     setError("")
     setStep(1)
   }
@@ -244,6 +270,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     { id: "basic", name: "Basic Details", icon: <FaUser /> },
     { id: "health", name: "Health Info", icon: <FaHeartbeat /> },
     { id: "family", name: "Family Members", icon: <FaUsers /> },
+    { id: "status", name: "Status Update", icon: <FaUserGraduate /> },
   ]
 
   // Health Tab Component
@@ -511,6 +538,92 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     )
   }
 
+  // Status Update Tab Component
+  const StatusUpdateTab = () => {
+    const statusOptions = ["Active", "Graduated", "Dropped", "Inactive"]
+
+    const handleStatusDataParsed = (data) => {
+      // Validate required fields
+      const invalidEntries = data.filter((item) => !item.rollNumber)
+
+      if (invalidEntries.length > 0) {
+        setError("All entries must have a rollNumber field")
+        return
+      }
+
+      setError("")
+      setStatusData(data)
+      setUploadStatus(`${data.length} students will have their status updated to ${selectedStatus}`)
+    }
+
+    const statusTemplateHeaders = ["rollNumber"]
+
+    const statusInstructionsText = (
+      <div>
+        <p className="font-medium mb-1">Field Input Types:</p>
+        <ul className="grid grid-cols-1 gap-y-1">
+          <li>
+            <span className="font-medium">rollNumber:</span> String (Required) - The roll number of the student to update
+          </li>
+        </ul>
+      </div>
+    )
+
+    return (
+      <div className="space-y-6">
+        <h3 className="text-lg font-medium text-gray-800">Update Student Status</h3>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Select Status to Apply</label>
+          <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-sm text-gray-500">All selected students will be updated to this status</p>
+        </div>
+
+        <div className="border-t pt-4">
+          <h4 className="text-base font-medium text-gray-700 mb-3">Upload CSV with Student Roll Numbers</h4>
+
+          <CsvUploader onDataParsed={handleStatusDataParsed} requiredFields={["rollNumber"]} templateFileName="status_update_template.csv" templateHeaders={statusTemplateHeaders} maxRecords={900} instructionText={statusInstructionsText} />
+        </div>
+
+        {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+
+        {statusData.length > 0 && !error && (
+          <div className="mt-4 p-4 bg-green-50 rounded-lg">
+            <p className="text-green-700 font-medium">{uploadStatus}</p>
+          </div>
+        )}
+
+        {statusData.length > 0 && (
+          <div className="mt-4 border rounded-lg overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Roll Number
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {statusData.slice(0, 10).map((student, index) => (
+                  <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{student.rollNumber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {statusData.length > 10 && <div className="px-4 py-3 bg-gray-50 text-xs text-gray-500">Showing 10 of {statusData.length} records</div>}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   if (!isOpen) return null
 
   return (
@@ -636,6 +749,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       {/* Family Tab */}
       {activeTab === "family" && <FamilyMembersTab />}
 
+      {/* Status Tab */}
+      {activeTab === "status" && <StatusUpdateTab />}
+
       <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
         {activeTab === "basic" && step === 1 ? (
           <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
@@ -655,7 +771,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           <button
             onClick={handleUpdate}
             className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center"
-            disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || isLoading || isUpdating}
+            disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || isLoading || isUpdating}
           >
             {isUpdating ? (
               <>

@@ -45,6 +45,7 @@ export const buildStudentQueryParams = (filters, pagination, sorting) => {
   if (filters.roomNumber) params.append("roomNumber", filters.roomNumber)
   if (filters.yearOfStudy) params.append("yearOfStudy", filters.yearOfStudy)
   if (filters.hasAllocation) params.append("hasAllocation", filters.hasAllocation)
+  if (filters.status) params.append("status", filters.status)
 
   // Add date parameters
   if (filters.admissionDateFrom) {
@@ -75,6 +76,7 @@ export const DEFAULT_FILTERS = {
   gender: "",
   roomNumber: "",
   hasAllocation: "",
+  status: "Active",
   admissionDateFrom: null,
   admissionDateTo: null,
 }
