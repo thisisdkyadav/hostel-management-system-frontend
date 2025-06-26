@@ -12,6 +12,7 @@ const getFieldDescription = (field) => {
     phone: "Allow students to update their phone number.",
     emergencyContact: "Allow students to update their emergency contact information.",
     bloodGroup: "Allow students to update their blood group information.",
+    admissionDate: "Allow students to update their admission date information.",
   }
 
   return descriptions[field] || `Allow students to edit their ${field}.`
@@ -28,6 +29,7 @@ const getFieldIcon = (field) => {
     phone: "📞",
     emergencyContact: "🚨",
     bloodGroup: "🩸",
+    admissionDate: "📅",
   }
 
   return icons[field] || "✏️"

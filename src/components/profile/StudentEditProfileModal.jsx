@@ -105,6 +105,10 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
         label: "Date of Birth",
         icon: <HiCalendar className="text-blue-600" size={20} />,
       },
+      admissionDate: {
+        label: "Admission Date",
+        icon: <HiCalendar className="text-blue-600" size={20} />,
+      },
       phone: {
         label: "Phone Number",
         icon: <HiPhone className="text-blue-600" size={20} />,
@@ -308,6 +312,7 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
                 {editableFields.includes("name") && renderField("name")}
                 {editableFields.includes("gender") && renderField("gender")}
                 {editableFields.includes("dateOfBirth") && renderField("dateOfBirth", "date")}
+                {editableFields.includes("admissionDate") && renderField("admissionDate", "date")}
                 {editableFields.includes("bloodGroup") && renderField("bloodGroup")}
                 {editableFields.includes("phone") && renderField("phone", "tel")}
                 {editableFields.includes("address") && renderField("address")}
