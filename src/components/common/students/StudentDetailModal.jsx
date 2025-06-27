@@ -432,6 +432,33 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   </div>
                 </div>
               </div>
+
+              {/* if day scholar is true then show the day scholar details */}
+              {studentDetails.isDayScholar && (
+                <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
+                    <h4 className="text-sm font-semibold text-[#1360AB]">Day Scholar Details</h4>
+                  </div>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 text-sm">Address:</span>
+                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.address || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 text-sm">Owner Name:</span>
+                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.ownerName || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 text-sm">Owner Phone:</span>
+                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 text-sm">Owner Email:</span>
+                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </>
         )
