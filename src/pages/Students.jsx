@@ -107,6 +107,12 @@ const Students = () => {
 
   const degrees = ["B.Tech", "M.Tech", "PhD", "BSc", "MSc", "MBA", "BBA"]
 
+  const dayScholarOptions = [
+    { value: "", label: "All Students" },
+    { value: "true", label: "Day Scholar" },
+    { value: "false", label: "Hosteller" },
+  ]
+
   const handleImportStudents = async (importedStudents) => {
     try {
       const result = await importStudents(importedStudents)
@@ -264,7 +270,7 @@ const Students = () => {
 
       <StudentStats />
 
-      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} />}
+      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} dayScholarOptions={dayScholarOptions} />}
 
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
         <div className="text-sm text-gray-600">

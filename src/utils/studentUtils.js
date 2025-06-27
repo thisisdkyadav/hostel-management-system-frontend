@@ -46,6 +46,10 @@ export const buildStudentQueryParams = (filters, pagination, sorting) => {
   if (filters.yearOfStudy) params.append("yearOfStudy", filters.yearOfStudy)
   if (filters.hasAllocation) params.append("hasAllocation", filters.hasAllocation)
   if (filters.status) params.append("status", filters.status)
+  if (filters.isDayScholar !== "") {
+    const boolValue = filters.isDayScholar === "true" ? true : false
+    params.append("isDayScholar", boolValue)
+  }
 
   // Add date parameters
   if (filters.admissionDateFrom) {
@@ -77,6 +81,7 @@ export const DEFAULT_FILTERS = {
   roomNumber: "",
   hasAllocation: "",
   status: "Active",
+  isDayScholar: "",
   admissionDateFrom: null,
   admissionDateTo: null,
 }
