@@ -4,7 +4,7 @@ import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
 
-const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize }) => {
+const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions }) => {
   return (
     <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
@@ -112,6 +112,16 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
               <option value="false">No Allocation</option>
             </select>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1.5">Day Scholar</label>
+            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.isDayScholar} onChange={(e) => updateFilter("isDayScholar", e.target.value)}>
+              <option value="">All Students</option>
+              <option value="true">Day Scholar</option>
+              <option value="false">Hosteller</option>
+            </select>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Students per page</label>
             <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.studentsPerPage} onChange={(e) => setPageSize(e.target.value)}>
