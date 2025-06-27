@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate } from "react-icons/fa"
+import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate, FaHome } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
@@ -7,6 +7,7 @@ import StudentDetailModal from "./StudentDetailModal"
 import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../services/healthApi"
 import { adminApi } from "../../../services/adminApi"
+import toast from "react-hot-toast"
 
 const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -25,6 +26,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [uploadStatus, setUploadStatus] = useState("")
   const [statusData, setStatusData] = useState([])
   const [selectedStatus, setSelectedStatus] = useState("Active")
+  const [dayScholarData, setDayScholarData] = useState([])
+  const [dayScholarMode, setDayScholarMode] = useState("add")
 
   const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
@@ -185,6 +188,31 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setUploadStatus(`${data.length} students will have their status updated to ${selectedStatus}`)
   }
 
+  const handleDayScholarDataParsed = (data) => {
+    // Validate required fields
+    const invalidEntries = data.filter((item) => !item.rollNumber)
+
+    if (invalidEntries.length > 0) {
+      setError("All entries must have a rollNumber field")
+      return
+    }
+
+    if (dayScholarMode === "add") {
+      // Check if all required fields are present for add mode
+      const missingFields = data.filter((item) => !item.address || !item.ownerName || !item.ownerPhone || !item.ownerEmail)
+
+      if (missingFields.length > 0) {
+        setError("All fields are required for day scholar students")
+        return
+      }
+    }
+
+    setError("")
+    setDayScholarData(data)
+    setUploadStatus(`${data.length} students ready for ${dayScholarMode === "add" ? "adding/updating as day scholars" : "removing from day scholars"}`)
+    toast.success(`${data.length} students ready for update`)
+  }
+
   const handleUpdate = async () => {
     if (activeTab === "basic" && parsedData.length === 0) {
       setError("No data to update")
@@ -203,6 +231,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     if (activeTab === "status" && statusData.length === 0) {
       setError("No students selected for status update")
+      return
+    }
+
+    if (activeTab === "dayScholar" && dayScholarData.length === 0) {
+      setError("No day scholar data to update")
       return
     }
 
@@ -237,6 +270,32 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         // Use the adminApi to update student statuses
         const rollNumbers = statusData.map((student) => student.rollNumber)
         isSuccess = await adminApi.bulkUpdateStudentsStatus(rollNumbers, selectedStatus)
+      } else if (activeTab === "dayScholar") {
+        // Format day scholar data for the API
+        const formattedDayScholarData = {}
+
+        dayScholarData.forEach((student) => {
+          formattedDayScholarData[student.rollNumber] = {
+            isDayScholar: dayScholarMode === "add",
+            ...(dayScholarMode === "add" && {
+              dayScholarDetails: {
+                address: student.address || "",
+                ownerName: student.ownerName || "",
+                ownerPhone: student.ownerPhone || "",
+                ownerEmail: student.ownerEmail || "",
+              },
+            }),
+          }
+        })
+
+        const response = await adminApi.bulkUpdateDayScholarDetails(formattedDayScholarData)
+        isSuccess = response.success
+
+        if (isSuccess) {
+          toast.success(`Successfully updated ${dayScholarData.length} student${dayScholarData.length > 1 ? "s" : ""} day scholar status`)
+        } else if (response.errors && response.errors.length > 0) {
+          toast.error(`Updated with ${response.errors.length} errors. Please check the details.`)
+        }
       }
 
       if (isSuccess) {
@@ -245,6 +304,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       }
     } catch (error) {
       setError(error.message || "An error occurred while updating")
+      toast.error(error.message || "An error occurred while updating")
     } finally {
       setIsUpdating(false)
     }
@@ -256,6 +316,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setHealthData([])
     setFamilyData([])
     setStatusData([])
+    setDayScholarData([])
     setError("")
     setStep(1)
   }
@@ -271,6 +332,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     { id: "health", name: "Health Info", icon: <FaHeartbeat /> },
     { id: "family", name: "Family Members", icon: <FaUsers /> },
     { id: "status", name: "Status Update", icon: <FaUserGraduate /> },
+    { id: "dayScholar", name: "Day Scholar", icon: <FaHome /> },
   ]
 
   // Health Tab Component
@@ -624,6 +686,237 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     )
   }
 
+  // Day Scholar Tab Component
+  const DayScholarTab = () => {
+    const [dayScholarStudents, setDayScholarStudents] = useState([
+      {
+        rollNumber: "",
+        address: "",
+        ownerName: "",
+        ownerPhone: "",
+        ownerEmail: "",
+      },
+    ])
+
+    const dayScholarTemplateHeaders = dayScholarMode === "add" ? ["rollNumber", "address", "ownerName", "ownerPhone", "ownerEmail"] : ["rollNumber"]
+
+    const dayScholarInstructionsText = (
+      <div>
+        <p className="font-medium mb-1">Field Input Types:</p>
+        <ul className="grid grid-cols-1 gap-y-1">
+          <li>
+            <span className="font-medium">rollNumber:</span> String (Required)
+          </li>
+          {dayScholarMode === "add" && (
+            <>
+              <li>
+                <span className="font-medium">address:</span> String (Required)
+              </li>
+              <li>
+                <span className="font-medium">ownerName:</span> String (Required)
+              </li>
+              <li>
+                <span className="font-medium">ownerPhone:</span> String (Required)
+              </li>
+              <li>
+                <span className="font-medium">ownerEmail:</span> String (Required)
+              </li>
+            </>
+          )}
+        </ul>
+      </div>
+    )
+
+    const addDayScholarStudent = () => {
+      setDayScholarStudents([
+        ...dayScholarStudents,
+        {
+          rollNumber: "",
+          address: "",
+          ownerName: "",
+          ownerPhone: "",
+          ownerEmail: "",
+        },
+      ])
+    }
+
+    const removeDayScholarStudent = (index) => {
+      const newStudents = [...dayScholarStudents]
+      newStudents.splice(index, 1)
+      setDayScholarStudents(newStudents)
+    }
+
+    const handleChange = (index, field, value) => {
+      const updatedStudents = [...dayScholarStudents]
+      updatedStudents[index][field] = value
+      setDayScholarStudents(updatedStudents)
+    }
+
+    const handleManualUpdate = () => {
+      // Filter out empty students
+      const validStudents = dayScholarStudents.filter((s) => s.rollNumber)
+
+      if (validStudents.length === 0) {
+        setError("Please add at least one student with a Roll Number")
+        return
+      }
+
+      if (dayScholarMode === "add") {
+        // Check if all required fields are filled for add mode
+        const invalidStudents = validStudents.filter((s) => !s.address || !s.ownerName || !s.ownerPhone || !s.ownerEmail)
+
+        if (invalidStudents.length > 0) {
+          setError("All fields are required for day scholar students")
+          return
+        }
+      }
+
+      setDayScholarData(validStudents)
+      setError("")
+      toast.success(`${validStudents.length} students ready for update`)
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+          <h3 className="text-lg font-medium text-gray-800">Update Day Scholar Status</h3>
+          <div className="mt-2 sm:mt-0">
+            <div className="inline-flex items-center rounded-md shadow-sm">
+              <button type="button" onClick={() => setDayScholarMode("add")} className={`px-4 py-2 text-sm font-medium rounded-l-md ${dayScholarMode === "add" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"}`}>
+                Add/Update Day Scholar
+              </button>
+              <button type="button" onClick={() => setDayScholarMode("remove")} className={`px-4 py-2 text-sm font-medium rounded-r-md ${dayScholarMode === "remove" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"}`}>
+                Remove Day Scholar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col space-y-4">
+          <div className="border-b border-gray-200 pb-4">
+            <h4 className="text-base font-medium text-gray-700 mb-2">Option 1: Upload CSV</h4>
+            <CsvUploader
+              onDataParsed={handleDayScholarDataParsed}
+              requiredFields={["rollNumber"]}
+              templateFileName={dayScholarMode === "add" ? "day_scholar_add_template.csv" : "day_scholar_remove_template.csv"}
+              templateHeaders={dayScholarTemplateHeaders}
+              maxRecords={900}
+              instructionText={dayScholarInstructionsText}
+            />
+
+            {dayScholarData.length > 0 && (
+              <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                <p className="text-green-700 font-medium">{uploadStatus}</p>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h4 className="text-base font-medium text-gray-700 mb-4">Option 2: Add Students Manually</h4>
+
+            <div className="space-y-4">
+              {dayScholarStudents.map((student, index) => (
+                <div key={index} className="p-4 border rounded-lg bg-gray-50">
+                  <div className="flex justify-between mb-3">
+                    <h5 className="font-medium text-gray-700">Student {index + 1}</h5>
+                    {dayScholarStudents.length > 1 && (
+                      <button onClick={() => removeDayScholarStudent(index)} className="text-red-500 hover:text-red-700" aria-label="Remove student">
+                        <FaTrash />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
+                      <input type="text" value={student.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                    </div>
+
+                    {dayScholarMode === "add" && (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Owner Name *</label>
+                          <input type="text" value={student.ownerName} onChange={(e) => handleChange(index, "ownerName", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Owner Phone *</label>
+                          <input type="tel" value={student.ownerPhone} onChange={(e) => handleChange(index, "ownerPhone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Owner Email *</label>
+                          <input type="email" value={student.ownerEmail} onChange={(e) => handleChange(index, "ownerEmail", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+                          <input type="text" value={student.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex space-x-4">
+                <button onClick={addDayScholarStudent} className="flex items-center px-3 py-2 text-sm font-medium text-[#1360AB] border border-[#1360AB] rounded-md hover:bg-blue-50">
+                  <FaPlus className="mr-1" /> Add Another Student
+                </button>
+
+                <button onClick={handleManualUpdate} className="flex items-center px-3 py-2 text-sm font-medium text-white bg-[#1360AB] rounded-md hover:bg-[#0d4a8b]">
+                  <FaCheck className="mr-1" /> Save Students
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Preview table for day scholar data */}
+          {dayScholarData.length > 0 && (
+            <div className="mt-4 border rounded-lg overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Roll Number
+                    </th>
+                    {dayScholarMode === "add" && (
+                      <>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Address
+                        </th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Owner Name
+                        </th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Owner Phone
+                        </th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {dayScholarData.slice(0, 5).map((student, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{student.rollNumber}</td>
+                      {dayScholarMode === "add" && (
+                        <>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{student.address || "-"}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{student.ownerName || "-"}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{student.ownerPhone || "-"}</td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {dayScholarData.length > 5 && <div className="px-4 py-3 bg-gray-50 text-xs text-gray-500">Showing 5 of {dayScholarData.length} records</div>}
+            </div>
+          )}
+
+          {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+        </div>
+      </div>
+    )
+  }
+
   if (!isOpen) return null
 
   return (
@@ -752,6 +1045,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       {/* Status Tab */}
       {activeTab === "status" && <StatusUpdateTab />}
 
+      {/* Day Scholar Tab */}
+      {activeTab === "dayScholar" && <DayScholarTab />}
+
       <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
         {activeTab === "basic" && step === 1 ? (
           <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
@@ -771,7 +1067,15 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           <button
             onClick={handleUpdate}
             className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center"
-            disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || isLoading || isUpdating}
+            disabled={
+              (activeTab === "basic" && parsedData.length === 0) ||
+              (activeTab === "health" && healthData.length === 0) ||
+              (activeTab === "family" && familyData.length === 0) ||
+              (activeTab === "status" && statusData.length === 0) ||
+              (activeTab === "dayScholar" && dayScholarData.length === 0) ||
+              isLoading ||
+              isUpdating
+            }
           >
             {isUpdating ? (
               <>

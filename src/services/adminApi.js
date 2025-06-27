@@ -247,6 +247,26 @@ export const adminApi = {
       throw error
     }
   },
+
+  bulkUpdateDayScholarDetails: async (dayScholarData) => {
+    try {
+      const response = await fetch(`${baseUrl}/student/profiles/day-scholar`, {
+        method: "PUT",
+        ...fetchOptions,
+        body: JSON.stringify({ data: dayScholarData }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update day scholar details")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating day scholar details:", error)
+      throw error
+    }
+  },
 }
 
 export default adminApi
