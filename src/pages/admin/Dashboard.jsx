@@ -110,59 +110,6 @@ const Dashboard = () => {
     fetchDashboardData()
   }, [])
 
-  // Dummy data generator
-  const getDummyData = () => ({
-    students: {
-      branchWise: [
-        { branch: "CSE", boys: 210, girls: 190, total: 400 },
-        { branch: "ECE", boys: 180, girls: 160, total: 340 },
-        { branch: "ME", boys: 230, girls: 70, total: 300 },
-        { branch: "CE", boys: 150, girls: 90, total: 240 },
-        { branch: "EE", boys: 120, girls: 80, total: 200 },
-      ],
-      degreeWise: [
-        { degree: "B.Tech", boys: 650, girls: 450, total: 1100 },
-        { degree: "M.Tech", boys: 140, girls: 90, total: 230 },
-        { degree: "PhD", boys: 80, girls: 40, total: 120 },
-        { degree: "MBA", boys: 20, girls: 10, total: 30 },
-      ],
-      totalBoys: 890,
-      totalGirls: 590,
-      grandTotal: 1480,
-    },
-    hostels: [
-      { name: "BH-1", totalRooms: 200, occupied: 190, vacant: 10, totalCapacity: 400, currentOccupancy: 380, vacantCapacity: 20 },
-      { name: "BH-2", totalRooms: 200, occupied: 185, vacant: 15, totalCapacity: 400, currentOccupancy: 370, vacantCapacity: 30 },
-      { name: "GH-1", totalRooms: 150, occupied: 140, vacant: 10, totalCapacity: 300, currentOccupancy: 280, vacantCapacity: 20 },
-      { name: "GH-2", totalRooms: 150, occupied: 135, vacant: 15, totalCapacity: 300, currentOccupancy: 270, vacantCapacity: 30 },
-    ],
-    events: [
-      { id: 1, title: "Hostel Day", date: "2023-08-15", time: "10:00 AM", location: "Main Auditorium" },
-      { id: 2, title: "Cultural Night", date: "2023-08-20", time: "6:00 PM", location: "Open Air Theatre" },
-      { id: 3, title: "Sports Tournament", date: "2023-08-25", time: "9:00 AM", location: "Sports Complex" },
-      { id: 4, title: "Alumni Meet", date: "2023-09-05", time: "11:00 AM", location: "Conference Hall" },
-    ],
-    complaints: {
-      total: 42,
-      pending: 12,
-      inProgress: 18,
-      resolved: 12,
-      resolvedToday: 5,
-      byCategory: {
-        plumbing: 15,
-        electrical: 10,
-        furniture: 8,
-        cleaning: 5,
-        other: 4,
-      },
-      recentComplaints: [
-        { id: 1, title: "Water leakage in room", category: "Plumbing", status: "Pending", date: "2023-08-02" },
-        { id: 2, title: "Fan not working", category: "Electrical", status: "In Progress", date: "2023-08-01" },
-        { id: 3, title: "Broken chair", category: "Furniture", status: "Pending", date: "2023-07-30" },
-      ],
-    },
-  })
-
   // Format date for header
   const formatHeaderDate = () => {
     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
@@ -356,6 +303,54 @@ const Dashboard = () => {
                         </tr>
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Hostler vs Day Scholar Card */}
+        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 h-[20rem] xl:col-span-2">
+          {loading ? (
+            <div className="h-full flex flex-col">
+              <ShimmerLoader height="1.5rem" width="60%" className="mb-4" />
+              <ChartShimmer height="calc(100% - 2rem)" />
+            </div>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="h-full flex flex-col">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+                <FaUser className="mr-2 text-teal-600" /> Hostler vs Day Scholar
+              </h2>
+
+              <div className="flex-1 flex flex-col">
+                <div className="flex-1">
+                  <HostlerDayScholarChart data={dashboardData?.hostlerAndDayScholarCounts} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-lg border-l-4 border-teal-400">
+                    <p className="text-xs text-gray-600 mb-1">Hostlers</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-bold text-teal-700">{dashboardData?.hostlerAndDayScholarCounts?.hostler?.total}</span>
+                      <div className="flex items-center text-xs">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys}</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-lg border-l-4 border-orange-400">
+                    <p className="text-xs text-gray-600 mb-1">Day Scholars</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-bold text-orange-700">{dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total}</span>
+                      <div className="flex items-center text-xs">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys}</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -592,6 +587,63 @@ const HostelOccupancyChart = ({ data }) => {
   }
 
   return <Doughnut data={chartData} options={options} />
+}
+
+// Add the new chart component for Hostler vs Day Scholar
+const HostlerDayScholarChart = ({ data }) => {
+  if (!data) return null
+
+  const chartData = {
+    labels: ["Hostlers", "Day Scholars"],
+    datasets: [
+      {
+        label: "Boys",
+        data: [data.hostler.boys, data.dayScholar.boys],
+        backgroundColor: "#3B82F6",
+        barThickness: 25,
+      },
+      {
+        label: "Girls",
+        data: [data.hostler.girls, data.dayScholar.girls],
+        backgroundColor: "#EC4899",
+        barThickness: 25,
+      },
+    ],
+  }
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          boxWidth: 12,
+          usePointStyle: true,
+          pointStyle: "circle",
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          precision: 0,
+        },
+        grid: {
+          color: "rgba(0, 0, 0, 0.05)",
+        },
+      },
+    },
+    minBarLength: 5,
+  }
+
+  return <Bar data={chartData} options={options} />
 }
 
 export default Dashboard
