@@ -224,4 +224,19 @@ export const hostelApi = {
 
     return response.json()
   },
+
+  changeArchiveStatus: async (hostelId, status) => {
+    const response = await fetch(`${baseUrl}/hostel/archive/${hostelId}`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify({ status }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to change archive status")
+    }
+
+    return response.json()
+  },
 }

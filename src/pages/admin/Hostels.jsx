@@ -15,12 +15,13 @@ const Hostels = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
   const [hostels, setHostels] = useState([])
+  const [fetchArchive, setFetchArchive] = useState(false)
 
   const filteredHostels = filterHostels(hostels, activeTab, searchTerm)
 
-  const fetchHostels = async () => {
+  const fetchHostels = async (fetchArchive = false) => {
     try {
-      const response = await adminApi.getAllHostels()
+      const response = await adminApi.getAllHostels(fetchArchive ? "archive=true" : "")
 
       setHostels(response || [])
     } catch (error) {
@@ -37,6 +38,15 @@ const Hostels = () => {
     }
   }
 
+  const handleArchiveToggle = () => {
+    fetchHostels(!fetchArchive)
+    setFetchArchive(!fetchArchive)
+  }
+
+  const refreshHostels = () => {
+    fetchHostels(fetchArchive)
+  }
+
   useEffect(() => {
     fetchHostels()
   }, [])
@@ -46,9 +56,15 @@ const Hostels = () => {
       <div className="px-4 md:px-6 lg:px-8 py-6 flex-1">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Hostel Management</h1>
-          <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
-            <FaPlus className="mr-2" /> Add Hostel
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={handleArchiveToggle} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
+              {fetchArchive ? "Show All" : "Show Archived"}
+            </button>
+
+            <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
+              <FaPlus className="mr-2" /> Add Hostel
+            </button>
+          </div>
         </header>
 
         <HostelStats hostels={hostels} />
@@ -62,7 +78,7 @@ const Hostels = () => {
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {filteredHostels.map((hostel) => (
-            <HostelCard key={hostel.id} hostel={hostel} onUpdate={handleUpdateHostel} />
+            <HostelCard key={hostel.id} hostel={hostel} onUpdate={handleUpdateHostel} refreshHostels={refreshHostels} />
           ))}
         </div>
 
