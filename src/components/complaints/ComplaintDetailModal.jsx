@@ -31,8 +31,14 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
     setShowStudentDetailModal(false)
   }
 
+  const handleReporterClick = () => {
+    if (complaintData.reportedBy.role !== "Student") return
+    setShowStudentDetailModal(true)
+  }
+
   useEffect(() => {
     const fetchStudentId = async () => {
+      if (complaintData.reportedBy.role !== "Student") return
       const studentId = await getStudentId(complaintData.reportedBy.id)
       setStudentId(studentId)
     }
@@ -88,7 +94,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               </div>
             </div>
 
-            <div onClick={() => setShowStudentDetailModal(true)} className="bg-gray-50 p-5 rounded-xl cursor-pointer">
+            <div onClick={() => handleReporterClick()} className="bg-gray-50 p-5 rounded-xl cursor-pointer">
               <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-4">
                 <FaUserCircle className="mr-2" /> Reported By
               </h4>
