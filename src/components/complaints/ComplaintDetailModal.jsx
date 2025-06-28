@@ -1,15 +1,19 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaEdit } from "react-icons/fa"
 import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import UpdateComplaintModal from "./UpdateComplaintModal"
+import { getStudentId } from "../../services/studentService"
+import StudentDetailModal from "../common/students/StudentDetailModal"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplaintUpdate }) => {
   const { user } = useAuth()
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [complaintData, setComplaintData] = useState(selectedComplaint)
+  const [studentId, setStudentId] = useState(null)
+  const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
 
   if (!complaintData) return null
 
@@ -22,6 +26,18 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
       onComplaintUpdate(updatedComplaint)
     }
   }
+
+  const handleStudentUpdate = () => {
+    setShowStudentDetailModal(false)
+  }
+
+  useEffect(() => {
+    const fetchStudentId = async () => {
+      const studentId = await getStudentId(complaintData.reportedBy.id)
+      setStudentId(studentId)
+    }
+    fetchStudentId()
+  }, [complaintData.reportedBy.id])
 
   return (
     <>
@@ -72,7 +88,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               </div>
             </div>
 
-            <div className="bg-gray-50 p-5 rounded-xl">
+            <div onClick={() => setShowStudentDetailModal(true)} className="bg-gray-50 p-5 rounded-xl cursor-pointer">
               <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-4">
                 <FaUserCircle className="mr-2" /> Reported By
               </h4>
@@ -113,6 +129,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
       </Modal>
 
       {showUpdateModal && <UpdateComplaintModal complaint={complaintData} onClose={() => setShowUpdateModal(false)} onUpdate={handleComplaintUpdate} />}
+      {showStudentDetailModal && studentId && <StudentDetailModal selectedStudent={{ _id: studentId, userId: complaintData.reportedBy.id }} setShowStudentDetail={setShowStudentDetailModal} onUpdate={handleStudentUpdate} />}
     </>
   )
 }
