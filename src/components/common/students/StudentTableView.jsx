@@ -1,7 +1,8 @@
 import React from "react"
-import { FaSortAmountDown, FaSortAmountUp, FaEye, FaUserGraduate } from "react-icons/fa"
+import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
 import BaseTable from "../table/BaseTable"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+
 const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails }) => {
   const columns = [
     {
@@ -48,19 +49,9 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
       className: "hidden sm:table-cell",
       render: (student) => <span className="text-sm text-gray-600 font-medium">{student.displayRoom}</span>,
     },
-    {
-      header: "Actions",
-      key: "actions",
-      align: "right",
-      render: (student) => (
-        <button onClick={() => viewStudentDetails(student)} className="text-[#1360AB] hover:text-blue-800 transition-colors p-2 rounded-full hover:bg-blue-50" aria-label="View student details">
-          <FaEye className="h-4 w-4" />
-        </button>
-      ),
-    },
   ]
 
-  return <BaseTable columns={columns} data={currentStudents} emptyMessage="No students to display" />
+  return <BaseTable columns={columns} data={currentStudents} emptyMessage="No students to display" onRowClick={viewStudentDetails} />
 }
 
 export default StudentTableView
