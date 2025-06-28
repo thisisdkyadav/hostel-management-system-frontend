@@ -37,6 +37,7 @@ import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
 import FamilyDetails from "./FamilyDetails"
 import HealthTab from "./HealthTab"
+import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -49,7 +50,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [activeTab, setActiveTab] = useState("profile")
 
   // Data for different tabs
-  const [complaints, setComplaints] = useState([])
   const [accessRecords, setAccessRecords] = useState([])
   const [visitorRequests, setVisitorRequests] = useState([])
   const [feedbacks, setFeedbacks] = useState([])
@@ -57,7 +57,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   const [idCardData, setIdCardData] = useState({ front: null, back: null })
 
   // Loading states for different tabs
-  const [loadingComplaints, setLoadingComplaints] = useState(false)
   const [loadingAccessRecords, setLoadingAccessRecords] = useState(false)
   const [loadingVisitorRequests, setLoadingVisitorRequests] = useState(false)
   const [loadingFeedbacks, setLoadingFeedbacks] = useState(false)
@@ -102,20 +101,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       console.error("Error fetching student details:", error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const fetchStudentComplaints = async () => {
-    if (activeTab !== "complaints" || !selectedStudent?.userId) return
-    try {
-      setLoadingComplaints(true)
-      const response = await studentApi.getStudentComplaints(selectedStudent.userId, { limit: 10 })
-      setComplaints(response.data || [])
-    } catch (error) {
-      console.error("Error fetching student complaints:", error)
-      setComplaints([])
-    } finally {
-      setLoadingComplaints(false)
     }
   }
 
@@ -227,9 +212,6 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
   useEffect(() => {
     if (!isImport && selectedStudent?.userId) {
       switch (activeTab) {
-        case "complaints":
-          fetchStudentComplaints()
-          break
         case "access":
           fetchStudentAccessHistory()
           break
@@ -467,51 +449,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         return <FamilyDetails userId={selectedStudent.userId} />
 
       case "complaints":
-        return (
-          <div className="bg-white">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Complaints History</h3>
-            {loadingComplaints ? (
-              <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
-              </div>
-            ) : complaints.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg">
-                <FaClipboardList className="mx-auto text-gray-300 mb-2 text-4xl" />
-                <p className="text-gray-500">No complaints found for this student</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {complaints.map((complaint) => (
-                      <tr key={complaint._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(complaint.createdAt)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{complaint.title}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{complaint.category}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${complaint.status === "Pending" ? "bg-yellow-100 text-yellow-800" : complaint.status === "In Progress" ? "bg-blue-100 text-blue-800" : complaint.status === "Resolved" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
-                          >
-                            {complaint.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )
+        return <ComplaintsTab userId={selectedStudent.userId} />
+
       case "access":
         return (
           <div className="bg-white">
