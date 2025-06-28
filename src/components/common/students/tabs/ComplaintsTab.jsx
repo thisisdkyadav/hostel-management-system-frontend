@@ -67,7 +67,7 @@ const ComplaintsTab = ({ userId }) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {complaints.map((complaint) => (
                 <tr onClick={() => handleComplaintClick(complaint)} key={complaint._id} className="hover:bg-gray-50 cursor-pointer">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(complaint.createdAt)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(complaint.createdDate)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{complaint.title}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{complaint.category}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
