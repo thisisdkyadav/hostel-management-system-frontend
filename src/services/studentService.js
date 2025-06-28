@@ -51,3 +51,25 @@ export const updateProfile = async (userId, profileData) => {
     throw error
   }
 }
+
+export const getStudentId = async (userId) => {
+  try {
+    const response = await fetch(`${baseUrl}/student/id/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to get student ID")
+    }
+
+    const result = await response.json()
+    return result.data
+  } catch (error) {
+    console.error("Error getting student ID:", error)
+    throw error
+  }
+}
