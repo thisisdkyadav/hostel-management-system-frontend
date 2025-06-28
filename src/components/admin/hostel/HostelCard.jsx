@@ -6,7 +6,7 @@ import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
 
-const HostelCard = ({ hostel, onUpdate }) => {
+const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 
@@ -86,7 +86,7 @@ const HostelCard = ({ hostel, onUpdate }) => {
         </div>
       </div>
 
-      {showEditModal && <EditHostelModal hostel={hostel} onClose={() => setShowEditModal(false)} onSave={handleSaveHostel} />}
+      {showEditModal && <EditHostelModal hostel={hostel} onClose={() => setShowEditModal(false)} onSave={handleSaveHostel} refreshHostels={refreshHostels} />}
       {showDetailsModal && <HostelDetailsModal hostel={hostel} onClose={() => setShowDetailsModal(false)} />}
     </>
   )

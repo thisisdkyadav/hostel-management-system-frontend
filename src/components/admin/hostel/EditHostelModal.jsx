@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
-import { FaBuilding, FaUser, FaDoorOpen } from "react-icons/fa"
+import { FaBuilding, FaUser, FaDoorOpen, FaArchive } from "react-icons/fa"
 import Button from "../../common/Button"
 import RoomManagementModal from "./RoomManagementModal"
+import { hostelApi } from "../../../services/hostelApi"
 
-const EditHostelModal = ({ hostel, onClose, onSave }) => {
+const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
   const [formData, setFormData] = useState({
     name: "",
     gender: "",
   })
+
+  const [isArchived, setIsArchived] = useState(hostel.isArchived)
 
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -73,6 +76,21 @@ const EditHostelModal = ({ hostel, onClose, onSave }) => {
     onSave({ ...hostel })
   }
 
+  const handleArchiveToggle = async () => {
+    const message = isArchived ? "Are you sure you want to unarchive this hostel?" : "Are you sure you want to archive this hostel?"
+    // confirm the action
+    const confirm = window.confirm(message)
+    if (!confirm) return
+
+    try {
+      await hostelApi.changeArchiveStatus(hostel.id, !isArchived)
+      setIsArchived(!isArchived)
+      refreshHostels()
+    } catch (error) {
+      console.error("Error changing archive status:", error)
+    }
+  }
+
   return (
     <>
       <Modal title="Edit Hostel Details" onClose={onClose} width={500}>
@@ -128,6 +146,12 @@ const EditHostelModal = ({ hostel, onClose, onSave }) => {
               </div>
             </div>
             {errors.gender && <p className="mt-1.5 text-sm text-red-600">{errors.gender}</p>}
+          </div>
+
+          <div className="flex justify-center">
+            <Button type="button" onClick={handleArchiveToggle} variant="secondary" icon={<FaArchive />} animation="ripple" fullWidth>
+              {isArchived ? "Unarchive Hostel" : "Archive Hostel"}
+            </Button>
           </div>
 
           <div className="flex justify-center">

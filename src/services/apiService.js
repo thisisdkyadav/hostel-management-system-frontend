@@ -674,8 +674,8 @@ export const maintenanceApi = {
 }
 
 export const adminApi = {
-  getAllHostels: async () => {
-    const response = await fetch(`${baseUrl}/admin/hostels`, {
+  getAllHostels: async (queries) => {
+    const response = await fetch(`${baseUrl}/admin/hostels?${queries}`, {
       method: "GET",
       ...fetchOptions,
     })
