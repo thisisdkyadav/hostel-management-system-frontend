@@ -63,7 +63,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
 
   return (
     <>
-      <Modal title={`Manage Students - ${undertakingTitle}`} onClose={onClose} size="lg">
+      <Modal title={`Manage Students - ${undertakingTitle}`} onClose={onClose} size="lg" width={900}>
         <div className="space-y-5">
           {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
 
