@@ -157,7 +157,7 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
   if (!isOpen) return null
 
   return (
-    <Modal title={`Add Students to Undertaking - ${undertakingTitle}`} onClose={onClose} width={700}>
+    <Modal title={`Add Students to Undertaking - ${undertakingTitle}`} onClose={onClose} width={900}>
       {step === 1 && (
         <div className="space-y-5">
           <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
