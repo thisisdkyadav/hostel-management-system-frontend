@@ -291,13 +291,14 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
       y: {
         beginAtZero: true,
         ticks: {
+          display: false, // Hide the y-axis labels
           precision: 0,
-          callback: function (value) {
-            return value + (normalized ? "%" : "")
-          },
         },
         // Set y-axis scale based on view type
         suggestedMax: normalized ? 100 : Math.ceil(maxValue * 1.1),
+        grid: {
+          drawBorder: false, // Optional: removes the y-axis line
+        },
       },
     },
     // Only set minBarLength for non-zero values
