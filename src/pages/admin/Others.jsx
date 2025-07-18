@@ -3,11 +3,13 @@ import { FaBuilding } from "react-icons/fa"
 import FilterTabs from "../../components/common/FilterTabs"
 import InsuranceProviders from "../../components/admin/others/InsuranceProviders"
 import HostelLogins from "../../components/admin/others/HostelLogins"
+import Undertakings from "../../components/admin/others/Undertakings"
 
 // this page is for the admin to manage the others like Insurance Providers, Hostel Logins, etc.
 const OTHERS_TABS = [
   { label: "Insurance Providers", value: "insurance" },
   { label: "Hostel Logins", value: "logins" },
+  { label: "Undertakings", value: "undertakings" },
 ]
 
 const Others = () => {
@@ -25,6 +27,7 @@ const Others = () => {
 
       {activeTab === "insurance" && <InsuranceProviders />}
       {activeTab === "logins" && <HostelLogins />}
+      {activeTab === "undertakings" && <Undertakings />}
     </div>
   )
 }

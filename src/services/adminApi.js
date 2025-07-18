@@ -267,6 +267,183 @@ export const adminApi = {
       throw error
     }
   },
+
+  // Undertakings related functions
+  getUndertakings: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch undertakings")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching undertakings:", error)
+      throw error
+    }
+  },
+
+  createUndertaking: async (undertakingData) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(undertakingData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to create undertaking")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error creating undertaking:", error)
+      throw error
+    }
+  },
+
+  updateUndertaking: async (undertakingId, undertakingData) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}`, {
+        method: "PUT",
+        ...fetchOptions,
+        body: JSON.stringify(undertakingData),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to update undertaking")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error updating undertaking:", error)
+      throw error
+    }
+  },
+
+  deleteUndertaking: async (undertakingId) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}`, {
+        method: "DELETE",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to delete undertaking")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error deleting undertaking:", error)
+      throw error
+    }
+  },
+
+  getUndertakingStudents: async (undertakingId) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}/students`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch undertaking students")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching undertaking students:", error)
+      throw error
+    }
+  },
+
+  addStudentsToUndertaking: async (undertakingId, studentIds) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}/students`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify({ studentIds }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to add students to undertaking")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error adding students to undertaking:", error)
+      throw error
+    }
+  },
+
+  removeStudentFromUndertaking: async (undertakingId, studentId) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}/students/${studentId}`, {
+        method: "DELETE",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to remove student from undertaking")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error removing student from undertaking:", error)
+      throw error
+    }
+  },
+
+  getUndertakingStudentsStatus: async (undertakingId) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}/status`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch undertaking status")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching undertaking status:", error)
+      throw error
+    }
+  },
+
+  // Function to add students to undertaking by roll numbers
+  addStudentsToUndertakingByRollNumbers: async (undertakingId, rollNumbers) => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/admin/undertakings/${undertakingId}/students/by-roll-numbers`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify({ rollNumbers }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to add students to undertaking")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error adding students to undertaking by roll numbers:", error)
+      throw error
+    }
+  },
 }
 
 export default adminApi
