@@ -275,7 +275,9 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
       tooltip: {
         callbacks: {
           label: (context) => {
-            return `${context.dataset.label}: ${context.raw}${normalized ? "%" : ""}`
+            // Use original data for tooltip values
+            const originalValue = context.dataset.originalData ? context.dataset.originalData[context.dataIndex] : context.raw
+            return `${context.dataset.label}: ${originalValue}${normalized ? "%" : ""}`
           },
         },
       },
@@ -302,18 +304,29 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
     barPercentage: 0.8,
   }
 
-  // Process each dataset to handle zero values properly
+  // Process each dataset to apply square root transformation for better visualization
   chartData.datasets = chartData.datasets.map((dataset) => {
-    // Process each value in the dataset
+    // Find the maximum value in this dataset for scaling
+    const maxDatasetValue = Math.max(...dataset.data.filter((v) => v > 0), 1)
+
+    // Apply a square root transformation to make small values more visible
+    // while maintaining the relative differences between large values
     const processedData = dataset.data.map((value) => {
       if (value === 0) return null // Null values won't be drawn
-      return value // Keep non-zero values as is
+
+      // Apply square root transformation to make small values more visible
+      // We multiply by a factor to maintain a reasonable scale
+      const scaleFactor = Math.sqrt(maxDatasetValue)
+      return Math.sqrt(value) * scaleFactor
     })
+
+    // Store original values for tooltips
+    const originalData = [...dataset.data]
 
     return {
       ...dataset,
       data: processedData,
-      minBarLength: 20, // Fixed minimum bar length for all non-zero values
+      originalData: originalData, // Store original data for tooltips
     }
   })
 
