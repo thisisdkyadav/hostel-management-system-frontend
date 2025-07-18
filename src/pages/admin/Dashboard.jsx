@@ -8,10 +8,10 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../services/dashboardApi"
 
 // Chart components
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement } from "chart.js"
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
 import { Bar, Doughnut } from "react-chartjs-2"
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement)
+ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement)
 
 // Enhanced shimmer loader components
 const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
@@ -482,6 +482,9 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
     girlsData = data?.degreeWise?.map((item) => item.girls) || []
   }
 
+  // Generate a unique ID for the chart to avoid canvas reuse issues
+  const chartId = `degree-chart-${normalized ? "normalized" : "absolute"}-${Math.random().toString(36).substr(2, 9)}`
+
   const chartData = {
     labels: labels,
     datasets: [
@@ -537,8 +540,24 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
         suggestedMax: normalized ? 100 : Math.ceil(maxValue * 1.1),
       },
     },
-    minBarLength: 10,
+    // Only set minBarLength for non-zero values
+    barPercentage: 0.8,
   }
+
+  // Process each dataset to handle zero values properly
+  chartData.datasets = chartData.datasets.map((dataset) => {
+    // Process each value in the dataset
+    const processedData = dataset.data.map((value) => {
+      if (value === 0) return null // Null values won't be drawn
+      return value // Keep non-zero values as is
+    })
+
+    return {
+      ...dataset,
+      data: processedData,
+      minBarLength: 20, // Fixed minimum bar length for all non-zero values
+    }
+  })
 
   return <Bar data={chartData} options={options} />
 }
@@ -593,6 +612,9 @@ const HostelOccupancyChart = ({ data }) => {
 const HostlerDayScholarChart = ({ data }) => {
   if (!data) return null
 
+  // Generate a unique ID for the chart to avoid canvas reuse issues
+  const chartId = `hostler-chart-${Math.random().toString(36).substr(2, 9)}`
+
   const chartData = {
     labels: ["Hostlers", "Day Scholars"],
     datasets: [
@@ -640,8 +662,23 @@ const HostlerDayScholarChart = ({ data }) => {
         },
       },
     },
-    minBarLength: 5,
+    barPercentage: 0.8,
   }
+
+  // Process each dataset to handle zero values properly
+  chartData.datasets = chartData.datasets.map((dataset) => {
+    // Process each value in the dataset
+    const processedData = dataset.data.map((value) => {
+      if (value === 0) return null // Null values won't be drawn
+      return value // Keep non-zero values as is
+    })
+
+    return {
+      ...dataset,
+      data: processedData,
+      minBarLength: 20, // Fixed minimum bar length for all non-zero values
+    }
+  })
 
   return <Bar data={chartData} options={options} />
 }
