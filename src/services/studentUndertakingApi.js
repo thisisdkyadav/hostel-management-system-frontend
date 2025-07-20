@@ -81,4 +81,23 @@ export const studentUndertakingApi = {
       throw error
     }
   },
+
+  pendingUndertakingsCount: async () => {
+    try {
+      const response = await fetch(`${baseUrl}/undertaking/student/undertakings/pending/count`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch pending undertakings count")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching pending undertakings count:", error)
+      throw error
+    }
+  },
 }

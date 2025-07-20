@@ -13,6 +13,7 @@ import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
 import Modal from "../../components/common/Modal"
 import usePwaMobile from "../../hooks/usePwaMobile"
+import UndertakingsBanner from "../../components/student/UndertakingsBanner"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
 const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
@@ -204,6 +205,9 @@ const Dashboard = () => {
       {/* <button onClick={() => authApi.redirectToWellness()}>wellness</button> */}
       {/* Offline notification banner */}
       {isOfflineData && <OfflineBanner message="You're offline. Viewing cached dashboard data." className="mb-4" showDismiss={true} />}
+
+      {/* Undertakings Banner */}
+      <UndertakingsBanner />
 
       <section className="mb-6">
         <StudentProfile profile={dashboardData.profile} />
