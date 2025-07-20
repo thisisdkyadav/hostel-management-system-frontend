@@ -70,6 +70,7 @@ const StudentLayout = () => {
     { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications", badge: notificationsCount },
     { name: "Security", icon: FaUser, section: "main", path: "/student/security" },
     { name: "ID Card", icon: FaIdCard, section: "main", path: "/student/id-card" },
+    { name: "Undertakings", icon: FaClipboardList, section: "main", path: "/student/undertakings" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
@@ -96,6 +97,7 @@ const StudentLayout = () => {
     { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications", badge: notificationsCount },
     { name: "Security", icon: FaUser, section: "main", path: "/student/security" },
     { name: "ID Card", icon: FaIdCard, section: "main", path: "/student/id-card" },
+    { name: "Undertakings", icon: FaClipboardList, section: "main", path: "/student/undertakings" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
