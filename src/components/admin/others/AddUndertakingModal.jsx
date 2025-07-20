@@ -2,12 +2,15 @@ import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import { adminApi } from "../../../services/adminApi"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { format, parseISO } from "date-fns"
 
 const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    deadline: "",
+    deadline: null, // Use Date object for deadline
     content: "", // The actual undertaking text that students will read and accept
   })
   const [loading, setLoading] = useState(false)
@@ -21,20 +24,34 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
     }))
   }
 
+  // For react-datepicker
+  const handleDateChange = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      deadline: date,
+    }))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       setLoading(true)
       setError(null)
 
-      await adminApi.createUndertaking(formData)
+      // Format deadline as mm-dd-yyyy string before sending
+      const payload = {
+        ...formData,
+        deadline: formData.deadline ? format(formData.deadline, "MM-dd-yyyy") : "",
+      }
+
+      await adminApi.createUndertaking(payload)
       alert("Undertaking created successfully!")
 
       // Reset form
       setFormData({
         title: "",
         description: "",
-        deadline: "",
+        deadline: null,
         content: "",
       })
 
@@ -89,7 +106,20 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
             <div className="absolute left-3 top-3 text-gray-400">
               <FaCalendarAlt />
             </div>
-            <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" required />
+            <DatePicker
+              selected={formData.deadline}
+              onChange={handleDateChange}
+              dateFormat="MM-dd-yyyy"
+              className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
+              placeholderText="mm-dd-yyyy"
+              required
+              popperPlacement="bottom"
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              autoComplete="off"
+              wrapperClassName="w-full"
+            />
           </div>
         </div>
 
