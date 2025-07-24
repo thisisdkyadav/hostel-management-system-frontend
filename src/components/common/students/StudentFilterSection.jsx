@@ -5,6 +5,9 @@ import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions }) => {
+  // Define degree options
+  const degreeOptions = ["BDes.", "BTech", "International", "MA", "MS", "MSc", "MTech", "Mtech", "PDF", "PhD", "PhD(TRF)", "RA", "TRF"]
+
   return (
     <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
@@ -80,7 +83,14 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Degree</label>
-            <input type="text" placeholder="Degree" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)} />
+            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)}>
+              <option value="">All Degrees</option>
+              {degreeOptions.map((degree, index) => (
+                <option key={index} value={degree}>
+                  {degree}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
