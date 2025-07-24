@@ -162,17 +162,12 @@ const Dashboard = () => {
                 <ShimmerLoader height="1.5rem" width="60%" />
                 <ShimmerLoader height="1.5rem" width="20%" className="rounded-full" />
               </div>
-              <ChartShimmer height="calc(100% - 6rem)" />
-              <div className="mt-4 grid grid-cols-3 gap-4">
-                <ShimmerLoader height="3rem" className="rounded-lg" />
-                <ShimmerLoader height="3rem" className="rounded-lg" />
-                <ShimmerLoader height="3rem" className="rounded-lg" />
-              </div>
+              <TableShimmer rows={6} className="flex-1" />
             </div>
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col overflow-auto">
               <h2 className="flex justify-between items-center text-lg font-semibold text-gray-700 mb-4">
                 <div className="flex items-center">
                   <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
@@ -219,12 +214,12 @@ const Dashboard = () => {
 
               <div className="flex-1 flex flex-col">
                 {/* Always use degree-wise chart */}
-                <div className="h-3/4">
+                <div className="h-full">
                   <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} />
                 </div>
 
-                {/* Summary totals */}
-                <div className="mt-4 grid grid-cols-3 gap-4 text-center">
+                {/* Summary totals - Removing this section */}
+                {/* <div className="mt-4 grid grid-cols-3 gap-4 text-center">
                   <div className="bg-blue-50 p-2 rounded-lg">
                     <p className="text-xs text-gray-500">Total Boys</p>
                     <p className="text-lg font-bold text-blue-600">{dashboardData?.students?.totalBoys}</p>
@@ -237,7 +232,7 @@ const Dashboard = () => {
                     <p className="text-xs text-gray-500">Grand Total</p>
                     <p className="text-lg font-bold text-indigo-600">{dashboardData?.students?.grandTotal}</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           )}
@@ -459,121 +454,70 @@ const formatDate = (dateString) => {
 
 // Chart components
 const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
-  // Prepare data for absolute or normalized view
-  let labels = data?.degreeWise?.map((item) => item.degree) || []
-  let boysData, girlsData
+  if (!data?.degreeWise?.length) return <div className="h-full flex items-center justify-center text-gray-500">No student data available</div>
 
-  if (normalized) {
-    // For normalized view, convert to percentages
-    boysData =
-      data?.degreeWise?.map((item) => {
-        const total = item.boys + item.girls
-        return total > 0 ? Math.round((item.boys / total) * 100) : 0
-      }) || []
+  // Calculate totals for each row
+  const degreeData =
+    data?.degreeWise?.map((item) => ({
+      ...item,
+      total: item.boys + item.girls,
+    })) || []
 
-    girlsData =
-      data?.degreeWise?.map((item) => {
-        const total = item.boys + item.girls
-        return total > 0 ? Math.round((item.girls / total) * 100) : 0
-      }) || []
-  } else {
-    // For absolute view, use raw numbers
-    boysData = data?.degreeWise?.map((item) => item.boys) || []
-    girlsData = data?.degreeWise?.map((item) => item.girls) || []
-  }
+  return (
+    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50 sticky top-0">
+          <tr>
+            <th className="px-4 py-2 text-xs font-medium text-gray-500 text-left">Degree</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Boys</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Girls</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Total</th>
+            {normalized && (
+              <>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Boys %</th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-500 text-center">Girls %</th>
+              </>
+            )}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {degreeData.map((item, index) => {
+            const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
+            const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
-  // Generate a unique ID for the chart to avoid canvas reuse issues
-  const chartId = `degree-chart-${normalized ? "normalized" : "absolute"}-${Math.random().toString(36).substr(2, 9)}`
+            return (
+              <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
+                <td className="px-4 py-2 text-sm text-blue-600 text-center font-medium">{item.boys}</td>
+                <td className="px-4 py-2 text-sm text-pink-600 text-center font-medium">{item.girls}</td>
+                <td className="px-4 py-2 text-sm text-indigo-600 text-center font-medium">{item.total}</td>
+                {normalized && (
+                  <>
+                    <td className="px-4 py-2 text-sm text-blue-600 text-center font-medium">{boysPercent}%</td>
+                    <td className="px-4 py-2 text-sm text-pink-600 text-center font-medium">{girlsPercent}%</td>
+                  </>
+                )}
+              </tr>
+            )
+          })}
 
-  const chartData = {
-    labels: labels,
-    datasets: [
-      {
-        label: normalized ? "Boys %" : "Boys",
-        data: boysData,
-        backgroundColor: "#3B82F6",
-        barThickness: 20,
-      },
-      {
-        label: normalized ? "Girls %" : "Girls",
-        data: girlsData,
-        backgroundColor: "#EC4899",
-        barThickness: 20,
-      },
-    ],
-  }
-
-  // Find max value to set appropriate scale
-  const allValues = [...boysData, ...girlsData]
-  const maxValue = allValues.length > 0 ? Math.max(...allValues) : 100
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            // Use original data for tooltip values
-            const originalValue = context.dataset.originalData ? context.dataset.originalData[context.dataIndex] : context.raw
-            return `${context.dataset.label}: ${originalValue}${normalized ? "%" : ""}`
-          },
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          display: false, // Hide the y-axis labels
-          precision: 0,
-        },
-        // Set y-axis scale based on view type
-        suggestedMax: normalized ? 100 : Math.ceil(maxValue * 1.1),
-        grid: {
-          drawBorder: false, // Optional: removes the y-axis line
-        },
-      },
-    },
-    // Only set minBarLength for non-zero values
-    barPercentage: 0.8,
-  }
-
-  // Process each dataset to apply square root transformation for better visualization
-  chartData.datasets = chartData.datasets.map((dataset) => {
-    // Find the maximum value in this dataset for scaling
-    const maxDatasetValue = Math.max(...dataset.data.filter((v) => v > 0), 1)
-
-    // Apply a square root transformation to make small values more visible
-    // while maintaining the relative differences between large values
-    const processedData = dataset.data.map((value) => {
-      if (value === 0) return null // Null values won't be drawn
-
-      // Apply square root transformation to make small values more visible
-      // We multiply by a factor to maintain a reasonable scale
-      const scaleFactor = Math.sqrt(maxDatasetValue)
-      return Math.sqrt(value) * scaleFactor
-    })
-
-    // Store original values for tooltips
-    const originalData = [...dataset.data]
-
-    return {
-      ...dataset,
-      data: processedData,
-      originalData: originalData, // Store original data for tooltips
-    }
-  })
-
-  return <Bar data={chartData} options={options} />
+          {/* Add totals row */}
+          <tr className="bg-gray-100 font-medium">
+            <td className="px-4 py-2 text-sm text-gray-800">Total</td>
+            <td className="px-4 py-2 text-sm text-blue-700 text-center">{data?.totalBoys || 0}</td>
+            <td className="px-4 py-2 text-sm text-pink-700 text-center">{data?.totalGirls || 0}</td>
+            <td className="px-4 py-2 text-sm text-indigo-700 text-center">{data?.grandTotal || 0}</td>
+            {normalized && (
+              <>
+                <td className="px-4 py-2 text-sm text-blue-700 text-center">{data?.grandTotal > 0 ? Math.round((data?.students?.totalBoys / data?.students?.grandTotal) * 100) : 0}%</td>
+                <td className="px-4 py-2 text-sm text-pink-700 text-center">{data?.grandTotal > 0 ? Math.round((data?.students?.totalGirls / data?.students?.grandTotal) * 100) : 0}%</td>
+              </>
+            )}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 const HostelOccupancyChart = ({ data }) => {
