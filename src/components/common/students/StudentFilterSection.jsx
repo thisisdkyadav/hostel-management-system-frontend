@@ -1,12 +1,39 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { BsFilterRight } from "react-icons/bs"
 import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
+import { getDepartmentList } from "../../../services/studentService"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions }) => {
   // Define degree options
   const degreeOptions = ["BDes.", "BTech", "International", "MA", "MS", "MSc", "MTech", "Mtech", "PDF", "PhD", "PhD(TRF)", "RA", "TRF"]
+  const [departments, setDepartments] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const fetchDepartments = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const departmentData = await getDepartmentList()
+      if (departmentData && Array.isArray(departmentData)) {
+        setDepartments(departmentData)
+      } else {
+        setDepartments([])
+      }
+    } catch (error) {
+      console.error("Failed to fetch departments:", error)
+      setError("Failed to load departments")
+      setDepartments([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchDepartments()
+  }, []) // We can keep empty dependency array as fetchDepartments is defined outside and uses only state setters
 
   return (
     <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-hidden">
@@ -70,15 +97,32 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Department</label>
-            {/* <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)}>
+            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)} disabled={loading}>
               <option value="">All Departments</option>
-              {departments.map((dept, index) => (
-                <option key={index} value={dept}>
-                  {dept}
+              {loading ? (
+                <option value="" disabled>
+                  Loading departments...
                 </option>
-              ))}
-            </select> */}
-            <input type="text" placeholder="Department" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)} />
+              ) : error ? (
+                <option value="" disabled>
+                  Error loading departments
+                </option>
+              ) : (
+                departments.map((dept, index) => (
+                  <option key={index} value={dept}>
+                    {dept}
+                  </option>
+                ))
+              )}
+            </select>
+            {error && (
+              <div className="flex items-center mt-1">
+                <p className="text-xs text-red-500 mr-2">{error}</p>
+                <button onClick={fetchDepartments} className="text-xs text-blue-600 hover:text-blue-800" disabled={loading}>
+                  Retry
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
