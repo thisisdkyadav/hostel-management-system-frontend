@@ -73,3 +73,26 @@ export const getStudentId = async (userId) => {
     throw error
   }
 }
+
+// get department list
+export const getDepartmentList = async () => {
+  try {
+    const response = await fetch(`${baseUrl}/student/departments/list`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to get department list")
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error) {
+    console.error("Error getting department list:", error)
+    throw error
+  }
+}
