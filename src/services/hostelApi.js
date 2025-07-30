@@ -47,7 +47,7 @@ export const hostelApi = {
   },
 
   updateRoomStatus: async (roomId, status) => {
-    const response = await fetch(`${baseUrl}/hostel/rooms/${roomId}/status`, {
+    const response = await fetch(`${baseUrl}/hostel/rooms/status/${roomId}`, {
       method: "PUT",
       ...fetchOptions,
       body: JSON.stringify({ status }),
