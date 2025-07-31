@@ -239,4 +239,18 @@ export const hostelApi = {
 
     return response.json()
   },
+
+  deleteAllAllocations: async (hostelId) => {
+    const response = await fetch(`${baseUrl}/hostel/delete-all-allocations/${hostelId}`, {
+      method: "DELETE",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to delete all allocations")
+    }
+
+    return response.json()
+  },
 }
