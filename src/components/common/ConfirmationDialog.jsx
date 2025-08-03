@@ -21,8 +21,11 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
     )
   }
 
+  // If not open, don't render anything
+  if (!isOpen) return null
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} footer={renderFooter()} width={400}>
+    <Modal title={title} onClose={onClose} footer={renderFooter()} width={400}>
       <div className="py-4">
         {isDestructive && (
           <div className="flex justify-center mb-4">

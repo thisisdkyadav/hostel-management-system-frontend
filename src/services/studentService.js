@@ -96,3 +96,24 @@ export const getDepartmentList = async () => {
     throw error
   }
 }
+
+export const getDegreesList = async () => {
+  try {
+    const response = await fetch(`${baseUrl}/student/degrees/list`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+    if (!response.ok) {
+      throw new Error("Failed to get degrees")
+    }
+
+    const result = await response.json()
+    return result.data
+  } catch (error) {
+    console.error("Error getting degrees:", error)
+    throw error
+  }
+}
