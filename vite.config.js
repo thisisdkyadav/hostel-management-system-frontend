@@ -88,9 +88,12 @@ export default defineConfig({
       srcDir: "public",
       filename: "sw.js",
       injectRegister: "auto",
+      injectManifest: {
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB limit
+      },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,webp}"],
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB limit
         clientsClaim: true,
         skipWaiting: true,
         runtimeCaching: [
