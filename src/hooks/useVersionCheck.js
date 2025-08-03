@@ -5,6 +5,7 @@ import { compareVersions, getUpdateType, storeLastSeenVersion, getLastSeenVersio
 const useVersionCheck = ({
   checkInterval = 60 * 1000, // 1 minute by default
   metaUrl = "/meta.json",
+  autoUpdateOnLoad = true, // New option for automatic updates on load
 } = {}) => {
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [updateType, setUpdateType] = useState(null) // "major", "minor", "patch"
@@ -12,6 +13,7 @@ const useVersionCheck = ({
   const currentVersion = import.meta.env.VITE_APP_VERSION || "unknown"
   const [updateSWFunction, setUpdateSWFunction] = useState(null)
   const [lastChecked, setLastChecked] = useState(null)
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false)
 
   // Store current version in localStorage on mount
   useEffect(() => {
@@ -52,8 +54,17 @@ const useVersionCheck = ({
         const updateSW = registerSW({
           onNeedRefresh() {
             console.log("New service worker available, update needed")
-            setUpdateAvailable(true)
-            setUpdateType("pwa")
+
+            // If auto-update is enabled and this is the initial load, update immediately
+            if (autoUpdateOnLoad && !initialLoadComplete) {
+              console.log("Auto-updating on initial load...")
+              updateSW(true) // Update immediately
+              setInitialLoadComplete(true)
+            } else {
+              // Otherwise show the notification
+              setUpdateAvailable(true)
+              setUpdateType("pwa")
+            }
           },
           onOfflineReady() {
             console.log("App is ready for offline use")
@@ -91,12 +102,15 @@ const useVersionCheck = ({
               console.log(`New version detected: ${data.version} (current: ${currentVersion})`)
               const updateTypeValue = getUpdateType(currentVersion, data.version)
               setUpdateType(updateTypeValue)
-              setUpdateAvailable(true)
 
-              // Force reload if forceUpdate flag is set
-              if (data.forceUpdate) {
-                console.log("Force update required, reloading...")
+              // If auto-update is enabled and this is the initial load, update immediately
+              if ((autoUpdateOnLoad && !initialLoadComplete) || data.forceUpdate) {
+                console.log("Auto-updating on initial load or force update required...")
+                setInitialLoadComplete(true)
                 handleUpdate()
+              } else {
+                // Otherwise show the notification
+                setUpdateAvailable(true)
               }
             }
           }
@@ -116,7 +130,7 @@ const useVersionCheck = ({
     return () => {
       if (intervalId) clearInterval(intervalId)
     }
-  }, [metaUrl, checkInterval, currentVersion, handleUpdate, isPWA])
+  }, [metaUrl, checkInterval, currentVersion, handleUpdate, isPWA, autoUpdateOnLoad, initialLoadComplete])
 
   return {
     updateAvailable,

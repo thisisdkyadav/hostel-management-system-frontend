@@ -3,8 +3,10 @@ import useVersionCheck from "../../hooks/useVersionCheck"
 import Toast from "./Toast"
 import UpdateLoadingScreen from "./UpdateLoadingScreen"
 
-const VersionUpdateNotification = () => {
-  const { updateAvailable, handleUpdate, currentVersion, updateType } = useVersionCheck()
+const VersionUpdateNotification = ({ autoUpdateOnLoad = true }) => {
+  const { updateAvailable, handleUpdate, currentVersion, updateType } = useVersionCheck({
+    autoUpdateOnLoad,
+  })
   const [showToast, setShowToast] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
 

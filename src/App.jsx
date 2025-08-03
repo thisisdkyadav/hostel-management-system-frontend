@@ -12,7 +12,7 @@ function App() {
       <AuthProvider>
         <GlobalProvider>
           <AppRoutes />
-          <VersionUpdateNotification />
+          <VersionUpdateNotification autoUpdateOnLoad={true} />
           <PWAInstallPrompt />
           <WhatsNewDialog />
         </GlobalProvider>
