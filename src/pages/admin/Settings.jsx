@@ -1,17 +1,29 @@
 import { useState, useEffect } from "react"
-import { HiCog, HiSave } from "react-icons/hi"
+import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/adminApi"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
+import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 
 const Settings = () => {
   const { user } = useAuth()
-  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState("studentFields")
+  const [loading, setLoading] = useState({
+    studentFields: false,
+    degrees: false,
+    departments: false,
+  })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [studentEditPermissions, setStudentEditPermissions] = useState([])
+  const [degrees, setDegrees] = useState([])
+  const [departments, setDepartments] = useState([])
   const [successMessage, setSuccessMessage] = useState("")
-  const [error, setError] = useState(null)
+  const [error, setError] = useState({
+    studentFields: null,
+    degrees: null,
+    departments: null,
+  })
 
   // List of all possible student editable fields with their labels
   const availableFields = [
@@ -28,38 +40,84 @@ const Settings = () => {
   ]
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const response = await adminApi.getStudentEditPermissions()
-
-        // Map the allowed fields from API to our permissions format
-        const allowedFields = response.value || []
-
-        // Create the full permissions array with allowed status
-        const permissionsData = availableFields.map((field) => ({
-          ...field,
-          allowed: allowedFields.includes(field.field),
-        }))
-
-        setStudentEditPermissions(permissionsData)
-      } catch (error) {
-        console.error("Error fetching settings:", error)
-        setError("Failed to load settings. Please try again later.")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchSettings()
+    fetchStudentEditPermissions()
   }, [])
+
+  useEffect(() => {
+    // Fetch data based on active tab
+    if (activeTab === "degrees" && degrees.length === 0) {
+      fetchDegrees()
+    } else if (activeTab === "departments" && departments.length === 0) {
+      fetchDepartments()
+    }
+  }, [activeTab])
+
+  const fetchStudentEditPermissions = async () => {
+    setLoading((prev) => ({ ...prev, studentFields: true }))
+    setError((prev) => ({ ...prev, studentFields: null }))
+    try {
+      const response = await adminApi.getStudentEditPermissions()
+
+      // Map the allowed fields from API to our permissions format
+      const allowedFields = response.value || []
+
+      // Create the full permissions array with allowed status
+      const permissionsData = availableFields.map((field) => ({
+        ...field,
+        allowed: allowedFields.includes(field.field),
+      }))
+
+      setStudentEditPermissions(permissionsData)
+    } catch (err) {
+      console.error("Error fetching student edit permissions:", err)
+      setError((prev) => ({
+        ...prev,
+        studentFields: "Failed to load student edit permissions. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, studentFields: false }))
+    }
+  }
+
+  const fetchDegrees = async () => {
+    setLoading((prev) => ({ ...prev, degrees: true }))
+    setError((prev) => ({ ...prev, degrees: null }))
+    try {
+      const response = await adminApi.getDegrees()
+      setDegrees(response.value || [])
+    } catch (err) {
+      console.error("Error fetching degrees:", err)
+      setError((prev) => ({
+        ...prev,
+        degrees: "Failed to load degrees. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, degrees: false }))
+    }
+  }
+
+  const fetchDepartments = async () => {
+    setLoading((prev) => ({ ...prev, departments: true }))
+    setError((prev) => ({ ...prev, departments: null }))
+    try {
+      const response = await adminApi.getDepartments()
+      setDepartments(response.value || [])
+    } catch (err) {
+      console.error("Error fetching departments:", err)
+      setError((prev) => ({
+        ...prev,
+        departments: "Failed to load departments. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, departments: false }))
+    }
+  }
 
   const handleUpdatePermissions = async (updatedPermissions) => {
     const confirmUpdate = window.confirm("Are you sure you want to update student edit permissions?")
     if (!confirmUpdate) return
 
-    setLoading(true)
+    setLoading((prev) => ({ ...prev, studentFields: true }))
     try {
       const response = await adminApi.updateStudentEditPermissions(updatedPermissions)
 
@@ -73,11 +131,47 @@ const Settings = () => {
       setStudentEditPermissions(permissionsData)
       setSuccessMessage(`Student edit permissions updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
       setShowSuccessModal(true)
-    } catch (error) {
-      console.error("Error updating permissions:", error)
+    } catch (err) {
+      console.error("Error updating permissions:", err)
       alert("An error occurred while updating permissions. Please try again.")
     } finally {
-      setLoading(false)
+      setLoading((prev) => ({ ...prev, studentFields: false }))
+    }
+  }
+
+  const handleUpdateDegrees = async (updatedDegrees) => {
+    const confirmUpdate = window.confirm("Are you sure you want to update degrees?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, degrees: true }))
+    try {
+      const response = await adminApi.updateDegrees(updatedDegrees)
+      setDegrees(response.configuration.value || [])
+      setSuccessMessage(`Degrees updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating degrees:", err)
+      alert("An error occurred while updating degrees. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, degrees: false }))
+    }
+  }
+
+  const handleUpdateDepartments = async (updatedDepartments) => {
+    const confirmUpdate = window.confirm("Are you sure you want to update departments?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, departments: true }))
+    try {
+      const response = await adminApi.updateDepartments(updatedDepartments)
+      setDepartments(response.configuration.value || [])
+      setSuccessMessage(`Departments updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating departments:", err)
+      alert("An error occurred while updating departments. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, departments: false }))
     }
   }
 
@@ -117,36 +211,134 @@ const Settings = () => {
       </header>
 
       <div className="max-w-3xl mx-auto">
+        {/* Tabs */}
+        <div className="mb-6 border-b border-gray-200">
+          <ul className="flex flex-wrap -mb-px">
+            <li className="mr-2">
+              <button onClick={() => setActiveTab("studentFields")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentFields" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                <HiCog className="mr-2 h-5 w-5" />
+                Student Edit Permissions
+              </button>
+            </li>
+            <li className="mr-2">
+              <button onClick={() => setActiveTab("degrees")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "degrees" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                <HiAcademicCap className="mr-2 h-5 w-5" />
+                Degrees
+              </button>
+            </li>
+            <li className="mr-2">
+              <button onClick={() => setActiveTab("departments")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "departments" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                <HiOfficeBuilding className="mr-2 h-5 w-5" />
+                Departments
+              </button>
+            </li>
+          </ul>
+        </div>
+
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <HiCog className="mr-2 text-[#1360AB]" size={20} />
-              Student Profile Edit Permissions
+              {activeTab === "studentFields" && (
+                <>
+                  <HiCog className="mr-2 text-[#1360AB]" size={20} />
+                  Student Profile Edit Permissions
+                </>
+              )}
+              {activeTab === "degrees" && (
+                <>
+                  <HiAcademicCap className="mr-2 text-[#1360AB]" size={20} />
+                  Academic Degrees
+                </>
+              )}
+              {activeTab === "departments" && (
+                <>
+                  <HiOfficeBuilding className="mr-2 text-[#1360AB]" size={20} />
+                  Academic Departments
+                </>
+              )}
             </h2>
           </div>
 
           <div className="p-6">
-            <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
-              <div className="flex-shrink-0 mt-0.5 mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <p className="text-sm">Configure which profile fields students are allowed to edit in their profiles. Enable or disable each field as needed.</p>
-            </div>
-
-            {error && (
+            {/* Error messages */}
+            {error[activeTab] && (
               <div className="bg-red-50 text-red-700 rounded-lg p-4 mb-6">
-                <p>{error}</p>
+                <p>{error[activeTab]}</p>
               </div>
             )}
 
-            {loading && studentEditPermissions.length === 0 ? (
-              <div className="flex justify-center py-6">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
-              </div>
-            ) : (
-              <StudentEditPermissionsForm permissions={studentEditPermissions} onUpdate={handleUpdatePermissions} isLoading={loading} />
+            {/* Student Edit Permissions Tab */}
+            {activeTab === "studentFields" && (
+              <>
+                <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
+                  <div className="flex-shrink-0 mt-0.5 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm">Configure which profile fields students are allowed to edit in their profiles. Enable or disable each field as needed.</p>
+                </div>
+
+                {loading.studentFields && studentEditPermissions.length === 0 ? (
+                  <div className="flex justify-center py-6">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
+                  </div>
+                ) : (
+                  <StudentEditPermissionsForm permissions={studentEditPermissions} onUpdate={handleUpdatePermissions} isLoading={loading.studentFields} />
+                )}
+              </>
+            )}
+
+            {/* Degrees Tab */}
+            {activeTab === "degrees" && (
+              <>
+                <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
+                  <div className="flex-shrink-0 mt-0.5 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm">Manage the list of academic degrees available in the system. Add or remove degrees as needed.</p>
+                </div>
+
+                {loading.degrees && degrees.length === 0 ? (
+                  <div className="flex justify-center py-6">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
+                  </div>
+                ) : (
+                  <ConfigListManager items={degrees} onUpdate={handleUpdateDegrees} isLoading={loading.degrees} title="Degree Management" description="Add or remove academic degrees available in the system" itemLabel="Degree" placeholder="Enter degree name (e.g., B.Tech, M.Tech, Ph.D)" />
+                )}
+              </>
+            )}
+
+            {/* Departments Tab */}
+            {activeTab === "departments" && (
+              <>
+                <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
+                  <div className="flex-shrink-0 mt-0.5 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm">Manage the list of academic departments available in the system. Add or remove departments as needed.</p>
+                </div>
+
+                {loading.departments && departments.length === 0 ? (
+                  <div className="flex justify-center py-6">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
+                  </div>
+                ) : (
+                  <ConfigListManager
+                    items={departments}
+                    onUpdate={handleUpdateDepartments}
+                    isLoading={loading.departments}
+                    title="Department Management"
+                    description="Add or remove academic departments available in the system"
+                    itemLabel="Department"
+                    placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)"
+                  />
+                )}
+              </>
             )}
           </div>
         </div>

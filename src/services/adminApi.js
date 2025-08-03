@@ -188,6 +188,24 @@ export const adminApi = {
     return await adminApi.updateConfig("studentEditableFields", allowedFields)
   },
 
+  // Degrees management
+  getDegrees: async () => {
+    return await adminApi.getConfig("degrees")
+  },
+
+  updateDegrees: async (degrees) => {
+    return await adminApi.updateConfig("degrees", degrees)
+  },
+
+  // Departments management
+  getDepartments: async () => {
+    return await adminApi.getConfig("departments")
+  },
+
+  updateDepartments: async (departments) => {
+    return await adminApi.updateConfig("departments", departments)
+  },
+
   // General config management functions
   getConfig: async (key) => {
     try {
