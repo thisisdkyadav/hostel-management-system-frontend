@@ -5,6 +5,7 @@ import { adminApi } from "../../services/adminApi"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
+import toast from "react-hot-toast"
 
 const Settings = () => {
   const { user } = useAuth()
@@ -133,9 +134,43 @@ const Settings = () => {
       setShowSuccessModal(true)
     } catch (err) {
       console.error("Error updating permissions:", err)
-      alert("An error occurred while updating permissions. Please try again.")
+      toast.error("An error occurred while updating permissions. Please try again.")
     } finally {
       setLoading((prev) => ({ ...prev, studentFields: false }))
+    }
+  }
+
+  const handleRenameDegree = async (oldName, newName) => {
+    try {
+      await adminApi.renameDegree(oldName, newName)
+
+      // Update local state with the new name
+      const updatedDegrees = degrees.map((degree) => (degree === oldName ? newName : degree))
+      setDegrees(updatedDegrees)
+
+      toast.success(`Degree "${oldName}" has been renamed to "${newName}"`)
+      return true
+    } catch (err) {
+      console.error("Error renaming degree:", err)
+      toast.error(`Failed to rename degree: ${err.message || "Unknown error"}`)
+      throw err
+    }
+  }
+
+  const handleRenameDepartment = async (oldName, newName) => {
+    try {
+      await adminApi.renameDepartment(oldName, newName)
+
+      // Update local state with the new name
+      const updatedDepartments = departments.map((dept) => (dept === oldName ? newName : dept))
+      setDepartments(updatedDepartments)
+
+      toast.success(`Department "${oldName}" has been renamed to "${newName}"`)
+      return true
+    } catch (err) {
+      console.error("Error renaming department:", err)
+      toast.error(`Failed to rename department: ${err.message || "Unknown error"}`)
+      throw err
     }
   }
 
@@ -151,7 +186,7 @@ const Settings = () => {
       setShowSuccessModal(true)
     } catch (err) {
       console.error("Error updating degrees:", err)
-      alert("An error occurred while updating degrees. Please try again.")
+      toast.error("An error occurred while updating degrees. Please try again.")
     } finally {
       setLoading((prev) => ({ ...prev, degrees: false }))
     }
@@ -169,7 +204,7 @@ const Settings = () => {
       setShowSuccessModal(true)
     } catch (err) {
       console.error("Error updating departments:", err)
-      alert("An error occurred while updating departments. Please try again.")
+      toast.error("An error occurred while updating departments. Please try again.")
     } finally {
       setLoading((prev) => ({ ...prev, departments: false }))
     }
@@ -298,7 +333,7 @@ const Settings = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <p className="text-sm">Manage the list of academic degrees available in the system. Add or remove degrees as needed.</p>
+                  <p className="text-sm">Manage the list of academic degrees available in the system. Click on a degree to rename or delete it.</p>
                 </div>
 
                 {loading.degrees && degrees.length === 0 ? (
@@ -306,7 +341,16 @@ const Settings = () => {
                     <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
                   </div>
                 ) : (
-                  <ConfigListManager items={degrees} onUpdate={handleUpdateDegrees} isLoading={loading.degrees} title="Degree Management" description="Add or remove academic degrees available in the system" itemLabel="Degree" placeholder="Enter degree name (e.g., B.Tech, M.Tech, Ph.D)" />
+                  <ConfigListManager
+                    items={degrees}
+                    onUpdate={handleUpdateDegrees}
+                    onRename={handleRenameDegree}
+                    isLoading={loading.degrees}
+                    title="Degree Management"
+                    description="Add or rename academic degrees available in the system. Click on a degree to edit it."
+                    itemLabel="Degree"
+                    placeholder="Enter degree name (e.g., B.Tech, M.Tech, Ph.D)"
+                  />
                 )}
               </>
             )}
@@ -320,7 +364,7 @@ const Settings = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <p className="text-sm">Manage the list of academic departments available in the system. Add or remove departments as needed.</p>
+                  <p className="text-sm">Manage the list of academic departments available in the system. Click on a department to rename or delete it.</p>
                 </div>
 
                 {loading.departments && departments.length === 0 ? (
@@ -331,9 +375,10 @@ const Settings = () => {
                   <ConfigListManager
                     items={departments}
                     onUpdate={handleUpdateDepartments}
+                    onRename={handleRenameDepartment}
                     isLoading={loading.departments}
                     title="Department Management"
-                    description="Add or remove academic departments available in the system"
+                    description="Add or rename academic departments available in the system. Click on a department to edit it."
                     itemLabel="Department"
                     placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)"
                   />

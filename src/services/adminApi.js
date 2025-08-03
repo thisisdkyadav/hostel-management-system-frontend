@@ -462,6 +462,50 @@ export const adminApi = {
       throw error
     }
   },
+
+  renameDegree: async (oldName, newName) => {
+    try {
+      const response = await fetch(`${baseUrl}/student/degrees/rename`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ oldName, newName }),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to rename degree")
+      }
+
+      const result = await response.json()
+      return result.data
+    } catch (error) {
+      console.error("Error renaming degree:", error)
+      throw error
+    }
+  },
+
+  renameDepartment: async (oldName, newName) => {
+    try {
+      const response = await fetch(`${baseUrl}/student/departments/rename`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ oldName, newName }),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to rename department")
+      }
+
+      const result = await response.json()
+      return result.data
+    } catch (error) {
+      console.error("Error renaming department:", error)
+      throw error
+    }
+  },
 }
 
 export default adminApi
