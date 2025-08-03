@@ -4,14 +4,20 @@ import Toast from "./Toast"
 import UpdateLoadingScreen from "./UpdateLoadingScreen"
 
 const VersionUpdateNotification = ({ autoUpdateOnLoad = true }) => {
+  console.log("VersionUpdateNotification rendered, autoUpdateOnLoad:", autoUpdateOnLoad)
+
   const { updateAvailable, handleUpdate, currentVersion, updateType } = useVersionCheck({
     autoUpdateOnLoad,
+    checkInterval: 30000, // Check every 30 seconds (for testing)
   })
+
   const [showToast, setShowToast] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
 
   useEffect(() => {
+    console.log("updateAvailable changed:", updateAvailable)
     if (updateAvailable) {
+      console.log("Setting showToast to true")
       setShowToast(true)
     }
   }, [updateAvailable])

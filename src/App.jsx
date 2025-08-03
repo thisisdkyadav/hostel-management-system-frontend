@@ -7,12 +7,15 @@ import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
 import WhatsNewDialog from "./components/common/WhatsNewDialog"
 
 function App() {
+  // Set to false if you want to always show update notifications
+  const autoUpdateOnInitialLoad = true
+
   return (
     <BrowserRouter>
       <AuthProvider>
         <GlobalProvider>
           <AppRoutes />
-          <VersionUpdateNotification autoUpdateOnLoad={true} />
+          <VersionUpdateNotification autoUpdateOnLoad={autoUpdateOnInitialLoad} />
           <PWAInstallPrompt />
           <WhatsNewDialog />
         </GlobalProvider>

@@ -15,10 +15,18 @@ const useVersionCheck = ({
   const [lastChecked, setLastChecked] = useState(null)
   const [initialLoadComplete, setInitialLoadComplete] = useState(false)
 
+  // Debug logging
+  console.log("Current version from env:", currentVersion)
+  console.log("Is PWA:", isPWA)
+  console.log("Auto update on load:", autoUpdateOnLoad)
+
   // Store current version in localStorage on mount
   useEffect(() => {
     if (currentVersion !== "unknown") {
       const lastSeen = getLastSeenVersion()
+
+      // Debug logging
+      console.log("Last seen version from localStorage:", lastSeen)
 
       // If this is a new version and we have a previous version stored
       if (lastSeen && compareVersions(currentVersion, lastSeen) > 0) {
@@ -83,6 +91,8 @@ const useVersionCheck = ({
       const checkVersion = async () => {
         try {
           setLastChecked(new Date())
+          console.log("Checking for updates at:", metaUrl)
+
           const response = await fetch(`${metaUrl}?_=${Date.now()}`, {
             cache: "no-store",
             headers: { "Cache-Control": "no-cache, no-store, must-revalidate" },
@@ -94,9 +104,12 @@ const useVersionCheck = ({
           }
 
           const data = await response.json()
+          console.log("Meta data received:", data)
+          console.log("Current version:", currentVersion)
 
           if (data.version && data.version !== currentVersion) {
             const versionDiff = compareVersions(data.version, currentVersion)
+            console.log("Version comparison result:", versionDiff)
 
             if (versionDiff > 0) {
               console.log(`New version detected: ${data.version} (current: ${currentVersion})`)
@@ -110,9 +123,14 @@ const useVersionCheck = ({
                 handleUpdate()
               } else {
                 // Otherwise show the notification
+                console.log("Setting updateAvailable to true")
                 setUpdateAvailable(true)
               }
+            } else {
+              console.log("No update needed, current version is same or newer")
             }
+          } else {
+            console.log("Version unchanged or not available in meta.json")
           }
         } catch (error) {
           console.warn("Version check failed:", error)

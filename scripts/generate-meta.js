@@ -9,6 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const getVersion = () => {
   // Try to get version from environment variable first
   if (process.env.VITE_APP_VERSION) {
+    console.log("Using version from environment variable:", process.env.VITE_APP_VERSION)
     return process.env.VITE_APP_VERSION
   }
 
@@ -16,6 +17,7 @@ const getVersion = () => {
   try {
     const packageJsonPath = path.resolve(__dirname, "../package.json")
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"))
+    console.log("Using version from package.json:", packageJson.version)
     return packageJson.version
   } catch (error) {
     console.error("Error reading package.json:", error)
@@ -32,12 +34,16 @@ const checkForceUpdate = (newVersion) => {
       const prevMeta = JSON.parse(fs.readFileSync(metaPath, "utf8"))
       const prevVersion = prevMeta.version || "0.0.0"
 
+      console.log("Previous version from meta.json:", prevVersion)
+
       // Parse versions
       const [prevMajor, prevMinor] = prevVersion.split(".").map(Number)
       const [newMajor, newMinor] = newVersion.split(".").map(Number)
 
       // Force update for major version changes or if explicitly set
-      return newMajor > prevMajor || process.env.FORCE_UPDATE === "true"
+      const shouldForceUpdate = newMajor > prevMajor || process.env.FORCE_UPDATE === "true"
+      console.log("Force update required:", shouldForceUpdate)
+      return shouldForceUpdate
     }
   } catch (error) {
     console.warn("Error checking previous version:", error)
@@ -69,6 +75,7 @@ const generateMetaJson = () => {
   fs.writeFileSync(metaPath, JSON.stringify(metaContent, null, 2))
 
   console.log(`Generated meta.json with version ${version}${forceUpdate ? " (force update)" : ""}`)
+  console.log("Meta content:", metaContent)
 }
 
 // Run the generator
