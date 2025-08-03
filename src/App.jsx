@@ -4,6 +4,7 @@ import AppRoutes from "./routes/AppRoutes"
 import GlobalProvider from "./contexts/GlobalProvider"
 import VersionUpdateNotification from "./components/common/VersionUpdateNotification"
 import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
+import WhatsNewDialog from "./components/common/WhatsNewDialog"
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <AppRoutes />
           <VersionUpdateNotification />
           <PWAInstallPrompt />
+          <WhatsNewDialog />
         </GlobalProvider>
       </AuthProvider>
     </BrowserRouter>

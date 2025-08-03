@@ -22,6 +22,7 @@ const copyMetaJson = () => {
         const metaContent = {
           version: packageJson.version || "0.0.0",
           buildTimestamp: new Date().toISOString(),
+          forceUpdate: false,
         }
         fs.writeFileSync(distPath, JSON.stringify(metaContent, null, 2))
         console.log("Created default meta.json in dist folder")
@@ -35,7 +36,7 @@ export default defineConfig({
     tailwindcss(),
     react(),
     VitePWA({
-      registerType: "prompt",
+      registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
       manifest: {
         name: "Hostel Management System - IIT Indore",
@@ -83,9 +84,15 @@ export default defineConfig({
         type: "module",
         navigateFallback: "index.html",
       },
+      strategies: "injectManifest",
+      srcDir: "public",
+      filename: "sw.js",
+      injectRegister: "auto",
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,webp}"],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

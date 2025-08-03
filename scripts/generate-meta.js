@@ -23,14 +23,39 @@ const getVersion = () => {
   }
 }
 
+// Check if this is a major or minor version update
+const checkForceUpdate = (newVersion) => {
+  try {
+    // Try to read the previous meta.json if it exists
+    const metaPath = path.resolve(__dirname, "../public/meta.json")
+    if (fs.existsSync(metaPath)) {
+      const prevMeta = JSON.parse(fs.readFileSync(metaPath, "utf8"))
+      const prevVersion = prevMeta.version || "0.0.0"
+
+      // Parse versions
+      const [prevMajor, prevMinor] = prevVersion.split(".").map(Number)
+      const [newMajor, newMinor] = newVersion.split(".").map(Number)
+
+      // Force update for major version changes or if explicitly set
+      return newMajor > prevMajor || process.env.FORCE_UPDATE === "true"
+    }
+  } catch (error) {
+    console.warn("Error checking previous version:", error)
+  }
+
+  return false
+}
+
 // Generate the meta.json file
 const generateMetaJson = () => {
   const version = getVersion()
   const buildTimestamp = new Date().toISOString()
+  const forceUpdate = checkForceUpdate(version)
 
   const metaContent = {
     version,
     buildTimestamp,
+    forceUpdate,
   }
 
   // Ensure the public directory exists
@@ -43,7 +68,7 @@ const generateMetaJson = () => {
   const metaPath = path.resolve(publicDir, "meta.json")
   fs.writeFileSync(metaPath, JSON.stringify(metaContent, null, 2))
 
-  console.log(`Generated meta.json with version ${version}`)
+  console.log(`Generated meta.json with version ${version}${forceUpdate ? " (force update)" : ""}`)
 }
 
 // Run the generator

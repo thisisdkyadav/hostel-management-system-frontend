@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-meta.js && vite build",
+    "build": "cross-env VITE_APP_VERSION=$npm_package_version node scripts/generate-meta.js && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -36,6 +36,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "cross-env": "^7.0.3",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
