@@ -26,3 +26,7 @@ dist-ssr
 
 .env
 .cursorignore
+
+# Generated files
+public/meta.json
+dist/meta.json
