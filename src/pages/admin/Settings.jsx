@@ -142,9 +142,10 @@ const Settings = () => {
 
   const handleRenameDegree = async (oldName, newName) => {
     try {
+      // Only call the API to rename the degree in the database
       await adminApi.renameDegree(oldName, newName)
 
-      // Update local state with the new name
+      // Only update the UI state, don't trigger a full config save
       const updatedDegrees = degrees.map((degree) => (degree === oldName ? newName : degree))
       setDegrees(updatedDegrees)
 
@@ -159,9 +160,10 @@ const Settings = () => {
 
   const handleRenameDepartment = async (oldName, newName) => {
     try {
+      // Only call the API to rename the department in the database
       await adminApi.renameDepartment(oldName, newName)
 
-      // Update local state with the new name
+      // Only update the UI state, don't trigger a full config save
       const updatedDepartments = departments.map((dept) => (dept === oldName ? newName : dept))
       setDepartments(updatedDepartments)
 

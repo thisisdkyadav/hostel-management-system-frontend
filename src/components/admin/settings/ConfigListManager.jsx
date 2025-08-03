@@ -12,10 +12,12 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [newItemName, setNewItemName] = useState("")
   const [renameLoading, setRenameLoading] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // Update local items when props change
   useEffect(() => {
     setLocalItems(items)
+    setHasUnsavedChanges(false)
   }, [items])
 
   const handleAddItem = (e) => {
@@ -34,6 +36,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
     setLocalItems([...localItems, newItem.trim()])
     setNewItem("")
     setError("")
+    setHasUnsavedChanges(true)
   }
 
   const handleItemClick = (item) => {
@@ -52,6 +55,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
     setLocalItems(updatedItems)
     setShowDeleteConfirmation(false)
     setSelectedItem(null)
+    setHasUnsavedChanges(true)
   }
 
   const handleRename = async () => {
@@ -76,10 +80,8 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         await onRename(selectedItem, newItemName.trim())
       }
 
-      // Update the local items list with the renamed item
-      const updatedItems = localItems.map((item) => (item === selectedItem ? newItemName.trim() : item))
-
-      setLocalItems(updatedItems)
+      // Let the parent component handle the state update
+      // Don't set hasUnsavedChanges to true since this is saved directly to the database
       setShowItemModal(false)
       setSelectedItem(null)
       setError("")
@@ -93,7 +95,12 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onUpdate(localItems)
+
+    // Only trigger onUpdate if there are unsaved changes
+    if (hasUnsavedChanges) {
+      onUpdate(localItems)
+      setHasUnsavedChanges(false)
+    }
   }
 
   return (
@@ -141,8 +148,10 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         <div className="pt-4">
           <button
             type="submit"
-            className={`w-full flex justify-center items-center px-4 py-3 ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1360AB] hover:bg-[#0d4b86]"} text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`}
-            disabled={isLoading}
+            className={`w-full flex justify-center items-center px-4 py-3 ${
+              isLoading ? "bg-gray-400 cursor-not-allowed" : hasUnsavedChanges ? "bg-[#1360AB] hover:bg-[#0d4b86]" : "bg-gray-300 text-gray-600 cursor-not-allowed"
+            } text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`}
+            disabled={isLoading || !hasUnsavedChanges}
           >
             {isLoading ? (
               <>
@@ -152,7 +161,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
             ) : (
               <>
                 <HiSave className="mr-2" size={20} />
-                Save Changes
+                {hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
               </>
             )}
           </button>
