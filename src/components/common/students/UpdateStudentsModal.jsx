@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate, FaHome } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
@@ -28,9 +28,34 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [selectedStatus, setSelectedStatus] = useState("Active")
   const [dayScholarData, setDayScholarData] = useState([])
   const [dayScholarMode, setDayScholarMode] = useState("add")
+  const [validDegrees, setValidDegrees] = useState([])
+  const [validDepartments, setValidDepartments] = useState([])
+  const [configLoading, setConfigLoading] = useState(false)
 
   const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
+
+  // Fetch valid degrees and departments from the config API
+  useEffect(() => {
+    if (isOpen && activeTab === "basic") {
+      fetchConfigData()
+    }
+  }, [isOpen, activeTab])
+
+  const fetchConfigData = async () => {
+    setConfigLoading(true)
+    try {
+      const [degreesResponse, departmentsResponse] = await Promise.all([adminApi.getDegrees(), adminApi.getDepartments()])
+
+      setValidDegrees(degreesResponse.value || [])
+      setValidDepartments(departmentsResponse.value || [])
+    } catch (err) {
+      console.error("Error fetching config data:", err)
+      toast.error("Failed to load degree and department options. Some validations may not work properly.")
+    } finally {
+      setConfigLoading(false)
+    }
+  }
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
@@ -106,6 +131,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             return
           }
 
+          const invalidRecords = []
           const parsedData = results.data.map((student, index) => {
             const studentData = {
               rollNumber: student.rollNumber,
@@ -121,8 +147,39 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               }
             })
 
+            // Validate degree and department if they are provided
+            if (studentData.degree && validDegrees.length > 0 && !validDegrees.includes(studentData.degree)) {
+              invalidRecords.push({
+                row: index + 2, // +2 because of 0-indexing and header row
+                field: "degree",
+                value: studentData.degree,
+                message: `Invalid degree: "${studentData.degree}"`,
+              })
+            }
+
+            if (studentData.department && validDepartments.length > 0 && !validDepartments.includes(studentData.department)) {
+              invalidRecords.push({
+                row: index + 2,
+                field: "department",
+                value: studentData.department,
+                message: `Invalid department: "${studentData.department}"`,
+              })
+            }
+
             return studentData
           })
+
+          if (invalidRecords.length > 0) {
+            const errorMessages = invalidRecords.slice(0, 5).map((rec) => `Row ${rec.row}: ${rec.message}`)
+
+            if (invalidRecords.length > 5) {
+              errorMessages.push(`... and ${invalidRecords.length - 5} more errors`)
+            }
+
+            setError(`Invalid data detected:\n${errorMessages.join("\n")}`)
+            setIsLoading(false)
+            return
+          }
 
           setParsedData(parsedData)
           setStep(2)
@@ -137,6 +194,17 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         setIsLoading(false)
       },
     })
+  }
+
+  // Format array for display in the UI
+  const formatArrayForDisplay = (arr) => {
+    if (!arr || arr.length === 0) return "Loading..."
+
+    if (arr.length <= 5) {
+      return arr.join(", ")
+    }
+
+    return arr.slice(0, 5).join(", ") + `, ... (${arr.length - 5} more)`
   }
 
   const handleHealthDataParsed = (data) => {
@@ -967,10 +1035,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                       <span className="font-medium">dateOfBirth:</span> YYYY-MM-DD
                     </li>
                     <li>
-                      <span className="font-medium">degree:</span> String
+                      <span className="font-medium">degree:</span> {configLoading ? "Loading..." : validDegrees.length > 0 ? "Must be one of the valid degrees" : "String"}
                     </li>
                     <li>
-                      <span className="font-medium">department:</span> String
+                      <span className="font-medium">department:</span> {configLoading ? "Loading..." : validDepartments.length > 0 ? "Must be one of the valid departments" : "String"}
                     </li>
                     <li>
                       <span className="font-medium">year:</span> Number
@@ -991,6 +1059,25 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                       <span className="font-medium">guardianEmail:</span> Email
                     </li>
                   </ul>
+
+                  {/* Display valid degrees and departments */}
+                  {!configLoading && (
+                    <div className="mt-3 space-y-2">
+                      {validDegrees.length > 0 && (
+                        <div>
+                          <p className="font-medium text-blue-700">Valid Degrees:</p>
+                          <p className="text-gray-700 bg-blue-50 p-1 rounded">{formatArrayForDisplay(validDegrees)}</p>
+                        </div>
+                      )}
+
+                      {validDepartments.length > 0 && (
+                        <div>
+                          <p className="font-medium text-blue-700">Valid Departments:</p>
+                          <p className="text-gray-700 bg-blue-50 p-1 rounded">{formatArrayForDisplay(validDepartments)}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               {csvFile && (
@@ -1009,11 +1096,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   </button>
                 </div>
               )}
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
-              {isLoading && (
+              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+              {(isLoading || configLoading) && (
                 <div className="flex items-center justify-center py-4">
                   <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                  <span className="ml-2 text-sm text-gray-600">Processing file...</span>
+                  <span className="ml-2 text-sm text-gray-600">{isLoading ? "Processing file..." : "Loading configuration..."}</span>
                 </div>
               )}
             </div>
@@ -1030,7 +1117,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
               </div>
 
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
             </div>
           )}
         </>
