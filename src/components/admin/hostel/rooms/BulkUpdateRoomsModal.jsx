@@ -131,7 +131,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
           </div>
         )}
 
-        <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName={isUnitBased ? "update_unit_rooms_template.csv" : "update_rooms_template.csv"} templateHeaders={requiredFields} instructionText={templateInstructions} maxRecords={300} />
+        <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName={isUnitBased ? "update_unit_rooms_template.csv" : "update_rooms_template.csv"} templateHeaders={requiredFields} instructionText={templateInstructions} maxRecords={1000} />
 
         {parsedCsvData.length > 0 && (
           <div className="space-y-4">
