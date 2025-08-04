@@ -94,7 +94,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         </div>
       )}
 
-      <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName={isUnitBased ? "unit_based_rooms_template.csv" : "room_only_template.csv"} templateHeaders={requiredFields} instructionText={templateInstructions} maxRecords={300} />
+      <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName={isUnitBased ? "unit_based_rooms_template.csv" : "room_only_template.csv"} templateHeaders={requiredFields} instructionText={templateInstructions} maxRecords={1000} />
 
       {parsedCsvData.length > 0 && (
         <div className="space-y-4">
