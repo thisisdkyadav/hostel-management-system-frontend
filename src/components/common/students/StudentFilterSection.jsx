@@ -3,14 +3,15 @@ import { BsFilterRight } from "react-icons/bs"
 import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
-import { getDepartmentList } from "../../../services/studentService"
+import { getDepartmentList, getDegreesList } from "../../../services/studentService"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions }) => {
-  // Define degree options
-  const degreeOptions = ["BDes.", "BTech", "International", "MA", "MS", "MSc", "MTech", "Mtech", "PDF", "PhD", "PhD(TRF)", "RA", "TRF"]
   const [departments, setDepartments] = useState([])
+  const [degreeOptions, setDegreeOptions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [degreesLoading, setDegreesLoading] = useState(false)
+  const [degreesError, setDegreesError] = useState(null)
 
   const fetchDepartments = async () => {
     setLoading(true)
@@ -31,9 +32,29 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
     }
   }
 
+  const fetchDegrees = async () => {
+    setDegreesLoading(true)
+    setDegreesError(null)
+    try {
+      const degreesData = await getDegreesList()
+      if (degreesData && Array.isArray(degreesData)) {
+        setDegreeOptions(degreesData)
+      } else {
+        setDegreeOptions([])
+      }
+    } catch (error) {
+      console.error("Failed to fetch degrees:", error)
+      setDegreesError("Failed to load degrees")
+      setDegreeOptions([])
+    } finally {
+      setDegreesLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchDepartments()
-  }, []) // We can keep empty dependency array as fetchDepartments is defined outside and uses only state setters
+    fetchDegrees()
+  }, [])
 
   return (
     <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-hidden">
@@ -127,14 +148,32 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1.5">Degree</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)}>
+            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)} disabled={degreesLoading}>
               <option value="">All Degrees</option>
-              {degreeOptions.map((degree, index) => (
-                <option key={index} value={degree}>
-                  {degree}
+              {degreesLoading ? (
+                <option value="" disabled>
+                  Loading degrees...
                 </option>
-              ))}
+              ) : degreesError ? (
+                <option value="" disabled>
+                  Error loading degrees
+                </option>
+              ) : (
+                degreeOptions.map((degree, index) => (
+                  <option key={index} value={degree}>
+                    {degree}
+                  </option>
+                ))
+              )}
             </select>
+            {degreesError && (
+              <div className="flex items-center mt-1">
+                <p className="text-xs text-red-500 mr-2">{degreesError}</p>
+                <button onClick={fetchDegrees} className="text-xs text-blue-600 hover:text-blue-800" disabled={degreesLoading}>
+                  Retry
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
