@@ -111,7 +111,7 @@ export const getDegreesList = async () => {
     }
 
     const result = await response.json()
-    return result.data
+    return result
   } catch (error) {
     console.error("Error getting degrees:", error)
     throw error
