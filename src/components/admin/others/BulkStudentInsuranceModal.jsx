@@ -66,8 +66,8 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 900) {
-            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
+          if (results.data.length > 10000) {
+            setError("Free accounts are limited to 10000 records. Please upgrade or reduce your data.")
             setIsLoading(false)
             return
           }
