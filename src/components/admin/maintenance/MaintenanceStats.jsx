@@ -1,5 +1,5 @@
 import React from "react"
-import { FaTools, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH } from "react-icons/fa"
+import { FaTools, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserTie } from "react-icons/fa"
 
 const MaintenanceStats = ({ maintenanceStaff }) => {
   // Count staff by category
@@ -46,6 +46,12 @@ const MaintenanceStats = ({ maintenanceStaff }) => {
       value: countByCategory.Internet || 0,
       icon: <FaWifi className="text-purple-500" />,
       bgColor: "bg-purple-50",
+    },
+    {
+      name: "Attendant",
+      value: countByCategory.Attendant || 0,
+      icon: <FaUserTie className="text-pink-500" />,
+      bgColor: "bg-pink-50",
     },
     {
       name: "Other",

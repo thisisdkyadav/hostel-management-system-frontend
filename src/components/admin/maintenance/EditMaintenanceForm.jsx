@@ -5,7 +5,17 @@ import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
+const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
+const CATEGORY_DISPLAY_LABELS = {
+  Plumbing: "Plumber",
+  Electrical: "Electrician",
+  Civil: "Carpenter",
+  Cleanliness: "House Keeping",
+  Internet: "IT Technician",
+  Attendant: "Attendant",
+  Other: "Other",
+}
+const getCategoryDisplayLabel = (value) => CATEGORY_DISPLAY_LABELS[value] || value
 
 const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
   const [loading, setLoading] = useState(false)
@@ -135,7 +145,7 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
               <option value="">Select a category</option>
               {MAINTENANCE_CATEGORIES.map((category) => (
                 <option key={category} value={category}>
-                  {category}
+                  {getCategoryDisplayLabel(category)}
                 </option>
               ))}
             </select>

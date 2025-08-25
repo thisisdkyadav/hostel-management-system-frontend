@@ -26,11 +26,12 @@ export const SECURITY_FILTER_TABS = [
 
 export const MAINTENANCE_FILTER_TABS = [
   { label: "all", value: "all", color: "[#1360AB]" },
-  { label: "Plumbing", value: "Plumbing", color: "[#1360AB]" },
-  { label: "Electrical", value: "Electrical", color: "[#1360AB]" },
-  { label: "Civil", value: "Civil", color: "[#1360AB]" },
-  { label: "Cleanliness", value: "Cleanliness", color: "[#1360AB]" },
-  { label: "Internet", value: "Internet", color: "[#1360AB]" },
+  { label: "Plumber", value: "Plumbing", color: "[#1360AB]" },
+  { label: "Electrician", value: "Electrical", color: "[#1360AB]" },
+  { label: "Carpenter", value: "Civil", color: "[#1360AB]" },
+  { label: "Housekeeping", value: "Cleanliness", color: "[#130AB]" },
+  { label: "IT Technician", value: "Internet", color: "[#1360AB]" },
+  { label: "Attendant", value: "Attendant", color: "[#1360AB]" },
   { label: "Other", value: "Other", color: "[#1360AB]" },
 ]
 
