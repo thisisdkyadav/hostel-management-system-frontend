@@ -1,58 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import { FaUser, FaUsers, FaCalendarAlt, FaExclamationCircle } from 'react-icons/fa'
-import { BiBuildings } from 'react-icons/bi'
-import { TbBuildingCommunity } from 'react-icons/tb'
-import { MdDashboard, MdOutlineEvent, MdNotifications } from 'react-icons/md'
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import { useAuth } from '../../contexts/AuthProvider'
-import { dashboardApi } from '../../services/dashboardApi'
+import React, { useState, useEffect } from "react"
+import { FaUser, FaUsers, FaCalendarAlt, FaExclamationCircle } from "react-icons/fa"
+import { BiBuildings } from "react-icons/bi"
+import { TbBuildingCommunity } from "react-icons/tb"
+import { MdDashboard, MdOutlineEvent, MdNotifications } from "react-icons/md"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
+import { useAuth } from "../../contexts/AuthProvider"
+import { dashboardApi } from "../../services/dashboardApi"
 
 // Chart components
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  ArcElement,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement,
-  LogarithmicScale,
-} from 'chart.js'
-import { Bar, Doughnut } from 'react-chartjs-2'
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
+import { Bar, Doughnut } from "react-chartjs-2"
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LogarithmicScale,
-  BarElement,
-  Title,
-  ArcElement,
-  Tooltip,
-  Legend,
-  PointElement,
-  LineElement
-)
+ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement)
 
 // Enhanced shimmer loader components
-const ShimmerLoader = ({ height, width = '100%', className = '' }) => (
-  <div
-    className={`animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-lg shadow-sm ${className}`}
-    style={{ height, width }}
-    aria-hidden="true"
-  />
-)
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-lg shadow-sm ${className}`} style={{ height, width }} aria-hidden="true" />
 
 // Shimmer with blurred preview for charts
-const ChartShimmer = ({ height, className = '' }) => (
-  <div
-    className={`relative overflow-hidden rounded-xl border border-gray-200 ${className}`}
-    style={{ height }}
-    role="status"
-    aria-label="Loading chart"
-  >
+const ChartShimmer = ({ height, className = "" }) => (
+  <div className={`relative overflow-hidden rounded-xl border border-gray-200 ${className}`} style={{ height }} role="status" aria-label="Loading chart">
     <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-400 animate-spin"></div>
@@ -63,7 +29,7 @@ const ChartShimmer = ({ height, className = '' }) => (
 )
 
 // Shimmer for tables
-const TableShimmer = ({ rows = 4, className = '' }) => (
+const TableShimmer = ({ rows = 4, className = "" }) => (
   <div className={`overflow-hidden rounded-lg ${className}`}>
     <div className="bg-gray-50 py-2 px-4 flex">
       {[...Array(4)].map((_, i) => (
@@ -74,10 +40,10 @@ const TableShimmer = ({ rows = 4, className = '' }) => (
     </div>
 
     {[...Array(rows)].map((_, i) => (
-      <div key={i} className={`flex py-2 px-4 ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+      <div key={i} className={`flex py-2 px-4 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
         {[...Array(4)].map((_, j) => (
           <div key={j} className="flex-1 px-2">
-            <ShimmerLoader height="0.8rem" width={j === 0 ? '80%' : '50%'} className="mx-auto" />
+            <ShimmerLoader height="0.8rem" width={j === 0 ? "80%" : "50%"} className="mx-auto" />
           </div>
         ))}
       </div>
@@ -86,7 +52,7 @@ const TableShimmer = ({ rows = 4, className = '' }) => (
 )
 
 // Shimmer for stat cards
-const StatCardShimmer = ({ className = '' }) => (
+const StatCardShimmer = ({ className = "" }) => (
   <div className={`rounded-lg border-l-4 border-gray-300 bg-gray-50 p-4 ${className}`}>
     <div className="absolute right-2 top-2">
       <ShimmerLoader height="1rem" width="2rem" />
@@ -98,7 +64,7 @@ const StatCardShimmer = ({ className = '' }) => (
 )
 
 // Shimmer for event cards
-const EventCardShimmer = ({ count = 3, className = '' }) => (
+const EventCardShimmer = ({ count = 3, className = "" }) => (
   <div className={`space-y-3 ${className}`}>
     {[...Array(count)].map((_, i) => (
       <div key={i} className="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300">
@@ -119,7 +85,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [currentDate] = useState(new Date())
-  const [studentView, setStudentView] = useState('degree') // Default to degree view
+  const [studentView, setStudentView] = useState("degree") // Default to degree view
   const [normalizedView, setNormalizedView] = useState(false)
 
   useEffect(() => {
@@ -135,8 +101,8 @@ const Dashboard = () => {
         //   setLoading(false)
         // }, 1200) // Simulate API delay
       } catch (err) {
-        console.error('Error fetching dashboard data:', err)
-        setError('Failed to load dashboard statistics')
+        console.error("Error fetching dashboard data:", err)
+        setError("Failed to load dashboard statistics")
         setLoading(false)
       }
     }
@@ -146,7 +112,7 @@ const Dashboard = () => {
 
   // Format date for header
   const formatHeaderDate = () => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
     return currentDate.toLocaleDateString(undefined, options)
   }
 
@@ -156,9 +122,7 @@ const Dashboard = () => {
         <div className="flex items-center mb-4 md:mb-0">
           <MdDashboard className="text-blue-600 text-3xl mr-3" />
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
-              Admin Dashboard
-            </h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Admin Dashboard</h1>
             <p className="text-sm text-gray-500">{formatHeaderDate()}</p>
           </div>
         </div>
@@ -174,15 +138,13 @@ const Dashboard = () => {
               <div className="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full border border-blue-100 hover:bg-blue-100 transition">
                 <MdNotifications className="mr-2" aria-hidden="true" />
                 <span aria-live="polite">
-                  <span className="font-semibold">{dashboardData?.complaints?.pending || 0}</span>{' '}
-                  pending complaints
+                  <span className="font-semibold">{dashboardData?.complaints?.pending || 0}</span> pending complaints
                 </span>
               </div>
               <div className="flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-full border border-purple-100 hover:bg-purple-100 transition">
                 <FaCalendarAlt className="mr-2" aria-hidden="true" />
                 <span aria-live="polite">
-                  <span className="font-semibold">{dashboardData?.events?.length || 0}</span>{' '}
-                  upcoming events
+                  <span className="font-semibold">{dashboardData?.events?.length || 0}</span> upcoming events
                 </span>
               </div>
             </>
@@ -212,31 +174,11 @@ const Dashboard = () => {
                 </div>
 
                 <div className="flex items-center">
-                  <div
-                    className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner"
-                    role="tablist"
-                    aria-label="Distribution mode"
-                  >
-                    <button
-                      onClick={() => setNormalizedView(false)}
-                      className={`px-3 py-1 rounded-full transition-all duration-200 ${
-                        !normalizedView
-                          ? 'bg-green-600 text-white shadow'
-                          : 'text-gray-700 hover:bg-gray-200'
-                      }`}
-                      aria-selected={!normalizedView}
-                    >
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Distribution mode">
+                    <button onClick={() => setNormalizedView(false)} className={`px-3 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
                       Absolute
                     </button>
-                    <button
-                      onClick={() => setNormalizedView(true)}
-                      className={`px-3 py-1 rounded-full transition-all duration-200 ${
-                        normalizedView
-                          ? 'bg-green-600 text-white shadow'
-                          : 'text-gray-700 hover:bg-gray-200'
-                      }`}
-                      aria-selected={!!normalizedView}
-                    >
+                    <button onClick={() => setNormalizedView(true)} className={`px-3 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
                       Normalized
                     </button>
                   </div>
@@ -245,10 +187,7 @@ const Dashboard = () => {
 
               <div className="flex-1 flex flex-col">
                 <div className="h-full">
-                  <DegreeWiseStudentsChart
-                    data={dashboardData?.students}
-                    normalized={normalizedView}
-                  />
+                  <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} />
                 </div>
               </div>
             </div>
@@ -289,55 +228,26 @@ const Dashboard = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50 sticky top-0 z-10">
                         <tr>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">
-                            Hostel
-                          </th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">
-                            Capacity
-                          </th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">
-                            Occupancy
-                          </th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">
-                            Vacancy
-                          </th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Hostel</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Capacity</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Occupancy</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Vacancy</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-100">
                         {dashboardData?.hostels?.map((hostel, index) => (
                           <tr key={index} className="hover:bg-gray-50/70 transition">
                             <td className="px-4 py-2 text-sm text-gray-800">{hostel.name}</td>
-                            <td className="px-4 py-2 text-sm text-gray-600 text-center">
-                              {hostel.totalCapacity}
-                            </td>
-                            <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">
-                              {hostel.currentOccupancy}
-                            </td>
-                            <td className="px-4 py-2 text-sm text-emerald-700 text-center font-medium">
-                              {hostel.vacantCapacity}
-                            </td>
+                            <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalCapacity}</td>
+                            <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{hostel.currentOccupancy}</td>
+                            <td className="px-4 py-2 text-sm text-emerald-700 text-center font-medium">{hostel.vacantCapacity}</td>
                           </tr>
                         ))}
                         <tr className="bg-gray-50 font-medium">
                           <td className="px-4 py-2 text-sm text-gray-900">Total</td>
-                          <td className="px-4 py-2 text-sm text-gray-900 text-center">
-                            {dashboardData?.hostels?.reduce(
-                              (sum, hostel) => sum + hostel.totalCapacity,
-                              0
-                            )}
-                          </td>
-                          <td className="px-4 py-2 text-sm text-blue-800 text-center">
-                            {dashboardData?.hostels?.reduce(
-                              (sum, hostel) => sum + hostel.currentOccupancy,
-                              0
-                            )}
-                          </td>
-                          <td className="px-4 py-2 text-sm text-emerald-800 text-center">
-                            {dashboardData?.hostels?.reduce(
-                              (sum, hostel) => sum + hostel.vacantCapacity,
-                              0
-                            )}
-                          </td>
+                          <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalCapacity, 0)}</td>
+                          <td className="px-4 py-2 text-sm text-blue-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0)}</td>
+                          <td className="px-4 py-2 text-sm text-emerald-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -364,24 +274,18 @@ const Dashboard = () => {
               </h2>
 
               <div className="flex-1 flex flex-col">
-                <div className="flex-1">
+                {/* <div className="flex-1">
                   <HostlerDayScholarChart data={dashboardData?.hostlerAndDayScholarCounts} />
-                </div>
+                </div> */}
 
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-xl border border-teal-200/60">
                     <p className="text-xs text-gray-600 mb-1">Hostlers</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-teal-700">
-                        {dashboardData?.hostlerAndDayScholarCounts?.hostler?.total}
-                      </span>
+                      <span className="text-xl font-bold text-teal-700">{dashboardData?.hostlerAndDayScholarCounts?.hostler?.total}</span>
                       <div className="flex items-center text-xs">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">
-                          B: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys}
-                        </span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">
-                          G: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls}
-                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys}</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls}</span>
                       </div>
                     </div>
                   </div>
@@ -389,16 +293,10 @@ const Dashboard = () => {
                   <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-xl border border-orange-200/60">
                     <p className="text-xs text-gray-600 mb-1">Day Scholars</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-orange-700">
-                        {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total}
-                      </span>
+                      <span className="text-xl font-bold text-orange-700">{dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total}</span>
                       <div className="flex items-center text-xs">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">
-                          B: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys}
-                        </span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">
-                          G: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls}
-                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys}</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls}</span>
                       </div>
                     </div>
                   </div>
@@ -431,38 +329,24 @@ const Dashboard = () => {
               <div className="flex-1 flex flex-col justify-center">
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 p-4 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-bl-md">
-                      Pending
-                    </div>
-                    <p className="text-4xl font-extrabold text-amber-700 mt-2">
-                      {dashboardData?.complaints?.pending}
-                    </p>
+                    <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
+                    <p className="text-4xl font-extrabold text-amber-700 mt-2">{dashboardData?.complaints?.pending}</p>
                   </div>
 
                   <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 p-4 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-bl-md">
-                      In Progress
-                    </div>
-                    <p className="text-4xl font-extrabold text-blue-700 mt-2">
-                      {dashboardData?.complaints?.inProgress}
-                    </p>
+                    <div className="absolute right-0 top-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
+                    <p className="text-4xl font-extrabold text-blue-700 mt-2">{dashboardData?.complaints?.inProgress}</p>
                   </div>
 
                   <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-green-50 to-green-100 border border-green-200 p-4 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-green-500 text-white text-xs px-2 py-0.5 rounded-bl-md">
-                      Resolved Today
-                    </div>
-                    <p className="text-4xl font-extrabold text-green-700 mt-2">
-                      {dashboardData?.complaints?.resolvedToday}
-                    </p>
+                    <div className="absolute right-0 top-0 bg-green-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Resolved Today</div>
+                    <p className="text-4xl font-extrabold text-green-700 mt-2">{dashboardData?.complaints?.resolvedToday}</p>
                   </div>
                 </div>
 
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 text-center">
                   <span className="text-gray-600">Total Active Complaints</span>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {dashboardData?.complaints?.pending + dashboardData?.complaints?.inProgress}
-                  </p>
+                  <p className="text-2xl font-bold text-gray-900">{dashboardData?.complaints?.pending + dashboardData?.complaints?.inProgress}</p>
                 </div>
               </div>
             </div>
@@ -489,10 +373,7 @@ const Dashboard = () => {
               <div className="flex-1 overflow-hidden">
                 <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300">
                   {dashboardData?.events?.map((event) => (
-                    <div
-                      key={event.id}
-                      className="mb-3 bg-purple-50 p-3 rounded-xl border border-purple-200 hover:shadow-sm transition-all"
-                    >
+                    <div key={event.id} className="mb-3 bg-purple-50 p-3 rounded-xl border border-purple-200 hover:shadow-sm transition-all">
                       <h3 className="font-medium text-purple-900">{event.title}</h3>
                       <div className="flex justify-between items-center mt-2 text-sm">
                         <div className="flex items-center text-gray-600">
@@ -505,9 +386,7 @@ const Dashboard = () => {
                     </div>
                   ))}
 
-                  {dashboardData?.events?.length === 0 && (
-                    <div className="text-center py-6 text-gray-500">No upcoming events</div>
-                  )}
+                  {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-gray-500">No upcoming events</div>}
                 </div>
               </div>
             </div>
@@ -520,18 +399,13 @@ const Dashboard = () => {
 
 // Helper function for date formatting
 const formatDate = (dateString) => {
-  const options = { month: 'short', day: 'numeric', year: 'numeric' }
+  const options = { month: "short", day: "numeric", year: "numeric" }
   return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
 // Chart components
 const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
-  if (!data?.degreeWise?.length)
-    return (
-      <div className="h-full flex items-center justify-center text-gray-500">
-        No student data available
-      </div>
-    )
+  if (!data?.degreeWise?.length) return <div className="h-full flex items-center justify-center text-gray-500">No student data available</div>
   const degreeData =
     data?.degreeWise?.map((item) => ({
       ...item,
@@ -563,23 +437,13 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
             return (
               <tr key={index} className="hover:bg-gray-50/70 transition">
                 <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
-                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">
-                  {item.boys}
-                </td>
-                <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">
-                  {item.girls}
-                </td>
-                <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">
-                  {item.total}
-                </td>
+                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.boys}</td>
+                <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{item.girls}</td>
+                <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">{item.total}</td>
                 {normalized && (
                   <>
-                    <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">
-                      {boysPercent}%
-                    </td>
-                    <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">
-                      {girlsPercent}%
-                    </td>
+                    <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{boysPercent}%</td>
+                    <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{girlsPercent}%</td>
                   </>
                 )}
               </tr>
@@ -591,24 +455,12 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
             <td className="px-4 py-2 text-sm text-gray-900">Total</td>
             <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalBoys || 0}</td>
             <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.totalGirls || 0}</td>
-            <td className="px-4 py-2 text-sm text-indigo-800 text-center">
-              {data?.grandTotal || 0}
-            </td>
+            <td className="px-4 py-2 text-sm text-indigo-800 text-center">{data?.grandTotal || 0}</td>
             {normalized && (
               <>
                 {/* Fix: use totals from data, not nested under data.students */}
-                <td className="px-4 py-2 text-sm text-blue-800 text-center">
-                  {data?.grandTotal > 0
-                    ? Math.round((data?.totalBoys / data?.grandTotal) * 100)
-                    : 0}
-                  %
-                </td>
-                <td className="px-4 py-2 text-sm text-pink-800 text-center">
-                  {data?.grandTotal > 0
-                    ? Math.round((data?.totalGirls / data?.grandTotal) * 100)
-                    : 0}
-                  %
-                </td>
+                <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
+                <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
               </>
             )}
           </tr>
@@ -620,15 +472,12 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
 
 const HostelOccupancyChart = ({ data }) => {
   const chartData = {
-    labels: ['Occupied', 'Vacant'],
+    labels: ["Occupied", "Vacant"],
     datasets: [
       {
-        data: [
-          data?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0),
-          data?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0),
-        ],
-        backgroundColor: ['#3B82F6', '#22C55E'],
-        borderColor: ['#ffffff', '#ffffff'],
+        data: [data?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0), data?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)],
+        backgroundColor: ["#3B82F6", "#22C55E"],
+        borderColor: ["#ffffff", "#ffffff"],
         borderWidth: 2,
       },
     ],
@@ -637,10 +486,10 @@ const HostelOccupancyChart = ({ data }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    cutout: '65%',
+    cutout: "65%",
     plugins: {
       legend: {
-        position: 'bottom',
+        position: "bottom",
         labels: {
           usePointStyle: true,
           padding: 8,
@@ -675,18 +524,18 @@ const HostlerDayScholarChart = ({ data }) => {
   const chartId = `hostler-chart-${Math.random().toString(36).substr(2, 9)}`
 
   const chartData = {
-    labels: ['Hostlers', 'Day Scholars'],
+    labels: ["Hostlers", "Day Scholars"],
     datasets: [
       {
-        label: 'Boys',
+        label: "Boys",
         data: [data.hostler.boys, data.dayScholar.boys],
-        backgroundColor: '#3B82F6',
+        backgroundColor: "#3B82F6",
         barThickness: 25,
       },
       {
-        label: 'Girls',
+        label: "Girls",
         data: [data.hostler.girls, data.dayScholar.girls],
-        backgroundColor: '#EC4899',
+        backgroundColor: "#EC4899",
         barThickness: 25,
       },
     ],
@@ -697,19 +546,17 @@ const HostlerDayScholarChart = ({ data }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: "top",
         labels: {
           boxWidth: 12,
           usePointStyle: true,
-          pointStyle: 'circle',
+          pointStyle: "circle",
         },
       },
       tooltip: {
         callbacks: {
           label: (context) => {
-            const originalValue = context.dataset.originalData
-              ? context.dataset.originalData[context.dataIndex]
-              : context.raw
+            const originalValue = context.dataset.originalData ? context.dataset.originalData[context.dataIndex] : context.raw
             return `${context.dataset.label}: ${originalValue}`
           },
         },
@@ -720,7 +567,7 @@ const HostlerDayScholarChart = ({ data }) => {
       y: {
         beginAtZero: true,
         ticks: { display: false, precision: 0 },
-        grid: { color: 'rgba(0, 0, 0, 0.05)', drawBorder: false },
+        grid: { color: "rgba(0, 0, 0, 0.05)", drawBorder: false },
       },
     },
     barPercentage: 0.75,
