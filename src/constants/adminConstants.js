@@ -8,6 +8,7 @@ export const COMPLAINT_FILTER_TABS = [
   { label: "All Complaints", value: "all", color: "[#1360AB]" },
   { label: "Pending", value: "Pending", color: "[#1360AB]" },
   { label: "In Progress", value: "In Progress", color: "[#1360AB]" },
+  { label: "Forwarded to IDO", value: "Forwarded to IDO", color: "[#1360AB]" },
   { label: "Resolved", value: "Resolved", color: "[#1360AB]" },
 ]
 

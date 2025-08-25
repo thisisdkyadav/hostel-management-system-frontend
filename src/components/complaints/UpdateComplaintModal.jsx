@@ -9,7 +9,7 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
 
-  const statusOptions = ["Pending", "In Progress", "Resolved", "Rejected"]
+  const statusOptions = ["Pending", "In Progress", "Resolved", "Forwarded to IDO", "Rejected"]
 
   const handleSubmit = async (e) => {
     e.preventDefault()

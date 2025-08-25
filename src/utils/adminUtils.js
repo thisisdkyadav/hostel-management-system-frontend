@@ -116,6 +116,8 @@ export const getStatusColor = (status) => {
       return "bg-blue-100 text-blue-700"
     case "In Progress":
       return "bg-yellow-100 text-yellow-700"
+    case "Forwarded to IDO":
+      return "bg-purple-100 text-purple-700"
     case "Resolved":
       return "bg-green-100 text-green-700"
     case "Closed":
