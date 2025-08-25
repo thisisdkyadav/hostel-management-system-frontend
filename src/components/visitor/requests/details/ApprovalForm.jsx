@@ -1,6 +1,6 @@
 import React from "react"
 
-const ApprovalForm = ({ selectedHostel, onHostelChange, paymentAmount, onPaymentAmountChange, onCancel, onSubmit, hostelList }) => {
+const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
   return (
     <div className="bg-green-50 border border-green-100 p-4 rounded-lg animate-fadeIn">
       <h3 className="font-medium text-green-800 mb-3">Approve Visitor Request</h3>
@@ -21,11 +21,19 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, paymentAmount, onPayment
       </div>
 
       {/* Payment Amount (Optional) */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label htmlFor="payment-amount" className="block text-sm font-medium text-gray-700 mb-1">
           Payment Amount (Optional)
         </label>
         <input type="number" id="payment-amount" value={paymentAmount} onChange={(e) => onPaymentAmountChange(e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter amount (e.g., 1000)" min="0" />
+      </div> */}
+
+      {/* Approval Information */}
+      <div className="mb-4">
+        <label htmlFor="approval-information" className="block text-sm font-medium text-gray-700 mb-1">
+          Approval Information
+        </label>
+        <textarea id="approval-information" value={approvalInformation} onChange={(e) => onApprovalInformationChange(e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter approval information" />
       </div>
 
       {/* Action Buttons */}

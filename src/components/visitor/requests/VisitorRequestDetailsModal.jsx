@@ -29,6 +29,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   const [showRejectForm, setShowRejectForm] = useState(false)
   const [showApproveForm, setShowApproveForm] = useState(false)
   const [paymentAmount, setPaymentAmount] = useState("")
+  const [approvalInformation, setApprovalInformation] = useState("")
 
   const [showAllocationForm, setShowAllocationForm] = useState(false)
   const [isUnitBased, setIsUnitBased] = useState(false)
@@ -70,6 +71,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       setShowRejectForm(false)
       setShowApproveForm(false)
       setPaymentAmount("")
+      setApprovalInformation("")
       setShowAllocationForm(false)
       setAllocatedRooms([])
       setShowCheckInForm(false)
@@ -145,7 +147,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
     try {
       const amountToSend = paymentAmount.trim() !== "" ? Number(paymentAmount) : null
-      await visitorApi.approveVisitorRequest(requestId, selectedHostel, amountToSend)
+      await visitorApi.approveVisitorRequest(requestId, selectedHostel, amountToSend, approvalInformation)
       onRefresh()
       onClose()
     } catch (error) {
@@ -234,6 +236,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     setShowRejectForm(false)
     if (showApproveForm) {
       setPaymentAmount("")
+      setApprovalInformation("")
     }
   }
 
@@ -302,7 +305,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         </div>
 
         {/* Reason for Visit */}
-        <VisitReason reason={request.reason} />
+        <VisitReason reason={request.reason} approvalInformation={request.approveInfo} isApproved={request.status === "Approved"} />
 
         {/* Visitors Information */}
         <VisitorInformation visitors={request.visitors} />
@@ -340,7 +343,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Approve Form (for Admin) */}
         {["Admin"].includes(user.role) && request.status === "Pending" && showApproveForm && (
-          <ApprovalForm selectedHostel={selectedHostel} onHostelChange={setSelectedHostel} paymentAmount={paymentAmount} onPaymentAmountChange={setPaymentAmount} onCancel={() => setShowApproveForm(false)} onSubmit={handleApproveRequest} hostelList={hostelList} />
+          <ApprovalForm selectedHostel={selectedHostel} onHostelChange={setSelectedHostel} approvalInformation={approvalInformation} onApprovalInformationChange={setApprovalInformation} onCancel={() => setShowApproveForm(false)} onSubmit={handleApproveRequest} hostelList={hostelList} />
         )}
 
         {/* Reject Form (for Admin) */}
