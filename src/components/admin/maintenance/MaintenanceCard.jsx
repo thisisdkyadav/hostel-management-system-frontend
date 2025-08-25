@@ -1,8 +1,18 @@
 import React, { useState } from "react"
-import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog, FaPhone, FaEye } from "react-icons/fa"
+import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaWifi, FaEllipsisH, FaUserCog, FaPhone, FaEye, FaUserTie } from "react-icons/fa"
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+const CATEGORY_DISPLAY_LABELS = {
+  Plumbing: "Plumber",
+  Electrical: "Electrician",
+  Civil: "Carpenter",
+  Cleanliness: "House Keeping",
+  Internet: "IT Technician",
+  Attendant: "Attendant",
+  Other: "Other",
+}
+const getCategoryDisplayLabel = (value) => CATEGORY_DISPLAY_LABELS[value] || value
 const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
@@ -19,6 +29,8 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         return <FaBroom className="text-green-500" />
       case "Internet":
         return <FaWifi className="text-purple-500" />
+      case "Attendant":
+        return <FaUserTie className="text-pink-500" />
       default:
         return <FaEllipsisH className="text-gray-500" />
     }
@@ -36,6 +48,8 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         return { bg: "bg-green-100", text: "text-green-700" }
       case "Internet":
         return { bg: "bg-purple-100", text: "text-purple-700" }
+      case "Attendant":
+        return { bg: "bg-pink-100", text: "text-pink-700" }
       default:
         return { bg: "bg-gray-100", text: "text-gray-700" }
     }
@@ -47,7 +61,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
     <>
       <div className="group bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 relative">
         <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColor.bg} ${categoryColor.text}`}>{staff.category}</span>
+          <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColor.bg} ${categoryColor.text}`}>{getCategoryDisplayLabel(staff.category)}</span>
         </div>
 
         <div className="flex items-center">
@@ -64,7 +78,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
             <h3 className="font-bold text-gray-800 text-lg">{staff.name}</h3>
             <div className="flex items-center mt-1 text-sm text-gray-500">
               {getCategoryIcon(staff.category)}
-              <span className="ml-1.5">{staff.category} Specialist</span>
+              <span className="ml-1.5">{getCategoryDisplayLabel(staff.category)}</span>
             </div>
           </div>
         </div>
