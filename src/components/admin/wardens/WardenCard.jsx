@@ -76,12 +76,12 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </div>
           <div>
             <h3 className="font-bold text-lg text-gray-800 truncate">{warden.name}</h3>
-            <div className="flex flex-wrap items-center mt-1 text-sm">
+            {/* <div className="flex flex-wrap items-center mt-1 text-sm">
               <BsCalendarCheck className="text-[#1360AB] mr-1.5" />
               <span className="text-gray-600">
                 {serviceYears} {serviceYears === 1 ? "year" : "years"} of service
               </span>
-            </div>
+            </div> */}
           </div>
         </div>
 
