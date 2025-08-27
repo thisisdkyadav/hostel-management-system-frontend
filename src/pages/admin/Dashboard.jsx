@@ -310,43 +310,62 @@ const Dashboard = () => {
         <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
           {loading ? (
             <div className="h-full flex flex-col">
-              <ShimmerLoader height="1.25rem" width="50%" className="mb-6" />
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                <StatCardShimmer className="relative h-24" />
-                <StatCardShimmer className="relative h-24" />
-                <StatCardShimmer className="relative h-24" />
+              <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <StatCardShimmer className="relative h-16" />
+                <StatCardShimmer className="relative h-16" />
               </div>
-              <ShimmerLoader height="4rem" className="rounded-lg mt-auto" />
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <StatCardShimmer className="relative h-16" />
+                <StatCardShimmer className="relative h-16" />
+                <StatCardShimmer className="relative h-16" />
+              </div>
+              <ShimmerLoader height="3rem" className="rounded-lg mt-auto" />
             </div>
           ) : error ? (
             <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
           ) : (
             <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
                 <FaExclamationCircle className="mr-2 text-amber-500" /> Complaints Overview
               </h2>
 
               <div className="flex-1 flex flex-col justify-center">
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 p-4 flex flex-col items-center justify-center">
+                {/* Top row - Primary stats */}
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 p-3 flex flex-col items-center justify-center">
                     <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
-                    <p className="text-4xl font-extrabold text-amber-700 mt-2">{dashboardData?.complaints?.pending}</p>
+                    <p className="text-3xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
                   </div>
 
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 p-4 flex flex-col items-center justify-center">
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 p-3 flex flex-col items-center justify-center">
                     <div className="absolute right-0 top-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
-                    <p className="text-4xl font-extrabold text-blue-700 mt-2">{dashboardData?.complaints?.inProgress}</p>
-                  </div>
-
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-green-50 to-green-100 border border-green-200 p-4 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-green-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Resolved Today</div>
-                    <p className="text-4xl font-extrabold text-green-700 mt-2">{dashboardData?.complaints?.resolvedToday}</p>
+                    <p className="text-3xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 text-center">
-                  <span className="text-gray-600">Total Active Complaints</span>
-                  <p className="text-2xl font-bold text-gray-900">{dashboardData?.complaints?.pending + dashboardData?.complaints?.inProgress}</p>
+                {/* Bottom row - Secondary stats */}
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 p-2 flex flex-col items-center justify-center">
+                    <div className="absolute right-0 top-0 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">IDO</div>
+                    <p className="text-2xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+                  </div>
+
+                  {/* <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-green-50 to-green-100 border border-green-200 p-2 flex flex-col items-center justify-center">
+                    <div className="absolute right-0 top-0 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Resolved</div>
+                    <p className="text-2xl font-bold text-green-700 mt-1">{dashboardData?.complaints?.resolved || 0}</p>
+                  </div> */}
+
+                  <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 p-2 flex flex-col items-center justify-center">
+                    <div className="absolute right-0 top-0 bg-emerald-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Today</div>
+                    <p className="text-2xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
+                  </div>
+                </div>
+
+                {/* Summary */}
+                <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                  <span className="text-gray-600 text-sm">Total Active Complaints</span>
+                  <p className="text-xl font-bold text-gray-900">{(dashboardData?.complaints?.pending || 0) + (dashboardData?.complaints?.inProgress || 0)}</p>
                 </div>
               </div>
             </div>
