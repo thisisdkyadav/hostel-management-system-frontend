@@ -216,12 +216,12 @@ const Dashboard = () => {
                 <TbBuildingCommunity className="mr-2 text-blue-600" /> Hostel Occupancy Overview
               </h2>
 
-              <div className="flex-1 grid grid-cols-3 gap-4">
-                <div className="flex items-center justify-center">
+              <div className="flex-1 grid grid-cols-2 gap-4">
+                {/* <div className="flex items-center justify-center">
                   <div className="w-full max-w-[130px]">
                     <HostelOccupancyChart data={dashboardData?.hostels} />
                   </div>
-                </div>
+                </div> */}
 
                 <div className="col-span-2 overflow-hidden">
                   <div className="overflow-x-auto max-h-[20rem] scrollbar-thin scrollbar-thumb-gray-300">
@@ -229,6 +229,7 @@ const Dashboard = () => {
                       <thead className="bg-gray-50 sticky top-0 z-10">
                         <tr>
                           <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Hostel</th>
+                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Active Rooms</th>
                           <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Capacity</th>
                           <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Occupancy</th>
                           <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Vacancy</th>
@@ -238,6 +239,7 @@ const Dashboard = () => {
                         {dashboardData?.hostels?.map((hostel, index) => (
                           <tr key={index} className="hover:bg-gray-50/70 transition">
                             <td className="px-4 py-2 text-sm text-gray-800">{hostel.name}</td>
+                            <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalRooms}</td>
                             <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalCapacity}</td>
                             <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{hostel.currentOccupancy}</td>
                             <td className="px-4 py-2 text-sm text-emerald-700 text-center font-medium">{hostel.vacantCapacity}</td>
@@ -245,6 +247,7 @@ const Dashboard = () => {
                         ))}
                         <tr className="bg-gray-50 font-medium">
                           <td className="px-4 py-2 text-sm text-gray-900">Total</td>
+                          <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalRooms, 0)}</td>
                           <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalCapacity, 0)}</td>
                           <td className="px-4 py-2 text-sm text-blue-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0)}</td>
                           <td className="px-4 py-2 text-sm text-emerald-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)}</td>
