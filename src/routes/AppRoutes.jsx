@@ -61,11 +61,12 @@ import Security from "../pages/student/Security.jsx"
 import HostelSupervisorLayout from "../layouts/HostelSupervisorLayout.jsx"
 import AdminHostelSupervisors from "../pages/admin/HostelSupervisors.jsx"
 import AdminSettings from "../pages/admin/Settings"
+import AdminAdminManagement from "../pages/admin/AdminManagement.jsx"
 
 // import related to super admin
 import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
 import SuperAdminDashboard from "../pages/superadmin/Dashboard.jsx"
-import AdminManagement from "../pages/superadmin/AdminManagement.jsx"
+import SuperAdminAdminManagement from "../pages/superadmin/AdminManagement.jsx"
 import ApiKeyManagement from "../pages/superadmin/ApiKeyManagement.jsx"
 import Others from "../pages/admin/Others.jsx"
 import SSOLogin from "../pages/SSOLogin.jsx"
@@ -96,7 +97,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<SuperAdminDashboard />} />
-        <Route path="admins" element={<AdminManagement />} />
+        <Route path="admins" element={<SuperAdminAdminManagement />} />
         <Route path="api-keys" element={<ApiKeyManagement />} />
         <Route path="profile" element={<Profile />} />
       </Route>
@@ -255,6 +256,7 @@ const AppRoutes = () => {
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
+        <Route path="administrators" element={<AdminAdminManagement />} />
         <Route path="wardens" element={<AdminWarden />} />
         <Route path="associate-wardens" element={<AdminAssociateWardens />} />
         <Route path="hostel-supervisors" element={<AdminHostelSupervisors />} />
