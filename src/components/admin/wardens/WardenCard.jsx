@@ -76,6 +76,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </div>
           <div>
             <h3 className="font-bold text-lg text-gray-800 truncate">{warden.name}</h3>
+            {warden.category && <div className="text-sm text-gray-600 mt-0.5 truncate">{warden.category}</div>}
             {/* <div className="flex flex-wrap items-center mt-1 text-sm">
               <BsCalendarCheck className="text-[#1360AB] mr-1.5" />
               <span className="text-gray-600">

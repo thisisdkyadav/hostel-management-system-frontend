@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FiUser, FiMail, FiPhone, FiLock, FiCalendar } from "react-icons/fi"
+import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag } from "react-icons/fi"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 
@@ -12,6 +12,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
     password: "",
     phone: "",
     joinDate: "",
+    category: "",
   })
 
   const handleChange = (e) => {
@@ -38,6 +39,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
         password: "",
         phone: "",
         joinDate: "",
+        category: "",
       })
 
       onClose()
@@ -97,6 +99,16 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
                 <FiPhone />
               </div>
               <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="+91 9876543210" />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Category</label>
+            <div className="relative">
+              <div className="absolute left-3 top-3 text-gray-400">
+                <FiTag />
+              </div>
+              <input type="text" name="category" value={formData.category} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="e.g., Senior, Junior" />
             </div>
           </div>
 
