@@ -48,8 +48,16 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             <div className="flex items-center">
               <MdMeetingRoom className="text-gray-500 mr-2 text-sm" />
               <span className="text-xs md:text-sm">
-                {hostel.totalRooms} Rooms ({hostel.vacantRooms} vacant)
+                {hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)
               </span>
+            </div>
+            <div className="flex items-center">
+              <MdMeetingRoom className="text-gray-500 mr-2 text-sm" />
+              <span className="text-xs md:text-sm">{hostel.activeRoomsCapacity} Capacity</span>
+            </div>
+            <div className="flex items-center">
+              <MdMeetingRoom className="text-gray-500 mr-2 text-sm" />
+              <span className="text-xs md:text-sm">{hostel.vacantRooms} Vacant Rooms</span>
             </div>
             <div className="flex items-center">
               <FaTools className="text-gray-500 mr-2 text-sm" />
