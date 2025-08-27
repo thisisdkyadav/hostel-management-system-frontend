@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt, FaShieldAlt, FaRedo } from "react-icons/fa"
+import { FiTag } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../services/apiService"
 import { accessControlApi } from "../../../services/accessControlApi"
@@ -19,6 +20,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
     joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
     profileImage: warden.profileImage || "",
+    category: warden.category || "",
   })
 
   const [permissions, setPermissions] = useState(null)
@@ -30,6 +32,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
       hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
       joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
       profileImage: warden.profileImage || "",
+      category: warden.category || "",
     }))
 
     // Fetch user permissions
@@ -117,6 +120,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         hostelIds: formData.hostelIds,
         joinDate: formData.joinDate,
         profileImage: formData.profileImage,
+        category: formData.category,
       }
 
       // Update user info
@@ -250,6 +254,16 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                     <FaPhone />
                   </div>
                   <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter phone number" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                <div className="relative">
+                  <div className="absolute left-3 top-3 text-gray-400">
+                    <FiTag />
+                  </div>
+                  <input type="text" name="category" value={formData.category} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="e.g., Senior, Junior" />
                 </div>
               </div>
 
