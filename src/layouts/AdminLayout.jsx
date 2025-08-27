@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaTools, FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaShieldAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBell, FaBoxes, FaTasks } from "react-icons/fa"
+import { FaTools, FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaShieldAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBell, FaBoxes, FaTasks, FaUserShield } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import AdminProvider from "../contexts/AdminProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -34,6 +34,7 @@ const AdminLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/admin/lost-and-found" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/admin/feedbacks" },
+    { name: "Administrators", icon: FaUserShield, section: "main", path: "/admin/administrators" },
     { name: "Wardens", icon: FaUserTie, section: "main", path: "/admin/wardens" },
     { name: "Associate Wardens", icon: FaUserTie, section: "main", path: "/admin/associate-wardens" },
     { name: "Hostel Supervisors", icon: FaUserTie, section: "main", path: "/admin/hostel-supervisors" },
