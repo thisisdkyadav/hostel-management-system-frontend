@@ -347,11 +347,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         )}
 
         {/* Payment Link (Student only) */}
-        {user.role === "Student" && request.paymentLink && (
+        {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
           <div className="text-sm">
             <span className="font-semibold text-blue-700 mr-2">Payment Link:</span>
-            <a href={request.paymentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
-              {request.paymentLink}
+            <a href={request.visitorPaymentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+              {request.visitorPaymentLink}
             </a>
           </div>
         )}
