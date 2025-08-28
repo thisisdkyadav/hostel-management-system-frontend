@@ -30,4 +30,19 @@ export const uploadApi = {
 
     return response.json()
   },
+
+  uploadH2Form: async (imageData) => {
+    const response = await fetch(`${baseUrl}/upload/h2-form`, {
+      method: "POST",
+      credentials: "include",
+      body: imageData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to upload H2 form")
+    }
+
+    return response.json()
+  },
 }
