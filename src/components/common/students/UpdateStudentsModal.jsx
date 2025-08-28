@@ -213,6 +213,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     const validatedData = data
       .map((item) => {
+        // Remove spaces from blood group value before validation
+        if (item.bloodGroup) {
+          item.bloodGroup = item.bloodGroup.replace(/\s+/g, "")
+        }
+
         // Check if blood group is valid
         if (item.bloodGroup && !validBloodGroups.includes(item.bloodGroup)) {
           setError(`Invalid blood group format: "${item.bloodGroup}" for roll number ${item.rollNumber}. Valid formats are: ${validBloodGroups.join(", ")}`)
