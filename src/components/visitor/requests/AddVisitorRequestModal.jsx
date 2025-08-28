@@ -1,6 +1,7 @@
 import React, { useState } from "react"
-import { FaExclamationTriangle, FaPlus, FaUserAlt } from "react-icons/fa"
+import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import { uploadApi } from "../../../services/uploadApi"
 
 const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,10 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [h2FormFile, setH2FormFile] = useState(null)
+  const [h2FormUploading, setH2FormUploading] = useState(false)
+  const [h2FormUploaded, setH2FormUploaded] = useState(false)
+  const [h2FormUrl, setH2FormUrl] = useState("")
 
   const today = new Date()
   const minDate = new Date(today)
@@ -43,6 +48,54 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
     })
   }
 
+  const handleH2FormFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // Validate file type (PDF only)
+      const validTypes = ["application/pdf"]
+      if (!validTypes.includes(file.type)) {
+        setError("Please upload a PDF file for the H2 form")
+        return
+      }
+
+      // Validate file size (max 5MB)
+      const maxSize = 5 * 1024 * 1024 // 5MB
+      if (file.size > maxSize) {
+        setError(`H2 form file size exceeds 5MB limit. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.`)
+        return
+      }
+
+      setH2FormFile(file)
+      setError(null)
+    }
+  }
+
+  const uploadH2Form = async () => {
+    if (!h2FormFile) return
+
+    try {
+      setH2FormUploading(true)
+      setError(null)
+
+      const formData = new FormData()
+      formData.append("h2Form", h2FormFile)
+
+      const response = await uploadApi.uploadH2Form(formData)
+      setH2FormUrl(response.url)
+      setH2FormUploaded(true)
+    } catch (err) {
+      setError(err.message || "Failed to upload H2 form. Please try again.")
+    } finally {
+      setH2FormUploading(false)
+    }
+  }
+
+  const removeH2Form = () => {
+    setH2FormFile(null)
+    setH2FormUploaded(false)
+    setH2FormUrl("")
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -54,6 +107,11 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
     if (!formData.fromDate || !formData.toDate) {
       setError("Please select both from and to dates")
+      return
+    }
+
+    if (!h2FormUploaded) {
+      setError("Please upload the H2 form before submitting the request")
       return
     }
 
@@ -81,6 +139,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         reason: formData.reason,
         fromDate: formData.fromDate,
         toDate: formData.toDate,
+        h2FormUrl: h2FormUrl,
       }
 
       const success = await onSubmit(requestData)
@@ -91,6 +150,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           fromDate: "",
           toDate: "",
         })
+        removeH2Form()
         onClose()
       } else {
         setError("Failed to submit visitor request. Please try again.")
@@ -177,12 +237,89 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
           />
         </div>
 
+        {/* H2 Form Upload */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="block text-gray-700 text-sm font-medium">
+              H2 Form Upload <span className="text-red-500">*</span>
+            </label>
+            <a href="https://hostel.iiti.ac.in/docs/H2%20Form.pdf" target="_blank" rel="noopener noreferrer" className="text-xs text-[#1360AB] hover:text-blue-700 underline">
+              Download H2 Form
+            </a>
+          </div>
+
+          {!h2FormUploaded ? (
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+              <div className="text-center">
+                <div className="mx-auto w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-3">
+                  <FaFileAlt className="w-6 h-6 text-[#1360AB]" />
+                </div>
+                <div className="space-y-2">
+                  <p className="text-gray-700 text-sm">Upload filled H2 form</p>
+                  <p className="text-gray-500 text-xs">PDF only (max 5MB)</p>
+                </div>
+
+                {h2FormFile ? (
+                  <div className="mt-4 space-y-3">
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-center justify-center space-x-2">
+                        <FaFileAlt className="text-gray-600" />
+                        <span className="text-sm text-gray-700">{h2FormFile.name}</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-center space-x-3">
+                      <button type="button" onClick={removeH2Form} className="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                        Remove
+                      </button>
+                      <button type="button" onClick={uploadH2Form} disabled={h2FormUploading} className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center">
+                        {h2FormUploading ? (
+                          <>
+                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <FaUpload className="mr-2" size={12} />
+                            Upload
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-4">
+                    <label className="inline-block">
+                      <input type="file" className="hidden" accept=".pdf" onChange={handleH2FormFileChange} />
+                      <span className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 cursor-pointer inline-block transition-colors">Select File</span>
+                    </label>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                  <FaCheckCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-green-800 font-medium text-sm">H2 Form Uploaded Successfully</p>
+                  <p className="text-green-600 text-xs">Ready to submit visitor request</p>
+                </div>
+                <button type="button" onClick={removeH2Form} className="text-green-600 hover:text-green-800 text-xs underline">
+                  Change
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Submit Section */}
         <div className="flex justify-end pt-4 border-t border-gray-100">
           <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mr-3">
             Cancel
           </button>
-          <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors" disabled={loading || visitorProfiles.length === 0}>
+          <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors" disabled={loading || visitorProfiles.length === 0 || !h2FormUploaded}>
             {loading ? "Submitting..." : "Submit Request"}
           </button>
         </div>
