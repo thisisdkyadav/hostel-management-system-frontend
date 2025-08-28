@@ -440,6 +440,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
         <thead className="bg-gray-50 sticky top-0 z-10">
           <tr>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Degree</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Registered</th>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys</th>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls</th>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Total</th>
@@ -459,6 +460,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
             return (
               <tr key={index} className="hover:bg-gray-50/70 transition">
                 <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
+                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.registeredStudents}</td>
                 <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.boys}</td>
                 <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{item.girls}</td>
                 <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">{item.total}</td>
@@ -475,6 +477,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
           {/* Totals row */}
           <tr className="bg-gray-50 font-medium">
             <td className="px-4 py-2 text-sm text-gray-900">Total</td>
+            <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalRegisteredStudents || 0}</td>
             <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalBoys || 0}</td>
             <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.totalGirls || 0}</td>
             <td className="px-4 py-2 text-sm text-indigo-800 text-center">{data?.grandTotal || 0}</td>
