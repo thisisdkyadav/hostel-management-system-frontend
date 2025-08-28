@@ -506,6 +506,15 @@ export const adminApi = {
       throw error
     }
   },
+
+  // Registered students management
+  getRegisteredStudents: async () => {
+    return await adminApi.getConfig("registeredStudents")
+  },
+
+  updateRegisteredStudents: async (registeredStudents) => {
+    return await adminApi.updateConfig("registeredStudents", registeredStudents)
+  },
 }
 
 export default adminApi

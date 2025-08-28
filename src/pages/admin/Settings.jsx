@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
-import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding } from "react-icons/hi"
+import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/adminApi"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
+import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import toast from "react-hot-toast"
 
@@ -14,16 +15,19 @@ const Settings = () => {
     studentFields: false,
     degrees: false,
     departments: false,
+    registeredStudents: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [studentEditPermissions, setStudentEditPermissions] = useState([])
   const [degrees, setDegrees] = useState([])
   const [departments, setDepartments] = useState([])
+  const [registeredStudents, setRegisteredStudents] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
     studentFields: null,
     degrees: null,
     departments: null,
+    registeredStudents: null,
   })
 
   // List of all possible student editable fields with their labels
@@ -50,6 +54,13 @@ const Settings = () => {
       fetchDegrees()
     } else if (activeTab === "departments" && departments.length === 0) {
       fetchDepartments()
+    } else if (activeTab === "registeredStudents") {
+      if (degrees.length === 0) {
+        fetchDegrees()
+      }
+      if (Object.keys(registeredStudents).length === 0) {
+        fetchRegisteredStudents()
+      }
     }
   }, [activeTab])
 
@@ -111,6 +122,23 @@ const Settings = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, departments: false }))
+    }
+  }
+
+  const fetchRegisteredStudents = async () => {
+    setLoading((prev) => ({ ...prev, registeredStudents: true }))
+    setError((prev) => ({ ...prev, registeredStudents: null }))
+    try {
+      const response = await adminApi.getRegisteredStudents()
+      setRegisteredStudents(response.value || {})
+    } catch (err) {
+      console.error("Error fetching registered students:", err)
+      setError((prev) => ({
+        ...prev,
+        registeredStudents: "Failed to load registered students data. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, registeredStudents: false }))
     }
   }
 
@@ -212,6 +240,24 @@ const Settings = () => {
     }
   }
 
+  const handleUpdateRegisteredStudents = async (updatedRegisteredStudents) => {
+    const confirmUpdate = window.confirm("Are you sure you want to update registered students counts?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, registeredStudents: true }))
+    try {
+      const response = await adminApi.updateRegisteredStudents(updatedRegisteredStudents)
+      setRegisteredStudents(response.configuration.value || {})
+      setSuccessMessage(`Registered students counts updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating registered students:", err)
+      toast.error("An error occurred while updating registered students counts. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, registeredStudents: false }))
+    }
+  }
+
   if (user?.role !== "Admin") {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -269,6 +315,12 @@ const Settings = () => {
                 Departments
               </button>
             </li>
+            <li className="mr-2">
+              <button onClick={() => setActiveTab("registeredStudents")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "registeredStudents" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                <HiUsers className="mr-2 h-5 w-5" />
+                Registered Students
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -291,6 +343,12 @@ const Settings = () => {
                 <>
                   <HiOfficeBuilding className="mr-2 text-[#1360AB]" size={20} />
                   Academic Departments
+                </>
+              )}
+              {activeTab === "registeredStudents" && (
+                <>
+                  <HiUsers className="mr-2 text-[#1360AB]" size={20} />
+                  Registered Students
                 </>
               )}
             </h2>
@@ -384,6 +442,28 @@ const Settings = () => {
                     itemLabel="Department"
                     placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)"
                   />
+                )}
+              </>
+            )}
+
+            {/* Registered Students Tab */}
+            {activeTab === "registeredStudents" && (
+              <>
+                <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
+                  <div className="flex-shrink-0 mt-0.5 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm">Set the total number of registered students for each degree program. This helps track enrollment statistics and capacity planning.</p>
+                </div>
+
+                {loading.registeredStudents && Object.keys(registeredStudents).length === 0 ? (
+                  <div className="flex justify-center py-6">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
+                  </div>
+                ) : (
+                  <RegisteredStudentsForm degrees={degrees} registeredStudents={registeredStudents} onUpdate={handleUpdateRegisteredStudents} isLoading={loading.registeredStudents} />
                 )}
               </>
             )}
