@@ -18,6 +18,7 @@ import ActionButtons from "./details/ActionButtons"
 import CheckInOutForm from "./details/CheckInOutForm"
 import EditVisitorRequestModal from "./EditVisitorRequestModal"
 import StudentDetails from "./details/StudentDetails"
+import H2FormViewerModal from "./H2FormViewerModal"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
   const { user, canAccess } = useAuth()
@@ -42,6 +43,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   const [processingAction, setProcessingAction] = useState(false)
 
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showH2FormModal, setShowH2FormModal] = useState(false)
 
   // Fetch request details from API
   const fetchRequestDetails = async () => {
@@ -307,6 +309,32 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {/* Reason for Visit */}
         <VisitReason reason={request.reason} approvalInformation={request.approveInfo} isApproved={request.status === "Approved"} />
 
+        {/* H2 Form Section */}
+        {request.h2FormUrl && (
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-[#1360AB]" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-800">H2 Form Document</h4>
+                  <p className="text-sm text-gray-600">Guest Room Booking Form</p>
+                </div>
+              </div>
+              <button onClick={() => setShowH2FormModal(true)} className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                </svg>
+                <span>View H2 Form</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Visitors Information */}
         <VisitorInformation visitors={request.visitors} />
 
@@ -380,6 +408,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         request={request}
         onRefresh={onRefresh}
       />
+
+      <H2FormViewerModal isOpen={showH2FormModal} onClose={() => setShowH2FormModal(false)} h2FormUrl={request?.h2FormUrl} />
     </Modal>
   )
 }
