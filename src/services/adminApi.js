@@ -515,6 +515,15 @@ export const adminApi = {
   updateRegisteredStudents: async (registeredStudents) => {
     return await adminApi.updateConfig("registeredStudents", registeredStudents)
   },
+
+  // System settings management
+  getSystemSettings: async () => {
+    return await adminApi.getConfig("systemSettings")
+  },
+
+  updateSystemSettings: async (config) => {
+    return await adminApi.updateConfig("systemSettings", config)
+  },
 }
 
 export default adminApi

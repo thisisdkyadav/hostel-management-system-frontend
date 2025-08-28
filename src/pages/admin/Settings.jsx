@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
-import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers } from "react-icons/hi"
+import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/adminApi"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
+import ConfigForm from "../../components/admin/settings/ConfigForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import toast from "react-hot-toast"
 
@@ -16,18 +17,21 @@ const Settings = () => {
     degrees: false,
     departments: false,
     registeredStudents: false,
+    systemSettings: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [studentEditPermissions, setStudentEditPermissions] = useState([])
   const [degrees, setDegrees] = useState([])
   const [departments, setDepartments] = useState([])
   const [registeredStudents, setRegisteredStudents] = useState({})
+  const [systemSettings, setSystemSettings] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
     studentFields: null,
     degrees: null,
     departments: null,
     registeredStudents: null,
+    systemSettings: null,
   })
 
   // List of all possible student editable fields with their labels
@@ -61,6 +65,8 @@ const Settings = () => {
       if (Object.keys(registeredStudents).length === 0) {
         fetchRegisteredStudents()
       }
+    } else if (activeTab === "systemSettings" && Object.keys(systemSettings).length === 0) {
+      fetchSystemSettings()
     }
   }, [activeTab])
 
@@ -139,6 +145,23 @@ const Settings = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, registeredStudents: false }))
+    }
+  }
+
+  const fetchSystemSettings = async () => {
+    setLoading((prev) => ({ ...prev, systemSettings: true }))
+    setError((prev) => ({ ...prev, systemSettings: null }))
+    try {
+      const response = await adminApi.getSystemSettings()
+      setSystemSettings(response.value || {})
+    } catch (err) {
+      console.error("Error fetching system settings:", err)
+      setError((prev) => ({
+        ...prev,
+        systemSettings: "Failed to load system settings data. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, systemSettings: false }))
     }
   }
 
@@ -258,6 +281,24 @@ const Settings = () => {
     }
   }
 
+  const handleUpdateSystemSettings = async (updatedSettings) => {
+    const confirmUpdate = window.confirm("Are you sure you want to update the system settings?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, systemSettings: true }))
+    try {
+      const response = await adminApi.updateSystemSettings(updatedSettings)
+      setSystemSettings(response.configuration.value || {})
+      setSuccessMessage(`System settings updated successfully on ${new Date(response.lastUpdated).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating system settings:", err)
+      toast.error("An error occurred while updating system settings. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, systemSettings: false }))
+    }
+  }
+
   if (user?.role !== "Admin") {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
@@ -321,6 +362,12 @@ const Settings = () => {
                 Registered Students
               </button>
             </li>
+            <li className="mr-2">
+              <button onClick={() => setActiveTab("systemSettings")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "systemSettings" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+                <HiAdjustments className="mr-2 h-5 w-5" />
+                System Settings
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -349,6 +396,12 @@ const Settings = () => {
                 <>
                   <HiUsers className="mr-2 text-[#1360AB]" size={20} />
                   Registered Students
+                </>
+              )}
+              {activeTab === "systemSettings" && (
+                <>
+                  <HiAdjustments className="mr-2 text-[#1360AB]" size={20} />
+                  System Settings
                 </>
               )}
             </h2>
@@ -464,6 +517,28 @@ const Settings = () => {
                   </div>
                 ) : (
                   <RegisteredStudentsForm degrees={degrees} registeredStudents={registeredStudents} onUpdate={handleUpdateRegisteredStudents} isLoading={loading.registeredStudents} />
+                )}
+              </>
+            )}
+
+            {/* System Settings Tab */}
+            {activeTab === "systemSettings" && (
+              <>
+                <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
+                  <div className="flex-shrink-0 mt-0.5 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm">Edit system configuration values. You can only modify existing configuration keys; adding or removing keys is not allowed through this interface.</p>
+                </div>
+
+                {loading.systemSettings && Object.keys(systemSettings).length === 0 ? (
+                  <div className="flex justify-center py-6">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
+                  </div>
+                ) : (
+                  <ConfigForm config={systemSettings} onUpdate={handleUpdateSystemSettings} isLoading={loading.systemSettings} />
                 )}
               </>
             )}
