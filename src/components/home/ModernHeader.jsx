@@ -27,7 +27,7 @@ const ModernHeader = () => {
       ],
     },
     { label: "Contact", icon: <FiPhone className="mr-2" />, path: "/contact" },
-    { label: "About", icon: <FiInfo className="mr-2" />, path: "/about" },
+    { label: "Dev Team", icon: <FiCode className="mr-2" />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
   ]
 
   const aboutNavItems = [
