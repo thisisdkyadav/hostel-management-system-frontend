@@ -19,6 +19,9 @@ import CheckInOutForm from "./details/CheckInOutForm"
 import EditVisitorRequestModal from "./EditVisitorRequestModal"
 import StudentDetails from "./details/StudentDetails"
 import H2FormViewerModal from "./H2FormViewerModal"
+import PaymentInfoForm from "./details/PaymentInfoForm"
+import PaymentInfoViewer from "./details/PaymentInfoViewer"
+import PaymentInfoModal from "./PaymentInfoModal"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
   const { user, canAccess } = useAuth()
@@ -44,6 +47,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
   const [showEditModal, setShowEditModal] = useState(false)
   const [showH2FormModal, setShowH2FormModal] = useState(false)
+  const [showPaymentForm, setShowPaymentForm] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // Fetch request details from API
   const fetchRequestDetails = async () => {
@@ -78,6 +83,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       setAllocatedRooms([])
       setShowCheckInForm(false)
       setShowCheckOutForm(false)
+      setShowPaymentForm(false)
+      setShowPaymentModal(false)
     }
   }, [isOpen, requestId])
 
@@ -232,6 +239,19 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
     }
   }
 
+  // Payment info handler
+  const handleSubmitPaymentInfo = async (paymentData) => {
+    try {
+      await visitorApi.submitPaymentInfo(requestId, paymentData)
+      await fetchRequestDetails()
+      setShowPaymentForm(false)
+      alert("Payment information submitted successfully!")
+    } catch (error) {
+      console.error("Error submitting payment info:", error)
+      alert("Failed to submit payment information. Please try again.")
+    }
+  }
+
   // UI toggle handlers
   const toggleApproveForm = () => {
     setShowApproveForm(!showApproveForm)
@@ -356,6 +376,34 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
           </div>
         )}
 
+        {/* Payment Information Submission (Student only) */}
+        {user.role === "Student" && request.status === "Approved" && !request.paymentInfo.transactionId && !showPaymentForm && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-[#1360AB]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-medium text-blue-800">Payment Information Required</h4>
+                  <p className="text-sm text-blue-600">Submit your payment details for verification</p>
+                </div>
+              </div>
+              <button onClick={() => setShowPaymentForm(true)} className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+                Submit Payment Info
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Information Form (Student only) */}
+        {user.role === "Student" && request.status === "Approved" && showPaymentForm && <PaymentInfoForm onSubmit={handleSubmitPaymentInfo} onCancel={() => setShowPaymentForm(false)} expectedAmount={request.amount} />}
+
+        {/* Payment Information Viewer (for authorized roles) */}
+        {["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Student"].includes(user.role) && request.paymentInfo && <PaymentInfoViewer paymentInfo={request.paymentInfo} onViewScreenshot={() => setShowPaymentModal(true)} />}
+
         {/* Security Check-in/out (if applicable) */}
         {request.status === "Approved" && request.checkInTime && <SecurityCheck checkInTime={request.checkInTime} checkOutTime={request.checkOutTime} />}
 
@@ -410,6 +458,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       />
 
       <H2FormViewerModal isOpen={showH2FormModal} onClose={() => setShowH2FormModal(false)} h2FormUrl={request?.h2FormUrl} />
+
+      <PaymentInfoModal isOpen={showPaymentModal} onClose={() => setShowPaymentModal(false)} paymentScreenshot={request?.paymentInfo?.screenshot} />
     </Modal>
   )
 }

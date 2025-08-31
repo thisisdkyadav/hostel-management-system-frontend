@@ -45,4 +45,19 @@ export const uploadApi = {
 
     return response.json()
   },
+
+  uploadPaymentScreenshot: async (imageData, userId) => {
+    const response = await fetch(`${baseUrl}/upload/payment-screenshot`, {
+      method: "POST",
+      credentials: "include",
+      body: imageData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to upload payment screenshot")
+    }
+
+    return response.json()
+  },
 }
