@@ -32,6 +32,7 @@ export const StatCard = ({ title, value, subtitle, icon, color = "#1360AB" }) =>
  * @param {number} props.columns - Number of columns for the grid (default: 4)
  */
 const StatCards = ({ stats, columns = 4 }) => {
+  console.log(columns)
   const getGridClass = () => {
     // Show 2 cards per row by default, 1 card only on tiny screens (<480px)
     let gridClass = "grid-cols-2 max-[375px]:grid-cols-1"
@@ -42,8 +43,10 @@ const StatCards = ({ stats, columns = 4 }) => {
       gridClass = "grid-cols-2"
     } else if (columns === 3) {
       gridClass += " md:grid-cols-3"
-    } else if (columns >= 4) {
+    } else if (columns === 4) {
       gridClass += " lg:grid-cols-4"
+    } else if (columns >= 5) {
+      gridClass += " lg:grid-cols-5"
     }
 
     return gridClass
