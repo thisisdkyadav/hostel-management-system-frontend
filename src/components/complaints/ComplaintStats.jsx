@@ -15,6 +15,7 @@ const ComplaintStats = ({ statsData, loading }) => {
   const pendingComplaints = statsData?.pending || 0
   const inProgressComplaints = statsData?.inProgress || 0
   const resolvedComplaints = statsData?.resolved || 0
+  const forwardedToIDOComplaints = statsData?.forwardedToIDO || 0
   // const urgentComplaints = statsData?.urgent || 0
 
   const statsCards = [
@@ -50,6 +51,14 @@ const ComplaintStats = ({ statsData, loading }) => {
       color: "#22c55e", // green-500
       iconColor: "text-green-500",
     },
+    {
+      title: "Forwarded to IDO",
+      value: forwardedToIDOComplaints,
+      subtitle: "Escalated",
+      icon: <MdPriorityHigh className="text-2xl" />,
+      color: "#f97316", // orange-500
+      iconColor: "text-orange-500",
+    },
     // {
     //   title: "Urgent",
     //   value: urgentComplaints,
@@ -60,7 +69,7 @@ const ComplaintStats = ({ statsData, loading }) => {
     // },
   ]
 
-  return <StatCards stats={statsCards} />
+  return <StatCards stats={statsCards} columns={5} />
 }
 
 export default ComplaintStats
