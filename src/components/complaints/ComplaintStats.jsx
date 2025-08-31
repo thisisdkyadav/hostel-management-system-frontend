@@ -3,15 +3,21 @@ import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
 import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
 import StatCards from "../common/StatCards"
+import LoadingState from "../common/LoadingState"
 
-const ComplaintStats = ({ complaints }) => {
-  const totalComplaints = complaints.length
-  const newComplaints = complaints.filter((c) => c.status === "Pending").length
-  const inProgressComplaints = complaints.filter((c) => c.status === "In Progress").length
-  const resolvedComplaints = complaints.filter((c) => c.status === "Resolved").length
-  // const urgentComplaints = complaints.filter((c) => c.priority === "Urgent").length
+const ComplaintStats = ({ statsData, loading }) => {
+  if (loading) {
+    return <LoadingState />
+  }
 
-  const statsData = [
+  // Default values if statsData is not available
+  const totalComplaints = statsData?.total || 0
+  const pendingComplaints = statsData?.pending || 0
+  const inProgressComplaints = statsData?.inProgress || 0
+  const resolvedComplaints = statsData?.resolved || 0
+  // const urgentComplaints = statsData?.urgent || 0
+
+  const statsCards = [
     {
       title: "Total",
       value: totalComplaints,
@@ -22,7 +28,7 @@ const ComplaintStats = ({ complaints }) => {
     },
     {
       title: "Pending",
-      value: newComplaints,
+      value: pendingComplaints,
       subtitle: "Pending Review",
       icon: <MdOutlineWatchLater className="text-2xl" />,
       color: "#3b82f6",
@@ -54,7 +60,7 @@ const ComplaintStats = ({ complaints }) => {
     // },
   ]
 
-  return <StatCards stats={statsData} />
+  return <StatCards stats={statsCards} />
 }
 
 export default ComplaintStats

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../contexts/AuthProvider"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { adminApi } from "../services/apiService"
+import { complaintApi } from "../services/complaintApi"
 import { COMPLAINT_FILTER_TABS } from "../constants/adminConstants"
 import ComplaintStats from "../components/complaints/ComplaintStats"
 import ComplaintDetailModal from "../components/complaints/ComplaintDetailModal"
@@ -36,6 +37,8 @@ const Complaints = () => {
   const [loading, setLoading] = useState(false)
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
+  const [statsData, setStatsData] = useState(null)
+  const [statsLoading, setStatsLoading] = useState(false)
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -90,6 +93,26 @@ const Complaints = () => {
     }
   }
 
+  const fetchComplaintStats = async () => {
+    try {
+      setStatsLoading(true)
+      const queryParams = {}
+
+      // Only add hostelId to stats query if a specific hostel is selected
+      if (filters.hostelId !== "all") {
+        queryParams.hostelId = filters.hostelId
+      }
+
+      const response = await complaintApi.getStats(queryParams)
+      setStatsData(response.data || response)
+    } catch (error) {
+      console.error("Error fetching complaint stats:", error)
+      setStatsData(null)
+    } finally {
+      setStatsLoading(false)
+    }
+  }
+
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchComplaints()
@@ -97,11 +120,15 @@ const Complaints = () => {
     return () => clearTimeout(delay)
   }, [filters])
 
+  useEffect(() => {
+    fetchComplaintStats()
+  }, [filters.hostelId])
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={showCraftComplaint} setShowCraftComplaint={setShowCraftComplaint} userRole={user?.role} />
 
-      <ComplaintStats complaints={complaints} />
+      <ComplaintStats statsData={statsData} loading={statsLoading} />
 
       {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} priorities={priorities} />}
 
