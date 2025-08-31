@@ -87,6 +87,7 @@ const Dashboard = () => {
   const [currentDate] = useState(new Date())
   const [studentView, setStudentView] = useState("degree") // Default to degree view
   const [normalizedView, setNormalizedView] = useState(false)
+  const [studentDataView, setStudentDataView] = useState("normal") // Toggle between "normal" and "registered"
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -173,7 +174,18 @@ const Dashboard = () => {
                   <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center space-x-3">
+                  {/* Normal/Registered Toggle */}
+                  <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Student data type">
+                    <button onClick={() => setStudentDataView("normal")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
+                      Normal
+                    </button>
+                    <button onClick={() => setStudentDataView("registered")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "registered"}>
+                      Registered
+                    </button>
+                  </div>
+
+                  {/* Absolute/Normalized Toggle */}
                   <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Distribution mode">
                     <button onClick={() => setNormalizedView(false)} className={`px-3 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
                       Absolute
@@ -187,7 +199,7 @@ const Dashboard = () => {
 
               <div className="flex-1 flex flex-col">
                 <div className="h-full">
-                  <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} />
+                  <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} studentDataView={studentDataView} />
                 </div>
               </div>
             </div>
@@ -426,13 +438,41 @@ const formatDate = (dateString) => {
 }
 
 // Chart components
-const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
+const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "normal" }) => {
   if (!data?.degreeWise?.length) return <div className="h-full flex items-center justify-center text-gray-500">No student data available</div>
+
   const degreeData =
-    data?.degreeWise?.map((item) => ({
-      ...item,
-      total: item.boys + item.girls,
-    })) || []
+    data?.degreeWise?.map((item) => {
+      // Choose which data to display based on studentDataView toggle
+      let displayBoys, displayGirls, displayTotal
+      if (studentDataView === "registered") {
+        // Show registered students data from settings
+        const registeredData = item.registeredStudents
+        if (typeof registeredData === "object" && registeredData !== null) {
+          displayBoys = registeredData.boys || 0
+          displayGirls = registeredData.girls || 0
+          displayTotal = registeredData.total || 0
+        } else {
+          // If old format or no breakdown available, show total as boys+girls split evenly or 0
+          const total = parseInt(registeredData) || 0
+          displayBoys = Math.floor(total / 2)
+          displayGirls = Math.ceil(total / 2)
+          displayTotal = total
+        }
+      } else {
+        // Show normal/actual students data (default)
+        displayBoys = item.boys || 0
+        displayGirls = item.girls || 0
+        displayTotal = displayBoys + displayGirls
+      }
+
+      return {
+        ...item,
+        boys: displayBoys,
+        girls: displayGirls,
+        total: displayTotal,
+      }
+    }) || []
 
   return (
     <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
@@ -440,7 +480,6 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
         <thead className="bg-gray-50 sticky top-0 z-10">
           <tr>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Degree</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Registered</th>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys</th>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls</th>
             <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Total</th>
@@ -460,7 +499,6 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
             return (
               <tr key={index} className="hover:bg-gray-50/70 transition">
                 <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
-                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.registeredStudents}</td>
                 <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.boys}</td>
                 <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{item.girls}</td>
                 <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">{item.total}</td>
@@ -477,15 +515,66 @@ const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
           {/* Totals row */}
           <tr className="bg-gray-50 font-medium">
             <td className="px-4 py-2 text-sm text-gray-900">Total</td>
-            <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalRegisteredStudents || 0}</td>
-            <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalBoys || 0}</td>
-            <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.totalGirls || 0}</td>
-            <td className="px-4 py-2 text-sm text-indigo-800 text-center">{data?.grandTotal || 0}</td>
+            <td className="px-4 py-2 text-sm text-blue-800 text-center">
+              {(() => {
+                if (studentDataView === "registered") {
+                  // Calculate total registered boys from all degrees
+                  return degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
+                } else {
+                  return data?.totalBoys || 0
+                }
+              })()}
+            </td>
+            <td className="px-4 py-2 text-sm text-pink-800 text-center">
+              {(() => {
+                if (studentDataView === "registered") {
+                  // Calculate total registered girls from all degrees
+                  return degreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
+                } else {
+                  return data?.totalGirls || 0
+                }
+              })()}
+            </td>
+            <td className="px-4 py-2 text-sm text-indigo-800 text-center">
+              {(() => {
+                if (studentDataView === "registered") {
+                  // Calculate total registered students from all degrees
+                  return degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
+                } else {
+                  return data?.grandTotal || 0
+                }
+              })()}
+            </td>
             {normalized && (
               <>
-                {/* Fix: use totals from data, not nested under data.students */}
-                <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
-                <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
+                <td className="px-4 py-2 text-sm text-blue-800 text-center">
+                  {(() => {
+                    let totalBoys, grandTotal
+                    if (studentDataView === "registered") {
+                      totalBoys = degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
+                      grandTotal = degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
+                    } else {
+                      totalBoys = data?.totalBoys || 0
+                      grandTotal = data?.grandTotal || 0
+                    }
+                    return grandTotal > 0 ? Math.round((totalBoys / grandTotal) * 100) : 0
+                  })()}
+                  %
+                </td>
+                <td className="px-4 py-2 text-sm text-pink-800 text-center">
+                  {(() => {
+                    let totalGirls, grandTotal
+                    if (studentDataView === "registered") {
+                      totalGirls = degreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
+                      grandTotal = degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
+                    } else {
+                      totalGirls = data?.totalGirls || 0
+                      grandTotal = data?.grandTotal || 0
+                    }
+                    return grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
+                  })()}
+                  %
+                </td>
               </>
             )}
           </tr>
