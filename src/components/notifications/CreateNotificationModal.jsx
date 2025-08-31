@@ -3,6 +3,7 @@ import { FaExclamationTriangle, FaBell } from "react-icons/fa"
 import Modal from "../common/Modal"
 import { notificationApi } from "../../services/notificationApi"
 import { useGlobal } from "../../contexts/GlobalProvider"
+import { getDepartmentList, getDegreesList } from "../../services/studentService"
 
 const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   const { hostelList } = useGlobal()
@@ -12,8 +13,9 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [departmentInput, setDepartmentInput] = useState("")
-  const [degreeInput, setDegreeInput] = useState("")
+  const [availableDepartments, setAvailableDepartments] = useState([])
+  const [availableDegrees, setAvailableDegrees] = useState([])
+  const [loadingOptions, setLoadingOptions] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
     message: "",
@@ -32,6 +34,24 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
       ...prev,
       expiryDate: date.toISOString().split("T")[0],
     }))
+
+    // Fetch departments and degrees when component mounts
+    const fetchOptions = async () => {
+      setLoadingOptions(true)
+      try {
+        const [departmentsResponse, degreesResponse] = await Promise.all([getDepartmentList(), getDegreesList()])
+
+        setAvailableDepartments(departmentsResponse || [])
+        setAvailableDegrees(degreesResponse || [])
+      } catch (error) {
+        console.error("Error fetching departments/degrees:", error)
+        setError("Failed to load departments and degrees")
+      } finally {
+        setLoadingOptions(false)
+      }
+    }
+
+    fetchOptions()
   }, [])
 
   const getHostelNamesByIds = (ids) => {
@@ -55,10 +75,24 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           return { ...prev, hostelIds: currentHostelIds.filter((id) => id !== value) }
         }
       })
-    } else if (name === "departmentsInput") {
-      setDepartmentInput(value)
-    } else if (name === "degreesInput") {
-      setDegreeInput(value)
+    } else if (name === "departments" && type === "checkbox") {
+      setFormData((prev) => {
+        const currentDepartments = prev.departments || []
+        if (checked) {
+          return { ...prev, departments: [...currentDepartments, value] }
+        } else {
+          return { ...prev, departments: currentDepartments.filter((dept) => dept !== value) }
+        }
+      })
+    } else if (name === "degrees" && type === "checkbox") {
+      setFormData((prev) => {
+        const currentDegrees = prev.degrees || []
+        if (checked) {
+          return { ...prev, degrees: [...currentDegrees, value] }
+        } else {
+          return { ...prev, degrees: currentDegrees.filter((degree) => degree !== value) }
+        }
+      })
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -81,30 +115,13 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
     return true
   }
 
-  const parseInputToArray = (inputString) => {
-    return inputString
-      .split(",")
-      .map((item) => item.trim())
-      .filter((item) => item !== "")
-  }
-
   const moveToStep2 = () => {
     if (!validateForm()) return
-
-    setFormData((prev) => ({
-      ...prev,
-      departments: parseInputToArray(departmentInput),
-      degrees: parseInputToArray(degreeInput),
-    }))
-
     setStep(2)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    const finalDepartments = parseInputToArray(departmentInput)
-    const finalDegrees = parseInputToArray(degreeInput)
 
     try {
       setLoading(true)
@@ -118,8 +135,8 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
       }
 
       if (formData.hostelIds.length > 0) payload.hostelId = formData.hostelIds
-      if (finalDegrees.length > 0) payload.degree = finalDegrees
-      if (finalDepartments.length > 0) payload.department = finalDepartments
+      if (formData.degrees.length > 0) payload.degree = formData.degrees
+      if (formData.departments.length > 0) payload.department = formData.departments
       if (formData.gender) payload.gender = formData.gender
 
       const response = await notificationApi.createNotification(payload)
@@ -151,8 +168,6 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
       gender: "",
       expiryDate: date.toISOString().split("T")[0],
     })
-    setDepartmentInput("")
-    setDegreeInput("")
     setStep(1)
     setError(null)
   }
@@ -217,21 +232,44 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-2">Department(s)</label>
-                <textarea
-                  name="departmentsInput"
-                  value={departmentInput}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all"
-                  placeholder="Enter departments, separated by commas"
-                />
-                <p className="text-xs text-gray-500 mt-1">e.g., CSE, ECE, ME</p>
+                <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3 space-y-2 bg-white">
+                  {loadingOptions ? (
+                    <p className="text-sm text-gray-500">Loading departments...</p>
+                  ) : availableDepartments && availableDepartments.length > 0 ? (
+                    availableDepartments.map((department) => (
+                      <div key={department} className="flex items-center">
+                        <input type="checkbox" id={`dept-${department}`} name="departments" value={department} checked={formData.departments.includes(department)} onChange={handleChange} className="h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB]" />
+                        <label htmlFor={`dept-${department}`} className="ml-2 block text-sm text-gray-900">
+                          {department}
+                        </label>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500">No departments available.</p>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Select one or more departments</p>
               </div>
 
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-2">Degree(s)</label>
-                <textarea name="degreesInput" value={degreeInput} onChange={handleChange} rows={3} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter degrees, separated by commas" />
-                <p className="text-xs text-gray-500 mt-1">e.g., BTech, MTech</p>
+                <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-lg p-3 space-y-2 bg-white">
+                  {loadingOptions ? (
+                    <p className="text-sm text-gray-500">Loading degrees...</p>
+                  ) : availableDegrees && availableDegrees.length > 0 ? (
+                    availableDegrees.map((degree) => (
+                      <div key={degree} className="flex items-center">
+                        <input type="checkbox" id={`degree-${degree}`} name="degrees" value={degree} checked={formData.degrees.includes(degree)} onChange={handleChange} className="h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB]" />
+                        <label htmlFor={`degree-${degree}`} className="ml-2 block text-sm text-gray-900">
+                          {degree}
+                        </label>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500">No degrees available.</p>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Select one or more degrees</p>
               </div>
 
               <div>
