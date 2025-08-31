@@ -507,6 +507,25 @@ export const adminApi = {
     }
   },
 
+  getMaintenanceStaffStats: async (staffId) => {
+    try {
+      const response = await fetch(`${baseUrl}/admin/maintenance-staff-stats/${staffId}`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || "Failed to fetch maintenance staff stats")
+      }
+
+      return response.json()
+    } catch (error) {
+      console.error("Error fetching maintenance staff stats:", error)
+      throw error
+    }
+  },
+
   // Registered students management
   getRegisteredStudents: async () => {
     return await adminApi.getConfig("registeredStudents")
