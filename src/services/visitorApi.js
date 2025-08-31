@@ -390,4 +390,48 @@ export const visitorApi = {
       throw error
     }
   },
+
+  // updatePaymentInfo: async (requestId, paymentInfo) => {
+  //   try {
+  //     const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/payment-info`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify(paymentInfo),
+  //     })
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to update payment info")
+  //     }
+
+  //     return await response.json()
+  //   } catch (error) {
+  //     console.error("Error updating payment info:", error)
+  //     throw error
+  //   }
+  // },
+
+  submitPaymentInfo: async (requestId, paymentData) => {
+    try {
+      const response = await fetch(`${baseUrl}/visitor/requests/${requestId}/payment-info`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(paymentData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to submit payment info")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error submitting payment info:", error)
+      throw error
+    }
+  },
 }
