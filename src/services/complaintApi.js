@@ -57,4 +57,23 @@ export const complaintApi = {
       throw error
     }
   },
+
+  getStats: async (query) => {
+    const queryParams = new URLSearchParams(query).toString()
+    try {
+      const response = await fetch(`${baseUrl}/complaint/stats?${queryParams}`, {
+        method: "GET",
+        ...fetchOptions,
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch complaint stats")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error fetching complaint stats:", error)
+      throw error
+    }
+  },
 }
