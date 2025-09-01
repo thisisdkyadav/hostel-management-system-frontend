@@ -45,4 +45,19 @@ export const dashboardApi = {
 
     return response.json()
   },
+
+  getWardenHostelStatistics: async () => {
+    const route = "/dashboard/warden/hostel-statistics"
+    const response = await fetch(`${baseUrl}${route}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to fetch warden hostel statistics")
+    }
+
+    return response.json()
+  },
 }
