@@ -154,6 +154,7 @@ const AppRoutes = () => {
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="notifications" element={<NotificationCenter />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="student-inventory" element={<StudentInventory />} />
@@ -177,6 +178,7 @@ const AppRoutes = () => {
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="notifications" element={<NotificationCenter />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="student-inventory" element={<StudentInventory />} />
@@ -201,6 +203,7 @@ const AppRoutes = () => {
         <Route path="complaints" element={<Complaint />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<VisitorRequests />} />
+        <Route path="notifications" element={<NotificationCenter />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="student-inventory" element={<StudentInventory />} />
