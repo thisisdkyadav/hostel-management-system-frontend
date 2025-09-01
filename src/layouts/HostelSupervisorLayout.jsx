@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes, FaTasks, FaBell } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes, FaTasks, FaBell, FaFileSignature } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -35,6 +35,7 @@ const HostelSupervisorLayout = () => {
     { name: "Notifications", icon: FaBell, section: "main", path: "/hostel-supervisor/notifications" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/hostel-supervisor/complaints" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/hostel-supervisor/feedbacks" },
+    { name: "Undertakings", icon: FaFileSignature, section: "main", path: "/hostel-supervisor/undertakings" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/hostel-supervisor/profile" },
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]

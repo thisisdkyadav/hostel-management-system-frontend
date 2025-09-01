@@ -76,6 +76,7 @@ import Inventory from "../pages/admin/Inventory.jsx"
 import StudentInventory from "../pages/warden/StudentInventory.jsx"
 import TaskManagement from "../pages/admin/TaskManagement.jsx"
 import MyTasks from "../pages/MyTasks.jsx"
+import WardenUndertakings from "../pages/warden/Undertakings.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -161,6 +162,7 @@ const AppRoutes = () => {
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
+        <Route path="undertakings" element={<WardenUndertakings />} />
         <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
@@ -185,6 +187,7 @@ const AppRoutes = () => {
         {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
+        <Route path="undertakings" element={<WardenUndertakings />} />
         <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
@@ -209,6 +212,7 @@ const AppRoutes = () => {
         <Route path="student-inventory" element={<StudentInventory />} />
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
+        <Route path="undertakings" element={<WardenUndertakings />} />
         <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
