@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { statsApi } from "../../services/apiService"
 import { dashboardApi } from "../../services/dashboardApi"
 import StatCards from "../../components/common/StatCards"
-import { BiError, BiCalendarEvent } from "react-icons/bi"
+import { BiError, BiCalendarEvent, BiBuildings } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { MdChangeCircle, MdDashboard } from "react-icons/md"
 import { FiSearch } from "react-icons/fi"
@@ -25,6 +25,7 @@ const DashboardWarden = () => {
   const [eventStats, setEventStats] = useState(null)
   const [visitorStats, setVisitorStats] = useState(null)
   const [studentStats, setStudentStats] = useState(null)
+  const [hostelStats, setHostelStats] = useState(null)
   const [normalizedView, setNormalizedView] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -34,12 +35,19 @@ const DashboardWarden = () => {
       try {
         setLoading(true)
 
-        const [lostAndFoundData, eventsData, visitorData, studentData] = await Promise.all([statsApi.getLostAndFoundStats(), statsApi.getEventStats(profile?.hostelId?._id), statsApi.getVisitorStats(profile?.hostelId?._id), dashboardApi.getStudentStatistics()])
+        const [lostAndFoundData, eventsData, visitorData, studentData, hostelData] = await Promise.all([
+          statsApi.getLostAndFoundStats(),
+          statsApi.getEventStats(profile?.hostelId?._id),
+          statsApi.getVisitorStats(profile?.hostelId?._id),
+          dashboardApi.getStudentStatistics(),
+          dashboardApi.getWardenHostelStatistics(),
+        ])
 
         setLostFoundStats(lostAndFoundData)
         setEventStats(eventsData)
         setVisitorStats(visitorData)
         setStudentStats({ students: studentData.data })
+        setHostelStats(hostelData.data)
       } catch (err) {
         console.error("Error fetching stats:", err)
         setError("Failed to load dashboard statistics")
@@ -147,30 +155,32 @@ const DashboardWarden = () => {
 
         <div className="h-64">
           {studentStats ? (
-            <DegreeWiseStudentsChart data={studentStats?.students} normalized={normalizedView} />
+            <DegreeWiseStudentsTable data={studentStats?.students} normalized={normalizedView} />
           ) : (
             <div className="h-full flex items-center justify-center">
               <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin" />
             </div>
           )}
         </div>
+      </div>
 
-        {studentStats && (
-          <div className="mt-4 grid grid-cols-3 gap-4 text-center">
-            <div className="bg-blue-50 p-2 rounded-lg">
-              <p className="text-xs text-gray-500">Total Boys</p>
-              <p className="text-lg font-bold text-blue-600">{studentStats?.students?.totalBoys || 0}</p>
+      {/* Hostel Statistics section */}
+      <div className="mb-6 bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-700 flex items-center">
+            <BiBuildings className="mr-2 text-blue-500" /> Hostel Overview
+          </h2>
+        </div>
+
+        <div className="h-64">
+          {hostelStats ? (
+            <HostelStatisticsTable data={hostelStats} />
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin" />
             </div>
-            <div className="bg-pink-50 p-2 rounded-lg">
-              <p className="text-xs text-gray-500">Total Girls</p>
-              <p className="text-lg font-bold text-pink-600">{studentStats?.students?.totalGirls || 0}</p>
-            </div>
-            <div className="bg-indigo-50 p-2 rounded-lg">
-              <p className="text-xs text-gray-500">Grand Total</p>
-              <p className="text-lg font-bold text-indigo-600">{studentStats?.students?.grandTotal || 0}</p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -215,123 +225,159 @@ const StatInfo = ({ label, value, color, isBold = false }) => (
   </div>
 )
 
-// Chart component for degree-wise student distribution
-const DegreeWiseStudentsChart = ({ data, normalized = false }) => {
-  // Prepare data for absolute or normalized view
-  let labels = data?.degreeWise?.map((item) => item.degree) || []
-  let boysData, girlsData
-
-  if (normalized) {
-    // For normalized view, convert to percentages
-    boysData =
-      data?.degreeWise?.map((item) => {
-        const total = item.boys + item.girls
-        return total > 0 ? Math.round((item.boys / total) * 100) : 0
-      }) || []
-
-    girlsData =
-      data?.degreeWise?.map((item) => {
-        const total = item.boys + item.girls
-        return total > 0 ? Math.round((item.girls / total) * 100) : 0
-      }) || []
-  } else {
-    // For absolute view, use raw numbers
-    boysData = data?.degreeWise?.map((item) => item.boys) || []
-    girlsData = data?.degreeWise?.map((item) => item.girls) || []
+// Table component for degree-wise student distribution
+const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
+  if (!data?.degreeWise?.length) {
+    return <div className="h-full flex items-center justify-center text-gray-500">No student data available</div>
   }
 
-  // Generate a unique ID for the chart to avoid canvas reuse issues
-  const chartId = `degree-chart-${normalized ? "normalized" : "absolute"}-${Math.random().toString(36).substr(2, 9)}`
+  const degreeData =
+    data?.degreeWise?.map((item) => ({
+      ...item,
+      boys: item.boys || 0,
+      girls: item.girls || 0,
+      total: (item.boys || 0) + (item.girls || 0),
+    })) || []
 
-  const chartData = {
-    labels: labels,
-    datasets: [
-      {
-        label: normalized ? "Boys %" : "Boys",
-        data: boysData,
-        backgroundColor: "#3B82F6",
-        barThickness: 20,
-      },
-      {
-        label: normalized ? "Girls %" : "Girls",
-        data: girlsData,
-        backgroundColor: "#EC4899",
-        barThickness: 20,
-      },
-    ],
+  return (
+    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50 sticky top-0 z-10">
+          <tr>
+            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Degree</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls</th>
+            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Total</th>
+            {normalized && (
+              <>
+                <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys %</th>
+                <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls %</th>
+              </>
+            )}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-100">
+          {degreeData.map((item, index) => {
+            const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
+            const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
+
+            return (
+              <tr key={index} className="hover:bg-gray-50/70 transition">
+                <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
+                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.boys}</td>
+                <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{item.girls}</td>
+                <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">{item.total}</td>
+                {normalized && (
+                  <>
+                    <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{boysPercent}%</td>
+                    <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{girlsPercent}%</td>
+                  </>
+                )}
+              </tr>
+            )
+          })}
+
+          {/* Totals row */}
+          <tr className="bg-gray-50 font-medium">
+            <td className="px-4 py-2 text-sm text-gray-900">Total</td>
+            <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalBoys || 0}</td>
+            <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.totalGirls || 0}</td>
+            <td className="px-4 py-2 text-sm text-indigo-800 text-center">{data?.grandTotal || 0}</td>
+            {normalized && (
+              <>
+                <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
+                <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
+              </>
+            )}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+// Hostel Statistics Table component
+const HostelStatisticsTable = ({ data }) => {
+  if (!data) {
+    return <div className="h-full flex items-center justify-center text-gray-500">No hostel data available</div>
   }
 
-  // Find max value to set appropriate scale
-  const allValues = [...boysData, ...girlsData]
-  const maxValue = allValues.length > 0 ? Math.max(...allValues) : 100
+  return (
+    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Basic Information */}
+        <div className="space-y-4">
+          <h3 className="text-md font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Name:</span>
+              <span className="text-sm font-medium text-gray-800">{data.name}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Type:</span>
+              <span className="text-sm font-medium text-gray-800">{data.type}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Gender:</span>
+              <span className="text-sm font-medium text-gray-800">{data.gender}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Maintenance Issues:</span>
+              <span className={`text-sm font-medium ${data.maintenanceIssues > 0 ? "text-red-600" : "text-green-600"}`}>{data.maintenanceIssues}</span>
+            </div>
+          </div>
+        </div>
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            // Use original data for tooltip values
-            const originalValue = context.dataset.originalData ? context.dataset.originalData[context.dataIndex] : context.raw
-            return `${context.dataset.label}: ${originalValue}${normalized ? "%" : ""}`
-          },
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          display: false, // Hide the y-axis labels
-          precision: 0,
-        },
-        // Set y-axis scale based on view type
-        suggestedMax: normalized ? 100 : Math.ceil(maxValue * 1.1),
-        grid: {
-          drawBorder: false, // Optional: removes the y-axis line
-        },
-      },
-    },
-    // Only set minBarLength for non-zero values
-    barPercentage: 0.8,
-  }
+        {/* Room Statistics */}
+        <div className="space-y-4">
+          <h3 className="text-md font-semibold text-gray-800 border-b pb-2">Room Statistics</h3>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Total Rooms:</span>
+              <span className="text-sm font-medium text-gray-800">{data.totalRooms}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Active Rooms:</span>
+              <span className="text-sm font-medium text-blue-600">{data.totalActiveRooms}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Occupied Rooms:</span>
+              <span className="text-sm font-medium text-green-600">{data.occupiedRooms}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-sm text-gray-600">Vacant Rooms:</span>
+              <span className="text-sm font-medium text-orange-600">{data.vacantRooms}</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  // Process each dataset to apply square root transformation for better visualization
-  chartData.datasets = chartData.datasets.map((dataset) => {
-    // Find the maximum value in this dataset for scaling
-    const maxDatasetValue = Math.max(...dataset.data.filter((v) => v > 0), 1)
+      {/* Capacity and Occupancy Statistics */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="text-center">
+            <p className="text-xs text-blue-600 mb-1">Total Capacity</p>
+            <p className="text-2xl font-bold text-blue-700">{data.capacity}</p>
+          </div>
+        </div>
 
-    // Apply a square root transformation to make small values more visible
-    // while maintaining the relative differences between large values
-    const processedData = dataset.data.map((value) => {
-      if (value === 0) return null // Null values won't be drawn
+        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+          <div className="text-center">
+            <p className="text-xs text-green-600 mb-1">Occupancy Rate</p>
+            <p className="text-2xl font-bold text-green-700">{data.occupancyRate?.toFixed(1)}%</p>
+          </div>
+        </div>
 
-      // Apply square root transformation to make small values more visible
-      // We multiply by a factor to maintain a reasonable scale
-      const scaleFactor = Math.sqrt(maxDatasetValue)
-      return Math.sqrt(value) * scaleFactor
-    })
-
-    // Store original values for tooltips
-    const originalData = [...dataset.data]
-
-    return {
-      ...dataset,
-      data: processedData,
-      originalData: originalData, // Store original data for tooltips
-    }
-  })
-
-  return <Bar data={chartData} options={options} />
+        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+          <div className="text-center">
+            <p className="text-xs text-purple-600 mb-1">Active Rooms Occupancy</p>
+            <p className="text-2xl font-bold text-purple-700">{data.activeRoomsOccupancy}</p>
+            <p className="text-xs text-gray-500 mt-1">of {data.activeRoomsCapacity}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default DashboardWarden
