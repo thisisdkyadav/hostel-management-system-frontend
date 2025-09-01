@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes, FaTasks } from "react-icons/fa"
+import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes, FaTasks, FaBell } from "react-icons/fa"
 import { MdSpaceDashboard } from "react-icons/md"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -32,6 +32,7 @@ const AssociateWardenLayout = () => {
     { name: "Events", icon: FaCalendarAlt, section: "main", path: "/associate-warden/events" },
     // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/associate-warden/room-change-requests" },
     { name: "Visitors", icon: FaUserTie, section: "main", path: "/associate-warden/visitors" },
+    { name: "Notifications", icon: FaBell, section: "main", path: "/associate-warden/notifications" },
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/associate-warden/complaints" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/associate-warden/feedbacks" },
     { name: "Profile", icon: FaUser, section: "bottom", path: "/associate-warden/profile" },
