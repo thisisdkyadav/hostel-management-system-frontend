@@ -34,7 +34,7 @@ const AdminLayout = () => {
     { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/admin/lost-and-found" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/admin/feedbacks" },
-    { name: "Administrators", icon: FaUserShield, section: "main", path: "/admin/administrators" },
+    { name: "HCU Staff", icon: FaUserShield, section: "main", path: "/admin/administrators" },
     { name: "Wardens", icon: FaUserTie, section: "main", path: "/admin/wardens" },
     { name: "Associate Wardens", icon: FaUserTie, section: "main", path: "/admin/associate-wardens" },
     { name: "Hostel Supervisors", icon: FaUserTie, section: "main", path: "/admin/hostel-supervisors" },
