@@ -448,10 +448,11 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
       if (studentDataView === "registered") {
         // Show registered students data from settings
         const registeredData = item.registeredStudents
-        if (typeof registeredData === "object" && registeredData !== null) {
-          displayBoys = registeredData.boys || 0
-          displayGirls = registeredData.girls || 0
-          displayTotal = registeredData.total || 0
+        const registered = item?.registered || null
+        if (registered !== null) {
+          displayBoys = registered.boys || 0
+          displayGirls = registered.girls || 0
+          displayTotal = registered.total || 0
         } else {
           // If old format or no breakdown available, show total as boys+girls split evenly or 0
           const total = parseInt(registeredData) || 0
