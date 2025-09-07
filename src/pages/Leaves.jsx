@@ -19,6 +19,9 @@ const Leaves = () => {
     limit: 10,
   })
 
+  // Admin toggle for self vs all leaves
+  const [viewSelfOnly, setViewSelfOnly] = useState(false)
+
   const [showFilters, setShowFilters] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [selectedLeave, setSelectedLeave] = useState(null)
@@ -60,7 +63,7 @@ const Leaves = () => {
   const fetchLeaves = async () => {
     try {
       setLoading(true)
-      if (isAdmin) {
+      if (isAdmin && !viewSelfOnly) {
         const queryParams = {}
         if (filters.status !== "all") queryParams.status = filters.status
         if (filters.startDate) queryParams.startDate = filters.startDate
@@ -75,6 +78,7 @@ const Leaves = () => {
         setTotalItems(response.totalCount || response.meta?.total || normalized.length)
         setTotalPages(response.totalPages || response.meta?.totalPages || 1)
       } else {
+        // Fetch self leaves (for non-admin or admin viewing self)
         const response = await leaveApi.getMyLeaves()
         const list = response.leaves || response.data || response || []
         const normalized = Array.isArray(list) ? list : []
@@ -94,11 +98,11 @@ const Leaves = () => {
       fetchLeaves()
     }, 300)
     return () => clearTimeout(delay)
-  }, [filters, isAdmin])
+  }, [filters, isAdmin, viewSelfOnly])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <LeavesHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} onCreate={() => setShowCreateModal(true)} title="Leave Management" isAdmin={isAdmin} />
+      <LeavesHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} onCreate={() => setShowCreateModal(true)} title="Leave Management" isAdmin={isAdmin} viewSelfOnly={viewSelfOnly} setViewSelfOnly={setViewSelfOnly} />
 
       {showFilters && <LeavesFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} isAdmin={isAdmin} />}
 
@@ -109,6 +113,7 @@ const Leaves = () => {
           leave={selectedLeave}
           onClose={() => setShowDetailModal(false)}
           isAdmin={isAdmin}
+          isSelfView={!isAdmin || viewSelfOnly}
           onUpdated={() => {
             setShowDetailModal(false)
             fetchLeaves()

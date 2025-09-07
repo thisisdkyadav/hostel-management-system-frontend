@@ -86,6 +86,25 @@ export const leaveApi = {
     }
     return response.json()
   },
+
+  /**
+   * join leave
+   * @param {leaveId} leaveId
+   * @param {joinInfo} joinInfo
+   * @returns
+   */
+  joinLeave: async (leaveId, joinInfo) => {
+    const response = await fetch(`${baseUrl}/leave/${leaveId}/join`, {
+      method: "PUT",
+      ...fetchOptions,
+      body: JSON.stringify(joinInfo),
+    })
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to join leave")
+    }
+    return response.json()
+  },
 }
 
 export default leaveApi

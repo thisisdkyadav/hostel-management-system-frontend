@@ -2,7 +2,7 @@ import Button from "../common/Button"
 import { FaFilter, FaPlus, FaList, FaTh, FaCalendarAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 
-const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCreate, title = "Leave Management", isAdmin = false }) => {
+const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCreate, title = "Leave Management", isAdmin = false, viewSelfOnly, setViewSelfOnly }) => {
   const { user } = useAuth()
   const canCreate = ["Admin", "Hostel Supervisor", "Maintenance Staff"].includes(user?.role)
 
@@ -20,6 +20,17 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
           <Button onClick={() => setShowFilters(!showFilters)} variant={showFilters ? "primary" : "white"} size="small" icon={<FaFilter className="mr-2" />} className={`hover:shadow-sm transition-all duration-300 ${showFilters ? "ring-2 ring-blue-400 ring-opacity-50" : ""}`}>
             Filters
           </Button>
+
+          {isAdmin && (
+            <div className="flex border border-gray-200 rounded-lg overflow-hidden shadow-sm bg-white">
+              <Button onClick={() => setViewSelfOnly(false)} variant={!viewSelfOnly ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200 ${!viewSelfOnly ? "shadow-sm" : "hover:bg-gray-50"}`}>
+                All
+              </Button>
+              <Button onClick={() => setViewSelfOnly(true)} variant={viewSelfOnly ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200 ${viewSelfOnly ? "shadow-sm" : "hover:bg-gray-50"}`}>
+                Mine
+              </Button>
+            </div>
+          )}
 
           <div className="flex border border-gray-200 rounded-lg overflow-hidden shadow-sm bg-white">
             <Button onClick={() => setViewMode("list")} variant={viewMode === "list" ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200 ${viewMode === "list" ? "shadow-sm" : "hover:bg-gray-50"}`} icon={<FaList className="mr-2" />}>
