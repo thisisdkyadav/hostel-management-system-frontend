@@ -1,7 +1,8 @@
-import React from "react"
-import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes } from "react-icons/fa"
+import React, { useState } from "react"
+import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
+  const [crossHostelReason, setCrossHostelReason] = useState("")
   const formatDate = (dateString) => {
     if (!dateString) return "N/A"
     const date = new Date(dateString)
@@ -26,6 +27,35 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
       <div className="bg-green-50 p-3 rounded-lg border-l-4 border-green-500 mb-6">
         <p className="text-green-700 font-medium">Student verified successfully!</p>
       </div>
+
+      {/* Cross-Hostel Alert */}
+      {student.isSameHostel === false && (
+        <div className="bg-orange-50 border-2 border-orange-400 rounded-lg p-4 mb-6">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <FaExclamationTriangle className="h-6 w-6 text-orange-600 mt-0.5" />
+            </div>
+            <div className="ml-3 flex-1">
+              <h3 className="text-lg font-semibold text-orange-800 mb-2">Cross-Hostel Entry Alert</h3>
+              <p className="text-orange-700 text-sm mb-3">This student belongs to a different hostel. Please provide a reason for allowing entry.</p>
+              <div className="space-y-2">
+                <label htmlFor="crossHostelReason" className="block text-sm font-medium text-orange-800">
+                  Reason for Cross-Hostel Entry <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="crossHostelReason"
+                  value={crossHostelReason}
+                  onChange={(e) => setCrossHostelReason(e.target.value)}
+                  placeholder="Enter reason for allowing this cross-hostel entry..."
+                  className="w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                  rows="3"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Profile Image Section */}
@@ -119,7 +149,11 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
               <FaTimes className="mr-2" /> Reset
             </button>
 
-            <button onClick={onRecordEntry} disabled={recordingEntry} className="flex-1 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors flex items-center justify-center disabled:bg-blue-300 disabled:cursor-not-allowed">
+            <button
+              onClick={() => onRecordEntry(student.isSameHostel === false ? crossHostelReason.trim() : null)}
+              disabled={recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())}
+              className="flex-1 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors flex items-center justify-center disabled:bg-blue-300 disabled:cursor-not-allowed"
+            >
               {getNextStatus() === "Checked In" ? (
                 <>
                   <FaSignInAlt className="mr-2" /> Check In

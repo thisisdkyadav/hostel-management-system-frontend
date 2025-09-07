@@ -135,7 +135,7 @@ const QRScanner = ({ onRefresh }) => {
     return lastCheckInOut.status === "Checked In" ? "Checked Out" : "Checked In"
   }
 
-  const recordEntry = async () => {
+  const recordEntry = async (crossHostelReason = null) => {
     if (!scannedStudent) return
 
     try {
@@ -144,10 +144,17 @@ const QRScanner = ({ onRefresh }) => {
 
       const status = getNextStatus()
 
-      await securityApi.addStudentEntryWithEmail({
+      const entryData = {
         email: scannedStudent.email,
         status: status,
-      })
+      }
+
+      // Add cross-hostel reason if provided
+      if (crossHostelReason) {
+        entryData.crossHostelReason = crossHostelReason
+      }
+
+      await securityApi.addStudentEntryWithEmail(entryData)
       onRefresh()
       handleReset()
       setRecordingEntry(false)
