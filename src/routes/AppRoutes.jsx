@@ -62,6 +62,7 @@ import HostelSupervisorLayout from "../layouts/HostelSupervisorLayout.jsx"
 import AdminHostelSupervisors from "../pages/admin/HostelSupervisors.jsx"
 import AdminSettings from "../pages/admin/Settings"
 import AdminAdminManagement from "../pages/admin/AdminManagement.jsx"
+import Leaves from "../pages/Leaves.jsx"
 
 // import related to super admin
 import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
@@ -139,6 +140,7 @@ const AppRoutes = () => {
         <Route index element={<MaintenancePage />} />
         <Route path="attendance" element={<MaintenanceAttendance />} />
         <Route path="my-tasks" element={<MyTasks />} />
+        <Route path="leaves" element={<Leaves />} />
       </Route>
 
       <Route
@@ -204,6 +206,7 @@ const AppRoutes = () => {
         <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
         <Route path="complaints" element={<Complaint />} />
+        <Route path="leaves" element={<Leaves />} />
         <Route path="students" element={<Students />} />
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="notifications" element={<NotificationCenter />} />
@@ -270,6 +273,7 @@ const AppRoutes = () => {
         <Route path="students" element={<Students />} />
         <Route path="inventory" element={<Inventory />} />
         <Route path="complaints" element={<Complaint />} />
+        <Route path="leaves" element={<Leaves />} />
         <Route path="security" element={<SecurityLogins />} />
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />

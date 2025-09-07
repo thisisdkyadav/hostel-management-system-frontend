@@ -26,6 +26,7 @@ const HostelSupervisorLayout = () => {
     { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/hostel-supervisor" },
     { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/hostel-supervisor/hostels/${user?.hostel?.name}`, pathPattern: "^/hostel-supervisor/hostels(/.*)?$" },
     { name: "Students", icon: FaUsers, section: "main", path: "/hostel-supervisor/students" },
+    { name: "Leaves", icon: FaCalendarAlt, section: "main", path: "/hostel-supervisor/leaves" },
     { name: "Student Inventory", icon: FaBoxes, section: "main", path: "/hostel-supervisor/student-inventory" },
     { name: "My Tasks", icon: FaTasks, section: "main", path: "/hostel-supervisor/my-tasks" },
     { name: "Lost and Found", icon: FaSearch, section: "main", path: "/hostel-supervisor/lost-and-found" },
