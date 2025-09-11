@@ -6,6 +6,229 @@ import Modal from "../../common/Modal"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../services/adminApi"
 
+// Extracted to avoid remounting on each parent render which caused input focus loss
+const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-medium text-gray-800">Add Single Student</h3>
+
+      <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
+        <div className="flex-shrink-0 mt-0.5 mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <p className="text-sm">Fill in the student details below. Fields marked with * are required.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Required Fields */}
+        <div className="md:col-span-2">
+          <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Required Information</h4>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+          <input
+            type="text"
+            value={manualStudent.name}
+            onChange={(e) => handleManualInputChange("name", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter student's full name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+          <input
+            type="email"
+            value={manualStudent.email}
+            onChange={(e) => handleManualInputChange("email", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter email address"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
+          <input
+            type="text"
+            value={manualStudent.rollNumber}
+            onChange={(e) => handleManualInputChange("rollNumber", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter roll number"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <input
+            type="tel"
+            value={manualStudent.phone}
+            onChange={(e) => handleManualInputChange("phone", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter phone number"
+          />
+        </div>
+
+        {/* Optional Fields */}
+        <div className="md:col-span-2 mt-6">
+          <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Optional Information</h4>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <input
+            type="password"
+            value={manualStudent.password}
+            onChange={(e) => handleManualInputChange("password", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter password"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+          <select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+          <input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]" />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+          {validDegrees.length > 0 ? (
+            <select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
+              <option value="">Select degree</option>
+              {validDegrees.map((degree) => (
+                <option key={degree} value={degree}>
+                  {degree}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={manualStudent.degree}
+              onChange={(e) => handleManualInputChange("degree", e.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+              placeholder="Enter degree"
+            />
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+          {validDepartments.length > 0 ? (
+            <select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
+              <option value="">Select department</option>
+              {validDepartments.map((department) => (
+                <option key={department} value={department}>
+                  {department}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              value={manualStudent.department}
+              onChange={(e) => handleManualInputChange("department", e.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+              placeholder="Enter department"
+            />
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
+          <input
+            type="number"
+            value={manualStudent.year}
+            onChange={(e) => handleManualInputChange("year", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter year"
+            min="1"
+            max="10"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Admission Date</label>
+          <input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]" />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+          <textarea
+            value={manualStudent.address}
+            onChange={(e) => handleManualInputChange("address", e.target.value)}
+            rows={3}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter address"
+          />
+        </div>
+
+        {/* Guardian Information */}
+        <div className="md:col-span-2 mt-6">
+          <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Guardian Information</h4>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Name</label>
+          <input
+            type="text"
+            value={manualStudent.guardian}
+            onChange={(e) => handleManualInputChange("guardian", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter guardian's name"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Phone</label>
+          <input
+            type="tel"
+            value={manualStudent.guardianPhone}
+            onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter guardian's phone"
+          />
+        </div>
+
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Email</label>
+          <input
+            type="email"
+            value={manualStudent.guardianEmail}
+            onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            placeholder="Enter guardian's email"
+          />
+        </div>
+      </div>
+
+      {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+
+      {configLoading && (
+        <div className="flex items-center justify-center py-4">
+          <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <span className="ml-2 text-sm text-gray-600">Loading configuration...</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -327,229 +550,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     { id: "manual", name: "Single Student", icon: <FaUser /> },
   ]
 
-  // Manual Student Form Component
-  const ManualStudentForm = () => {
-    return (
-      <div className="space-y-6">
-        <h3 className="text-lg font-medium text-gray-800">Add Single Student</h3>
-
-        <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
-          <div className="flex-shrink-0 mt-0.5 mr-3">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <p className="text-sm">Fill in the student details below. Fields marked with * are required.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Required Fields */}
-          <div className="md:col-span-2">
-            <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Required Information</h4>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-            <input
-              type="text"
-              value={manualStudent.name}
-              onChange={(e) => handleManualInputChange("name", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter student's full name"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-            <input
-              type="email"
-              value={manualStudent.email}
-              onChange={(e) => handleManualInputChange("email", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter email address"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
-            <input
-              type="text"
-              value={manualStudent.rollNumber}
-              onChange={(e) => handleManualInputChange("rollNumber", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter roll number"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-            <input
-              type="tel"
-              value={manualStudent.phone}
-              onChange={(e) => handleManualInputChange("phone", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter phone number"
-            />
-          </div>
-
-          {/* Optional Fields */}
-          <div className="md:col-span-2 mt-6">
-            <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Optional Information</h4>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              value={manualStudent.password}
-              onChange={(e) => handleManualInputChange("password", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter password"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-            <select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
-              <option value="">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-            <input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
-            {validDegrees.length > 0 ? (
-              <select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
-                <option value="">Select degree</option>
-                {validDegrees.map((degree) => (
-                  <option key={degree} value={degree}>
-                    {degree}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type="text"
-                value={manualStudent.degree}
-                onChange={(e) => handleManualInputChange("degree", e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-                placeholder="Enter degree"
-              />
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-            {validDepartments.length > 0 ? (
-              <select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
-                <option value="">Select department</option>
-                {validDepartments.map((department) => (
-                  <option key={department} value={department}>
-                    {department}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type="text"
-                value={manualStudent.department}
-                onChange={(e) => handleManualInputChange("department", e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-                placeholder="Enter department"
-              />
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-            <input
-              type="number"
-              value={manualStudent.year}
-              onChange={(e) => handleManualInputChange("year", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter year"
-              min="1"
-              max="10"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Admission Date</label>
-            <input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]" />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-            <textarea
-              value={manualStudent.address}
-              onChange={(e) => handleManualInputChange("address", e.target.value)}
-              rows={3}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter address"
-            />
-          </div>
-
-          {/* Guardian Information */}
-          <div className="md:col-span-2 mt-6">
-            <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Guardian Information</h4>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Name</label>
-            <input
-              type="text"
-              value={manualStudent.guardian}
-              onChange={(e) => handleManualInputChange("guardian", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter guardian's name"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Phone</label>
-            <input
-              type="tel"
-              value={manualStudent.guardianPhone}
-              onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter guardian's phone"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Email</label>
-            <input
-              type="email"
-              value={manualStudent.guardianEmail}
-              onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
-              placeholder="Enter guardian's email"
-            />
-          </div>
-        </div>
-
-        {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
-
-        {configLoading && (
-          <div className="flex items-center justify-center py-4">
-            <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <span className="ml-2 text-sm text-gray-600">Loading configuration...</span>
-          </div>
-        )}
-      </div>
-    )
-  }
-
   if (!isOpen) return null
 
   return (
@@ -694,7 +694,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       )}
 
       {/* Manual Student Tab */}
-      {activeTab === "manual" && <ManualStudentForm />}
+      {activeTab === "manual" && <ManualStudentForm manualStudent={manualStudent} handleManualInputChange={handleManualInputChange} validDegrees={validDegrees} validDepartments={validDepartments} configLoading={configLoading} error={error} />}
 
       <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
         {/* CSV Tab Buttons */}
