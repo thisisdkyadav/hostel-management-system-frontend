@@ -9,6 +9,7 @@ export const useStudents = (options = {}) => {
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [missingOptions, setMissingOptions] = useState([])
 
   const [filters, setFilters] = useState({
     ...DEFAULT_FILTERS,
@@ -30,22 +31,31 @@ export const useStudents = (options = {}) => {
 
   const debounceTimerRef = useRef(null)
 
-  const fetchStudents = useCallback(async (queryString) => {
-    try {
-      setLoading(true)
-      setError(null)
-      const response = await studentApi.getStudents(queryString)
-      setStudents(response?.data || [])
-      setTotalCount(response?.pagination?.total || 0)
-      setTotalPages(Math.ceil(response?.pagination?.total / pagination.perPage) || 0)
-      return response
-    } catch (err) {
-      setError(err.message || "Failed to fetch students")
-      return { error: err }
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  const fetchStudents = useCallback(
+    async (queryString) => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await studentApi.getStudents(queryString)
+        setStudents(response?.data || [])
+        setTotalCount(response?.pagination?.total || 0)
+        setTotalPages(Math.ceil(response?.pagination?.total / pagination.perPage) || 0)
+
+        // Handle missing options from API response
+        if (response?.meta?.missingOptions) {
+          setMissingOptions(response.meta.missingOptions)
+        }
+
+        return response
+      } catch (err) {
+        setError(err.message || "Failed to fetch students")
+        return { error: err }
+      } finally {
+        setLoading(false)
+      }
+    },
+    [pagination.perPage]
+  )
 
   const fetchWithCurrentFilters = useCallback(() => {
     const queryString = buildStudentQueryParams(filters, pagination, sorting)
@@ -89,6 +99,10 @@ export const useStudents = (options = {}) => {
         ...prev,
         currentPage: page,
       }))
+
+      if (autoFetch) {
+        fetchWithCurrentFilters()
+      }
     },
     [autoFetch, fetchWithCurrentFilters]
   )
@@ -100,6 +114,10 @@ export const useStudents = (options = {}) => {
         perPage: size,
         currentPage: 1,
       }))
+
+      if (autoFetch) {
+        fetchWithCurrentFilters()
+      }
     },
     [autoFetch, fetchWithCurrentFilters]
   )
@@ -172,6 +190,7 @@ export const useStudents = (options = {}) => {
     totalCount,
     loading,
     error,
+    missingOptions,
 
     filters,
     pagination,
