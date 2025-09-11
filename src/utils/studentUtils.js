@@ -60,6 +60,11 @@ export const buildStudentQueryParams = (filters, pagination, sorting) => {
     params.append("admissionDateTo", formatDateForAPI(filters.admissionDateTo))
   }
 
+  // Add missing options filter
+  if (filters.missingOptions && filters.missingOptions.length > 0) {
+    params.append("missing", filters.missingOptions.join(","))
+  }
+
   // Add sorting parameters
   params.append("sortBy", sorting.sortField)
   params.append("sortOrder", sorting.sortDirection)
@@ -84,6 +89,7 @@ export const DEFAULT_FILTERS = {
   isDayScholar: "",
   admissionDateFrom: null,
   admissionDateTo: null,
+  missingOptions: [],
 }
 
 /**

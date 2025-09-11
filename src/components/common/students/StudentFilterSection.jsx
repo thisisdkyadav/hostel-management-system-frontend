@@ -3,9 +3,10 @@ import { BsFilterRight } from "react-icons/bs"
 import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
+import MultiSelectDropdown from "../MultiSelectDropdown"
 import { getDepartmentList, getDegreesList } from "../../../services/studentService"
 
-const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions }) => {
+const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
   const [departments, setDepartments] = useState([])
   const [degreeOptions, setDegreeOptions] = useState([])
   const [loading, setLoading] = useState(false)
@@ -57,7 +58,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
   }, [])
 
   return (
-    <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-hidden">
+    <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-visible">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
         <h3 className="font-bold text-gray-700 flex items-center mb-2 sm:mb-0">
           <BsFilterRight className="mr-2 text-[#1360AB] text-lg" /> Filter Students
@@ -225,6 +226,12 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
               <option value="200">200</option>
             </select>
           </div>
+
+          {missingOptions.length > 0 && (
+            <div>
+              <MultiSelectDropdown label="Missing Information" options={missingOptions} selectedValues={filters.missingOptions || []} onChange={(selectedValues) => updateFilter("missingOptions", selectedValues)} placeholder="Select missing fields..." />
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">

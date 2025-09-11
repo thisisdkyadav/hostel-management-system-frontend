@@ -90,7 +90,7 @@ const Students = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
 
-  const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents } = useStudents({
+  const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents, missingOptions } = useStudents({
     perPage: 10,
     autoFetch: true,
   })
@@ -270,7 +270,9 @@ const Students = () => {
 
       <StudentStats />
 
-      {showFilters && <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} dayScholarOptions={dayScholarOptions} />}
+      {showFilters && (
+        <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} dayScholarOptions={dayScholarOptions} missingOptions={missingOptions} />
+      )}
 
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
         <div className="text-sm text-gray-600">
