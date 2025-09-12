@@ -178,7 +178,7 @@ const Dashboard = () => {
                   {/* Normal/Registered Toggle */}
                   <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Student data type">
                     <button onClick={() => setStudentDataView("normal")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
-                      Normal
+                      Hostler
                     </button>
                     <button onClick={() => setStudentDataView("registered")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "registered"}>
                       Registered
@@ -294,27 +294,106 @@ const Dashboard = () => {
                 </div> */}
 
                 <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-xl border border-teal-200/60">
-                    <p className="text-xs text-gray-600 mb-1">Hostlers</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-teal-700">{dashboardData?.hostlerAndDayScholarCounts?.hostler?.total}</span>
-                      <div className="flex items-center text-xs">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys}</span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls}</span>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Compute hostler/day-scholar counts from degree-wise student data when available */}
+                  {(() => {
+                    // Safe access to degreeWise and registered data
+                    const degreeWise = dashboardData?.students?.degreeWise || []
 
-                  <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-xl border border-orange-200/60">
-                    <p className="text-xs text-gray-600 mb-1">Day Scholars</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-orange-700">{dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total}</span>
-                      <div className="flex items-center text-xs">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys}</span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls}</span>
-                      </div>
-                    </div>
-                  </div>
+                    // Sum normal (actual) counts by gender and total
+                    const normalSums = degreeWise.reduce(
+                      (acc, d) => {
+                        const boys = parseInt(d.boys) || 0
+                        const girls = parseInt(d.girls) || 0
+                        acc.boys += boys
+                        acc.girls += girls
+                        acc.total += boys + girls
+                        return acc
+                      },
+                      { boys: 0, girls: 0, total: 0 }
+                    )
+
+                    // Sum registered counts; try multiple possible shapes
+                    const registeredSums = degreeWise.reduce(
+                      (acc, d) => {
+                        // preferred: d.registered (object with boys/girls/total)
+                        if (d.registered && typeof d.registered === "object") {
+                          const rb = parseInt(d.registered.boys) || 0
+                          const rg = parseInt(d.registered.girls) || 0
+                          const rt = parseInt(d.registered.total) || rb + rg
+                          acc.boys += rb
+                          acc.girls += rg
+                          acc.total += rt
+                        } else if (d.registeredStudents != null) {
+                          // older format: registeredStudents might be a number
+                          const rt = parseInt(d.registeredStudents) || 0
+                          // if no breakdown available, split evenly
+                          const rb = Math.floor(rt / 2)
+                          const rg = rt - rb
+                          acc.boys += rb
+                          acc.girls += rg
+                          acc.total += rt
+                        } else {
+                          // fallback: use d.totalRegistered or d.total if available
+                          const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
+                          const rb = Math.floor(rt / 2)
+                          const rg = rt - rb
+                          acc.boys += rb
+                          acc.girls += rg
+                          acc.total += rt
+                        }
+
+                        return acc
+                      },
+                      { boys: 0, girls: 0, total: 0 }
+                    )
+
+                    // Derive day scholar = registered - normal (per gender and total)
+                    const dayScholar = {
+                      boys: Math.max(0, registeredSums.boys - normalSums.boys),
+                      girls: Math.max(0, registeredSums.girls - normalSums.girls),
+                    }
+                    dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
+
+                    // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
+                    const hostler = {
+                      boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
+                      girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
+                    }
+                    hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
+
+                    // Fallback for day scholar if registered info missing: use provided counts
+                    const finalDayScholar = {
+                      boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
+                      girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
+                    }
+                    finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
+
+                    return (
+                      <>
+                        <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-xl border border-teal-200/60">
+                          <p className="text-xs text-gray-600 mb-1">Hostlers</p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xl font-bold text-teal-700">{hostler.total}</span>
+                            <div className="flex items-center text-xs">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {hostler.boys}</span>
+                              <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {hostler.girls}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-xl border border-orange-200/60">
+                          <p className="text-xs text-gray-600 mb-1">Day Scholars</p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xl font-bold text-orange-700">{finalDayScholar.total}</span>
+                            <div className="flex items-center text-xs">
+                              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {finalDayScholar.boys}</span>
+                              <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {finalDayScholar.girls}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )
+                  })()}
                 </div>
               </div>
             </div>
