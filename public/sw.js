@@ -1,7 +1,7 @@
 // This service worker is used for offline functionality and online status detection
 // It will be replaced by the VitePWA generated service worker in production
 
-const CACHE_NAME = "hms-cache-v1"
+const CACHE_NAME = "hms-cache-v4"
 
 // Install event - cache basic assets
 self.addEventListener("install", (event) => {
