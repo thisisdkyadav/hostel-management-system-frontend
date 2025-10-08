@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { studentApi, authApi } from "../../services/apiService"
 import { BiError } from "react-icons/bi"
@@ -71,6 +71,7 @@ const Dashboard = () => {
   const [error, setError] = useState(null)
   const [isOfflineData, setIsOfflineData] = useState(false)
   const [showQRModal, setShowQRModal] = useState(false)
+  const [showBirthday, setShowBirthday] = useState(false)
 
   const fetchDashboardData = async () => {
     try {
@@ -132,29 +133,230 @@ const Dashboard = () => {
     return currentTime - cachedTime > CACHE_EXPIRY_TIME
   }
 
-  useEffect(() => {
-    // Check for cached data first
-    const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+  // Helper to compare month and day of DOB with today
+  const isBirthdayToday = (dobValue) => {
+    if (!dobValue) return false
 
-    if (cachedData) {
-      const { data, timestamp } = JSON.parse(cachedData)
+    console.log("Checking birthday for DOB value:", dobValue)
 
-      // If cache is not expired or offline, use cached data immediately
-      if (!isCacheExpired(timestamp) || !isOnline) {
-        setDashboardData(data)
-        setIsOfflineData(!isOnline)
-        setLoading(false)
-
-        // If online and cache not expired, no need to fetch again
-        if (isOnline && !isCacheExpired(timestamp)) {
-          return
+    // Try to parse common formats; prefer ISO-like strings
+    let dob = new Date(dobValue)
+    if (isNaN(dob.getTime())) {
+      // Try to handle dd/mm/yyyy or dd-mm-yyyy
+      const parts = String(dobValue).split(/[\/\-]/)
+      if (parts.length >= 3) {
+        // try formats: yyyy-mm-dd or dd-mm-yyyy
+        let day, month
+        if (parts[0].length === 4) {
+          // yyyy-mm-dd
+          month = parseInt(parts[1], 10) - 1
+          day = parseInt(parts[2], 10)
+        } else {
+          // dd-mm-yyyy
+          day = parseInt(parts[0], 10)
+          month = parseInt(parts[1], 10) - 1
         }
+
+        if (!isNaN(day) && !isNaN(month)) {
+          dob = new Date(2000, month, day) // year doesn't matter
+        } else {
+          return false
+        }
+      } else {
+        return false
       }
     }
 
-    // Fetch fresh data if online or no valid cache
-    fetchDashboardData()
+    const today = new Date()
+    const isBD = dob.getDate() === today.getDate() && dob.getMonth() === today.getMonth()
+    console.log(`Birthday check: DOB=${dob.toDateString()}, Today=${today.toDateString()}, isBirthday=${isBD}`)
+
+    return isBD
+  }
+
+  useEffect(() => {
+    // New behavior:
+    // - When online: always fetch fresh data (do not use cache as primary source)
+    // - When offline: use cached data if available, otherwise show an error
+    const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
+
+    if (isOnline) {
+      // Always fetch fresh data when online
+      fetchDashboardData()
+    } else {
+      // Offline: try to use cached data
+      if (cachedData) {
+        try {
+          const { data } = JSON.parse(cachedData)
+          setDashboardData(data)
+          setIsOfflineData(true)
+          setError(null)
+        } catch (e) {
+          console.error("Failed to parse cached dashboard data:", e)
+          setError("You are offline and no cached data is available")
+        }
+      } else {
+        setError("You are offline and no cached data is available")
+      }
+
+      setLoading(false)
+    }
   }, [isOnline])
+
+  // Birthday display: check when dashboardData/profile becomes available
+  useEffect(() => {
+    if (!dashboardData || !dashboardData.profile) return
+
+    const dob = dashboardData.profile.dateOfBirth || dashboardData.profile.dob || dashboardData.profile.DOB
+    if (!isBirthdayToday(dob)) return
+
+    // Use localStorage to show birthday overlay only once per user per year
+    const userId = dashboardData.profile.id || (user && user.uid) || user?.id || "unknown_user"
+    const key = `birthday_shown_${userId}`
+    const currentYear = String(new Date().getFullYear())
+    const shownYear = localStorage.getItem(key)
+
+    if (shownYear !== currentYear) {
+      // not shown this year yet
+      setShowBirthday(true)
+      try {
+        localStorage.setItem(key, currentYear)
+      } catch (e) {
+        // ignore storage errors
+      }
+    }
+  }, [dashboardData, user])
+
+  // Birthday overlay component with canvas-based confetti
+  const BirthdayOverlay = ({ name, onClose }) => {
+    const canvasRef = useRef(null)
+    const rafRef = useRef(null)
+    const particlesRef = useRef([])
+    const stopTimeoutRef = useRef(null)
+
+    useEffect(() => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const ctx = canvas.getContext("2d")
+
+      let width = (canvas.width = window.innerWidth)
+      let height = (canvas.height = window.innerHeight)
+
+      const colors = ["#1360AB", "#0d4b86", "#1a5fb8", "#ffffff", "#e0f2fe"]
+
+      const createParticle = () => {
+        return {
+          x: Math.random() * width,
+          y: Math.random() * -height * 0.5,
+          w: 6 + Math.random() * 10,
+          h: 8 + Math.random() * 10,
+          vx: (Math.random() - 0.5) * 6,
+          vy: 2 + Math.random() * 6,
+          angle: Math.random() * Math.PI * 2,
+          va: (Math.random() - 0.5) * 0.2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotate: Math.random() * 360,
+        }
+      }
+
+      const initParticles = (count = 120) => {
+        particlesRef.current = []
+        for (let i = 0; i < count; i++) particlesRef.current.push(createParticle())
+      }
+
+      const resize = () => {
+        width = canvas.width = window.innerWidth
+        height = canvas.height = window.innerHeight
+      }
+
+      const gravity = 0.15
+
+      const render = () => {
+        ctx.clearRect(0, 0, width, height)
+
+        const particles = particlesRef.current
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i]
+          p.vy += gravity
+          p.x += p.vx
+          p.y += p.vy
+          p.angle += p.va
+
+          ctx.save()
+          ctx.translate(p.x, p.y)
+          ctx.rotate(p.angle)
+          ctx.fillStyle = p.color
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h)
+          ctx.restore()
+
+          // recycle if out of bounds
+          if (p.y > height + 50 || p.x < -50 || p.x > width + 50) {
+            particles[i] = createParticle()
+            particles[i].y = Math.random() * -80
+          }
+        }
+
+        rafRef.current = requestAnimationFrame(render)
+      }
+
+      initParticles(140)
+      render()
+      window.addEventListener("resize", resize)
+
+      // stop confetti after 6 seconds
+      stopTimeoutRef.current = setTimeout(() => {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current)
+        particlesRef.current = []
+        ctx.clearRect(0, 0, width, height)
+      }, 6000)
+
+      return () => {
+        window.removeEventListener("resize", resize)
+        if (rafRef.current) cancelAnimationFrame(rafRef.current)
+        if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current)
+        try {
+          ctx.clearRect(0, 0, width, height)
+        } catch (e) {}
+      }
+    }, [])
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
+
+        {/* full-screen canvas for confetti */}
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+
+        <div className="relative bg-gradient-to-br from-[#1360AB] via-[#0d4b86] to-[#1a5fb8] text-white rounded-2xl p-6 w-[min(95%,720px)] mx-4 shadow-2xl overflow-hidden">
+          <button onClick={onClose} className="absolute top-4 right-4 text-white/90 bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors">
+            ✕
+          </button>
+          <div className="flex flex-col items-center text-center space-y-4">
+            <h2 className="text-3xl md:text-4xl font-extrabold">Happy Birthday{name ? `, ${name.split(" ")[0]}` : "!"}</h2>
+            <p className="text-sm md:text-base max-w-md">Wishing you a day filled with joy, success and unforgettable moments. Have a fantastic year ahead!</p>
+
+            <div className="mt-2 w-full flex items-center justify-center">
+              <div className="bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">Enjoy your special day 🎉</div>
+            </div>
+
+            <div className="w-full mt-4 grid grid-cols-2 gap-3">
+              <button onClick={onClose} className="py-2 bg-white text-[#1360AB] rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Thanks!
+              </button>
+              <button
+                onClick={() => {
+                  onClose()
+                }}
+                className="py-2 bg-white/20 border border-white/30 rounded-lg hover:bg-white/30 transition-colors"
+              >
+                Celebrate
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (
@@ -257,6 +459,9 @@ const Dashboard = () => {
           </div>
         </Modal>
       )}
+
+      {/* Birthday overlay (appears once per user per year) */}
+      {showBirthday && <BirthdayOverlay name={dashboardData?.profile?.name || dashboardData?.profile?.fullName || dashboardData?.profile?.displayName} onClose={() => setShowBirthday(false)} />}
     </div>
   )
 }
