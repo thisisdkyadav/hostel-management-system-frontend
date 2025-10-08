@@ -119,37 +119,164 @@ const Dashboard = () => {
 
   return (
     <div className="px-6 py-6 flex-1 bg-gradient-to-b from-gray-50 to-white">
-      <header className="flex flex-col md:flex-row md:justify-between md:items-center bg-white/90 backdrop-blur rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 mb-6">
-        <div className="flex items-center mb-4 md:mb-0">
-          <MdDashboard className="text-blue-600 text-3xl mr-3" />
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Admin Dashboard</h1>
-            <p className="text-sm text-gray-500">{formatHeaderDate()}</p>
+      <header className="bg-white/90 backdrop-blur rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center mb-4 md:mb-0">
+            <MdDashboard className="text-blue-600 text-3xl mr-3" />
+            <div>
+              <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Admin Dashboard</h1>
+              <p className="text-sm text-gray-500">{formatHeaderDate()}</p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {loading ? (
-            <>
-              <ShimmerLoader height="2.25rem" width="10rem" className="rounded-full" />
-              <ShimmerLoader height="2.25rem" width="10rem" className="rounded-full" />
-            </>
-          ) : (
-            <>
-              <div className="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full border border-blue-100 hover:bg-blue-100 transition">
-                <MdNotifications className="mr-2" aria-hidden="true" />
-                <span aria-live="polite">
-                  <span className="font-semibold">{dashboardData?.complaints?.pending || 0}</span> pending complaints
-                </span>
+          {/* Hostler vs Day Scholar Section */}
+          <div className="flex items-center mb-4 md:mb-0 md:mx-6">
+            {loading ? (
+              <div className="flex gap-4">
+                <ShimmerLoader height="3rem" width="12rem" className="rounded-xl" />
+                <ShimmerLoader height="3rem" width="12rem" className="rounded-xl" />
               </div>
-              <div className="flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-full border border-purple-100 hover:bg-purple-100 transition">
-                <FaCalendarAlt className="mr-2" aria-hidden="true" />
-                <span aria-live="polite">
-                  <span className="font-semibold">{dashboardData?.events?.length || 0}</span> upcoming events
-                </span>
-              </div>
-            </>
-          )}
+            ) : error ? (
+              <div className="text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm">Error loading data</div>
+            ) : (
+              (() => {
+                // Safe access to degreeWise and registered data
+                const degreeWise = dashboardData?.students?.degreeWise || []
+
+                // Sum normal (actual) counts by gender and total
+                const normalSums = degreeWise.reduce(
+                  (acc, d) => {
+                    const boys = parseInt(d.boys) || 0
+                    const girls = parseInt(d.girls) || 0
+                    acc.boys += boys
+                    acc.girls += girls
+                    acc.total += boys + girls
+                    return acc
+                  },
+                  { boys: 0, girls: 0, total: 0 }
+                )
+
+                // Sum registered counts; try multiple possible shapes
+                const registeredSums = degreeWise.reduce(
+                  (acc, d) => {
+                    // preferred: d.registered (object with boys/girls/total)
+                    if (d.registered && typeof d.registered === "object") {
+                      const rb = parseInt(d.registered.boys) || 0
+                      const rg = parseInt(d.registered.girls) || 0
+                      const rt = parseInt(d.registered.total) || rb + rg
+                      acc.boys += rb
+                      acc.girls += rg
+                      acc.total += rt
+                    } else if (d.registeredStudents != null) {
+                      // older format: registeredStudents might be a number
+                      const rt = parseInt(d.registeredStudents) || 0
+                      // if no breakdown available, split evenly
+                      const rb = Math.floor(rt / 2)
+                      const rg = rt - rb
+                      acc.boys += rb
+                      acc.girls += rg
+                      acc.total += rt
+                    } else {
+                      // fallback: use d.totalRegistered or d.total if available
+                      const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
+                      const rb = Math.floor(rt / 2)
+                      const rg = rt - rb
+                      acc.boys += rb
+                      acc.girls += rg
+                      acc.total += rt
+                    }
+
+                    return acc
+                  },
+                  { boys: 0, girls: 0, total: 0 }
+                )
+
+                // Derive day scholar = registered - normal (per gender and total)
+                const dayScholar = {
+                  boys: Math.max(0, registeredSums.boys - normalSums.boys),
+                  girls: Math.max(0, registeredSums.girls - normalSums.girls),
+                }
+                dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
+
+                // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
+                const hostler = {
+                  boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
+                  girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
+                }
+                hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
+
+                // Fallback for day scholar if registered info missing: use provided counts
+                const finalDayScholar = {
+                  boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
+                  girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
+                }
+                finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
+
+                return (
+                  <div className="flex items-center gap-6">
+                    {/* Hostlers Section */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <FaUser className="text-teal-600 text-lg" />
+                        <span className="text-sm font-medium text-gray-700">Hostlers:</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-teal-700">{hostler.total}</span>
+                        <span className="text-sm text-gray-600">Total</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">B: {hostler.boys}</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md text-xs font-medium">G: {hostler.girls}</span>
+                      </div>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="h-8 w-px bg-gray-300"></div>
+
+                    {/* Day Scholars Section */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <FaUser className="text-orange-600 text-lg" />
+                        <span className="text-sm font-medium text-gray-700">Day Scholars:</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-orange-700">{finalDayScholar.total}</span>
+                        <span className="text-sm text-gray-600">Total</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">B: {finalDayScholar.boys}</span>
+                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md text-xs font-medium">G: {finalDayScholar.girls}</span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })()
+            )}
+          </div>
+
+          {/* <div className="flex flex-wrap items-center gap-3">
+            {loading ? (
+              <>
+                <ShimmerLoader height="2.25rem" width="10rem" className="rounded-full" />
+                <ShimmerLoader height="2.25rem" width="10rem" className="rounded-full" />
+              </>
+            ) : (
+              <>
+                <div className="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full border border-blue-100 hover:bg-blue-100 transition">
+                  <MdNotifications className="mr-2" aria-hidden="true" />
+                  <span aria-live="polite">
+                    <span className="font-semibold">{dashboardData?.complaints?.pending || 0}</span> pending complaints
+                  </span>
+                </div>
+                <div className="flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-full border border-purple-100 hover:bg-purple-100 transition">
+                  <FaCalendarAlt className="mr-2" aria-hidden="true" />
+                  <span aria-live="polite">
+                    <span className="font-semibold">{dashboardData?.events?.length || 0}</span> upcoming events
+                  </span>
+                </div>
+              </>
+            )}
+          </div> */}
         </div>
       </header>
 
@@ -273,128 +400,57 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Hostler vs Day Scholar Card */}
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] xl:col-span-2 p-5">
+        {/* Leaves card */}
+        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
           {loading ? (
             <div className="h-full flex flex-col">
               <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-              <ChartShimmer height="calc(100% - 2rem)" />
+              <TableShimmer rows={4} className="flex-1" />
             </div>
           ) : error ? (
             <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
           ) : (
             <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaUser className="mr-2 text-teal-600" /> Hostler vs Day Scholar
+              <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                <MdOutlineEvent className="mr-2 text-amber-500" /> Upcoming Joins (from Leaves)
               </h2>
 
-              <div className="flex-1 flex flex-col">
-                {/* <div className="flex-1">
-                  <HostlerDayScholarChart data={dashboardData?.hostlerAndDayScholarCounts} />
-                </div> */}
-
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  {/* Compute hostler/day-scholar counts from degree-wise student data when available */}
-                  {(() => {
-                    // Safe access to degreeWise and registered data
-                    const degreeWise = dashboardData?.students?.degreeWise || []
-
-                    // Sum normal (actual) counts by gender and total
-                    const normalSums = degreeWise.reduce(
-                      (acc, d) => {
-                        const boys = parseInt(d.boys) || 0
-                        const girls = parseInt(d.girls) || 0
-                        acc.boys += boys
-                        acc.girls += girls
-                        acc.total += boys + girls
-                        return acc
-                      },
-                      { boys: 0, girls: 0, total: 0 }
-                    )
-
-                    // Sum registered counts; try multiple possible shapes
-                    const registeredSums = degreeWise.reduce(
-                      (acc, d) => {
-                        // preferred: d.registered (object with boys/girls/total)
-                        if (d.registered && typeof d.registered === "object") {
-                          const rb = parseInt(d.registered.boys) || 0
-                          const rg = parseInt(d.registered.girls) || 0
-                          const rt = parseInt(d.registered.total) || rb + rg
-                          acc.boys += rb
-                          acc.girls += rg
-                          acc.total += rt
-                        } else if (d.registeredStudents != null) {
-                          // older format: registeredStudents might be a number
-                          const rt = parseInt(d.registeredStudents) || 0
-                          // if no breakdown available, split evenly
-                          const rb = Math.floor(rt / 2)
-                          const rg = rt - rb
-                          acc.boys += rb
-                          acc.girls += rg
-                          acc.total += rt
-                        } else {
-                          // fallback: use d.totalRegistered or d.total if available
-                          const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
-                          const rb = Math.floor(rt / 2)
-                          const rg = rt - rb
-                          acc.boys += rb
-                          acc.girls += rg
-                          acc.total += rt
+              <div className="flex-1 overflow-auto">
+                {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
+                  <p className="text-sm text-gray-500">No recent leaves</p>
+                ) : (
+                  <ul className="space-y-3">
+                    {dashboardData.leaves.data.leaves.map((lv) => {
+                      const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
+                      // compute joining date = endDate + 1 day
+                      let joinDate = ""
+                      try {
+                        const end = lv && lv.endDate ? new Date(lv.endDate) : null
+                        if (end) {
+                          const j = new Date(end)
+                          j.setDate(j.getDate() + 1)
+                          joinDate = j.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
                         }
+                      } catch (e) {
+                        joinDate = "Invalid date"
+                      }
 
-                        return acc
-                      },
-                      { boys: 0, girls: 0, total: 0 }
-                    )
-
-                    // Derive day scholar = registered - normal (per gender and total)
-                    const dayScholar = {
-                      boys: Math.max(0, registeredSums.boys - normalSums.boys),
-                      girls: Math.max(0, registeredSums.girls - normalSums.girls),
-                    }
-                    dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
-
-                    // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
-                    const hostler = {
-                      boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
-                      girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
-                    }
-                    hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
-
-                    // Fallback for day scholar if registered info missing: use provided counts
-                    const finalDayScholar = {
-                      boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
-                      girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
-                    }
-                    finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
-
-                    return (
-                      <>
-                        <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-3 rounded-xl border border-teal-200/60">
-                          <p className="text-xs text-gray-600 mb-1">Hostlers</p>
-                          <div className="flex justify-between items-center">
-                            <span className="text-xl font-bold text-teal-700">{hostler.total}</span>
-                            <div className="flex items-center text-xs">
-                              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {hostler.boys}</span>
-                              <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {hostler.girls}</span>
-                            </div>
+                      return (
+                        <li key={lv._id} className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
+                          <div>
+                            <p className="text-sm font-medium text-gray-800">{name}</p>
+                            <p className="text-xs text-gray-500">Leave ends: {lv.endDate ? new Date(lv.endDate).toLocaleDateString() : "—"}</p>
                           </div>
-                        </div>
 
-                        <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-3 rounded-xl border border-orange-200/60">
-                          <p className="text-xs text-gray-600 mb-1">Day Scholars</p>
-                          <div className="flex justify-between items-center">
-                            <span className="text-xl font-bold text-orange-700">{finalDayScholar.total}</span>
-                            <div className="flex items-center text-xs">
-                              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-1">B: {finalDayScholar.boys}</span>
-                              <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md">G: {finalDayScholar.girls}</span>
-                            </div>
+                          <div className="text-right">
+                            <p className="text-sm text-green-700 font-semibold">Join: {joinDate || "—"}</p>
+                            <p className="text-xs text-gray-500">Status: {lv.joinStatus || lv.status || "—"}</p>
                           </div>
-                        </div>
-                      </>
-                    )
-                  })()}
-                </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
               </div>
             </div>
           )}
