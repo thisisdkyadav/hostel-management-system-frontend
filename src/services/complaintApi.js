@@ -76,4 +76,23 @@ export const complaintApi = {
       throw error
     }
   },
+
+  giveFeedback: async (complaintId, feedbackData) => {
+    try {
+      const response = await fetch(`${baseUrl}/complaint/${complaintId}/feedback`, {
+        method: "POST",
+        ...fetchOptions,
+        body: JSON.stringify(feedbackData),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error submitting feedback:", error)
+      throw error
+    }
+  },
 }
