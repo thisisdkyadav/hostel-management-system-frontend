@@ -33,7 +33,11 @@ const copyMetaJson = () => {
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react(),
+    react({
+      babel: {
+        plugins: ["babel-plugin-react-compiler"],
+      },
+    }),
     VitePWA({
       registerType: "prompt",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
