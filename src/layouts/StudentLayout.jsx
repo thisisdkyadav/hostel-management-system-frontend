@@ -2,7 +2,7 @@ import Sidebar from "../components/Sidebar"
 import BottomBar from "../components/BottomBar"
 import { Outlet, useNavigate } from "react-router-dom"
 import { FaUser, FaClipboardList, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBell, FaUserFriends, FaIdCard } from "react-icons/fa"
-import { MdOutlineSpaceDashboard, MdOutlineEvent, MdOutlineSearch } from "react-icons/md"
+import { MdOutlineSpaceDashboard, MdOutlineEvent, MdOutlineSearch, MdSpaceDashboard } from "react-icons/md"
 import { LuClipboardList } from "react-icons/lu"
 import { useAuth } from "../contexts/AuthProvider"
 import { HiAnnotation } from "react-icons/hi"
@@ -88,10 +88,10 @@ const StudentLayout = () => {
 
   // Standard sidebar items for non-PWA view
   const sidebarNavItems = [
-    { name: "Dashboard", icon: MdOutlineSpaceDashboard, section: "main", path: "/student" },
-    { name: "Complaints", icon: LuClipboardList, section: "main", path: "/student/complaints" },
-    { name: "Lost and Found", icon: MdOutlineSearch, section: "main", path: "/student/lost-and-found" },
-    { name: "Events", icon: MdOutlineEvent, section: "main", path: "/student/events" },
+    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/student" },
+    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
+    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/student/lost-and-found" },
+    { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },
     { name: "Visitors", icon: FaUserFriends, section: "main", path: "/student/visitors" },
     { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
     { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications", badge: notificationsCount },
