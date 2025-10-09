@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaEdit } from "react-icons/fa"
+import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaEdit, FaStar } from "react-icons/fa"
 import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import UpdateComplaintModal from "./UpdateComplaintModal"
 import { getStudentId } from "../../services/studentService"
 import StudentDetailModal from "../common/students/StudentDetailModal"
+import FeedbackModal from "./FeedbackModal"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplaintUpdate }) => {
   const { user } = useAuth()
@@ -14,6 +15,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
   const [complaintData, setComplaintData] = useState(selectedComplaint)
   const [studentId, setStudentId] = useState(null)
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
 
   if (!complaintData) return null
 
@@ -63,6 +65,12 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               {canUpdateComplaint && (
                 <button onClick={() => setShowUpdateModal(true)} className="flex items-center text-sm text-blue-600 hover:text-blue-800 transition-colors px-3 py-1 border border-blue-200 rounded-full hover:bg-blue-50">
                   <FaEdit className="mr-1" /> Update Status & Notes
+                </button>
+              )}
+
+              {user && user._id === complaintData.reportedBy.id && (
+                <button onClick={() => setShowFeedbackModal(true)} className="flex items-center text-sm text-green-600 hover:text-green-800 transition-colors px-3 py-1 border border-green-200 rounded-full hover:bg-green-50">
+                  <FaStar className="mr-1" /> Give Feedback
                 </button>
               )}
             </div>
@@ -127,6 +135,39 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             {complaintData.resolutionNotes ? <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{complaintData.resolutionNotes}</div> : <div className="bg-gray-50 p-5 rounded-xl text-gray-500 italic">No resolution notes yet.</div>}
           </div>
 
+          {complaintData.feedback && (
+            <div>
+              <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
+                <FaStar className="mr-2" /> User Feedback
+              </h4>
+              <div className="bg-gray-50 p-5 rounded-xl">
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <span className="text-gray-600 mr-2">Rating:</span>
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar key={i} className={`text-sm ${i < complaintData.feedbackRating ? "text-yellow-400" : "text-gray-300"}`} />
+                      ))}
+                      <span className="ml-2 text-gray-700">({complaintData.feedbackRating}/5)</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Satisfaction:</span>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${complaintData.satisfactionStatus === "Satisfied" ? "bg-green-100 text-green-800" : complaintData.satisfactionStatus === "Unsatisfied" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`}>
+                      {complaintData.satisfactionStatus}
+                    </span>
+                  </div>
+                  {complaintData.feedback && (
+                    <div>
+                      <span className="text-gray-600 block mb-1">Comments:</span>
+                      <div className="text-gray-700">{complaintData.feedback}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-wrap justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
             <div>Created: {new Date(complaintData.createdDate).toLocaleString()}</div>
             {complaintData.lastUpdated !== complaintData.createdDate && <div>Last Updated: {new Date(complaintData.lastUpdated).toLocaleString()}</div>}
@@ -136,6 +177,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
 
       {showUpdateModal && <UpdateComplaintModal complaint={complaintData} onClose={() => setShowUpdateModal(false)} onUpdate={handleComplaintUpdate} />}
       {showStudentDetailModal && studentId && <StudentDetailModal selectedStudent={{ _id: studentId, userId: complaintData.reportedBy.id }} setShowStudentDetail={setShowStudentDetailModal} onUpdate={handleStudentUpdate} />}
+      {showFeedbackModal && <FeedbackModal complaint={complaintData} onClose={() => setShowFeedbackModal(false)} onFeedback={() => {}} />}
     </>
   )
 }
