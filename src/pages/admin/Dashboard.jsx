@@ -478,37 +478,32 @@ const Dashboard = () => {
                 <div className="flex-1 flex flex-col justify-center">
                   {/* Top row - Primary stats */}
                   <div className="grid grid-cols-2 gap-3 mb-3">
-                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 p-3 flex flex-col items-center justify-center">
-                      <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-amber-100 p-3 flex flex-col items-center justify-center shadow-sm">
+                      <div className="absolute right-0 top-0 bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
                       <p className="text-3xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 p-3 flex flex-col items-center justify-center">
-                      <div className="absolute right-0 top-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-blue-100 p-3 flex flex-col items-center justify-center shadow-sm">
+                      <div className="absolute right-0 top-0 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
                       <p className="text-3xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
                     </div>
                   </div>
 
                   {/* Bottom row - Secondary stats */}
                   <div className="grid grid-cols-2 gap-2 mb-3">
-                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 p-2 flex flex-col items-center justify-center">
-                      <div className="absolute right-0 top-0 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">IDO</div>
+                    <div className="relative overflow-hidden rounded-lg bg-white border border-purple-100 p-2 flex flex-col items-center justify-center shadow-sm">
+                      <div className="absolute right-0 top-0 bg-purple-100 text-purple-700 text-xs px-1.5 py-0.5 rounded-bl-md">IDO</div>
                       <p className="text-2xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
                     </div>
 
-                    {/* <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-green-50 to-green-100 border border-green-200 p-2 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Resolved</div>
-                    <p className="text-2xl font-bold text-green-700 mt-1">{dashboardData?.complaints?.resolved || 0}</p>
-                  </div> */}
-
-                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 p-2 flex flex-col items-center justify-center">
-                      <div className="absolute right-0 top-0 bg-emerald-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Today</div>
+                    <div className="relative overflow-hidden rounded-lg bg-white border border-emerald-100 p-2 flex flex-col items-center justify-center shadow-sm">
+                      <div className="absolute right-0 top-0 bg-emerald-100 text-emerald-700 text-xs px-1.5 py-0.5 rounded-bl-md">Today</div>
                       <p className="text-2xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
                     </div>
                   </div>
 
                   {/* Summary */}
-                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                  <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center">
                     <span className="text-gray-600 text-sm">Active for more than 20 days</span>
                     <p className="text-xl font-bold text-gray-900">{dashboardData?.complaints?.overdueCount || 0}</p>
                   </div>
