@@ -509,8 +509,8 @@ const Dashboard = () => {
 
                   {/* Summary */}
                   <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
-                    <span className="text-gray-600 text-sm">Total Active Complaints</span>
-                    <p className="text-xl font-bold text-gray-900">{(dashboardData?.complaints?.pending || 0) + (dashboardData?.complaints?.inProgress || 0)}</p>
+                    <span className="text-gray-600 text-sm">Active for more than 20 days</span>
+                    <p className="text-xl font-bold text-gray-900">{(dashboardData?.complaints?.overdueCount || 0) + (dashboardData?.complaints?.inProgress || 0)}</p>
                   </div>
                 </div>
               </div>
