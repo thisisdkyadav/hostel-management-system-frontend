@@ -278,3 +278,65 @@ body {
   -webkit-backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.8);
 }
+
+/* Sidebar custom scrollbar - subtle theme-colored thumb */
+.sidebar-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(19, 96, 171, 0.15) transparent;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(19, 96, 171, 0.15);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(19, 96, 171, 0.25);
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:active {
+  background-color: rgba(19, 96, 171, 0.35);
+}
+
+/* Apply the same subtle themed scrollbar globally */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(19, 96, 171, 0.15) transparent;
+}
+
+/* WebKit-based browsers */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(19, 96, 171, 0.15);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(19, 96, 171, 0.25);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: rgba(19, 96, 171, 0.35);
+}
