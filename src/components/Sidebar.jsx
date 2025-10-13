@@ -159,30 +159,27 @@ const Sidebar = ({ navItems }) => {
         onClick={() => handleNavigation(item)}
         title={!isOpen ? item.name : ""}
         className={`
-          group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer
-          ${isActiveItem ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
+          group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer border border-transparent
+          ${
+            isActiveItem
+              ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70"
+              : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"
+          }
         `}
       >
-        <div
-          className={`
-          flex items-center ${isOpen ? "px-4 py-3" : "px-2 py-3 justify-center"}
-          ${isActiveItem ? "" : "hover:text-[#1360AB]"}
-        `}
-        >
+        <div className={`flex items-center ${isOpen ? "px-4 py-3" : "px-2 py-3 justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : ""}`}>
             <item.icon
-              className={`
-              text-xl
-              ${isActiveItem ? "text-white" : "text-[#1360AB]"}
-              ${!isActiveItem ? "group-hover:text-[#1360AB]" : ""}
-            `}
+              className={`text-xl transition-colors duration-200 ${
+                isActiveItem ? "text-white" : "text-slate-500 group-hover:text-[#1360AB]"
+              }`}
             />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
                 <div
                   className={`
-                  min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center
+                  min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center shadow shadow-red-500/30
                   ${item.badge > 99 ? "min-w-6" : ""}
                 `}
                 >
@@ -194,17 +191,18 @@ const Sidebar = ({ navItems }) => {
 
           {isOpen && (
             <span
-              className={`
-              text-sm font-medium whitespace-nowrap transition-all duration-200
-              ${!isActiveItem ? "group-hover:translate-x-1" : ""}
-            `}
+              className={`text-sm font-medium whitespace-nowrap transition-all duration-200 ${
+                isActiveItem ? "text-white" : "group-hover:translate-x-1"
+              }`}
             >
               {item.name}
             </span>
           )}
         </div>
 
-        {isActiveItem && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
+        {isActiveItem && (
+              <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>
+        )}
       </li>
     )
   }
@@ -223,8 +221,12 @@ const Sidebar = ({ navItems }) => {
           <div
             onClick={() => profileItem && handleNavigation(profileItem)}
             className={`
-              relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center
-              ${isProfileActive ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
+              relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center border border-transparent
+              ${
+                isProfileActive
+                  ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70"
+                  : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"
+              }
             `}
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
@@ -243,7 +245,9 @@ const Sidebar = ({ navItems }) => {
                 <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360AB]"}`} />
               )}
             </div>
-            {isProfileActive && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
+            {isProfileActive && (
+              <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>
+            )}
           </div>
         </div>
       )
@@ -254,8 +258,12 @@ const Sidebar = ({ navItems }) => {
         <div
           onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
-            group relative rounded-xl transition-all duration-200 cursor-pointer
-            ${isProfileActive ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
+            group relative rounded-xl transition-all duration-200 cursor-pointer border border-transparent
+            ${
+              isProfileActive
+                ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70"
+                : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"
+            }
           `}
         >
           <div className="flex items-center justify-between px-4 py-3">
@@ -280,8 +288,8 @@ const Sidebar = ({ navItems }) => {
               </div>
 
               <div className="flex flex-col justify-center overflow-hidden flex-1 min-w-0">
-                <span className={`text-sm font-medium truncate ${isProfileActive ? "text-white" : "text-gray-900"}`}>{user.name || "User"}</span>
-                {user.role && <span className={`text-xs truncate ${isProfileActive ? "text-blue-100" : "text-gray-500"}`}>{user.role}</span>}
+                <span className={`text-sm font-medium truncate ${isProfileActive ? "text-white" : "text-slate-900"}`}>{user.name || "User"}</span>
+                {user.role && <span className={`text-xs truncate ${isProfileActive ? "text-slate-200/80" : "text-slate-500"}`}>{user.role}</span>}
               </div>
             </div>
 
@@ -296,7 +304,7 @@ const Sidebar = ({ navItems }) => {
                   className={`
                     w-9 h-9 rounded-lg flex items-center justify-center
                     transition-all duration-200
-                    ${isProfileActive ? "hover:bg-white/20 text-white" : "hover:bg-red-50 text-gray-600 hover:text-red-600"}
+                    ${isProfileActive ? "hover:bg-white/20 text-white" : "border border-transparent hover:border-red-200 hover:bg-red-50 text-slate-500 hover:text-red-600"}
                   `}
                   aria-label="Logout"
                 >
@@ -306,7 +314,7 @@ const Sidebar = ({ navItems }) => {
             )}
           </div>
 
-          {isProfileActive && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
+          {isProfileActive && <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>}
         </div>
       </div>
     )
@@ -318,43 +326,58 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-white shadow-lg border-r border-gray-100 ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-64" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}>
+      <div
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-gradient-to-b from-white via-slate-50 to-slate-100/90 backdrop-blur border-r border-slate-200/60 shadow-xl ${
+          isOpen ? "left-0" : "-left-full md:left-0"
+        } ${isOpen ? "w-64" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}
+      >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
-          <div className={`border-b border-gray-100 ${isMobile ? "hidden" : ""} h-16`}>
-            <div className={`h-full flex items-center ${isOpen ? "justify-between px-3" : "justify-center px-2"} hover:bg-[#f6fbff]`}>
+          <div className={`border-b border-slate-200/60 ${isMobile ? "hidden" : ""} h-16 bg-white/70 backdrop-blur-lg`}>
+            <div
+              className={`h-full flex items-center ${
+                isOpen ? "justify-between px-3" : "justify-center px-2"
+              } transition-colors duration-200 hover:bg-white/50`}
+            >
               {/* Logo - only show when expanded. smaller and paired with subtle label */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
                   <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-8 w-auto object-contain transition-all opacity-95" />
-                  {/* <span className="ml-2 text-sm font-semibold text-[#1360AB]">Hostel</span> */}
                 </div>
               )}
 
-              {/* Toggle Button - refined sizing and visual weight */}
+              {/* Toggle Button */}
               {isOpen ? (
-                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-8 h-8 rounded-md border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-[#1360AB] transition-all duration-200">
-                  <HiMenuAlt2 className="text-lg" />
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  title="Minimize"
+                  className="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:border-slate-300 hover:text-[#1360AB] transition-all duration-200"
+                >
+                  <HiMenuAlt2 className="text-[19px]" />
                 </button>
               ) : (
-                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-8 h-8 rounded-md bg-gray-100 text-gray-600 hover:bg-[#1360AB] hover:text-white flex items-center justify-center transition-all duration-200">
-                  <HiMenuAlt3 className="text-lg" />
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  title="Expand"
+                  className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 hover:bg-[#1360AB] hover:text-white hover:border-[#1360AB] flex items-center justify-center transition-all duration-200"
+                >
+                  <HiMenuAlt3 className="text-[19px]" />
                 </button>
               )}
             </div>
           </div>
 
           {/* Main Navigation */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin sidebar-scrollbar">
-            <ul className="space-y-1">{mainNavItems.map(renderNavItem)}</ul>
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 scrollbar-thin sidebar-scrollbar">
+            <ul className="space-y-1.5">{mainNavItems.map(renderNavItem)}</ul>
           </div>
 
           {/* Active Hostel */}
           {isWardenRole && assignedHostels && assignedHostels.length > 0 && (
-            <div className={`border-t border-gray-100 ${isOpen ? "p-3" : "p-2"}`}>
+            <div className={`border-t border-slate-200/60 bg-white/70 backdrop-blur ${isOpen ? "p-3" : "p-2"}`}>
               {isOpen ? (
                 <>
-                  <label htmlFor="activeHostelSelect" className="block text-xs font-medium text-gray-500 mb-1.5 px-1">
+                  <label htmlFor="activeHostelSelect" className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-1.5 px-1">
                     Active Hostel
                   </label>
                   <div className="relative">
@@ -363,7 +386,7 @@ const Sidebar = ({ navItems }) => {
                       value={activeHostelId || ""}
                       onChange={handleHostelChange}
                       disabled={isUpdatingHostel}
-                      className="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB] bg-gray-50 appearance-none pr-8 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB]/60 focus:border-[#1360AB]/60 bg-white/70 shadow-sm appearance-none pr-9 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       {!activeHostelId && assignedHostels.length > 0 && (
                         <option value="" disabled>
@@ -383,9 +406,9 @@ const Sidebar = ({ navItems }) => {
                     </select>
                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                       {isUpdatingHostel ? (
-                        <CgSpinner className="animate-spin text-gray-500" />
+                        <CgSpinner className="animate-spin text-[#1360AB]" />
                       ) : (
-                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
                         </svg>
                       )}
@@ -403,9 +426,17 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-gray-100 space-y-2 overflow-x-hidden ${isOpen ? "p-3" : "p-2"}`}>
+          <div
+            className={`border-t border-slate-200/60 bg-white/70 backdrop-blur space-y-2 overflow-x-hidden ${
+              isOpen ? "px-3 pt-3 pb-4" : "p-2"
+            }`}
+          >
             {renderProfileSection()}
-            <ul className="space-y-1">{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul>
+            <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>
+              {bottomNavItems
+                .filter((item) => item.name !== "Profile" && item.name !== "Logout")
+                .map(renderNavItem)}
+            </ul>
           </div>
         </div>
       </div>
