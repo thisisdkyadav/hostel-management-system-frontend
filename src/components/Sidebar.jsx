@@ -160,20 +160,12 @@ const Sidebar = ({ navItems }) => {
         title={!isOpen ? item.name : ""}
         className={`
           group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer border border-transparent
-          ${
-            isActiveItem
-              ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70"
-              : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"
-          }
+          ${isActiveItem ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"}
         `}
       >
         <div className={`flex items-center ${isOpen ? "px-4 py-3" : "px-2 py-3 justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : ""}`}>
-            <item.icon
-              className={`text-xl transition-colors duration-200 ${
-                isActiveItem ? "text-white" : "text-slate-500 group-hover:text-[#1360AB]"
-              }`}
-            />
+            <item.icon className={`text-xl transition-colors duration-200 ${isActiveItem ? "text-white" : "text-slate-500 group-hover:text-[#1360AB]"}`} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
@@ -189,20 +181,10 @@ const Sidebar = ({ navItems }) => {
             )}
           </div>
 
-          {isOpen && (
-            <span
-              className={`text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-                isActiveItem ? "text-white" : "group-hover:translate-x-1"
-              }`}
-            >
-              {item.name}
-            </span>
-          )}
+          {isOpen && <span className={`text-sm font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white" : "group-hover:translate-x-1"}`}>{item.name}</span>}
         </div>
 
-        {isActiveItem && (
-              <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>
-        )}
+        {isActiveItem && <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>}
       </li>
     )
   }
@@ -222,11 +204,7 @@ const Sidebar = ({ navItems }) => {
             onClick={() => profileItem && handleNavigation(profileItem)}
             className={`
               relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center border border-transparent
-              ${
-                isProfileActive
-                  ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70"
-                  : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"
-              }
+              ${isProfileActive ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"}
             `}
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
@@ -245,9 +223,7 @@ const Sidebar = ({ navItems }) => {
                 <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360AB]"}`} />
               )}
             </div>
-            {isProfileActive && (
-              <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>
-            )}
+            {isProfileActive && <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>}
           </div>
         </div>
       )
@@ -259,11 +235,7 @@ const Sidebar = ({ navItems }) => {
           onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
             group relative rounded-xl transition-all duration-200 cursor-pointer border border-transparent
-            ${
-              isProfileActive
-                ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70"
-                : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"
-            }
+            ${isProfileActive ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"}
           `}
         >
           <div className="flex items-center justify-between px-4 py-3">
@@ -327,18 +299,14 @@ const Sidebar = ({ navItems }) => {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-gradient-to-b from-white via-slate-50 to-slate-100/90 backdrop-blur border-r border-slate-200/60 shadow-xl ${
-          isOpen ? "left-0" : "-left-full md:left-0"
-        } ${isOpen ? "w-64" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-gradient-to-b from-white via-slate-50 to-slate-100/90 backdrop-blur border-r border-slate-200/60 shadow-xl ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-64" : "w-0 md:w-20"} ${
+          isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
+        } overflow-hidden`}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
           <div className={`border-b border-slate-200/60 ${isMobile ? "hidden" : ""} h-16 bg-white/70 backdrop-blur-lg`}>
-            <div
-              className={`h-full flex items-center ${
-                isOpen ? "justify-between px-3" : "justify-center px-2"
-              } transition-colors duration-200 hover:bg-white/50`}
-            >
+            <div className={`h-full flex items-center ${isOpen ? "justify-between px-3" : "justify-center px-2"} transition-colors duration-200 hover:bg-white/50`}>
               {/* Logo - only show when expanded. smaller and paired with subtle label */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
@@ -348,19 +316,11 @@ const Sidebar = ({ navItems }) => {
 
               {/* Toggle Button */}
               {isOpen ? (
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  title="Minimize"
-                  className="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:border-slate-300 hover:text-[#1360AB] transition-all duration-200"
-                >
+                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:border-slate-300 hover:text-[#1360AB] transition-all duration-200">
                   <HiMenuAlt2 className="text-[19px]" />
                 </button>
               ) : (
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  title="Expand"
-                  className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 hover:bg-[#1360AB] hover:text-white hover:border-[#1360AB] flex items-center justify-center transition-all duration-200"
-                >
+                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 hover:bg-[#1360AB] hover:text-white hover:border-[#1360AB] flex items-center justify-center transition-all duration-200">
                   <HiMenuAlt3 className="text-[19px]" />
                 </button>
               )}
@@ -426,17 +386,9 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div
-            className={`border-t border-slate-200/60 bg-white/70 backdrop-blur space-y-2 overflow-x-hidden ${
-              isOpen ? "px-3 pt-3 pb-4" : "p-2"
-            }`}
-          >
+          <div className={`border-t border-slate-200/60 bg-white/70 backdrop-blur space-y-2 overflow-x-hidden ${isOpen ? "px-3 pt-3 pb-4" : "p-2"}`}>
             {renderProfileSection()}
-            <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>
-              {bottomNavItems
-                .filter((item) => item.name !== "Profile" && item.name !== "Logout")
-                .map(renderNavItem)}
-            </ul>
+            <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul>
           </div>
         </div>
       </div>
