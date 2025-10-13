@@ -120,27 +120,27 @@ const Dashboard = () => {
   return (
     <div className="flex-1 bg-gradient-to-b from-gray-50 to-white">
       {/* Modern Compact Header - Full Width with 0 margin */}
-      <header className="bg-white shadow-md border-b border-gray-200">
-        <div className="px-6 py-3">
+      <header className="bg-white shadow-sm border-b border-gray-100">
+        <div className="px-6 py-2.5">
           <div className="flex items-center justify-between gap-4">
             {/* Left Section - Dashboard Title & Stats */}
-            <div className="flex items-center gap-6 flex-1">
+            <div className="flex items-center gap-5 flex-1">
               {/* Dashboard Title */}
-              <div className="flex items-center gap-3 border-r border-gray-200 pr-6">
+              <div className="flex items-center gap-3 border-r border-gray-200 pr-5">
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900 tracking-tight">Admin Dashboard</h1>
-                  <p className="text-xs text-gray-500">{formatHeaderDate()}</p>
+                  <h1 className="text-xl font-semibold text-[#1360AB] tracking-tight">Admin Dashboard</h1>
+                  <p className="text-xs text-gray-500 mt-0.5">{formatHeaderDate()}</p>
                 </div>
               </div>
 
               {/* Hostler vs Day Scholar Stats - Compact Modern Design */}
               {loading ? (
-                <div className="flex gap-3">
-                  <ShimmerLoader height="2.5rem" width="9rem" className="rounded-lg" />
-                  <ShimmerLoader height="2.5rem" width="9rem" className="rounded-lg" />
+                <div className="flex gap-2.5">
+                  <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
+                  <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
                 </div>
               ) : error ? (
-                <div className="text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5 text-xs">Error loading data</div>
+                <div className="text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-1.5 text-xs">Error loading data</div>
               ) : (
                 (() => {
                   // Safe access to degreeWise and registered data
@@ -216,36 +216,36 @@ const Dashboard = () => {
                   finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
 
                   return (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5">
                       {/* Hostlers Card - Compact */}
-                      <div className="bg-teal-50 border border-teal-200 rounded-lg px-3 py-2 hover:bg-teal-100 transition-all shadow-sm">
+                      <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
                         <div className="flex items-center gap-2">
-                          <FaUser className="text-teal-600 text-sm" />
+                          <FaUser className="text-[#1360AB] text-sm" />
                           <div className="flex items-center gap-2">
                             <div>
-                              <p className="text-xs text-teal-700 font-medium">Hostlers</p>
-                              <p className="text-lg font-bold text-teal-800 leading-none">{hostler.total}</p>
+                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Hostlers</p>
+                              <p className="text-lg font-bold text-gray-900 leading-none">{hostler.total}</p>
                             </div>
-                            <div className="flex gap-1 ml-2">
-                              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold border border-blue-200">B {hostler.boys}</span>
-                              <span className="px-1.5 py-0.5 bg-pink-100 text-pink-700 rounded text-[10px] font-semibold border border-pink-200">G {hostler.girls}</span>
+                            <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
+                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {hostler.boys}</span>
+                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {hostler.girls}</span>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       {/* Day Scholars Card - Compact */}
-                      <div className="bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 hover:bg-orange-100 transition-all shadow-sm">
+                      <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
                         <div className="flex items-center gap-2">
-                          <FaUser className="text-orange-600 text-sm" />
+                          <FaUser className="text-[#1360AB] text-sm" />
                           <div className="flex items-center gap-2">
                             <div>
-                              <p className="text-xs text-orange-700 font-medium">Day Scholars</p>
-                              <p className="text-lg font-bold text-orange-800 leading-none">{finalDayScholar.total}</p>
+                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Day Scholars</p>
+                              <p className="text-lg font-bold text-gray-900 leading-none">{finalDayScholar.total}</p>
                             </div>
-                            <div className="flex gap-1 ml-2">
-                              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold border border-blue-200">B {finalDayScholar.boys}</span>
-                              <span className="px-1.5 py-0.5 bg-pink-100 text-pink-700 rounded text-[10px] font-semibold border border-pink-200">G {finalDayScholar.girls}</span>
+                            <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
+                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {finalDayScholar.boys}</span>
+                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {finalDayScholar.girls}</span>
                             </div>
                           </div>
                         </div>
@@ -257,16 +257,16 @@ const Dashboard = () => {
             </div>
 
             {/* Right Section - User Profile */}
-            <div className="flex items-center gap-3 border-l border-gray-200 pl-6">
+            <div className="flex items-center gap-3 border-l border-gray-200 pl-5">
               <div className="text-right">
                 <p className="text-sm font-semibold text-gray-900">{user?.name || "Admin User"}</p>
                 <p className="text-xs text-gray-500">{user?.role || "Administrator"}</p>
               </div>
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-gray-200 hover:ring-[#1360AB] transition-all">
+                <div className="w-9 h-9 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-semibold text-xs shadow-sm ring-1 ring-gray-200 hover:ring-[#1360AB] transition-all">
                   {user?.profilePic || user?.profileImage ? <img src={user.profilePic || user.profileImage} alt={user?.name || "User"} className="w-full h-full rounded-full object-cover" /> : <span>{user?.name?.charAt(0)?.toUpperCase() || "A"}</span>}
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
             </div>
           </div>
@@ -291,9 +291,9 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col overflow-auto">
-                <h2 className="flex justify-between items-center text-lg font-semibold text-gray-800 mb-4">
+                <h2 className="flex justify-between items-center text-base font-semibold text-gray-800 mb-4">
                   <div className="flex items-center">
-                    <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
+                    Student Distribution
                   </div>
 
                   <div className="flex items-center space-x-3">
@@ -346,8 +346,8 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <TbBuildingCommunity className="mr-2 text-blue-600" /> Hostel Occupancy Overview
+                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">
+                  Hostel Occupancy Overview
                 </h2>
 
                 <div className="flex-1 grid grid-cols-2 gap-4">
@@ -406,8 +406,8 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                  <MdOutlineEvent className="mr-2 text-amber-500" /> Upcoming Joins (from Leaves)
+                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">
+                  Upcoming Joins (from Leaves)
                 </h2>
 
                 <div className="flex-1 overflow-auto">
@@ -471,8 +471,8 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                  <FaExclamationCircle className="mr-2 text-amber-500" /> Complaints Overview
+                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">
+                  Complaints Overview
                 </h2>
 
                 <div className="flex-1 flex flex-col justify-center">
@@ -525,8 +525,8 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <MdOutlineEvent className="mr-2 text-purple-600" /> Upcoming Events
+                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">
+                  Upcoming Events
                 </h2>
 
                 <div className="flex-1 overflow-hidden">
