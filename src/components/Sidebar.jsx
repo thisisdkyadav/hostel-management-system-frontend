@@ -145,39 +145,9 @@ const Sidebar = ({ navItems }) => {
     const isLogout = item.name === "Logout"
     const isProfile = item.name === "Profile"
 
-    if (isProfile && isOpen && user) {
-      return (
-        <li
-          key={item.name}
-          onClick={() => handleNavigation(item)}
-          className={`
-            group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer
-            ${isActiveItem ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
-          `}
-        >
-          <div className={`flex items-center px-4 py-3 ${isActiveItem ? "" : "hover:text-[#1360AB]"}`}>
-            <div className="min-w-10 h-10 rounded-full flex items-center justify-center overflow-hidden mr-3">
-              {user.profileImage ? (
-                <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-10 h-10 rounded-full object-cover" />
-              ) : user.name?.charAt(0).toUpperCase() ? (
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActiveItem ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}`}>
-                  <span className="font-semibold">{user.name.charAt(0).toUpperCase()}</span>
-                </div>
-              ) : (
-                <FaUserCircle className={`text-2xl ${isActiveItem ? "text-white" : "text-[#1360AB]"}`} />
-              )}
-            </div>
-
-            <div className="flex flex-col justify-center overflow-hidden">
-              <span className={`text-sm font-medium truncate ${isActiveItem ? "text-white" : ""}`}>{user.name || "User"}</span>
-              {user.email && <span className={`text-xs truncate ${isActiveItem ? "text-blue-100" : "text-gray-500"}`}>{user.email}</span>}
-              {user.role && <span className={`text-xs truncate ${isActiveItem ? "text-blue-200" : "text-gray-400"}`}>{user.role}</span>}
-            </div>
-          </div>
-
-          {isActiveItem && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
-        </li>
-      )
+    // Don't render profile and logout separately in the bottom section
+    if ((isProfile || isLogout) && isOpen) {
+      return null
     }
 
     return (
@@ -187,21 +157,20 @@ const Sidebar = ({ navItems }) => {
         className={`
           group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer
           ${isActiveItem ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
-          ${isLogout ? "hover:bg-red-50 hover:text-red-600" : ""}
         `}
       >
         <div
           className={`
           flex items-center px-4 py-3 
-          ${isActiveItem ? "" : isLogout ? "hover:text-red-600" : "hover:text-[#1360AB]"}
+          ${isActiveItem ? "" : "hover:text-[#1360AB]"}
         `}
         >
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : "mx-auto"}`}>
             <item.icon
               className={`
               text-xl
-              ${isActiveItem ? "text-white" : isLogout ? "text-red-500" : "text-[#1360AB]"}
-              ${!isActiveItem && !isLogout ? "group-hover:text-[#1360AB]" : ""}
+              ${isActiveItem ? "text-white" : "text-[#1360AB]"}
+              ${!isActiveItem ? "group-hover:text-[#1360AB]" : ""}
             `}
             />
 
@@ -224,7 +193,6 @@ const Sidebar = ({ navItems }) => {
               className={`
               text-sm font-medium whitespace-nowrap transition-all duration-200
               ${!isActiveItem ? "group-hover:translate-x-1" : ""}
-              ${isLogout && !isActiveItem ? "text-red-500" : ""}
             `}
             >
               {item.name}
@@ -234,6 +202,85 @@ const Sidebar = ({ navItems }) => {
 
         {isActiveItem && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
       </li>
+    )
+  }
+
+  const renderProfileSection = () => {
+    if (!isOpen || !user) return null
+
+    const profileItem = bottomNavItems.find((item) => item.name === "Profile")
+    const logoutItem = bottomNavItems.find((item) => item.name === "Logout")
+    const isProfileActive = active === "Profile"
+
+    return (
+      <div className="relative">
+        <div
+          onClick={() => profileItem && handleNavigation(profileItem)}
+          className={`
+            group relative rounded-xl transition-all duration-200 cursor-pointer
+            ${isProfileActive ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
+          `}
+        >
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center flex-1 min-w-0">
+              <div className="relative mr-3 flex-shrink-0">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                  {user.profileImage ? (
+                    <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
+                  ) : user.name?.charAt(0).toUpperCase() ? (
+                    <div
+                      className={`
+                      w-full h-full flex items-center justify-center font-semibold
+                      ${isProfileActive ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}
+                    `}
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  ) : (
+                    <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360AB]"}`} />
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col justify-center overflow-hidden flex-1 min-w-0">
+                <span className={`text-sm font-medium truncate ${isProfileActive ? "text-white" : "text-gray-900"}`}>{user.name || "User"}</span>
+                {user.role && <span className={`text-xs truncate ${isProfileActive ? "text-blue-100" : "text-gray-500"}`}>{user.role}</span>}
+              </div>
+            </div>
+
+            {logoutItem && (
+              <div className="relative flex-shrink-0 ml-3 group/logout">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleNavigation(logoutItem)
+                  }}
+                  className={`
+                    w-9 h-9 rounded-lg flex items-center justify-center
+                    transition-all duration-200
+                    ${isProfileActive ? "hover:bg-white/20 text-white" : "hover:bg-red-50 text-gray-600 hover:text-red-600"}
+                  `}
+                  aria-label="Logout"
+                >
+                  <logoutItem.icon className="text-lg" />
+                </button>
+
+                {/* Tooltip */}
+                <div className="absolute bottom-full right-0 mb-2 hidden group-hover/logout:block z-50 pointer-events-none">
+                  <div className="bg-gray-800 text-white text-xs px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap">
+                    Logout
+                    <div className="absolute top-full right-2 -mt-1">
+                      <div className="border-[5px] border-transparent border-t-gray-800"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {isProfileActive && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
+        </div>
+      </div>
     )
   }
 
@@ -294,8 +341,9 @@ const Sidebar = ({ navItems }) => {
             </div>
           )}
 
-          <div className="p-3 border-t border-gray-100">
-            <ul className="space-y-1">{bottomNavItems.map(renderNavItem)}</ul>
+          <div className="p-3 border-t border-gray-100 space-y-2">
+            {renderProfileSection()}
+            <ul className="space-y-1">{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul>
           </div>
         </div>
       </div>

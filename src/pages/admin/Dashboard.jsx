@@ -118,448 +118,444 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="px-6 py-6 flex-1 bg-gradient-to-b from-gray-50 to-white">
-      <header className="bg-white/90 backdrop-blur rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center mb-4 md:mb-0">
-            <MdDashboard className="text-blue-600 text-3xl mr-3" />
-            <div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-gray-500">{formatHeaderDate()}</p>
+    <div className="flex-1 bg-gradient-to-b from-gray-50 to-white">
+      {/* Modern Compact Header - Full Width with 0 margin */}
+      <header className="bg-white shadow-md border-b border-gray-200">
+        <div className="px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            {/* Left Section - Dashboard Title & Stats */}
+            <div className="flex items-center gap-6 flex-1">
+              {/* Dashboard Title */}
+              <div className="flex items-center gap-3 border-r border-gray-200 pr-6">
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900 tracking-tight">Admin Dashboard</h1>
+                  <p className="text-xs text-gray-500">{formatHeaderDate()}</p>
+                </div>
+              </div>
+
+              {/* Hostler vs Day Scholar Stats - Compact Modern Design */}
+              {loading ? (
+                <div className="flex gap-3">
+                  <ShimmerLoader height="2.5rem" width="9rem" className="rounded-lg" />
+                  <ShimmerLoader height="2.5rem" width="9rem" className="rounded-lg" />
+                </div>
+              ) : error ? (
+                <div className="text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5 text-xs">Error loading data</div>
+              ) : (
+                (() => {
+                  // Safe access to degreeWise and registered data
+                  const degreeWise = dashboardData?.students?.degreeWise || []
+
+                  // Sum normal (actual) counts by gender and total
+                  const normalSums = degreeWise.reduce(
+                    (acc, d) => {
+                      const boys = parseInt(d.boys) || 0
+                      const girls = parseInt(d.girls) || 0
+                      acc.boys += boys
+                      acc.girls += girls
+                      acc.total += boys + girls
+                      return acc
+                    },
+                    { boys: 0, girls: 0, total: 0 }
+                  )
+
+                  // Sum registered counts; try multiple possible shapes
+                  const registeredSums = degreeWise.reduce(
+                    (acc, d) => {
+                      // preferred: d.registered (object with boys/girls/total)
+                      if (d.registered && typeof d.registered === "object") {
+                        const rb = parseInt(d.registered.boys) || 0
+                        const rg = parseInt(d.registered.girls) || 0
+                        const rt = parseInt(d.registered.total) || rb + rg
+                        acc.boys += rb
+                        acc.girls += rg
+                        acc.total += rt
+                      } else if (d.registeredStudents != null) {
+                        // older format: registeredStudents might be a number
+                        const rt = parseInt(d.registeredStudents) || 0
+                        // if no breakdown available, split evenly
+                        const rb = Math.floor(rt / 2)
+                        const rg = rt - rb
+                        acc.boys += rb
+                        acc.girls += rg
+                        acc.total += rt
+                      } else {
+                        // fallback: use d.totalRegistered or d.total if available
+                        const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
+                        const rb = Math.floor(rt / 2)
+                        const rg = rt - rb
+                        acc.boys += rb
+                        acc.girls += rg
+                        acc.total += rt
+                      }
+
+                      return acc
+                    },
+                    { boys: 0, girls: 0, total: 0 }
+                  )
+
+                  // Derive day scholar = registered - normal (per gender and total)
+                  const dayScholar = {
+                    boys: Math.max(0, registeredSums.boys - normalSums.boys),
+                    girls: Math.max(0, registeredSums.girls - normalSums.girls),
+                  }
+                  dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
+
+                  // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
+                  const hostler = {
+                    boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
+                    girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
+                  }
+                  hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
+
+                  // Fallback for day scholar if registered info missing: use provided counts
+                  const finalDayScholar = {
+                    boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
+                    girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
+                  }
+                  finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
+
+                  return (
+                    <div className="flex items-center gap-3">
+                      {/* Hostlers Card - Compact */}
+                      <div className="bg-teal-50 border border-teal-200 rounded-lg px-3 py-2 hover:bg-teal-100 transition-all shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <FaUser className="text-teal-600 text-sm" />
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <p className="text-xs text-teal-700 font-medium">Hostlers</p>
+                              <p className="text-lg font-bold text-teal-800 leading-none">{hostler.total}</p>
+                            </div>
+                            <div className="flex gap-1 ml-2">
+                              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold border border-blue-200">B {hostler.boys}</span>
+                              <span className="px-1.5 py-0.5 bg-pink-100 text-pink-700 rounded text-[10px] font-semibold border border-pink-200">G {hostler.girls}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Day Scholars Card - Compact */}
+                      <div className="bg-orange-50 border border-orange-200 rounded-lg px-3 py-2 hover:bg-orange-100 transition-all shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <FaUser className="text-orange-600 text-sm" />
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <p className="text-xs text-orange-700 font-medium">Day Scholars</p>
+                              <p className="text-lg font-bold text-orange-800 leading-none">{finalDayScholar.total}</p>
+                            </div>
+                            <div className="flex gap-1 ml-2">
+                              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px] font-semibold border border-blue-200">B {finalDayScholar.boys}</span>
+                              <span className="px-1.5 py-0.5 bg-pink-100 text-pink-700 rounded text-[10px] font-semibold border border-pink-200">G {finalDayScholar.girls}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()
+              )}
+            </div>
+
+            {/* Right Section - User Profile */}
+            <div className="flex items-center gap-3 border-l border-gray-200 pl-6">
+              <div className="text-right">
+                <p className="text-sm font-semibold text-gray-900">{user?.name || "Admin User"}</p>
+                <p className="text-xs text-gray-500">{user?.role || "Administrator"}</p>
+              </div>
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-gray-200 hover:ring-[#1360AB] transition-all">
+                  {user?.profilePic || user?.profileImage ? <img src={user.profilePic || user.profileImage} alt={user?.name || "User"} className="w-full h-full rounded-full object-cover" /> : <span>{user?.name?.charAt(0)?.toUpperCase() || "A"}</span>}
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
             </div>
           </div>
-
-          {/* Hostler vs Day Scholar Section */}
-          <div className="flex items-center mb-4 md:mb-0 md:mx-6">
-            {loading ? (
-              <div className="flex gap-4">
-                <ShimmerLoader height="3rem" width="12rem" className="rounded-xl" />
-                <ShimmerLoader height="3rem" width="12rem" className="rounded-xl" />
-              </div>
-            ) : error ? (
-              <div className="text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm">Error loading data</div>
-            ) : (
-              (() => {
-                // Safe access to degreeWise and registered data
-                const degreeWise = dashboardData?.students?.degreeWise || []
-
-                // Sum normal (actual) counts by gender and total
-                const normalSums = degreeWise.reduce(
-                  (acc, d) => {
-                    const boys = parseInt(d.boys) || 0
-                    const girls = parseInt(d.girls) || 0
-                    acc.boys += boys
-                    acc.girls += girls
-                    acc.total += boys + girls
-                    return acc
-                  },
-                  { boys: 0, girls: 0, total: 0 }
-                )
-
-                // Sum registered counts; try multiple possible shapes
-                const registeredSums = degreeWise.reduce(
-                  (acc, d) => {
-                    // preferred: d.registered (object with boys/girls/total)
-                    if (d.registered && typeof d.registered === "object") {
-                      const rb = parseInt(d.registered.boys) || 0
-                      const rg = parseInt(d.registered.girls) || 0
-                      const rt = parseInt(d.registered.total) || rb + rg
-                      acc.boys += rb
-                      acc.girls += rg
-                      acc.total += rt
-                    } else if (d.registeredStudents != null) {
-                      // older format: registeredStudents might be a number
-                      const rt = parseInt(d.registeredStudents) || 0
-                      // if no breakdown available, split evenly
-                      const rb = Math.floor(rt / 2)
-                      const rg = rt - rb
-                      acc.boys += rb
-                      acc.girls += rg
-                      acc.total += rt
-                    } else {
-                      // fallback: use d.totalRegistered or d.total if available
-                      const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
-                      const rb = Math.floor(rt / 2)
-                      const rg = rt - rb
-                      acc.boys += rb
-                      acc.girls += rg
-                      acc.total += rt
-                    }
-
-                    return acc
-                  },
-                  { boys: 0, girls: 0, total: 0 }
-                )
-
-                // Derive day scholar = registered - normal (per gender and total)
-                const dayScholar = {
-                  boys: Math.max(0, registeredSums.boys - normalSums.boys),
-                  girls: Math.max(0, registeredSums.girls - normalSums.girls),
-                }
-                dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
-
-                // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
-                const hostler = {
-                  boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
-                  girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
-                }
-                hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
-
-                // Fallback for day scholar if registered info missing: use provided counts
-                const finalDayScholar = {
-                  boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
-                  girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
-                }
-                finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
-
-                return (
-                  <div className="flex items-center gap-6">
-                    {/* Hostlers Section */}
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <FaUser className="text-teal-600 text-lg" />
-                        <span className="text-sm font-medium text-gray-700">Hostlers:</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-teal-700">{hostler.total}</span>
-                        <span className="text-sm text-gray-600">Total</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">B: {hostler.boys}</span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md text-xs font-medium">G: {hostler.girls}</span>
-                      </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="h-8 w-px bg-gray-300"></div>
-
-                    {/* Day Scholars Section */}
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-2">
-                        <FaUser className="text-orange-600 text-lg" />
-                        <span className="text-sm font-medium text-gray-700">Day Scholars:</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-orange-700">{finalDayScholar.total}</span>
-                        <span className="text-sm text-gray-600">Total</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">B: {finalDayScholar.boys}</span>
-                        <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-md text-xs font-medium">G: {finalDayScholar.girls}</span>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })()
-            )}
-          </div>
-
-          {/* <div className="flex flex-wrap items-center gap-3">
-            {loading ? (
-              <>
-                <ShimmerLoader height="2.25rem" width="10rem" className="rounded-full" />
-                <ShimmerLoader height="2.25rem" width="10rem" className="rounded-full" />
-              </>
-            ) : (
-              <>
-                <div className="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full border border-blue-100 hover:bg-blue-100 transition">
-                  <MdNotifications className="mr-2" aria-hidden="true" />
-                  <span aria-live="polite">
-                    <span className="font-semibold">{dashboardData?.complaints?.pending || 0}</span> pending complaints
-                  </span>
-                </div>
-                <div className="flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-full border border-purple-100 hover:bg-purple-100 transition">
-                  <FaCalendarAlt className="mr-2" aria-hidden="true" />
-                  <span aria-live="polite">
-                    <span className="font-semibold">{dashboardData?.events?.length || 0}</span> upcoming events
-                  </span>
-                </div>
-              </>
-            )}
-          </div> */}
         </div>
       </header>
 
-      {/* Main dashboard grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-        {/* Student data card */}
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
-          {loading ? (
-            <div className="h-full flex flex-col">
-              <div className="flex justify-between items-center mb-4">
-                <ShimmerLoader height="1.25rem" width="50%" />
-                <ShimmerLoader height="1.75rem" width="8rem" className="rounded-full" />
-              </div>
-              <TableShimmer rows={6} className="flex-1" />
-            </div>
-          ) : error ? (
-            <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
-          ) : (
-            <div className="h-full flex flex-col overflow-auto">
-              <h2 className="flex justify-between items-center text-lg font-semibold text-gray-800 mb-4">
-                <div className="flex items-center">
-                  <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
+      {/* Main Content with padding */}
+      <div className="px-6 py-6">
+        {/* Main dashboard grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+          {/* Student data card */}
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <ShimmerLoader height="1.25rem" width="50%" />
+                  <ShimmerLoader height="1.75rem" width="8rem" className="rounded-full" />
                 </div>
-
-                <div className="flex items-center space-x-3">
-                  {/* Normal/Registered Toggle */}
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Student data type">
-                    <button onClick={() => setStudentDataView("normal")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
-                      Hostler
-                    </button>
-                    <button onClick={() => setStudentDataView("registered")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "registered"}>
-                      Registered
-                    </button>
+                <TableShimmer rows={6} className="flex-1" />
+              </div>
+            ) : error ? (
+              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col overflow-auto">
+                <h2 className="flex justify-between items-center text-lg font-semibold text-gray-800 mb-4">
+                  <div className="flex items-center">
+                    <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
                   </div>
 
-                  {/* Absolute/Normalized Toggle */}
-                  <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Distribution mode">
-                    <button onClick={() => setNormalizedView(false)} className={`px-3 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
-                      Absolute
-                    </button>
-                    <button onClick={() => setNormalizedView(true)} className={`px-3 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
-                      Normalized
-                    </button>
+                  <div className="flex items-center space-x-3">
+                    {/* Normal/Registered Toggle */}
+                    <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Student data type">
+                      <button onClick={() => setStudentDataView("normal")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
+                        Hostler
+                      </button>
+                      <button onClick={() => setStudentDataView("registered")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "registered"}>
+                        Registered
+                      </button>
+                    </div>
+
+                    {/* Absolute/Normalized Toggle */}
+                    <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Distribution mode">
+                      <button onClick={() => setNormalizedView(false)} className={`px-3 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
+                        Absolute
+                      </button>
+                      <button onClick={() => setNormalizedView(true)} className={`px-3 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
+                        Normalized
+                      </button>
+                    </div>
+                  </div>
+                </h2>
+
+                <div className="flex-1 flex flex-col">
+                  <div className="h-full">
+                    <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} studentDataView={studentDataView} />
                   </div>
                 </div>
-              </h2>
+              </div>
+            )}
+          </div>
 
-              <div className="flex-1 flex flex-col">
-                <div className="h-full">
-                  <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} studentDataView={studentDataView} />
+          {/* Hostel occupancy card */}
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+                <div className="flex-1 grid grid-cols-3 gap-4">
+                  <div className="flex items-center justify-center">
+                    <ChartShimmer height="140px" className="rounded-full" />
+                  </div>
+                  <div className="col-span-2">
+                    <TableShimmer rows={4} className="h-[16rem]" />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            ) : error ? (
+              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <TbBuildingCommunity className="mr-2 text-blue-600" /> Hostel Occupancy Overview
+                </h2>
 
-        {/* Hostel occupancy card */}
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
-          {loading ? (
-            <div className="h-full flex flex-col">
-              <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-              <div className="flex-1 grid grid-cols-3 gap-4">
-                <div className="flex items-center justify-center">
-                  <ChartShimmer height="140px" className="rounded-full" />
-                </div>
-                <div className="col-span-2">
-                  <TableShimmer rows={4} className="h-[16rem]" />
-                </div>
-              </div>
-            </div>
-          ) : error ? (
-            <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
-          ) : (
-            <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <TbBuildingCommunity className="mr-2 text-blue-600" /> Hostel Occupancy Overview
-              </h2>
-
-              <div className="flex-1 grid grid-cols-2 gap-4">
-                {/* <div className="flex items-center justify-center">
+                <div className="flex-1 grid grid-cols-2 gap-4">
+                  {/* <div className="flex items-center justify-center">
                   <div className="w-full max-w-[130px]">
                     <HostelOccupancyChart data={dashboardData?.hostels} />
                   </div>
                 </div> */}
 
-                <div className="col-span-2 overflow-hidden">
-                  <div className="overflow-x-auto max-h-[20rem] scrollbar-thin scrollbar-thumb-gray-300">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50 sticky top-0 z-10">
-                        <tr>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Hostel</th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Active Rooms</th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Capacity</th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Occupancy</th>
-                          <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Vacancy</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-100">
-                        {dashboardData?.hostels?.map((hostel, index) => (
-                          <tr key={index} className="hover:bg-gray-50/70 transition">
-                            <td className="px-4 py-2 text-sm text-gray-800">{hostel.name}</td>
-                            <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalRooms}</td>
-                            <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalCapacity}</td>
-                            <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{hostel.currentOccupancy}</td>
-                            <td className="px-4 py-2 text-sm text-emerald-700 text-center font-medium">{hostel.vacantCapacity}</td>
+                  <div className="col-span-2 overflow-hidden">
+                    <div className="overflow-x-auto max-h-[20rem] scrollbar-thin scrollbar-thumb-gray-300">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50 sticky top-0 z-10">
+                          <tr>
+                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Hostel</th>
+                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Active Rooms</th>
+                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Capacity</th>
+                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Occupancy</th>
+                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Vacancy</th>
                           </tr>
-                        ))}
-                        <tr className="bg-gray-50 font-medium">
-                          <td className="px-4 py-2 text-sm text-gray-900">Total</td>
-                          <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalRooms, 0)}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalCapacity, 0)}</td>
-                          <td className="px-4 py-2 text-sm text-blue-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0)}</td>
-                          <td className="px-4 py-2 text-sm text-emerald-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)}</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100">
+                          {dashboardData?.hostels?.map((hostel, index) => (
+                            <tr key={index} className="hover:bg-gray-50/70 transition">
+                              <td className="px-4 py-2 text-sm text-gray-800">{hostel.name}</td>
+                              <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalRooms}</td>
+                              <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalCapacity}</td>
+                              <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{hostel.currentOccupancy}</td>
+                              <td className="px-4 py-2 text-sm text-emerald-700 text-center font-medium">{hostel.vacantCapacity}</td>
+                            </tr>
+                          ))}
+                          <tr className="bg-gray-50 font-medium">
+                            <td className="px-4 py-2 text-sm text-gray-900">Total</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalRooms, 0)}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalCapacity, 0)}</td>
+                            <td className="px-4 py-2 text-sm text-blue-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0)}</td>
+                            <td className="px-4 py-2 text-sm text-emerald-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* Leaves card */}
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
-          {loading ? (
-            <div className="h-full flex flex-col">
-              <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-              <TableShimmer rows={4} className="flex-1" />
-            </div>
-          ) : error ? (
-            <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
-          ) : (
-            <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                <MdOutlineEvent className="mr-2 text-amber-500" /> Upcoming Joins (from Leaves)
-              </h2>
+          {/* Leaves card */}
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+                <TableShimmer rows={4} className="flex-1" />
+              </div>
+            ) : error ? (
+              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col">
+                <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                  <MdOutlineEvent className="mr-2 text-amber-500" /> Upcoming Joins (from Leaves)
+                </h2>
 
-              <div className="flex-1 overflow-auto">
-                {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
-                  <p className="text-sm text-gray-500">No recent leaves</p>
-                ) : (
-                  <ul className="space-y-3">
-                    {dashboardData.leaves.data.leaves.map((lv) => {
-                      const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
-                      // compute joining date = endDate + 1 day
-                      let joinDate = ""
-                      try {
-                        const end = lv && lv.endDate ? new Date(lv.endDate) : null
-                        if (end) {
-                          const j = new Date(end)
-                          j.setDate(j.getDate() + 1)
-                          joinDate = j.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                <div className="flex-1 overflow-auto">
+                  {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
+                    <p className="text-sm text-gray-500">No recent leaves</p>
+                  ) : (
+                    <ul className="space-y-3">
+                      {dashboardData.leaves.data.leaves.map((lv) => {
+                        const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
+                        // compute joining date = endDate + 1 day
+                        let joinDate = ""
+                        try {
+                          const end = lv && lv.endDate ? new Date(lv.endDate) : null
+                          if (end) {
+                            const j = new Date(end)
+                            j.setDate(j.getDate() + 1)
+                            joinDate = j.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                          }
+                        } catch (e) {
+                          joinDate = "Invalid date"
                         }
-                      } catch (e) {
-                        joinDate = "Invalid date"
-                      }
 
-                      return (
-                        <li key={lv._id} className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
-                          <div>
-                            <p className="text-sm font-medium text-gray-800">{name}</p>
-                            <p className="text-xs text-gray-500">Leave ends: {lv.endDate ? new Date(lv.endDate).toLocaleDateString() : "—"}</p>
-                          </div>
+                        return (
+                          <li key={lv._id} className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
+                            <div>
+                              <p className="text-sm font-medium text-gray-800">{name}</p>
+                              <p className="text-xs text-gray-500">Leave ends: {lv.endDate ? new Date(lv.endDate).toLocaleDateString() : "—"}</p>
+                            </div>
 
-                          <div className="text-right">
-                            <p className="text-sm text-green-700 font-semibold">Join: {joinDate || "—"}</p>
-                            <p className="text-xs text-gray-500">Status: {lv.joinStatus || lv.status || "—"}</p>
-                          </div>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Complaints summary card */}
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
-          {loading ? (
-            <div className="h-full flex flex-col">
-              <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <StatCardShimmer className="relative h-16" />
-                <StatCardShimmer className="relative h-16" />
-              </div>
-              <div className="grid grid-cols-3 gap-3 mb-3">
-                <StatCardShimmer className="relative h-16" />
-                <StatCardShimmer className="relative h-16" />
-                <StatCardShimmer className="relative h-16" />
-              </div>
-              <ShimmerLoader height="3rem" className="rounded-lg mt-auto" />
-            </div>
-          ) : error ? (
-            <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
-          ) : (
-            <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                <FaExclamationCircle className="mr-2 text-amber-500" /> Complaints Overview
-              </h2>
-
-              <div className="flex-1 flex flex-col justify-center">
-                {/* Top row - Primary stats */}
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 p-3 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
-                    <p className="text-3xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
-                  </div>
-
-                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 p-3 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
-                    <p className="text-3xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
-                  </div>
+                            <div className="text-right">
+                              <p className="text-sm text-green-700 font-semibold">Join: {joinDate || "—"}</p>
+                              <p className="text-xs text-gray-500">Status: {lv.joinStatus || lv.status || "—"}</p>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
                 </div>
+              </div>
+            )}
+          </div>
 
-                {/* Bottom row - Secondary stats */}
-                <div className="grid grid-cols-2 gap-2 mb-3">
-                  <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 p-2 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">IDO</div>
-                    <p className="text-2xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+          {/* Complaints summary card */}
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <StatCardShimmer className="relative h-16" />
+                  <StatCardShimmer className="relative h-16" />
+                </div>
+                <div className="grid grid-cols-3 gap-3 mb-3">
+                  <StatCardShimmer className="relative h-16" />
+                  <StatCardShimmer className="relative h-16" />
+                  <StatCardShimmer className="relative h-16" />
+                </div>
+                <ShimmerLoader height="3rem" className="rounded-lg mt-auto" />
+              </div>
+            ) : error ? (
+              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col">
+                <h2 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                  <FaExclamationCircle className="mr-2 text-amber-500" /> Complaints Overview
+                </h2>
+
+                <div className="flex-1 flex flex-col justify-center">
+                  {/* Top row - Primary stats */}
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 p-3 flex flex-col items-center justify-center">
+                      <div className="absolute right-0 top-0 bg-amber-500 text-white text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
+                      <p className="text-3xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
+                    </div>
+
+                    <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 p-3 flex flex-col items-center justify-center">
+                      <div className="absolute right-0 top-0 bg-blue-500 text-white text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
+                      <p className="text-3xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
+                    </div>
                   </div>
 
-                  {/* <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-green-50 to-green-100 border border-green-200 p-2 flex flex-col items-center justify-center">
+                  {/* Bottom row - Secondary stats */}
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 p-2 flex flex-col items-center justify-center">
+                      <div className="absolute right-0 top-0 bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">IDO</div>
+                      <p className="text-2xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+                    </div>
+
+                    {/* <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-green-50 to-green-100 border border-green-200 p-2 flex flex-col items-center justify-center">
                     <div className="absolute right-0 top-0 bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Resolved</div>
                     <p className="text-2xl font-bold text-green-700 mt-1">{dashboardData?.complaints?.resolved || 0}</p>
                   </div> */}
 
-                  <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 p-2 flex flex-col items-center justify-center">
-                    <div className="absolute right-0 top-0 bg-emerald-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Today</div>
-                    <p className="text-2xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
+                    <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 p-2 flex flex-col items-center justify-center">
+                      <div className="absolute right-0 top-0 bg-emerald-500 text-white text-xs px-1.5 py-0.5 rounded-bl-md">Today</div>
+                      <p className="text-2xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
+                    </div>
+                  </div>
+
+                  {/* Summary */}
+                  <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
+                    <span className="text-gray-600 text-sm">Total Active Complaints</span>
+                    <p className="text-xl font-bold text-gray-900">{(dashboardData?.complaints?.pending || 0) + (dashboardData?.complaints?.inProgress || 0)}</p>
                   </div>
                 </div>
+              </div>
+            )}
+          </div>
 
-                {/* Summary */}
-                <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center">
-                  <span className="text-gray-600 text-sm">Total Active Complaints</span>
-                  <p className="text-xl font-bold text-gray-900">{(dashboardData?.complaints?.pending || 0) + (dashboardData?.complaints?.inProgress || 0)}</p>
+          {/* Upcoming events card */}
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+                <div className="flex-1 overflow-hidden">
+                  <EventCardShimmer count={3} />
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            ) : error ? (
+              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <MdOutlineEvent className="mr-2 text-purple-600" /> Upcoming Events
+                </h2>
 
-        {/* Upcoming events card */}
-        <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
-          {loading ? (
-            <div className="h-full flex flex-col">
-              <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-              <div className="flex-1 overflow-hidden">
-                <EventCardShimmer count={3} />
-              </div>
-            </div>
-          ) : error ? (
-            <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
-          ) : (
-            <div className="h-full flex flex-col">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <MdOutlineEvent className="mr-2 text-purple-600" /> Upcoming Events
-              </h2>
-
-              <div className="flex-1 overflow-hidden">
-                <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300">
-                  {dashboardData?.events?.map((event) => (
-                    <div key={event.id} className="mb-3 bg-purple-50 p-3 rounded-xl border border-purple-200 hover:shadow-sm transition-all">
-                      <h3 className="font-medium text-purple-900">{event.title}</h3>
-                      <div className="flex justify-between items-center mt-2 text-sm">
-                        <div className="flex items-center text-gray-600">
-                          <FaCalendarAlt className="mr-1 text-xs" />
-                          {formatDate(event.date)}
+                <div className="flex-1 overflow-hidden">
+                  <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300">
+                    {dashboardData?.events?.map((event) => (
+                      <div key={event.id} className="mb-3 bg-purple-50 p-3 rounded-xl border border-purple-200 hover:shadow-sm transition-all">
+                        <h3 className="font-medium text-purple-900">{event.title}</h3>
+                        <div className="flex justify-between items-center mt-2 text-sm">
+                          <div className="flex items-center text-gray-600">
+                            <FaCalendarAlt className="mr-1 text-xs" />
+                            {formatDate(event.date)}
+                          </div>
+                          <div className="text-gray-600">{event.time}</div>
                         </div>
-                        <div className="text-gray-600">{event.time}</div>
+                        <div className="text-xs text-gray-500 mt-1">{event.location}</div>
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">{event.location}</div>
-                    </div>
-                  ))}
+                    ))}
 
-                  {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-gray-500">No upcoming events</div>}
+                    {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-gray-500">No upcoming events</div>}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
