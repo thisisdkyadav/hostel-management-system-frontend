@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { wardenApi, associateWardenApi, hostelSupervisorApi } from "../services/apiService"
 import { FaUserCircle, FaBuilding } from "react-icons/fa"
 import { CgSpinner } from "react-icons/cg"
+import { HiMenuAlt2, HiMenuAlt3 } from "react-icons/hi"
 import { useWarden } from "../contexts/WardenProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
@@ -79,7 +80,9 @@ const Sidebar = ({ navItems }) => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-      setIsOpen(window.innerWidth >= 768)
+      if (mobile) {
+        setIsOpen(false)
+      }
     }
 
     window.addEventListener("resize", handleResize)
@@ -145,7 +148,7 @@ const Sidebar = ({ navItems }) => {
     const isLogout = item.name === "Logout"
     const isProfile = item.name === "Profile"
 
-    // Don't render profile and logout separately in the bottom section
+    // Don't render profile and logout separately in the bottom section when sidebar is open
     if ((isProfile || isLogout) && isOpen) {
       return null
     }
@@ -154,6 +157,7 @@ const Sidebar = ({ navItems }) => {
       <li
         key={item.name}
         onClick={() => handleNavigation(item)}
+        title={!isOpen ? item.name : ""}
         className={`
           group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer
           ${isActiveItem ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
@@ -161,11 +165,11 @@ const Sidebar = ({ navItems }) => {
       >
         <div
           className={`
-          flex items-center px-4 py-3 
+          flex items-center ${isOpen ? "px-4 py-3" : "px-2 py-3 justify-center"}
           ${isActiveItem ? "" : "hover:text-[#1360AB]"}
         `}
         >
-          <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : "mx-auto"}`}>
+          <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : ""}`}>
             <item.icon
               className={`
               text-xl
@@ -206,11 +210,44 @@ const Sidebar = ({ navItems }) => {
   }
 
   const renderProfileSection = () => {
-    if (!isOpen || !user) return null
+    if (!user) return null
 
     const profileItem = bottomNavItems.find((item) => item.name === "Profile")
     const logoutItem = bottomNavItems.find((item) => item.name === "Logout")
     const isProfileActive = active === "Profile"
+
+    if (!isOpen) {
+      // Minimized view - show just profile icon
+      return (
+        <div className="relative group" title={user.name || "Profile"}>
+          <div
+            onClick={() => profileItem && handleNavigation(profileItem)}
+            className={`
+              relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center
+              ${isProfileActive ? "bg-[#1360AB] text-white shadow-md" : "text-gray-700 hover:bg-[#1360AB]/10"}
+            `}
+          >
+            <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+              {user.profileImage ? (
+                <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
+              ) : user.name?.charAt(0).toUpperCase() ? (
+                <div
+                  className={`
+                    w-full h-full flex items-center justify-center font-semibold
+                    ${isProfileActive ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}
+                  `}
+                >
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              ) : (
+                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360AB]"}`} />
+              )}
+            </div>
+            {isProfileActive && <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-2/3 bg-white rounded-r-md"></div>}
+          </div>
+        </div>
+      )
+    }
 
     return (
       <div className="relative">
@@ -255,6 +292,7 @@ const Sidebar = ({ navItems }) => {
                     e.stopPropagation()
                     handleNavigation(logoutItem)
                   }}
+                  title="Logout"
                   className={`
                     w-9 h-9 rounded-lg flex items-center justify-center
                     transition-all duration-200
@@ -264,16 +302,6 @@ const Sidebar = ({ navItems }) => {
                 >
                   <logoutItem.icon className="text-lg" />
                 </button>
-
-                {/* Tooltip */}
-                <div className="absolute bottom-full right-0 mb-2 hidden group-hover/logout:block z-50 pointer-events-none">
-                  <div className="bg-gray-800 text-white text-xs px-2.5 py-1.5 rounded-md shadow-lg whitespace-nowrap">
-                    Logout
-                    <div className="absolute top-full right-2 -mt-1">
-                      <div className="border-[5px] border-transparent border-t-gray-800"></div>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
           </div>
@@ -290,58 +318,92 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-white shadow-lg border-r border-gray-100 ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-64" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"}`}>
+      <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-white shadow-lg border-r border-gray-100 ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-64" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}>
         <div className="flex flex-col h-full">
-          <div className={`p-4 flex justify-center items-center border-b border-gray-100 ${isOpen ? "h-20" : "h-16"} ${isMobile ? "hidden" : ""} cursor-pointer`} onClick={() => navigate("/")}>
-            {isOpen ? <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-10 w-auto object-contain" /> : <div className="w-10 h-10 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-bold text-xs transition-all hover:bg-[#0d4d8c]">IITI</div>}
+          {/* Logo and Toggle */}
+          <div className={`border-b border-gray-100 ${isMobile ? "hidden" : ""} h-16`}>
+            <div className={`h-full flex items-center ${isOpen ? "justify-between px-3" : "justify-center px-2"} hover:bg-[#f6fbff]`}>
+              {/* Logo - only show when expanded. smaller and paired with subtle label */}
+              {isOpen && (
+                <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
+                  <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-8 w-auto object-contain transition-all opacity-95" />
+                  {/* <span className="ml-2 text-sm font-semibold text-[#1360AB]">Hostel</span> */}
+                </div>
+              )}
+
+              {/* Toggle Button - refined sizing and visual weight */}
+              {isOpen ? (
+                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-8 h-8 rounded-md border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-[#1360AB] transition-all duration-200">
+                  <HiMenuAlt2 className="text-lg" />
+                </button>
+              ) : (
+                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-8 h-8 rounded-md bg-gray-100 text-gray-600 hover:bg-[#1360AB] hover:text-white flex items-center justify-center transition-all duration-200">
+                  <HiMenuAlt3 className="text-lg" />
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
+          {/* Main Navigation */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 scrollbar-thin sidebar-scrollbar">
             <ul className="space-y-1">{mainNavItems.map(renderNavItem)}</ul>
           </div>
-          {isWardenRole && isOpen && assignedHostels && assignedHostels.length > 0 && (
-            <div className="p-3 border-t border-gray-100">
-              <label htmlFor="activeHostelSelect" className="block text-xs font-medium text-gray-500 mb-1.5 px-1">
-                Active Hostel
-              </label>
-              <div className="relative">
-                <select
-                  id="activeHostelSelect"
-                  value={activeHostelId || ""}
-                  onChange={handleHostelChange}
-                  disabled={isUpdatingHostel}
-                  className="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB] bg-gray-50 appearance-none pr-8 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {!activeHostelId && assignedHostels.length > 0 && (
-                    <option value="" disabled>
-                      Select Active Hostel
-                    </option>
-                  )}
-                  {assignedHostels.map((hostel) => {
-                    const hostelId = typeof hostel === "string" ? hostel : hostel?._id
-                    const hostelName = typeof hostel === "string" ? `Hostel (${hostelId?.slice(-4) || "Unknown"})` : hostel?.name || "Unknown Hostel"
-                    if (!hostelId) return null
-                    return (
-                      <option key={hostelId} value={hostelId}>
-                        {hostelName}
-                      </option>
-                    )
-                  })}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  {isUpdatingHostel ? (
-                    <CgSpinner className="animate-spin text-gray-500" />
-                  ) : (
-                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
-                    </svg>
-                  )}
+
+          {/* Active Hostel */}
+          {isWardenRole && assignedHostels && assignedHostels.length > 0 && (
+            <div className={`border-t border-gray-100 ${isOpen ? "p-3" : "p-2"}`}>
+              {isOpen ? (
+                <>
+                  <label htmlFor="activeHostelSelect" className="block text-xs font-medium text-gray-500 mb-1.5 px-1">
+                    Active Hostel
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="activeHostelSelect"
+                      value={activeHostelId || ""}
+                      onChange={handleHostelChange}
+                      disabled={isUpdatingHostel}
+                      className="w-full p-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB] bg-gray-50 appearance-none pr-8 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                      {!activeHostelId && assignedHostels.length > 0 && (
+                        <option value="" disabled>
+                          Select Active Hostel
+                        </option>
+                      )}
+                      {assignedHostels.map((hostel) => {
+                        const hostelId = typeof hostel === "string" ? hostel : hostel?._id
+                        const hostelName = typeof hostel === "string" ? `Hostel (${hostelId?.slice(-4) || "Unknown"})` : hostel?.name || "Unknown Hostel"
+                        if (!hostelId) return null
+                        return (
+                          <option key={hostelId} value={hostelId}>
+                            {hostelName}
+                          </option>
+                        )
+                      })}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      {isUpdatingHostel ? (
+                        <CgSpinner className="animate-spin text-gray-500" />
+                      ) : (
+                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="relative group" title="Active Hostel">
+                  <div className="w-full py-3 flex justify-center">
+                    <FaBuilding className="text-xl text-[#1360AB]" />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
 
-          <div className="p-3 border-t border-gray-100 space-y-2">
+          {/* Profile and Logout */}
+          <div className={`border-t border-gray-100 space-y-2 overflow-x-hidden ${isOpen ? "p-3" : "p-2"}`}>
             {renderProfileSection()}
             <ul className="space-y-1">{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul>
           </div>
