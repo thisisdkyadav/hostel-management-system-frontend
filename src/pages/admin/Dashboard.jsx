@@ -309,13 +309,13 @@ const Dashboard = () => {
 
                   <div className="flex items-center space-x-2">
                     {/* Normal/Registered Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.65rem] shadow-inner" role="tablist" aria-label="Student data type">
-                      <button onClick={() => setStudentDataView("normal")} className={`px-2 py-0.5 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
+                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.8125rem] shadow-inner" role="tablist" aria-label="Student data type">
+                      <button onClick={() => setStudentDataView("normal")} className={`px-2.5 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
                         Hostler
                       </button>
                       <button
                         onClick={() => setStudentDataView("registered")}
-                        className={`px-2 py-0.5 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`}
+                        className={`px-2.5 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`}
                         aria-selected={studentDataView === "registered"}
                       >
                         Registered
@@ -323,11 +323,11 @@ const Dashboard = () => {
                     </div>
 
                     {/* Absolute/Normalized Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.65rem] shadow-inner" role="tablist" aria-label="Distribution mode">
-                      <button onClick={() => setNormalizedView(false)} className={`px-2 py-0.5 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
+                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.8125rem] shadow-inner" role="tablist" aria-label="Distribution mode">
+                      <button onClick={() => setNormalizedView(false)} className={`px-2.5 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
                         Absolute
                       </button>
-                      <button onClick={() => setNormalizedView(true)} className={`px-2 py-0.5 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
+                      <button onClick={() => setNormalizedView(true)} className={`px-2.5 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
                         Normalized
                       </button>
                     </div>
@@ -371,7 +371,7 @@ const Dashboard = () => {
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
                         <tr>
-                          <th className="px-3 py-2 text-[0.65rem] font-semibold text-gray-700 text-left uppercase tracking-wide">
+                          <th className="px-3 py-2 text-[0.8125rem] font-semibold text-gray-700 text-left uppercase tracking-wide">
                             <div className="flex items-center gap-2">
                               <input
                                 type="checkbox"
@@ -388,10 +388,10 @@ const Dashboard = () => {
                               Hostel
                             </div>
                           </th>
-                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Rooms</th>
-                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Capacity</th>
-                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Occupancy</th>
-                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Vacancy</th>
+                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Rooms</th>
+                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Capacity</th>
+                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Occupancy</th>
+                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Vacancy</th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-100">
@@ -405,33 +405,35 @@ const Dashboard = () => {
                                   onChange={() => toggleHostelSelection(index)}
                                   className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-2 cursor-pointer transition-opacity ${allHostelsSelected ? "opacity-30" : "opacity-100"}`}
                                 />
-                                <span className={`text-xs font-medium ${selectedHostels.includes(index) ? "text-gray-800" : "text-gray-500"}`}>{hostel.name}</span>
+                                <span className={`text-[0.8125rem] font-medium ${selectedHostels.includes(index) ? "text-gray-800" : "text-gray-500"}`}>{hostel.name}</span>
                               </div>
                             </td>
-                            <td className="px-2 py-1.5 text-xs text-gray-700 text-center font-medium">{hostel.totalRooms}</td>
-                            <td className="px-2 py-1.5 text-xs text-gray-700 text-center font-medium">{hostel.totalCapacity}</td>
+                            <td className="px-2 py-1.5 text-[0.8125rem] text-gray-700 text-center font-medium">{hostel.totalRooms}</td>
+                            <td className="px-2 py-1.5 text-[0.8125rem] text-gray-700 text-center font-medium">{hostel.totalCapacity}</td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-semibold bg-blue-100 text-blue-800">{hostel.currentOccupancy}</span>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.8125rem] font-semibold bg-blue-100 text-blue-800">{hostel.currentOccupancy}</span>
                             </td>
                             <td className="px-2 py-1.5 text-center">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-semibold bg-emerald-100 text-emerald-800">{hostel.vacantCapacity}</span>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.8125rem] font-semibold bg-emerald-100 text-emerald-800">{hostel.vacantCapacity}</span>
                             </td>
                           </tr>
                         ))}
                         <tr className="bg-gradient-to-r from-gray-100 to-gray-50 font-semibold border-t-2 border-gray-300">
-                          <td className="px-3 py-2 text-xs text-gray-900">
+                          <td className="px-3 py-2 text-[0.8125rem] text-gray-900">
                             <div className="flex items-center gap-2">
                               <div className="w-3.5 h-3.5"></div>
                               <span className="uppercase tracking-wide font-bold">Total {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && `(${selectedHostels.length})`}</span>
                             </div>
                           </td>
-                          <td className="px-2 py-2 text-xs text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                          <td className="px-2 py-2 text-xs text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
                           <td className="px-2 py-2 text-center">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-200 text-blue-900">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.8125rem] font-bold bg-blue-200 text-blue-900">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</span>
                           </td>
                           <td className="px-2 py-2 text-center">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-200 text-emerald-900">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.8125rem] font-bold bg-emerald-200 text-emerald-900">
+                              {dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}
+                            </span>
                           </td>
                         </tr>
                       </tbody>
@@ -443,7 +445,7 @@ const Dashboard = () => {
           </div>
 
           {/* Leaves card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -453,13 +455,16 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">Upcoming Joins (from Leaves)</h2>
+                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
+                  <FaCalendarAlt className="mr-1.5 text-[#1360AB] text-base" />
+                  Upcoming Joins (from Leaves)
+                </h2>
 
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                   {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
-                    <p className="text-sm text-gray-500">No recent leaves</p>
+                    <p className="text-[0.8125rem] text-gray-500">No recent leaves</p>
                   ) : (
-                    <ul className="space-y-3">
+                    <ul className="space-y-2">
                       {dashboardData.leaves.data.leaves.map((lv) => {
                         const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
                         // compute joining date = endDate + 1 day
@@ -476,15 +481,15 @@ const Dashboard = () => {
                         }
 
                         return (
-                          <li key={lv._id} className="flex items-center justify-between bg-gray-50 rounded-lg p-3 border border-gray-100">
+                          <li key={lv._id} className="flex items-center justify-between bg-gradient-to-r from-gray-50 to-white rounded-lg p-2.5 border border-gray-100 hover:border-gray-300 transition-all">
                             <div>
-                              <p className="text-sm font-medium text-gray-800">{name}</p>
-                              <p className="text-xs text-gray-500">Leave ends: {lv.endDate ? new Date(lv.endDate).toLocaleDateString() : "—"}</p>
+                              <p className="text-[0.8125rem] font-semibold text-gray-800">{name}</p>
+                              <p className="text-[0.75rem] text-gray-500 mt-0.5">Leave ends: {lv.endDate ? new Date(lv.endDate).toLocaleDateString() : "—"}</p>
                             </div>
 
                             <div className="text-right">
-                              <p className="text-sm text-green-700 font-semibold">Join: {joinDate || "—"}</p>
-                              <p className="text-xs text-gray-500">Status: {lv.joinStatus || lv.status || "—"}</p>
+                              <p className="text-[0.8125rem] text-green-700 font-bold">Join: {joinDate || "—"}</p>
+                              <p className="text-[0.75rem] text-gray-500 mt-0.5">Status: {lv.joinStatus || lv.status || "—"}</p>
                             </div>
                           </li>
                         )
@@ -497,7 +502,7 @@ const Dashboard = () => {
           </div>
 
           {/* Complaints summary card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -516,39 +521,42 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">Complaints Overview</h2>
+                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
+                  <FaExclamationCircle className="mr-1.5 text-[#1360AB] text-base" />
+                  Complaints Overview
+                </h2>
 
                 <div className="flex-1 flex flex-col justify-center">
                   {/* Top row - Primary stats */}
-                  <div className="grid grid-cols-2 gap-3 mb-3">
-                    <div className="relative overflow-hidden rounded-xl bg-white border border-amber-100 p-3 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-bl-md">Pending</div>
-                      <p className="text-3xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-amber-100 p-2 flex flex-col items-center justify-center shadow-sm">
+                      <div className="absolute right-0 top-0 bg-amber-100 text-amber-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">Pending</div>
+                      <p className="text-2xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-xl bg-white border border-blue-100 p-3 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-bl-md">In Progress</div>
-                      <p className="text-3xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-blue-100 p-2 flex flex-col items-center justify-center shadow-sm">
+                      <div className="absolute right-0 top-0 bg-blue-100 text-blue-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">In Progress</div>
+                      <p className="text-2xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
                     </div>
                   </div>
 
                   {/* Bottom row - Secondary stats */}
-                  <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="grid grid-cols-2 gap-2 mb-2">
                     <div className="relative overflow-hidden rounded-lg bg-white border border-purple-100 p-2 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-purple-100 text-purple-700 text-xs px-1.5 py-0.5 rounded-bl-md">IDO</div>
-                      <p className="text-2xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+                      <div className="absolute right-0 top-0 bg-purple-100 text-purple-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">IDO</div>
+                      <p className="text-xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
                     </div>
 
                     <div className="relative overflow-hidden rounded-lg bg-white border border-emerald-100 p-2 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-emerald-100 text-emerald-700 text-xs px-1.5 py-0.5 rounded-bl-md">Today</div>
-                      <p className="text-2xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
+                      <div className="absolute right-0 top-0 bg-emerald-100 text-emerald-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">Today</div>
+                      <p className="text-xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
                     </div>
                   </div>
 
                   {/* Summary */}
-                  <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center">
-                    <span className="text-gray-600 text-sm">Active for more than 20 days</span>
-                    <p className="text-xl font-bold text-gray-900">{dashboardData?.complaints?.overdueCount || 0}</p>
+                  <div className="bg-gradient-to-r from-gray-50 to-white p-2.5 rounded-xl border border-gray-200 shadow-sm text-center">
+                    <span className="text-gray-600 text-[0.8125rem] font-medium">Active for more than 20 days</span>
+                    <p className="text-xl font-bold text-gray-900 mt-0.5">{dashboardData?.complaints?.overdueCount || 0}</p>
                   </div>
                 </div>
               </div>
@@ -556,7 +564,7 @@ const Dashboard = () => {
           </div>
 
           {/* Upcoming events card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-5">
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -568,25 +576,28 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">Upcoming Events</h2>
+                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
+                  <MdOutlineEvent className="mr-1.5 text-[#1360AB] text-base" />
+                  Upcoming Events
+                </h2>
 
                 <div className="flex-1 overflow-hidden">
-                  <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300">
+                  <div className="overflow-y-auto max-h-[17rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                     {dashboardData?.events?.map((event) => (
-                      <div key={event.id} className="mb-3 bg-purple-50 p-3 rounded-xl border border-purple-200 hover:shadow-sm transition-all">
-                        <h3 className="font-medium text-purple-900">{event.title}</h3>
-                        <div className="flex justify-between items-center mt-2 text-sm">
+                      <div key={event.id} className="mb-2 bg-gradient-to-r from-purple-50 to-white p-2.5 rounded-xl border border-purple-200 hover:shadow-sm hover:border-purple-300 transition-all">
+                        <h3 className="font-semibold text-[0.8125rem] text-purple-900">{event.title}</h3>
+                        <div className="flex justify-between items-center mt-1.5 text-[0.75rem]">
                           <div className="flex items-center text-gray-600">
-                            <FaCalendarAlt className="mr-1 text-xs" />
+                            <FaCalendarAlt className="mr-1 text-[0.65rem]" />
                             {formatDate(event.date)}
                           </div>
-                          <div className="text-gray-600">{event.time}</div>
+                          <div className="text-gray-600 font-medium">{event.time}</div>
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">{event.location}</div>
+                        <div className="text-[0.75rem] text-gray-500 mt-1">{event.location}</div>
                       </div>
                     ))}
 
-                    {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-gray-500">No upcoming events</div>}
+                    {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-[0.8125rem] text-gray-500">No upcoming events</div>}
                   </div>
                 </div>
               </div>
@@ -647,14 +658,14 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
           <tr>
-            <th className="px-3 py-2 text-[0.65rem] font-semibold text-gray-700 text-left uppercase tracking-wide">Degree</th>
-            <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys</th>
-            <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls</th>
-            <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Total</th>
+            <th className="px-3 py-2 text-[0.8125rem] font-semibold text-gray-700 text-left uppercase tracking-wide">Degree</th>
+            <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys</th>
+            <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls</th>
+            <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Total</th>
             {normalized && (
               <>
-                <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys %</th>
-                <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls %</th>
+                <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys %</th>
+                <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls %</th>
               </>
             )}
           </tr>
@@ -666,14 +677,14 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
 
             return (
               <tr key={index} className="hover:bg-blue-50/30 transition-colors">
-                <td className="px-3 py-1.5 text-xs text-gray-800 font-medium">{item.degree}</td>
-                <td className="px-2 py-1.5 text-xs text-blue-700 text-center font-medium">{item.boys}</td>
-                <td className="px-2 py-1.5 text-xs text-pink-700 text-center font-medium">{item.girls}</td>
-                <td className="px-2 py-1.5 text-xs text-indigo-700 text-center font-semibold">{item.total}</td>
+                <td className="px-3 py-1.5 text-[0.8125rem] text-gray-800 font-medium">{item.degree}</td>
+                <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium">{item.boys}</td>
+                <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium">{item.girls}</td>
+                <td className="px-2 py-1.5 text-[0.8125rem] text-indigo-700 text-center font-semibold">{item.total}</td>
                 {normalized && (
                   <>
-                    <td className="px-2 py-1.5 text-xs text-blue-700 text-center font-medium">{boysPercent}%</td>
-                    <td className="px-2 py-1.5 text-xs text-pink-700 text-center font-medium">{girlsPercent}%</td>
+                    <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium">{boysPercent}%</td>
+                    <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium">{girlsPercent}%</td>
                   </>
                 )}
               </tr>
@@ -682,8 +693,8 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
 
           {/* Totals row */}
           <tr className="bg-gradient-to-r from-gray-100 to-gray-50 font-semibold border-t-2 border-gray-300">
-            <td className="px-3 py-2 text-xs text-gray-900 font-bold uppercase tracking-wide">Total</td>
-            <td className="px-2 py-2 text-xs text-blue-800 text-center font-bold">
+            <td className="px-3 py-2 text-[0.8125rem] text-gray-900 font-bold uppercase tracking-wide">Total</td>
+            <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-bold">
               {(() => {
                 if (studentDataView === "registered") {
                   // Calculate total registered boys from all degrees
@@ -693,7 +704,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                 }
               })()}
             </td>
-            <td className="px-2 py-2 text-xs text-pink-800 text-center font-bold">
+            <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-bold">
               {(() => {
                 if (studentDataView === "registered") {
                   // Calculate total registered girls from all degrees
@@ -703,7 +714,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                 }
               })()}
             </td>
-            <td className="px-2 py-2 text-xs text-indigo-800 text-center font-bold">
+            <td className="px-2 py-2 text-[0.8125rem] text-indigo-800 text-center font-bold">
               {(() => {
                 if (studentDataView === "registered") {
                   // Calculate total registered students from all degrees
@@ -715,7 +726,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
             </td>
             {normalized && (
               <>
-                <td className="px-2 py-2 text-xs text-blue-800 text-center font-bold">
+                <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-bold">
                   {(() => {
                     let totalBoys, grandTotal
                     if (studentDataView === "registered") {
@@ -729,7 +740,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                   })()}
                   %
                 </td>
-                <td className="px-2 py-2 text-xs text-pink-800 text-center font-bold">
+                <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-bold">
                   {(() => {
                     let totalGirls, grandTotal
                     if (studentDataView === "registered") {
