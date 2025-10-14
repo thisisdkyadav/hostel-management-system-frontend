@@ -88,6 +88,7 @@ const Dashboard = () => {
   const [studentView, setStudentView] = useState("degree") // Default to degree view
   const [normalizedView, setNormalizedView] = useState(false)
   const [studentDataView, setStudentDataView] = useState("normal") // Toggle between "normal" and "registered"
+  const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -110,6 +111,27 @@ const Dashboard = () => {
 
     fetchDashboardData()
   }, [])
+
+  // Initialize selected hostels when data loads
+  useEffect(() => {
+    if (dashboardData?.hostels) {
+      setSelectedHostels(dashboardData.hostels.map((_, index) => index))
+    }
+  }, [dashboardData])
+
+  // Toggle hostel selection
+  const toggleHostelSelection = (index) => {
+    setSelectedHostels((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index)
+      } else {
+        return [...prev, index]
+      }
+    })
+  }
+
+  // Check if all hostels are selected
+  const allHostelsSelected = dashboardData?.hostels ? selectedHostels.length === dashboardData.hostels.length : false
 
   // Format date for header
   const formatHeaderDate = () => {
@@ -318,7 +340,7 @@ const Dashboard = () => {
           </div>
 
           {/* Hostel occupancy card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -335,47 +357,81 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">Hostel Occupancy Overview</h2>
+                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
+                  <BiBuildings className="mr-1.5 text-[#1360AB] text-base" />
+                  Hostel Occupancy Overview
+                </h2>
 
-                <div className="flex-1 grid grid-cols-2 gap-4">
-                  {/* <div className="flex items-center justify-center">
-                  <div className="w-full max-w-[130px]">
-                    <HostelOccupancyChart data={dashboardData?.hostels} />
-                  </div>
-                </div> */}
-
-                  <div className="col-span-2 overflow-hidden">
-                    <div className="overflow-x-auto max-h-[20rem] scrollbar-thin scrollbar-thumb-gray-300">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 sticky top-0 z-10">
-                          <tr>
-                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Hostel</th>
-                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Active Rooms</th>
-                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Capacity</th>
-                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Occupancy</th>
-                            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Vacancy</th>
+                <div className="flex-1 overflow-hidden">
+                  <div className="overflow-x-auto max-h-[21rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
+                        <tr>
+                          <th className="px-3 py-2 text-[0.65rem] font-semibold text-gray-700 text-left uppercase tracking-wide">
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={allHostelsSelected}
+                                onChange={() => {
+                                  if (allHostelsSelected) {
+                                    setSelectedHostels([])
+                                  } else {
+                                    setSelectedHostels(dashboardData.hostels.map((_, index) => index))
+                                  }
+                                }}
+                                className="w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-2 cursor-pointer"
+                              />
+                              Hostel
+                            </div>
+                          </th>
+                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Rooms</th>
+                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Capacity</th>
+                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Occupancy</th>
+                          <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Vacancy</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-100">
+                        {dashboardData?.hostels?.map((hostel, index) => (
+                          <tr key={index} className={`hover:bg-blue-50/30 transition-colors ${selectedHostels.includes(index) ? "bg-white" : "bg-gray-50/50"}`}>
+                            <td className="px-3 py-1.5">
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedHostels.includes(index)}
+                                  onChange={() => toggleHostelSelection(index)}
+                                  className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-2 cursor-pointer transition-opacity ${allHostelsSelected ? "opacity-30" : "opacity-100"}`}
+                                />
+                                <span className={`text-xs font-medium ${selectedHostels.includes(index) ? "text-gray-800" : "text-gray-500"}`}>{hostel.name}</span>
+                              </div>
+                            </td>
+                            <td className="px-2 py-1.5 text-xs text-gray-700 text-center font-medium">{hostel.totalRooms}</td>
+                            <td className="px-2 py-1.5 text-xs text-gray-700 text-center font-medium">{hostel.totalCapacity}</td>
+                            <td className="px-2 py-1.5 text-center">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-semibold bg-blue-100 text-blue-800">{hostel.currentOccupancy}</span>
+                            </td>
+                            <td className="px-2 py-1.5 text-center">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.65rem] font-semibold bg-emerald-100 text-emerald-800">{hostel.vacantCapacity}</span>
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
-                          {dashboardData?.hostels?.map((hostel, index) => (
-                            <tr key={index} className="hover:bg-gray-50/70 transition">
-                              <td className="px-4 py-2 text-sm text-gray-800">{hostel.name}</td>
-                              <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalRooms}</td>
-                              <td className="px-4 py-2 text-sm text-gray-600 text-center">{hostel.totalCapacity}</td>
-                              <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{hostel.currentOccupancy}</td>
-                              <td className="px-4 py-2 text-sm text-emerald-700 text-center font-medium">{hostel.vacantCapacity}</td>
-                            </tr>
-                          ))}
-                          <tr className="bg-gray-50 font-medium">
-                            <td className="px-4 py-2 text-sm text-gray-900">Total</td>
-                            <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalRooms, 0)}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.totalCapacity, 0)}</td>
-                            <td className="px-4 py-2 text-sm text-blue-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0)}</td>
-                            <td className="px-4 py-2 text-sm text-emerald-800 text-center">{dashboardData?.hostels?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                        ))}
+                        <tr className="bg-gradient-to-r from-gray-100 to-gray-50 font-semibold border-t-2 border-gray-300">
+                          <td className="px-3 py-2 text-xs text-gray-900">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3.5 h-3.5"></div>
+                              <span className="uppercase tracking-wide font-bold">Total {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && `(${selectedHostels.length})`}</span>
+                            </div>
+                          </td>
+                          <td className="px-2 py-2 text-xs text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                          <td className="px-2 py-2 text-xs text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                          <td className="px-2 py-2 text-center">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-200 text-blue-900">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</span>
+                          </td>
+                          <td className="px-2 py-2 text-center">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-200 text-emerald-900">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
