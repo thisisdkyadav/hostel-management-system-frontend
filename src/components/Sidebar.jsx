@@ -261,7 +261,7 @@ const Sidebar = ({ navItems }) => {
 
               <div className="flex flex-col justify-center overflow-hidden flex-1 min-w-0">
                 <span className={`text-sm font-medium truncate ${isProfileActive ? "text-white" : "text-slate-900"}`}>{user.name || "User"}</span>
-                {user.role && <span className={`text-xs truncate ${isProfileActive ? "text-slate-200/80" : "text-slate-500"}`}>{user.role}</span>}
+                {user.email && <span className={`text-xs truncate ${isProfileActive ? "text-slate-200/80" : "text-slate-500"}`}>{user.email}</span>}
               </div>
             </div>
 
@@ -386,9 +386,9 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-slate-200/60 bg-white/70 backdrop-blur space-y-2 overflow-x-hidden ${isOpen ? "px-3 pt-3 pb-4" : "p-2"}`}>
+          <div className={`border-t border-slate-200/60 bg-white/70 backdrop-blur space-y-2 overflow-x-hidden ${isOpen ? "px-3 py-3" : "p-2"}`}>
             {renderProfileSection()}
-            <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul>
+            {/* <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul> */}
           </div>
         </div>
       </div>
