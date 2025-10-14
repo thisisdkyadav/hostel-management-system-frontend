@@ -337,9 +337,6 @@ const Sidebar = ({ navItems }) => {
             <div className={`border-t border-slate-200/60 bg-white/70 backdrop-blur ${isOpen ? "p-3" : "p-2"}`}>
               {isOpen ? (
                 <>
-                  <label htmlFor="activeHostelSelect" className="block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 mb-1.5 px-1">
-                    Active Hostel
-                  </label>
                   <div className="relative">
                     <select
                       id="activeHostelSelect"
