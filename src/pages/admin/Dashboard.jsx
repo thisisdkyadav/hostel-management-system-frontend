@@ -133,7 +133,12 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Hostler vs Day Scholar Stats - Compact Modern Design */}
+              {/* Left area keeps title; stats moved to right header section */}
+              <div />
+            </div>
+
+            {/* Right Section - Hostler vs Day Scholar Stats (moved) */}
+            <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
               {loading ? (
                 <div className="flex gap-2.5">
                   <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
@@ -255,20 +260,6 @@ const Dashboard = () => {
                 })()
               )}
             </div>
-
-            {/* Right Section - User Profile */}
-            <div className="flex items-center gap-3 border-l border-gray-200 pl-5">
-              <div className="text-right">
-                <p className="text-sm font-semibold text-gray-900">{user?.name || "Admin User"}</p>
-                <p className="text-xs text-gray-500">{user?.role || "Administrator"}</p>
-              </div>
-              <div className="relative">
-                <div className="w-9 h-9 rounded-full bg-[#1360AB] flex items-center justify-center text-white font-semibold text-xs shadow-sm ring-1 ring-gray-200 hover:ring-[#1360AB] transition-all">
-                  {user?.profilePic || user?.profileImage ? <img src={user.profilePic || user.profileImage} alt={user?.name || "User"} className="w-full h-full rounded-full object-cover" /> : <span>{user?.name?.charAt(0)?.toUpperCase() || "A"}</span>}
-                </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
-              </div>
-            </div>
           </div>
         </div>
       </header>
@@ -292,9 +283,7 @@ const Dashboard = () => {
             ) : (
               <div className="h-full flex flex-col overflow-auto">
                 <h2 className="flex justify-between items-center text-base font-semibold text-gray-800 mb-4">
-                  <div className="flex items-center">
-                    Student Distribution
-                  </div>
+                  <div className="flex items-center">Student Distribution</div>
 
                   <div className="flex items-center space-x-3">
                     {/* Normal/Registered Toggle */}
@@ -346,9 +335,7 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">
-                  Hostel Occupancy Overview
-                </h2>
+                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">Hostel Occupancy Overview</h2>
 
                 <div className="flex-1 grid grid-cols-2 gap-4">
                   {/* <div className="flex items-center justify-center">
@@ -406,9 +393,7 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">
-                  Upcoming Joins (from Leaves)
-                </h2>
+                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">Upcoming Joins (from Leaves)</h2>
 
                 <div className="flex-1 overflow-auto">
                   {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
@@ -471,9 +456,7 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">
-                  Complaints Overview
-                </h2>
+                <h2 className="text-base font-semibold text-gray-800 mb-3 flex items-center">Complaints Overview</h2>
 
                 <div className="flex-1 flex flex-col justify-center">
                   {/* Top row - Primary stats */}
@@ -525,9 +508,7 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">
-                  Upcoming Events
-                </h2>
+                <h2 className="text-base font-semibold text-gray-800 mb-4 flex items-center">Upcoming Events</h2>
 
                 <div className="flex-1 overflow-hidden">
                   <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300">
