@@ -291,7 +291,7 @@ const Dashboard = () => {
         {/* Main dashboard grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           {/* Student data card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-5">
+          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <div className="flex justify-between items-center mb-4">
@@ -304,26 +304,30 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col overflow-auto">
-                <h2 className="flex justify-between items-center text-base font-semibold text-gray-800 mb-4">
+                <h2 className="flex justify-between items-center text-sm font-semibold text-gray-800 mb-1.5 leading-tight">
                   <div className="flex items-center">Student Distribution</div>
 
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2">
                     {/* Normal/Registered Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Student data type">
-                      <button onClick={() => setStudentDataView("normal")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
+                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.65rem] shadow-inner" role="tablist" aria-label="Student data type">
+                      <button onClick={() => setStudentDataView("normal")} className={`px-2 py-0.5 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
                         Hostler
                       </button>
-                      <button onClick={() => setStudentDataView("registered")} className={`px-3 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "registered"}>
+                      <button
+                        onClick={() => setStudentDataView("registered")}
+                        className={`px-2 py-0.5 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`}
+                        aria-selected={studentDataView === "registered"}
+                      >
                         Registered
                       </button>
                     </div>
 
                     {/* Absolute/Normalized Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs shadow-inner" role="tablist" aria-label="Distribution mode">
-                      <button onClick={() => setNormalizedView(false)} className={`px-3 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
+                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.65rem] shadow-inner" role="tablist" aria-label="Distribution mode">
+                      <button onClick={() => setNormalizedView(false)} className={`px-2 py-0.5 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
                         Absolute
                       </button>
-                      <button onClick={() => setNormalizedView(true)} className={`px-3 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
+                      <button onClick={() => setNormalizedView(true)} className={`px-2 py-0.5 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
                         Normalized
                       </button>
                     </div>
@@ -639,18 +643,18 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
     }) || []
 
   return (
-    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
+    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 sticky top-0 z-10">
+        <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
           <tr>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Degree</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Total</th>
+            <th className="px-3 py-2 text-[0.65rem] font-semibold text-gray-700 text-left uppercase tracking-wide">Degree</th>
+            <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys</th>
+            <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls</th>
+            <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Total</th>
             {normalized && (
               <>
-                <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys %</th>
-                <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls %</th>
+                <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys %</th>
+                <th className="px-2 py-2 text-[0.65rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls %</th>
               </>
             )}
           </tr>
@@ -661,15 +665,15 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
             const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
             return (
-              <tr key={index} className="hover:bg-gray-50/70 transition">
-                <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
-                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.boys}</td>
-                <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{item.girls}</td>
-                <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">{item.total}</td>
+              <tr key={index} className="hover:bg-blue-50/30 transition-colors">
+                <td className="px-3 py-1.5 text-xs text-gray-800 font-medium">{item.degree}</td>
+                <td className="px-2 py-1.5 text-xs text-blue-700 text-center font-medium">{item.boys}</td>
+                <td className="px-2 py-1.5 text-xs text-pink-700 text-center font-medium">{item.girls}</td>
+                <td className="px-2 py-1.5 text-xs text-indigo-700 text-center font-semibold">{item.total}</td>
                 {normalized && (
                   <>
-                    <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{boysPercent}%</td>
-                    <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{girlsPercent}%</td>
+                    <td className="px-2 py-1.5 text-xs text-blue-700 text-center font-medium">{boysPercent}%</td>
+                    <td className="px-2 py-1.5 text-xs text-pink-700 text-center font-medium">{girlsPercent}%</td>
                   </>
                 )}
               </tr>
@@ -677,9 +681,9 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
           })}
 
           {/* Totals row */}
-          <tr className="bg-gray-50 font-medium">
-            <td className="px-4 py-2 text-sm text-gray-900">Total</td>
-            <td className="px-4 py-2 text-sm text-blue-800 text-center">
+          <tr className="bg-gradient-to-r from-gray-100 to-gray-50 font-semibold border-t-2 border-gray-300">
+            <td className="px-3 py-2 text-xs text-gray-900 font-bold uppercase tracking-wide">Total</td>
+            <td className="px-2 py-2 text-xs text-blue-800 text-center font-bold">
               {(() => {
                 if (studentDataView === "registered") {
                   // Calculate total registered boys from all degrees
@@ -689,7 +693,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                 }
               })()}
             </td>
-            <td className="px-4 py-2 text-sm text-pink-800 text-center">
+            <td className="px-2 py-2 text-xs text-pink-800 text-center font-bold">
               {(() => {
                 if (studentDataView === "registered") {
                   // Calculate total registered girls from all degrees
@@ -699,7 +703,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                 }
               })()}
             </td>
-            <td className="px-4 py-2 text-sm text-indigo-800 text-center">
+            <td className="px-2 py-2 text-xs text-indigo-800 text-center font-bold">
               {(() => {
                 if (studentDataView === "registered") {
                   // Calculate total registered students from all degrees
@@ -711,7 +715,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
             </td>
             {normalized && (
               <>
-                <td className="px-4 py-2 text-sm text-blue-800 text-center">
+                <td className="px-2 py-2 text-xs text-blue-800 text-center font-bold">
                   {(() => {
                     let totalBoys, grandTotal
                     if (studentDataView === "registered") {
@@ -725,7 +729,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
                   })()}
                   %
                 </td>
-                <td className="px-4 py-2 text-sm text-pink-800 text-center">
+                <td className="px-2 py-2 text-xs text-pink-800 text-center font-bold">
                   {(() => {
                     let totalGirls, grandTotal
                     if (studentDataView === "registered") {
