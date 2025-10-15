@@ -1,5 +1,6 @@
 import { BrowserRouter } from "react-router-dom"
 import { AuthProvider } from "./contexts/AuthProvider"
+import { SocketProvider } from "./contexts/SocketProvider"
 import AppRoutes from "./routes/AppRoutes"
 import GlobalProvider from "./contexts/GlobalProvider"
 import VersionUpdateNotification from "./components/common/VersionUpdateNotification"
@@ -9,11 +10,13 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <GlobalProvider>
-          <AppRoutes />
-          <VersionUpdateNotification />
-          <PWAInstallPrompt />
-        </GlobalProvider>
+        <SocketProvider>
+          <GlobalProvider>
+            <AppRoutes />
+            <VersionUpdateNotification />
+            <PWAInstallPrompt />
+          </GlobalProvider>
+        </SocketProvider>
       </AuthProvider>
     </BrowserRouter>
   )
