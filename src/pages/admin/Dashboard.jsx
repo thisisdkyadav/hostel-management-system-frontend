@@ -4,8 +4,10 @@ import { BiBuildings } from "react-icons/bi"
 import { TbBuildingCommunity } from "react-icons/tb"
 import { MdDashboard, MdOutlineEvent, MdNotifications } from "react-icons/md"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
+import { HiStatusOnline } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../services/dashboardApi"
+import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 
 // Chart components
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
@@ -89,6 +91,12 @@ const Dashboard = () => {
   const [normalizedView, setNormalizedView] = useState(false)
   const [studentDataView, setStudentDataView] = useState("normal") // Toggle between "normal" and "registered"
   const [selectedHostels, setSelectedHostels] = useState([]) // Track selected hostels for total calculation
+
+  // Fetch online users stats with auto-refresh every 5 seconds
+  const { stats: onlineStats, loading: onlineLoading } = useOnlineUsers({
+    autoFetch: true,
+    refreshInterval: 5000, // Refresh every 5 seconds
+  })
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -273,6 +281,30 @@ const Dashboard = () => {
                             <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
                               <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {finalDayScholar.boys}</span>
                               <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {finalDayScholar.girls}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Online Users Card - Compact (Rightmost) */}
+                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-md px-3 py-1.5 hover:border-green-400 transition-all">
+                        <div className="flex items-center gap-2">
+                          <HiStatusOnline className="text-green-600 text-sm animate-pulse" />
+                          <div className="flex items-center gap-2">
+                            <div>
+                              <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Online Now</p>
+                              <p className="text-lg font-bold text-green-800 leading-none">{onlineStats?.totalOnline || 0}</p>
+                            </div>
+                            <div className="flex gap-1 ml-1.5 border-l border-green-300 pl-2">
+                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Students online">
+                                S: {onlineStats?.byRole?.Student || 0}
+                              </span>
+                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Hostel Supervisors online">
+                                HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
+                              </span>
+                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Admins online">
+                                A: {onlineStats?.byRole?.Admin || 0}
+                              </span>
                             </div>
                           </div>
                         </div>
