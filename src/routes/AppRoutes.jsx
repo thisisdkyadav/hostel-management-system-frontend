@@ -56,6 +56,7 @@ import Feedbacks from "../pages/warden/Feedbacks.jsx"
 import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
 import AssociateWardenLayout from "../layouts/AssociateWardenLayout.jsx"
+import HostelGateLayout from "../layouts/HostelGateLayout.jsx"
 import NotificationCenter from "../pages/NotificationCenter"
 import Security from "../pages/student/Security.jsx"
 import HostelSupervisorLayout from "../layouts/HostelSupervisorLayout.jsx"
@@ -73,6 +74,7 @@ import Others from "../pages/admin/Others.jsx"
 import SSOLogin from "../pages/SSOLogin.jsx"
 import Attendance from "../pages/guard/Attendance.jsx"
 import HostelGateAttendance from "../pages/guard/HostelGateAttendance.jsx"
+import ScannerEntries from "../pages/guard/ScannerEntries.jsx"
 import Inventory from "../pages/admin/Inventory.jsx"
 import StudentInventory from "../pages/warden/StudentInventory.jsx"
 import TaskManagement from "../pages/admin/TaskManagement.jsx"
@@ -241,7 +243,7 @@ const AppRoutes = () => {
         path="/hostel-gate"
         element={
           <ProtectedRoute allowedRoles={["Hostel Gate"]}>
-            <SecurityLayout />
+            <HostelGateLayout />
           </ProtectedRoute>
         }
       >
@@ -249,6 +251,7 @@ const AppRoutes = () => {
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="entries" element={<StudentEntries />} />
+        <Route path="scanner-entries" element={<ScannerEntries />} />
         <Route path="attendance" element={<HostelGateAttendance />} />
         <Route path="my-tasks" element={<MyTasks />} />
       </Route>

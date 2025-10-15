@@ -119,4 +119,19 @@ export const securityApi = {
 
     return response.json()
   },
+
+  updateCrossHostelReason: async (entryId, reason) => {
+    const response = await fetch(`${baseUrl}/security/entries/${entryId}/cross-hostel-reason`, {
+      method: "PATCH",
+      ...fetchOptions,
+      body: JSON.stringify({ reason: reason }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to update cross-hostel reason")
+    }
+
+    return response.json()
+  },
 }
