@@ -4,6 +4,7 @@ import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import { securityApi } from "../../services/apiService"
 import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
+import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const AddStudentEntry = () => {
@@ -74,6 +75,11 @@ const AddStudentEntry = () => {
           <button onClick={() => setActiveTab("manual")} className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center ${activeTab === "manual" ? "bg-[#E4F1FF] text-[#1360AB]" : "text-gray-600 hover:bg-gray-100"}`}>
             <FaRegKeyboard className="mr-2" /> Manual Entry
           </button>
+        </div>
+
+        {/* Scanner Status Indicator */}
+        <div className="mb-6">
+          <ScannerStatusIndicator />
         </div>
 
         {/* Content based on active tab */}

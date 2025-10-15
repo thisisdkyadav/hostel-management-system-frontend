@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes } from "react-icons/fa"
 import { securityApi } from "../../services/securityApi"
+import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
 
 const QRScanner = ({ onRefresh }) => {
+  const { fetchScannerEntries } = useQRScanner()
   const [scanning, setScanning] = useState(false)
   const [error, setError] = useState("")
   const [scannedStudent, setScannedStudent] = useState(null)
@@ -156,6 +158,7 @@ const QRScanner = ({ onRefresh }) => {
 
       await securityApi.addStudentEntryWithEmail(entryData)
       onRefresh()
+      fetchScannerEntries() // Also refresh the scanner entries context
       handleReset()
       setRecordingEntry(false)
     } catch (error) {
