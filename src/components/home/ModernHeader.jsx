@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FiMenu, FiX, FiChevronDown, FiLogOut, FiUser, FiHome, FiPhone, FiInfo, FiCode, FiBook, FiExternalLink } from "react-icons/fi"
+import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ModernHeader = () => {
   const { user, getHomeRoute, logout } = useAuth()
@@ -156,7 +157,13 @@ const ModernHeader = () => {
                   } shadow-md focus:outline-none`}
                   aria-label="User menu"
                 >
-                  {user.name?.charAt(0).toUpperCase() || <FiUser className="w-5 h-5" />}
+                  {user?.profileImage ? (
+                    <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
+                  ) : user?.name?.charAt(0).toUpperCase() ? (
+                    <span className="text-white font-semibold">{user.name.charAt(0).toUpperCase()}</span>
+                  ) : (
+                    <FaUserCircle className="text-white text-lg" />
+                  )}
                 </button>
 
                 {isProfileOpen && (
