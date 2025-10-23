@@ -60,4 +60,19 @@ export const uploadApi = {
 
     return response.json()
   },
+
+  uploadLostAndFoundImage: async (imageData) => {
+    const response = await fetch(`${baseUrl}/upload/lost-and-found-image`, {
+      method: "POST",
+      credentials: "include",
+      body: imageData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to upload lost and found image")
+    }
+
+    return response.json()
+  },
 }

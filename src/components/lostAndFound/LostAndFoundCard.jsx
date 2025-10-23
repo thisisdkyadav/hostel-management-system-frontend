@@ -3,6 +3,7 @@ import { FaEdit } from "react-icons/fa"
 import { BsCalendarDate } from "react-icons/bs"
 import { MdInventory } from "react-icons/md"
 import { formatDate } from "../../utils/formatters"
+import { getMediaUrl } from "../../utils/mediaUtils"
 import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../services/apiService"
@@ -86,6 +87,17 @@ const LostAndFoundCard = ({ item, refresh }) => {
           </div>
           <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
         </div>
+
+        {item.images && item.images.length > 0 && (
+          <div className="mt-4">
+            <div className="grid grid-cols-3 gap-2">
+              {item.images.slice(0, 3).map((imageUrl, index) => (
+                <img key={index} src={getMediaUrl(imageUrl)} alt={`${item.itemName} ${index + 1}`} className="w-full h-20 object-cover rounded-lg border border-gray-200" />
+              ))}
+            </div>
+            {item.images.length > 3 && <p className="text-xs text-gray-500 mt-2">+{item.images.length - 3} more images</p>}
+          </div>
+        )}
 
         <div className="mt-4 space-y-3">
           <div className="flex items-center">

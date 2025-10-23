@@ -1,6 +1,9 @@
 import React, { useState } from "react"
 import { MdInventory, MdSave, MdCancel, MdDelete } from "react-icons/md"
 import { BsCalendarDate } from "react-icons/bs"
+import { FaImage, FaTimes } from "react-icons/fa"
+import { uploadApi } from "../../services/uploadApi"
+import { getMediaUrl } from "../../utils/mediaUtils"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   const [formData, setFormData] = useState({
@@ -8,7 +11,9 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
     description: item.description,
     status: item.status,
     dateFound: item.dateFound.split("T")[0],
+    images: item.images || [],
   })
+  const [uploading, setUploading] = useState(false)
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -41,6 +46,40 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
     if (window.confirm("Are you sure you want to delete this item? This action cannot be undone.")) {
       onDelete(item._id)
     }
+  }
+
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files)
+    if (files.length === 0) return
+
+    setUploading(true)
+    const uploadedUrls = []
+
+    try {
+      for (const file of files) {
+        const imageFormData = new FormData()
+        imageFormData.append("image", file)
+        const response = await uploadApi.uploadLostAndFoundImage(imageFormData)
+        uploadedUrls.push(response.url)
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        images: [...prev.images, ...uploadedUrls],
+      }))
+    } catch (error) {
+      console.error("Error uploading images:", error)
+      alert("Failed to upload some images. Please try again.")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const removeImage = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }))
   }
 
   return (
@@ -81,6 +120,37 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
               <option value="Claimed">Claimed</option>
               <option value="Archived">Archived</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1.5">
+              <div className="flex items-center">
+                <FaImage className="mr-2" />
+                Item Images
+              </div>
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              disabled={uploading}
+              className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-blue-100 outline-none file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-[#1360AB] hover:file:bg-blue-100"
+            />
+            {uploading && <p className="text-xs text-blue-600 mt-1">Uploading...</p>}
+
+            {formData.images && formData.images.length > 0 && (
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {formData.images.map((imageUrl, index) => (
+                  <div key={index} className="relative group">
+                    <img src={getMediaUrl(imageUrl)} alt={`Item ${index + 1}`} className="w-full h-20 object-cover rounded-lg border border-gray-200" />
+                    <button type="button" onClick={() => removeImage(index)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <FaTimes size={10} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
