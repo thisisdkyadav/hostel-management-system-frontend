@@ -64,6 +64,7 @@ import AdminHostelSupervisors from "../pages/admin/HostelSupervisors.jsx"
 import AdminSettings from "../pages/admin/Settings"
 import AdminAdminManagement from "../pages/admin/AdminManagement.jsx"
 import Leaves from "../pages/Leaves.jsx"
+import LiveCheckInOut from "../pages/admin/LiveCheckInOut.jsx"
 
 // import related to super admin
 import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
@@ -266,6 +267,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<AdminDashboard />} />
+        <Route path="live-checkinout" element={<LiveCheckInOut />} />
         <Route path="hostels" element={<AdminHostels />} />
         <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
         <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
