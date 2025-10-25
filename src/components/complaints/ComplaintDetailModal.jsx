@@ -135,7 +135,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             {complaintData.resolutionNotes ? <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{complaintData.resolutionNotes}</div> : <div className="bg-gray-50 p-5 rounded-xl text-gray-500 italic">No resolution notes yet.</div>}
           </div>
 
-          {complaintData.feedback && (
+          {complaintData.feedbackRating && (
             <div>
               <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
                 <FaStar className="mr-2" /> User Feedback
