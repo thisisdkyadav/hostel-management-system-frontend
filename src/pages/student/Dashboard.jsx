@@ -14,6 +14,7 @@ import QRCodeGenerator from "../../components/QRCodeGenerator"
 import Modal from "../../components/common/Modal"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
+import ComplaintFeedbackPopup from "../../components/student/ComplaintFeedbackPopup"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
 const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
@@ -72,6 +73,9 @@ const Dashboard = () => {
   const [isOfflineData, setIsOfflineData] = useState(false)
   const [showQRModal, setShowQRModal] = useState(false)
   const [showBirthday, setShowBirthday] = useState(false)
+  const [showFeedbackPopup, setShowFeedbackPopup] = useState(false)
+  const [currentFeedbackComplaint, setCurrentFeedbackComplaint] = useState(null)
+  const [feedbackComplaintIndex, setFeedbackComplaintIndex] = useState(0)
 
   const fetchDashboardData = async () => {
     try {
@@ -208,7 +212,11 @@ const Dashboard = () => {
     if (!dashboardData || !dashboardData.profile) return
 
     const dob = dashboardData.profile.dateOfBirth || dashboardData.profile.dob || dashboardData.profile.DOB
-    if (!isBirthdayToday(dob)) return
+    if (!isBirthdayToday(dob)) {
+      // No birthday, check for feedback complaints
+      checkForFeedbackComplaints()
+      return
+    }
 
     // Use localStorage to show birthday overlay only once per user per year
     const userId = dashboardData.profile.id || (user && user.uid) || user?.id || "unknown_user"
@@ -224,8 +232,93 @@ const Dashboard = () => {
       } catch (e) {
         // ignore storage errors
       }
+    } else {
+      // Birthday already shown, check for feedback complaints
+      checkForFeedbackComplaints()
     }
   }, [dashboardData, user])
+
+  // Check and show feedback popup for resolved complaints without feedback
+  const checkForFeedbackComplaints = () => {
+    if (!dashboardData?.resolvedComplaintsWithoutFeedback?.length) return
+
+    const complaints = dashboardData.resolvedComplaintsWithoutFeedback
+    const userId = user?._id || user?.id || "unknown_user"
+    const key = `feedback_snoozed_${userId}`
+    const today = new Date().toDateString()
+
+    try {
+      const snoozedData = JSON.parse(localStorage.getItem(key) || "{}")
+
+      // Find first complaint that hasn't been snoozed today
+      const complaintToShow = complaints.find((c) => {
+        const snoozedDate = snoozedData[c.id]
+        // Show if never snoozed or snoozed on a different day
+        return !snoozedDate || snoozedDate !== today
+      })
+
+      if (complaintToShow) {
+        const index = complaints.findIndex((c) => c.id === complaintToShow.id)
+        setCurrentFeedbackComplaint(complaintToShow)
+        setFeedbackComplaintIndex(index)
+        setShowFeedbackPopup(true)
+      }
+    } catch (e) {
+      console.error("Error checking feedback complaints:", e)
+    }
+  }
+
+  // Handle birthday overlay close
+  const handleBirthdayClose = () => {
+    setShowBirthday(false)
+    // After birthday, check for feedback complaints
+    checkForFeedbackComplaints()
+  }
+
+  // Handle feedback popup close (dismissed without submitting)
+  const handleFeedbackDismiss = () => {
+    if (!currentFeedbackComplaint) return
+
+    const userId = user?._id || user?.id || "unknown_user"
+    const key = `feedback_snoozed_${userId}`
+    const today = new Date().toDateString()
+
+    try {
+      const snoozedData = JSON.parse(localStorage.getItem(key) || "{}")
+      // Store the complaint ID with today's date
+      snoozedData[currentFeedbackComplaint.id] = today
+      localStorage.setItem(key, JSON.stringify(snoozedData))
+    } catch (e) {
+      console.error("Error saving snoozed complaint:", e)
+    }
+
+    setShowFeedbackPopup(false)
+    setCurrentFeedbackComplaint(null)
+
+    // Check if there are more complaints to show
+    const nextIndex = feedbackComplaintIndex + 1
+    if (dashboardData?.resolvedComplaintsWithoutFeedback?.[nextIndex]) {
+      const nextComplaint = dashboardData.resolvedComplaintsWithoutFeedback[nextIndex]
+      const snoozedData = JSON.parse(localStorage.getItem(key) || "{}")
+      const today = new Date().toDateString()
+
+      // Only show next complaint if it hasn't been snoozed today
+      if (!snoozedData[nextComplaint.id] || snoozedData[nextComplaint.id] !== today) {
+        setCurrentFeedbackComplaint(nextComplaint)
+        setFeedbackComplaintIndex(nextIndex)
+        setTimeout(() => setShowFeedbackPopup(true), 500)
+      }
+    }
+  }
+
+  // Handle feedback submission
+  const handleFeedbackSubmitted = () => {
+    setShowFeedbackPopup(false)
+    setCurrentFeedbackComplaint(null)
+
+    // Refresh dashboard data to update the complaints list
+    fetchDashboardData()
+  }
 
   // Birthday overlay component with canvas-based confetti
   const BirthdayOverlay = ({ name, onClose }) => {
@@ -461,7 +554,10 @@ const Dashboard = () => {
       )}
 
       {/* Birthday overlay (appears once per user per year) */}
-      {showBirthday && <BirthdayOverlay name={dashboardData?.profile?.name || dashboardData?.profile?.fullName || dashboardData?.profile?.displayName} onClose={() => setShowBirthday(false)} />}
+      {showBirthday && <BirthdayOverlay name={dashboardData?.profile?.name || dashboardData?.profile?.fullName || dashboardData?.profile?.displayName} onClose={handleBirthdayClose} />}
+
+      {/* Feedback popup for resolved complaints without feedback */}
+      {showFeedbackPopup && currentFeedbackComplaint && <ComplaintFeedbackPopup complaint={currentFeedbackComplaint} onClose={handleFeedbackDismiss} onFeedbackSubmitted={handleFeedbackSubmitted} />}
     </div>
   )
 }
