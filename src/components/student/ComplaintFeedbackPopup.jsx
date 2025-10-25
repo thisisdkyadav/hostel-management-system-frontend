@@ -63,58 +63,63 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
   )
 
   return (
-    <Modal title="Rate Your Resolution" onClose={onClose} width={700} footer={footerContent}>
-      <div className="space-y-6">
+    <Modal title="Rate Your Resolution" onClose={onClose} width={650} footer={footerContent}>
+      <div className="space-y-4">
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+          <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded">
             <p className="text-red-700 text-sm">{error}</p>
           </div>
         )}
 
-        {/* Complaint Info */}
-        <div className="bg-gray-50 p-5 rounded-xl space-y-4">
-          <div>
-            <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-2">
-              <FaClipboardList className="mr-2" /> Complaint Details
-            </h4>
-            <p className="text-lg font-semibold text-gray-800">{complaint.title}</p>
+        {/* Complaint Info - Compact */}
+        <div className="bg-gray-50 p-4 rounded-lg space-y-2.5">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-1">
+                <FaClipboardList className="mr-1.5 flex-shrink-0" size={14} /> Complaint
+              </h4>
+              <p className="font-semibold text-gray-800 text-base leading-tight">{complaint.title}</p>
+            </div>
+            <div className="flex gap-1.5 flex-shrink-0">
+              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 whitespace-nowrap">{complaint.category}</span>
+              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-800 whitespace-nowrap">{complaint.status}</span>
+            </div>
           </div>
 
-          {complaint.description && (
-            <div>
-              <h5 className="text-sm font-medium text-gray-600 mb-1">Description</h5>
-              <p className="text-gray-700 text-sm">{complaint.description}</p>
+          {(complaint.description || complaint.resolutionNotes) && (
+            <div className="grid grid-cols-1 gap-2.5 pt-1">
+              {complaint.description && (
+                <div>
+                  <h5 className="text-xs font-medium text-gray-500 mb-0.5">Description</h5>
+                  <p className="text-gray-700 text-sm leading-snug line-clamp-2">{complaint.description}</p>
+                </div>
+              )}
+
+              {complaint.resolutionNotes && (
+                <div>
+                  <h5 className="text-xs font-medium text-[#1360AB] flex items-center mb-0.5">
+                    <FaInfoCircle className="mr-1" size={12} /> Resolution
+                  </h5>
+                  <p className="text-gray-700 text-sm leading-snug line-clamp-2">{complaint.resolutionNotes}</p>
+                </div>
+              )}
             </div>
           )}
-
-          {complaint.resolutionNotes && (
-            <div>
-              <h5 className="text-sm font-medium text-[#1360AB] flex items-center mb-1">
-                <FaInfoCircle className="mr-1" /> Resolution Notes
-              </h5>
-              <p className="text-gray-700 text-sm">{complaint.resolutionNotes}</p>
-            </div>
-          )}
-
-          <div className="flex flex-wrap gap-2 pt-2">
-            <span className="px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700">{complaint.category}</span>
-            <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">{complaint.status}</span>
-          </div>
         </div>
 
-        {/* Rating Section */}
+        {/* Rating Section - Compact */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            How would you rate the resolution? <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Rate the resolution <span className="text-red-500">*</span>
           </label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {[1, 2, 3, 4, 5].map((rating) => (
               <button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)} className="transition-transform hover:scale-110 focus:outline-none">
-                <FaStar size={36} className={`${rating <= (hoveredRating || feedbackRating) ? "text-yellow-400" : "text-gray-300"} transition-colors`} />
+                <FaStar size={32} className={`${rating <= (hoveredRating || feedbackRating) ? "text-yellow-400" : "text-gray-300"} transition-colors`} />
               </button>
             ))}
             {feedbackRating > 0 && (
-              <span className="ml-3 text-gray-700 font-medium">
+              <span className="ml-2 text-gray-700 font-medium text-sm">
                 {feedbackRating === 1 && "Poor"}
                 {feedbackRating === 2 && "Fair"}
                 {feedbackRating === 3 && "Good"}
@@ -125,48 +130,48 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
           </div>
         </div>
 
-        {/* Satisfaction Status */}
+        {/* Satisfaction Status - Compact */}
         <div>
-          <label htmlFor="satisfactionStatus" className="block text-sm font-medium text-gray-700 mb-2">
-            Are you satisfied with the resolution? <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Satisfaction status <span className="text-red-500">*</span>
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
               onClick={() => setSatisfactionStatus("Satisfied")}
-              className={`px-4 py-3 rounded-lg border-2 transition-all font-medium ${satisfactionStatus === "Satisfied" ? "border-green-500 bg-green-50 text-green-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
+              className={`px-3 py-2 rounded-lg border-2 transition-all font-medium text-sm ${satisfactionStatus === "Satisfied" ? "border-green-500 bg-green-50 text-green-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
             >
               Satisfied
             </button>
             <button
               type="button"
               onClick={() => setSatisfactionStatus("Unsatisfied")}
-              className={`px-4 py-3 rounded-lg border-2 transition-all font-medium ${satisfactionStatus === "Unsatisfied" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
+              className={`px-3 py-2 rounded-lg border-2 transition-all font-medium text-sm ${satisfactionStatus === "Unsatisfied" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
             >
               Unsatisfied
             </button>
             <button
               type="button"
               onClick={() => setSatisfactionStatus("False Resolution")}
-              className={`px-4 py-3 rounded-lg border-2 transition-all font-medium ${satisfactionStatus === "False Resolution" ? "border-yellow-500 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
+              className={`px-3 py-2 rounded-lg border-2 transition-all font-medium text-sm ${satisfactionStatus === "False Resolution" ? "border-yellow-500 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
             >
-              False Resolution
+              False Fix
             </button>
           </div>
         </div>
 
-        {/* Feedback Text */}
+        {/* Feedback Text - Compact */}
         <div>
           <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-2">
-            Additional Comments (Optional)
+            Comments (Optional)
           </label>
           <textarea
             id="feedback"
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            rows={4}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1360AB] focus:border-[#1360AB] transition-colors resize-none"
-            placeholder="Share your thoughts about the resolution process..."
+            rows={3}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1360AB] focus:border-[#1360AB] transition-colors resize-none text-sm"
+            placeholder="Share your thoughts..."
           />
         </div>
       </div>
