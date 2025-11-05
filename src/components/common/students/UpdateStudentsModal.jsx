@@ -131,6 +131,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             return
           }
 
+          const validGenders = ["Male", "Female"]
           const invalidRecords = []
           const parsedData = results.data.map((student, index) => {
             const studentData = {
@@ -146,6 +147,16 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 }
               }
             })
+
+            // Validate gender if provided
+            if (studentData.gender && !validGenders.includes(studentData.gender)) {
+              invalidRecords.push({
+                row: index + 2,
+                field: "gender",
+                value: studentData.gender,
+                message: `Invalid gender: "${studentData.gender}". Only "Male" or "Female" are allowed.`,
+              })
+            }
 
             // Validate degree and department if they are provided
             if (studentData.degree && validDegrees.length > 0 && !validDegrees.includes(studentData.degree)) {
@@ -1034,7 +1045,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                       <span className="font-medium">password:</span> String
                     </li>
                     <li>
-                      <span className="font-medium">gender:</span> Male/Female/Other
+                      <span className="font-medium">gender:</span> Male/Female
                     </li>
                     <li>
                       <span className="font-medium">dateOfBirth:</span> YYYY-MM-DD
