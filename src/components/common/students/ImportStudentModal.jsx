@@ -96,7 +96,6 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
             <option value="">Select gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -359,6 +358,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
           }
 
           const invalidRecords = []
+          const validGenders = ["Male", "Female"]
           const parsedData = results.data.map((student, index) => {
             const studentData = {}
 
@@ -369,6 +369,16 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 studentData[field] = student[field] || ""
               }
             })
+
+            // Validate gender if provided
+            if (studentData.gender && !validGenders.includes(studentData.gender)) {
+              invalidRecords.push({
+                row: index + 2,
+                field: "gender",
+                value: studentData.gender,
+                message: `Invalid gender: "${studentData.gender}". Only "Male" or "Female" are allowed.`,
+              })
+            }
 
             // Validate degree and department if they are provided
             if (studentData.degree && validDegrees.length > 0 && !validDegrees.includes(studentData.degree)) {
@@ -471,6 +481,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
 
   const validateManualStudent = () => {
     const errors = []
+    const validGenders = ["Male", "Female"]
 
     // Check required fields
     if (!manualStudent.name.trim()) errors.push("Name is required")
@@ -480,6 +491,11 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     // Validate email format
     if (manualStudent.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(manualStudent.email)) {
       errors.push("Please enter a valid email address")
+    }
+
+    // Validate gender if provided
+    if (manualStudent.gender && !validGenders.includes(manualStudent.gender)) {
+      errors.push(`Invalid gender: "${manualStudent.gender}". Only "Male" or "Female" are allowed.`)
     }
 
     // Validate degree and department
@@ -596,7 +612,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                       <span className="font-medium">password:</span> String
                     </li>
                     <li>
-                      <span className="font-medium">gender:</span> Male/Female/Other
+                      <span className="font-medium">gender:</span> Male/Female
                     </li>
                     <li>
                       <span className="font-medium">dateOfBirth:</span> YYYY-MM-DD
