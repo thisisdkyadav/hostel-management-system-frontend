@@ -35,6 +35,7 @@ import { IDcardApi } from "../../../services/IDcardApi"
 import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
+import Certificates from "./Certificates"
 import FamilyDetails from "./FamilyDetails"
 import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
@@ -88,6 +89,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     { id: "inventory", name: "Inventory", icon: <FaBoxes /> },
     { id: "idcard", name: "ID Card", icon: <FaIdCard /> },
     { id: "disco", name: "DisCo Actions", icon: <FaUserFriends /> },
+    { id: "certificates", name: "Certificates", icon: <FaIdCard /> },
     { id: "family", name: "Family", icon: <FaUsers /> },
     { id: "health", name: "Health", icon: <FaHeartbeat /> },
   ]
@@ -758,6 +760,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         )
       case "disco":
         return <DisCoActions userId={selectedStudent.userId} />
+      case "certificates":
+        return <Certificates userId={selectedStudent.userId} />
       case "health":
         return <HealthTab userId={selectedStudent.userId} />
       default:
@@ -912,7 +916,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   return (
     <>
-      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1200} tabs={!isImport ? modalTabs : null} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={!isImport} footer={renderFooter()} fullHeight={true}>
+      <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1300} tabs={!isImport ? modalTabs : null} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={!isImport} footer={renderFooter()} fullHeight={true}>
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">

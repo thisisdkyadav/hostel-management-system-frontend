@@ -75,4 +75,19 @@ export const uploadApi = {
 
     return response.json()
   },
+
+  uploadCertificate: async (fileData) => {
+    const response = await fetch(`${baseUrl}/upload/certificate`, {
+      method: "POST",
+      credentials: "include",
+      body: fileData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to upload certificate")
+    }
+
+    return response.json()
+  },
 }
