@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { FaDownload, FaFilePdf, FaImage } from "react-icons/fa"
+import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 
 const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -13,17 +13,15 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
       setIsLoading(true)
       setError(false)
 
-      // Determine file type from URL
-      const urlLower = certificateUrl.toLowerCase()
-      if (urlLower.endsWith(".pdf")) {
+      // Determine file type from URL or extension
+      const url = certificateUrl.toLowerCase()
+      if (url.includes(".pdf") || url.includes("pdf")) {
         setFileType("pdf")
-      } else if (urlLower.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
+      } else if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png") || url.includes(".gif") || url.includes(".webp")) {
         setFileType("image")
       } else {
-        setFileType("unknown")
+        setFileType("pdf") // Default to PDF
       }
-
-      setIsLoading(false)
     }
   }, [certificateUrl, isOpen])
 
@@ -40,56 +38,103 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
 
   if (!isOpen || !certificateUrl) return null
 
+  const fullUrl = getMediaUrl(certificateUrl)
+
   return (
-    <Modal
-      title={
-        <div className="flex items-center justify-between w-full">
-          <span>Certificate Viewer</span>
-          <button onClick={handleDownload} className="px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm">
-            <FaDownload />
-            <span>Download</span>
-          </button>
+    <Modal title="Certificate Document" onClose={onClose} width={900} fullHeight={true}>
+      <div className="space-y-4 h-full">
+        {/* Header with action buttons */}
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <FaFileAlt className="w-5 h-5 text-[#1360AB]" />
+            </div>
+            <div>
+              <h3 className="font-medium text-gray-800">Certificate Document</h3>
+              <p className="text-sm text-gray-600">Issued Certificate</p>
+            </div>
+          </div>
+          <div className="flex space-x-2">
+            <button onClick={handleDownload} className="flex items-center space-x-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+              <FaDownload className="w-4 h-4" />
+              <span>Download</span>
+            </button>
+            <a href={fullUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 px-3 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+              <FaExternalLinkAlt className="w-4 h-4" />
+              <span>Open in New Tab</span>
+            </a>
+          </div>
         </div>
-      }
-      onClose={onClose}
-      width={900}
-    >
-      <div className="p-4">
-        {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="w-12 h-12 border-4 border-t-[#1360AB] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-          </div>
-        ) : error ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
+
+        {/* Document Viewer */}
+        <div className="flex-1 bg-white border-2 border-gray-200 rounded-lg overflow-hidden" style={{ height: "calc(100% - 100px)" }}>
+          {fileType === "image" ? (
+            <div className="w-full h-full flex items-center justify-center p-4 overflow-auto">
+              <img
+                src={fullUrl}
+                alt="Certificate Document"
+                className="w-full h-auto object-contain"
+                onLoad={() => setIsLoading(false)}
+                onError={() => {
+                  setError(true)
+                  setIsLoading(false)
+                }}
+              />
             </div>
-            <p className="text-gray-600 mb-2">Failed to load certificate</p>
-            <button onClick={handleDownload} className="text-blue-600 hover:underline text-sm">
-              Try downloading instead
-            </button>
-          </div>
-        ) : fileType === "pdf" ? (
-          <div className="bg-gray-50 rounded-lg overflow-hidden" style={{ height: "70vh" }}>
-            <iframe src={getMediaUrl(certificateUrl)} className="w-full h-full" title="Certificate PDF" onError={() => setError(true)} />
-          </div>
-        ) : fileType === "image" ? (
-          <div className="flex justify-center bg-gray-50 rounded-lg p-4" style={{ maxHeight: "70vh", overflow: "auto" }}>
-            <img src={getMediaUrl(certificateUrl)} alt="Certificate" className="max-w-full h-auto rounded-lg shadow-lg" onError={() => setError(true)} />
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
-              </svg>
+          ) : (
+            // For PDF files, we'll use object tag with fallback
+            <div className="w-full h-full relative">
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                  <div className="flex items-center space-x-3">
+                    <FaSpinner className="w-5 h-5 text-[#1360AB] animate-spin" />
+                    <span className="text-gray-600">Loading document...</span>
+                  </div>
+                </div>
+              )}
+
+              <object
+                data={fullUrl}
+                type="application/pdf"
+                className="w-full h-full"
+                onLoad={() => setIsLoading(false)}
+                onError={() => {
+                  setError(true)
+                  setIsLoading(false)
+                }}
+              >
+                {/* Fallback for when PDF object fails */}
+                <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center">
+                  <FaFileAlt className="w-16 h-16 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-700 mb-2">Cannot display PDF in browser</h3>
+                  <p className="text-gray-500 mb-6">Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
+                  <div className="flex space-x-3">
+                    <button onClick={handleDownload} className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                      <FaDownload className="w-4 h-4" />
+                      <span>Download PDF</span>
+                    </button>
+                    <a href={fullUrl} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      <FaExternalLinkAlt className="w-4 h-4" />
+                      <span>Open in New Tab</span>
+                    </a>
+                  </div>
+                </div>
+              </object>
             </div>
-            <p className="text-gray-600 mb-2">Unable to preview this file type</p>
-            <button onClick={handleDownload} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-              Download File
-            </button>
+          )}
+        </div>
+
+        {/* Error state */}
+        {error && (
+          <div className="text-center py-4">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-700 font-medium mb-2">Unable to load document</p>
+              <p className="text-red-600 text-sm mb-4">There was an error loading the document. Please try downloading it instead.</p>
+              <button onClick={handleDownload} className="inline-flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                <FaDownload className="w-4 h-4" />
+                <span>Download Document</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
