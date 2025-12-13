@@ -105,24 +105,25 @@ const ModernHeader = () => {
                   <>
                     <button
                       onClick={() => handleDropdownToggle(index)}
-                      className={`px-4 py-2.5 rounded-xl font-medium flex items-center transition-all duration-300 ${activeDropdown === index ? "bg-blue-50 text-blue-600 shadow-sm" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50/80"}`}
+                      className={`px-4 py-2.5 rounded-2xl font-medium flex items-center transition-all duration-300 ${activeDropdown === index ? "bg-blue-50 text-blue-600 shadow-sm" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50/80"}`}
                     >
                       {item.icon}
                       {item.label}
                       <FiChevronDown className={`ml-1 transform transition-transform duration-300 ${activeDropdown === index ? "rotate-180" : ""}`} />
                     </button>
                     {activeDropdown === index && (
-                      <div className="absolute right-0 mt-3 w-64 bg-white/98 backdrop-blur-xl rounded-xl shadow-xl shadow-gray-900/10 overflow-hidden z-50 border border-gray-100/80 animate-fadeIn ring-1 ring-black/5">
-                        <div className="p-1">
+                      <div className="absolute right-0 mt-3 w-72 bg-white backdrop-blur-xl rounded-2xl shadow-2xl shadow-gray-900/15 overflow-hidden z-50 border border-gray-100 animate-fadeIn ring-1 ring-black/5">
+                        <div className="p-2">
                           {item.submenu.map((subItem, subIndex) => (
                             <a
                               key={subIndex}
                               href={subItem.path}
                               target={subItem.path.startsWith("http") ? "_blank" : undefined}
                               rel={subItem.path.startsWith("http") ? "noopener noreferrer" : undefined}
-                              className="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-lg m-1 font-medium"
+                              className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-xl font-medium"
                             >
                               {subItem.label}
+                              {subItem.path.startsWith("http") && <FiExternalLink className="w-4 h-4 text-gray-400" />}
                             </a>
                           ))}
                         </div>
@@ -130,13 +131,13 @@ const ModernHeader = () => {
                     )}
                   </>
                 ) : item.isExternal ? (
-                  <a href={item.path} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 rounded-xl font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 transition-all duration-300 flex items-center">
+                  <a href={item.path} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 rounded-2xl font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 transition-all duration-300 flex items-center">
                     {item.icon}
                     {item.label}
                     <FiExternalLink className="ml-1.5 w-3.5 h-3.5" />
                   </a>
                 ) : (
-                  <Link to={item.path} className="px-4 py-2.5 rounded-xl font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 transition-all duration-300 flex items-center">
+                  <Link to={item.path} className="px-4 py-2.5 rounded-2xl font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 transition-all duration-300 flex items-center">
                     {item.icon}
                     {item.label}
                   </Link>
@@ -166,36 +167,54 @@ const ModernHeader = () => {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-3 w-64 bg-white/98 backdrop-blur-xl rounded-xl shadow-xl shadow-gray-900/10 overflow-hidden z-50 border border-gray-100/80 animate-fadeIn ring-1 ring-black/5">
-                    <div className="p-4 border-b border-gray-100/80 bg-blue-50/80">
-                      <p className="font-medium text-gray-800">{user.name}</p>
-                      <p className="text-sm text-gray-500">{user.email}</p>
+                  <div className="absolute right-0 mt-3 w-72 bg-white backdrop-blur-xl rounded-2xl shadow-2xl shadow-gray-900/15 overflow-hidden z-50 border border-gray-100 animate-fadeIn ring-1 ring-black/5">
+                    {/* User Info Header */}
+                    <div className="px-5 py-4 bg-blue-50/60 border-b border-blue-100/50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-lg shadow-md shadow-blue-500/30">
+                          {user?.profileImage ? (
+                            <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-11 h-11 rounded-full object-cover" />
+                          ) : (
+                            user.name.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-800 truncate">{user.name}</p>
+                          <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-1">
-                      <Link to={getHomeRoute()} className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1" onClick={() => setIsProfileOpen(false)}>
-                        <FiHome className="mr-3 text-gray-400" />
-                        Dashboard
+                    
+                    {/* Menu Items */}
+                    <div className="p-2">
+                      <Link to={getHomeRoute()} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-xl" onClick={() => setIsProfileOpen(false)}>
+                        <FiHome className="w-5 h-5 text-gray-400" />
+                        <span className="font-medium">Dashboard</span>
                       </Link>
-                      <Link to={`${getHomeRoute()}/profile`} className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1" onClick={() => setIsProfileOpen(false)}>
-                        <FiUser className="mr-3 text-gray-400" />
-                        My Profile
+                      <Link to={`${getHomeRoute()}/profile`} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-xl" onClick={() => setIsProfileOpen(false)}>
+                        <FiUser className="w-5 h-5 text-gray-400" />
+                        <span className="font-medium">My Profile</span>
                       </Link>
-                      <button onClick={handleLogout} className="w-full flex items-center px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-colors duration-200 rounded-lg m-1">
-                        <FiLogOut className="mr-3 text-red-400" />
-                        Logout
+                      
+                      {/* Divider */}
+                      <div className="my-2 mx-3 border-t border-gray-100"></div>
+                      
+                      <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-left text-red-600 hover:bg-red-50 transition-all duration-200 rounded-xl">
+                        <FiLogOut className="w-5 h-5 text-red-400" />
+                        <span className="font-medium">Logout</span>
                       </button>
                     </div>
                   </div>
                 )}
               </div>
             ) : (
-              <Link to="/login" className="px-5 py-2.5 rounded-xl font-medium transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02]">
+              <Link to="/login" className="px-5 py-2.5 rounded-2xl font-medium transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02]">
                 Login
               </Link>
             )}
 
             {/* Improved Mobile menu button */}
-            <button className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg text-xl focus:outline-none text-gray-700 hover:bg-gray-100 transition-colors duration-300" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
+            <button className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-xl text-xl focus:outline-none text-gray-700 hover:bg-gray-100 transition-colors duration-300" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">
               <div className={`transition-all duration-300 ${isMenuOpen ? "opacity-0 scale-50 rotate-90" : "opacity-100 scale-100 rotate-0"}`}>
                 <FiMenu />
               </div>
