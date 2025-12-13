@@ -240,31 +240,38 @@ const Students = () => {
         </div>
       )}
 
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Student Management</h1>
-        <div className="flex flex-wrap gap-2">
-          <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
-            {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button>
+      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Student Management</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowFilters(!showFilters)}>
+                {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
+                {showFilters ? "Hide Filters" : "Show Filters"}
+              </button>
 
-          {["Admin"].includes(user?.role) && (
-            <>
-              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowImportModal(true)}>
-                <FaFileImport className="mr-2" /> Import
-              </button>
-              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowUpdateModal(true)}>
-                <FaEdit className="mr-2" /> Bulk Update
-              </button>
-              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowAllocateModal(true)}>
-                <FaFileImport className="mr-2" /> Update Allocations
-              </button>
-            </>
-          )}
+              {["Admin"].includes(user?.role) && (
+                <>
+                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowImportModal(true)}>
+                    <FaFileImport className="mr-2" /> Import
+                  </button>
+                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowUpdateModal(true)}>
+                    <FaEdit className="mr-2" /> Bulk Update
+                  </button>
+                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowAllocateModal(true)}>
+                    <FaFileImport className="mr-2" /> Update Allocations
+                  </button>
+                </>
+              )}
 
-          <button onClick={handleExportStudents} className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700">
-            <FaFileExport className="mr-2" /> Export
-          </button>
+              <button onClick={handleExportStudents} className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium">
+                <FaFileExport className="mr-2" /> Export
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 

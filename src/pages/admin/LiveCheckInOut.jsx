@@ -118,31 +118,36 @@ const LiveCheckInOut = () => {
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto max-w-[1600px]">
         {/* Compact Header */}
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-semibold text-gray-900">Live Check-In/Out Monitor</h1>
-            <span className={["inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium", socketStatus === "connected" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"].join(" ")}>
-              <span className={["h-1.5 w-1.5 rounded-full", socketStatus === "connected" ? "bg-emerald-500" : "bg-rose-500"].join(" ")} />
-              {socketStatus === "connected" ? "Live" : "Offline"}
-            </span>
-            {highlightEntry && <span className="text-xs text-gray-400">Last: {getTimeAgo(highlightEntry.dateAndTime)}</span>}
-          </div>
+        <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 -mt-4 mb-3 px-4 py-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div>
+                <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Live Check-In/Out Monitor</h1>
+                <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+              </div>
+              <span className={["inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium", socketStatus === "connected" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"].join(" ")}>
+                <span className={["h-1.5 w-1.5 rounded-full", socketStatus === "connected" ? "bg-emerald-500" : "bg-rose-500"].join(" ")} />
+                {socketStatus === "connected" ? "Live" : "Offline"}
+              </span>
+              {highlightEntry && <span className="text-xs text-gray-400">Last: {getTimeAgo(highlightEntry.dateAndTime)}</span>}
+            </div>
 
-          <div className="flex items-center gap-2">
-            <button onClick={() => refresh()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-md bg-[#1360AB] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#0f4e8a] disabled:opacity-60">
-              <FiRefreshCw className={["text-xs", loading ? "animate-spin" : ""].filter(Boolean).join(" ")} />
-              Refresh
-            </button>
-            <button onClick={exportToCSV} className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50">
-              <FiDownload className="text-xs" />
-              Export
-            </button>
-            <button onClick={() => setShowFilters(true)} className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50">
-              <FiFilter className="text-xs" />
-              Filters
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => refresh()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-full bg-[#0b57d0] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#0e4eb5] disabled:opacity-60">
+                <FiRefreshCw className={["text-xs", loading ? "animate-spin" : ""].filter(Boolean).join(" ")} />
+                Refresh
+              </button>
+              <button onClick={exportToCSV} className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50">
+                <FiDownload className="text-xs" />
+                Export
+              </button>
+              <button onClick={() => setShowFilters(true)} className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50">
+                <FiFilter className="text-xs" />
+                Filters
+              </button>
+            </div>
           </div>
-        </div>
+        </header>
 
         {/* Compact Stats Row */}
         <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">

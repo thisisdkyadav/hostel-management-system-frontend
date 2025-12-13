@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import { colorClasses } from "../../constants/themeConfig"
 
 const Button = ({
   children,
@@ -12,40 +13,83 @@ const Button = ({
   isLoading = false,
   disabled = false,
   fullWidth = false,
-  animation = "none", // New animation prop
+  animation = "none",
   ...rest
 }) => {
-  const baseStyles = "rounded-lg transition-all duration-300 flex items-center justify-center disabled:cursor-not-allowed relative overflow-hidden"
+  const baseStyles = `
+    rounded-full font-medium transition-all duration-200 
+    flex items-center justify-center gap-2
+    disabled:cursor-not-allowed disabled:opacity-60
+    relative overflow-hidden
+    focus:outline-none
+    active:scale-[0.98]
+  `
 
+  // Using new theme colors #0b57d0 and hover #0e4eb5
   const variantStyles = {
-    primary: "bg-[#1360AB] text-white shadow-sm hover:shadow-md hover:bg-[#0d4b86] disabled:bg-blue-300",
-    secondary: "bg-[#E4F1FF] text-[#1360AB] hover:bg-[#1360AB] hover:text-white",
-    danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-300",
-    success: "bg-green-600 text-white hover:bg-green-700 disabled:bg-green-300",
-    outline: "bg-white text-[#1360AB] border border-[#1360AB] hover:bg-[#E4F1FF]",
-    white: "bg-white text-gray-800 shadow-sm hover:bg-[#E4F1FF] hover:text-[#1360AB]",
+    primary: `
+      bg-[#0b57d0] text-white 
+      hover:bg-[#0e4eb5]
+      disabled:bg-[#0b57d0]/50
+    `,
+    secondary: `
+      bg-[#e8f0fe] text-[#0b57d0]
+      border border-[#d2e3fc]
+      hover:bg-[#d2e3fc]
+    `,
+    danger: `
+      ${colorClasses.danger.bg} text-white 
+      ${colorClasses.danger.bgHover}
+      disabled:bg-red-300
+    `,
+    success: `
+      ${colorClasses.success.bg} text-white 
+      ${colorClasses.success.bgHover}
+      disabled:bg-emerald-300
+    `,
+    outline: `
+      bg-white text-[#0b57d0]
+      border-2 border-[#0b57d0]
+      hover:bg-[#e8f0fe]
+    `,
+    white: `
+      ${colorClasses.white.bg} ${colorClasses.white.text}
+      border ${colorClasses.white.border}
+      ${colorClasses.white.bgHover} ${colorClasses.white.borderHover} ${colorClasses.white.textHover}
+    `,
+    ghost: `
+      ${colorClasses.ghost.bg} ${colorClasses.ghost.text}
+      ${colorClasses.ghost.bgHover} ${colorClasses.ghost.textHover}
+    `,
   }
 
   const sizeStyles = {
-    small: "py-2 px-3 text-sm",
-    medium: "py-3 px-4",
-    large: "py-4 px-6 text-lg",
+    small: "py-2 px-4 text-sm",
+    medium: "py-2.5 px-5 text-sm",
+    large: "py-3 px-6 text-base",
   }
 
   const widthStyles = fullWidth ? "w-full" : ""
 
-  // Animation styles
+  // Animation styles - no movement animations
   const animationStyles = {
     none: "",
     pulse: "hover:animate-pulse",
-    bounce: "hover:animate-bounce",
-    slideIn: "transform hover:-translate-y-1",
+    bounce: "",
+    slideIn: "",
     glow: "hover:shadow-glow",
     ripple: "ripple-effect",
-    shake: "active:animate-shake",
+    shake: "",
   }
 
-  const buttonStyles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${widthStyles} ${animationStyles[animation] || ""} ${className}`
+  const buttonStyles = `
+    ${baseStyles} 
+    ${variantStyles[variant]} 
+    ${sizeStyles[size]} 
+    ${widthStyles} 
+    ${animationStyles[animation] || ""} 
+    ${className}
+  `.replace(/\s+/g, ' ').trim()
 
   const handleClick = (e) => {
     // Create ripple effect if animation is ripple
@@ -75,12 +119,12 @@ const Button = ({
     <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonStyles} {...rest}>
       {isLoading ? (
         <>
-          <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
+          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
           <span>Loading...</span>
         </>
       ) : (
         <>
-          {icon && <span className="mr-2">{icon}</span>}
+          {icon && <span className="flex-shrink-0">{icon}</span>}
           {children}
         </>
       )}
@@ -92,7 +136,7 @@ Button.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   type: PropTypes.oneOf(["button", "submit", "reset"]),
-  variant: PropTypes.oneOf(["primary", "secondary", "danger", "success", "outline", "white"]),
+  variant: PropTypes.oneOf(["primary", "secondary", "danger", "success", "outline", "white", "ghost"]),
   size: PropTypes.oneOf(["small", "medium", "large"]),
   className: PropTypes.string,
   icon: PropTypes.node,
