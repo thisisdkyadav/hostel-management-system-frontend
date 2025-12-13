@@ -43,13 +43,20 @@ const LostAndFound = () => {
   return (
     <>
       <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Lost and Found</h1>
-          {canAccess("lost_and_found", "create") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
-            <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
-              <FaPlus className="mr-2" /> Add Item
-            </button>
-          )}
+        <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+          <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Lost and Found</h1>
+                <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+              </div>
+              {canAccess("lost_and_found", "create") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
+                <button onClick={() => setShowAddModal(true)} className="bg-[#0b57d0] text-white flex items-center px-4 py-2 rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
+                  <FaPlus className="mr-2" /> Add Item
+                </button>
+              )}
+            </div>
+          </div>
         </header>
 
         <LostAndFoundStats items={lostItems} />

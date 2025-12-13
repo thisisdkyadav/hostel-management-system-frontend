@@ -164,13 +164,20 @@ const MyTasks = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       {/* Header with Title and Statistics */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">My Tasks</h1>
-        <div className="mt-2 sm:mt-0 flex items-center space-x-4">
-          <div className="bg-blue-100 text-[#1360AB] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
-          {stats.overdueTasks > 0 && <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Overdue: {stats.overdueTasks}</div>}
+      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">My Tasks</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="bg-blue-100 text-[#0b57d0] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
+              {stats.overdueTasks > 0 && <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Overdue: {stats.overdueTasks}</div>}
+            </div>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Filter Tabs */}
       <div className="mt-6 mb-4">

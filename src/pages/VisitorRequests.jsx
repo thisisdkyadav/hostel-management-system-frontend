@@ -105,34 +105,32 @@ const VisitorRequests = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div className="flex items-center mb-4 sm:mb-0">
-          <div className="p-3 mr-4 rounded-xl bg-blue-100 text-[#1360AB] flex-shrink-0">
-            <FaUserFriends size={24} />
+      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Visitor Requests</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2 rounded-full transition-colors text-sm font-medium ${showFilters ? "bg-[#0b57d0] text-white" : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"}`}>
+                <FaFilter className="mr-2" /> {showFilters ? "Hide Filters" : "Filter Requests"}
+              </button>
+              {["Student"].includes(user.role) && (
+                <>
+                  <button onClick={() => setShowAddProfileModal(true)} className="flex items-center px-4 py-2 bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium">
+                    <FaPlus className="mr-2" /> Add Visitor Profile
+                  </button>
+                  <button onClick={() => setShowManageProfilesModal(true)} className="flex items-center px-4 py-2 bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium">
+                    <FaUserEdit className="mr-2" /> Manage Profiles
+                  </button>
+                  <button onClick={() => setShowAddRequestModal(true)} className="flex items-center px-4 py-2 bg-[#0b57d0] text-white rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
+                    <FaPlus className="mr-2" /> New Request
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Visitor Requests</h1>
-            <p className="text-gray-500 text-sm mt-1">{["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "Manage visitor accommodation requests for your hostel" : "Manage your visitor accommodation requests"}</p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2.5 rounded-xl transition-colors ${showFilters ? "bg-[#1360AB] text-white shadow-md" : "bg-white text-gray-700 border border-gray-200 shadow-sm hover:bg-gray-50"}`}>
-            <FaFilter className="mr-2" /> {showFilters ? "Hide Filters" : "Filter Requests"}
-          </button>
-          {["Student"].includes(user.role) && (
-            <>
-              <button onClick={() => setShowAddProfileModal(true)} className="flex items-center px-4 py-2.5 bg-white text-gray-700 rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
-                <FaPlus className="mr-2" /> Add Visitor Profile
-              </button>
-              <button onClick={() => setShowManageProfilesModal(true)} className="flex items-center px-4 py-2.5 bg-white text-gray-700 rounded-xl border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
-                <FaUserEdit className="mr-2" /> Manage Profiles
-              </button>
-              <button onClick={() => setShowAddRequestModal(true)} className="flex items-center px-4 py-2.5 bg-[#1360AB] text-white rounded-xl shadow-sm hover:bg-blue-700 transition-colors">
-                <FaPlus className="mr-2" /> New Request
-              </button>
-            </>
-          )}
         </div>
       </header>
 
