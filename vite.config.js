@@ -63,7 +63,7 @@ export default defineConfig({
 
         navigateFallback: undefined,
 
-        globPatterns: ["**/*.{js,css}"],
+        globPatterns: ["**/*.{css}"],
 
         runtimeCaching: [
           {
@@ -71,6 +71,14 @@ export default defineConfig({
             handler: "NetworkFirst",
             options: {
               cacheName: "html-cache",
+            },
+          },
+          ,
+          {
+            urlPattern: /\.(?:js)$/i,
+            handler: "StaleWhileRevalidate",
+            options: {
+              cacheName: "js-runtime-cache",
             },
           },
           {
