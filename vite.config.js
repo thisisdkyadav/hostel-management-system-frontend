@@ -41,56 +41,38 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
+
       manifest: {
         name: "Hostel Management System - IIT Indore",
         short_name: "HMS - IITI",
-        description: "Hostel Management System for IIT Indore students and staff",
         start_url: "/",
         display: "standalone",
-        orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#1360AB",
-        categories: ["education", "productivity"],
-        icons: [
-          {
-            src: "/IITILogo.png",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-          {
-            src: "/IITILogo.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-          {
-            src: "/apple-touch-icon.png",
-            sizes: "180x180",
-            type: "image/png",
-            purpose: "apple touch icon",
-          },
-        ],
-        related_applications: [],
-        prefer_related_applications: false,
-        shortcuts: [
-          {
-            name: "Dashboard",
-            short_name: "Dashboard",
-            url: "/student",
-            description: "View your dashboard",
-          },
-        ],
       },
+
       devOptions: {
-        enabled: true, // Enable PWA in development mode for testing
+        enabled: true,
         type: "module",
-        navigateFallback: "index.html",
       },
+
       workbox: {
-        globPatterns: ["**/*.{js,css,ico,png,svg,jpg,jpeg,gif,webp}"],
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+
+        navigateFallback: undefined,
+
+        globPatterns: ["**/*.{js,css}"],
+
         runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "html-cache",
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: "CacheFirst",
@@ -98,10 +80,7 @@ export default defineConfig({
               cacheName: "google-fonts-cache",
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
+                maxAgeSeconds: 31536000,
               },
             },
           },
@@ -112,10 +91,7 @@ export default defineConfig({
               cacheName: "gstatic-fonts-cache",
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
+                maxAgeSeconds: 31536000,
               },
             },
           },
