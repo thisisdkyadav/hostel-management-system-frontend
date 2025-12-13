@@ -83,7 +83,7 @@ const HomePage = () => {
               {user ? (
                 <Link
                   to={getHomeRoute()}
-                  className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden"
+                  className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-2xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   <span className="relative">Go to Dashboard</span>
@@ -92,7 +92,7 @@ const HomePage = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden"
+                  className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-2xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   <span className="relative">Login Now</span>
@@ -112,7 +112,7 @@ const HomePage = () => {
               <div className="absolute top-1/4 -right-10 w-24 h-24 bg-blue-300/40 rounded-full z-0 animate-[bounce_7s_ease-in-out_infinite_0.5s] blur-md"></div>
 
               {/* Card with hover effects that don't affect the graphic content */}
-              <div className="rounded-2xl overflow-hidden shadow-xl shadow-blue-900/8 p-8 backdrop-blur-lg bg-white/95 relative z-10 transition-all duration-500 border border-blue-100/60 hover:border-blue-200/80 hover:shadow-2xl hover:shadow-blue-900/12 hover:bg-white ring-1 ring-white/50">
+              <div className="rounded-3xl overflow-hidden shadow-xl shadow-blue-900/8 p-8 backdrop-blur-lg bg-white/95 relative z-10 transition-all duration-500 border border-blue-100/60 hover:border-blue-200/80 hover:shadow-2xl hover:shadow-blue-900/12 hover:bg-white ring-1 ring-white/50">
                 <StatisticsGraphic />
               </div>
             </div>
