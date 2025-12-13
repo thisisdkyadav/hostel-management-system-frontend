@@ -73,7 +73,6 @@ export default defineConfig({
               cacheName: "html-cache",
             },
           },
-          ,
           {
             urlPattern: /\.(?:js)$/i,
             handler: "StaleWhileRevalidate",
@@ -86,10 +85,6 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "google-fonts-cache",
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 31536000,
-              },
             },
           },
           {
@@ -97,10 +92,6 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "gstatic-fonts-cache",
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 31536000,
-              },
             },
           },
         ],
