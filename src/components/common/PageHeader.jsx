@@ -1,0 +1,48 @@
+import React from "react"
+import PropTypes from "prop-types"
+
+/**
+ * PageHeader - Consistent header across all admin pages
+ * 
+ * Matches the admin Dashboard header styling:
+ * - Title in theme color (text-xl font-semibold)
+ * - Date below title (text-xs text-gray-500)
+ * - Optional right-side content for actions
+ */
+const PageHeader = ({ title, children, className = "" }) => {
+  const formatDate = () => {
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+    return new Date().toLocaleDateString(undefined, options)
+  }
+
+  return (
+    <header className={`bg-white shadow-sm border-b border-gray-100 ${className}`}>
+      <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left Section - Title & Date */}
+          <div className="flex items-center">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">{title}</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{formatDate()}</p>
+            </div>
+          </div>
+
+          {/* Right Section - Actions (optional) */}
+          {children && (
+            <div className="flex items-center gap-3">
+              {children}
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  )
+}
+
+PageHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node,
+  className: PropTypes.string,
+}
+
+export default PageHeader

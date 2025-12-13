@@ -106,26 +106,24 @@ const UpdatePassword = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div className="flex items-center mb-4 sm:mb-0">
-          <div className="p-3 mr-4 rounded-xl bg-blue-100 text-[#1360AB] flex-shrink-0">
-            <HiKey size={24} />
+      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Update User Password</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button onClick={() => setShowRemoveByRoleModal(true)} className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors flex items-center text-sm font-medium">
+                <HiTrash className="mr-2" />
+                Remove by Role
+              </button>
+              <button onClick={() => setShowBulkModal(true)} className="px-4 py-2 bg-[#0b57d0] text-white rounded-full hover:bg-[#0e4eb5] transition-colors flex items-center text-sm font-medium">
+                <HiUpload className="mr-2" />
+                Bulk Update
+              </button>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Update User Password</h1>
-            <p className="text-gray-500 text-sm mt-1 max-w-xl">Reset password for any user in the system. They'll use this new password for their next login.</p>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3">
-          <button onClick={() => setShowRemoveByRoleModal(true)} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-sm flex items-center">
-            <HiTrash className="mr-2" />
-            Remove by Role
-          </button>
-          <button onClick={() => setShowBulkModal(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm flex items-center">
-            <HiUpload className="mr-2" />
-            Bulk Update
-          </button>
         </div>
       </header>
 

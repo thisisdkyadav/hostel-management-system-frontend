@@ -322,14 +322,13 @@ const Settings = () => {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div className="flex items-center mb-4 sm:mb-0">
-          <div className="p-3 mr-4 rounded-xl bg-blue-100 text-[#1360AB] flex-shrink-0">
-            <HiCog size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Application Settings</h1>
-            <p className="text-gray-500 text-sm mt-1 max-w-xl">Configure system-wide settings for the hostel management application.</p>
+      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Application Settings</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
           </div>
         </div>
       </header>

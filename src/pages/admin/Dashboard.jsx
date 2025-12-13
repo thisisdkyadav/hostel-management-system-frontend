@@ -156,9 +156,9 @@ const Dashboard = () => {
             {/* Left Section - Dashboard Title & Stats */}
             <div className="flex items-center gap-5 flex-1">
               {/* Dashboard Title */}
-              <div className="flex items-center gap-3 border-r border-gray-200 pr-5">
+              <div className="flex items-center gap-3">
                 <div>
-                  <h1 className="text-xl font-semibold text-[#1360AB] tracking-tight">Admin Dashboard</h1>
+                  <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Admin Dashboard</h1>
                   <p className="text-xs text-gray-500 mt-0.5">{formatHeaderDate()}</p>
                 </div>
               </div>
