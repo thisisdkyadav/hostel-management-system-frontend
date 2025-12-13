@@ -74,7 +74,7 @@ const HomePage = () => {
           <div className="lg:w-1/2 text-center lg:text-left">
             {/* Enhanced heading with better animation */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 mb-6 animate-slideUp tracking-tight">
-              Welcome to.
+              Welcome to
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mt-2 hover:from-indigo-600 hover:to-blue-600 transition-colors duration-500">Hostel Management System</span>
             </h1>
 
