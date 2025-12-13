@@ -137,30 +137,27 @@ const NotificationCenter = () => {
         </div>
       )}
 
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-        <div className="flex items-center mb-4 sm:mb-0">
-          <div className="p-3 mr-4 rounded-xl bg-blue-100 text-[#1360AB] flex-shrink-0">
-            <FaBell size={24} />
+      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Notification Center</h1>
+              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["Admin"].includes(user.role) && (
+                <>
+                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowFilters(!showFilters)}>
+                    <FaFilter className="mr-2" />
+                    {showFilters ? "Hide Filters" : "Show Filters"}
+                  </button>
+                  <button onClick={() => setShowCreateModal(true)} className="bg-[#0b57d0] text-white flex items-center px-4 py-2 rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
+                    <FaPlus className="mr-2" /> Create Notification
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Notification Center</h1>
-            <p className="text-gray-500 text-sm mt-1">Create and manage system-wide notifications</p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {["Admin"].includes(user.role) && (
-            <>
-              <button className="flex items-center px-3 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors text-gray-700" onClick={() => setShowFilters(!showFilters)}>
-                <FaFilter className="mr-2" />
-                {showFilters ? "Hide Filters" : "Show Filters"}
-              </button>
-
-              <button onClick={() => setShowCreateModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl shadow-sm hover:bg-[#0d4d8a] transition-colors">
-                <FaPlus className="mr-2" /> Create Notification
-              </button>
-            </>
-          )}
         </div>
       </header>
 
