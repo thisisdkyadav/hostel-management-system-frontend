@@ -83,18 +83,17 @@ const ModernHeader = () => {
   }
 
   return (
-    <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-lg py-2" : "bg-transparent py-4"}`}>
+    <header className={`fixed w-full z-50 transition-all duration-500 ${isScrolled ? "bg-white/95 backdrop-blur-xl shadow-lg shadow-gray-900/5 py-2 border-b border-gray-100/50" : "bg-transparent py-4"}`}>
       <div className="w-full max-w-screen-xl mx-auto px-6 md:px-8 lg:px-12">
         <div className="flex justify-between items-center">
           {/* Improved Logo with hover effect */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative overflow-hidden transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-md">
-              <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-6 md:h-8 z-10 relative" />
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-lg"></div>
+            <div className="relative overflow-hidden transition-all duration-300 transform group-hover:scale-105">
+              <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-6 md:h-8 z-10 relative drop-shadow-sm" />
             </div>
             <div className="text-gray-800">
-              <h1 className="text-sm md:text-base font-bold">IIT INDORE</h1>
-              <p className="text-xs md:text-sm font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Halls of Residence</p>
+              <h1 className="text-sm md:text-base font-bold tracking-wide">IIT INDORE</h1>
+              <p className="text-xs md:text-sm font-semibold text-blue-600">Halls of Residence</p>
             </div>
           </Link>
 
@@ -106,14 +105,14 @@ const ModernHeader = () => {
                   <>
                     <button
                       onClick={() => handleDropdownToggle(index)}
-                      className={`px-4 py-2 rounded-lg font-medium flex items-center transition-all duration-300 ${activeDropdown === index ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50"}`}
+                      className={`px-4 py-2.5 rounded-xl font-medium flex items-center transition-all duration-300 ${activeDropdown === index ? "bg-blue-50 text-blue-600 shadow-sm" : "text-gray-700 hover:text-blue-600 hover:bg-blue-50/80"}`}
                     >
                       {item.icon}
                       {item.label}
                       <FiChevronDown className={`ml-1 transform transition-transform duration-300 ${activeDropdown === index ? "rotate-180" : ""}`} />
                     </button>
                     {activeDropdown === index && (
-                      <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl overflow-hidden z-50 border border-gray-100 animate-fadeIn">
+                      <div className="absolute right-0 mt-3 w-64 bg-white/98 backdrop-blur-xl rounded-xl shadow-xl shadow-gray-900/10 overflow-hidden z-50 border border-gray-100/80 animate-fadeIn ring-1 ring-black/5">
                         <div className="p-1">
                           {item.submenu.map((subItem, subIndex) => (
                             <a
@@ -121,7 +120,7 @@ const ModernHeader = () => {
                               href={subItem.path}
                               target={subItem.path.startsWith("http") ? "_blank" : undefined}
                               rel={subItem.path.startsWith("http") ? "noopener noreferrer" : undefined}
-                              className="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1"
+                              className="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 rounded-lg m-1 font-medium"
                             >
                               {subItem.label}
                             </a>
@@ -131,13 +130,13 @@ const ModernHeader = () => {
                     )}
                   </>
                 ) : item.isExternal ? (
-                  <a href={item.path} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 flex items-center">
+                  <a href={item.path} target="_blank" rel="noopener noreferrer" className="px-4 py-2.5 rounded-xl font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 transition-all duration-300 flex items-center">
                     {item.icon}
                     {item.label}
                     <FiExternalLink className="ml-1.5 w-3.5 h-3.5" />
                   </a>
                 ) : (
-                  <Link to={item.path} className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 flex items-center">
+                  <Link to={item.path} className="px-4 py-2.5 rounded-xl font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 transition-all duration-300 flex items-center">
                     {item.icon}
                     {item.label}
                   </Link>
@@ -153,8 +152,8 @@ const ModernHeader = () => {
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 ${
-                    isProfileOpen ? "bg-gradient-to-r from-blue-600 to-indigo-600 ring-4 ring-blue-100" : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-indigo-600"
-                  } shadow-md focus:outline-none`}
+                    isProfileOpen ? "bg-blue-600 ring-4 ring-blue-100/80 scale-105" : "bg-blue-500 hover:bg-blue-600 hover:scale-105"
+                  } shadow-md shadow-blue-500/25 focus:outline-none`}
                   aria-label="User menu"
                 >
                   {user?.profileImage ? (
@@ -167,17 +166,17 @@ const ModernHeader = () => {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-xl overflow-hidden z-50 border border-gray-100 animate-fadeIn">
-                    <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+                  <div className="absolute right-0 mt-3 w-64 bg-white/98 backdrop-blur-xl rounded-xl shadow-xl shadow-gray-900/10 overflow-hidden z-50 border border-gray-100/80 animate-fadeIn ring-1 ring-black/5">
+                    <div className="p-4 border-b border-gray-100/80 bg-blue-50/80">
                       <p className="font-medium text-gray-800">{user.name}</p>
                       <p className="text-sm text-gray-500">{user.email}</p>
                     </div>
                     <div className="p-1">
-                      <Link to={getHomeRoute()} className="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1" onClick={() => setIsProfileOpen(false)}>
+                      <Link to={getHomeRoute()} className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1" onClick={() => setIsProfileOpen(false)}>
                         <FiHome className="mr-3 text-gray-400" />
                         Dashboard
                       </Link>
-                      <Link to={`${getHomeRoute()}/profile`} className="flex items-center px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1" onClick={() => setIsProfileOpen(false)}>
+                      <Link to={`${getHomeRoute()}/profile`} className="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 rounded-lg m-1" onClick={() => setIsProfileOpen(false)}>
                         <FiUser className="mr-3 text-gray-400" />
                         My Profile
                       </Link>
@@ -190,7 +189,7 @@ const ModernHeader = () => {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="px-5 py-2.5 rounded-lg font-medium transition-all duration-300 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-indigo-600 text-white shadow-md hover:shadow-lg">
+              <Link to="/login" className="px-5 py-2.5 rounded-xl font-medium transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02]">
                 Login
               </Link>
             )}
@@ -209,10 +208,10 @@ const ModernHeader = () => {
       </div>
 
       {/* Improved Mobile Navigation */}
-      <div className={`lg:hidden bg-white/95 backdrop-blur-md overflow-hidden transition-all duration-500 ${isMenuOpen ? "max-h-screen border-t border-gray-100 shadow-lg" : "max-h-0"}`}>
+      <div className={`lg:hidden bg-white/98 backdrop-blur-xl overflow-hidden transition-all duration-500 ${isMenuOpen ? "max-h-screen border-t border-gray-100/80 shadow-xl shadow-gray-900/5" : "max-h-0"}`}>
         <div className="w-full max-w-screen-xl mx-auto px-6 md:px-8 lg:px-12 py-4 space-y-3">
           {navItems.map((item, index) => (
-            <div key={index} className={`py-2 ${activeDropdown === index ? "bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg" : ""}`}>
+            <div key={index} className={`py-2 ${activeDropdown === index ? "bg-blue-50 rounded-lg" : ""}`}>
               {item.submenu ? (
                 <>
                   <button onClick={() => handleDropdownToggle(index)} className="w-full flex justify-between items-center px-3 py-2 rounded-lg text-gray-700 hover:text-blue-600 transition-colors">
@@ -258,7 +257,7 @@ const ModernHeader = () => {
           {/* Mobile login button if user is not logged in */}
           {!user && (
             <div className="pt-3 border-t border-gray-100 mt-3">
-              <Link to="/login" className="flex items-center justify-center w-full py-3 rounded-lg font-medium bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-indigo-600 text-white transition-colors duration-300 shadow-md" onClick={() => setIsMenuOpen(false)}>
+              <Link to="/login" className="flex items-center justify-center w-full py-3 rounded-lg font-medium bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300 shadow-md" onClick={() => setIsMenuOpen(false)}>
                 <FiUser className="mr-2" />
                 Login
               </Link>
