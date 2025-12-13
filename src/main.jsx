@@ -4,30 +4,68 @@ import "./index.css"
 import App from "./App.jsx"
 import { registerSW } from "virtual:pwa-register"
 
-// Store the install prompt event for later use
+/* -------------------------------
+   PWA install prompt handling
+-------------------------------- */
 window.deferredPrompt = null
 
-// Listen for the beforeinstallprompt event
 window.addEventListener("beforeinstallprompt", (e) => {
-  // Prevent Chrome 67+ from automatically showing the prompt
   e.preventDefault()
-  // Store the event for later use
   window.deferredPrompt = e
 })
 
-// Register service worker using VitePWA
+/* -------------------------------
+   Auto-update Service Worker
+-------------------------------- */
 const updateSW = registerSW({
+  immediate: true,
+
   onNeedRefresh() {
-    // This will be handled by VersionUpdateNotification component
+    // Force new SW + reload automatically
+    updateSW(true)
   },
+
   onOfflineReady() {
-    // App is ready to work offline
+    console.log("App ready to work offline")
   },
 })
 
-// Expose updateSW function globally for use in components
+// Optional: expose for debugging
 window.updateServiceWorker = updateSW
 
+/* -------------------------------
+   Auto cache invalidation via meta.json
+-------------------------------- */
+async function checkAppVersion() {
+  try {
+    const res = await fetch("/meta.json", { cache: "no-store" })
+    const meta = await res.json()
+
+    const storedVersion = localStorage.getItem("app_version")
+
+    if (storedVersion && storedVersion !== meta.version) {
+      // New deployment detected
+      localStorage.clear()
+
+      if ("caches" in window) {
+        const keys = await caches.keys()
+        await Promise.all(keys.map((k) => caches.delete(k)))
+      }
+
+      window.location.reload()
+    }
+
+    localStorage.setItem("app_version", meta.version)
+  } catch {
+    // fail silently
+  }
+}
+
+checkAppVersion()
+
+/* -------------------------------
+   Render app
+-------------------------------- */
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />
