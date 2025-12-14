@@ -106,7 +106,7 @@ const Feedbacks = () => {
         <FeedbackStats feedbacks={feedbacks} />
 
         <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div className="w-full sm:w-auto overflow-x-auto pb-2">
+          <div className="w-full sm:w-auto pb-2">
             <FilterTabs tabs={FEEDBACK_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
           </div>
           <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search feedbacks..." className="w-full sm:w-64 md:w-72" />

@@ -64,7 +64,7 @@ const InsuranceProviders = () => {
       </header>
 
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        {/* <div className="w-full sm:w-auto overflow-x-auto pb-2">
+        {/* <div className="w-full sm:w-auto pb-2">
           <FilterTabs tabs={INSURANCE_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
         </div> */}
         <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search providers by name, email, phone or dates" className="w-full sm:w-64 md:w-72" />

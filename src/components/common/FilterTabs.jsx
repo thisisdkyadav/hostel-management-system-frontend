@@ -2,13 +2,14 @@ import React from "react"
 import PropTypes from "prop-types"
 
 /**
- * FilterButton - Individual filter chip button
+ * FilterButton - Modern filter chip button
  * 
  * Styling:
- * - 8px border radius (rounded-lg)
- * - No shadow, no border
- * - Active: Filled with theme color, white text
- * - Inactive: Light gray background, gray text
+ * - 10px border radius (rounded-[10px])
+ * - Subtle shadow on inactive state
+ * - Active: Solid primary color, white text, enhanced shadow
+ * - Inactive: White background, gray text
+ * - Hover: Lift effect with translateY(-2px)
  */
 export const FilterButton = ({ 
   children, 
@@ -21,25 +22,31 @@ export const FilterButton = ({
   return (
     <button
       onClick={onClick}
+      style={{
+        boxShadow: isActive 
+          ? '0 4px 15px rgba(11, 87, 208, 0.3)' 
+          : '0 2px 8px rgba(11, 87, 208, 0.05)',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
       className={`
-        inline-flex items-center gap-2 px-4 py-1.5 rounded-lg
-        text-sm font-medium transition-all duration-200
+        inline-flex items-center gap-2 px-4 py-2 rounded-[10px]
+        text-sm font-medium border-none cursor-pointer
         focus:outline-none
         ${isActive 
-          ? "bg-[#0b57d0] text-white" 
-          : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900"
+          ? "bg-[#0b57d0] text-white hover:shadow-[0_6px_20px_rgba(11,87,208,0.4)]" 
+          : "bg-white text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0] hover:shadow-[0_4px_12px_rgba(11,87,208,0.12)]"
         }
         ${className}
       `}
     >
-      {icon && <span className="text-xs">{icon}</span>}
+      {icon && <span className="text-sm">{icon}</span>}
       {children}
       {count !== undefined && (
         <span className={`
-          px-1.5 py-0.5 rounded text-xs font-semibold
+          px-2 py-0.5 rounded-md text-xs font-semibold
           ${isActive 
             ? "bg-white/20 text-white" 
-            : "bg-gray-200 text-gray-600"
+            : "bg-[#e8f1fe] text-[#0b57d0]"
           }
         `}>
           {count}
@@ -110,22 +117,28 @@ export const FilterChip = ({ label, onRemove, icon, className = "" }) => {
  */
 export const ToggleButtonGroup = ({ options, activeValue, onChange, className = "" }) => {
   return (
-    <div className={`flex bg-gray-100 rounded-lg p-1 ${className}`}>
+    <div 
+      className={`flex bg-white rounded-xl p-1 ${className}`}
+      style={{ boxShadow: '0 2px 8px rgba(11, 87, 208, 0.08)' }}
+    >
       {options.map((option) => (
         <button
           key={option.value}
           onClick={() => onChange(option.value)}
+          style={{
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
           className={`
-            flex items-center gap-2 px-3 py-1.5 rounded-md
-            text-sm font-medium transition-all duration-200
+            flex items-center gap-2 px-4 py-2 rounded-[10px]
+            text-sm font-medium cursor-pointer border-none
             focus:outline-none
             ${activeValue === option.value 
-              ? "bg-[#0b57d0] text-white" 
-              : "text-gray-600 hover:text-gray-900"
+              ? "bg-[#0b57d0] text-white shadow-[0_4px_15px_rgba(11,87,208,0.3)]" 
+              : "text-[#4a6085] hover:text-[#0b57d0] hover:bg-[#e8f1fe]"
             }
           `}
         >
-          {option.icon && <span className="text-xs">{option.icon}</span>}
+          {option.icon && <span className="text-sm">{option.icon}</span>}
           {option.label}
         </button>
       ))}
