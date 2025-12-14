@@ -49,28 +49,51 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
   const safeBottomNavItems = bottomNavItems || []
 
   return (
-    <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white z-40 flex items-center justify-between px-4 border-b border-gray-100 shadow-sm">
-      <button onClick={() => setIsOpen(!isOpen)} className="bg-[#1360AB] text-white p-2.5 rounded-full shadow-lg">
+    <div 
+      className="md:hidden fixed top-0 left-0 right-0 h-16 z-40 flex items-center justify-between px-4 border-b border-[#d4e4fd]"
+      style={{
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(232,241,254,0.9))',
+        backdropFilter: 'blur(20px)',
+      }}
+    >
+      {/* Menu Toggle Button */}
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white transition-all duration-300"
+        style={{
+          background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+          boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
+        }}
+      >
         {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
       </button>
 
-      <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
-        <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-8 w-auto object-contain" />
+      {/* HMS Logo Text */}
+      <div 
+        className="flex items-center cursor-pointer" 
+        onClick={() => navigate("/")}
+      >
+        <span className="text-[#0b57d0] font-bold text-xl tracking-tight">HMS</span>
       </div>
 
+      {/* User Profile Dropdown */}
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className={`
-            w-10 h-10 rounded-full flex items-center justify-center 
-            text-white font-bold transition-all duration-200
-            ${dropdownOpen ? "bg-[#0d4d8c] ring-2 ring-blue-200 shadow-md" : "bg-[#1360AB] hover:bg-[#0d4d8c] shadow-md border-2 border-white hover:border-blue-100"}
-            focus:outline-none focus:ring-2 focus:ring-blue-300
+            w-10 h-10 rounded-[10px] flex items-center justify-center 
+            text-white font-bold transition-all duration-300
+            focus:outline-none
+            ${dropdownOpen ? "ring-2 ring-[#a8c9fc]" : ""}
           `}
+          style={{
+            background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+            boxShadow: dropdownOpen ? '0 6px 20px rgba(11, 87, 208, 0.4)' : '0 4px 15px rgba(11, 87, 208, 0.3)',
+          }}
           aria-label="User menu"
         >
           {user?.profileImage ? (
-            <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
+            <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-lg object-cover" />
           ) : user?.name?.charAt(0).toUpperCase() ? (
             <span className="text-white font-semibold">{user.name.charAt(0).toUpperCase()}</span>
           ) : (
@@ -78,8 +101,16 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
           )}
         </button>
 
+        {/* Dropdown Menu */}
         {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50 py-1 border border-gray-100 animate-fadeIn">
+          <div 
+            className="absolute right-0 mt-2 w-48 rounded-xl z-50 py-2 border border-[#d4e4fd] animate-fadeIn"
+            style={{
+              background: 'linear-gradient(145deg, rgba(255,255,255,0.98), rgba(232,241,254,0.95))',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 10px 40px rgba(11, 87, 208, 0.15)',
+            }}
+          >
             {safeBottomNavItems.map((item) => (
               <div
                 key={item.name}
@@ -88,14 +119,17 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
                   setDropdownOpen(false)
                 }}
                 className={`
-                  flex items-center px-4 py-2 text-sm cursor-pointer transition-colors
-                  ${item.name === "Logout" ? "text-red-500 hover:bg-red-50" : "text-gray-700 hover:bg-[#1360AB]/10 hover:text-[#1360AB]"}
+                  flex items-center px-4 py-2.5 text-sm font-medium cursor-pointer transition-all duration-200 mx-2 rounded-lg
+                  ${item.name === "Logout" 
+                    ? "text-[#ef4444] hover:bg-[#fef2f2]" 
+                    : "text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0]"
+                  }
                 `}
               >
                 <item.icon
                   className={`
-                    text-lg mr-2
-                    ${item.name === "Logout" ? "text-red-500" : "text-[#1360AB]"}
+                    text-base mr-3
+                    ${item.name === "Logout" ? "text-[#ef4444]" : "text-[#8fa3c4]"}
                   `}
                 />
                 <span>{item.name}</span>
