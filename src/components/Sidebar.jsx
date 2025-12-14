@@ -331,10 +331,10 @@ const Sidebar = ({ navItems }) => {
           {/* Logo and Toggle */}
           <div className={`border-b border-[#d4e4fd] ${isMobile ? "hidden" : ""} h-16`} style={{ background: 'rgba(255,255,255,0.8)' }}>
             <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
-              {/* Logo - only show when expanded. smaller and paired with subtle label */}
+              {/* HMS Text Logo - only show when expanded */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
-                  <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-8 w-auto object-contain transition-all opacity-95" />
+                  <span className="text-[#0b57d0] font-bold text-xl tracking-tight">HMS</span>
                 </div>
               )}
 

@@ -57,7 +57,7 @@ const Hostels = () => {
       <div className="flex flex-col h-full">
         {/* Fixed Header */}
         <header 
-          className="sticky top-0 z-50 border-b border-[#d4e4fd]"
+          className="sticky top-0 z-10 border-b border-[#d4e4fd]"
           style={{
             background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(232,241,254,0.9))',
             backdropFilter: 'blur(20px)',
