@@ -148,7 +148,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex-1 bg-gradient-to-b from-gray-50 to-white">
+    <div className="flex-1">
       {/* Modern Compact Header - Full Width with 0 margin */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="px-6 py-2.5">
