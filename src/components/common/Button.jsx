@@ -14,6 +14,7 @@ const Button = ({
   disabled = false,
   fullWidth = false,
   animation = "none",
+  gradient = false,
   ...rest
 }) => {
   const baseStyles = `
@@ -27,11 +28,9 @@ const Button = ({
 
   // Using new theme colors #0b57d0 and hover #0e4eb5
   const variantStyles = {
-    primary: `
-      bg-[#0b57d0] text-white 
-      hover:bg-[#0e4eb5]
-      disabled:bg-[#0b57d0]/50
-    `,
+    primary: gradient 
+      ? `text-white disabled:opacity-50`
+      : `bg-[#0b57d0] text-white hover:bg-[#0e4eb5] disabled:bg-[#0b57d0]/50`,
     secondary: `
       bg-[#e8f0fe] text-[#0b57d0]
       border border-[#d2e3fc]
@@ -91,6 +90,13 @@ const Button = ({
     ${className}
   `.replace(/\s+/g, ' ').trim()
 
+  // Gradient styles for primary variant
+  const gradientStyle = gradient && variant === "primary" ? {
+    background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+    boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
+    transition: 'all 0.3s ease',
+  } : {}
+
   const handleClick = (e) => {
     // Create ripple effect if animation is ripple
     if (animation === "ripple" && !disabled && !isLoading) {
@@ -115,8 +121,30 @@ const Button = ({
     if (onClick) onClick(e)
   }
 
+  // Handle hover state for gradient buttons
+  const handleMouseEnter = (e) => {
+    if (gradient && variant === "primary" && !disabled && !isLoading) {
+      e.currentTarget.style.boxShadow = '0 6px 20px rgba(11, 87, 208, 0.4)'
+    }
+  }
+
+  const handleMouseLeave = (e) => {
+    if (gradient && variant === "primary" && !disabled && !isLoading) {
+      e.currentTarget.style.boxShadow = '0 4px 15px rgba(11, 87, 208, 0.3)'
+    }
+  }
+
   return (
-    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonStyles} {...rest}>
+    <button 
+      type={type} 
+      onClick={handleClick} 
+      disabled={disabled || isLoading} 
+      className={buttonStyles} 
+      style={gradientStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      {...rest}
+    >
       {isLoading ? (
         <>
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
@@ -144,6 +172,7 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   fullWidth: PropTypes.bool,
   animation: PropTypes.oneOf(["none", "pulse", "bounce", "slideIn", "glow", "ripple", "shake"]),
+  gradient: PropTypes.bool,
 }
 
 export default Button

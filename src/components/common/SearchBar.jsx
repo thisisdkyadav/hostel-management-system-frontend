@@ -11,48 +11,56 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
 
   return (
     <div className={`relative ${className}`}>
-      <div
+      {/* Search Icon */}
+      <FaSearch 
         className={`
-          flex items-center w-full overflow-hidden
-          border ${isFocused ? "border-[#1360AB] shadow-sm" : "border-gray-300"}
-          bg-white rounded-xl transition-all duration-200
-          focus-within:border-[#1360AB] focus-within:shadow-sm
+          absolute left-4 top-1/2 -translate-y-1/2 
+          pointer-events-none transition-colors duration-300
+          ${isFocused ? "text-[#0b57d0]" : "text-[#8fa3c4]"}
         `}
-      >
-        <div className="flex items-center justify-center pl-3">
-          <FaSearch className={`text-gray-400 ${isFocused ? "text-[#1360AB]" : ""} transition-colors duration-200`} />
-        </div>
+        size={14}
+      />
 
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          className="w-full pl-2 pr-8 py-2.5 rounded-xl text-gray-700
-                    focus:outline-none bg-transparent"
-        />
-
-        {value && (
-          <button
-            onClick={handleClear}
-            className="absolute right-3 text-gray-400 hover:text-gray-600 
-                     focus:outline-none transition-colors duration-200"
-            aria-label="Clear search"
-          >
-            <FaTimes size={14} />
-          </button>
-        )}
-      </div>
-
-      <div
+      {/* Search Input */}
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        style={{
+          boxShadow: isFocused ? '0 0 0 3px rgba(11, 87, 208, 0.1)' : 'none',
+          transition: 'all 0.3s ease',
+        }}
         className={`
-          absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-[#1360AB] 
-          transition-all duration-300 rounded-full
-          ${isFocused ? "w-[95%] opacity-100" : "w-0 opacity-0"}
+          w-full py-3 pl-11 pr-10
+          rounded-xl border bg-white
+          text-sm text-[#0a1628] font-normal
+          placeholder:text-[#8fa3c4]
+          focus:outline-none
+          ${isFocused 
+            ? "border-[#0b57d0]" 
+            : "border-[#d4e4fd]"
+          }
         `}
-      ></div>
+      />
+
+      {/* Clear Button */}
+      {value && (
+        <button
+          onClick={handleClear}
+          className={`
+            absolute right-4 top-1/2 -translate-y-1/2
+            transition-colors duration-200
+            focus:outline-none
+            ${isFocused ? "text-[#0b57d0] hover:text-[#083ca8]" : "text-[#8fa3c4] hover:text-[#4a6085]"}
+          `}
+          aria-label="Clear search"
+        >
+          <FaTimes size={14} />
+        </button>
+      )}
     </div>
   )
 }
