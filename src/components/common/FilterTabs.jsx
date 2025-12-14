@@ -23,6 +23,9 @@ export const FilterButton = ({
     <button
       onClick={onClick}
       style={{
+        background: isActive 
+          ? 'linear-gradient(135deg, #0b57d0, #3b7de8)' 
+          : '#ffffff',
         boxShadow: isActive 
           ? '0 4px 15px rgba(11, 87, 208, 0.3)' 
           : '0 2px 8px rgba(11, 87, 208, 0.05)',
@@ -33,8 +36,8 @@ export const FilterButton = ({
         text-sm font-medium border-none cursor-pointer
         focus:outline-none
         ${isActive 
-          ? "bg-[#0b57d0] text-white hover:shadow-[0_6px_20px_rgba(11,87,208,0.4)]" 
-          : "bg-white text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0] hover:shadow-[0_4px_12px_rgba(11,87,208,0.12)]"
+          ? "text-white hover:shadow-[0_6px_20px_rgba(11,87,208,0.4)]" 
+          : "text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0] hover:shadow-[0_4px_12px_rgba(11,87,208,0.12)]"
         }
         ${className}
       `}
@@ -126,6 +129,9 @@ export const ToggleButtonGroup = ({ options, activeValue, onChange, className = 
           key={option.value}
           onClick={() => onChange(option.value)}
           style={{
+            background: activeValue === option.value 
+              ? 'linear-gradient(135deg, #0b57d0, #3b7de8)' 
+              : 'transparent',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
           className={`
@@ -133,7 +139,7 @@ export const ToggleButtonGroup = ({ options, activeValue, onChange, className = 
             text-sm font-medium cursor-pointer border-none
             focus:outline-none
             ${activeValue === option.value 
-              ? "bg-[#0b57d0] text-white shadow-[0_4px_15px_rgba(11,87,208,0.3)]" 
+              ? "text-white shadow-[0_4px_15px_rgba(11,87,208,0.3)]" 
               : "text-[#4a6085] hover:text-[#0b57d0] hover:bg-[#e8f1fe]"
             }
           `}
