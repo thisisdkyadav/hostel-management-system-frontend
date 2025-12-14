@@ -279,47 +279,21 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Sidebar custom scrollbar - subtle theme-colored thumb */
-.sidebar-scrollbar {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: rgba(19, 96, 171, 0.15) transparent;
-}
+/* ============================================
+   CUSTOM SCROLLBAR - Theme #0b57d0
+   ============================================ */
 
-.sidebar-scrollbar::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(19, 96, 171, 0.15);
-  border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-
-.sidebar-scrollbar:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(19, 96, 171, 0.25);
-}
-
-.sidebar-scrollbar::-webkit-scrollbar-thumb:active {
-  background-color: rgba(19, 96, 171, 0.35);
-}
-
-/* Apply the same subtle themed scrollbar globally */
+/* Global scrollbar styling */
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(19, 96, 171, 0.15) transparent;
+  scrollbar-color: #a8c9fc transparent;
 }
 
-/* WebKit-based browsers */
+/* WebKit-based browsers (Chrome, Safari, Edge) */
 *::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 *::-webkit-scrollbar-track {
@@ -327,16 +301,37 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: rgba(19, 96, 171, 0.15);
-  border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  background: #a8c9fc;
+  border-radius: 10px;
 }
 
-*:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(19, 96, 171, 0.25);
+*::-webkit-scrollbar-thumb:hover {
+  background: #3b7de8;
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background-color: rgba(19, 96, 171, 0.35);
+  background: #0b57d0;
+}
+
+/* Sidebar-specific scrollbar (inherits global but can override if needed) */
+.sidebar-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #a8c9fc transparent;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #a8c9fc;
+  border-radius: 10px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3b7de8;
 }
