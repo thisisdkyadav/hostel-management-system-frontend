@@ -159,13 +159,21 @@ const Sidebar = ({ navItems }) => {
         onClick={() => handleNavigation(item)}
         title={!isOpen ? item.name : ""}
         className={`
-          group relative my-1.5 rounded-xl transition-all duration-200 cursor-pointer border border-transparent
-          ${isActiveItem ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"}
+          group relative rounded-[10px] transition-all duration-300 cursor-pointer border
+          ${isOpen ? "my-[0.35rem]" : "my-1"}
+          ${isActiveItem 
+            ? "text-white border-transparent" 
+            : "text-[#4a6085] border-transparent hover:bg-white/80 hover:border-[#d4e4fd] hover:text-[#0b57d0]"
+          }
         `}
+        style={isActiveItem ? {
+          background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+          boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
+        } : {}}
       >
-        <div className={`flex items-center ${isOpen ? "px-4 py-3" : "px-2 py-3 justify-center"}`}>
-          <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : ""}`}>
-            <item.icon className={`text-xl transition-colors duration-200 ${isActiveItem ? "text-white" : "text-slate-500 group-hover:text-[#1360AB]"}`} />
+        <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
+          <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
+            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[#8fa3c4] group-hover:text-[#0b57d0]"}`} style={{ width: '22px' }} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
@@ -181,10 +189,10 @@ const Sidebar = ({ navItems }) => {
             )}
           </div>
 
-          {isOpen && <span className={`text-sm font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white" : "group-hover:translate-x-1"}`}>{item.name}</span>}
+          {isOpen && <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white" : ""}`}>{item.name}</span>}
         </div>
 
-        {isActiveItem && <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>}
+        {isActiveItem && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/70"></div>}
       </li>
     )
   }
@@ -220,10 +228,10 @@ const Sidebar = ({ navItems }) => {
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               ) : (
-                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360AB]"}`} />
+                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#0b57d0]"}`} />
               )}
             </div>
-            {isProfileActive && <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>}
+            {isProfileActive && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/70"></div>}
           </div>
         </div>
       )
@@ -234,34 +242,42 @@ const Sidebar = ({ navItems }) => {
         <div
           onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
-            group relative rounded-xl transition-all duration-200 cursor-pointer border border-transparent
-            ${isProfileActive ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"}
+            group relative rounded-xl transition-all duration-300 cursor-pointer border
+            ${isProfileActive ? "text-white border-transparent" : "text-[#4a6085] border-transparent hover:bg-white/80 hover:border-[#d4e4fd]"}
           `}
+          style={isProfileActive ? {
+            background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+            boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
+          } : {}}
         >
-          <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center justify-between px-3 py-3">
             <div className="flex items-center flex-1 min-w-0">
               <div className="relative mr-3 flex-shrink-0">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                <div className="w-10 h-10 rounded-[10px] flex items-center justify-center overflow-hidden">
                   {user.profileImage ? (
                     <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
                   ) : user.name?.charAt(0).toUpperCase() ? (
                     <div
                       className={`
                       w-full h-full flex items-center justify-center font-semibold
-                      ${isProfileActive ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}
+                      ${isProfileActive ? "bg-white text-[#0b57d0]" : ""}
                     `}
+                      style={!isProfileActive ? {
+                        background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+                        color: 'white'
+                      } : {}}
                     >
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   ) : (
-                    <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360AB]"}`} />
+                    <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#0b57d0]"}`} />
                   )}
                 </div>
               </div>
 
               <div className="flex flex-col justify-center overflow-hidden flex-1 min-w-0">
-                <span className={`text-sm font-medium truncate ${isProfileActive ? "text-white" : "text-slate-900"}`}>{user.name || "User"}</span>
-                {user.email && <span className={`text-xs truncate ${isProfileActive ? "text-slate-200/80" : "text-slate-500"}`}>{user.email}</span>}
+                <span className={`text-[0.9rem] font-semibold truncate ${isProfileActive ? "text-white" : "text-[#0a1628]"}`}>{user.name || "User"}</span>
+                {user.email && <span className={`text-xs truncate ${isProfileActive ? "text-white/80" : "text-[#4a6085]"}`}>{user.email}</span>}
               </div>
             </div>
 
@@ -274,9 +290,12 @@ const Sidebar = ({ navItems }) => {
                   }}
                   title="Logout"
                   className={`
-                    w-9 h-9 rounded-lg flex items-center justify-center
-                    transition-all duration-200
-                    ${isProfileActive ? "hover:bg-white/20 text-white" : "border border-transparent hover:border-red-200 hover:bg-red-50 text-slate-500 hover:text-red-600"}
+                    w-9 h-9 rounded-[10px] flex items-center justify-center
+                    transition-all duration-200 border
+                    ${isProfileActive 
+                      ? "hover:bg-white/20 text-white border-transparent" 
+                      : "border-transparent hover:border-[#fecaca] hover:bg-[#fef2f2] text-[#4a6085] hover:text-[#ef4444]"
+                    }
                   `}
                   aria-label="Logout"
                 >
@@ -299,14 +318,19 @@ const Sidebar = ({ navItems }) => {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-gradient-to-b from-white via-slate-50 to-slate-100/90 backdrop-blur border-r border-slate-200/60 shadow-xl ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-64" : "w-0 md:w-20"} ${
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out border-r border-[#d4e4fd] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
           isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
         } overflow-hidden`}
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(232,241,254,0.9) 100%)',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '4px 0 20px rgba(11, 87, 208, 0.05)',
+        }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
-          <div className={`border-b border-slate-200/60 ${isMobile ? "hidden" : ""} h-16 bg-white/70 backdrop-blur-lg`}>
-            <div className={`h-full flex items-center ${isOpen ? "justify-between px-3" : "justify-center px-2"} transition-colors duration-200 hover:bg-white/50`}>
+          <div className={`border-b border-[#d4e4fd] ${isMobile ? "hidden" : ""} h-16`} style={{ background: 'rgba(255,255,255,0.8)' }}>
+            <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
               {/* Logo - only show when expanded. smaller and paired with subtle label */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
@@ -316,11 +340,11 @@ const Sidebar = ({ navItems }) => {
 
               {/* Toggle Button */}
               {isOpen ? (
-                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:border-slate-300 hover:text-[#1360AB] transition-all duration-200">
+                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-[10px] border border-[#d4e4fd] flex items-center justify-center text-[#4a6085] bg-white hover:bg-[#e8f1fe] hover:border-[#a8c9fc] hover:text-[#0b57d0] transition-all duration-200">
                   <HiMenuAlt2 className="text-[19px]" />
                 </button>
               ) : (
-                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 hover:bg-[#1360AB] hover:text-white hover:border-[#1360AB] flex items-center justify-center transition-all duration-200">
+                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-[10px] bg-white border border-[#d4e4fd] text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0] hover:border-[#a8c9fc] flex items-center justify-center transition-all duration-200">
                   <HiMenuAlt3 className="text-[19px]" />
                 </button>
               )}
@@ -328,8 +352,8 @@ const Sidebar = ({ navItems }) => {
           </div>
 
           {/* Main Navigation */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 scrollbar-thin sidebar-scrollbar">
-            <ul className="space-y-1.5">{mainNavItems.map(renderNavItem)}</ul>
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-[0.875rem] py-[0.875rem] sidebar-scrollbar">
+            <ul className="space-y-0">{mainNavItems.map(renderNavItem)}</ul>
           </div>
 
           {/* Active Hostel */}
@@ -383,7 +407,7 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-slate-200/60 bg-white/70 backdrop-blur space-y-2 overflow-x-hidden ${isOpen ? "px-3 py-3" : "p-2"}`}>
+          <div className={`border-t border-[#d4e4fd] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`} style={{ background: 'rgba(255,255,255,0.8)' }}>
             {renderProfileSection()}
             {/* <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul> */}
           </div>
