@@ -20,7 +20,7 @@ const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages,
   return (
     <>
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <div className="w-full sm:w-auto overflow-x-auto pb-2">
+        <div className="w-full sm:w-auto pb-2">
           <FilterTabs tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
         </div>
       </div>

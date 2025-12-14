@@ -215,7 +215,7 @@ const ApiKeyManagement = () => {
         <div className="text-gray-600 mb-4">API keys are used for authenticating external applications that integrate with your system. These keys should be kept secure and can be activated or deactivated as needed.</div>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div className="w-full sm:w-auto overflow-x-auto pb-2">
+          <div className="w-full sm:w-auto pb-2">
             <FilterTabs tabs={filterTabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
           </div>
           <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search API keys by name" className="w-full sm:w-64 md:w-72" />

@@ -50,7 +50,7 @@ const MaintenanceStaff = () => {
       <MaintenanceStats maintenanceStaff={maintenanceStaff} />
 
       <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <div className="w-full sm:w-auto overflow-x-auto pb-2">
+        <div className="w-full sm:w-auto pb-2">
           <FilterTabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filterCategory} setActiveTab={setFilterCategory} />
         </div>
         <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search staff by name or category" className="w-full sm:w-64 md:w-80" />
