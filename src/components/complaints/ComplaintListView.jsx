@@ -25,11 +25,10 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
         <div className="flex items-center">
           <div className="flex-shrink-0 h-8 w-8">
             {complaint.reportedBy?.profileImage ? (
-              <img className="h-8 w-8 rounded-lg object-cover" src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
+              <img className="h-8 w-8 rounded-full object-cover" src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
             ) : (
               <div 
-                className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-medium"
-                style={{ background: 'linear-gradient(135deg, #0b57d0, #3b7de8)' }}
+                className="h-8 w-8 rounded-full flex items-center justify-center text-white font-medium bg-[#0b57d0]"
               >
                 {complaint.reportedBy?.name?.charAt(0) || "U"}
               </div>
