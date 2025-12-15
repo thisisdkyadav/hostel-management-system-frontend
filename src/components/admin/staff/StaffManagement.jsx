@@ -6,6 +6,8 @@ import NoResults from "../../common/NoResults"
 import WardenCard from "../wardens/WardenCard"
 import AddWardenModal from "../wardens/AddWardenModal"
 import WardenStats from "../wardens/WardenStats"
+import PageHeader from "../../common/PageHeader"
+import Button from "../../common/Button"
 import { filterWardens } from "../../../utils/adminUtils"
 import { WARDEN_FILTER_TABS } from "../../../constants/adminConstants"
 import { adminApi } from "../../../services/apiService"
@@ -39,20 +41,14 @@ const StaffManagement = ({ staffType = "warden" }) => {
   }, [staffType])
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">{staffTitle} Management</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <button onClick={() => setShowAddModal(true)} className="bg-[#0b57d0] text-white flex items-center px-4 py-2 rounded-full hover:bg-[#0e4eb5] transition-all duration-200 text-sm font-medium">
-              <FaPlus className="mr-2" /> Add {staffTitle}
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col h-full">
+      <PageHeader title={`${staffTitle} Management`}>
+        <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
+          Add {staffTitle}
+        </Button>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <WardenStats wardens={staffList} staffType={staffType} />
 
@@ -72,6 +68,7 @@ const StaffManagement = ({ staffType = "warden" }) => {
       {filteredStaff.length === 0 && <NoResults icon={<FaUserTie className="text-gray-300 text-3xl" />} message={`No ${staffTitle.toLowerCase()}s found`} suggestion="Try changing your search or filter criteria" />}
 
       <AddWardenModal show={showAddModal} staffType={staffType} onClose={() => setShowAddModal(false)} onAdd={fetchStaff} />
+      </div>
     </div>
   )
 }

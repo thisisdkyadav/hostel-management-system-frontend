@@ -6,6 +6,8 @@ import RemovePasswordsByRoleModal from "../../components/admin/password/RemovePa
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/apiService"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
+import PageHeader from "../../components/common/PageHeader"
+import Button from "../../components/common/Button"
 
 const UpdatePassword = () => {
   const { user } = useAuth()
@@ -105,27 +107,17 @@ const UpdatePassword = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Update User Password</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={() => setShowRemoveByRoleModal(true)} className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors flex items-center text-sm font-medium">
-                <HiTrash className="mr-2" />
-                Remove by Role
-              </button>
-              <button onClick={() => setShowBulkModal(true)} className="px-4 py-2 bg-[#0b57d0] text-white rounded-full hover:bg-[#0e4eb5] transition-colors flex items-center text-sm font-medium">
-                <HiUpload className="mr-2" />
-                Bulk Update
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col h-full">
+      <PageHeader title="Update User Password">
+        <Button variant="danger" onClick={() => setShowRemoveByRoleModal(true)} icon={<HiTrash />}>
+          Remove by Role
+        </Button>
+        <Button variant="primary" onClick={() => setShowBulkModal(true)} icon={<HiUpload />}>
+          Bulk Update
+        </Button>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -197,6 +189,7 @@ const UpdatePassword = () => {
           width={600}
         />
       )}
+      </div>
     </div>
   )
 }

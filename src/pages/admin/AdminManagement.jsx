@@ -5,6 +5,8 @@ import NoResults from "../../components/common/NoResults"
 import AdminCard from "../../components/admin/admins/AdminCard"
 import AddAdminModal from "../../components/admin/admins/AddAdminModal"
 import AdminStats from "../../components/admin/admins/AdminStats"
+import PageHeader from "../../components/common/PageHeader"
+import Button from "../../components/common/Button"
 import superAdminService from "../../services/superAdminService"
 
 const AdminManagement = () => {
@@ -54,20 +56,14 @@ const AdminManagement = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Administrator Management</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <button onClick={() => setShowAddModal(true)} className="bg-[#0b57d0] text-white flex items-center px-4 py-2 rounded-full hover:bg-[#0e4eb5] transition-all duration-200 text-sm font-medium">
-              <FaPlus className="mr-2" /> Add Administrator
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col h-full">
+      <PageHeader title="Administrator Management">
+        <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
+          Add Administrator
+        </Button>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <AdminStats admins={admins} />
 
@@ -105,6 +101,7 @@ const AdminManagement = () => {
       )}
 
       <AddAdminModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={handleAddAdmin} />
+      </div>
     </div>
   )
 }
