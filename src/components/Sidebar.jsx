@@ -162,20 +162,20 @@ const Sidebar = ({ navItems }) => {
           group relative rounded-[10px] transition-all duration-200 cursor-pointer
           ${isOpen ? "my-[0.35rem]" : "my-1"}
           ${isActiveItem 
-            ? "bg-[#0b57d0] text-white shadow-sm" 
-            : "text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0b57d0]"
+            ? "bg-[#0b57d0] text-white shadow-[0_4px_12px_rgba(11,87,208,0.35)]" 
+            : "text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#0b57d0] hover:shadow-sm"
           }
         `}
       >
         <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
-            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[#8fa3c4] group-hover:text-[#0b57d0]"}`} style={{ width: '22px' }} />
+            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[#94a3b8] group-hover:text-[#0b57d0]"}`} style={{ width: '20px' }} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
                 <div
                   className={`
-                  min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center shadow shadow-red-500/30
+                  min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center shadow-md
                   ${item.badge > 99 ? "min-w-6" : ""}
                 `}
                 >
@@ -185,10 +185,10 @@ const Sidebar = ({ navItems }) => {
             )}
           </div>
 
-          {isOpen && <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white" : ""}`}>{item.name}</span>}
+          {isOpen && <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white font-semibold" : ""}`}>{item.name}</span>}
         </div>
 
-        {isActiveItem && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/70"></div>}
+        {isActiveItem && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/80"></div>}
       </li>
     )
   }
