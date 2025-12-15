@@ -16,15 +16,18 @@ const PageHeader = ({ title, children, className = "" }) => {
   }
 
   return (
-    <header className={`bg-white shadow-sm border-b border-gray-100 ${className}`}>
-      <div className="px-4 sm:px-6 lg:px-8 py-2.5">
+    <header 
+      className={`sticky top-0 z-10 bg-white border-b border-[#e2e8f0] ${className}`}
+      style={{
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      }}
+    >
+      <div className="px-4 md:px-6 lg:px-8 py-2">
         <div className="flex items-center justify-between gap-4">
           {/* Left Section - Title & Date */}
-          <div className="flex items-center">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">{title}</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{formatDate()}</p>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold text-[#0b57d0] tracking-tight">{title}</h1>
+            <p className="text-xs text-[#64748b] mt-0.5">{formatDate()}</p>
           </div>
 
           {/* Right Section - Actions (optional) */}

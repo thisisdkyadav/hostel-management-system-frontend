@@ -7,6 +7,7 @@ import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"
 import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
 import Button from "../../components/common/Button"
+import PageHeader from "../../components/common/PageHeader"
 import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
 import { adminApi } from "../../services/apiService"
@@ -56,37 +57,23 @@ const Hostels = () => {
     <>
       <div className="flex flex-col h-full">
         {/* Fixed Header */}
-        <header 
-          className="sticky top-0 z-10 bg-white border-b border-[#e2e8f0]"
-          style={{
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-          }}
-        >
-          <div className="px-4 md:px-6 lg:px-8 py-2">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h1 className="text-xl font-bold text-[#0b57d0] tracking-tight">Hostel Management</h1>
-                <p className="text-xs text-[#64748b] mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="secondary" 
-                  onClick={handleArchiveToggle}
-                  icon={<FaArchive />}
-                >
-                  {fetchArchive ? "Show All" : "Show Archived"}
-                </Button>
-                <Button 
-                  variant="primary" 
-                  onClick={() => setShowAddModal(true)}
-                  icon={<FaPlus />}
-                >
-                  Add Hostel
-                </Button>
-              </div>
-            </div>
-          </div>
-        </header>
+        <PageHeader title="Hostel Management">
+          <Button 
+            variant="secondary" 
+            onClick={handleArchiveToggle}
+            icon={<FaArchive />}
+          >
+            {fetchArchive ? "Show All" : "Show Archived"}
+          </Button>
+          <Button 
+            variant="primary" 
+            onClick={() => setShowAddModal(true)}
+            icon={<FaPlus />}
+          >
+            Add Hostel
+          </Button>
+        </PageHeader>
+
 
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-scroll px-4 md:px-6 lg:px-8 py-6">
