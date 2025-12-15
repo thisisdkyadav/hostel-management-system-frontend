@@ -50,20 +50,15 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
 
   return (
     <div 
-      className="md:hidden fixed top-0 left-0 right-0 h-16 z-40 flex items-center justify-between px-4 border-b border-[#d4e4fd]"
+      className="md:hidden fixed top-0 left-0 right-0 h-16 z-40 flex items-center justify-between px-4 bg-white border-b border-[#e2e8f0]"
       style={{
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(232,241,254,0.9))',
-        backdropFilter: 'blur(20px)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
       }}
     >
       {/* Menu Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white transition-all duration-300"
-        style={{
-          background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
-          boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
-        }}
+        className="w-10 h-10 bg-[#0b57d0] rounded-lg flex items-center justify-center text-white transition-all duration-200 hover:bg-[#083ca8]"
       >
         {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
       </button>
@@ -81,15 +76,11 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className={`
-            w-10 h-10 rounded-[10px] flex items-center justify-center 
-            text-white font-bold transition-all duration-300
+            w-10 h-10 bg-[#0b57d0] rounded-lg flex items-center justify-center 
+            text-white font-bold transition-all duration-200 hover:bg-[#083ca8]
             focus:outline-none
-            ${dropdownOpen ? "ring-2 ring-[#a8c9fc]" : ""}
+            ${dropdownOpen ? "ring-2 ring-[#cbd5e1]" : ""}
           `}
-          style={{
-            background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
-            boxShadow: dropdownOpen ? '0 6px 20px rgba(11, 87, 208, 0.4)' : '0 4px 15px rgba(11, 87, 208, 0.3)',
-          }}
           aria-label="User menu"
         >
           {user?.profileImage ? (
@@ -104,11 +95,9 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         {/* Dropdown Menu */}
         {dropdownOpen && (
           <div 
-            className="absolute right-0 mt-2 w-48 rounded-xl z-50 py-2 border border-[#d4e4fd] animate-fadeIn"
+            className="absolute right-0 mt-2 w-48 bg-white rounded-xl z-50 py-2 border border-[#e2e8f0] animate-fadeIn"
             style={{
-              background: 'linear-gradient(145deg, rgba(255,255,255,0.98), rgba(232,241,254,0.95))',
-              backdropFilter: 'blur(20px)',
-              boxShadow: '0 10px 40px rgba(11, 87, 208, 0.15)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             }}
           >
             {safeBottomNavItems.map((item) => (

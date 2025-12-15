@@ -5,11 +5,11 @@ import PropTypes from "prop-types"
  * FilterButton - Modern filter chip button
  * 
  * Styling:
- * - 10px border radius (rounded-[10px])
+ * - Rounded corners with border radius
  * - Subtle shadow on inactive state
  * - Active: Solid primary color, white text, enhanced shadow
  * - Inactive: White background, gray text
- * - Hover: Lift effect with translateY(-2px)
+ * - Hover: Background color change
  */
 export const FilterButton = ({ 
   children, 
@@ -22,22 +22,13 @@ export const FilterButton = ({
   return (
     <button
       onClick={onClick}
-      style={{
-        background: isActive 
-          ? 'linear-gradient(135deg, #0b57d0, #3b7de8)' 
-          : '#ffffff',
-        boxShadow: isActive 
-          ? '0 4px 15px rgba(11, 87, 208, 0.3)' 
-          : '0 2px 8px rgba(11, 87, 208, 0.05)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      }}
       className={`
         inline-flex items-center gap-2 px-4 py-2 rounded-[10px]
         text-sm font-medium border-none cursor-pointer
-        focus:outline-none
+        focus:outline-none transition-all duration-200
         ${isActive 
-          ? "text-white hover:shadow-[0_6px_20px_rgba(11,87,208,0.4)]" 
-          : "text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0] hover:shadow-[0_4px_12px_rgba(11,87,208,0.12)]"
+          ? "bg-[#0b57d0] text-white shadow-sm hover:bg-[#083ca8]" 
+          : "bg-white text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0b57d0]"
         }
         ${className}
       `}
@@ -49,7 +40,7 @@ export const FilterButton = ({
           px-2 py-0.5 rounded-md text-xs font-semibold
           ${isActive 
             ? "bg-white/20 text-white" 
-            : "bg-[#e8f1fe] text-[#0b57d0]"
+            : "bg-[#f1f5f9] text-[#64748b]"
           }
         `}>
           {count}
@@ -122,25 +113,19 @@ export const ToggleButtonGroup = ({ options, activeValue, onChange, className = 
   return (
     <div 
       className={`flex bg-white rounded-xl p-1 ${className}`}
-      style={{ boxShadow: '0 2px 8px rgba(11, 87, 208, 0.08)' }}
+      style={{ boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)' }}
     >
       {options.map((option) => (
         <button
           key={option.value}
           onClick={() => onChange(option.value)}
-          style={{
-            background: activeValue === option.value 
-              ? 'linear-gradient(135deg, #0b57d0, #3b7de8)' 
-              : 'transparent',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
           className={`
             flex items-center gap-2 px-4 py-2 rounded-[10px]
             text-sm font-medium cursor-pointer border-none
-            focus:outline-none
+            focus:outline-none transition-all duration-200
             ${activeValue === option.value 
-              ? "text-white shadow-[0_4px_15px_rgba(11,87,208,0.3)]" 
-              : "text-[#4a6085] hover:text-[#0b57d0] hover:bg-[#e8f1fe]"
+              ? "bg-[#0b57d0] text-white shadow-sm" 
+              : "text-[#64748b] hover:text-[#0b57d0] hover:bg-[#f8fafc]"
             }
           `}
         >

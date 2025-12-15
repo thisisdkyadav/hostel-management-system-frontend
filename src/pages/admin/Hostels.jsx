@@ -57,17 +57,16 @@ const Hostels = () => {
       <div className="flex flex-col h-full">
         {/* Fixed Header */}
         <header 
-          className="sticky top-0 z-10 border-b border-[#d4e4fd]"
+          className="sticky top-0 z-10 bg-white border-b border-[#e2e8f0]"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(232,241,254,0.9))',
-            backdropFilter: 'blur(20px)',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
           }}
         >
           <div className="px-4 md:px-6 lg:px-8 py-2">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <h1 className="text-xl font-bold text-[#0b57d0] tracking-tight">Hostel Management</h1>
-                <p className="text-xs text-[#4a6085] mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+                <p className="text-xs text-[#64748b] mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
               </div>
               <div className="flex items-center gap-3">
                 <Button 
@@ -79,7 +78,6 @@ const Hostels = () => {
                 </Button>
                 <Button 
                   variant="primary" 
-                  gradient
                   onClick={() => setShowAddModal(true)}
                   icon={<FaPlus />}
                 >
