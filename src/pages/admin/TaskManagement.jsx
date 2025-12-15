@@ -6,6 +6,8 @@ import TaskStats from "../../components/tasks/TaskStats"
 import TaskForm from "../../components/tasks/TaskForm"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
 import Pagination from "../../components/common/Pagination"
+import PageHeader from "../../components/common/PageHeader"
+import Button from "../../components/common/Button"
 
 const TaskManagement = () => {
   const { user } = useAuth()
@@ -147,23 +149,17 @@ const TaskManagement = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+    <div className="flex flex-col h-full">
       {/* Header with Title and Create Button */}
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Task Management</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            {WHO_CAN_CREATE_TASK.includes(user?.role) && (
-              <button onClick={() => setShowCreateTask(true)} className="px-4 py-2 bg-[#0b57d0] text-white text-sm font-medium rounded-full hover:bg-[#0e4eb5] transition-all">
-                Create New Task
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Task Management">
+        {WHO_CAN_CREATE_TASK.includes(user?.role) && (
+          <Button variant="primary" onClick={() => setShowCreateTask(true)}>
+            Create New Task
+          </Button>
+        )}
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       {/* Task Statistics */}
       {stats && <TaskStats stats={stats} />}
@@ -303,6 +299,7 @@ const TaskManagement = () => {
 
       {/* Task Detail Modal */}
       {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} />}
+      </div>
     </div>
   )
 }

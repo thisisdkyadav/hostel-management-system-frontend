@@ -6,6 +6,8 @@ import NoResults from "../../components/common/NoResults"
 import MaintenanceCard from "../../components/admin/maintenance/MaintenanceCard"
 import AddMaintenanceModal from "../../components/admin/maintenance/AddMaintenanceModal"
 import MaintenanceStats from "../../components/admin/maintenance/MaintenanceStats"
+import PageHeader from "../../components/common/PageHeader"
+import Button from "../../components/common/Button"
 import { filterMaintenanceStaff } from "../../utils/adminUtils"
 import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants"
 import { adminApi } from "../../services/apiService"
@@ -32,20 +34,14 @@ const MaintenanceStaff = () => {
   }, [])
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Maintenance Staff Management</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <button onClick={() => setShowAddModal(true)} className="bg-[#0b57d0] text-white flex items-center px-4 py-2 rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
-              <FaPlus className="mr-2" /> Add Staff
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col h-full">
+      <PageHeader title="Maintenance Staff Management">
+        <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
+          Add Staff
+        </Button>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <MaintenanceStats maintenanceStaff={maintenanceStaff} />
 
@@ -69,6 +65,7 @@ const MaintenanceStaff = () => {
       )}
 
       <AddMaintenanceModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchMaintenanceStaff} />
+      </div>
     </div>
   )
 }

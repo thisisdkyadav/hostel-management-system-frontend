@@ -7,6 +7,7 @@ import ConfigListManager from "../../components/admin/settings/ConfigListManager
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
+import PageHeader from "../../components/common/PageHeader"
 import toast from "react-hot-toast"
 
 const Settings = () => {
@@ -321,17 +322,10 @@ const Settings = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Application Settings</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col h-full">
+      <PageHeader title="Application Settings" />
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <div className="max-w-3xl mx-auto">
         {/* Tabs */}
@@ -547,6 +541,7 @@ const Settings = () => {
 
       {/* Success Modal */}
       {showSuccessModal && <CommonSuccessModal show={showSuccessModal} onClose={() => setShowSuccessModal(false)} title="Settings Updated" message={successMessage} infoText="Changes have been applied" infoIcon={HiSave} buttonText="Done" />}
+      </div>
     </div>
   )
 }
