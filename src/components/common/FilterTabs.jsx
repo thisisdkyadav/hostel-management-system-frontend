@@ -27,8 +27,8 @@ export const FilterButton = ({
         text-sm font-medium border-none cursor-pointer
         focus:outline-none transition-all duration-200
         ${isActive 
-          ? "bg-[#0b57d0] text-white shadow-sm hover:bg-[#083ca8]" 
-          : "bg-white text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0b57d0]"
+          ? "bg-[#1360aa] text-white shadow-sm hover:bg-[#083ca8]" 
+          : "bg-white text-[#64748b] hover:bg-[#f8fafc] hover:text-[#1360aa]"
         }
         ${className}
       `}
@@ -81,7 +81,7 @@ export const FilterChip = ({ label, onRemove, icon, className = "" }) => {
     <span 
       className={`
         inline-flex items-center gap-1.5 px-3 py-1.5 
-        bg-[#e8f0fe] text-[#0b57d0] rounded-lg text-sm font-medium
+        bg-[#e8f0fe] text-[#1360aa] rounded-lg text-sm font-medium
         transition-all duration-200 hover:bg-[#d2e3fc]
         ${className}
       `}
@@ -124,8 +124,8 @@ export const ToggleButtonGroup = ({ options, activeValue, onChange, className = 
             text-sm font-medium cursor-pointer border-none
             focus:outline-none transition-all duration-200
             ${activeValue === option.value 
-              ? "bg-[#0b57d0] text-white shadow-sm" 
-              : "text-[#64748b] hover:text-[#0b57d0] hover:bg-[#f8fafc]"
+              ? "bg-[#1360aa] text-white shadow-sm" 
+              : "text-[#64748b] hover:text-[#1360aa] hover:bg-[#f8fafc]"
             }
           `}
         >

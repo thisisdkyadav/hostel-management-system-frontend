@@ -168,11 +168,11 @@ const MyTasks = () => {
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">My Tasks</h1>
+              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">My Tasks</h1>
               <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 text-[#0b57d0] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
+              <div className="bg-blue-100 text-[#1360aa] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
               {stats.overdueTasks > 0 && <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Overdue: {stats.overdueTasks}</div>}
             </div>
           </div>

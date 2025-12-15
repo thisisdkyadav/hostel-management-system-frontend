@@ -28,7 +28,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
               <img className="h-8 w-8 rounded-full object-cover" src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
             ) : (
               <div 
-                className="h-8 w-8 rounded-full flex items-center justify-center text-white font-medium bg-[#0b57d0]"
+                className="h-8 w-8 rounded-full flex items-center justify-center text-white font-medium bg-[#1360aa]"
               >
                 {complaint.reportedBy?.name?.charAt(0) || "U"}
               </div>

@@ -109,11 +109,11 @@ const VisitorRequests = () => {
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Visitor Requests</h1>
+              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Visitor Requests</h1>
               <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2 rounded-full transition-colors text-sm font-medium ${showFilters ? "bg-[#0b57d0] text-white" : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"}`}>
+              <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2 rounded-full transition-colors text-sm font-medium ${showFilters ? "bg-[#1360aa] text-white" : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"}`}>
                 <FaFilter className="mr-2" /> {showFilters ? "Hide Filters" : "Filter Requests"}
               </button>
               {["Student"].includes(user.role) && (
@@ -124,7 +124,7 @@ const VisitorRequests = () => {
                   <button onClick={() => setShowManageProfilesModal(true)} className="flex items-center px-4 py-2 bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium">
                     <FaUserEdit className="mr-2" /> Manage Profiles
                   </button>
-                  <button onClick={() => setShowAddRequestModal(true)} className="flex items-center px-4 py-2 bg-[#0b57d0] text-white rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
+                  <button onClick={() => setShowAddRequestModal(true)} className="flex items-center px-4 py-2 bg-[#1360aa] text-white rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
                     <FaPlus className="mr-2" /> New Request
                   </button>
                 </>

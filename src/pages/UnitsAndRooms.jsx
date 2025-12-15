@@ -368,7 +368,7 @@ const UnitsAndRooms = () => {
         <div className="px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">
+              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">
                 {currentHostel.name}: {hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || unitNumber || "Selected Unit"}`) : "Room Management"}
               </h1>
               <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>

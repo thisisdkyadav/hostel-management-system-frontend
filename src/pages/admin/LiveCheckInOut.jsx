@@ -122,7 +122,7 @@ const LiveCheckInOut = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div>
-                <h1 className="text-xl font-semibold text-[#0b57d0] tracking-tight">Live Check-In/Out Monitor</h1>
+                <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Live Check-In/Out Monitor</h1>
                 <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
               </div>
               <span className={["inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium", socketStatus === "connected" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"].join(" ")}>
@@ -133,7 +133,7 @@ const LiveCheckInOut = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <button onClick={() => refresh()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-full bg-[#0b57d0] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#0e4eb5] disabled:opacity-60">
+              <button onClick={() => refresh()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-full bg-[#1360aa] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#0e4eb5] disabled:opacity-60">
                 <FiRefreshCw className={["text-xs", loading ? "animate-spin" : ""].filter(Boolean).join(" ")} />
                 Refresh
               </button>
