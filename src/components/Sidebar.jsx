@@ -162,14 +162,14 @@ const Sidebar = ({ navItems }) => {
           group relative rounded-[10px] transition-all duration-200 cursor-pointer
           ${isOpen ? "my-[0.35rem]" : "my-1"}
           ${isActiveItem 
-            ? "bg-[#0b57d0] text-white shadow-[0_4px_12px_rgba(11,87,208,0.35)]" 
-            : "text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#0b57d0] hover:shadow-sm"
+            ? "bg-[#1360aa] text-white shadow-[0_4px_12px_rgba(11,87,208,0.35)]" 
+            : "text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#1360aa] hover:shadow-sm"
           }
         `}
       >
         <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
-            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[#94a3b8] group-hover:text-[#0b57d0]"}`} style={{ width: '20px' }} />
+            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[#94a3b8] group-hover:text-[#1360aa]"}`} style={{ width: '20px' }} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
@@ -224,7 +224,7 @@ const Sidebar = ({ navItems }) => {
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               ) : (
-                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#0b57d0]"}`} />
+                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360aa]"}`} />
               )}
             </div>
             {isProfileActive && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/70"></div>}
@@ -239,7 +239,7 @@ const Sidebar = ({ navItems }) => {
           onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
             group relative rounded-xl transition-all duration-200 cursor-pointer border
-            ${isProfileActive ? "bg-[#0b57d0] text-white border-transparent shadow-sm" : "text-[#64748b] border-transparent hover:bg-[#f8fafc] hover:border-[#e2e8f0]"}
+            ${isProfileActive ? "bg-[#1360aa] text-white border-transparent shadow-sm" : "text-[#64748b] border-transparent hover:bg-[#f8fafc] hover:border-[#e2e8f0]"}
           `}
         >
           <div className="flex items-center justify-between px-3 py-3">
@@ -252,13 +252,13 @@ const Sidebar = ({ navItems }) => {
                     <div
                       className={`
                       w-full h-full flex items-center justify-center font-semibold
-                      ${isProfileActive ? "bg-white text-[#0b57d0]" : "bg-[#0b57d0] text-white"}
+                      ${isProfileActive ? "bg-white text-[#1360aa]" : "bg-[#1360aa] text-white"}
                     `}
                     >
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   ) : (
-                    <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#0b57d0]"}`} />
+                    <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360aa]"}`} />
                   )}
                 </div>
               </div>
@@ -320,17 +320,17 @@ const Sidebar = ({ navItems }) => {
               {/* HMS Text Logo - only show when expanded */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
-                  <span className="text-[#0b57d0] font-bold text-xl tracking-tight">HMS</span>
+                  <span className="text-[#1360aa] font-bold text-xl tracking-tight">HMS</span>
                 </div>
               )}
 
               {/* Toggle Button */}
               {isOpen ? (
-                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-[10px] border border-[#d4e4fd] flex items-center justify-center text-[#4a6085] bg-white hover:bg-[#e8f1fe] hover:border-[#a8c9fc] hover:text-[#0b57d0] transition-all duration-200">
+                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-[10px] border border-[#d4e4fd] flex items-center justify-center text-[#4a6085] bg-white hover:bg-[#e8f1fe] hover:border-[#a8c9fc] hover:text-[#1360aa] transition-all duration-200">
                   <HiMenuAlt2 className="text-[19px]" />
                 </button>
               ) : (
-                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-[10px] bg-white border border-[#d4e4fd] text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0] hover:border-[#a8c9fc] flex items-center justify-center transition-all duration-200">
+                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-[10px] bg-white border border-[#d4e4fd] text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#1360aa] hover:border-[#a8c9fc] flex items-center justify-center transition-all duration-200">
                   <HiMenuAlt3 className="text-[19px]" />
                 </button>
               )}

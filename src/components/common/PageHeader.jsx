@@ -26,7 +26,7 @@ const PageHeader = ({ title, children, className = "" }) => {
         <div className="flex items-center justify-between gap-4">
           {/* Left Section - Title & Date */}
           <div>
-            <h1 className="text-xl font-bold text-[#0b57d0] tracking-tight">{title}</h1>
+            <h1 className="text-xl font-bold text-[#1360aa] tracking-tight">{title}</h1>
             <p className="text-xs text-[#64748b] mt-0.5">{formatDate()}</p>
           </div>
 

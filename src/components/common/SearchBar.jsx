@@ -16,7 +16,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
         className={`
           absolute left-4 top-1/2 -translate-y-1/2 
           pointer-events-none transition-colors duration-300
-          ${isFocused ? "text-[#0b57d0]" : "text-[#8fa3c4]"}
+          ${isFocused ? "text-[#1360aa]" : "text-[#8fa3c4]"}
         `}
         size={14}
       />
@@ -40,7 +40,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
           placeholder:text-[#8fa3c4]
           focus:outline-none
           ${isFocused 
-            ? "border-[#0b57d0]" 
+            ? "border-[#1360aa]" 
             : "border-[#d4e4fd]"
           }
         `}
@@ -54,7 +54,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
             absolute right-4 top-1/2 -translate-y-1/2
             transition-colors duration-200
             focus:outline-none
-            ${isFocused ? "text-[#0b57d0] hover:text-[#083ca8]" : "text-[#8fa3c4] hover:text-[#4a6085]"}
+            ${isFocused ? "text-[#1360aa] hover:text-[#083ca8]" : "text-[#8fa3c4] hover:text-[#4a6085]"}
           `}
           aria-label="Clear search"
         >

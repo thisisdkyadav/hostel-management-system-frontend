@@ -26,13 +26,13 @@ const Button = ({
     active:scale-[0.98]
   `
 
-  // Using new theme colors #0b57d0 and hover #0e4eb5
+  // Using new theme colors #1360aa and hover #0e4eb5
   const variantStyles = {
     primary: gradient 
       ? `text-white disabled:opacity-50`
-      : `bg-[#0b57d0] text-white hover:bg-[#0e4eb5] disabled:bg-[#0b57d0]/50`,
+      : `bg-[#1360aa] text-white hover:bg-[#0e4eb5] disabled:bg-[#1360aa]/50`,
     secondary: `
-      bg-[#e8f0fe] text-[#0b57d0]
+      bg-[#e8f0fe] text-[#1360aa]
       border border-[#d2e3fc]
       hover:bg-[#d2e3fc]
     `,
@@ -47,8 +47,8 @@ const Button = ({
       disabled:bg-emerald-300
     `,
     outline: `
-      bg-white text-[#0b57d0]
-      border-2 border-[#0b57d0]
+      bg-white text-[#1360aa]
+      border-2 border-[#1360aa]
       hover:bg-[#e8f0fe]
     `,
     white: `
@@ -92,7 +92,7 @@ const Button = ({
 
   // Gradient styles for primary variant
   const gradientStyle = gradient && variant === "primary" ? {
-    background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
+    background: 'linear-gradient(135deg, #1360aa, #3b7de8)',
     boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
     transition: 'all 0.3s ease',
   } : {}

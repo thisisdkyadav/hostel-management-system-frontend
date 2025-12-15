@@ -58,7 +58,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
       {/* Menu Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-10 h-10 bg-[#0b57d0] rounded-lg flex items-center justify-center text-white transition-all duration-200 hover:bg-[#083ca8]"
+        className="w-10 h-10 bg-[#1360aa] rounded-lg flex items-center justify-center text-white transition-all duration-200 hover:bg-[#083ca8]"
       >
         {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
       </button>
@@ -68,7 +68,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         className="flex items-center cursor-pointer" 
         onClick={() => navigate("/")}
       >
-        <span className="text-[#0b57d0] font-bold text-xl tracking-tight">HMS</span>
+        <span className="text-[#1360aa] font-bold text-xl tracking-tight">HMS</span>
       </div>
 
       {/* User Profile Dropdown */}
@@ -76,7 +76,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className={`
-            w-10 h-10 bg-[#0b57d0] rounded-full flex items-center justify-center 
+            w-10 h-10 bg-[#1360aa] rounded-full flex items-center justify-center 
             text-white font-bold transition-all duration-200 hover:bg-[#083ca8]
             focus:outline-none
             ${dropdownOpen ? "ring-2 ring-[#cbd5e1]" : ""}
@@ -111,7 +111,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
                   flex items-center px-4 py-2.5 text-sm font-medium cursor-pointer transition-all duration-200 mx-2 rounded-lg
                   ${item.name === "Logout" 
                     ? "text-[#ef4444] hover:bg-[#fef2f2]" 
-                    : "text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#0b57d0]"
+                    : "text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#1360aa]"
                   }
                 `}
               >

@@ -1,6 +1,6 @@
 import React from "react"
 
-export const StatCard = ({ title, value, subtitle, icon, color = "#0b57d0" }) => {
+export const StatCard = ({ title, value, subtitle, icon, color = "#1360aa" }) => {
   return (
     <div 
       className="bg-white rounded-xl p-3 transition-all duration-200 border border-[#e2e8f0] hover:border-[#cbd5e1] hover:shadow-md hover:scale-[1.02] group"

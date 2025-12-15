@@ -300,7 +300,7 @@ body {
 }
 
 /* ============================================
-   CUSTOM SCROLLBAR - Theme #0b57d0
+   CUSTOM SCROLLBAR - Theme #1360aa
    ============================================ */
 
 /* Global scrollbar styling */
@@ -330,7 +330,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background: #0b57d0;
+  background: #1360aa;
 }
 
 /* Sidebar-specific scrollbar (inherits global but can override if needed) */
