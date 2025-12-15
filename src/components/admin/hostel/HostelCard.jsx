@@ -13,20 +13,20 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const getIconStyle = (gender) => {
     if (gender === "Boys") {
       return {
-        base: "bg-gradient-to-br from-[#d4e4fd] to-[#e8f1fe] text-[#0b57d0]",
-        hover: "bg-gradient-to-br from-[#0b57d0] to-[#3b7de8] text-white"
+        base: "bg-[#e8f1fe] text-[#0b57d0]",
+        hover: "bg-[#0b57d0] text-white"
       }
     }
     if (gender === "Girls") {
       return {
-        base: "bg-gradient-to-br from-pink-100 to-pink-50 text-pink-600",
-        hover: "bg-gradient-to-br from-pink-500 to-pink-400 text-white"
+        base: "bg-pink-50 text-pink-600",
+        hover: "bg-pink-500 text-white"
       }
     }
     // Co-ed / Other
     return {
-      base: "bg-gradient-to-br from-purple-100 to-purple-50 text-purple-600",
-      hover: "bg-gradient-to-br from-purple-500 to-purple-400 text-white"
+      base: "bg-purple-50 text-purple-600",
+      hover: "bg-purple-500 text-white"
     }
   }
 
@@ -46,12 +46,10 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   return (
     <>
       <div 
-        className="rounded-[20px] p-5 md:p-6 transition-all duration-400 border border-[#d4e4fd] group"
+        className="bg-white rounded-[20px] p-5 md:p-6 transition-all duration-300 border border-[#d4e4fd] group"
         style={{
-          background: 'linear-gradient(145deg, rgba(255,255,255,0.95), rgba(232,241,254,0.8))',
-          boxShadow: isHovered ? '0 10px 30px rgba(11, 87, 208, 0.1)' : 'none',
+          boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : '0 1px 3px rgba(0, 0, 0, 0.05)',
           borderColor: isHovered ? '#a8c9fc' : '#d4e4fd',
-          transition: 'all 0.4s ease'
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -64,8 +62,8 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             <FaBuilding />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-[#0a1628]">{hostel.name}</h3>
-            <p className="text-sm text-[#4a6085]">
+            <h3 className="text-xl font-bold text-[#1e293b]">{hostel.name}</h3>
+            <p className="text-sm text-[#64748b]">
               {hostel.gender} {hostel.type && `(${hostel.type})`}
             </p>
           </div>
@@ -75,20 +73,20 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
         <div className="flex justify-between mb-5">
           {/* Stats List */}
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#4a6085]">
-              <FaDoorClosed className="text-[#8fa3c4] w-4" />
+            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
+              <FaDoorClosed className="text-[#94a3b8] w-4" />
               <span>{hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)</span>
             </div>
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#4a6085]">
-              <FaUsers className="text-[#8fa3c4] w-4" />
+            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
+              <FaUsers className="text-[#94a3b8] w-4" />
               <span>{hostel.activeRoomsCapacity} Capacity</span>
             </div>
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#4a6085]">
-              <FaDoorOpen className="text-[#8fa3c4] w-4" />
+            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
+              <FaDoorOpen className="text-[#94a3b8] w-4" />
               <span>{hostel.vacantRooms} Vacant Rooms</span>
             </div>
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#4a6085]">
-              <FaTools className="text-[#8fa3c4] w-4" />
+            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
+              <FaTools className="text-[#94a3b8] w-4" />
               <span>{hostel.maintenanceIssues} maintenance issue{hostel.maintenanceIssues !== 1 ? 's' : ''}</span>
             </div>
           </div>

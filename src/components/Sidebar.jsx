@@ -159,17 +159,13 @@ const Sidebar = ({ navItems }) => {
         onClick={() => handleNavigation(item)}
         title={!isOpen ? item.name : ""}
         className={`
-          group relative rounded-[10px] transition-all duration-300 cursor-pointer border
+          group relative rounded-[10px] transition-all duration-200 cursor-pointer
           ${isOpen ? "my-[0.35rem]" : "my-1"}
           ${isActiveItem 
-            ? "text-white border-transparent" 
-            : "text-[#4a6085] border-transparent hover:bg-white/80 hover:border-[#d4e4fd] hover:text-[#0b57d0]"
+            ? "bg-[#0b57d0] text-white shadow-sm" 
+            : "text-[#64748b] hover:bg-[#f8fafc] hover:text-[#0b57d0]"
           }
         `}
-        style={isActiveItem ? {
-          background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
-          boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
-        } : {}}
       >
         <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
@@ -242,13 +238,9 @@ const Sidebar = ({ navItems }) => {
         <div
           onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
-            group relative rounded-xl transition-all duration-300 cursor-pointer border
-            ${isProfileActive ? "text-white border-transparent" : "text-[#4a6085] border-transparent hover:bg-white/80 hover:border-[#d4e4fd]"}
+            group relative rounded-xl transition-all duration-200 cursor-pointer border
+            ${isProfileActive ? "bg-[#0b57d0] text-white border-transparent shadow-sm" : "text-[#64748b] border-transparent hover:bg-[#f8fafc] hover:border-[#e2e8f0]"}
           `}
-          style={isProfileActive ? {
-            background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
-            boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
-          } : {}}
         >
           <div className="flex items-center justify-between px-3 py-3">
             <div className="flex items-center flex-1 min-w-0">
@@ -260,12 +252,8 @@ const Sidebar = ({ navItems }) => {
                     <div
                       className={`
                       w-full h-full flex items-center justify-center font-semibold
-                      ${isProfileActive ? "bg-white text-[#0b57d0]" : ""}
+                      ${isProfileActive ? "bg-white text-[#0b57d0]" : "bg-[#0b57d0] text-white"}
                     `}
-                      style={!isProfileActive ? {
-                        background: 'linear-gradient(135deg, #0b57d0, #3b7de8)',
-                        color: 'white'
-                      } : {}}
                     >
                       {user.name.charAt(0).toUpperCase()}
                     </div>
@@ -318,18 +306,16 @@ const Sidebar = ({ navItems }) => {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out border-r border-[#d4e4fd] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-white border-r border-[#e2e8f0] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
           isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
         } overflow-hidden`}
         style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(232,241,254,0.9) 100%)',
-          backdropFilter: 'blur(20px)',
-          boxShadow: '4px 0 20px rgba(11, 87, 208, 0.05)',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
         }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
-          <div className={`border-b border-[#d4e4fd] ${isMobile ? "hidden" : ""} h-16`} style={{ background: 'rgba(255,255,255,0.8)' }}>
+          <div className={`border-b border-[#e2e8f0] bg-[#fafbfc] ${isMobile ? "hidden" : ""} h-16`}>
             <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
               {/* HMS Text Logo - only show when expanded */}
               {isOpen && (
@@ -407,7 +393,7 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-[#d4e4fd] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`} style={{ background: 'rgba(255,255,255,0.8)' }}>
+          <div className={`border-t border-[#e2e8f0] bg-[#fafbfc] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>
             {renderProfileSection()}
             {/* <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul> */}
           </div>
