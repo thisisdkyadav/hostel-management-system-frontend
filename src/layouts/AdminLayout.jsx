@@ -48,63 +48,10 @@ const AdminLayout = () => {
     { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
   ]
 
-
-  //  <div className="flex flex-col md:flex-row min-h-screen relative">
-  //       {/* Animated Background */}
-  //       <div 
-  //         className="fixed inset-0 overflow-hidden pointer-events-none"
-  //         style={{
-  //           zIndex: -1,
-  //           background: 'linear-gradient(135deg, #f5f9ff 0%, #e8f1fe 50%, #ffffff 100%)',
-  //         }}
-  //       >
-  //         {/* Gradient Orb 1 - Top Left */}
-  //         <div 
-  //           className="absolute rounded-full animate-orb-float"
-  //           style={{
-  //             top: '-10%',
-  //             left: '-5%',
-  //             width: '400px',
-  //             height: '400px',
-  //             background: 'radial-gradient(circle, rgba(11, 87, 208, 0.2) 0%, transparent 70%)',
-  //             filter: 'blur(80px)',
-  //             opacity: 0.5,
-  //           }}
-  //         />
-  //         {/* Gradient Orb 2 - Bottom Right */}
-  //         <div 
-  //           className="absolute rounded-full animate-orb-float"
-  //           style={{
-  //             bottom: '-10%',
-  //             right: '-5%',
-  //             width: '500px',
-  //             height: '500px',
-  //             background: 'radial-gradient(circle, rgba(59, 125, 232, 0.15) 0%, transparent 70%)',
-  //             filter: 'blur(80px)',
-  //             opacity: 0.5,
-  //             animationDelay: '5s',
-  //           }}
-  //         />
-  //         {/* Gradient Orb 3 - Center */}
-  //         <div 
-  //           className="absolute rounded-full animate-orb-float"
-  //           style={{
-  //             top: '50%',
-  //             left: '30%',
-  //             width: '300px',
-  //             height: '300px',
-  //             background: 'radial-gradient(circle, rgba(107, 163, 245, 0.12) 0%, transparent 70%)',
-  //             filter: 'blur(80px)',
-  //             opacity: 0.5,
-  //             animationDelay: '10s',
-  //           }}
-  //         />
-  //       </div>
   return (
     <AdminProvider>
      
-<div className="flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50 min-h-screen">
-        
+<div className="flex flex-col md:flex-row bg-[#f0f4f9] min-h-screen">      
         <Sidebar navItems={navItems} />
         <div className="flex-1 h-screen overflow-auto pt-16 md:pt-0">
           <Outlet />

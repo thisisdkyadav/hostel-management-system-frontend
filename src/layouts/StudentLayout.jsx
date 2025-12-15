@@ -133,7 +133,7 @@ const StudentLayout = () => {
   const showSidebar = !showBottomBar
 
   return (
-    <div className={`flex flex-col md:flex-row bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50 min-h-screen ${showBottomBar ? "pwa-container" : ""}`}>
+    <div className={`flex flex-col md:flex-row bg-[#f0f4f9] min-h-screen ${showBottomBar ? "pwa-container" : ""}`}>
       {showSidebar && <Sidebar navItems={sidebarNavItems} />}
 
       <div className={`flex-1 h-screen overflow-auto ${showBottomBar ? "pb-16 pwa-bottom-padding" : "pt-16 md:pt-0"}`}>
