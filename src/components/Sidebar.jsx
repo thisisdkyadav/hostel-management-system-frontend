@@ -245,7 +245,7 @@ const Sidebar = ({ navItems }) => {
           <div className="flex items-center justify-between px-3 py-3">
             <div className="flex items-center flex-1 min-w-0">
               <div className="relative mr-3 flex-shrink-0">
-                <div className="w-10 h-10 rounded-[10px] flex items-center justify-center overflow-hidden">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
                   {user.profileImage ? (
                     <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
                   ) : user.name?.charAt(0).toUpperCase() ? (

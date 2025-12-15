@@ -76,7 +76,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className={`
-            w-10 h-10 bg-[#0b57d0] rounded-lg flex items-center justify-center 
+            w-10 h-10 bg-[#0b57d0] rounded-full flex items-center justify-center 
             text-white font-bold transition-all duration-200 hover:bg-[#083ca8]
             focus:outline-none
             ${dropdownOpen ? "ring-2 ring-[#cbd5e1]" : ""}
@@ -84,7 +84,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
           aria-label="User menu"
         >
           {user?.profileImage ? (
-            <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-lg object-cover" />
+            <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full rounded-full object-cover" />
           ) : user?.name?.charAt(0).toUpperCase() ? (
             <span className="text-white font-semibold">{user.name.charAt(0).toUpperCase()}</span>
           ) : (
