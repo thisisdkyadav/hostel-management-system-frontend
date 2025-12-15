@@ -3,28 +3,29 @@ import React from "react"
 export const StatCard = ({ title, value, subtitle, icon, color = "#0b57d0" }) => {
   return (
     <div 
-      className="bg-white rounded-xl p-4 py-3 transition-all duration-200 border border-[#e2e8f0] hover:border-[#cbd5e1] hover:shadow-sm group"
+      className="bg-white rounded-xl p-3 transition-all duration-200 border border-[#e2e8f0] hover:border-[#cbd5e1] hover:shadow-md hover:scale-[1.02] group"
       style={{ 
         boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
       }}
     >
-      <div className="flex justify-between items-start">
-        <span className="text-[#64748b] text-sm font-medium">{title}</span>
+      <div className="flex justify-between items-start mb-1.5">
+        <span className="text-[#64748b] text-xs font-semibold uppercase tracking-wide">{title}</span>
         <div 
-          className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors duration-200"
+          className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110"
           style={{ 
-            backgroundColor: `${color}10`,
+            backgroundColor: `${color}15`,
           }}
         >
           {React.cloneElement(icon, {
             style: { color },
-            className: "text-lg",
+            className: "text-base",
           })}
         </div>
       </div>
-      <div className="mt-2">
+      <div>
         <h3 
-          className="text-xl md:text-2xl font-bold text-[#1e293b]" 
+          className="text-xl md:text-2xl font-bold leading-none" 
+          style={{ color }}
         >
           {value}
         </h3>
