@@ -1,43 +1,34 @@
-import React, { useState } from "react"
+import React from "react"
 
 export const StatCard = ({ title, value, subtitle, icon, color = "#0b57d0" }) => {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
     <div 
-      className="rounded-[20px] p-4 py-3 transition-all duration-300 border group relative overflow-hidden"
+      className="bg-white rounded-xl p-4 py-3 transition-all duration-200 border border-[#e2e8f0] hover:border-[#cbd5e1] hover:shadow-sm group"
       style={{ 
-        background: 'linear-gradient(145deg, rgba(255,255,255,0.95), rgba(232,241,254,0.8))',
-        borderColor: isHovered ? '#a8c9fc' : '#d4e4fd',
-        boxShadow: isHovered ? '0 10px 30px rgba(11, 87, 208, 0.1)' : 'none',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex justify-between items-start relative z-10">
-        <span className="text-[#4a6085] text-sm font-medium">{title}</span>
+      <div className="flex justify-between items-start">
+        <span className="text-[#64748b] text-sm font-medium">{title}</span>
         <div 
-          className="w-9 h-9 rounded-[10px] flex items-center justify-center transition-all duration-300"
+          className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors duration-200"
           style={{ 
-            background: isHovered 
-              ? `linear-gradient(135deg, ${color}, ${color}99)`
-              : `${color}15`,
+            backgroundColor: `${color}10`,
           }}
         >
           {React.cloneElement(icon, {
-            style: { color: isHovered ? '#ffffff' : color },
-            className: "text-lg transition-all duration-300",
+            style: { color },
+            className: "text-lg",
           })}
         </div>
       </div>
       <div className="mt-2">
         <h3 
-          className="text-xl md:text-2xl font-bold transition-colors duration-300" 
-          style={{ color: '#0a1628' }}
+          className="text-xl md:text-2xl font-bold text-[#1e293b]" 
         >
           {value}
         </h3>
-        <p className="text-xs text-[#8fa3c4]">{subtitle}</p>
+        <p className="text-xs text-[#94a3b8] mt-0.5">{subtitle}</p>
       </div>
     </div>
   )
