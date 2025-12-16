@@ -366,40 +366,6 @@ const Settings = () => {
         </div>
 
         <Card className="overflow-hidden">
-          <Card.Header className="border-b border-gray-100 bg-gray-50 px-6 py-4 mb-0">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              {activeTab === "studentFields" && (
-                <>
-                  <HiCog className="mr-2 text-[#1360AB]" size={20} />
-                  Student Profile Edit Permissions
-                </>
-              )}
-              {activeTab === "degrees" && (
-                <>
-                  <HiAcademicCap className="mr-2 text-[#1360AB]" size={20} />
-                  Academic Degrees
-                </>
-              )}
-              {activeTab === "departments" && (
-                <>
-                  <HiOfficeBuilding className="mr-2 text-[#1360AB]" size={20} />
-                  Academic Departments
-                </>
-              )}
-              {activeTab === "registeredStudents" && (
-                <>
-                  <HiUsers className="mr-2 text-[#1360AB]" size={20} />
-                  Registered Students
-                </>
-              )}
-              {activeTab === "systemSettings" && (
-                <>
-                  <HiAdjustments className="mr-2 text-[#1360AB]" size={20} />
-                  System Settings
-                </>
-              )}
-            </h2>
-          </Card.Header>
 
           <Card.Body className="p-6">
             {/* Error messages */}
