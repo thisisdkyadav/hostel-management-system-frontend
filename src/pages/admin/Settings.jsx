@@ -9,6 +9,7 @@ import ConfigForm from "../../components/admin/settings/ConfigForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import toast from "react-hot-toast"
+import Card from "../../components/common/Card"
 
 const Settings = () => {
   const { user } = useAuth()
@@ -364,8 +365,8 @@ const Settings = () => {
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
+        <Card className="overflow-hidden">
+          <Card.Header className="border-b border-gray-100 bg-gray-50 px-6 py-4 mb-0">
             <h2 className="text-lg font-semibold text-gray-800 flex items-center">
               {activeTab === "studentFields" && (
                 <>
@@ -398,9 +399,9 @@ const Settings = () => {
                 </>
               )}
             </h2>
-          </div>
+          </Card.Header>
 
-          <div className="p-6">
+          <Card.Body className="p-6">
             {/* Error messages */}
             {error[activeTab] && (
               <div className="bg-red-50 text-red-700 rounded-lg p-4 mb-6">
@@ -535,8 +536,8 @@ const Settings = () => {
                 )}
               </>
             )}
-          </div>
-        </div>
+          </Card.Body>
+        </Card>
       </div>
 
       {/* Success Modal */}
