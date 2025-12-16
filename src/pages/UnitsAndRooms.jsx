@@ -13,6 +13,8 @@ import AllocateStudentModal from "../components/wardens/AllocateStudentModal"
 import SearchBar from "../components/common/SearchBar"
 import RoomStats from "../components/wardens/RoomStats"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
+import PageHeader from "../components/common/PageHeader"
+import Button from "../components/common/Button"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
@@ -362,44 +364,37 @@ const UnitsAndRooms = () => {
 
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
+  const dynamicTitle = `${currentHostel.name}: ${hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || unitNumber || "Selected Unit"}`) : "Room Management"}`
+
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">
-                {currentHostel.name}: {hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || unitNumber || "Selected Unit"}`) : "Room Management"}
-              </h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {hostelType === "unit-based" && currentView === "rooms" && (
-                <button onClick={goBackToUnits} className="flex items-center px-3 py-2 text-gray-700 bg-white rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium">
-                  <FaBuilding className="mr-2" /> Back to Units
-                </button>
-              )}
+    <div className="flex flex-col h-full">
+      <PageHeader title={dynamicTitle}>
+        {hostelType === "unit-based" && currentView === "rooms" && (
+          <Button variant="white" onClick={goBackToUnits} icon={<FaBuilding />}>
+            Back to Units
+          </Button>
+        )}
 
-              {["Admin"].includes(user.role) && (
-                <Link to="/admin/hostels" className="flex items-center px-3 py-2 bg-white rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium">
-                  <FaBuilding className="mr-2" /> Back to Hostels
-                </Link>
-              )}
+        {["Admin"].includes(user.role) && (
+          <Link to="/admin/hostels">
+            <Button variant="white" icon={<FaBuilding />}>
+              Back to Hostels
+            </Button>
+          </Link>
+        )}
 
-              {["Admin"].includes(user.role) && (
-                <button className="flex items-center px-3 py-2 bg-white rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowUploadModal(true)}>
-                  <FaFileImport className="mr-2" /> Update Allocations
-                </button>
-              )}
+        {["Admin"].includes(user.role) && (
+          <Button variant="white" onClick={() => setShowUploadModal(true)} icon={<FaFileImport />}>
+            Update Allocations
+          </Button>
+        )}
 
-              <button className="flex items-center px-3 py-2 bg-white rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowFilters(!showFilters)}>
-                {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
-                {showFilters ? "Hide Filters" : "Show Filters"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+        <Button variant="white" onClick={() => setShowFilters(!showFilters)} icon={showFilters ? <MdClearAll /> : <MdFilterAlt />}>
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </Button>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       {hostelType === "unit-based" ? <UnitStats units={units} rooms={rooms} currentView={currentView} totalCount={totalItems} /> : <RoomStats rooms={rooms} totalCount={totalItems} />}
 
@@ -557,6 +552,7 @@ const UnitsAndRooms = () => {
       {showAllocateModal && selectedRoom && <AllocateStudentModal room={selectedRoom} isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onSuccess={handleAllocationSuccess} />}
 
       {showUploadModal && <UpdateAllocationModal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)} onAllocate={handleUpdateAllocations} />}
+      </div>
     </div>
   )
 }

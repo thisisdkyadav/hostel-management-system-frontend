@@ -10,6 +10,8 @@ import ImportStudentModal from "../components/common/students/ImportStudentModal
 import UpdateStudentsModal from "../components/common/students/UpdateStudentsModal"
 import StudentTableView from "../components/common/students/StudentTableView"
 import Pagination from "../components/common/Pagination"
+import PageHeader from "../components/common/PageHeader"
+import Button from "../components/common/Button"
 import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -232,7 +234,7 @@ const Students = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+    <div className="flex flex-col h-full">
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
           <p className="font-medium">Error:</p>
@@ -240,40 +242,31 @@ const Students = () => {
         </div>
       )}
 
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Student Management</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowFilters(!showFilters)}>
-                {showFilters ? <MdClearAll className="mr-2" /> : <MdFilterAlt className="mr-2" />}
-                {showFilters ? "Hide Filters" : "Show Filters"}
-              </button>
+      <PageHeader title="Student Management">
+        <Button variant="white" onClick={() => setShowFilters(!showFilters)} icon={showFilters ? <MdClearAll /> : <MdFilterAlt />}>
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </Button>
 
-              {["Admin"].includes(user?.role) && (
-                <>
-                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowImportModal(true)}>
-                    <FaFileImport className="mr-2" /> Import
-                  </button>
-                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowUpdateModal(true)}>
-                    <FaEdit className="mr-2" /> Bulk Update
-                  </button>
-                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowAllocateModal(true)}>
-                    <FaFileImport className="mr-2" /> Update Allocations
-                  </button>
-                </>
-              )}
+        {["Admin"].includes(user?.role) && (
+          <>
+            <Button variant="white" onClick={() => setShowImportModal(true)} icon={<FaFileImport />}>
+              Import
+            </Button>
+            <Button variant="white" onClick={() => setShowUpdateModal(true)} icon={<FaEdit />}>
+              Bulk Update
+            </Button>
+            <Button variant="white" onClick={() => setShowAllocateModal(true)} icon={<FaFileImport />}>
+              Update Allocations
+            </Button>
+          </>
+        )}
 
-              <button onClick={handleExportStudents} className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium">
-                <FaFileExport className="mr-2" /> Export
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+        <Button variant="white" onClick={handleExportStudents} icon={<FaFileExport />}>
+          Export
+        </Button>
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <StudentStats />
 
@@ -337,6 +330,7 @@ const Students = () => {
       {["Admin"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
       {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
       {["Admin"].includes(user?.role) && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
+      </div>
     </div>
   )
 }
