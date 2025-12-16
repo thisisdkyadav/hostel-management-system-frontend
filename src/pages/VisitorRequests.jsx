@@ -9,6 +9,8 @@ import ManageVisitorProfilesModal from "../components/visitor/requests/ManageVis
 import LoadingState from "../components/common/LoadingState"
 import ErrorState from "../components/common/ErrorState"
 import EmptyState from "../components/common/EmptyState"
+import PageHeader from "../components/common/PageHeader"
+import Button from "../components/common/Button"
 
 const VisitorRequests = () => {
   const { user, canAccess } = useAuth()
@@ -104,35 +106,27 @@ const VisitorRequests = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Visitor Requests</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2 rounded-full transition-colors text-sm font-medium ${showFilters ? "bg-[#1360aa] text-white" : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"}`}>
-                <FaFilter className="mr-2" /> {showFilters ? "Hide Filters" : "Filter Requests"}
-              </button>
-              {["Student"].includes(user.role) && (
-                <>
-                  <button onClick={() => setShowAddProfileModal(true)} className="flex items-center px-4 py-2 bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium">
-                    <FaPlus className="mr-2" /> Add Visitor Profile
-                  </button>
-                  <button onClick={() => setShowManageProfilesModal(true)} className="flex items-center px-4 py-2 bg-white text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium">
-                    <FaUserEdit className="mr-2" /> Manage Profiles
-                  </button>
-                  <button onClick={() => setShowAddRequestModal(true)} className="flex items-center px-4 py-2 bg-[#1360aa] text-white rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
-                    <FaPlus className="mr-2" /> New Request
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="flex flex-col h-full">
+      <PageHeader title="Visitor Requests">
+        <Button variant={showFilters ? "primary" : "white"} onClick={() => setShowFilters(!showFilters)} icon={<FaFilter />}>
+          {showFilters ? "Hide Filters" : "Filter Requests"}
+        </Button>
+        {["Student"].includes(user.role) && (
+          <>
+            <Button variant="white" onClick={() => setShowAddProfileModal(true)} icon={<FaPlus />}>
+              Add Visitor Profile
+            </Button>
+            <Button variant="white" onClick={() => setShowManageProfilesModal(true)} icon={<FaUserEdit />}>
+              Manage Profiles
+            </Button>
+            <Button variant="primary" onClick={() => setShowAddRequestModal(true)} icon={<FaPlus />}>
+              New Request
+            </Button>
+          </>
+        )}
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       {showFilters && (
         <div className="bg-white p-4 rounded-xl shadow-sm mb-6">
@@ -191,6 +185,7 @@ const VisitorRequests = () => {
       {showAddRequestModal && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
 
       {showManageProfilesModal && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
+      </div>
     </div>
   )
 }

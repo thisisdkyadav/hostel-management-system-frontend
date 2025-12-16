@@ -8,6 +8,7 @@ import { HiStatusOnline } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../services/dashboardApi"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
+import PageHeader from "../../components/common/PageHeader"
 
 // Chart components
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
@@ -141,185 +142,157 @@ const Dashboard = () => {
   // Check if all hostels are selected
   const allHostelsSelected = dashboardData?.hostels ? selectedHostels.length === dashboardData.hostels.length : false
 
-  // Format date for header
-  const formatHeaderDate = () => {
-    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
-    return currentDate.toLocaleDateString(undefined, options)
-  }
-
   return (
-    <div className="flex-1">
-      {/* Modern Compact Header - Full Width with 0 margin */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="px-6 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            {/* Left Section - Dashboard Title & Stats */}
-            <div className="flex items-center gap-5 flex-1">
-              {/* Dashboard Title */}
-              <div className="flex items-center gap-3">
-                <div>
-                  <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Admin Dashboard</h1>
-                  <p className="text-xs text-gray-500 mt-0.5">{formatHeaderDate()}</p>
-                </div>
-              </div>
+    <div className="flex flex-col h-full">
+      <PageHeader title="Admin Dashboard">
+        {loading ? (
+          <div className="flex gap-2.5">
+            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
+            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
+          </div>
+        ) : error ? (
+          <div className="text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-1.5 text-xs">Error loading data</div>
+        ) : (
+          (() => {
+            // Safe access to degreeWise and registered data
+            const degreeWise = dashboardData?.students?.degreeWise || []
 
-              {/* Left area keeps title; stats moved to right header section */}
-              <div />
-            </div>
+            // Sum normal (actual) counts by gender and total
+            const normalSums = degreeWise.reduce(
+              (acc, d) => {
+                const boys = parseInt(d.boys) || 0
+                const girls = parseInt(d.girls) || 0
+                acc.boys += boys
+                acc.girls += girls
+                acc.total += boys + girls
+                return acc
+              },
+              { boys: 0, girls: 0, total: 0 }
+            )
 
-            {/* Right Section - Hostler vs Day Scholar Stats (moved) */}
-            <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
-              {loading ? (
-                <div className="flex gap-2.5">
-                  <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
-                  <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
-                </div>
-              ) : error ? (
-                <div className="text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-1.5 text-xs">Error loading data</div>
-              ) : (
-                (() => {
-                  // Safe access to degreeWise and registered data
-                  const degreeWise = dashboardData?.students?.degreeWise || []
+            // Sum registered counts; try multiple possible shapes
+            const registeredSums = degreeWise.reduce(
+              (acc, d) => {
+                // preferred: d.registered (object with boys/girls/total)
+                if (d.registered && typeof d.registered === "object") {
+                  const rb = parseInt(d.registered.boys) || 0
+                  const rg = parseInt(d.registered.girls) || 0
+                  const rt = parseInt(d.registered.total) || rb + rg
+                  acc.boys += rb
+                  acc.girls += rg
+                  acc.total += rt
+                } else if (d.registeredStudents != null) {
+                  // older format: registeredStudents might be a number
+                  const rt = parseInt(d.registeredStudents) || 0
+                  // if no breakdown available, split evenly
+                  const rb = Math.floor(rt / 2)
+                  const rg = rt - rb
+                  acc.boys += rb
+                  acc.girls += rg
+                  acc.total += rt
+                } else {
+                  // fallback: use d.totalRegistered or d.total if available
+                  const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
+                  const rb = Math.floor(rt / 2)
+                  const rg = rt - rb
+                  acc.boys += rb
+                  acc.girls += rg
+                  acc.total += rt
+                }
 
-                  // Sum normal (actual) counts by gender and total
-                  const normalSums = degreeWise.reduce(
-                    (acc, d) => {
-                      const boys = parseInt(d.boys) || 0
-                      const girls = parseInt(d.girls) || 0
-                      acc.boys += boys
-                      acc.girls += girls
-                      acc.total += boys + girls
-                      return acc
-                    },
-                    { boys: 0, girls: 0, total: 0 }
-                  )
+                return acc
+              },
+              { boys: 0, girls: 0, total: 0 }
+            )
 
-                  // Sum registered counts; try multiple possible shapes
-                  const registeredSums = degreeWise.reduce(
-                    (acc, d) => {
-                      // preferred: d.registered (object with boys/girls/total)
-                      if (d.registered && typeof d.registered === "object") {
-                        const rb = parseInt(d.registered.boys) || 0
-                        const rg = parseInt(d.registered.girls) || 0
-                        const rt = parseInt(d.registered.total) || rb + rg
-                        acc.boys += rb
-                        acc.girls += rg
-                        acc.total += rt
-                      } else if (d.registeredStudents != null) {
-                        // older format: registeredStudents might be a number
-                        const rt = parseInt(d.registeredStudents) || 0
-                        // if no breakdown available, split evenly
-                        const rb = Math.floor(rt / 2)
-                        const rg = rt - rb
-                        acc.boys += rb
-                        acc.girls += rg
-                        acc.total += rt
-                      } else {
-                        // fallback: use d.totalRegistered or d.total if available
-                        const rt = parseInt(d.totalRegistered || d.registeredTotal || 0) || 0
-                        const rb = Math.floor(rt / 2)
-                        const rg = rt - rb
-                        acc.boys += rb
-                        acc.girls += rg
-                        acc.total += rt
-                      }
+            // Derive day scholar = registered - normal (per gender and total)
+            const dayScholar = {
+              boys: Math.max(0, registeredSums.boys - normalSums.boys),
+              girls: Math.max(0, registeredSums.girls - normalSums.girls),
+            }
+            dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
 
-                      return acc
-                    },
-                    { boys: 0, girls: 0, total: 0 }
-                  )
+            // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
+            const hostler = {
+              boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
+              girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
+            }
+            hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
 
-                  // Derive day scholar = registered - normal (per gender and total)
-                  const dayScholar = {
-                    boys: Math.max(0, registeredSums.boys - normalSums.boys),
-                    girls: Math.max(0, registeredSums.girls - normalSums.girls),
-                  }
-                  dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
+            // Fallback for day scholar if registered info missing: use provided counts
+            const finalDayScholar = {
+              boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
+              girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
+            }
+            finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
 
-                  // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
-                  const hostler = {
-                    boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
-                    girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
-                  }
-                  hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
-
-                  // Fallback for day scholar if registered info missing: use provided counts
-                  const finalDayScholar = {
-                    boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
-                    girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
-                  }
-                  finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
-
-                  return (
-                    <div className="flex items-center gap-2.5">
-                      {/* Hostlers Card - Compact */}
-                      <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
-                        <div className="flex items-center gap-2">
-                          <FaUser className="text-[#1360AB] text-sm" />
-                          <div className="flex items-center gap-2">
-                            <div>
-                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Hostlers</p>
-                              <p className="text-lg font-bold text-gray-900 leading-none">{hostler.total}</p>
-                            </div>
-                            <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
-                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {hostler.boys}</span>
-                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {hostler.girls}</span>
-                            </div>
-                          </div>
-                        </div>
+            return (
+              <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
+                {/* Hostlers Card - Compact */}
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
+                  <div className="flex items-center gap-2">
+                    <FaUser className="text-[#1360AB] text-sm" />
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Hostlers</p>
+                        <p className="text-lg font-bold text-gray-900 leading-none">{hostler.total}</p>
                       </div>
-
-                      {/* Day Scholars Card - Compact */}
-                      <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
-                        <div className="flex items-center gap-2">
-                          <FaUser className="text-[#1360AB] text-sm" />
-                          <div className="flex items-center gap-2">
-                            <div>
-                              <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Day Scholars</p>
-                              <p className="text-lg font-bold text-gray-900 leading-none">{finalDayScholar.total}</p>
-                            </div>
-                            <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
-                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {finalDayScholar.boys}</span>
-                              <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {finalDayScholar.girls}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Online Users Card - Compact (Rightmost) */}
-                      <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-md px-3 py-1.5 hover:border-green-400 transition-all">
-                        <div className="flex items-center gap-2">
-                          <HiStatusOnline className="text-green-600 text-sm animate-pulse" />
-                          <div className="flex items-center gap-2">
-                            <div>
-                              <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Online Now</p>
-                              <p className="text-lg font-bold text-green-800 leading-none">{onlineStats?.totalOnline || 0}</p>
-                            </div>
-                            <div className="flex gap-1 ml-1.5 border-l border-green-300 pl-2">
-                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Students online">
-                                S: {onlineStats?.byRole?.Student || 0}
-                              </span>
-                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Hostel Supervisors online">
-                                HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
-                              </span>
-                              <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Admins online">
-                                A: {onlineStats?.byRole?.Admin || 0}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                      <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
+                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {hostler.boys}</span>
+                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {hostler.girls}</span>
                       </div>
                     </div>
-                  )
-                })()
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+                  </div>
+                </div>
+
+                {/* Day Scholars Card - Compact */}
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
+                  <div className="flex items-center gap-2">
+                    <FaUser className="text-[#1360AB] text-sm" />
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Day Scholars</p>
+                        <p className="text-lg font-bold text-gray-900 leading-none">{finalDayScholar.total}</p>
+                      </div>
+                      <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
+                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {finalDayScholar.boys}</span>
+                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {finalDayScholar.girls}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Online Users Card - Compact (Rightmost) */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-md px-3 py-1.5 hover:border-green-400 transition-all">
+                  <div className="flex items-center gap-2">
+                    <HiStatusOnline className="text-green-600 text-sm animate-pulse" />
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Online Now</p>
+                        <p className="text-lg font-bold text-green-800 leading-none">{onlineStats?.totalOnline || 0}</p>
+                      </div>
+                      <div className="flex gap-1 ml-1.5 border-l border-green-300 pl-2">
+                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Students online">
+                          S: {onlineStats?.byRole?.Student || 0}
+                        </span>
+                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Hostel Supervisors online">
+                          HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
+                        </span>
+                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Admins online">
+                          A: {onlineStats?.byRole?.Admin || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })()
+        )}
+      </PageHeader>
 
       {/* Main Content with padding */}
-      <div className="px-6 py-6">
+      <div className="flex-1 overflow-y-auto px-6 py-6">
         {/* Main dashboard grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           {/* Student data card */}

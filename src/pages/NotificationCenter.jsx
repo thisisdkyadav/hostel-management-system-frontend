@@ -7,6 +7,8 @@ import CreateNotificationModal from "../components/notifications/CreateNotificat
 import NoResults from "../components/common/NoResults"
 import Pagination from "../components/common/Pagination"
 import FilterTabs from "../components/common/FilterTabs"
+import PageHeader from "../components/common/PageHeader"
+import Button from "../components/common/Button"
 import { notificationApi } from "../services/notificationApi"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -129,7 +131,7 @@ const NotificationCenter = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+    <div className="flex flex-col h-full">
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
           <p className="font-medium">Error:</p>
@@ -137,29 +139,20 @@ const NotificationCenter = () => {
         </div>
       )}
 
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Notification Center</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {["Admin"].includes(user.role) && (
-                <>
-                  <button className="flex items-center px-3 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors text-gray-700 text-sm font-medium" onClick={() => setShowFilters(!showFilters)}>
-                    <FaFilter className="mr-2" />
-                    {showFilters ? "Hide Filters" : "Show Filters"}
-                  </button>
-                  <button onClick={() => setShowCreateModal(true)} className="bg-[#1360aa] text-white flex items-center px-4 py-2 rounded-full hover:bg-[#0e4eb5] transition-colors text-sm font-medium">
-                    <FaPlus className="mr-2" /> Create Notification
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Notification Center">
+        {["Admin"].includes(user.role) && (
+          <>
+            <Button variant="white" onClick={() => setShowFilters(!showFilters)} icon={<FaFilter />}>
+              {showFilters ? "Hide Filters" : "Show Filters"}
+            </Button>
+            <Button variant="primary" onClick={() => setShowCreateModal(true)} icon={<FaPlus />}>
+              Create Notification
+            </Button>
+          </>
+        )}
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       {stats && <NotificationStats stats={stats} />}
 
@@ -189,6 +182,7 @@ const NotificationCenter = () => {
       </div>
 
       <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
+      </div>
     </div>
   )
 }

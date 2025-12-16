@@ -4,6 +4,7 @@ import { taskApi } from "../services/taskApi"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../constants/taskConstants"
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
 import Pagination from "../components/common/Pagination"
+import PageHeader from "../components/common/PageHeader"
 
 const MyTasks = () => {
   const { user } = useAuth()
@@ -162,22 +163,14 @@ const MyTasks = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+    <div className="flex flex-col h-full">
       {/* Header with Title and Statistics */}
-      <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6">
-        <div className="px-4 sm:px-6 lg:px-8 py-2.5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">My Tasks</h1>
-              <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-blue-100 text-[#1360aa] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
-              {stats.overdueTasks > 0 && <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Overdue: {stats.overdueTasks}</div>}
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="My Tasks">
+        <div className="bg-blue-100 text-[#1360aa] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
+        {stats.overdueTasks > 0 && <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Overdue: {stats.overdueTasks}</div>}
+      </PageHeader>
+
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       {/* Filter Tabs */}
       <div className="mt-6 mb-4">
@@ -273,6 +266,7 @@ const MyTasks = () => {
 
       {/* Task Detail Modal */}
       {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} allowedStatusUpdates={getStatusUpdateOptions()} isUserView={true} />}
+      </div>
     </div>
   )
 }
