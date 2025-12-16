@@ -13,8 +13,7 @@ import AllocateStudentModal from "../components/wardens/AllocateStudentModal"
 import SearchBar from "../components/common/SearchBar"
 import RoomStats from "../components/wardens/RoomStats"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
-import PageHeader from "../components/common/PageHeader"
-import Button from "../components/common/Button"
+import UnitsAndRoomsHeader from "../components/headers/UnitsAndRoomsHeader"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
@@ -368,31 +367,17 @@ const UnitsAndRooms = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title={dynamicTitle}>
-        {hostelType === "unit-based" && currentView === "rooms" && (
-          <Button variant="white" onClick={goBackToUnits} icon={<FaBuilding />}>
-            Back to Units
-          </Button>
-        )}
-
-        {["Admin"].includes(user.role) && (
-          <Link to="/admin/hostels">
-            <Button variant="white" icon={<FaBuilding />}>
-              Back to Hostels
-            </Button>
-          </Link>
-        )}
-
-        {["Admin"].includes(user.role) && (
-          <Button variant="white" onClick={() => setShowUploadModal(true)} icon={<FaFileImport />}>
-            Update Allocations
-          </Button>
-        )}
-
-        <Button variant="white" onClick={() => setShowFilters(!showFilters)} icon={showFilters ? <MdClearAll /> : <MdFilterAlt />}>
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </Button>
-      </PageHeader>
+      <UnitsAndRoomsHeader 
+        title={dynamicTitle}
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+        onBackToUnits={goBackToUnits}
+        onUpdateAllocations={() => setShowUploadModal(true)}
+        showBackToUnits={hostelType === "unit-based" && currentView === "rooms"}
+        showBackToHostels={true}
+        showUpdateAllocations={true}
+        userRole={user.role}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

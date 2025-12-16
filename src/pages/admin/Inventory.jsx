@@ -2,14 +2,14 @@ import React, { useState } from "react"
 import ItemTypes from "../../components/admin/inventory/ItemTypes"
 import HostelAllocation from "../../components/admin/inventory/HostelAllocation"
 import InventoryReports from "../../components/admin/inventory/InventoryReports"
-import PageHeader from "../../components/common/PageHeader"
+import InventoryHeader from "../../components/headers/InventoryHeader"
 
 const Inventory = () => {
   const [activeTab, setActiveTab] = useState("itemTypes")
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Inventory Management" />
+      <InventoryHeader />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

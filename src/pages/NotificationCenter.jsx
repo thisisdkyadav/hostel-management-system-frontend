@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaBell, FaPlus, FaFilter } from "react-icons/fa"
+import { FaBell } from "react-icons/fa"
 import NotificationStats from "../components/notifications/NotificationStats"
 import NotificationTable from "../components/notifications/NotificationTable"
 import NotificationFilterSection from "../components/notifications/NotificationFilterSection"
@@ -7,8 +7,7 @@ import CreateNotificationModal from "../components/notifications/CreateNotificat
 import NoResults from "../components/common/NoResults"
 import Pagination from "../components/common/Pagination"
 import FilterTabs from "../components/common/FilterTabs"
-import PageHeader from "../components/common/PageHeader"
-import Button from "../components/common/Button"
+import NotificationCenterHeader from "../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../services/notificationApi"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -139,18 +138,12 @@ const NotificationCenter = () => {
         </div>
       )}
 
-      <PageHeader title="Notification Center">
-        {["Admin"].includes(user.role) && (
-          <>
-            <Button variant="white" onClick={() => setShowFilters(!showFilters)} icon={<FaFilter />}>
-              {showFilters ? "Hide Filters" : "Show Filters"}
-            </Button>
-            <Button variant="primary" onClick={() => setShowCreateModal(true)} icon={<FaPlus />}>
-              Create Notification
-            </Button>
-          </>
-        )}
-      </PageHeader>
+      <NotificationCenterHeader 
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+        onCreateNotification={() => setShowCreateModal(true)}
+        userRole={user.role}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
