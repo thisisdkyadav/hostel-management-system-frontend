@@ -1,13 +1,11 @@
 import { useState, useEffect, use } from "react"
-import { FaPlus } from "react-icons/fa"
 import FilterTabs from "../components/common/FilterTabs"
 import SearchBar from "../components/common/SearchBar"
 import NoResults from "../components/common/NoResults"
 import LostAndFoundStats from "../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../components/lostAndFound/LostAndFoundCard"
 import AddLostItemModal from "../components/lostAndFound/AddLostItemModal"
-import PageHeader from "../components/common/PageHeader"
-import Button from "../components/common/Button"
+import LostAndFoundHeader from "../components/headers/LostAndFoundHeader"
 import { filterLostItems } from "../utils/adminUtils"
 import { lostAndFoundApi } from "../services/apiService"
 import { useAuth } from "../contexts/AuthProvider"
@@ -45,13 +43,11 @@ const LostAndFound = () => {
   return (
     <>
       <div className="flex flex-col h-full">
-        <PageHeader title="Lost and Found">
-          {canAccess("lost_and_found", "create") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
-            <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
-              Add Item
-            </Button>
-          )}
-        </PageHeader>
+        <LostAndFoundHeader 
+          onAddItem={() => setShowAddModal(true)}
+          canCreate={canAccess("lost_and_found", "create")}
+          userRole={user?.role}
+        />
 
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

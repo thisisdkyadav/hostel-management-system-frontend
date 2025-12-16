@@ -8,7 +8,7 @@ import { HiStatusOnline } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../services/dashboardApi"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
-import PageHeader from "../../components/common/PageHeader"
+import DashboardHeader from "../../components/headers/DashboardHeader"
 
 // Chart components
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
@@ -144,7 +144,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Admin Dashboard">
+      <DashboardHeader>
         {loading ? (
           <div className="flex gap-2.5">
             <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
@@ -289,7 +289,7 @@ const Dashboard = () => {
             )
           })()
         )}
-      </PageHeader>
+      </DashboardHeader>
 
       {/* Main Content with padding */}
       <div className="flex-1 overflow-y-auto px-6 py-6">

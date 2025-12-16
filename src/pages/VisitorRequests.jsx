@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { FaUserFriends, FaPlus, FaFilter, FaUserEdit } from "react-icons/fa"
+import { FaUserFriends } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 import { visitorApi } from "../services/visitorApi"
 import VisitorRequestTable from "../components/visitor/requests/VisitorRequestTable"
@@ -9,8 +9,7 @@ import ManageVisitorProfilesModal from "../components/visitor/requests/ManageVis
 import LoadingState from "../components/common/LoadingState"
 import ErrorState from "../components/common/ErrorState"
 import EmptyState from "../components/common/EmptyState"
-import PageHeader from "../components/common/PageHeader"
-import Button from "../components/common/Button"
+import VisitorRequestsHeader from "../components/headers/VisitorRequestsHeader"
 
 const VisitorRequests = () => {
   const { user, canAccess } = useAuth()
@@ -107,24 +106,14 @@ const VisitorRequests = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Visitor Requests">
-        <Button variant={showFilters ? "primary" : "white"} onClick={() => setShowFilters(!showFilters)} icon={<FaFilter />}>
-          {showFilters ? "Hide Filters" : "Filter Requests"}
-        </Button>
-        {["Student"].includes(user.role) && (
-          <>
-            <Button variant="white" onClick={() => setShowAddProfileModal(true)} icon={<FaPlus />}>
-              Add Visitor Profile
-            </Button>
-            <Button variant="white" onClick={() => setShowManageProfilesModal(true)} icon={<FaUserEdit />}>
-              Manage Profiles
-            </Button>
-            <Button variant="primary" onClick={() => setShowAddRequestModal(true)} icon={<FaPlus />}>
-              New Request
-            </Button>
-          </>
-        )}
-      </PageHeader>
+      <VisitorRequestsHeader 
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+        onAddProfile={() => setShowAddProfileModal(true)}
+        onManageProfiles={() => setShowManageProfilesModal(true)}
+        onNewRequest={() => setShowAddRequestModal(true)}
+        userRole={user.role}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

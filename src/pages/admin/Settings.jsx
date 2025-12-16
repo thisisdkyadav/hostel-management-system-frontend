@@ -7,7 +7,7 @@ import ConfigListManager from "../../components/admin/settings/ConfigListManager
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
-import PageHeader from "../../components/common/PageHeader"
+import SettingsHeader from "../../components/headers/SettingsHeader"
 import toast from "react-hot-toast"
 
 const Settings = () => {
@@ -323,7 +323,7 @@ const Settings = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Application Settings" />
+      <SettingsHeader />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

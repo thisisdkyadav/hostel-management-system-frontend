@@ -4,7 +4,7 @@ import FilterTabs from "../../components/common/FilterTabs"
 import InsuranceProviders from "../../components/admin/others/InsuranceProviders"
 import HostelLogins from "../../components/admin/others/HostelLogins"
 import Undertakings from "../../components/admin/others/Undertakings"
-import PageHeader from "../../components/common/PageHeader"
+import OthersHeader from "../../components/headers/OthersHeader"
 
 // this page is for the admin to manage the others like Insurance Providers, Hostel Logins, etc.
 const OTHERS_TABS = [
@@ -18,7 +18,7 @@ const Others = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Others Management" />
+      <OthersHeader />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

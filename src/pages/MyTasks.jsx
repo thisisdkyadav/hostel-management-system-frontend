@@ -4,7 +4,7 @@ import { taskApi } from "../services/taskApi"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../constants/taskConstants"
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
 import Pagination from "../components/common/Pagination"
-import PageHeader from "../components/common/PageHeader"
+import MyTasksHeader from "../components/headers/MyTasksHeader"
 
 const MyTasks = () => {
   const { user } = useAuth()
@@ -165,10 +165,7 @@ const MyTasks = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Header with Title and Statistics */}
-      <PageHeader title="My Tasks">
-        <div className="bg-blue-100 text-[#1360aa] px-3 py-1 rounded-full text-sm font-medium">Total: {pagination.total || 0}</div>
-        {stats.overdueTasks > 0 && <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Overdue: {stats.overdueTasks}</div>}
-      </PageHeader>
+      <MyTasksHeader totalTasks={pagination.total} overdueTasks={stats.overdueTasks} />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

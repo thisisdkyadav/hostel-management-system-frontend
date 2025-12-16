@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { FaUserGraduate, FaFileExport, FaFileImport, FaEdit } from "react-icons/fa"
-import { MdFilterAlt, MdClearAll } from "react-icons/md"
+import { FaUserGraduate } from "react-icons/fa"
 import NoResults from "../components/common/NoResults"
 import StudentStats from "../components/common/students/StudentStats"
 import StudentFilterSection from "../components/common/students/StudentFilterSection"
@@ -10,8 +9,7 @@ import ImportStudentModal from "../components/common/students/ImportStudentModal
 import UpdateStudentsModal from "../components/common/students/UpdateStudentsModal"
 import StudentTableView from "../components/common/students/StudentTableView"
 import Pagination from "../components/common/Pagination"
-import PageHeader from "../components/common/PageHeader"
-import Button from "../components/common/Button"
+import StudentsHeader from "../components/headers/StudentsHeader"
 import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
@@ -242,29 +240,15 @@ const Students = () => {
         </div>
       )}
 
-      <PageHeader title="Student Management">
-        <Button variant="white" onClick={() => setShowFilters(!showFilters)} icon={showFilters ? <MdClearAll /> : <MdFilterAlt />}>
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </Button>
-
-        {["Admin"].includes(user?.role) && (
-          <>
-            <Button variant="white" onClick={() => setShowImportModal(true)} icon={<FaFileImport />}>
-              Import
-            </Button>
-            <Button variant="white" onClick={() => setShowUpdateModal(true)} icon={<FaEdit />}>
-              Bulk Update
-            </Button>
-            <Button variant="white" onClick={() => setShowAllocateModal(true)} icon={<FaFileImport />}>
-              Update Allocations
-            </Button>
-          </>
-        )}
-
-        <Button variant="white" onClick={handleExportStudents} icon={<FaFileExport />}>
-          Export
-        </Button>
-      </PageHeader>
+      <StudentsHeader 
+        showFilters={showFilters}
+        onToggleFilters={() => setShowFilters(!showFilters)}
+        onImport={() => setShowImportModal(true)}
+        onBulkUpdate={() => setShowUpdateModal(true)}
+        onUpdateAllocations={() => setShowAllocateModal(true)}
+        onExport={handleExportStudents}
+        userRole={user?.role}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
-import { FaUserTie, FaPlus } from "react-icons/fa"
+import { FaUserTie } from "react-icons/fa"
 import FilterTabs from "../../common/FilterTabs"
 import SearchBar from "../../common/SearchBar"
 import NoResults from "../../common/NoResults"
 import WardenCard from "../wardens/WardenCard"
 import AddWardenModal from "../wardens/AddWardenModal"
 import WardenStats from "../wardens/WardenStats"
-import PageHeader from "../../common/PageHeader"
-import Button from "../../common/Button"
+import StaffManagementHeader from "../../headers/StaffManagementHeader"
 import { filterWardens } from "../../../utils/adminUtils"
 import { WARDEN_FILTER_TABS } from "../../../constants/adminConstants"
 import { adminApi } from "../../../services/apiService"
@@ -42,11 +41,10 @@ const StaffManagement = ({ staffType = "warden" }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title={`${staffTitle} Management`}>
-        <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
-          Add {staffTitle}
-        </Button>
-      </PageHeader>
+      <StaffManagementHeader 
+        staffTitle={staffTitle}
+        onAddStaff={() => setShowAddModal(true)}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
