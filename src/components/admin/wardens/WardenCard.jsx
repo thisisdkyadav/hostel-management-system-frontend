@@ -4,6 +4,7 @@ import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import Card from "../../common/Card"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
@@ -59,34 +60,30 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
 
   return (
     <>
-      <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
+      <Card className="relative overflow-hidden">
         <div className={`absolute top-0 right-0 w-16 h-16`}>
           <div className={`absolute rotate-45 transform origin-bottom-right ${statusColor.bg} text-white text-xs font-medium py-1 right-[-6px] top-[-2px] w-24 text-center`}>{status === "assigned" ? "Assigned" : "Unassigned"}</div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
-            {warden.profileImage ? (
-              <img src={getMediaUrl(warden.profileImage)} alt={warden.name} className="w-16 h-16 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center border-2 border-[#1360AB]">
-                <FaUserTie className="text-[#1360AB] text-2xl" />
-              </div>
-            )}
+        <Card.Header className="mb-0">
+          <div className="flex flex-col md:flex-row md:items-center">
+            <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
+              {warden.profileImage ? (
+                <img src={getMediaUrl(warden.profileImage)} alt={warden.name} className="w-16 h-16 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center border-2 border-[#1360AB]">
+                  <FaUserTie className="text-[#1360AB] text-2xl" />
+                </div>
+              )}
+            </div>
+            <div>
+              <h3 className="font-bold text-lg text-gray-800 truncate">{warden.name}</h3>
+              {warden.category && <div className="text-sm text-gray-600 mt-0.5 truncate">{warden.category}</div>}
+            </div>
           </div>
-          <div>
-            <h3 className="font-bold text-lg text-gray-800 truncate">{warden.name}</h3>
-            {warden.category && <div className="text-sm text-gray-600 mt-0.5 truncate">{warden.category}</div>}
-            {/* <div className="flex flex-wrap items-center mt-1 text-sm">
-              <BsCalendarCheck className="text-[#1360AB] mr-1.5" />
-              <span className="text-gray-600">
-                {serviceYears} {serviceYears === 1 ? "year" : "years"} of service
-              </span>
-            </div> */}
-          </div>
-        </div>
+        </Card.Header>
 
-        <div className="mt-5 space-y-3 text-sm">
+        <Card.Body className="mt-5 space-y-3 text-sm">
           <div className="flex items-center">
             <div className="flex-shrink-0 w-8 flex justify-center">
               <FaEnvelope className="text-gray-400" />
@@ -109,9 +106,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             </div>
             <span className="font-medium text-gray-800 break-words"> {getAssignedHostelNames()}</span>
           </div>
-        </div>
+        </Card.Body>
 
-        <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
+        <Card.Footer className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
           <div className="text-xs text-gray-500">
             Joined on{" "}
             {warden.joinDate
@@ -126,8 +123,8 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           <button onClick={() => setShowEditForm(true)} className="flex items-center justify-center p-2.5 bg-blue-50 text-[#1360AB] rounded-lg hover:bg-blue-100 transition-all duration-200" aria-label={`Edit ${staffTitle.toLowerCase()}`}>
             <FaEdit className="text-sm" />
           </button>
-        </div>
-      </div>
+        </Card.Footer>
+      </Card>
 
       {showEditForm && <EditWardenForm warden={warden} staffType={staffType} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={handleDelete} />}
     </>

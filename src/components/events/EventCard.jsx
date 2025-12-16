@@ -6,6 +6,7 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../services/apiService"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
+import Card from "../common/Card"
 
 const EventCard = ({ event, refresh }) => {
   const { user } = useAuth()
@@ -64,21 +65,26 @@ const EventCard = ({ event, refresh }) => {
 
   return (
     <>
-      <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 cursor-pointer" onClick={handleCardClick}>
-        <div className="flex justify-between items-start">
-          <div className="flex items-center">
-            <div className={`p-2.5 mr-3 rounded-xl ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>
-              <FaCalendarAlt size={20} />
+      <Card 
+        className="cursor-pointer"
+        onClick={handleCardClick}
+      >
+        <Card.Header className="mb-0">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center">
+              <div className={`p-2.5 mr-3 rounded-xl ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>
+                <FaCalendarAlt size={20} />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{event.eventName}</h3>
+                <span className="text-xs text-gray-500">ID: {event._id.substring(0, 8)}</span>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{event.eventName}</h3>
-              <span className="text-xs text-gray-500">ID: {event._id.substring(0, 8)}</span>
-            </div>
+            <span className={`text-xs px-2.5 py-1 rounded-full ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
           </div>
-          <span className={`text-xs px-2.5 py-1 rounded-full ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
-        </div>
+        </Card.Header>
 
-        <div className="mt-4 space-y-3">
+        <Card.Body className="mt-4 space-y-3">
           <div className="flex items-center flex-wrap">
             <div className="flex items-center mr-4 mb-1">
               <FaCalendarAlt className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
@@ -102,16 +108,16 @@ const EventCard = ({ event, refresh }) => {
           <div className="bg-gray-50 p-3 rounded-lg min-h-[80px]">
             <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>
           </div>
-        </div>
+        </Card.Body>
 
-        <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+        <Card.Footer className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
           {["Admin"].includes(user.role) && (
             <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
               <FaEdit className="mr-2" /> Edit
             </button>
           )}
-        </div>
-      </div>
+        </Card.Footer>
+      </Card>
 
       {showDetailModal && <EventDetailModal selectedEvent={event} setShowDetailModal={setShowDetailModal} />}
     </>
