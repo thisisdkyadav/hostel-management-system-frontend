@@ -9,6 +9,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../services/dashboardApi"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
+import Card from "../../components/common/Card"
 
 // Chart components
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
@@ -296,7 +297,7 @@ const Dashboard = () => {
         {/* Main dashboard grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           {/* Student data card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-3">
+          <Card className="xl:col-span-2 h-[24rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <div className="flex justify-between items-center mb-4">
@@ -346,10 +347,10 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Hostel occupancy card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-3">
+          <Card className="xl:col-span-2 h-[24rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -447,10 +448,10 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Leaves card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 xl:col-span-2 h-[24rem] p-3">
+          <Card className="xl:col-span-2 h-[24rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -504,10 +505,10 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Complaints summary card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-3">
+          <Card className="h-[20rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -566,10 +567,10 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Upcoming events card */}
-          <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-all duration-300 h-[20rem] p-3">
+          <Card className="h-[20rem] p-3">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -607,7 +608,7 @@ const Dashboard = () => {
                 </div>
               </div>
             )}
-          </div>
+          </Card>
         </div>
       </div>
     </div>
