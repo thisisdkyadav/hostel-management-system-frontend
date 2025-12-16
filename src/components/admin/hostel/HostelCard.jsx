@@ -3,6 +3,7 @@ import { FaBuilding, FaEdit, FaDoorClosed, FaUsers, FaDoorOpen, FaTools, FaClipb
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
+import Card from "../../common/Card"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -45,32 +46,30 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
 
   return (
     <>
-      <div 
-        className="bg-white rounded-[20px] p-5 md:p-6 transition-all duration-300 border border-[#d4e4fd] group"
-        style={{
-          boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : '0 1px 3px rgba(0, 0, 0, 0.05)',
-          borderColor: isHovered ? '#a8c9fc' : '#d4e4fd',
-        }}
+      <Card 
+        className="group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Header with Icon and Title */}
-        <div className="flex items-center gap-4 mb-5">
-          <div 
-            className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`}
-          >
-            <FaBuilding />
+        <Card.Header>
+          <div className="flex items-center gap-4">
+            <div 
+              className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`}
+            >
+              <FaBuilding />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-[#1e293b]">{hostel.name}</h3>
+              <p className="text-sm text-[#64748b]">
+                {hostel.gender} {hostel.type && `(${hostel.type})`}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-xl font-bold text-[#1e293b]">{hostel.name}</h3>
-            <p className="text-sm text-[#64748b]">
-              {hostel.gender} {hostel.type && `(${hostel.type})`}
-            </p>
-          </div>
-        </div>
+        </Card.Header>
 
         {/* Stats and Occupancy Ring */}
-        <div className="flex justify-between mb-5">
+        <Card.Body className="flex justify-between mb-5">
           {/* Stats List */}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
@@ -105,7 +104,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
                 r={radius}
                 fill="none"
                 stroke="#d4e4fd"
-                strokeWidth="4"
+                strokeWidth="2.5"
               />
               {/* Progress circle */}
               <circle
@@ -114,7 +113,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
                 r={radius}
                 fill="none"
                 stroke="#1360aa"
-                strokeWidth="4"
+                strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeDasharray={strokeDasharray}
                 style={{ transition: 'stroke-dasharray 0.5s ease' }}
@@ -126,10 +125,10 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <span className="text-[0.65rem] text-[#4a6085]">Occupancy</span>
             </div>
           </div>
-        </div>
+        </Card.Body>
 
         {/* Action Buttons */}
-        <div className="flex flex-col gap-2">
+        <Card.Footer className="flex flex-col gap-2 mt-0">
           <div className="flex gap-2">
             <button 
               onClick={() => setShowEditModal(true)}
@@ -186,8 +185,8 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             <FaClipboardList />
             View Details
           </button>
-        </div>
-      </div>
+        </Card.Footer>
+      </Card>
 
       {showEditModal && <EditHostelModal hostel={hostel} onClose={() => setShowEditModal(false)} onSave={handleSaveHostel} refreshHostels={refreshHostels} />}
       {showDetailsModal && <HostelDetailsModal hostel={hostel} onClose={() => setShowDetailsModal(false)} />}
