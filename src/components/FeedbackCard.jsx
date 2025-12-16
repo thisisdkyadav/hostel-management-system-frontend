@@ -5,6 +5,7 @@ import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
+import Card from "./common/Card"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   const { canAccess } = useAuth()
@@ -122,40 +123,42 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-      <div className="flex justify-between items-start">
-        <div className="flex items-center">
-          <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
-            <HiAnnotation size={20} />
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{feedback.title}</h3>
-            <span className="text-xs text-gray-500">ID: {feedback._id.substring(0, 8)}</span>
-          </div>
-        </div>
-        {!isStudentView && canAccess("feedback", "view") && (
+    <Card>
+      <Card.Header className="mb-0">
+        <div className="flex justify-between items-start">
           <div className="flex items-center">
-            {feedback.userId.profileImage ? (
-              <img src={getMediaUrl(feedback.userId.profileImage)} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                <HiUser className="text-[#1360AB]" size={20} />
-              </div>
-            )}
-            <div className="mr-2">
-              <p className="text-sm font-medium text-gray-800">{feedback.userId.name}</p>
-              <p className="text-xs text-gray-600 flex items-center">
-                <HiMail className="mr-1" size={12} />
-                {feedback.userId.email}
-              </p>
+            <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
+              <HiAnnotation size={20} />
             </div>
-            <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>
+            <div>
+              <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{feedback.title}</h3>
+              <span className="text-xs text-gray-500">ID: {feedback._id.substring(0, 8)}</span>
+            </div>
           </div>
-        )}
-        {isStudentView && canAccess("feedback", "view") && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
-      </div>
+          {!isStudentView && canAccess("feedback", "view") && (
+            <div className="flex items-center">
+              {feedback.userId.profileImage ? (
+                <img src={getMediaUrl(feedback.userId.profileImage)} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+                  <HiUser className="text-[#1360AB]" size={20} />
+                </div>
+              )}
+              <div className="mr-2">
+                <p className="text-sm font-medium text-gray-800">{feedback.userId.name}</p>
+                <p className="text-xs text-gray-600 flex items-center">
+                  <HiMail className="mr-1" size={12} />
+                  {feedback.userId.email}
+                </p>
+              </div>
+              <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>
+            </div>
+          )}
+          {isStudentView && canAccess("feedback", "view") && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
+        </div>
+      </Card.Header>
 
-      <div className="mt-4 space-y-3">
+      <Card.Body className="mt-4 space-y-3">
         <div className="flex items-center flex-wrap">
           <div className="flex items-center mr-4 mb-1">
             <HiCalendar className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
@@ -181,9 +184,9 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
             </div>
           </div>
         )}
-      </div>
+      </Card.Body>
 
-      <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end space-x-3">
+      <Card.Footer className="mt-4 pt-3 border-t border-gray-100 flex justify-end space-x-3">
         {!isStudentView && canAccess("feedback", "react") && status === "Pending" && !feedback.reply && (
           <>
             <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b87] transition-all duration-300">
@@ -243,12 +246,12 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
             </button>
           </>
         )}
-      </div>
+      </Card.Footer>
 
       <FeedbackReplyModal isOpen={isReplyModalOpen} onClose={() => setIsReplyModalOpen(false)} feedback={feedback} onReply={handleReply} />
 
       <FeedbackFormModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSubmit={handleEdit} initialData={feedback} isEditing={true} />
-    </div>
+    </Card>
   )
 }
 

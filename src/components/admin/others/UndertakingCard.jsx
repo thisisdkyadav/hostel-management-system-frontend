@@ -4,6 +4,7 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../services/adminApi"
+import Card from "../../common/Card"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -39,27 +40,29 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center">
-            <div className="bg-blue-100 p-2 rounded-lg mr-3">
-              <FaFileSignature className="text-[#1360AB]" size={20} />
+      <Card>
+        <Card.Header className="mb-0">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-2 rounded-lg mr-3">
+                <FaFileSignature className="text-[#1360AB]" size={20} />
+              </div>
+              <h3 className="font-semibold text-lg text-gray-800">{undertaking.title}</h3>
             </div>
-            <h3 className="font-semibold text-lg text-gray-800">{undertaking.title}</h3>
+            {!isReadOnly && (
+              <div className="flex space-x-2">
+                <button onClick={() => setShowEditModal(true)} className="p-2 text-gray-500 hover:text-[#1360AB] hover:bg-blue-50 rounded-lg transition-colors" title="Edit undertaking">
+                  <FaEdit />
+                </button>
+                <button onClick={handleDelete} disabled={isDeleting} className={`p-2 ${isDeleting ? "text-gray-400" : "text-gray-500 hover:text-red-600 hover:bg-red-50"} rounded-lg transition-colors`} title="Delete undertaking">
+                  {isDeleting ? <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin"></span> : <FaTrash />}
+                </button>
+              </div>
+            )}
           </div>
-          {!isReadOnly && (
-            <div className="flex space-x-2">
-              <button onClick={() => setShowEditModal(true)} className="p-2 text-gray-500 hover:text-[#1360AB] hover:bg-blue-50 rounded-lg transition-colors" title="Edit undertaking">
-                <FaEdit />
-              </button>
-              <button onClick={handleDelete} disabled={isDeleting} className={`p-2 ${isDeleting ? "text-gray-400" : "text-gray-500 hover:text-red-600 hover:bg-red-50"} rounded-lg transition-colors`} title="Delete undertaking">
-                {isDeleting ? <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin"></span> : <FaTrash />}
-              </button>
-            </div>
-          )}
-        </div>
+        </Card.Header>
 
-        <div className="space-y-3 mt-4">
+        <Card.Body className="space-y-3 mt-4">
           <div className="text-gray-600">
             <p className="line-clamp-2">{undertaking.description}</p>
           </div>
@@ -86,9 +89,9 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
               <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${acceptancePercentage}%` }}></div>
             </div>
           </div>
-        </div>
+        </Card.Body>
 
-        <div className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
+        <Card.Footer className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
           {!isReadOnly && (
             <button onClick={() => setShowManageStudentsModal(true)} className="py-2 px-3 bg-blue-50 hover:bg-blue-100 text-[#1360AB] rounded-lg transition-colors flex items-center justify-center font-medium text-sm">
               <FaUsers className="mr-1" /> Manage Students
@@ -97,8 +100,8 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
           <button onClick={() => setShowStatusModal(true)} className={`py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors flex items-center justify-center font-medium text-sm ${isReadOnly ? "col-span-2" : ""}`}>
             <FaClipboardCheck className="mr-1" /> View Status
           </button>
-        </div>
-      </div>
+        </Card.Footer>
+      </Card>
 
       {!isReadOnly && showEditModal && <EditUndertakingModal show={showEditModal} undertaking={undertaking} onClose={() => setShowEditModal(false)} onUpdate={onUpdate} />}
       {!isReadOnly && showManageStudentsModal && <ManageStudentsModal show={showManageStudentsModal} undertakingId={undertaking.id} undertakingTitle={undertaking.title} onClose={() => setShowManageStudentsModal(false)} onUpdate={onUpdate} />}
