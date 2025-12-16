@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react"
-import { FaPlus, FaArchive } from "react-icons/fa"
 import FilterTabs from "../../components/common/FilterTabs"
 import SearchBar from "../../components/common/SearchBar"
 import NoResults from "../../components/common/NoResults"
 import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"
 import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
-import Button from "../../components/common/Button"
-import PageHeader from "../../components/common/PageHeader"
+import HostelsHeader from "../../components/headers/HostelsHeader"
 import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
 import { adminApi } from "../../services/apiService"
@@ -57,22 +55,11 @@ const Hostels = () => {
     <>
       <div className="flex flex-col h-full">
         {/* Fixed Header */}
-        <PageHeader title="Hostel Management">
-          <Button 
-            variant="secondary" 
-            onClick={handleArchiveToggle}
-            icon={<FaArchive />}
-          >
-            {fetchArchive ? "Show All" : "Show Archived"}
-          </Button>
-          <Button 
-            variant="primary" 
-            onClick={() => setShowAddModal(true)}
-            icon={<FaPlus />}
-          >
-            Add Hostel
-          </Button>
-        </PageHeader>
+        <HostelsHeader 
+          onAddHostel={() => setShowAddModal(true)}
+          onArchiveToggle={handleArchiveToggle}
+          fetchArchive={fetchArchive}
+        />
 
 
         {/* Scrollable Content Area */}

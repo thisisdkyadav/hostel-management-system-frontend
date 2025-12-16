@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../services/taskApi"
-import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES, TASK_FILTER_TABS, TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, WHO_CAN_CREATE_TASK } from "../../constants/taskConstants"
+import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES, TASK_FILTER_TABS, TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
 import TaskStats from "../../components/tasks/TaskStats"
 import TaskForm from "../../components/tasks/TaskForm"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
 import Pagination from "../../components/common/Pagination"
-import PageHeader from "../../components/common/PageHeader"
-import Button from "../../components/common/Button"
+import TaskManagementHeader from "../../components/headers/TaskManagementHeader"
 
 const TaskManagement = () => {
   const { user } = useAuth()
@@ -151,13 +150,10 @@ const TaskManagement = () => {
   return (
     <div className="flex flex-col h-full">
       {/* Header with Title and Create Button */}
-      <PageHeader title="Task Management">
-        {WHO_CAN_CREATE_TASK.includes(user?.role) && (
-          <Button variant="primary" onClick={() => setShowCreateTask(true)}>
-            Create New Task
-          </Button>
-        )}
-      </PageHeader>
+      <TaskManagementHeader 
+        onCreateTask={() => setShowCreateTask(true)}
+        userRole={user?.role}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

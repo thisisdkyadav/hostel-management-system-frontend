@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
-import { FaUserShield, FaPlus } from "react-icons/fa"
+import { FaUserShield } from "react-icons/fa"
 import SearchBar from "../../components/common/SearchBar"
 import NoResults from "../../components/common/NoResults"
 import AdminCard from "../../components/admin/admins/AdminCard"
 import AddAdminModal from "../../components/admin/admins/AddAdminModal"
 import AdminStats from "../../components/admin/admins/AdminStats"
-import PageHeader from "../../components/common/PageHeader"
-import Button from "../../components/common/Button"
+import AdminManagementHeader from "../../components/headers/AdminManagementHeader"
 import superAdminService from "../../services/superAdminService"
 
 const AdminManagement = () => {
@@ -57,11 +56,7 @@ const AdminManagement = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Administrator Management">
-        <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
-          Add Administrator
-        </Button>
-      </PageHeader>
+      <AdminManagementHeader onAddAdmin={() => setShowAddModal(true)} />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

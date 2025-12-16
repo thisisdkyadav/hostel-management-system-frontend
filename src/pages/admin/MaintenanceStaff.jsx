@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react"
-import { FaTools, FaPlus } from "react-icons/fa"
+import { FaTools } from "react-icons/fa"
 import FilterTabs from "../../components/common/FilterTabs"
 import SearchBar from "../../components/common/SearchBar"
 import NoResults from "../../components/common/NoResults"
 import MaintenanceCard from "../../components/admin/maintenance/MaintenanceCard"
 import AddMaintenanceModal from "../../components/admin/maintenance/AddMaintenanceModal"
 import MaintenanceStats from "../../components/admin/maintenance/MaintenanceStats"
-import PageHeader from "../../components/common/PageHeader"
-import Button from "../../components/common/Button"
+import MaintenanceStaffHeader from "../../components/headers/MaintenanceStaffHeader"
 import { filterMaintenanceStaff } from "../../utils/adminUtils"
 import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants"
 import { adminApi } from "../../services/apiService"
@@ -35,11 +34,7 @@ const MaintenanceStaff = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Maintenance Staff Management">
-        <Button variant="primary" onClick={() => setShowAddModal(true)} icon={<FaPlus />}>
-          Add Staff
-        </Button>
-      </PageHeader>
+      <MaintenanceStaffHeader onAddStaff={() => setShowAddModal(true)} />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
