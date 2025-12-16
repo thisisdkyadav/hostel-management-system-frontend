@@ -7,6 +7,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/apiService"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
+import Card from "../../components/common/Card"
 
 const UpdatePassword = () => {
   const { user } = useAuth()
@@ -115,15 +116,9 @@ const UpdatePassword = () => {
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <HiKey className="mr-2 text-[#1360AB]" size={20} />
-              Password Reset Form
-            </h2>
-          </div>
+        <Card className="overflow-hidden">
 
-          <div className="p-6">
+          <Card.Body className="p-6">
             <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
               <div className="flex-shrink-0 mt-0.5 mr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,8 +129,8 @@ const UpdatePassword = () => {
             </div>
 
             <UpdatePasswordForm onSubmit={handlePasswordUpdate} />
-          </div>
-        </div>
+          </Card.Body>
+        </Card>
       </div>
 
       {/* Single Password Update Success Modal */}
