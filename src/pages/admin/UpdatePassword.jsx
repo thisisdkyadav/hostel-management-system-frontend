@@ -6,8 +6,7 @@ import RemovePasswordsByRoleModal from "../../components/admin/password/RemovePa
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../services/apiService"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
-import PageHeader from "../../components/common/PageHeader"
-import Button from "../../components/common/Button"
+import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
 
 const UpdatePassword = () => {
   const { user } = useAuth()
@@ -108,14 +107,10 @@ const UpdatePassword = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <PageHeader title="Update User Password">
-        <Button variant="danger" onClick={() => setShowRemoveByRoleModal(true)} icon={<HiTrash />}>
-          Remove by Role
-        </Button>
-        <Button variant="primary" onClick={() => setShowBulkModal(true)} icon={<HiUpload />}>
-          Bulk Update
-        </Button>
-      </PageHeader>
+      <UpdatePasswordHeader 
+        onBulkUpdate={() => setShowBulkModal(true)}
+        onRemoveByRole={() => setShowRemoveByRoleModal(true)}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 

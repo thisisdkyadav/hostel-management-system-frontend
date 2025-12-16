@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { useAuth } from "../contexts/AuthProvider"
 import { leaveApi } from "../services/leaveApi"
-import LeavesHeader from "../components/leaves/LeavesHeader"
+import LeavesHeader from "../components/headers/LeavesHeader"
 import LeavesFilterPanel from "../components/leaves/LeavesFilterPanel"
 import LeavesContent from "../components/leaves/LeavesContent"
 import LeaveDetailModal from "../components/leaves/LeaveDetailModal"
