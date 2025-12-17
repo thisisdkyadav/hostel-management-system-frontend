@@ -384,78 +384,92 @@ const Dashboard = () => {
                   Hostel Occupancy
                 </h2>
 
-                <div className="flex-1 overflow-hidden">
-                  <div className="overflow-x-auto max-h-[21rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 rounded-[14px] border border-gray-200">
-                    <table className="min-w-full">
-                      <thead className="bg-gradient-to-r from-slate-50 to-gray-50 sticky top-0 z-10 border-b border-gray-200">
-                        <tr>
-                          <th className="px-3 py-2.5 text-[0.7rem] font-bold text-gray-600 text-left uppercase tracking-wider">
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                checked={allHostelsSelected}
-                                onChange={() => {
-                                  if (allHostelsSelected) {
-                                    setSelectedHostels([])
-                                  } else {
-                                    setSelectedHostels(dashboardData.hostels.map((_, index) => index))
-                                  }
-                                }}
-                                className="w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB]"
-                              />
-                              Hostel Name
-                            </div>
-                          </th>
-                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Rooms</th>
-                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Capacity</th>
-                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Occupied</th>
-                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Vacant</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-50">
-                        {dashboardData?.hostels?.map((hostel, index) => {
-                          const occupancyRate = hostel.totalCapacity > 0 ? (hostel.currentOccupancy / hostel.totalCapacity) * 100 : 0;
-                          return (
-                            <tr key={index} className={`group hover:bg-blue-50/50 transition-all duration-150 ${selectedHostels.includes(index) ? "bg-white" : "bg-gray-50/30"}`}>
-                              <td className="px-3 py-1.5">
-                                <div className="flex items-center gap-2">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedHostels.includes(index)}
-                                    onChange={() => toggleHostelSelection(index)}
-                                    className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB] transition-opacity ${allHostelsSelected ? "opacity-40" : "opacity-100"}`}
-                                  />
-                                  <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-gray-800 group-hover:text-[#1360AB]" : "text-gray-500"}`}>{hostel.name}</span>
-                                </div>
-                              </td>
-                              <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums">{hostel.totalRooms}</td>
-                              <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums">{hostel.totalCapacity}</td>
-                              <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-bold tabular-nums">{hostel.currentOccupancy}</td>
-                              <td className="px-2 py-1.5 text-[0.8125rem] text-emerald-700 text-center font-bold tabular-nums">{hostel.vacantCapacity}</td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                      <tfoot className="bg-gradient-to-r from-slate-100 to-gray-100 sticky bottom-0 border-t-2 border-gray-300">
-                        <tr>
-                          <td className="px-3 py-2 text-[0.75rem] text-gray-900">
-                            <div className="flex items-center gap-2">
-                              <div className="w-3.5 h-3.5"></div>
-                              <div className="flex items-center gap-1.5">
-                                <span className="uppercase tracking-wider font-extrabold">Total</span>
-                                {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
-                                  <span className="px-1.5 py-0.5 bg-[#1360AB] text-white text-[0.65rem] rounded font-bold">{selectedHostels.length}</span>
-                                )}
+                <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+                  <div className="rounded-[14px] border border-gray-200 flex flex-col h-full min-h-0 overflow-hidden">
+                    {/* Fixed Header */}
+                    <div className="bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-200 flex-shrink-0">
+                      <table className="min-w-full">
+                        <thead>
+                          <tr>
+                            <th className="px-3 py-2 text-[0.7rem] font-bold text-gray-600 text-left uppercase tracking-wider w-[40%]">
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  checked={allHostelsSelected}
+                                  onChange={() => {
+                                    if (allHostelsSelected) {
+                                      setSelectedHostels([])
+                                    } else {
+                                      setSelectedHostels(dashboardData.hostels.map((_, index) => index))
+                                    }
+                                  }}
+                                  className="w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB]"
+                                />
+                                Hostel
                               </div>
-                            </div>
-                          </td>
-                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
-                          <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
-                          <td className="px-2 py-2 text-[0.8125rem] text-emerald-800 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
-                        </tr>
-                      </tfoot>
-                    </table>
+                            </th>
+                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Rooms</th>
+                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Capacity</th>
+                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Occupied</th>
+                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Vacant</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    
+                    {/* Scrollable Body */}
+                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                      <table className="min-w-full">
+                        <tbody className="bg-white divide-y divide-gray-50">
+                          {dashboardData?.hostels?.map((hostel, index) => {
+                            return (
+                              <tr key={index} className={`group hover:bg-blue-50/50 transition-all duration-150 ${selectedHostels.includes(index) ? "bg-white" : "bg-gray-50/30"}`}>
+                                <td className="px-3 py-1.5 w-[40%]">
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedHostels.includes(index)}
+                                      onChange={() => toggleHostelSelection(index)}
+                                      className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB] transition-opacity ${allHostelsSelected ? "opacity-40" : "opacity-100"}`}
+                                    />
+                                    <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-gray-800 group-hover:text-[#1360AB]" : "text-gray-500"}`}>{hostel.name}</span>
+                                  </div>
+                                </td>
+                                <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
+                                <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
+                                <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
+                                <td className="px-2 py-1.5 text-[0.8125rem] text-emerald-700 text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                    
+                    {/* Fixed Footer */}
+                    <div className="bg-gradient-to-r from-slate-100 to-gray-100 border-t-2 border-gray-300 flex-shrink-0">
+                      <table className="min-w-full">
+                        <tfoot>
+                          <tr>
+                            <td className="px-3 py-2 text-[0.75rem] text-gray-900 w-[40%]">
+                              <div className="flex items-center gap-2">
+                                <div className="w-3.5 h-3.5"></div>
+                                <div className="flex items-center gap-1.5">
+                                  <span className="uppercase tracking-wider font-extrabold">Total</span>
+                                  {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
+                                    <span className="px-1.5 py-0.5 bg-[#1360AB] text-white text-[0.65rem] rounded font-bold">{selectedHostels.length}</span>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                            <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                            <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
+                            <td className="px-2 py-2 text-[0.8125rem] text-emerald-800 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -775,112 +789,87 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
       }
     }) || []
 
+  // Calculate totals for footer
+  const totalBoys = studentDataView === "registered" 
+    ? degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
+    : data?.totalBoys || 0
+  const totalGirls = studentDataView === "registered"
+    ? degreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
+    : data?.totalGirls || 0
+  const grandTotal = studentDataView === "registered"
+    ? degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
+    : data?.grandTotal || 0
+  const boysPercentTotal = grandTotal > 0 ? Math.round((totalBoys / grandTotal) * 100) : 0
+  const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
+
   return (
-    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
-          <tr>
-            <th className="px-3 py-2 text-[0.8125rem] font-semibold text-gray-700 text-left uppercase tracking-wide">Degree</th>
-            <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys</th>
-            <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls</th>
-            <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Total</th>
-            {normalized && (
-              <>
-                <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Boys %</th>
-                <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Girls %</th>
-              </>
-            )}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-100">
-          {degreeData.map((item, index) => {
-            const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
-            const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
+    <div className="h-full flex flex-col rounded-[14px] border border-gray-200 overflow-hidden">
+      {/* Fixed Header */}
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 flex-shrink-0">
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              <th className="px-3 py-2 text-[0.75rem] font-bold text-gray-600 text-left uppercase tracking-wide w-[30%]">Degree</th>
+              <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[17.5%]">Boys</th>
+              <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[17.5%]">Girls</th>
+              <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[17.5%]">Total</th>
+              {normalized && (
+                <>
+                  <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[8.75%]">B%</th>
+                  <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[8.75%]">G%</th>
+                </>
+              )}
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      {/* Scrollable Body */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <table className="min-w-full">
+          <tbody className="bg-white divide-y divide-gray-100">
+            {degreeData.map((item, index) => {
+              const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
+              const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
-            return (
-              <tr key={index} className="hover:bg-blue-50/30 transition-colors">
-                <td className="px-3 py-1.5 text-[0.8125rem] text-gray-800 font-medium">{item.degree}</td>
-                <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium">{item.boys}</td>
-                <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium">{item.girls}</td>
-                <td className="px-2 py-1.5 text-[0.8125rem] text-indigo-700 text-center font-semibold">{item.total}</td>
-                {normalized && (
-                  <>
-                    <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium">{boysPercent}%</td>
-                    <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium">{girlsPercent}%</td>
-                  </>
-                )}
-              </tr>
-            )
-          })}
-
-          {/* Totals row */}
-          <tr className="bg-gradient-to-r from-gray-100 to-gray-50 font-semibold border-t-2 border-gray-300">
-            <td className="px-3 py-2 text-[0.8125rem] text-gray-900 font-bold uppercase tracking-wide">Total</td>
-            <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-bold">
-              {(() => {
-                if (studentDataView === "registered") {
-                  // Calculate total registered boys from all degrees
-                  return degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
-                } else {
-                  return data?.totalBoys || 0
-                }
-              })()}
-            </td>
-            <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-bold">
-              {(() => {
-                if (studentDataView === "registered") {
-                  // Calculate total registered girls from all degrees
-                  return degreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
-                } else {
-                  return data?.totalGirls || 0
-                }
-              })()}
-            </td>
-            <td className="px-2 py-2 text-[0.8125rem] text-indigo-800 text-center font-bold">
-              {(() => {
-                if (studentDataView === "registered") {
-                  // Calculate total registered students from all degrees
-                  return degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
-                } else {
-                  return data?.grandTotal || 0
-                }
-              })()}
-            </td>
-            {normalized && (
-              <>
-                <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-bold">
-                  {(() => {
-                    let totalBoys, grandTotal
-                    if (studentDataView === "registered") {
-                      totalBoys = degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
-                      grandTotal = degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
-                    } else {
-                      totalBoys = data?.totalBoys || 0
-                      grandTotal = data?.grandTotal || 0
-                    }
-                    return grandTotal > 0 ? Math.round((totalBoys / grandTotal) * 100) : 0
-                  })()}
-                  %
-                </td>
-                <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-bold">
-                  {(() => {
-                    let totalGirls, grandTotal
-                    if (studentDataView === "registered") {
-                      totalGirls = degreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
-                      grandTotal = degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
-                    } else {
-                      totalGirls = data?.totalGirls || 0
-                      grandTotal = data?.grandTotal || 0
-                    }
-                    return grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
-                  })()}
-                  %
-                </td>
-              </>
-            )}
-          </tr>
-        </tbody>
-      </table>
+              return (
+                <tr key={index} className="hover:bg-blue-50/30 transition-colors">
+                  <td className="px-3 py-1.5 text-[0.8125rem] text-gray-800 font-medium w-[30%]">{item.degree}</td>
+                  <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium w-[17.5%]">{item.boys}</td>
+                  <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium w-[17.5%]">{item.girls}</td>
+                  <td className="px-2 py-1.5 text-[0.8125rem] text-indigo-700 text-center font-semibold w-[17.5%]">{item.total}</td>
+                  {normalized && (
+                    <>
+                      <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium w-[8.75%]">{boysPercent}%</td>
+                      <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium w-[8.75%]">{girlsPercent}%</td>
+                    </>
+                  )}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      
+      {/* Fixed Footer */}
+      <div className="bg-gradient-to-r from-gray-100 to-gray-50 border-t-2 border-gray-300 flex-shrink-0">
+        <table className="min-w-full">
+          <tfoot>
+            <tr>
+              <td className="px-3 py-2 text-[0.8125rem] text-gray-900 font-extrabold uppercase tracking-wide w-[30%]">Total</td>
+              <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold w-[17.5%]">{totalBoys}</td>
+              <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-extrabold w-[17.5%]">{totalGirls}</td>
+              <td className="px-2 py-2 text-[0.8125rem] text-indigo-800 text-center font-extrabold w-[17.5%]">{grandTotal}</td>
+              {normalized && (
+                <>
+                  <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold w-[8.75%]">{boysPercentTotal}%</td>
+                  <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-extrabold w-[8.75%]">{girlsPercentTotal}%</td>
+                </>
+              )}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   )
 }
