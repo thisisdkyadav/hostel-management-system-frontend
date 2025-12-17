@@ -423,7 +423,7 @@ const Dashboard = () => {
                         <tbody className="bg-white divide-y divide-gray-50">
                           {dashboardData?.hostels?.map((hostel, index) => {
                             return (
-                              <tr key={index} className={`group hover:bg-blue-50/50 transition-all duration-150 ${selectedHostels.includes(index) ? "bg-white" : "bg-gray-50/30"}`}>
+                              <tr key={index} className={`group hover:bg-blue-100 transition-all duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-100'}`}>
                                 <td className="px-3 py-1.5 w-[40%]">
                                   <div className="flex items-center gap-2">
                                     <input
@@ -832,7 +832,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
               const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
               return (
-                <tr key={index} className="hover:bg-blue-50/30 transition-colors">
+                <tr key={index} className={`hover:bg-blue-100 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-100'}`}>
                   <td className="px-3 py-1.5 text-[0.8125rem] text-gray-800 font-medium w-[30%]">{item.degree}</td>
                   <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium w-[17.5%]">{item.boys}</td>
                   <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium w-[17.5%]">{item.girls}</td>
