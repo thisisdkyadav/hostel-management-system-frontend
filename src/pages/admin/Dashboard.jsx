@@ -297,7 +297,7 @@ const Dashboard = () => {
         {/* Main dashboard grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
           {/* Student data card */}
-          <Card className="xl:col-span-2 h-[24rem] p-3">
+          <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <div className="flex justify-between items-center mb-4">
@@ -310,37 +310,47 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col overflow-auto">
-                <h2 className="flex justify-between items-center text-sm font-semibold text-gray-800 mb-1.5 leading-tight">
-                  <div className="flex items-center">Student Distribution</div>
-
-                  <div className="flex items-center space-x-2">
+                {/* Compact Header */}
+                <div className="flex justify-between items-center mb-2">
+                  <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5">
+                    <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
+                    Student Distribution
+                  </h2>
+                  <div className="flex items-center gap-1.5">
                     {/* Normal/Registered Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.8125rem] shadow-inner" role="tablist" aria-label="Student data type">
-                      <button onClick={() => setStudentDataView("normal")} className={`px-2.5 py-1 rounded-full transition-all duration-200 ${studentDataView === "normal" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={studentDataView === "normal"}>
+                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.7rem]" role="tablist">
+                      <button 
+                        onClick={() => setStudentDataView("normal")} 
+                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[#1360AB] text-white" : "text-gray-600 hover:bg-gray-200"}`} 
+                      >
                         Hostler
                       </button>
                       <button
                         onClick={() => setStudentDataView("registered")}
-                        className={`px-2.5 py-1 rounded-full transition-all duration-200 ${studentDataView === "registered" ? "bg-blue-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`}
-                        aria-selected={studentDataView === "registered"}
+                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[#1360AB] text-white" : "text-gray-600 hover:bg-gray-200"}`}
                       >
                         Registered
                       </button>
                     </div>
-
                     {/* Absolute/Normalized Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.8125rem] shadow-inner" role="tablist" aria-label="Distribution mode">
-                      <button onClick={() => setNormalizedView(false)} className={`px-2.5 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!normalizedView}>
-                        Absolute
+                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.7rem]" role="tablist">
+                      <button 
+                        onClick={() => setNormalizedView(false)} 
+                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${!normalizedView ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-200"}`} 
+                      >
+                        Abs
                       </button>
-                      <button onClick={() => setNormalizedView(true)} className={`px-2.5 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-600 text-white shadow" : "text-gray-700 hover:bg-gray-200"}`} aria-selected={!!normalizedView}>
-                        Normalized
+                      <button 
+                        onClick={() => setNormalizedView(true)} 
+                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${normalizedView ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-200"}`} 
+                      >
+                        %
                       </button>
                     </div>
                   </div>
-                </h2>
+                </div>
 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col min-h-0">
                   <div className="h-full">
                     <DegreeWiseStudentsChart data={dashboardData?.students} normalized={normalizedView} studentDataView={studentDataView} />
                   </div>
@@ -350,7 +360,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Hostel occupancy card */}
-          <Card className="xl:col-span-2 h-[24rem] p-3">
+          <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -367,17 +377,19 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
-                  <BiBuildings className="mr-1.5 text-[#1360AB] text-base" />
-                  Hostel Occupancy Overview
+                {/* Compact Header */}
+                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
+                  <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
+                  <BiBuildings className="text-[#1360AB] text-sm" />
+                  Hostel Occupancy
                 </h2>
 
                 <div className="flex-1 overflow-hidden">
-                  <div className="overflow-x-auto max-h-[21rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0 z-10">
+                  <div className="overflow-x-auto max-h-[21rem] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 rounded-[14px] border border-gray-200">
+                    <table className="min-w-full">
+                      <thead className="bg-gradient-to-r from-slate-50 to-gray-50 sticky top-0 z-10 border-b border-gray-200">
                         <tr>
-                          <th className="px-3 py-2 text-[0.8125rem] font-semibold text-gray-700 text-left uppercase tracking-wide">
+                          <th className="px-3 py-2.5 text-[0.7rem] font-bold text-gray-600 text-left uppercase tracking-wider">
                             <div className="flex items-center gap-2">
                               <input
                                 type="checkbox"
@@ -389,60 +401,60 @@ const Dashboard = () => {
                                     setSelectedHostels(dashboardData.hostels.map((_, index) => index))
                                   }
                                 }}
-                                className="w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-2 cursor-pointer"
+                                className="w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB]"
                               />
-                              Hostel
+                              Hostel Name
                             </div>
                           </th>
-                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Rooms</th>
-                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Capacity</th>
-                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Occupancy</th>
-                          <th className="px-2 py-2 text-[0.8125rem] font-semibold text-gray-700 text-center uppercase tracking-wide">Vacancy</th>
+                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Rooms</th>
+                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Capacity</th>
+                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Occupied</th>
+                          <th className="px-2 py-2.5 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider">Vacant</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-100">
-                        {dashboardData?.hostels?.map((hostel, index) => (
-                          <tr key={index} className={`hover:bg-blue-50/30 transition-colors ${selectedHostels.includes(index) ? "bg-white" : "bg-gray-50/50"}`}>
-                            <td className="px-3 py-1.5">
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedHostels.includes(index)}
-                                  onChange={() => toggleHostelSelection(index)}
-                                  className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-2 cursor-pointer transition-opacity ${allHostelsSelected ? "opacity-30" : "opacity-100"}`}
-                                />
-                                <span className={`text-[0.8125rem] font-medium ${selectedHostels.includes(index) ? "text-gray-800" : "text-gray-500"}`}>{hostel.name}</span>
-                              </div>
-                            </td>
-                            <td className="px-2 py-1.5 text-[0.8125rem] text-gray-700 text-center font-medium">{hostel.totalRooms}</td>
-                            <td className="px-2 py-1.5 text-[0.8125rem] text-gray-700 text-center font-medium">{hostel.totalCapacity}</td>
-                            <td className="px-2 py-1.5 text-center">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.8125rem] font-semibold bg-blue-100 text-blue-800">{hostel.currentOccupancy}</span>
-                            </td>
-                            <td className="px-2 py-1.5 text-center">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.8125rem] font-semibold bg-emerald-100 text-emerald-800">{hostel.vacantCapacity}</span>
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="bg-gradient-to-r from-gray-100 to-gray-50 font-semibold border-t-2 border-gray-300">
-                          <td className="px-3 py-2 text-[0.8125rem] text-gray-900">
+                      <tbody className="bg-white divide-y divide-gray-50">
+                        {dashboardData?.hostels?.map((hostel, index) => {
+                          const occupancyRate = hostel.totalCapacity > 0 ? (hostel.currentOccupancy / hostel.totalCapacity) * 100 : 0;
+                          return (
+                            <tr key={index} className={`group hover:bg-blue-50/50 transition-all duration-150 ${selectedHostels.includes(index) ? "bg-white" : "bg-gray-50/30"}`}>
+                              <td className="px-3 py-1.5">
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedHostels.includes(index)}
+                                    onChange={() => toggleHostelSelection(index)}
+                                    className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB] transition-opacity ${allHostelsSelected ? "opacity-40" : "opacity-100"}`}
+                                  />
+                                  <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-gray-800 group-hover:text-[#1360AB]" : "text-gray-500"}`}>{hostel.name}</span>
+                                </div>
+                              </td>
+                              <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums">{hostel.totalRooms}</td>
+                              <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums">{hostel.totalCapacity}</td>
+                              <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-bold tabular-nums">{hostel.currentOccupancy}</td>
+                              <td className="px-2 py-1.5 text-[0.8125rem] text-emerald-700 text-center font-bold tabular-nums">{hostel.vacantCapacity}</td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                      <tfoot className="bg-gradient-to-r from-slate-100 to-gray-100 sticky bottom-0 border-t-2 border-gray-300">
+                        <tr>
+                          <td className="px-3 py-2 text-[0.75rem] text-gray-900">
                             <div className="flex items-center gap-2">
                               <div className="w-3.5 h-3.5"></div>
-                              <span className="uppercase tracking-wide font-bold">Total {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && `(${selectedHostels.length})`}</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="uppercase tracking-wider font-extrabold">Total</span>
+                                {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
+                                  <span className="px-1.5 py-0.5 bg-[#1360AB] text-white text-[0.65rem] rounded font-bold">{selectedHostels.length}</span>
+                                )}
+                              </div>
                             </div>
                           </td>
-                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-bold">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
-                          <td className="px-2 py-2 text-center">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.8125rem] font-bold bg-blue-200 text-blue-900">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</span>
-                          </td>
-                          <td className="px-2 py-2 text-center">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.8125rem] font-bold bg-emerald-200 text-emerald-900">
-                              {dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}
-                            </span>
-                          </td>
+                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                          <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                          <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
+                          <td className="px-2 py-2 text-[0.8125rem] text-emerald-800 text-center font-extrabold tabular-nums">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
                         </tr>
-                      </tbody>
+                      </tfoot>
                     </table>
                   </div>
                 </div>
@@ -450,8 +462,8 @@ const Dashboard = () => {
             )}
           </Card>
 
-          {/* Leaves card */}
-          <Card className="xl:col-span-2 h-[24rem] p-3">
+          {/* Staff Leaves card */}
+          <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -461,41 +473,76 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
-                  <FaCalendarAlt className="mr-1.5 text-[#1360AB] text-base" />
-                  Upcoming Joins (from Leaves)
+                {/* Compact Header */}
+                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
+                  <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
+                  <FaCalendarAlt className="text-[#1360AB] text-xs" />
+                  Staff Upcoming Joins
                 </h2>
 
                 <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                   {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
-                    <p className="text-[0.8125rem] text-gray-500">No recent leaves</p>
+                    <div className="flex flex-col items-center justify-center h-full text-center py-8">
+                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                        <FaCalendarAlt className="text-gray-400 text-lg" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-500">No upcoming returns</p>
+                      <p className="text-xs text-gray-400 mt-1">All students are currently present</p>
+                    </div>
                   ) : (
                     <ul className="space-y-2">
-                      {dashboardData.leaves.data.leaves.map((lv) => {
+                      {dashboardData.leaves.data.leaves.map((lv, index) => {
                         const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
                         // compute joining date = endDate + 1 day
                         let joinDate = ""
+                        let daysRemaining = null
                         try {
                           const end = lv && lv.endDate ? new Date(lv.endDate) : null
                           if (end) {
                             const j = new Date(end)
                             j.setDate(j.getDate() + 1)
                             joinDate = j.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                            // Calculate days remaining
+                            const today = new Date()
+                            const timeDiff = j.getTime() - today.getTime()
+                            daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
                           }
                         } catch (e) {
                           joinDate = "Invalid date"
                         }
 
+                        const statusColors = {
+                          'pending': 'bg-amber-50 text-amber-700 border-amber-200',
+                          'approved': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                          'rejected': 'bg-red-50 text-red-700 border-red-200',
+                        }
+                        const status = (lv.joinStatus || lv.status || '').toLowerCase()
+                        const statusStyle = statusColors[status] || 'bg-gray-50 text-gray-700 border-gray-200'
+
                         return (
-                          <li key={lv._id} className="flex items-center justify-between bg-gradient-to-r from-gray-50 to-white rounded-lg p-2.5 border border-gray-100 hover:border-gray-300 transition-all">
-                            <div>
-                              <p className="text-[0.8125rem] font-semibold text-gray-800">{name}</p>
-                              <p className="text-[0.75rem] text-gray-500 mt-0.5">Leave ends: {lv.endDate ? new Date(lv.endDate).toLocaleDateString() : "—"}</p>
+                          <li 
+                            key={lv._id} 
+                            className="group relative flex items-center justify-between bg-white rounded-[12px] p-2.5 border border-gray-100 hover:border-[#1360AB]/30 transition-all duration-150"
+                          >
+                            {/* Left accent bar */}
+                            <div className={`absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full ${daysRemaining !== null && daysRemaining <= 1 ? 'bg-emerald-500' : daysRemaining !== null && daysRemaining <= 3 ? 'bg-amber-500' : 'bg-blue-500'}`}></div>
+                            
+                            <div className="pl-2">
+                              <p className="text-[0.8125rem] font-semibold text-gray-900 group-hover:text-[#1360AB] transition-colors">{name}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[0.7rem] text-gray-500">Leave ends:</span>
+                                <span className="text-[0.7rem] font-medium text-gray-700">{lv.endDate ? new Date(lv.endDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "—"}</span>
+                              </div>
                             </div>
 
-                            <div className="text-right">
-                              <p className="text-[0.8125rem] text-green-700 font-bold">Join: {joinDate || "—"}</p>
-                              <p className="text-[0.75rem] text-gray-500 mt-0.5">Status: {lv.joinStatus || lv.status || "—"}</p>
+                            <div className="text-right flex flex-col items-end gap-1.5">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[0.7rem] text-gray-500">Returns:</span>
+                                <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md text-[0.75rem] font-bold border border-emerald-200">{joinDate || "—"}</span>
+                              </div>
+                              <span className={`px-2 py-0.5 rounded-md text-[0.65rem] font-semibold uppercase tracking-wide border ${statusStyle}`}>
+                                {lv.joinStatus || lv.status || "Pending"}
+                              </span>
                             </div>
                           </li>
                         )
@@ -508,7 +555,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Complaints summary card */}
-          <Card className="h-[20rem] p-3">
+          <Card className="h-[20rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -527,42 +574,62 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
-                  <FaExclamationCircle className="mr-1.5 text-[#1360AB] text-base" />
-                  Complaints Overview
+                {/* Compact Header */}
+                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
+                  <span className="w-1 h-4 bg-amber-500 rounded-full"></span>
+                  <FaExclamationCircle className="text-amber-600 text-xs" />
+                  Complaints
                 </h2>
 
-                <div className="flex-1 flex flex-col justify-center">
-                  {/* Top row - Primary stats */}
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    <div className="relative overflow-hidden rounded-xl bg-white border border-amber-100 p-2 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-amber-100 text-amber-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">Pending</div>
-                      <p className="text-2xl font-extrabold text-amber-700 mt-1">{dashboardData?.complaints?.pending || 0}</p>
+                <div className="flex-1 flex flex-col justify-between">
+                  {/* Primary stats - 2x2 grid */}
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {/* Pending */}
+                    <div className="rounded-[12px] bg-amber-50 border border-amber-200/60 p-2 hover:border-amber-300 transition-all">
+                      <div className="flex items-center justify-between">
+                        <p className="text-[0.65rem] font-semibold text-amber-600 uppercase">Pending</p>
+                        <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                      </div>
+                      <p className="text-xl font-black text-amber-700 tabular-nums mt-0.5">{dashboardData?.complaints?.pending || 0}</p>
                     </div>
 
-                    <div className="relative overflow-hidden rounded-xl bg-white border border-blue-100 p-2 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-blue-100 text-blue-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">In Progress</div>
-                      <p className="text-2xl font-extrabold text-blue-700 mt-1">{dashboardData?.complaints?.inProgress || 0}</p>
+                    {/* In Progress */}
+                    <div className="rounded-[12px] bg-blue-50 border border-blue-200/60 p-2 hover:border-blue-300 transition-all">
+                      <div className="flex items-center justify-between">
+                        <p className="text-[0.65rem] font-semibold text-blue-600 uppercase">In Progress</p>
+                        <AiOutlineLoading3Quarters className="w-3 h-3 text-blue-500 animate-spin" />
+                      </div>
+                      <p className="text-xl font-black text-blue-700 tabular-nums mt-0.5">{dashboardData?.complaints?.inProgress || 0}</p>
+                    </div>
+
+                    {/* Forwarded to IDO */}
+                    <div className="rounded-[12px] bg-purple-50 border border-purple-200/60 p-2 hover:border-purple-300 transition-all">
+                      <div className="flex items-center justify-between">
+                        <p className="text-[0.65rem] font-semibold text-purple-600 uppercase">To IDO</p>
+                        <span className="text-[0.5rem] font-bold text-purple-500">FWD</span>
+                      </div>
+                      <p className="text-xl font-black text-purple-700 tabular-nums mt-0.5">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+                    </div>
+
+                    {/* Resolved Today */}
+                    <div className="rounded-[12px] bg-emerald-50 border border-emerald-200/60 p-2 hover:border-emerald-300 transition-all">
+                      <div className="flex items-center justify-between">
+                        <p className="text-[0.65rem] font-semibold text-emerald-600 uppercase">Today</p>
+                        <span className="text-xs text-emerald-600">✓</span>
+                      </div>
+                      <p className="text-xl font-black text-emerald-700 tabular-nums mt-0.5">{dashboardData?.complaints?.resolvedToday || 0}</p>
                     </div>
                   </div>
 
-                  {/* Bottom row - Secondary stats */}
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    <div className="relative overflow-hidden rounded-lg bg-white border border-purple-100 p-2 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-purple-100 text-purple-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">IDO</div>
-                      <p className="text-xl font-bold text-purple-700 mt-1">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+                  {/* Overdue Summary */}
+                  <div className="mt-1.5 bg-red-50 p-2 rounded-[12px] border border-red-200/60">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-red-500 text-xs">⚠</span>
+                        <p className="text-[0.7rem] font-bold text-red-600">Overdue 20+ days</p>
+                      </div>
+                      <p className="text-xl font-black text-red-700 tabular-nums">{dashboardData?.complaints?.overdueCount || 0}</p>
                     </div>
-
-                    <div className="relative overflow-hidden rounded-lg bg-white border border-emerald-100 p-2 flex flex-col items-center justify-center shadow-sm">
-                      <div className="absolute right-0 top-0 bg-emerald-100 text-emerald-700 text-[0.65rem] px-1.5 py-0.5 rounded-bl-md font-medium">Today</div>
-                      <p className="text-xl font-bold text-emerald-700 mt-1">{dashboardData?.complaints?.resolvedToday || 0}</p>
-                    </div>
-                  </div>
-
-                  {/* Summary */}
-                  <div className="bg-gradient-to-r from-gray-50 to-white p-2.5 rounded-xl border border-gray-200 shadow-sm text-center">
-                    <span className="text-gray-600 text-[0.8125rem] font-medium">Active for more than 20 days</span>
-                    <p className="text-xl font-bold text-gray-900 mt-0.5">{dashboardData?.complaints?.overdueCount || 0}</p>
                   </div>
                 </div>
               </div>
@@ -570,7 +637,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Upcoming events card */}
-          <Card className="h-[20rem] p-3">
+          <Card className="h-[20rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
                 <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
@@ -582,28 +649,77 @@ const Dashboard = () => {
               <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
-                <h2 className="text-sm font-semibold text-gray-800 mb-1.5 flex items-center leading-tight">
-                  <MdOutlineEvent className="mr-1.5 text-[#1360AB] text-base" />
+                {/* Compact Header */}
+                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
+                  <span className="w-1 h-4 bg-purple-500 rounded-full"></span>
+                  <MdOutlineEvent className="text-purple-600 text-sm" />
                   Upcoming Events
                 </h2>
 
                 <div className="flex-1 overflow-hidden">
-                  <div className="overflow-y-auto max-h-[17rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                    {dashboardData?.events?.map((event) => (
-                      <div key={event.id} className="mb-2 bg-gradient-to-r from-purple-50 to-white p-2.5 rounded-xl border border-purple-200 hover:shadow-sm hover:border-purple-300 transition-all">
-                        <h3 className="font-semibold text-[0.8125rem] text-purple-900">{event.title}</h3>
-                        <div className="flex justify-between items-center mt-1.5 text-[0.75rem]">
-                          <div className="flex items-center text-gray-600">
-                            <FaCalendarAlt className="mr-1 text-[0.65rem]" />
-                            {formatDate(event.date)}
+                  <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    {dashboardData?.events?.map((event, index) => {
+                      // Determine event date status
+                      const eventDate = new Date(event.date)
+                      const today = new Date()
+                      const timeDiff = eventDate.getTime() - today.getTime()
+                      const daysUntil = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+                      const isToday = daysUntil === 0
+                      const isTomorrow = daysUntil === 1
+                      const isThisWeek = daysUntil > 1 && daysUntil <= 7
+                      
+                      const dateColors = isToday ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 
+                                        isTomorrow ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                                        isThisWeek ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                                        'bg-gray-50 border-gray-200 text-gray-600'
+                      
+                      return (
+                        <div 
+                          key={event.id} 
+                          className="group mb-1.5 bg-white p-2 rounded-[12px] border border-gray-100 hover:border-purple-300 transition-all duration-150 relative overflow-hidden"
+                        >
+                          {/* Left accent bar */}
+                          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-purple-500 rounded-l-[12px]"></div>
+                          
+                          <div className="pl-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="font-bold text-[0.8125rem] text-gray-900 group-hover:text-purple-700 transition-colors leading-tight flex-1">{event.title}</h3>
+                              <span className={`px-2 py-0.5 rounded-md text-[0.6rem] font-bold uppercase tracking-wide border whitespace-nowrap ${dateColors}`}>
+                                {isToday ? 'Today' : isTomorrow ? 'Tomorrow' : formatDate(event.date)}
+                              </span>
+                            </div>
+                            
+                            <div className="flex items-center gap-3 mt-2">
+                              <div className="flex items-center gap-1 text-[0.7rem] text-gray-500">
+                                <FaCalendarAlt className="text-[0.6rem] text-purple-400" />
+                                <span className="font-medium">{formatDate(event.date)}</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-[0.7rem]">
+                                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                <span className="font-semibold text-purple-600">{event.time}</span>
+                              </div>
+                            </div>
+                            
+                            {event.location && (
+                              <div className="flex items-center gap-1 mt-1.5 text-[0.7rem] text-gray-500">
+                                <span className="text-purple-400">📍</span>
+                                <span>{event.location}</span>
+                              </div>
+                            )}
                           </div>
-                          <div className="text-gray-600 font-medium">{event.time}</div>
                         </div>
-                        <div className="text-[0.75rem] text-gray-500 mt-1">{event.location}</div>
-                      </div>
-                    ))}
+                      )
+                    })}
 
-                    {dashboardData?.events?.length === 0 && <div className="text-center py-6 text-[0.8125rem] text-gray-500">No upcoming events</div>}
+                    {dashboardData?.events?.length === 0 && (
+                      <div className="flex flex-col items-center justify-center h-full text-center py-8">
+                        <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mb-3">
+                          <MdOutlineEvent className="text-purple-400 text-xl" />
+                        </div>
+                        <p className="text-sm font-medium text-gray-500">No upcoming events</p>
+                        <p className="text-xs text-gray-400 mt-1">Check back later for updates</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
