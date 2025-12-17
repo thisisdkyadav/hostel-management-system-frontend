@@ -1,0 +1,577 @@
+/* ============================================
+   HOSTEL MANAGEMENT SYSTEM - THEME CSS
+   Centralized Theme Variables for Day/Night Modes
+   ============================================ */
+
+:root {
+  /* ============================================
+     COLOR PALETTE - PRIMARY
+     Main brand color: #1360AB
+     Hover states are DARKER, not lighter
+     ============================================ */
+  --color-primary: #1360AB;
+  --color-primary-hover: #0F4C81;        /* Darker - for hover states */
+  --color-primary-active: #0A3D68;       /* Even darker - for active/pressed states */
+  --color-primary-dark: #0D4A8F;         /* Dark variant */
+  --color-primary-darker: #083050;       /* Darkest variant */
+  
+  /* Lighter variants (for backgrounds, subtle accents) */
+  --color-primary-light: #2E7BC4;        /* Slightly lighter than primary */
+  --color-primary-lighter: #5A9AD8;      /* Lighter accent */
+  --color-primary-muted: #A8C9FC;        /* Muted/pastel version */
+  --color-primary-pale: #D4E4FD;         /* Very light - borders */
+  --color-primary-bg: #E8F1FE;           /* Background tint */
+  --color-primary-bg-hover: #D2E3FC;     /* Background tint hover */
+  --color-primary-bg-light: #F0F4F9;     /* Lightest background */
+
+  /* ============================================
+     COLOR PALETTE - SECONDARY/NEUTRAL
+     Gray scale for text, backgrounds, borders
+     ============================================ */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  
+  /* Text Colors - Dark to Light */
+  --color-text-primary: #0A1628;         /* Darkest - main headings */
+  --color-text-secondary: #1E293B;       /* Dark - secondary headings */
+  --color-text-body: #334155;            /* Body text */
+  --color-text-tertiary: #4A6085;        /* Tertiary text */
+  --color-text-muted: #64748B;           /* Muted text */
+  --color-text-placeholder: #8FA3C4;     /* Placeholder text */
+  --color-text-light: #94A3B8;           /* Light text */
+  --color-text-disabled: #9CA3AF;        /* Disabled text */
+
+  /* Background Colors - Light to Dark */
+  --color-bg-primary: #FFFFFF;           /* Main background (white) */
+  --color-bg-secondary: #FAFBFC;         /* Subtle gray */
+  --color-bg-tertiary: #F8FAFC;          /* Slightly darker */
+  --color-bg-page: #F0F4F9;              /* Page background */
+  --color-bg-hover: #F1F5F9;             /* Hover state */
+  --color-bg-muted: #E2E8F0;             /* Muted background */
+  --color-bg-disabled: #F3F4F6;          /* Disabled background */
+  --color-bg-modal-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Border Colors */
+  --color-border-light: #F1F5F9;         /* Lightest border */
+  --color-border-primary: #E2E8F0;       /* Primary border */
+  --color-border-secondary: #D4E4FD;     /* Secondary (blue tint) */
+  --color-border-focus: #1360AB;         /* Focus state */
+  --color-border-hover: #A8C9FC;         /* Hover state */
+  --color-border-input: #D1D5DB;         /* Input borders */
+  --color-border-gray: #E5E7EB;          /* Gray border */
+  --color-border-dark: #CBD5E1;          /* Darker border */
+
+  /* ============================================
+     COLOR PALETTE - SEMANTIC COLORS
+     Status and feedback colors
+     ============================================ */
+  
+  /* Success - Green */
+  --color-success: #22C55E;
+  --color-success-hover: #16A34A;        /* Darker for hover */
+  --color-success-active: #15803D;       /* Darkest for active */
+  --color-success-light: #86EFAC;
+  --color-success-bg: #DCFCE7;
+  --color-success-bg-light: #F0FDF4;
+  --color-success-text: #15803D;
+
+  /* Danger/Error - Red */
+  --color-danger: #EF4444;
+  --color-danger-hover: #DC2626;         /* Darker for hover */
+  --color-danger-active: #B91C1C;        /* Darkest for active */
+  --color-danger-light: #FCA5A5;
+  --color-danger-bg: #FEE2E2;
+  --color-danger-bg-light: #FEF2F2;
+  --color-danger-text: #991B1B;
+  --color-danger-border: #FECACA;
+
+  /* Warning - Amber/Yellow */
+  --color-warning: #F59E0B;
+  --color-warning-hover: #D97706;        /* Darker for hover */
+  --color-warning-active: #B45309;       /* Darkest for active */
+  --color-warning-light: #FCD34D;
+  --color-warning-bg: #FEF3C7;
+  --color-warning-bg-light: #FFFBEB;
+  --color-warning-text: #92400E;
+
+  /* Info - Blue (uses primary variants) */
+  --color-info: #3B82F6;
+  --color-info-hover: #2563EB;           /* Darker for hover */
+  --color-info-active: #1D4ED8;          /* Darkest for active */
+  --color-info-light: #93C5FD;
+  --color-info-bg: #DBEAFE;
+  --color-info-bg-light: #EFF6FF;
+  --color-info-text: #1D4ED8;
+
+  /* ============================================
+     COLOR PALETTE - GENDER SPECIFIC
+     Colors used for gender indicators
+     ============================================ */
+  
+  /* Boys - Blue (based on primary) */
+  --color-boys-bg: #E8F1FE;
+  --color-boys-text: #1360AB;
+  --color-boys-hover-bg: #1360AB;
+  --color-boys-hover-text: #FFFFFF;
+
+  /* Girls - Pink */
+  --color-girls-bg: #FCE7F3;
+  --color-girls-text: #DB2777;
+  --color-girls-hover-bg: #BE185D;       /* Darker pink for hover */
+  --color-girls-hover-text: #FFFFFF;
+
+  /* Co-ed/Other - Purple */
+  --color-coed-bg: #F3E8FF;
+  --color-coed-text: #9333EA;
+  --color-coed-hover-bg: #7C3AED;        /* Darker purple for hover */
+  --color-coed-hover-text: #FFFFFF;
+
+  /* ============================================
+     COLOR PALETTE - ADDITIONAL COLORS
+     Miscellaneous UI colors
+     ============================================ */
+  --color-purple-bg: #FAF5FF;
+  --color-purple-text: #7C3AED;
+  --color-purple-light-bg: #F3E8FF;
+
+  --color-orange-bg: #FFF7ED;
+  --color-orange-text: #EA580C;
+
+  --color-teal-bg: #F0FDFA;
+  --color-teal-text: #0D9488;
+
+  /* ============================================
+     SHADOWS
+     Box shadows for various elements
+     ============================================ */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+  
+  /* Card Shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  /* Button Shadows - using #1360AB as base */
+  --shadow-button: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-button-hover: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-button-primary: 0 4px 15px rgba(19, 96, 171, 0.25);
+  --shadow-button-primary-hover: 0 4px 15px rgba(19, 96, 171, 0.35);
+  --shadow-button-active: 0 4px 12px rgba(19, 96, 171, 0.4);
+
+  /* Focus Shadows */
+  --shadow-focus: 0 0 0 3px rgba(19, 96, 171, 0.2);
+  --shadow-focus-primary: 0 0 0 3px rgba(19, 96, 171, 0.15);
+  --shadow-focus-danger: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  --shadow-focus-success: 0 0 0 3px rgba(34, 197, 94, 0.2);
+
+  /* Glow Effects */
+  --shadow-glow: 0 0 15px rgba(19, 96, 171, 0.7);
+  --shadow-glow-primary: 0 0 20px rgba(19, 96, 171, 0.3);
+  --shadow-glow-success: 0 0 15px rgba(34, 197, 94, 0.4);
+  --shadow-glow-danger: 0 0 15px rgba(239, 68, 68, 0.4);
+
+  /* Modal Shadows */
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Dropdown Shadows */
+  --shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* ============================================
+     BORDER RADIUS
+     Consistent rounded corners
+     ============================================ */
+  --radius-none: 0;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-3xl: 16px;
+  --radius-4xl: 20px;
+  --radius-full: 9999px;
+
+  /* Specific Component Radii */
+  --radius-button: 9999px;
+  --radius-button-rect: 10px;
+  --radius-card: 20px;
+  --radius-modal: 16px;
+  --radius-input: 12px;
+  --radius-badge: 8px;
+  --radius-icon: 14px;
+  --radius-avatar: 9999px;
+  --radius-chip: 10px;
+  --radius-tab: 10px;
+
+  /* ============================================
+     SPACING
+     Consistent padding and margins
+     ============================================ */
+  --spacing-0: 0;
+  --spacing-px: 1px;
+  --spacing-0-5: 0.125rem;  /* 2px */
+  --spacing-1: 0.25rem;     /* 4px */
+  --spacing-1-5: 0.375rem;  /* 6px */
+  --spacing-2: 0.5rem;      /* 8px */
+  --spacing-2-5: 0.625rem;  /* 10px */
+  --spacing-3: 0.75rem;     /* 12px */
+  --spacing-3-5: 0.875rem;  /* 14px */
+  --spacing-4: 1rem;        /* 16px */
+  --spacing-5: 1.25rem;     /* 20px */
+  --spacing-6: 1.5rem;      /* 24px */
+  --spacing-7: 1.75rem;     /* 28px */
+  --spacing-8: 2rem;        /* 32px */
+  --spacing-9: 2.25rem;     /* 36px */
+  --spacing-10: 2.5rem;     /* 40px */
+  --spacing-12: 3rem;       /* 48px */
+  --spacing-14: 3.5rem;     /* 56px */
+  --spacing-16: 4rem;       /* 64px */
+  --spacing-20: 5rem;       /* 80px */
+
+  /* ============================================
+     TYPOGRAPHY
+     Font sizes, weights, and line heights
+     ============================================ */
+  --font-family-primary: "Roboto", sans-serif;
+  
+  /* Font Sizes */
+  --font-size-2xs: 0.625rem;  /* 10px */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.8125rem;  /* 13px */
+  --font-size-base: 0.875rem; /* 14px */
+  --font-size-md: 0.9375rem;  /* 15px */
+  --font-size-lg: 1rem;       /* 16px */
+  --font-size-xl: 1.125rem;   /* 18px */
+  --font-size-2xl: 1.25rem;   /* 20px */
+  --font-size-3xl: 1.5rem;    /* 24px */
+  --font-size-4xl: 1.875rem;  /* 30px */
+  --font-size-5xl: 2rem;      /* 32px */
+  --font-size-6xl: 2.5rem;    /* 40px */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* ============================================
+     TRANSITIONS
+     Animation durations and timing functions
+     ============================================ */
+  --transition-fast: 150ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+  --transition-slower: 500ms;
+  
+  --ease-default: ease;
+  --ease-in-out: ease-in-out;
+  --ease-out: ease-out;
+  --ease-in: ease-in;
+  --ease-linear: linear;
+  
+  --transition-all: all 0.3s ease;
+  --transition-colors: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  --transition-transform: transform 0.2s ease;
+  --transition-shadow: box-shadow 0.2s ease;
+  --transition-opacity: opacity 0.2s ease;
+
+  /* ============================================
+     Z-INDEX LAYERS
+     Consistent stacking order
+     ============================================ */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-tooltip: 60;
+  --z-toast: 70;
+
+  /* ============================================
+     COMPONENT SPECIFIC VARIABLES
+     ============================================ */
+
+  /* Sidebar */
+  --sidebar-width-expanded: 260px;
+  --sidebar-width-collapsed: 80px;
+  --sidebar-bg: var(--color-bg-primary);
+  --sidebar-border: var(--color-border-primary);
+  --sidebar-item-radius: 10px;
+  --sidebar-active-bg: #1360AB;
+  --sidebar-active-shadow: 0 4px 12px rgba(19, 96, 171, 0.35);
+
+  /* Header */
+  --header-height: 64px;
+  --header-bg: var(--color-bg-primary);
+  --header-border: var(--color-border-primary);
+
+  /* Cards */
+  --card-bg: var(--color-bg-primary);
+  --card-border: var(--color-border-secondary);
+  --card-border-hover: var(--color-border-hover);
+  --card-shadow: var(--shadow-card);
+  --card-shadow-hover: var(--shadow-card-hover);
+  --card-radius: var(--radius-card);
+  --card-padding: 1.5rem;
+
+  /* Inputs */
+  --input-bg: var(--color-bg-primary);
+  --input-border: var(--color-border-input);
+  --input-border-focus: #1360AB;
+  --input-radius: var(--radius-input);
+  --input-padding: 0.75rem;
+  --input-focus-ring: 0 0 0 2px rgba(19, 96, 171, 0.1);
+
+  /* Buttons */
+  --button-radius: var(--radius-button);
+  --button-padding-sm: 0.5rem 1rem;
+  --button-padding-md: 0.625rem 1.25rem;
+  --button-padding-lg: 0.75rem 1.5rem;
+  --button-primary-bg: #1360AB;
+  --button-primary-hover: #0F4C81;
+  --button-primary-active: #0A3D68;
+
+  /* Modals */
+  --modal-bg: var(--color-bg-primary);
+  --modal-radius: var(--radius-modal);
+  --modal-shadow: var(--shadow-modal);
+  --modal-backdrop: var(--color-bg-modal-overlay);
+  --modal-title-color: #1360AB;
+
+  /* Scrollbar */
+  --scrollbar-width: 6px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: #A8C9FC;
+  --scrollbar-thumb-hover: #5A9AD8;
+  --scrollbar-thumb-active: #1360AB;
+
+  /* Occupancy Ring (Hostel Card) */
+  --occupancy-ring-bg: #D4E4FD;
+  --occupancy-ring-fill: #1360AB;
+
+  /* Status Badge Colors */
+  --status-active-bg: #22C55E;
+  --status-active-text: #FFFFFF;
+  --status-inactive-bg: #EF4444;
+  --status-inactive-text: #FFFFFF;
+  --status-pending-bg: #F59E0B;
+  --status-pending-text: #FFFFFF;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #1360AB, #2E7BC4);
+  --gradient-primary-hover: linear-gradient(135deg, #0F4C81, #1360AB);
+
+  /* Ripple Effect */
+  --ripple-color: rgba(255, 255, 255, 0.7);
+
+  /* Ring/Focus Ring */
+  --ring-primary: 0 0 0 2px rgba(19, 96, 171, 0.1);
+  --ring-blue: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* ============================================
+   DARK MODE THEME
+   Override variables for dark mode
+   ============================================ */
+[data-theme="dark"],
+.dark {
+  /* Primary Colors - Adjusted for dark backgrounds */
+  --color-primary: #4C9AEF;
+  --color-primary-hover: #3B82F6;        /* Darker for hover */
+  --color-primary-active: #2563EB;       /* Even darker for active */
+  --color-primary-dark: #1D4ED8;
+  --color-primary-darker: #1E40AF;
+  
+  --color-primary-light: #60A5FA;
+  --color-primary-lighter: #93C5FD;
+  --color-primary-muted: #3B5998;
+  --color-primary-pale: #1E3A5F;
+  --color-primary-bg: #1E3A5F;
+  --color-primary-bg-hover: #2D4A6F;
+  --color-primary-bg-light: #0F172A;
+
+  /* Neutral/Secondary Colors */
+  --color-black: #FFFFFF;
+  --color-white: #0F172A;
+  
+  /* Text Colors */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #E2E8F0;
+  --color-text-body: #CBD5E1;
+  --color-text-tertiary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-text-placeholder: #475569;
+  --color-text-light: #475569;
+  --color-text-disabled: #374151;
+
+  /* Background Colors */
+  --color-bg-primary: #1E293B;
+  --color-bg-secondary: #0F172A;
+  --color-bg-tertiary: #1E293B;
+  --color-bg-page: #0F172A;
+  --color-bg-hover: #334155;
+  --color-bg-muted: #475569;
+  --color-bg-disabled: #1E293B;
+  --color-bg-modal-overlay: rgba(0, 0, 0, 0.85);
+
+  /* Border Colors */
+  --color-border-light: #1E293B;
+  --color-border-primary: #334155;
+  --color-border-secondary: #475569;
+  --color-border-focus: #4C9AEF;
+  --color-border-hover: #64748B;
+  --color-border-input: #475569;
+  --color-border-gray: #334155;
+  --color-border-dark: #64748B;
+
+  /* Semantic Colors - Adjusted for dark mode */
+  --color-success-bg: #14532D;
+  --color-success-bg-light: #052E16;
+  
+  --color-danger-bg: #450A0A;
+  --color-danger-bg-light: #2A0A0A;
+  --color-danger-border: #7F1D1D;
+  
+  --color-warning-bg: #451A03;
+  --color-warning-bg-light: #2A1403;
+  
+  --color-info-bg: #1E3A5F;
+  --color-info-bg-light: #0C1929;
+
+  /* Gender Colors - Dark mode */
+  --color-boys-bg: #1E3A5F;
+  --color-boys-text: #4C9AEF;
+  --color-boys-hover-bg: #4C9AEF;
+  --color-boys-hover-text: #FFFFFF;
+
+  --color-girls-bg: #4A1D34;
+  --color-girls-text: #F472B6;
+  --color-girls-hover-bg: #EC4899;
+  --color-girls-hover-text: #FFFFFF;
+
+  --color-coed-bg: #3B1D55;
+  --color-coed-text: #C084FC;
+  --color-coed-hover-bg: #A855F7;
+  --color-coed-hover-text: #FFFFFF;
+
+  /* Shadows - Darker and more pronounced for dark mode */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.7);
+  
+  --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.6);
+  
+  --shadow-button-primary: 0 4px 15px rgba(76, 154, 239, 0.25);
+  --shadow-button-primary-hover: 0 4px 15px rgba(76, 154, 239, 0.35);
+
+  --shadow-focus-primary: 0 0 0 3px rgba(76, 154, 239, 0.3);
+  
+  --shadow-glow: 0 0 15px rgba(76, 154, 239, 0.5);
+  --shadow-glow-primary: 0 0 20px rgba(76, 154, 239, 0.4);
+
+  /* Component overrides */
+  --sidebar-active-bg: #4C9AEF;
+  --sidebar-active-shadow: 0 4px 12px rgba(76, 154, 239, 0.35);
+
+  --button-primary-bg: #4C9AEF;
+  --button-primary-hover: #3B82F6;
+  --button-primary-active: #2563EB;
+
+  --input-border-focus: #4C9AEF;
+  --input-focus-ring: 0 0 0 2px rgba(76, 154, 239, 0.2);
+
+  --modal-title-color: #4C9AEF;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #475569;
+  --scrollbar-thumb-hover: #64748B;
+  --scrollbar-thumb-active: #4C9AEF;
+
+  /* Occupancy Ring */
+  --occupancy-ring-bg: #334155;
+  --occupancy-ring-fill: #4C9AEF;
+
+  /* Gradient */
+  --gradient-primary: linear-gradient(135deg, #4C9AEF, #60A5FA);
+  --gradient-primary-hover: linear-gradient(135deg, #3B82F6, #4C9AEF);
+
+  /* Ripple */
+  --ripple-color: rgba(255, 255, 255, 0.2);
+
+  /* Ring/Focus Ring */
+  --ring-primary: 0 0 0 2px rgba(76, 154, 239, 0.2);
+}
+
+/* ============================================
+   UTILITY CLASSES USING THEME VARIABLES
+   Can be used throughout the application
+   ============================================ */
+
+/* Background utilities */
+.bg-theme-primary { background-color: var(--color-bg-primary); }
+.bg-theme-secondary { background-color: var(--color-bg-secondary); }
+.bg-theme-tertiary { background-color: var(--color-bg-tertiary); }
+.bg-theme-page { background-color: var(--color-bg-page); }
+.bg-theme-hover { background-color: var(--color-bg-hover); }
+.bg-theme-brand { background-color: var(--color-primary); }
+.bg-theme-brand-hover { background-color: var(--color-primary-hover); }
+
+/* Text utilities */
+.text-theme-primary { color: var(--color-text-primary); }
+.text-theme-secondary { color: var(--color-text-secondary); }
+.text-theme-tertiary { color: var(--color-text-tertiary); }
+.text-theme-muted { color: var(--color-text-muted); }
+.text-theme-brand { color: var(--color-primary); }
+
+/* Border utilities */
+.border-theme-primary { border-color: var(--color-border-primary); }
+.border-theme-secondary { border-color: var(--color-border-secondary); }
+.border-theme-hover { border-color: var(--color-border-hover); }
+.border-theme-focus { border-color: var(--color-border-focus); }
+
+/* Shadow utilities */
+.shadow-theme-xs { box-shadow: var(--shadow-xs); }
+.shadow-theme-sm { box-shadow: var(--shadow-sm); }
+.shadow-theme-md { box-shadow: var(--shadow-md); }
+.shadow-theme-lg { box-shadow: var(--shadow-lg); }
+.shadow-theme-card { box-shadow: var(--shadow-card); }
+.shadow-theme-card-hover { box-shadow: var(--shadow-card-hover); }
+
+/* Radius utilities */
+.rounded-theme-sm { border-radius: var(--radius-sm); }
+.rounded-theme-md { border-radius: var(--radius-md); }
+.rounded-theme-lg { border-radius: var(--radius-lg); }
+.rounded-theme-xl { border-radius: var(--radius-xl); }
+.rounded-theme-card { border-radius: var(--radius-card); }
+.rounded-theme-button { border-radius: var(--radius-button); }
+.rounded-theme-input { border-radius: var(--radius-input); }
+
+/* Transition utilities */
+.transition-theme { transition: var(--transition-all); }
+.transition-theme-colors { transition: var(--transition-colors); }
+.transition-theme-transform { transition: var(--transition-transform); }
+.transition-theme-shadow { transition: var(--transition-shadow); }
