@@ -4,12 +4,12 @@ const Card = ({
   children, 
   className = "", 
   padding = "p-5 md:p-6",
-  rounded = "rounded-[20px]",
+  rounded = "rounded-[var(--radius-card)]",
   border = true,
-  borderColor = "#d4e4fd",
-  hoverBorderColor = "#a8c9fc",
-  shadow = "0 1px 3px rgba(0, 0, 0, 0.05)",
-  hoverShadow = "0 4px 12px rgba(0, 0, 0, 0.1)",
+  borderColor = "var(--color-border-secondary)",
+  hoverBorderColor = "var(--color-border-hover)",
+  shadow = "var(--shadow-card)",
+  hoverShadow = "var(--shadow-card-hover)",
   transition = true,
   onMouseEnter,
   onMouseLeave,
@@ -31,7 +31,7 @@ const Card = ({
   return (
     <div
       className={`
-        bg-white 
+        bg-[var(--color-bg-primary)] 
         ${rounded} 
         ${padding} 
         ${transition ? "transition-all duration-300" : ""} 
@@ -57,14 +57,14 @@ Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, sub
   return (
     <div className={`flex items-center gap-4 mb-5 ${className}`}>
       {icon && (
-        <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${iconBg} group-hover:${iconHoverBg}`}>
+        <div className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg} group-hover:${iconHoverBg}`}>
           {icon}
         </div>
       )}
       {(title || subtitle) && (
         <div>
-          {title && <h3 className="text-xl font-bold text-[#1e293b]">{title}</h3>}
-          {subtitle && <p className="text-sm text-[#64748b]">{subtitle}</p>}
+          {title && <h3 className="text-xl font-bold text-[var(--color-text-secondary)]">{title}</h3>}
+          {subtitle && <p className="text-sm text-[var(--color-text-muted)]">{subtitle}</p>}
         </div>
       )}
       {!icon && !title && !subtitle && children}

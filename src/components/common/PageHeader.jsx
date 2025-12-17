@@ -17,17 +17,17 @@ const PageHeader = ({ title, children, className = "" }) => {
 
   return (
     <header 
-      className={`sticky top-0 z-10 bg-white border-b border-[#e2e8f0] ${className}`}
+      className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`}
       style={{
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
       <div className="px-4 md:px-6 lg:px-8 py-2">
         <div className="flex items-center justify-between gap-4">
           {/* Left Section - Title & Date */}
           <div>
-            <h1 className="text-xl font-bold text-[#1360aa] tracking-tight">{title}</h1>
-            <p className="text-xs text-[#64748b] mt-0.5">{formatDate()}</p>
+            <h1 className="text-xl font-bold text-[var(--color-primary)] tracking-tight">{title}</h1>
+            <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{formatDate()}</p>
           </div>
 
           {/* Right Section - Actions (optional) */}
