@@ -50,15 +50,15 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
 
   return (
     <div 
-      className="md:hidden fixed top-0 left-0 right-0 h-16 z-40 flex items-center justify-between px-4 bg-white border-b border-[#e2e8f0]"
+      className="md:hidden fixed top-0 left-0 right-0 h-16 z-40 flex items-center justify-between px-4 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]"
       style={{
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
       {/* Menu Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-10 h-10 bg-[#1360aa] rounded-lg flex items-center justify-center text-white transition-all duration-200 hover:bg-[#083ca8]"
+        className="w-10 h-10 bg-[var(--color-primary)] rounded-lg flex items-center justify-center text-white transition-all duration-200 hover:bg-[var(--color-primary-hover)]"
       >
         {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
       </button>
@@ -68,7 +68,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         className="flex items-center cursor-pointer" 
         onClick={() => navigate("/")}
       >
-        <span className="text-[#1360aa] font-bold text-xl tracking-tight">HMS</span>
+        <span className="text-[var(--color-primary)] font-bold text-xl tracking-tight">HMS</span>
       </div>
 
       {/* User Profile Dropdown */}
@@ -76,10 +76,10 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className={`
-            w-10 h-10 bg-[#1360aa] rounded-full flex items-center justify-center 
-            text-white font-bold transition-all duration-200 hover:bg-[#083ca8]
+            w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center 
+            text-white font-bold transition-all duration-200 hover:bg-[var(--color-primary-hover)]
             focus:outline-none
-            ${dropdownOpen ? "ring-2 ring-[#cbd5e1]" : ""}
+            ${dropdownOpen ? "ring-2 ring-[var(--color-border-dark)]" : ""}
           `}
           aria-label="User menu"
         >
@@ -95,9 +95,9 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
         {/* Dropdown Menu */}
         {dropdownOpen && (
           <div 
-            className="absolute right-0 mt-2 w-48 bg-white rounded-xl z-50 py-2 border border-[#e2e8f0] animate-fadeIn"
+            className="absolute right-0 mt-2 w-48 bg-[var(--color-bg-primary)] rounded-xl z-50 py-2 border border-[var(--color-border-primary)] animate-fadeIn"
             style={{
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              boxShadow: 'var(--shadow-dropdown)',
             }}
           >
             {safeBottomNavItems.map((item) => (
@@ -110,15 +110,15 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
                 className={`
                   flex items-center px-4 py-2.5 text-sm font-medium cursor-pointer transition-all duration-200 mx-2 rounded-lg
                   ${item.name === "Logout" 
-                    ? "text-[#ef4444] hover:bg-[#fef2f2]" 
-                    : "text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#1360aa]"
+                    ? "text-[var(--color-danger)] hover:bg-[var(--color-danger-bg-light)]" 
+                    : "text-[var(--color-text-tertiary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"
                   }
                 `}
               >
                 <item.icon
                   className={`
                     text-base mr-3
-                    ${item.name === "Logout" ? "text-[#ef4444]" : "text-[#8fa3c4]"}
+                    ${item.name === "Logout" ? "text-[var(--color-danger)]" : "text-[var(--color-text-placeholder)]"}
                   `}
                 />
                 <span>{item.name}</span>

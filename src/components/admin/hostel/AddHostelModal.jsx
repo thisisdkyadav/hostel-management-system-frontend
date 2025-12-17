@@ -50,14 +50,14 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Hostel Name</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter hostel name" required />
+            <label className="block text-[var(--color-text-tertiary)] text-sm font-medium mb-2">Hostel Name</label>
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 border border-[var(--color-border-input)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-all" placeholder="Enter hostel name" required />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" required>
+              <label className="block text-[var(--color-text-tertiary)] text-sm font-medium mb-2">Gender</label>
+              <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-3 border border-[var(--color-border-input)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)]" required>
                 <option value="Boys">Boys</option>
                 <option value="Girls">Girls</option>
                 <option value="Co-ed">Co-ed</option>
@@ -65,8 +65,8 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">Hostel Type</label>
-              <select name="type" value={formData.type} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" required>
+              <label className="block text-[var(--color-text-tertiary)] text-sm font-medium mb-2">Hostel Type</label>
+              <select name="type" value={formData.type} onChange={handleChange} className="w-full p-3 border border-[var(--color-border-input)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)]" required>
                 <option value="unit-based">Unit-based</option>
                 <option value="room-only">Room-only</option>
               </select>
@@ -86,7 +86,7 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
           <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium">
+          <button type="submit" className="px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all shadow-sm hover:shadow font-medium">
             Add Hostel
           </button>
         </div>

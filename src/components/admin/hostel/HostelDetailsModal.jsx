@@ -83,7 +83,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     if (loading) {
       return (
         <div className="flex justify-center items-center py-12">
-          <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
         </div>
       )
     }
@@ -150,7 +150,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     if (loading) {
       return (
         <div className="flex justify-center items-center py-12">
-          <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
         </div>
       )
     }

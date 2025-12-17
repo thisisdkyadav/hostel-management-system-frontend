@@ -162,14 +162,14 @@ const Sidebar = ({ navItems }) => {
           group relative rounded-[10px] transition-all duration-200 cursor-pointer
           ${isOpen ? "my-[0.35rem]" : "my-1"}
           ${isActiveItem 
-            ? "bg-[#1360aa] text-white shadow-[0_4px_12px_rgba(11,87,208,0.35)]" 
-            : "text-[#64748b] hover:bg-[#f1f5f9] hover:text-[#1360aa] hover:shadow-sm"
+            ? "bg-[var(--color-primary)] text-white shadow-[var(--shadow-button-active)]" 
+            : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-primary)] hover:shadow-sm"
           }
         `}
       >
         <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
-            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[#94a3b8] group-hover:text-[#1360aa]"}`} style={{ width: '20px' }} />
+            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[var(--color-text-light)] group-hover:text-[var(--color-primary)]"}`} style={{ width: '20px' }} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
@@ -208,7 +208,7 @@ const Sidebar = ({ navItems }) => {
             onClick={() => profileItem && handleNavigation(profileItem)}
             className={`
               relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center border border-transparent
-              ${isProfileActive ? "bg-[#1360AB] text-white shadow-lg shadow-[#1360AB]/20 border-[#1360AB]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[#1360AB]"}
+              ${isProfileActive ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/20 border-[var(--color-primary)]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[var(--color-primary)]"}
             `}
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
@@ -224,7 +224,7 @@ const Sidebar = ({ navItems }) => {
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               ) : (
-                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[#1360aa]"}`} />
+                <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[var(--color-primary)]"}`} />
               )}
             </div>
             {isProfileActive && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/70"></div>}
@@ -306,31 +306,31 @@ const Sidebar = ({ navItems }) => {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-white border-r border-[#e2e8f0] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
           isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
         } overflow-hidden`}
         style={{
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
-          <div className={`border-b border-[#e2e8f0] bg-[#fafbfc] ${isMobile ? "hidden" : ""} h-16`}>
+          <div className={`border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] ${isMobile ? "hidden" : ""} h-16`}>
             <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
               {/* HMS Text Logo - only show when expanded */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
-                  <span className="text-[#1360aa] font-bold text-xl tracking-tight">HMS</span>
+                  <span className="text-[var(--color-primary)] font-bold text-xl tracking-tight">HMS</span>
                 </div>
               )}
 
               {/* Toggle Button */}
               {isOpen ? (
-                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-[10px] border border-[#d4e4fd] flex items-center justify-center text-[#4a6085] bg-white hover:bg-[#e8f1fe] hover:border-[#a8c9fc] hover:text-[#1360aa] transition-all duration-200">
+                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-[10px] border border-[var(--color-border-secondary)] flex items-center justify-center text-[var(--color-text-tertiary)] bg-[var(--color-bg-primary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)] transition-all duration-200">
                   <HiMenuAlt2 className="text-[19px]" />
                 </button>
               ) : (
-                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-[10px] bg-white border border-[#d4e4fd] text-[#4a6085] hover:bg-[#e8f1fe] hover:text-[#1360aa] hover:border-[#a8c9fc] flex items-center justify-center transition-all duration-200">
+                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-[10px] bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)] hover:border-[var(--color-border-hover)] flex items-center justify-center transition-all duration-200">
                   <HiMenuAlt3 className="text-[19px]" />
                 </button>
               )}
@@ -393,7 +393,7 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-[#e2e8f0] bg-[#fafbfc] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>
+          <div className={`border-t border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>
             {renderProfileSection()}
             {/* <ul className={`${isOpen ? "space-y-1.5" : "space-y-1"}`}>{bottomNavItems.filter((item) => item.name !== "Profile" && item.name !== "Logout").map(renderNavItem)}</ul> */}
           </div>
