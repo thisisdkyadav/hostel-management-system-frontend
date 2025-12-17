@@ -51,7 +51,6 @@ import UnitsAndRooms from "../pages/UnitsAndRooms.jsx"
 import Profile from "../pages/Profile.jsx"
 import MaintenanceStaff from "../pages/admin/MaintenanceStaff.jsx"
 import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
-import StudentFeedback from "../pages/student/Feedback.jsx"
 import Feedbacks from "../pages/warden/Feedbacks.jsx"
 import MaintenanceLayout from "../layouts/MaintenanceLayout.jsx"
 import AdminAssociateWardens from "../pages/admin/AssociateWardens.jsx"
@@ -121,7 +120,6 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
-        <Route path="feedback" element={<StudentFeedback />} />
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="notifications" element={<NotificationCenter />} />
         <Route path="settings" element={<Settings />} />
