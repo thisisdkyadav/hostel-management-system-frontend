@@ -230,7 +230,7 @@ const Dashboard = () => {
             return (
               <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
                 {/* Hostlers Card - Compact */}
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-1 hover:border-[#1360AB] transition-all">
                   <div className="flex items-center gap-2">
                     <FaUser className="text-[#1360AB] text-sm" />
                     <div className="flex items-center gap-2">
@@ -247,7 +247,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Day Scholars Card - Compact */}
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-1.5 hover:border-[#1360AB] transition-all">
+                <div className="bg-white border border-gray-200 rounded-md px-3 py-1 hover:border-[#1360AB] transition-all">
                   <div className="flex items-center gap-2">
                     <FaUser className="text-[#1360AB] text-sm" />
                     <div className="flex items-center gap-2">
@@ -264,7 +264,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* Online Users Card - Compact (Rightmost) */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-md px-3 py-1.5 hover:border-green-400 transition-all">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-md px-3 py-1 hover:border-green-400 transition-all">
                   <div className="flex items-center gap-2">
                     <HiStatusOnline className="text-green-600 text-sm animate-pulse" />
                     <div className="flex items-center gap-2">
