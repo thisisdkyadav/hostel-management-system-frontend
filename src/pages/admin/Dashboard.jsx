@@ -380,7 +380,6 @@ const Dashboard = () => {
                 {/* Compact Header */}
                 <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
                   <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
-                  <BiBuildings className="text-[#1360AB] text-sm" />
                   Hostel Occupancy
                 </h2>
 
@@ -490,7 +489,6 @@ const Dashboard = () => {
                 {/* Compact Header */}
                 <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
                   <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
-                  <FaCalendarAlt className="text-[#1360AB] text-xs" />
                   Staff Upcoming Joins
                 </h2>
 
@@ -590,7 +588,6 @@ const Dashboard = () => {
                 {/* Compact Header */}
                 <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
                   <span className="w-1 h-4 bg-amber-500 rounded-full"></span>
-                  <FaExclamationCircle className="text-amber-600 text-xs" />
                   Complaints
                 </h2>
 
@@ -665,7 +662,6 @@ const Dashboard = () => {
                 {/* Compact Header */}
                 <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
                   <span className="w-1 h-4 bg-purple-500 rounded-full"></span>
-                  <MdOutlineEvent className="text-purple-600 text-sm" />
                   Upcoming Events
                 </h2>
 
