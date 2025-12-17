@@ -18,7 +18,7 @@ const Button = ({
   ...rest
 }) => {
   const baseStyles = `
-    rounded-full font-medium transition-all duration-200 
+    rounded-[var(--radius-button)] font-medium transition-all duration-200 
     flex items-center justify-center gap-2
     disabled:cursor-not-allowed disabled:opacity-60
     relative overflow-hidden
@@ -26,15 +26,15 @@ const Button = ({
     active:scale-[0.98]
   `
 
-  // Using new theme colors #1360aa and hover #0e4eb5
+  // Using CSS variables for theme colors
   const variantStyles = {
     primary: gradient 
       ? `text-white disabled:opacity-50`
-      : `bg-[#1360aa] text-white hover:bg-[#0e4eb5] disabled:bg-[#1360aa]/50`,
+      : `bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50`,
     secondary: `
-      bg-[#e8f0fe] text-[#1360aa]
-      border border-[#d2e3fc]
-      hover:bg-[#d2e3fc]
+      bg-[var(--color-primary-bg)] text-[var(--color-primary)]
+      border border-[var(--color-primary-bg-hover)]
+      hover:bg-[var(--color-primary-bg-hover)]
     `,
     danger: `
       ${colorClasses.danger.bg} text-white 
@@ -47,9 +47,9 @@ const Button = ({
       disabled:bg-emerald-300
     `,
     outline: `
-      bg-white text-[#1360aa]
-      border-2 border-[#1360aa]
-      hover:bg-[#e8f0fe]
+      bg-[var(--color-bg-primary)] text-[var(--color-primary)]
+      border-2 border-[var(--color-primary)]
+      hover:bg-[var(--color-primary-bg)]
     `,
     white: `
       ${colorClasses.white.bg} ${colorClasses.white.text}
@@ -90,11 +90,11 @@ const Button = ({
     ${className}
   `.replace(/\s+/g, ' ').trim()
 
-  // Gradient styles for primary variant
+  // Gradient styles for primary variant - using CSS variables
   const gradientStyle = gradient && variant === "primary" ? {
-    background: 'linear-gradient(135deg, #1360aa, #3b7de8)',
-    boxShadow: '0 4px 15px rgba(11, 87, 208, 0.3)',
-    transition: 'all 0.3s ease',
+    background: 'var(--gradient-primary)',
+    boxShadow: 'var(--shadow-button-primary)',
+    transition: 'var(--transition-all)',
   } : {}
 
   const handleClick = (e) => {
@@ -124,13 +124,13 @@ const Button = ({
   // Handle hover state for gradient buttons
   const handleMouseEnter = (e) => {
     if (gradient && variant === "primary" && !disabled && !isLoading) {
-      e.currentTarget.style.boxShadow = '0 6px 20px rgba(11, 87, 208, 0.4)'
+      e.currentTarget.style.boxShadow = 'var(--shadow-button-primary-hover)'
     }
   }
 
   const handleMouseLeave = (e) => {
     if (gradient && variant === "primary" && !disabled && !isLoading) {
-      e.currentTarget.style.boxShadow = '0 4px 15px rgba(11, 87, 208, 0.3)'
+      e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
     }
   }
 

@@ -16,7 +16,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
         className={`
           absolute left-4 top-1/2 -translate-y-1/2 
           pointer-events-none transition-colors duration-300
-          ${isFocused ? "text-[#1360aa]" : "text-[#8fa3c4]"}
+          ${isFocused ? "text-[var(--color-primary)]" : "text-[var(--color-text-placeholder)]"}
         `}
         size={14}
       />
@@ -30,18 +30,18 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         style={{
-          boxShadow: isFocused ? '0 0 0 3px rgba(11, 87, 208, 0.1)' : 'none',
-          transition: 'all 0.3s ease',
+          boxShadow: isFocused ? 'var(--shadow-focus-primary)' : 'none',
+          transition: 'var(--transition-all)',
         }}
         className={`
           w-full py-3 pl-11 pr-10
-          rounded-xl border bg-white
-          text-sm text-[#0a1628] font-normal
-          placeholder:text-[#8fa3c4]
+          rounded-[var(--radius-input)] border bg-[var(--color-bg-primary)]
+          text-sm text-[var(--color-text-primary)] font-normal
+          placeholder:text-[var(--color-text-placeholder)]
           focus:outline-none
           ${isFocused 
-            ? "border-[#1360aa]" 
-            : "border-[#d4e4fd]"
+            ? "border-[var(--color-primary)]" 
+            : "border-[var(--color-border-secondary)]"
           }
         `}
       />
@@ -54,7 +54,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
             absolute right-4 top-1/2 -translate-y-1/2
             transition-colors duration-200
             focus:outline-none
-            ${isFocused ? "text-[#1360aa] hover:text-[#083ca8]" : "text-[#8fa3c4] hover:text-[#4a6085]"}
+            ${isFocused ? "text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]" : "text-[var(--color-text-placeholder)] hover:text-[var(--color-text-tertiary)]"}
           `}
           aria-label="Clear search"
         >

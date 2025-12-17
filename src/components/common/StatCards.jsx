@@ -1,23 +1,31 @@
 import React from "react"
 
-export const StatCard = ({ title, value, subtitle, icon, color = "#1360aa" }) => {
+export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)" }) => {
+  // Get the actual color value for dynamic opacity backgrounds
+  const getColorValue = (cssVar) => {
+    if (cssVar.startsWith('var(')) return null
+    return cssVar
+  }
+  
+  const colorValue = getColorValue(color) || '#1360AB'
+  
   return (
     <div 
-      className="bg-white rounded-xl p-3 transition-all duration-200 border border-[#e2e8f0] hover:border-[#cbd5e1] hover:shadow-md hover:scale-[1.02] group"
+      className="bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group"
       style={{ 
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+        boxShadow: 'var(--shadow-xs)',
       }}
     >
       <div className="flex justify-between items-start mb-1.5">
-        <span className="text-[#64748b] text-xs font-semibold uppercase tracking-wide">{title}</span>
+        <span className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wide">{title}</span>
         <div 
           className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110"
           style={{ 
-            backgroundColor: `${color}15`,
+            backgroundColor: `${colorValue}15`,
           }}
         >
           {React.cloneElement(icon, {
-            style: { color },
+            style: { color: colorValue },
             className: "text-base",
           })}
         </div>
@@ -25,11 +33,11 @@ export const StatCard = ({ title, value, subtitle, icon, color = "#1360aa" }) =>
       <div>
         <h3 
           className="text-xl md:text-2xl font-bold leading-none" 
-          style={{ color }}
+          style={{ color: colorValue }}
         >
           {value}
         </h3>
-        <p className="text-xs text-[#94a3b8] mt-0.5">{subtitle}</p>
+        <p className="text-xs text-[var(--color-text-light)] mt-0.5">{subtitle}</p>
       </div>
     </div>
   )
@@ -43,7 +51,6 @@ export const StatCard = ({ title, value, subtitle, icon, color = "#1360aa" }) =>
  * @param {number} props.columns - Number of columns for the grid (default: 4)
  */
 const StatCards = ({ stats, columns = 4 }) => {
-  console.log(columns)
   const getGridClass = () => {
     // Show 2 cards per row by default, 1 card only on tiny screens (<480px)
     let gridClass = "grid-cols-2 max-[375px]:grid-cols-1"
