@@ -14,20 +14,20 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const getIconStyle = (gender) => {
     if (gender === "Boys") {
       return {
-        base: "bg-[#e8f1fe] text-[#1360aa]",
-        hover: "bg-[#1360aa] text-white"
+        base: "bg-[var(--color-boys-bg)] text-[var(--color-boys-text)]",
+        hover: "bg-[var(--color-boys-hover-bg)] text-white"
       }
     }
     if (gender === "Girls") {
       return {
-        base: "bg-pink-50 text-pink-600",
-        hover: "bg-pink-500 text-white"
+        base: "bg-[var(--color-girls-bg)] text-[var(--color-girls-text)]",
+        hover: "bg-[var(--color-girls-hover-bg)] text-white"
       }
     }
     // Co-ed / Other
     return {
-      base: "bg-purple-50 text-purple-600",
-      hover: "bg-purple-500 text-white"
+      base: "bg-[var(--color-coed-bg)] text-[var(--color-coed-text)]",
+      hover: "bg-[var(--color-coed-hover-bg)] text-white"
     }
   }
 
@@ -60,8 +60,8 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <FaBuilding />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-[#1e293b]">{hostel.name}</h3>
-              <p className="text-sm text-[#64748b]">
+              <h3 className="text-xl font-bold text-[var(--color-text-secondary)]">{hostel.name}</h3>
+              <p className="text-sm text-[var(--color-text-muted)]">
                 {hostel.gender} {hostel.type && `(${hostel.type})`}
               </p>
             </div>
@@ -103,7 +103,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
                 cy="18"
                 r={radius}
                 fill="none"
-                stroke="#d4e4fd"
+                stroke="var(--occupancy-ring-bg)"
                 strokeWidth="2.5"
               />
               {/* Progress circle */}
@@ -112,7 +112,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
                 cy="18"
                 r={radius}
                 fill="none"
-                stroke="#1360aa"
+                stroke="var(--occupancy-ring-fill)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeDasharray={strokeDasharray}
@@ -132,16 +132,16 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
           <div className="flex gap-2">
             <button 
               onClick={() => setShowEditModal(true)}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[#e8f1fe] text-[#1360aa]"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
               style={{ transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #1360aa, #3b7de8)'
+                e.currentTarget.style.background = 'var(--gradient-primary)'
                 e.currentTarget.style.color = '#fff'
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(11, 87, 208, 0.25)'
+                e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#e8f1fe'
-                e.currentTarget.style.color = '#1360aa'
+                e.currentTarget.style.background = 'var(--color-primary-bg)'
+                e.currentTarget.style.color = 'var(--color-primary)'
                 e.currentTarget.style.boxShadow = 'none'
               }}
             >
@@ -150,16 +150,16 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             </button>
             <Link 
               to={`/admin/hostels/${hostel.name}`} 
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[#e8f1fe] text-[#1360aa]"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
               style={{ transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #1360aa, #3b7de8)'
+                e.currentTarget.style.background = 'var(--gradient-primary)'
                 e.currentTarget.style.color = '#fff'
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(11, 87, 208, 0.25)'
+                e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#e8f1fe'
-                e.currentTarget.style.color = '#1360aa'
+                e.currentTarget.style.background = 'var(--color-primary-bg)'
+                e.currentTarget.style.color = 'var(--color-primary)'
                 e.currentTarget.style.boxShadow = 'none'
               }}
             >
@@ -169,16 +169,16 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
           </div>
           <button 
             onClick={() => setShowDetailsModal(true)} 
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[#e8f1fe] text-[#1360aa]"
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
             style={{ transition: 'all 0.3s ease' }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, #1360aa, #3b7de8)'
+              e.currentTarget.style.background = 'var(--gradient-primary)'
               e.currentTarget.style.color = '#fff'
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(11, 87, 208, 0.25)'
+              e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#e8f1fe'
-              e.currentTarget.style.color = '#1360aa'
+              e.currentTarget.style.background = 'var(--color-primary-bg)'
+              e.currentTarget.style.color = 'var(--color-primary)'
               e.currentTarget.style.boxShadow = 'none'
             }}
           >

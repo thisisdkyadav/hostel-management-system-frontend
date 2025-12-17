@@ -9,7 +9,7 @@ const HostelListItem = ({ hostel, onUpdate, onDelete }) => {
   const [showRoomManagementModal, setShowRoomManagementModal] = useState(false)
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-[var(--color-bg-primary)] rounded-lg shadow-sm border border-[var(--color-border-light)] overflow-hidden">
       <div className="p-5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
           <h3 className="text-xl font-semibold text-gray-800">{hostel.name}</h3>

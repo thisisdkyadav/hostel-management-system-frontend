@@ -43,12 +43,12 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
     if (!showDeleteConfirmation) return null
 
     return createPortal(
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[60] p-4 md:p-6">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-auto animate-fadeIn w-full max-w-md">
+      <div className="fixed inset-0 bg-[var(--color-bg-modal-overlay)] backdrop-blur-sm flex items-center justify-center z-[60] p-4 md:p-6">
+        <div className="bg-[var(--color-bg-primary)] rounded-2xl overflow-auto animate-fadeIn w-full max-w-md" style={{ boxShadow: 'var(--shadow-modal)' }}>
           <div className="px-6 py-4 border-b border-gray-100">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl md:text-2xl font-bold text-[#1360AB]">Delete All Allocations</h3>
-              <button onClick={() => setShowDeleteConfirmation(false)} className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-all duration-200">
+              <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">Delete All Allocations</h3>
+              <button onClick={() => setShowDeleteConfirmation(false)} className="text-[var(--color-text-light)] hover:text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] rounded-full p-2 transition-all duration-200">
                 <FaTimes className="text-lg" />
               </button>
             </div>

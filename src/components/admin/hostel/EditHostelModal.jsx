@@ -115,7 +115,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full p-3 pl-10 border ${errors.name ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`}
+                className={`w-full p-3 pl-10 border ${errors.name ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-[var(--color-border-input)] focus:ring-[var(--color-primary-bg-hover)]"} rounded-lg focus:outline-none focus:ring-2 focus:border-[var(--color-primary)]`}
                 placeholder="Enter hostel name"
               />
             </div>
@@ -132,7 +132,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className={`w-full p-3 pl-10 border ${errors.gender ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] bg-white appearance-none`}
+                className={`w-full p-3 pl-10 border ${errors.gender ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-[var(--color-border-input)] focus:ring-[var(--color-primary-bg-hover)]"} rounded-lg focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] bg-[var(--color-bg-primary)] appearance-none`}
               >
                 <option value="">Select Gender</option>
                 <option value="Boys">Boys</option>
@@ -165,7 +165,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
               Cancel
             </button>
 
-            <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto px-4 py-2.5 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center">
+            <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto px-4 py-2.5 bg-[var(--color-primary)] text-white rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center justify-center">
               {isSubmitting ? (
                 <>
                   <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
