@@ -501,7 +501,6 @@ const Dashboard = () => {
                         <FaCalendarAlt className="text-gray-400 text-lg" />
                       </div>
                       <p className="text-sm font-medium text-gray-500">No upcoming returns</p>
-                      <p className="text-xs text-gray-400 mt-1">All students are currently present</p>
                     </div>
                   ) : (
                     <ul className="space-y-2">
