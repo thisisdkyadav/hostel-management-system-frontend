@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaStar } from "react-icons/fa"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { complaintApi } from "../../services/complaintApi"
 
 const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
@@ -31,28 +32,104 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
     }
   }
 
+  const MODAL_WIDTH = 600;
+  const TEXTAREA_ROWS = 4;
+  const RATING_OPTIONS = [1, 2, 3, 4, 5];
+
   return (
-    <Modal title="Give Feedback" onClose={onClose} width={600}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <Modal title="Give Feedback" onClose={onClose} width={MODAL_WIDTH}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-            <p className="text-red-700">{error}</p>
+          <div 
+            className="border-l-4" 
+            style={{ 
+              backgroundColor: 'var(--color-danger-bg)', 
+              borderColor: 'var(--color-danger)', 
+              padding: 'var(--spacing-4)', 
+              marginBottom: 'var(--spacing-4)' 
+            }}
+          >
+            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
         <div>
-          <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-1">
+          <label 
+            htmlFor="feedback" 
+            className="block" 
+            style={{ 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              color: 'var(--color-text-secondary)', 
+              marginBottom: 'var(--spacing-1)' 
+            }}
+          >
             Feedback
           </label>
-          <textarea id="feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Share your feedback about the resolution..." />
+          <textarea 
+            id="feedback" 
+            value={feedback} 
+            onChange={(e) => setFeedback(e.target.value)} 
+            rows={TEXTAREA_ROWS} 
+            className="w-full focus:outline-none" 
+            style={{ 
+              paddingLeft: 'var(--spacing-4)', 
+              paddingRight: 'var(--spacing-4)', 
+              paddingTop: 'var(--spacing-2)', 
+              paddingBottom: 'var(--spacing-2)', 
+              border: `var(--border-1) solid var(--color-border-input)`, 
+              borderRadius: 'var(--radius-lg)', 
+              backgroundColor: 'var(--color-bg-primary)' 
+            }}
+            onFocus={(e) => {
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--color-primary)';
+            }}
+            onBlur={(e) => {
+              e.target.style.boxShadow = 'none';
+              e.target.style.borderColor = 'var(--color-border-input)';
+            }}
+            placeholder="Share your feedback about the resolution..." 
+          />
         </div>
 
         <div>
-          <label htmlFor="feedbackRating" className="block text-sm font-medium text-gray-700 mb-1">
+          <label 
+            htmlFor="feedbackRating" 
+            className="block" 
+            style={{ 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              color: 'var(--color-text-secondary)', 
+              marginBottom: 'var(--spacing-1)' 
+            }}
+          >
             Rating
           </label>
-          <select id="feedbackRating" value={feedbackRating} onChange={(e) => setFeedbackRating(Number(e.target.value))} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            {[1, 2, 3, 4, 5].map((rating) => (
+          <select 
+            id="feedbackRating" 
+            value={feedbackRating} 
+            onChange={(e) => setFeedbackRating(Number(e.target.value))} 
+            className="w-full focus:outline-none" 
+            style={{ 
+              paddingLeft: 'var(--spacing-4)', 
+              paddingRight: 'var(--spacing-4)', 
+              paddingTop: 'var(--spacing-2)', 
+              paddingBottom: 'var(--spacing-2)', 
+              border: `var(--border-1) solid var(--color-border-input)`, 
+              borderRadius: 'var(--radius-lg)', 
+              backgroundColor: 'var(--color-bg-primary)' 
+            }}
+            onFocus={(e) => {
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--color-primary)';
+            }}
+            onBlur={(e) => {
+              e.target.style.boxShadow = 'none';
+              e.target.style.borderColor = 'var(--color-border-input)';
+            }}
+          >
+            {RATING_OPTIONS.map((rating) => (
               <option key={rating} value={rating}>
                 {rating} {rating === 1 ? "Star" : "Stars"}
               </option>
@@ -61,35 +138,64 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
         </div>
 
         <div>
-          <label htmlFor="satisfactionStatus" className="block text-sm font-medium text-gray-700 mb-1">
+          <label 
+            htmlFor="satisfactionStatus" 
+            className="block" 
+            style={{ 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              color: 'var(--color-text-secondary)', 
+              marginBottom: 'var(--spacing-1)' 
+            }}
+          >
             Satisfaction Status
           </label>
-          <select id="satisfactionStatus" value={satisfactionStatus} onChange={(e) => setSatisfactionStatus(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+          <select 
+            id="satisfactionStatus" 
+            value={satisfactionStatus} 
+            onChange={(e) => setSatisfactionStatus(e.target.value)} 
+            className="w-full focus:outline-none" 
+            style={{ 
+              paddingLeft: 'var(--spacing-4)', 
+              paddingRight: 'var(--spacing-4)', 
+              paddingTop: 'var(--spacing-2)', 
+              paddingBottom: 'var(--spacing-2)', 
+              border: `var(--border-1) solid var(--color-border-input)`, 
+              borderRadius: 'var(--radius-lg)', 
+              backgroundColor: 'var(--color-bg-primary)' 
+            }}
+            onFocus={(e) => {
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--color-primary)';
+            }}
+            onBlur={(e) => {
+              e.target.style.boxShadow = 'none';
+              e.target.style.borderColor = 'var(--color-border-input)';
+            }}
+          >
             <option value="Satisfied">Satisfied</option>
             <option value="Unsatisfied">Unsatisfied</option>
             <option value="False Resolution">False Resolution</option>
           </select>
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4">
-          <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+        <div className="flex justify-end" style={{ gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
+          <Button 
+            type="button" 
+            onClick={onClose} 
+            variant="outline"
+          >
             Cancel
-          </button>
-          <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
-            {isSubmitting ? (
-              <>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Submitting...
-              </>
-            ) : (
-              <>
-                <FaStar className="mr-2" /> Submit Feedback
-              </>
-            )}
-          </button>
+          </Button>
+          <Button 
+            type="submit" 
+            variant="primary"
+            isLoading={isSubmitting}
+            disabled={isSubmitting}
+            icon={!isSubmitting && <FaStar />}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+          </Button>
         </div>
       </form>
     </Modal>

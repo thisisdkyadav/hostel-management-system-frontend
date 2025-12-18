@@ -6,53 +6,149 @@ import Card from "../common/Card"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+    <div 
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+      style={{
+        gap: 'var(--spacing-4)'
+      }}
+    >
       {complaints.map((complaint) => (
-        <Card key={complaint.id} className="cursor-pointer" onClick={() => onViewDetails(complaint)}>
-          <Card.Header className="mb-0">
-            <div className="flex justify-between items-start">
-              <div className="flex flex-col">
-                <span className="text-xs text-gray-500">{complaint.id?.substring(0, 8)}</span>
-                <h3 className="font-bold text-lg mt-1 text-gray-800 line-clamp-1">{complaint.title}</h3>
+        <Card 
+          key={complaint.id} 
+          className="cursor-pointer"
+          onClick={() => onViewDetails(complaint)}
+        >
+          <Card.Header style={{ marginBottom: 0 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--color-text-muted)'
+                }}>{complaint.id?.substring(0, 8)}</span>
+                <h3 style={{
+                  fontWeight: 'var(--font-weight-bold)',
+                  fontSize: 'var(--font-size-xl)',
+                  marginTop: 'var(--spacing-1)',
+                  color: 'var(--color-text-secondary)'
+                }} className="line-clamp-1">{complaint.title}</h3>
               </div>
-              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(complaint.status)}`}>{complaint.status}</span>
+              <span className={`${getStatusColor(complaint.status)}`} style={{
+                padding: 'var(--badge-padding-sm)',
+                fontSize: 'var(--badge-font-sm)',
+                fontWeight: 'var(--font-weight-medium)',
+                borderRadius: 'var(--radius-full)'
+              }}>{complaint.status}</span>
             </div>
           </Card.Header>
 
           <Card.Body>
-            <div className="mt-3 flex items-center justify-between">
-              <div className="flex items-center">
-                <FaBuilding className="text-[#1360AB] text-opacity-70 text-sm mr-2 flex-shrink-0" />
-                <span className="text-sm text-gray-700 truncate max-w-[150px]">
+            <div style={{
+              marginTop: 'var(--spacing-3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <FaBuilding style={{
+                  color: 'var(--color-primary)',
+                  opacity: 'var(--opacity-70)',
+                  fontSize: 'var(--font-size-sm)',
+                  marginRight: 'var(--spacing-2)',
+                  flexShrink: 0
+                }} />
+                <span style={{
+                  fontSize: 'var(--font-size-sm)',
+                  color: 'var(--color-text-body)'
+                }} className="truncate max-w-[150px]">
                   {complaint.hostel}, Room {complaint.roomNumber}
                 </span>
               </div>
-              <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(complaint.priority)}`}>{complaint.priority}</span>
+              <span className={`${getPriorityColor(complaint.priority)}`} style={{
+                padding: 'var(--badge-padding-sm)',
+                fontSize: 'var(--badge-font-sm)',
+                fontWeight: 'var(--font-weight-medium)',
+                borderRadius: 'var(--radius-full)'
+              }}>{complaint.priority}</span>
             </div>
 
-            <div className="mt-4">
-              <div className="bg-gray-50 p-3 rounded-lg text-sm text-gray-700 line-clamp-3">{complaint.description}</div>
+            <div style={{ marginTop: 'var(--spacing-4)' }}>
+              <div style={{
+                backgroundColor: 'var(--color-bg-tertiary)',
+                padding: 'var(--spacing-3)',
+                borderRadius: 'var(--radius-lg)',
+                fontSize: 'var(--font-size-sm)',
+                color: 'var(--color-text-body)'
+              }} className="line-clamp-3">{complaint.description}</div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <div className="flex items-center">
-                <BiSolidCategory className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-                <span className="text-sm text-gray-700">{complaint.category}</span>
+            <div style={{
+              marginTop: 'var(--spacing-4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <BiSolidCategory style={{
+                  color: 'var(--color-primary)',
+                  opacity: 'var(--opacity-70)',
+                  marginRight: 'var(--spacing-2)',
+                  flexShrink: 0
+                }} />
+                <span style={{
+                  fontSize: 'var(--font-size-sm)',
+                  color: 'var(--color-text-body)'
+                }}>{complaint.category}</span>
               </div>
-              <span className="text-xs text-gray-500">{getTimeSince(complaint.createdDate)}</span>
+              <span style={{
+                fontSize: 'var(--font-size-xs)',
+                color: 'var(--color-text-muted)'
+              }}>{getTimeSince(complaint.createdDate)}</span>
             </div>
           </Card.Body>
 
-          <Card.Footer className="mt-4 pt-4 border-t border-gray-100 flex items-center">
-            <div className="flex items-center">
+          <Card.Footer style={{
+            marginTop: 'var(--spacing-4)',
+            paddingTop: 'var(--spacing-4)',
+            borderTop: `var(--border-1) solid var(--color-border-light)`,
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               {complaint.reportedBy?.profileImage ? (
-                <img src={getMediaUrl(complaint.reportedBy.profileImage)} alt={complaint.reportedBy.name} className="h-8 w-8 rounded-full object-cover mr-2" />
+                <img 
+                  src={getMediaUrl(complaint.reportedBy.profileImage)} 
+                  alt={complaint.reportedBy.name} 
+                  style={{
+                    height: 'var(--avatar-sm)',
+                    width: 'var(--avatar-sm)',
+                    borderRadius: 'var(--radius-full)',
+                    objectFit: 'cover',
+                    marginRight: 'var(--spacing-2)'
+                  }} 
+                />
               ) : (
-                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-2">{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
+                <div style={{
+                  height: 'var(--avatar-sm)',
+                  width: 'var(--avatar-sm)',
+                  borderRadius: 'var(--radius-full)',
+                  backgroundColor: 'var(--color-primary-bg)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--color-primary)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  marginRight: 'var(--spacing-2)'
+                }}>{complaint.reportedBy?.name?.charAt(0) || "U"}</div>
               )}
               <div>
-                <div className="text-xs font-medium line-clamp-1">{complaint.reportedBy?.name}</div>
-                <div className="text-xs text-gray-500">Reporter</div>
+                <div style={{
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)'
+                }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
+                <div style={{
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--color-text-muted)'
+                }}>Reporter</div>
               </div>
             </div>
           </Card.Footer>

@@ -23,53 +23,55 @@ const ComplaintStats = ({ statsData, loading }) => {
       title: "Total",
       value: totalComplaints,
       subtitle: "Complaints",
-      icon: <FaClipboardList className="text-2xl" />,
-      color: "#1360AB",
-      iconColor: "text-[#1360AB]",
+      icon: <FaClipboardList style={{ fontSize: 'var(--icon-2xl)' }} />,
+      color: "var(--color-primary)",
+      iconColor: "var(--color-primary)",
     },
     {
       title: "Pending",
       value: pendingComplaints,
       subtitle: "Pending Review",
-      icon: <MdOutlineWatchLater className="text-2xl" />,
-      color: "#3b82f6",
-      iconColor: "text-blue-500",
+      icon: <MdOutlineWatchLater style={{ fontSize: 'var(--icon-2xl)' }} />,
+      color: "var(--color-info)",
+      iconColor: "var(--color-info)",
     },
     {
       title: "In Progress",
       value: inProgressComplaints,
       subtitle: "Being Handled",
-      icon: <TbProgressCheck className="text-2xl" />,
-      color: "#eab308", // yellow-500
-      iconColor: "text-yellow-500",
+      icon: <TbProgressCheck style={{ fontSize: 'var(--icon-2xl)' }} />,
+      color: "var(--color-warning)",
+      iconColor: "var(--color-warning)",
     },
     {
       title: "Resolved",
       value: resolvedComplaints,
       subtitle: "Fixed Issues",
-      icon: <FaRegCheckCircle className="text-2xl" />,
-      color: "#22c55e", // green-500
-      iconColor: "text-green-500",
+      icon: <FaRegCheckCircle style={{ fontSize: 'var(--icon-2xl)' }} />,
+      color: "var(--color-success)",
+      iconColor: "var(--color-success)",
     },
     {
       title: "Forwarded to IDO",
       value: forwardedToIDOComplaints,
       subtitle: "Escalated",
-      icon: <MdPriorityHigh className="text-2xl" />,
-      color: "#f97316", // orange-500
-      iconColor: "text-orange-500",
+      icon: <MdPriorityHigh style={{ fontSize: 'var(--icon-2xl)' }} />,
+      color: "var(--color-orange-text)",
+      iconColor: "var(--color-orange-text)",
     },
     // {
     //   title: "Urgent",
     //   value: urgentComplaints,
     //   subtitle: "High Priority",
-    //   icon: <MdPriorityHigh className="text-2xl" />,
-    //   color: "#ef4444", // red-500
-    //   iconColor: "text-red-500",
+    //   icon: <MdPriorityHigh style={{ fontSize: 'var(--icon-2xl)' }} />,
+    //   color: "var(--color-danger)",
+    //   iconColor: "var(--color-danger)",
     // },
   ]
 
-  return <StatCards stats={statsCards} columns={5} />
+  const STATS_COLUMNS = 5;
+  
+  return <StatCards stats={statsCards} columns={STATS_COLUMNS} />
 }
 
 export default ComplaintStats

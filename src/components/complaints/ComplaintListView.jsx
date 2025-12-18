@@ -11,9 +11,15 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       header: "ID/Title",
       key: "title",
       render: (complaint) => (
-        <div className="flex flex-col">
-          <div className="text-xs text-[#8fa3c4]">{complaint.id?.substring(0, 8)}</div>
-          <div className="font-medium text-[#0a1628] line-clamp-1">{complaint.title}</div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-placeholder)'
+          }}>{complaint.id?.substring(0, 8)}</div>
+          <div style={{
+            fontWeight: 'var(--font-weight-medium)',
+            color: 'var(--color-text-primary)'
+          }} className="line-clamp-1">{complaint.title}</div>
         </div>
       ),
     },
@@ -22,21 +28,51 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       key: "reportedBy",
       className: "hidden md:table-cell",
       render: (complaint) => (
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-8 w-8">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{
+            flexShrink: 0,
+            height: 'var(--avatar-sm)',
+            width: 'var(--avatar-sm)'
+          }}>
             {complaint.reportedBy?.profileImage ? (
-              <img className="h-8 w-8 rounded-full object-cover" src={getMediaUrl(complaint.reportedBy.profileImage)} alt="" />
+              <img 
+                style={{
+                  height: 'var(--avatar-sm)',
+                  width: 'var(--avatar-sm)',
+                  borderRadius: 'var(--radius-full)',
+                  objectFit: 'cover'
+                }} 
+                src={getMediaUrl(complaint.reportedBy.profileImage)} 
+                alt="" 
+              />
             ) : (
               <div 
-                className="h-8 w-8 rounded-full flex items-center justify-center text-white font-medium bg-[#1360aa]"
+                style={{
+                  height: 'var(--avatar-sm)',
+                  width: 'var(--avatar-sm)',
+                  borderRadius: 'var(--radius-full)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'var(--color-white)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  backgroundColor: 'var(--color-primary)'
+                }}
               >
                 {complaint.reportedBy?.name?.charAt(0) || "U"}
               </div>
             )}
           </div>
-          <div className="ml-3">
-            <div className="text-sm font-medium text-[#0a1628] line-clamp-1">{complaint.reportedBy?.name}</div>
-            <div className="text-xs text-[#8fa3c4]">{getTimeSince(complaint.createdDate)}</div>
+          <div style={{ marginLeft: 'var(--spacing-3)' }}>
+            <div style={{
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-primary)'
+            }} className="line-clamp-1">{complaint.reportedBy?.name}</div>
+            <div style={{
+              fontSize: 'var(--font-size-xs)',
+              color: 'var(--color-text-placeholder)'
+            }}>{getTimeSince(complaint.createdDate)}</div>
           </div>
         </div>
       ),
@@ -46,27 +82,54 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       key: "location",
       className: "hidden sm:table-cell",
       render: (complaint) => (
-        <div className="flex flex-col">
-          <div className="font-medium text-sm truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
-          {complaint.roomNumber ? <div className="text-xs text-gray-500">Room {complaint.roomNumber}</div> : complaint.hostel ? <div className="text-xs text-gray-500 truncate max-w-[150px]">{complaint.location}</div> : null}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{
+            fontWeight: 'var(--font-weight-medium)',
+            fontSize: 'var(--font-size-sm)'
+          }} className="truncate max-w-[150px]">{complaint.hostel || complaint.location}</div>
+          {complaint.roomNumber ? <div style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-muted)'
+          }}>Room {complaint.roomNumber}</div> : complaint.hostel ? <div style={{
+            fontSize: 'var(--font-size-xs)',
+            color: 'var(--color-text-muted)'
+          }} className="truncate max-w-[150px]">{complaint.location}</div> : null}
         </div>
       ),
     },
     {
       header: "Category",
       key: "category",
-      className: "hidden md:table-cell text-sm text-gray-700",
+      className: "hidden md:table-cell",
+      style: {
+        fontSize: 'var(--font-size-sm)',
+        color: 'var(--color-text-body)'
+      }
     },
     {
       header: "Status",
       key: "status",
-      render: (complaint) => <span className={`px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${getStatusColor(complaint.status)}`}>{complaint.status}</span>,
+      render: (complaint) => <span className={`${getStatusColor(complaint.status)}`} style={{
+        padding: 'var(--badge-padding-sm)',
+        display: 'inline-flex',
+        fontSize: 'var(--badge-font-sm)',
+        lineHeight: 'var(--line-height-tight)',
+        fontWeight: 'var(--font-weight-medium)',
+        borderRadius: 'var(--radius-full)'
+      }}>{complaint.status}</span>,
     },
     {
       header: "Priority",
       key: "priority",
       className: "hidden lg:table-cell",
-      render: (complaint) => <span className={`px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${getPriorityColor(complaint.priority)}`}>{complaint.priority}</span>,
+      render: (complaint) => <span className={`${getPriorityColor(complaint.priority)}`} style={{
+        padding: 'var(--badge-padding-sm)',
+        display: 'inline-flex',
+        fontSize: 'var(--badge-font-sm)',
+        lineHeight: 'var(--line-height-tight)',
+        fontWeight: 'var(--font-weight-medium)',
+        borderRadius: 'var(--radius-full)'
+      }}>{complaint.priority}</span>,
     },
   ]
 
