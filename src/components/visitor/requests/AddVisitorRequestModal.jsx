@@ -166,38 +166,95 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
   return (
     <Modal title="Create Visitor Request" onClose={onClose} width={650}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
-          <div className="bg-red-50 p-4 rounded-lg flex items-start">
-            <FaExclamationTriangle className="text-red-500 mt-1 mr-3 flex-shrink-0" />
-            <p className="text-red-600">{error}</p>
+          <div style={{ 
+            backgroundColor: 'var(--color-danger-bg-light)', 
+            padding: 'var(--spacing-4)', 
+            borderRadius: 'var(--radius-lg)', 
+            display: 'flex', 
+            alignItems: 'flex-start' 
+          }}>
+            <FaExclamationTriangle style={{ 
+              color: 'var(--color-danger)', 
+              marginTop: 'var(--spacing-1)', 
+              marginRight: 'var(--spacing-3)', 
+              flexShrink: 0 
+            }} />
+            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
         {/* Visitor Selection */}
         <div>
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-medium text-gray-700">Select Visitors</h3>
-            <button type="button" onClick={handleAddProfile} className="text-sm text-[#1360AB] hover:text-blue-700 flex items-center">
-              <FaPlus size={12} className="mr-1" /> Add New Profile
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-3)' }}>
+            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Select Visitors</h3>
+            <button 
+              type="button" 
+              onClick={handleAddProfile} 
+              style={{ 
+                fontSize: 'var(--font-size-sm)', 
+                color: 'var(--color-primary)', 
+                display: 'flex', 
+                alignItems: 'center',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'var(--transition-colors)'
+              }}
+              onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'}
+              onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}
+            >
+              <FaPlus size={12} style={{ marginRight: 'var(--spacing-1)' }} /> Add New Profile
             </button>
           </div>
 
           {visitorProfiles.length === 0 ? (
-            <div className="bg-gray-50 p-4 rounded-lg text-center">
-              <p className="text-gray-500 text-sm">No visitor profiles found. Add some profiles first.</p>
+            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
+              <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>No visitor profiles found. Add some profiles first.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto p-2">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 'var(--spacing-3)', maxHeight: '240px', overflowY: 'auto', padding: 'var(--spacing-2)' }}>
               {visitorProfiles.map((visitor) => (
-                <div key={visitor._id} onClick={() => handleVisitorSelection(visitor._id)} className={`border p-3 rounded-lg cursor-pointer transition-colors ${formData.selectedVisitorIds.includes(visitor._id) ? "border-[#1360AB] bg-blue-50" : "border-gray-200 hover:bg-gray-50"}`}>
-                  <div className="flex items-start">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${formData.selectedVisitorIds.includes(visitor._id) ? "bg-[#1360AB] text-white" : "bg-gray-200 text-gray-500"}`}>
+                <div 
+                  key={visitor._id} 
+                  onClick={() => handleVisitorSelection(visitor._id)} 
+                  style={{ 
+                    border: `var(--border-1) solid ${formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-primary)' : 'var(--color-border-input)'}`,
+                    backgroundColor: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-primary-bg)' : 'transparent',
+                    padding: 'var(--spacing-3)', 
+                    borderRadius: 'var(--radius-lg)', 
+                    cursor: 'pointer', 
+                    transition: 'var(--transition-colors)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!formData.selectedVisitorIds.includes(visitor._id)) {
+                      e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!formData.selectedVisitorIds.includes(visitor._id)) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                    <div style={{ 
+                      width: 'var(--avatar-sm)', 
+                      height: 'var(--avatar-sm)', 
+                      borderRadius: 'var(--radius-full)', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      marginRight: 'var(--spacing-3)',
+                      backgroundColor: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-primary)' : 'var(--color-bg-muted)',
+                      color: formData.selectedVisitorIds.includes(visitor._id) ? 'var(--color-white)' : 'var(--color-text-muted)'
+                    }}>
                       <FaUserAlt size={12} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-800">{visitor.name}</h4>
-                      <div className="text-xs text-gray-500">
+                      <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{visitor.name}</h4>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                         <p>{visitor.relation}</p>
                         <p>{visitor.phone}</p>
                       </div>
@@ -210,26 +267,88 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         </div>
 
         {/* Visit Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">From Date</label>
-            <input type="date" name="fromDate" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p className="text-xs text-gray-500 mt-1">Must be at least 2 days from today</p>
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
+            <input 
+              type="date" 
+              name="fromDate" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.fromDate} 
+              onChange={handleChange} 
+              min={minDateString} 
+              required 
+            />
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Must be at least 2 days from today</p>
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">To Date</label>
-            <input type="date" name="toDate" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
+            <input 
+              type="date" 
+              name="toDate" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.toDate} 
+              onChange={handleChange} 
+              min={formData.fromDate || minDateString} 
+              required 
+            />
           </div>
         </div>
 
         {/* Reason for Visit */}
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">Reason for Visit</label>
+          <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
           <textarea
             name="reason"
             rows="4"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition resize-none"
+            style={{ 
+              width: '100%', 
+              padding: 'var(--input-padding)', 
+              border: 'var(--border-1) solid var(--input-border)', 
+              borderRadius: 'var(--input-radius)', 
+              outline: 'none', 
+              transition: 'var(--transition-colors)',
+              resize: 'none'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--input-border-focus)';
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--input-border)';
+              e.target.style.boxShadow = 'none';
+            }}
             value={formData.reason}
             onChange={handleChange}
             placeholder="Please provide details about the purpose of the visit"
@@ -239,47 +358,92 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
         {/* H2 Form Upload */}
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <label className="block text-gray-700 text-sm font-medium">
-              H2 Form Upload <span className="text-red-500">*</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+              H2 Form Upload <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
-            <a href="https://hostel.iiti.ac.in/docs/H2%20Form.pdf" target="_blank" rel="noopener noreferrer" className="text-xs text-[#1360AB] hover:text-blue-700 underline">
+            <a 
+              href="https://hostel.iiti.ac.in/docs/H2%20Form.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style={{ 
+                fontSize: 'var(--font-size-xs)', 
+                color: 'var(--color-primary)', 
+                textDecoration: 'underline',
+                transition: 'var(--transition-colors)'
+              }}
+              onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'}
+              onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}
+            >
               Download H2 Form
             </a>
           </div>
 
           {!h2FormUploaded ? (
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-              <div className="text-center">
-                <div className="mx-auto w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-3">
-                  <FaFileAlt className="w-6 h-6 text-[#1360AB]" />
+            <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ margin: '0 auto var(--spacing-3)', width: '48px', height: '48px', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FaFileAlt style={{ width: 'var(--icon-xl)', height: 'var(--icon-xl)', color: 'var(--color-primary)' }} />
                 </div>
-                <div className="space-y-2">
-                  <p className="text-gray-700 text-sm">Upload filled H2 form</p>
-                  <p className="text-gray-500 text-xs">PDF only (max 5MB)</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)' }}>Upload filled H2 form</p>
+                  <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>PDF only (max 5MB)</p>
                 </div>
 
                 {h2FormFile ? (
-                  <div className="mt-4 space-y-3">
-                    <div className="bg-gray-50 p-3 rounded-lg">
-                      <div className="flex items-center justify-center space-x-2">
-                        <FaFileAlt className="text-gray-600" />
-                        <span className="text-sm text-gray-700">{h2FormFile.name}</span>
+                  <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+                    <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)' }}>
+                        <FaFileAlt style={{ color: 'var(--color-text-tertiary)' }} />
+                        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{h2FormFile.name}</span>
                       </div>
                     </div>
-                    <div className="flex justify-center space-x-3">
-                      <button type="button" onClick={removeH2Form} className="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-3)' }}>
+                      <button 
+                        type="button" 
+                        onClick={removeH2Form} 
+                        style={{ 
+                          padding: 'var(--spacing-1) var(--spacing-3)', 
+                          fontSize: 'var(--font-size-xs)', 
+                          backgroundColor: 'var(--color-bg-muted)', 
+                          color: 'var(--color-text-tertiary)', 
+                          borderRadius: 'var(--radius-md)',
+                          border: 'none',
+                          cursor: 'pointer',
+                          transition: 'var(--transition-colors)'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+                      >
                         Remove
                       </button>
-                      <button type="button" onClick={uploadH2Form} disabled={h2FormUploading} className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed flex items-center">
+                      <button 
+                        type="button" 
+                        onClick={uploadH2Form} 
+                        disabled={h2FormUploading} 
+                        style={{ 
+                          padding: 'var(--spacing-2) var(--spacing-4)', 
+                          backgroundColor: h2FormUploading ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', 
+                          color: 'var(--color-white)', 
+                          fontSize: 'var(--font-size-sm)', 
+                          borderRadius: 'var(--radius-lg)',
+                          border: 'none',
+                          cursor: h2FormUploading ? 'not-allowed' : 'pointer',
+                          transition: 'var(--transition-colors)',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}
+                        onMouseEnter={(e) => !h2FormUploading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
+                        onMouseLeave={(e) => !h2FormUploading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}
+                      >
                         {h2FormUploading ? (
                           <>
-                            <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                            <div style={{ width: '12px', height: '12px', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></div>
                             Uploading...
                           </>
                         ) : (
                           <>
-                            <FaUpload className="mr-2" size={12} />
+                            <FaUpload style={{ marginRight: 'var(--spacing-2)' }} size={12} />
                             Upload
                           </>
                         )}
@@ -287,26 +451,55 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                     </div>
                   </div>
                 ) : (
-                  <div className="mt-4">
-                    <label className="inline-block">
-                      <input type="file" className="hidden" accept=".pdf" onChange={handleH2FormFileChange} />
-                      <span className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 cursor-pointer inline-block transition-colors">Select File</span>
+                  <div style={{ marginTop: 'var(--spacing-4)' }}>
+                    <label style={{ display: 'inline-block' }}>
+                      <input type="file" style={{ display: 'none' }} accept=".pdf" onChange={handleH2FormFileChange} />
+                      <span 
+                        style={{ 
+                          padding: 'var(--spacing-2) var(--spacing-4)', 
+                          backgroundColor: 'var(--button-primary-bg)', 
+                          color: 'var(--color-white)', 
+                          fontSize: 'var(--font-size-sm)', 
+                          borderRadius: 'var(--radius-lg)',
+                          cursor: 'pointer',
+                          display: 'inline-block',
+                          transition: 'var(--transition-colors)'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}
+                      >
+                        Select File
+                      </span>
                     </label>
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                  <FaCheckCircle className="w-5 h-5 text-green-600" />
+            <div style={{ backgroundColor: 'var(--color-success-bg-light)', border: 'var(--border-1) solid var(--color-success-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', backgroundColor: 'var(--color-success-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                  <FaCheckCircle style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} />
                 </div>
-                <div className="flex-1">
-                  <p className="text-green-800 font-medium text-sm">H2 Form Uploaded Successfully</p>
-                  <p className="text-green-600 text-xs">Ready to submit visitor request</p>
+                <div style={{ flex: 1 }}>
+                  <p style={{ color: 'var(--color-success-text)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>H2 Form Uploaded Successfully</p>
+                  <p style={{ color: 'var(--color-success)', fontSize: 'var(--font-size-xs)' }}>Ready to submit visitor request</p>
                 </div>
-                <button type="button" onClick={removeH2Form} className="text-green-600 hover:text-green-800 text-xs underline">
+                <button 
+                  type="button" 
+                  onClick={removeH2Form} 
+                  style={{ 
+                    color: 'var(--color-success)', 
+                    fontSize: 'var(--font-size-xs)', 
+                    textDecoration: 'underline',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'var(--transition-colors)'
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = 'var(--color-success-hover)'}
+                  onMouseLeave={(e) => e.target.style.color = 'var(--color-success)'}
+                >
                   Change
                 </button>
               </div>
@@ -315,11 +508,41 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         </div>
 
         {/* Submit Section */}
-        <div className="flex justify-end pt-4 border-t border-gray-100">
-          <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mr-3">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button 
+            type="button" 
+            onClick={onClose} 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: 'var(--color-bg-muted)', 
+              color: 'var(--color-text-secondary)', 
+              borderRadius: 'var(--radius-lg)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'var(--transition-colors)', 
+              marginRight: 'var(--spacing-3)' 
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+          >
             Cancel
           </button>
-          <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors" disabled={loading || visitorProfiles.length === 0 || !h2FormUploaded}>
+          <button 
+            type="submit" 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: (loading || visitorProfiles.length === 0 || !h2FormUploaded) ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', 
+              color: 'var(--color-white)', 
+              borderRadius: 'var(--radius-lg)',
+              border: 'none',
+              cursor: (loading || visitorProfiles.length === 0 || !h2FormUploaded) ? 'not-allowed' : 'pointer',
+              transition: 'var(--transition-colors)',
+              opacity: (loading || visitorProfiles.length === 0 || !h2FormUploaded) ? 'var(--opacity-disabled)' : '1'
+            }}
+            onMouseEnter={(e) => !(loading || visitorProfiles.length === 0 || !h2FormUploaded) && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
+            onMouseLeave={(e) => !(loading || visitorProfiles.length === 0 || !h2FormUploaded) && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}
+            disabled={loading || visitorProfiles.length === 0 || !h2FormUploaded}
+          >
             {loading ? "Submitting..." : "Submit Request"}
           </button>
         </div>
