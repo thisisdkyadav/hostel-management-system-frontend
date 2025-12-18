@@ -49,33 +49,155 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
 
   return (
     <Modal title="Add Visitor Profile" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {error && (
-          <div className="bg-red-50 p-4 rounded-lg flex items-start">
-            <FaExclamationTriangle className="text-red-500 mt-1 mr-3 flex-shrink-0" />
-            <p className="text-red-600">{error}</p>
+          <div style={{ 
+            backgroundColor: 'var(--color-danger-bg-light)', 
+            padding: 'var(--spacing-4)', 
+            borderRadius: 'var(--radius-lg)', 
+            display: 'flex', 
+            alignItems: 'flex-start' 
+          }}>
+            <FaExclamationTriangle style={{ 
+              color: 'var(--color-danger)', 
+              marginTop: 'var(--spacing-1)', 
+              marginRight: 'var(--spacing-3)', 
+              flexShrink: 0 
+            }} />
+            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Visitor Name</label>
-            <input type="text" name="name" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.name} onChange={handleChange} required />
+            <label style={{ 
+              display: 'block', 
+              color: 'var(--color-text-secondary)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              marginBottom: 'var(--spacing-2)' 
+            }}>Visitor Name</label>
+            <input 
+              type="text" 
+              name="name" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }} 
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.name} 
+              onChange={handleChange} 
+              required 
+            />
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
-            <input type="tel" name="phone" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.phone} onChange={handleChange} required />
+            <label style={{ 
+              display: 'block', 
+              color: 'var(--color-text-secondary)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              marginBottom: 'var(--spacing-2)' 
+            }}>Phone Number</label>
+            <input 
+              type="tel" 
+              name="phone" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }} 
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.phone} 
+              onChange={handleChange} 
+              required 
+            />
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
-            <input type="email" name="email" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.email} onChange={handleChange} required />
+            <label style={{ 
+              display: 'block', 
+              color: 'var(--color-text-secondary)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              marginBottom: 'var(--spacing-2)' 
+            }}>Email Address</label>
+            <input 
+              type="email" 
+              name="email" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }} 
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.email} 
+              onChange={handleChange} 
+              required 
+            />
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Relation with Student</label>
-            <select name="relation" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.relation} onChange={handleChange} required>
+            <label style={{ 
+              display: 'block', 
+              color: 'var(--color-text-secondary)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              marginBottom: 'var(--spacing-2)' 
+            }}>Relation with Student</label>
+            <select 
+              name="relation" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }} 
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.relation} 
+              onChange={handleChange} 
+              required
+            >
               <option value="">Select relation</option>
               <option value="Parent">Parent</option>
               <option value="Sibling">Sibling</option>
@@ -87,11 +209,46 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-gray-100">
-          <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mr-3">
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          paddingTop: 'var(--spacing-4)', 
+          borderTop: 'var(--border-1) solid var(--color-border-light)' 
+        }}>
+          <button 
+            type="button" 
+            onClick={onClose} 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: 'var(--color-bg-muted)', 
+              color: 'var(--color-text-secondary)', 
+              borderRadius: 'var(--radius-lg)', 
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'var(--transition-colors)', 
+              marginRight: 'var(--spacing-3)' 
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+          >
             Cancel
           </button>
-          <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors" disabled={loading}>
+          <button 
+            type="submit" 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: 'var(--button-primary-bg)', 
+              color: 'var(--color-white)', 
+              borderRadius: 'var(--radius-lg)', 
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'var(--transition-colors)',
+              opacity: loading ? 'var(--opacity-disabled)' : '1'
+            }}
+            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
+            onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}
+            disabled={loading}
+          >
             {loading ? "Saving..." : "Save Profile"}
           </button>
         </div>
