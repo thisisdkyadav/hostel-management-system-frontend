@@ -2,26 +2,88 @@ import React from "react"
 
 const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) => {
   return (
-    <div className="bg-red-50 border border-red-100 p-4 rounded-lg animate-fadeIn">
-      <h3 className="font-medium text-red-800 mb-3">Reject Visitor Request</h3>
-      <div className="mb-3">
-        <label htmlFor="rejection-reason" className="block text-sm font-medium text-gray-700 mb-1">
+    <div style={{
+      backgroundColor: 'var(--color-danger-bg-light)',
+      border: `var(--border-1) solid var(--color-danger-border)`,
+      padding: 'var(--spacing-4)',
+      borderRadius: 'var(--radius-lg)',
+      animation: 'fadeIn 0.3s ease-in-out'
+    }}>
+      <h3 style={{
+        fontWeight: 'var(--font-weight-medium)',
+        color: 'var(--color-danger-text)',
+        marginBottom: 'var(--spacing-3)',
+        fontSize: 'var(--font-size-base)'
+      }}>Reject Visitor Request</h3>
+      <div style={{ marginBottom: 'var(--spacing-3)' }}>
+        <label htmlFor="rejection-reason" style={{
+          display: 'block',
+          fontSize: 'var(--font-size-sm)',
+          fontWeight: 'var(--font-weight-medium)',
+          color: 'var(--color-text-body)',
+          marginBottom: 'var(--spacing-1)'
+        }}>
           Reason for Rejection (Optional)
         </label>
         <textarea
           id="rejection-reason"
           value={rejectionReason}
           onChange={(e) => onReasonChange(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          style={{
+            width: '100%',
+            padding: 'var(--spacing-2)',
+            border: `var(--border-1) solid var(--color-border-input)`,
+            borderRadius: 'var(--radius-md)',
+            fontSize: 'var(--font-size-base)',
+            outline: 'none',
+            transition: 'var(--transition-colors)',
+            resize: 'vertical'
+          }}
           rows="3"
           placeholder="Please provide an optional reason for rejection"
+          onFocus={(e) => {
+            e.target.style.boxShadow = 'var(--input-focus-ring)'
+            e.target.style.borderColor = 'var(--color-border-focus)'
+          }}
+          onBlur={(e) => {
+            e.target.style.boxShadow = 'none'
+            e.target.style.borderColor = 'var(--color-border-input)'
+          }}
         ></textarea>
       </div>
-      <div className="flex justify-end space-x-2">
-        <button onClick={onCancel} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+      <div style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: 'var(--spacing-2)'
+      }}>
+        <button onClick={onCancel} style={{
+          padding: 'var(--spacing-2) var(--spacing-4)',
+          backgroundColor: 'var(--color-bg-muted)',
+          color: 'var(--color-text-body)',
+          borderRadius: 'var(--radius-lg)',
+          border: 'none',
+          cursor: 'pointer',
+          transition: 'var(--transition-colors)',
+          fontSize: 'var(--font-size-base)',
+          fontWeight: 'var(--font-weight-medium)'
+        }}
+        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
           Cancel
         </button>
-        <button onClick={onSubmit} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+        <button onClick={onSubmit} style={{
+          padding: 'var(--spacing-2) var(--spacing-4)',
+          backgroundColor: 'var(--color-danger)',
+          color: 'var(--color-white)',
+          borderRadius: 'var(--radius-lg)',
+          border: 'none',
+          cursor: 'pointer',
+          transition: 'var(--transition-colors)',
+          fontSize: 'var(--font-size-base)',
+          fontWeight: 'var(--font-weight-medium)'
+        }}
+        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-hover)'}
+        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger)'}>
           Confirm Rejection
         </button>
       </div>
