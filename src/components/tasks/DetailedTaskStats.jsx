@@ -20,75 +20,130 @@ const DetailedTaskStats = ({ stats }) => {
     return TASK_PRIORITY_COLORS[priority] || "bg-gray-100 text-gray-800"
   }
 
-  // Category card colors
+  // Category card colors using theme variables
   const categoryColors = {
-    Maintenance: "bg-purple-100 text-purple-800",
-    Security: "bg-blue-100 text-blue-800",
-    Administrative: "bg-indigo-100 text-indigo-800",
-    Housekeeping: "bg-green-100 text-green-800",
-    Other: "bg-gray-100 text-gray-800",
+    Maintenance: { bg: 'var(--color-purple-light-bg)', text: 'var(--color-purple-text)' },
+    Security: { bg: 'var(--color-primary-bg)', text: 'var(--color-primary)' },
+    Administrative: { bg: 'var(--color-info-bg)', text: 'var(--color-info-text)' },
+    Housekeeping: { bg: 'var(--color-success-bg)', text: 'var(--color-success-text)' },
+    Other: { bg: 'var(--color-bg-muted)', text: 'var(--color-text-muted)' },
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+      gap: 'var(--spacing-4)'
+    }}>
       {/* Status Statistics */}
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-        <h3 className="text-sm font-medium text-gray-500 mb-3">By Status</h3>
-        <div className="space-y-2">
+      <div style={{
+        backgroundColor: 'var(--card-bg)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+        padding: 'var(--spacing-4)',
+        border: `var(--border-1) solid var(--color-border-primary)`
+      }}>
+        <h3 style={{
+          fontSize: 'var(--font-size-sm)',
+          fontWeight: 'var(--font-weight-medium)',
+          color: 'var(--color-text-muted)',
+          marginBottom: 'var(--spacing-3)'
+        }}>By Status</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
           {Object.entries(statusCounts || {}).map(([status, count]) => (
-            <div key={status} className="flex justify-between items-center">
+            <div key={status} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColorClass(status)}`}>{status}</span>
-              <span className="text-sm font-medium">{count}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Priority Statistics */}
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-        <h3 className="text-sm font-medium text-gray-500 mb-3">By Priority</h3>
-        <div className="space-y-2">
+      <div style={{
+        backgroundColor: 'var(--card-bg)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+        padding: 'var(--spacing-4)',
+        border: `var(--border-1) solid var(--color-border-primary)`
+      }}>
+        <h3 style={{
+          fontSize: 'var(--font-size-sm)',
+          fontWeight: 'var(--font-weight-medium)',
+          color: 'var(--color-text-muted)',
+          marginBottom: 'var(--spacing-3)'
+        }}>By Priority</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
           {Object.entries(priorityCounts || {}).map(([priority, count]) => (
-            <div key={priority} className="flex justify-between items-center">
+            <div key={priority} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColorClass(priority)}`}>{priority}</span>
-              <span className="text-sm font-medium">{count}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Category Statistics */}
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-        <h3 className="text-sm font-medium text-gray-500 mb-3">By Category</h3>
-        <div className="space-y-2">
+      <div style={{
+        backgroundColor: 'var(--card-bg)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+        padding: 'var(--spacing-4)',
+        border: `var(--border-1) solid var(--color-border-primary)`
+      }}>
+        <h3 style={{
+          fontSize: 'var(--font-size-sm)',
+          fontWeight: 'var(--font-weight-medium)',
+          color: 'var(--color-text-muted)',
+          marginBottom: 'var(--spacing-3)'
+        }}>By Category</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
           {Object.entries(categoryCounts || {}).map(([category, count]) => (
-            <div key={category} className="flex justify-between items-center">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColors[category] || "bg-gray-100"}`}>{category}</span>
-              <span className="text-sm font-medium">{count}</span>
+            <div key={category} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{
+                padding: 'var(--badge-padding-sm)',
+                borderRadius: 'var(--radius-full)',
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 'var(--font-weight-medium)',
+                backgroundColor: categoryColors[category]?.bg || 'var(--color-bg-muted)',
+                color: categoryColors[category]?.text || 'var(--color-text-muted)'
+              }}>{category}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Overdue Tasks Alert */}
-      <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-        <h3 className="text-sm font-medium text-gray-500 mb-3">Overview</h3>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Total Tasks</span>
-            <span className="text-sm font-medium">{Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)}</span>
+      <div style={{
+        backgroundColor: 'var(--card-bg)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+        padding: 'var(--spacing-4)',
+        border: `var(--border-1) solid var(--color-border-primary)`
+      }}>
+        <h3 style={{
+          fontSize: 'var(--font-size-sm)',
+          fontWeight: 'var(--font-weight-medium)',
+          color: 'var(--color-text-muted)',
+          marginBottom: 'var(--spacing-3)'
+        }}>Overview</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)' }}>Total Tasks</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{Object.values(statusCounts || {}).reduce((a, b) => a + b, 0)}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Completed</span>
-            <span className="text-sm font-medium text-green-600">{statusCounts?.Completed || 0}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)' }}>Completed</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-success-text)' }}>{statusCounts?.Completed || 0}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">In Progress</span>
-            <span className="text-sm font-medium text-[#1360AB]">{statusCounts?.["In Progress"] || 0}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)' }}>In Progress</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>{statusCounts?.["In Progress"] || 0}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm">Overdue</span>
-            <span className="text-sm font-medium text-red-600">{overdueTasks || 0}</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)' }}>Overdue</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-danger-text)' }}>{overdueTasks || 0}</span>
           </div>
         </div>
       </div>
