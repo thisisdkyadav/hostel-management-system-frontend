@@ -8,9 +8,9 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-medium text-gray-800 text-sm flex items-center">
-          <FiSearch className="mr-1.5 text-[#1360AB]" /> Lost & Found
+          <FiSearch className="mr-1.5" style={{ color: 'var(--color-primary)' }} /> Lost & Found
         </h3>
-        <Link to="lost-and-found" className="text-xs text-[#1360AB] hover:underline">
+        <Link to="lost-and-found" className="text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
           View All
         </Link>
       </div>
@@ -34,7 +34,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
       </div>
 
       <div className="mt-3 pt-2 border-t border-gray-100">
-        <Link to="lost-and-found" className="block w-full text-center bg-[#E4F1FF] text-[#1360AB] py-1.5 rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 text-xs font-medium">
+        <Link to="lost-and-found" className="block w-full text-center py-1.5 rounded-lg text-xs font-medium transition-all duration-300" style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary)'; e.currentTarget.style.color = 'var(--color-white)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary-bg)'; e.currentTarget.style.color = 'var(--color-primary)' }}>
           Browse Active Items
         </Link>
       </div>

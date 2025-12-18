@@ -18,35 +18,35 @@ import { Bar, Doughnut } from "react-chartjs-2"
 ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement)
 
 // Enhanced shimmer loader components
-const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-lg shadow-sm ${className}`} style={{ height, width }} aria-hidden="true" />
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] ${className}`} style={{ height, width }} aria-hidden="true" />
 
 // Shimmer with blurred preview for charts
 const ChartShimmer = ({ height, className = "" }) => (
-  <div className={`relative overflow-hidden rounded-xl border border-gray-200 ${className}`} style={{ height }} role="status" aria-label="Loading chart">
-    <div className="absolute inset-0 bg-white/60 backdrop-blur-sm"></div>
+  <div className={`relative overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-primary)] ${className}`} style={{ height }} role="status" aria-label="Loading chart">
+    <div className="absolute inset-0 bg-[var(--color-bg-primary)]/60 backdrop-blur-[var(--blur-sm)]"></div>
     <div className="absolute inset-0 flex items-center justify-center">
-      <div className="rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-400 animate-spin"></div>
+      <div className="rounded-[var(--radius-full)] h-[var(--spacing-12)] w-[var(--spacing-12)] border-[var(--border-4)] border-[var(--color-border-gray)] border-t-[var(--color-border-dark)] animate-spin"></div>
     </div>
-    <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-100 to-transparent"></div>
-    <div className="absolute inset-0 animate-pulse opacity-20 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"></div>
+    <div className="absolute inset-x-0 bottom-0 h-[var(--spacing-8)] bg-gradient-to-t from-[var(--color-bg-muted)] to-transparent"></div>
+    <div className="absolute inset-0 animate-pulse opacity-[var(--opacity-20)] bg-gradient-to-r from-[var(--color-bg-hover)] via-[var(--color-border-gray)] to-[var(--color-bg-hover)]"></div>
   </div>
 )
 
 // Shimmer for tables
 const TableShimmer = ({ rows = 4, className = "" }) => (
-  <div className={`overflow-hidden rounded-lg ${className}`}>
-    <div className="bg-gray-50 py-2 px-4 flex">
+  <div className={`overflow-hidden rounded-[var(--radius-lg)] ${className}`}>
+    <div className="bg-[var(--color-bg-tertiary)] py-[var(--spacing-2)] px-[var(--spacing-4)] flex">
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="flex-1 px-2">
-          <ShimmerLoader height="1rem" className="mb-1" />
+        <div key={i} className="flex-1 px-[var(--spacing-2)]">
+          <ShimmerLoader height="1rem" className="mb-[var(--spacing-1)]" />
         </div>
       ))}
     </div>
 
     {[...Array(rows)].map((_, i) => (
-      <div key={i} className={`flex py-2 px-4 ${i % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+      <div key={i} className={`flex py-[var(--spacing-2)] px-[var(--spacing-4)] ${i % 2 === 0 ? "bg-[var(--color-bg-primary)]" : "bg-[var(--color-bg-tertiary)]"}`}>
         {[...Array(4)].map((_, j) => (
-          <div key={j} className="flex-1 px-2">
+          <div key={j} className="flex-1 px-[var(--spacing-2)]">
             <ShimmerLoader height="0.8rem" width={j === 0 ? "80%" : "50%"} className="mx-auto" />
           </div>
         ))}
@@ -57,8 +57,8 @@ const TableShimmer = ({ rows = 4, className = "" }) => (
 
 // Shimmer for stat cards
 const StatCardShimmer = ({ className = "" }) => (
-  <div className={`rounded-lg border-l-4 border-gray-300 bg-gray-50 p-4 ${className}`}>
-    <div className="absolute right-2 top-2">
+  <div className={`rounded-[var(--radius-lg)] border-l-[var(--border-4)] border-[var(--color-border-gray)] bg-[var(--color-bg-tertiary)] p-[var(--spacing-4)] ${className}`}>
+    <div className="absolute right-[var(--spacing-2)] top-[var(--spacing-2)]">
       <ShimmerLoader height="1rem" width="2rem" />
     </div>
     <div className="flex justify-center items-center h-full">
@@ -69,15 +69,15 @@ const StatCardShimmer = ({ className = "" }) => (
 
 // Shimmer for event cards
 const EventCardShimmer = ({ count = 3, className = "" }) => (
-  <div className={`space-y-3 ${className}`}>
+  <div className={`space-y-[var(--spacing-3)] ${className}`}>
     {[...Array(count)].map((_, i) => (
-      <div key={i} className="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-300">
-        <ShimmerLoader height="1rem" width="70%" className="mb-3" />
+      <div key={i} className="bg-[var(--color-bg-tertiary)] p-[var(--spacing-3)] rounded-[var(--radius-lg)] border-l-[var(--border-4)] border-[var(--color-border-gray)]">
+        <ShimmerLoader height="1rem" width="70%" className="mb-[var(--spacing-3)]" />
         <div className="flex justify-between">
           <ShimmerLoader height="0.8rem" width="40%" />
           <ShimmerLoader height="0.8rem" width="25%" />
         </div>
-        <ShimmerLoader height="0.7rem" width="50%" className="mt-2" />
+        <ShimmerLoader height="0.7rem" width="50%" className="mt-[var(--spacing-2)]" />
       </div>
     ))}
   </div>

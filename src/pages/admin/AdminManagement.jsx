@@ -58,37 +58,37 @@ const AdminManagement = () => {
     <div className="flex flex-col h-full">
       <AdminManagementHeader onAddAdmin={() => setShowAddModal(true)} />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
 
       <AdminStats admins={admins} />
 
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-        <div className="text-gray-600 mb-4">Manage system administrators who have access to the admin portal. Administrators can manage hostels, wardens, students, and other system resources.</div>
+      <div className="bg-[var(--color-bg-primary)] rounded-[var(--radius-xl)] shadow-[var(--shadow-md)] p-[var(--spacing-6)] mb-[var(--spacing-6)]">
+        <div className="text-[var(--color-text-muted)] mb-[var(--spacing-4)]">Manage system administrators who have access to the admin portal. Administrators can manage hostels, wardens, students, and other system resources.</div>
 
         <div className="flex justify-end">
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search administrators by name or email" className="w-full sm:w-64 md:w-72" />
+          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search administrators by name or email" className="w-full sm:w-[var(--spacing-64)] md:w-[var(--spacing-72)]" />
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+        <div className="bg-[var(--color-danger-bg-light)] border-l-[var(--border-4)] border-[var(--color-danger)] p-[var(--spacing-4)] mb-[var(--spacing-6)]">
           <div className="flex">
-            <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="ml-[var(--spacing-3)]">
+              <p className="text-[var(--font-size-sm)] text-[var(--color-danger-text)]">{error}</p>
             </div>
           </div>
         </div>
       )}
 
       {loading && admins.length === 0 ? (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-          <p className="text-gray-600">Loading administrators...</p>
+        <div className="text-center py-[var(--spacing-10)]">
+          <div className="inline-block animate-spin rounded-[var(--radius-full)] h-[var(--spacing-8)] w-[var(--spacing-8)] border-t-[var(--border-2)] border-b-[var(--border-2)] border-[var(--color-primary)] mb-[var(--spacing-4)]"></div>
+          <p className="text-[var(--color-text-muted)]">Loading administrators...</p>
         </div>
       ) : filteredAdmins.length === 0 ? (
-        <NoResults icon={<FaUserShield className="text-gray-300 text-3xl" />} message="No administrators found" suggestion="Try changing your search criteria or add a new administrator" />
+        <NoResults icon={<FaUserShield className="text-[var(--color-border-primary)] text-[var(--font-size-3xl)]" />} message="No administrators found" suggestion="Try changing your search criteria or add a new administrator" />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-4)] md:gap-[var(--spacing-6)]">
           {filteredAdmins.map((admin) => (
             <AdminCard key={admin.id} admin={admin} onUpdate={() => fetchAdmins()} onDelete={() => fetchAdmins()} />
           ))}

@@ -143,12 +143,12 @@ const AccessHistory = ({ cachedData }) => {
       <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 h-full">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
-            <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
+            <div className="p-2.5 mr-3 rounded-xl" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
               <FaHistory size={20} />
             </div>
             <h2 className="text-xl font-bold text-gray-800">Access History</h2>
           </div>
-          <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-3 py-2 rounded-xl ${showFilters ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 border border-gray-200"}`} disabled={!isOnline && !cachedData}>
+          <button onClick={() => setShowFilters(!showFilters)} className="flex items-center px-3 py-2 rounded-xl" style={{ backgroundColor: showFilters ? 'var(--color-primary)' : 'var(--color-white)', color: showFilters ? 'var(--color-white)' : 'var(--color-text-body)', border: showFilters ? 'none' : '1px solid var(--color-border-primary)' }} disabled={!isOnline && !cachedData}>
             <FaFilter className="mr-2" /> Filters
           </button>
         </div>
@@ -188,7 +188,7 @@ const AccessHistory = ({ cachedData }) => {
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">
               <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+              <div className="absolute top-0 left-0 w-full h-full border-4 rounded-full animate-spin border-t-transparent" style={{ borderColor: 'var(--color-primary)' }}></div>
             </div>
           </div>
         ) : entries.length === 0 ? (
@@ -221,7 +221,7 @@ const AccessHistory = ({ cachedData }) => {
                       <tr key={entry._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className={`p-1.5 rounded-md ${entry.status === "Checked In" ? "bg-green-100" : "bg-blue-100"} mr-2`}>{entry.status === "Checked In" ? <FaSignInAlt className="text-green-600 text-sm" /> : <FaSignOutAlt className="text-blue-600 text-sm" />}</div>
+                            <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-info-bg)' }}>{entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}</div>
                             <span className="text-sm font-medium text-gray-700">{entry.status}</span>
                           </div>
                         </td>
@@ -250,7 +250,7 @@ const AccessHistory = ({ cachedData }) => {
                 <div key={entry._id} className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
-                      <div className={`p-1.5 rounded-md ${entry.status === "Checked In" ? "bg-green-100" : "bg-blue-100"} mr-2`}>{entry.status === "Checked In" ? <FaSignInAlt className="text-green-600 text-sm" /> : <FaSignOutAlt className="text-blue-600 text-sm" />}</div>
+                      <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-info-bg)' }}>{entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}</div>
                       <span className="text-sm font-medium text-gray-700">{entry.status}</span>
                     </div>
                   </div>

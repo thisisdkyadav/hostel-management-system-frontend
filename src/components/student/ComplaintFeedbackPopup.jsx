@@ -44,7 +44,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
       <button type="button" onClick={onClose} disabled={isSubmitting} className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors disabled:opacity-50">
         Skip for Now
       </button>
-      <button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} className="px-6 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+      <button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} className="px-6 py-2.5 text-white rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)' }} onMouseLeave={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)' }}>
         {isSubmitting ? (
           <>
             <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
         <div className="bg-gray-50 p-4 rounded-lg space-y-2.5">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-1">
+              <h4 className="text-sm font-medium flex items-center mb-1" style={{ color: 'var(--color-primary)' }}>
                 <FaClipboardList className="mr-1.5 flex-shrink-0" size={14} /> Complaint
               </h4>
               <p className="font-semibold text-gray-800 text-base leading-tight">{complaint.title}</p>
@@ -97,7 +97,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
               {complaint.resolutionNotes && (
                 <div>
-                  <h5 className="text-xs font-medium text-[#1360AB] flex items-center mb-0.5">
+                  <h5 className="text-xs font-medium flex items-center mb-0.5" style={{ color: 'var(--color-primary)' }}>
                     <FaInfoCircle className="mr-1" size={12} /> Resolution
                   </h5>
                   <p className="text-gray-700 text-sm leading-snug line-clamp-2">{complaint.resolutionNotes}</p>
@@ -170,7 +170,10 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1360AB] focus:border-[#1360AB] transition-colors resize-none text-sm"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 transition-colors resize-none text-sm"
+            style={{ '--tw-ring-color': 'var(--color-primary)' }}
+            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
+            onBlur={(e) => e.currentTarget.style.borderColor = ''}
             placeholder="Share your thoughts..."
           />
         </div>

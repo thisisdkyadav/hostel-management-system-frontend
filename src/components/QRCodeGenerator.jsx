@@ -85,14 +85,14 @@ const QRCodeGenerator = () => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
       <div className="flex items-center mb-4">
-        <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
+        <div className="p-2.5 mr-3 rounded-xl" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={20} />
         </div>
         <h2 className="text-xl font-bold text-gray-800">Campus Access QR Code</h2>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-lg mb-5 flex items-start">
-        <FaInfoCircle className="text-[#1360AB] mt-0.5 mr-2 flex-shrink-0" />
+      <div className="p-4 rounded-lg mb-5 flex items-start" style={{ backgroundColor: 'var(--color-primary-bg-light)' }}>
+        <FaInfoCircle className="mt-0.5 mr-2 flex-shrink-0" style={{ color: 'var(--color-primary)' }} />
         <p className="text-sm text-gray-700">This QR code acts as your digital ID. Security personnel will scan this code to verify your identity. For security reasons, each code expires after 5 minutes.</p>
       </div>
 
@@ -103,7 +103,7 @@ const QRCodeGenerator = () => {
       ) : (
         <div className="flex flex-col items-center">
           <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 inline-block">
-            <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={"#1360AB"} level={"H"} includeMargin={true} />
+            <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || "#1360AB"} level={"H"} includeMargin={true} />
           </div>
 
           {countdown !== null && (

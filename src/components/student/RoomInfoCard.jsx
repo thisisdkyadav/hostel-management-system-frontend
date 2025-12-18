@@ -16,14 +16,14 @@ const RoomInfoCard = ({ roomData }) => {
     <div className="bg-white shadow-sm p-4 rounded-xl w-full border border-gray-100">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <BsDoorOpenFill className="text-[#1360AB] text-lg" />
+          <BsDoorOpenFill className="text-lg" style={{ color: 'var(--color-primary)' }} />
           <h3 className="text-gray-600 font-medium">Your Room</h3>
         </div>
-        <span className="text-xs bg-blue-100 text-[#1360AB] px-2 py-0.5 rounded-full">{roomData.hostelName}</span>
+        <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>{roomData.hostelName}</span>
       </div>
 
       <div className="flex items-center gap-3 mt-3">
-        <p className="text-4xl font-medium text-[#1360AB]">{roomData.roomNumber}</p>
+        <p className="text-4xl font-medium" style={{ color: 'var(--color-primary)' }}>{roomData.roomNumber}</p>
         <div className="flex items-center text-xs text-gray-600">
           <FaUserFriends className="text-gray-500 mr-1" />
           <span>
@@ -38,7 +38,7 @@ const RoomInfoCard = ({ roomData }) => {
           <div className="flex flex-wrap gap-1.5">
             {roomData.roommates.map((roommate) => (
               <div key={roommate.rollNumber} className="flex items-center text-xs bg-gray-50 px-1.5 py-0.5 rounded-md">
-                {roommate.avatar ? <img src={getMediaUrl(roommate.avatar)} alt={roommate.name} className="w-4 h-4 rounded-full mr-1" /> : <div className="w-4 h-4 rounded-full bg-blue-100 text-[#1360AB] flex items-center justify-center text-[9px] mr-1">{getOccupantInitials(roommate.name)}</div>}
+                {roommate.avatar ? <img src={getMediaUrl(roommate.avatar)} alt={roommate.name} className="w-4 h-4 rounded-full mr-1" /> : <div className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] mr-1" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>{getOccupantInitials(roommate.name)}</div>}
                 <span className="truncate max-w-[80px]">{roommate.name}</span>
               </div>
             ))}

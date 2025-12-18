@@ -7,7 +7,7 @@ const StudentProfile = ({ profile }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col md:flex-row items-center">
       <div className="mb-4 md:mb-0 md:mr-6">
-        <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-[#1360AB] text-2xl">{profile.profileImage ? <img src={getMediaUrl(profile.profileImage)} alt="Profile" className="w-full h-full rounded-full object-cover" /> : <FaUser />}</div>
+        <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>{profile.profileImage ? <img src={getMediaUrl(profile.profileImage)} alt="Profile" className="w-full h-full rounded-full object-cover" /> : <FaUser />}</div>
       </div>
 
       <div className="flex-1 text-center md:text-left">
@@ -24,7 +24,7 @@ const StudentProfile = ({ profile }) => {
 
       <div className="mt-4 md:mt-0 flex space-x-2">
         {/* <div className="bg-blue-50 px-3 py-1 rounded-full text-xs text-[#1360AB]">{profile.year} Year</div> */}
-        <div className="bg-green-50 px-3 py-1 rounded-full text-xs text-green-600">{profile.hostelName}</div>
+        <div className="px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>{profile.hostelName}</div>
       </div>
     </div>
   )
