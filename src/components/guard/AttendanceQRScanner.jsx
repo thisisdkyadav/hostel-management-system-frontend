@@ -149,64 +149,179 @@ const AttendanceQRScanner = ({ onRefresh }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-      <div className="flex items-center mb-4">
-        <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
-          <FaQrcode size={20} />
+    <div style={{
+      backgroundColor: 'var(--color-bg-primary)',
+      borderRadius: 'var(--radius-xl)',
+      padding: 'var(--spacing-6)',
+      boxShadow: 'var(--shadow-sm)',
+      border: `var(--border-1) solid var(--color-border-light)`,
+      transition: 'var(--transition-all)'
+    }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+        <div style={{
+          padding: 'var(--spacing-2-5)',
+          marginRight: 'var(--spacing-3)',
+          borderRadius: 'var(--radius-xl)',
+          backgroundColor: 'var(--color-primary-bg)',
+          color: 'var(--color-primary)'
+        }}>
+          <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
-        <h2 className="text-xl font-bold text-gray-800">Scan Staff Attendance QR Code</h2>
+        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Scan Staff Attendance QR Code</h2>
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 text-red-700 p-3 rounded-lg border-l-4 border-red-500 flex items-start">
-          <FaTimes className="mr-2 mt-0.5 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div style={{
+          marginBottom: 'var(--spacing-4)',
+          backgroundColor: 'var(--color-danger-bg-light)',
+          color: 'var(--color-danger-text)',
+          padding: 'var(--spacing-3)',
+          borderRadius: 'var(--radius-lg)',
+          borderLeft: `var(--border-4) solid var(--color-danger)`,
+          display: 'flex',
+          alignItems: 'flex-start'
+        }}>
+          <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
+          <p style={{ fontSize: 'var(--font-size-sm)' }}>{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="mb-4 bg-green-50 text-green-700 p-3 rounded-lg border-l-4 border-green-500 flex items-start">
-          <FaUser className="mr-2 mt-0.5 flex-shrink-0" />
-          <p className="text-sm">{success}</p>
+        <div style={{
+          marginBottom: 'var(--spacing-4)',
+          backgroundColor: 'var(--color-success-bg-light)',
+          color: 'var(--color-success-text)',
+          padding: 'var(--spacing-3)',
+          borderRadius: 'var(--radius-lg)',
+          borderLeft: `var(--border-4) solid var(--color-success)`,
+          display: 'flex',
+          alignItems: 'flex-start'
+        }}>
+          <FaUser style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
+          <p style={{ fontSize: 'var(--font-size-sm)' }}>{success}</p>
         </div>
       )}
 
       {!scanning && !scannedPerson && !loading && (
-        <button onClick={startScanner} className="w-full py-3 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm hover:shadow-md flex items-center justify-center">
-          <FaQrcode className="mr-2" /> Start QR Scanner
+        <button onClick={startScanner} style={{
+          width: '100%',
+          padding: 'var(--spacing-3) 0',
+          backgroundColor: 'var(--button-primary-bg)',
+          color: 'var(--color-white)',
+          borderRadius: 'var(--radius-lg)',
+          transition: 'var(--transition-colors)',
+          boxShadow: 'var(--shadow-sm)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: 'var(--font-size-base)',
+          fontWeight: 'var(--font-weight-medium)'
+        }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}>
+          <FaQrcode style={{ marginRight: 'var(--spacing-2)' }} /> Start QR Scanner
         </button>
       )}
 
-      <div className="mb-4">
-        <div id="qr-reader" className="w-full max-w-sm mx-auto rounded-lg overflow-hidden"></div>
+      <div style={{ marginBottom: 'var(--spacing-4)' }}>
+        <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <button onClick={stopScanner} className="w-full mt-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-            <FaTimes className="mr-2 inline" /> Stop Scanner
+          <button onClick={stopScanner} style={{
+            width: '100%',
+            marginTop: 'var(--spacing-4)',
+            padding: 'var(--spacing-2) 0',
+            backgroundColor: 'var(--color-danger)',
+            color: 'var(--color-white)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'var(--transition-colors)',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)'
+          }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}>
+            <FaTimes style={{ marginRight: 'var(--spacing-2)', display: 'inline' }} /> Stop Scanner
           </button>
         )}
       </div>
 
       {loading && (
-        <div className="text-center py-8">
-          <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Processing QR code...</p>
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+          <div style={{
+            width: 'var(--spacing-12)',
+            height: 'var(--spacing-12)',
+            border: `var(--border-4) solid var(--color-primary)`,
+            borderTopColor: 'transparent',
+            borderRadius: 'var(--radius-full)',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto var(--spacing-4)'
+          }}></div>
+          <p style={{ color: 'var(--color-text-muted)' }}>Processing QR code...</p>
         </div>
       )}
 
       {scannedPerson && !loading && (
-        <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
-          <div className="mb-4">
-            <h3 className="font-semibold text-lg text-gray-800 mb-1">{scannedPerson.name}</h3>
-            <p className="text-gray-600 text-sm">{scannedPerson.email}</p>
-            <div className="mt-2 inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
+        <div style={{
+          marginTop: 'var(--spacing-4)',
+          padding: 'var(--spacing-4)',
+          border: `var(--border-1) solid var(--color-border-primary)`,
+          borderRadius: 'var(--radius-lg)',
+          backgroundColor: 'var(--color-bg-tertiary)'
+        }}>
+          <div style={{ marginBottom: 'var(--spacing-4)' }}>
+            <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</h3>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>{scannedPerson.email}</p>
+            <div style={{
+              marginTop: 'var(--spacing-2)',
+              display: 'inline-block',
+              padding: 'var(--spacing-1) var(--spacing-2)',
+              backgroundColor: 'var(--color-info-bg)',
+              color: 'var(--color-info-text)',
+              fontSize: 'var(--font-size-xs)',
+              fontWeight: 'var(--font-weight-medium)',
+              borderRadius: 'var(--radius-full)'
+            }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
           </div>
 
-          <div className="flex space-x-2 mt-4">
-            <button onClick={recordAttendance} disabled={recordingAttendance} className="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center">
-              {recordingAttendance ? <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span> : <FaUser className="mr-2" />}
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
+            <button onClick={recordAttendance} disabled={recordingAttendance} style={{
+              flex: 1,
+              padding: 'var(--spacing-2) 0',
+              backgroundColor: 'var(--color-success)',
+              color: 'var(--color-white)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-colors)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              cursor: recordingAttendance ? 'not-allowed' : 'pointer',
+              opacity: recordingAttendance ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
+              fontSize: 'var(--font-size-base)',
+              fontWeight: 'var(--font-weight-medium)'
+            }} onMouseEnter={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success-hover)')} onMouseLeave={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success)')}>
+              {recordingAttendance ? <span style={{
+                display: 'inline-block',
+                width: 'var(--spacing-4)',
+                height: 'var(--spacing-4)',
+                border: `var(--border-2) solid var(--color-white)`,
+                borderTopColor: 'transparent',
+                borderRadius: 'var(--radius-full)',
+                animation: 'spin 1s linear infinite',
+                marginRight: 'var(--spacing-2)'
+              }}></span> : <FaUser style={{ marginRight: 'var(--spacing-2)' }} />}
               Record Attendance
             </button>
-            <button onClick={handleReset} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+            <button onClick={handleReset} style={{
+              padding: '0 var(--spacing-4)',
+              backgroundColor: 'var(--color-bg-muted)',
+              color: 'var(--color-text-secondary)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-colors)',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: 'var(--font-size-base)',
+              fontWeight: 'var(--font-weight-medium)'
+            }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
               Cancel
             </button>
           </div>

@@ -5,60 +5,166 @@ const EntryDetails = ({ entry, onClose }) => {
   if (!entry) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-[#1360AB]">Entry Details</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <FaTimes size={20} />
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'var(--modal-backdrop)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 'var(--z-modal)'
+    }}>
+      <div style={{
+        backgroundColor: 'var(--modal-bg)',
+        borderRadius: 'var(--modal-radius)',
+        boxShadow: 'var(--modal-shadow)',
+        width: '100%',
+        maxWidth: 'var(--container-md)',
+        margin: '0 var(--spacing-4)',
+        padding: 'var(--spacing-6)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 'var(--spacing-4)'
+        }}>
+          <h2 style={{
+            fontSize: 'var(--font-size-xl)',
+            fontWeight: 'var(--font-weight-bold)',
+            color: 'var(--modal-title-color)'
+          }}>Entry Details</h2>
+          <button onClick={onClose} style={{
+            color: 'var(--color-text-muted)',
+            backgroundColor: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 'var(--spacing-2)',
+            transition: 'var(--transition-colors)'
+          }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-text-body)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
+            <FaTimes size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
           </button>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-          <div className="flex items-center mb-4">
-            <div className="bg-[#1360AB] p-3 rounded-full text-white mr-4">
-              <FaUserCircle size={32} />
+        <div style={{
+          backgroundColor: 'var(--color-bg-tertiary)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--spacing-4)',
+          marginBottom: 'var(--spacing-4)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: 'var(--spacing-4)'
+          }}>
+            <div style={{
+              backgroundColor: 'var(--button-primary-bg)',
+              padding: 'var(--spacing-3)',
+              borderRadius: 'var(--radius-full)',
+              color: 'var(--color-white)',
+              marginRight: 'var(--spacing-4)'
+            }}>
+              <FaUserCircle size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-2xl'))} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold">{entry.name}</h3>
-              <p className="text-gray-500 text-sm">{entry.id}</p>
+              <h3 style={{
+                fontSize: 'var(--font-size-lg)',
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--color-text-primary)'
+              }}>{entry.name}</h3>
+              <p style={{
+                color: 'var(--color-text-muted)',
+                fontSize: 'var(--font-size-sm)'
+              }}>{entry.id}</p>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center">
-              <FaDoorOpen className="text-[#1360AB] mr-3" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FaDoorOpen style={{
+                color: 'var(--color-primary)',
+                marginRight: 'var(--spacing-3)',
+                width: 'var(--icon-lg)'
+              }} />
               <div>
-                <p className="text-sm text-gray-500">Room Number</p>
-                <p className="font-medium">{entry.room}</p>
+                <p style={{
+                  fontSize: 'var(--font-size-sm)',
+                  color: 'var(--color-text-muted)'
+                }}>Room Number</p>
+                <p style={{
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--color-text-primary)'
+                }}>{entry.room}</p>
               </div>
             </div>
 
-            <div className="flex items-center">
-              <FaCalendarAlt className="text-[#1360AB] mr-3" />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FaCalendarAlt style={{
+                color: 'var(--color-primary)',
+                marginRight: 'var(--spacing-3)',
+                width: 'var(--icon-lg)'
+              }} />
               <div>
-                <p className="text-sm text-gray-500">Date</p>
-                <p className="font-medium">{entry.date}</p>
+                <p style={{
+                  fontSize: 'var(--font-size-sm)',
+                  color: 'var(--color-text-muted)'
+                }}>Date</p>
+                <p style={{
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--color-text-primary)'
+                }}>{entry.date}</p>
               </div>
             </div>
 
-            <div className="flex items-center">
-              <FaClock className="text-[#1360AB] mr-3" />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FaClock style={{
+                color: 'var(--color-primary)',
+                marginRight: 'var(--spacing-3)',
+                width: 'var(--icon-lg)'
+              }} />
               <div>
-                <p className="text-sm text-gray-500">Time</p>
-                <p className="font-medium">{entry.time}</p>
+                <p style={{
+                  fontSize: 'var(--font-size-sm)',
+                  color: 'var(--color-text-muted)'
+                }}>Time</p>
+                <p style={{
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--color-text-primary)'
+                }}>{entry.time}</p>
               </div>
             </div>
 
-            <div className="pt-2">
-              <p className="text-sm text-gray-500">Status</p>
-              <span className={`mt-1 px-3 py-1 inline-flex text-sm font-semibold rounded-full ${entry.status === "Checked In" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{entry.status}</span>
+            <div style={{ paddingTop: 'var(--spacing-2)' }}>
+              <p style={{
+                fontSize: 'var(--font-size-sm)',
+                color: 'var(--color-text-muted)'
+              }}>Status</p>
+              <span style={{
+                marginTop: 'var(--spacing-1)',
+                padding: 'var(--spacing-1) var(--spacing-3)',
+                display: 'inline-flex',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-semibold)',
+                borderRadius: 'var(--radius-full)',
+                backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
+                color: entry.status === "Checked In" ? 'var(--color-success-text)' : 'var(--color-danger-text)'
+              }}>{entry.status}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end">
-          <button onClick={onClose} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition">
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <button onClick={onClose} style={{
+            backgroundColor: 'var(--color-bg-muted)',
+            color: 'var(--color-text-body)',
+            padding: 'var(--spacing-2) var(--spacing-4)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'var(--transition-colors)',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)'
+          }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
             Close
           </button>
         </div>
