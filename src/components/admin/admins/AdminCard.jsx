@@ -21,11 +21,11 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
   const getStatusColor = (currentStatus) => {
     switch (currentStatus) {
       case "active":
-        return { bg: "bg-green-500", light: "bg-green-100", text: "text-green-700" }
+        return { bg: "bg-[var(--color-success)]", light: "bg-[var(--color-success-bg)]", text: "text-[var(--color-success-text)]" }
       case "inactive":
-        return { bg: "bg-red-500", light: "bg-red-100", text: "text-red-700" }
+        return { bg: "bg-[var(--color-danger)]", light: "bg-[var(--color-danger-bg)]", text: "text-[var(--color-danger-text)]" }
       default:
-        return { bg: "bg-gray-400", light: "bg-gray-100", text: "text-gray-700" }
+        return { bg: "bg-[var(--color-text-disabled)]", light: "bg-[var(--color-bg-muted)]", text: "text-[var(--color-text-muted)]" }
     }
   }
 
@@ -44,53 +44,53 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
   return (
     <>
       <Card className="relative overflow-hidden">
-        <div className={`absolute top-0 right-0 w-16 h-16`}>
-          <div className={`absolute rotate-45 transform origin-bottom-right ${statusColor.bg} text-white text-xs font-medium py-1 right-[-6px] top-[-2px] w-24 text-center`}>{status === "active" ? "Active" : "Inactive"}</div>
+        <div className={`absolute top-0 right-0 w-[var(--spacing-16)] h-[var(--spacing-16)]`}>
+          <div className={`absolute rotate-45 transform origin-bottom-right ${statusColor.bg} text-[var(--color-white)] text-[var(--font-size-xs)] font-[var(--font-weight-medium)] py-[var(--spacing-1)] right-[-6px] top-[-2px] w-[var(--spacing-24)] text-center`}>{status === "active" ? "Active" : "Inactive"}</div>
         </div>
 
         <Card.Header className="mb-0">
           <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
+          <div className="flex-shrink-0 mb-[var(--spacing-3)] md:mb-0 md:mr-[var(--spacing-4)]">
             {admin.profileImage ? (
-              <img src={getMediaUrl(admin.profileImage)} alt={admin.name} className="w-16 h-16 rounded-full object-cover border-2 border-[#1360AB] shadow-sm" />
+              <img src={getMediaUrl(admin.profileImage)} alt={admin.name} className="w-[var(--avatar-xl)] h-[var(--avatar-xl)] rounded-[var(--radius-full)] object-cover border-[var(--border-2)] border-[var(--color-primary)] shadow-[var(--shadow-sm)]" />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center border-2 border-[#1360AB]">
-                <FaUserShield className="text-[#1360AB] text-2xl" />
+              <div className="w-[var(--avatar-xl)] h-[var(--avatar-xl)] rounded-[var(--radius-full)] bg-[var(--color-primary-bg)] flex items-center justify-center border-[var(--border-2)] border-[var(--color-primary)]">
+                <FaUserShield className="text-[var(--color-primary)] text-[var(--font-size-2xl)]" />
               </div>
             )}
           </div>
           <div>
-            <h3 className="font-bold text-lg text-gray-800 truncate">{admin.name}</h3>
-            <div className="text-sm text-gray-600 mt-0.5 truncate">{admin.category || "Admin"}</div>
+            <h3 className="font-[var(--font-weight-bold)] text-[var(--font-size-lg)] text-[var(--color-text-secondary)] truncate">{admin.name}</h3>
+            <div className="text-[var(--font-size-sm)] text-[var(--color-text-muted)] mt-[var(--spacing-0-5)] truncate">{admin.category || "Admin"}</div>
           </div>
           </div>
         </Card.Header>
 
-        <Card.Body className="mt-5 space-y-3 text-sm">
+        <Card.Body className="mt-[var(--spacing-5)] space-y-[var(--spacing-3)] text-[var(--font-size-sm)]">
           <div className="flex items-center">
-            <div className="flex-shrink-0 w-8 flex justify-center">
-              <FaEnvelope className="text-gray-400" />
+            <div className="flex-shrink-0 w-[var(--spacing-8)] flex justify-center">
+              <FaEnvelope className="text-[var(--color-text-placeholder)]" />
             </div>
-            <span className="truncate text-gray-700">{admin.email}</span>
+            <span className="truncate text-[var(--color-text-tertiary)]">{admin.email}</span>
           </div>
 
           <div className="flex items-center">
-            <div className="flex-shrink-0 w-8 flex justify-center">
-              <FaPhone className="text-gray-400" />
+            <div className="flex-shrink-0 w-[var(--spacing-8)] flex justify-center">
+              <FaPhone className="text-[var(--color-text-placeholder)]" />
             </div>
-            {admin.phone ? <span className="text-gray-700">{admin.phone}</span> : <span className="text-gray-400 italic">Not provided</span>}
+            {admin.phone ? <span className="text-[var(--color-text-tertiary)]">{admin.phone}</span> : <span className="text-[var(--color-text-placeholder)] italic">Not provided</span>}
           </div>
 
           <div className="flex items-start">
-            <div className="flex-shrink-0 w-8 flex justify-center pt-0.5">
-              <FaUserShield className="text-gray-400" />
+            <div className="flex-shrink-0 w-[var(--spacing-8)] flex justify-center pt-[var(--spacing-0-5)]">
+              <FaUserShield className="text-[var(--color-text-placeholder)]" />
             </div>
-            <span className="font-medium text-gray-800 break-words">System Administrator</span>
+            <span className="font-[var(--font-weight-medium)] text-[var(--color-text-secondary)] break-words">System Administrator</span>
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
-          <div className="text-xs text-gray-500">
+        <Card.Footer className="mt-[var(--spacing-5)] pt-[var(--spacing-4)] border-t border-[var(--color-border-light)] flex items-center justify-between">
+          <div className="text-[var(--font-size-xs)] text-[var(--color-text-muted)]">
             Added on{" "}
             {admin.createdAt
               ? new Date(admin.createdAt).toLocaleDateString("en-US", {
@@ -101,9 +101,9 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
               : "N/A"}
           </div>
 
-          <div className="flex space-x-2">
-            <button onClick={() => setShowEditForm(true)} className="flex items-center justify-center p-2.5 bg-blue-50 text-[#1360AB] rounded-lg hover:bg-blue-100 transition-all duration-200" aria-label="Edit administrator">
-              <FaEdit className="text-sm" />
+          <div className="flex space-x-[var(--spacing-2)]">
+            <button onClick={() => setShowEditForm(true)} className="flex items-center justify-center p-[var(--spacing-2-5)] bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-[var(--radius-lg)] hover:bg-[var(--color-primary-bg-hover)] transition-[var(--transition-all)] duration-[var(--duration-normal)]" aria-label="Edit administrator">
+              <FaEdit className="text-[var(--font-size-sm)]" />
             </button>
           </div>
         </Card.Footer>
