@@ -26,15 +26,89 @@ const ActionButtons = ({
   const isApproved = requestStatus === "Approved"
   const isRejected = requestStatus === "Rejected"
 
+  const buttonBaseStyle = {
+    padding: "var(--spacing-2) var(--spacing-4)",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: "var(--shadow-sm)",
+    transition: "var(--transition-colors)",
+    fontSize: "var(--font-size-base)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "none",
+    cursor: "pointer",
+  }
+
+  const closeButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: "var(--color-bg-muted)",
+    color: "var(--color-text-body)",
+  }
+
+  const cancelButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: "var(--color-danger)",
+    color: "var(--color-white)",
+  }
+
+  const editButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: "var(--color-bg-muted)",
+    color: "var(--color-text-body)",
+  }
+
+  const rejectButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: showRejectForm ? "var(--color-danger-hover)" : "var(--color-danger)",
+    color: "var(--color-white)",
+  }
+
+  const approveButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: showApproveForm ? "var(--color-primary-hover)" : "var(--color-primary)",
+    color: "var(--color-white)",
+  }
+
+  const allocateButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: "var(--color-primary)",
+    color: "var(--color-white)",
+  }
+
+  const checkInButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: showCheckInForm ? "var(--color-primary-hover)" : "var(--color-primary)",
+    color: "var(--color-white)",
+  }
+
+  const checkOutButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: showCheckInForm ? "var(--color-success-hover)" : "var(--color-success)",
+    color: "var(--color-white)",
+  }
+
+  const editCheckTimesButtonStyle = {
+    ...buttonBaseStyle,
+    backgroundColor: "var(--color-warning)",
+    color: "var(--color-white)",
+  }
+
   return (
-    <div className="flex flex-wrap justify-end space-x-3 pt-4 border-t border-gray-200">
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "flex-end",
+        gap: "var(--spacing-3)",
+        paddingTop: "var(--spacing-4)",
+        borderTop: `var(--border-1) solid var(--color-border-primary)`,
+      }}
+    >
       {/* Student actions */}
       {userRole === "Student" && isPending && (
         <>
-          <button onClick={onCancelRequest} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition-colors">
+          <button onClick={onCancelRequest} style={cancelButtonStyle}>
             Cancel Request
           </button>
-          <button onClick={onEditRequest} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
+          <button onClick={onEditRequest} style={editButtonStyle}>
             Edit Request
           </button>
         </>
@@ -43,13 +117,13 @@ const ActionButtons = ({
       {/* Admin actions for pending requests */}
       {userRole === "Admin" && isPending && (
         <>
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
+          <button onClick={onClose} style={closeButtonStyle}>
             Close
           </button>
-          <button onClick={onShowRejectForm} className={`px-4 py-2 ${showRejectForm ? "bg-red-600" : "bg-red-500 hover:bg-red-600"} text-white rounded-lg shadow-sm transition-colors`}>
+          <button onClick={onShowRejectForm} style={rejectButtonStyle}>
             {showRejectForm ? "Cancel" : "Reject"}
           </button>
-          <button onClick={onShowApproveForm} className={`px-4 py-2 ${showApproveForm ? "bg-blue-600" : "bg-[#1360AB] hover:bg-blue-600"} text-white rounded-lg shadow-sm transition-colors`}>
+          <button onClick={onShowApproveForm} style={approveButtonStyle}>
             {showApproveForm ? "Cancel" : "Approve"}
           </button>
         </>
@@ -58,11 +132,11 @@ const ActionButtons = ({
       {/* Warden actions for approved requests */}
       {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && isApproved && (
         <>
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
+          <button onClick={onClose} style={closeButtonStyle}>
             Close
           </button>
           {!hasAllocatedRooms && (
-            <button onClick={onShowAllocationForm} className="px-4 py-2 bg-[#1360AB] hover:bg-blue-600 text-white rounded-lg shadow-sm transition-colors">
+            <button onClick={onShowAllocationForm} style={allocateButtonStyle}>
               Allocate Rooms
             </button>
           )}
@@ -72,26 +146,26 @@ const ActionButtons = ({
       {/* Security/Guard actions for approved requests */}
       {["Security", "Hostel Gate"].includes(userRole) && isApproved && (
         <>
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
+          <button onClick={onClose} style={closeButtonStyle}>
             Close
           </button>
 
           {hasAllocatedRooms && (
             <>
               {isCheckTimes && (
-                <button onClick={onShowCheckInForm} className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg shadow-sm transition-colors">
+                <button onClick={onShowCheckInForm} style={editCheckTimesButtonStyle}>
                   Edit Check Times
                 </button>
               )}
 
               {isCheckInForm && (
-                <button onClick={onShowCheckInForm} className={`px-4 py-2 ${showCheckInForm ? "bg-blue-600" : "bg-[#1360AB] hover:bg-blue-600"} text-white rounded-lg shadow-sm transition-colors`}>
+                <button onClick={onShowCheckInForm} style={checkInButtonStyle}>
                   {showCheckInForm ? "Cancel" : "Check In"}
                 </button>
               )}
 
               {isCheckOutForm && (
-                <button onClick={onShowCheckInForm} className={`px-4 py-2 ${showCheckInForm ? "bg-green-600" : "bg-green-500 hover:bg-green-600"} text-white rounded-lg shadow-sm transition-colors`}>
+                <button onClick={onShowCheckInForm} style={checkOutButtonStyle}>
                   {showCheckInForm ? "Cancel" : "Check Out"}
                 </button>
               )}
@@ -105,7 +179,7 @@ const ActionButtons = ({
         (userRole === "Admin" && !isPending) ||
         (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
         (["Security", "Hostel Gate"].includes(userRole) && !isApproved)) && (
-        <button onClick={onClose} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm transition-colors">
+        <button onClick={onClose} style={closeButtonStyle}>
           Close
         </button>
       )}
