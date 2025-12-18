@@ -51,31 +51,31 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
       <form onSubmit={handleSubmit}>
-        <div className="flex items-center mb-4">
-          <div className={`p-2.5 mr-3 rounded-xl bg-blue-100 text-blue-600`}>
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+          <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>
             <FaCalendarAlt size={20} />
           </div>
-          <div className="w-full">
-            <input type="text" name="eventName" value={formData.eventName} onChange={handleChange} className="font-bold text-lg w-full border-b border-gray-300 focus:border-[#1360AB] outline-none pb-1" required />
-            <span className="text-xs text-gray-500">ID: {event._id.substring(0, 8)}</span>
+          <div style={{ width: '100%' }}>
+            <input type="text" name="eventName" value={formData.eventName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', width: '100%', borderBottom: `var(--border-1) solid var(--color-border-input)`, outline: 'none', paddingBottom: 'var(--spacing-1)', transition: 'var(--transition-all)' }} onFocus={(e) => e.target.style.borderColor = 'var(--input-border-focus)'} onBlur={(e) => e.target.style.borderColor = 'var(--color-border-input)'} required />
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {event._id.substring(0, 8)}</span>
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Date and Time</label>
-            <input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" />
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Date and Time</label>
+            <input type="datetime-local" name="dateAndTime" value={formData.dateAndTime} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Hostel</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                 <FaBuilding />
               </div>
-              <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-2.5 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]">
+              <select name="hostelId" value={formData.hostelId} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-2-5)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }}>
                 <option value="all">All Hostels</option>
                 {hostelList?.map((hostel) => (
                   <option key={hostel._id} value={hostel._id}>
@@ -87,12 +87,12 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Gender</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Gender</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                 <FaUserFriends />
               </div>
-              <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-2.5 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]">
+              <select name="gender" value={formData.gender} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-2-5)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }}>
                 <option value="all">All Genders</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -102,29 +102,31 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Description</label>
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="w-full text-sm text-gray-700 border border-gray-300 rounded-lg p-3 focus:border-[#1360AB] focus:ring-1 focus:ring-blue-100 outline-none resize-none"
+              style={{ width: '100%', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', outline: 'none', resize: 'none', transition: 'var(--transition-all)' }}
+              onFocus={(e) => { e.target.style.borderColor = 'var(--input-border-focus)'; e.target.style.boxShadow = 'var(--input-focus-ring)'; }}
+              onBlur={(e) => { e.target.style.borderColor = 'var(--color-border-input)'; e.target.style.boxShadow = 'none'; }}
               placeholder="Event description"
             ></textarea>
           </div>
         </div>
 
-        <div className="mt-5 pt-3 border-t border-gray-100 flex flex-col-reverse sm:flex-row justify-between sm:items-center space-y-3 space-y-reverse sm:space-y-0">
-          <button type="button" onClick={handleDelete} className="flex items-center justify-center px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
-            <MdDelete className="mr-2" /> Delete
+        <div style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+          <button type="button" onClick={handleDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg-light)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'}>
+            <MdDelete style={{ marginRight: 'var(--spacing-2)' }} /> Delete
           </button>
 
-          <div className="flex flex-col-reverse sm:flex-row space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3">
-            <button type="button" onClick={onCancel} className="flex items-center justify-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-              <MdCancel className="mr-2" /> Cancel
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)' }}>
+            <button type="button" onClick={onCancel} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+              <MdCancel style={{ marginRight: 'var(--spacing-2)' }} /> Cancel
             </button>
-            <button type="submit" className="flex items-center justify-center px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors">
-              <FaSave className="mr-2" /> Save
+            <button type="submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
+              <FaSave style={{ marginRight: 'var(--spacing-2)' }} /> Save
             </button>
           </div>
         </div>
