@@ -3,11 +3,11 @@ import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (
-    <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg animate-fadeIn">
-      <h3 className="font-medium text-blue-800 mb-3 flex items-center">
+    <div className="border p-4 rounded-lg animate-fadeIn" style={{ backgroundColor: 'var(--color-primary-bg)', borderColor: 'var(--color-primary-pale)' }}>
+      <h3 className="font-medium mb-3 flex items-center" style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)' }}>
         <FaBuilding className="mr-2" /> Allocate Rooms for Visitors
       </h3>
-      <p className="text-sm text-gray-600 mb-4">Assign rooms for the visitors.</p>
+      <p className="mb-4" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Assign rooms for the visitors.</p>
 
       <div className="space-y-3">
         {allocatedRooms.map((room, index) => (
@@ -15,35 +15,129 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
             {isUnitBased ? (
               <>
                 <div className="flex-1">
-                  <label htmlFor={`unit-${index}`} className="block text-xs font-medium text-gray-700 mb-1">
+                  <label htmlFor={`unit-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
                     Unit
                   </label>
-                  <input id={`unit-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="A" />
+                  <input 
+                    id={`unit-${index}`} 
+                    type="text" 
+                    value={room[0] || ""} 
+                    onChange={(e) => onRoomChange(index, 0, e.target.value)} 
+                    className="w-full border focus:outline-none" 
+                    style={{ 
+                      padding: 'var(--input-padding)', 
+                      borderColor: 'var(--input-border)', 
+                      borderRadius: 'var(--radius-md)', 
+                      fontSize: 'var(--font-size-sm)',
+                      backgroundColor: 'var(--input-bg)'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'var(--input-border-focus)';
+                      e.target.style.boxShadow = 'var(--input-focus-ring)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'var(--input-border)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                    placeholder="A" 
+                  />
                 </div>
                 <div className="flex-1">
-                  <label htmlFor={`room-${index}`} className="block text-xs font-medium text-gray-700 mb-1">
+                  <label htmlFor={`room-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
                     Room Number
                   </label>
-                  <input id={`room-${index}`} type="text" value={room[1] || ""} onChange={(e) => onRoomChange(index, 1, e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="101" />
+                  <input 
+                    id={`room-${index}`} 
+                    type="text" 
+                    value={room[1] || ""} 
+                    onChange={(e) => onRoomChange(index, 1, e.target.value)} 
+                    className="w-full border focus:outline-none" 
+                    style={{ 
+                      padding: 'var(--input-padding)', 
+                      borderColor: 'var(--input-border)', 
+                      borderRadius: 'var(--radius-md)', 
+                      fontSize: 'var(--font-size-sm)',
+                      backgroundColor: 'var(--input-bg)'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'var(--input-border-focus)';
+                      e.target.style.boxShadow = 'var(--input-focus-ring)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'var(--input-border)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                    placeholder="101" 
+                  />
                 </div>
               </>
             ) : (
               <div className="flex-1">
-                <label htmlFor={`room-${index}`} className="block text-xs font-medium text-gray-700 mb-1">
+                <label htmlFor={`room-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
                   Room Number
                 </label>
-                <input id={`room-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="101" />
+                <input 
+                  id={`room-${index}`} 
+                  type="text" 
+                  value={room[0] || ""} 
+                  onChange={(e) => onRoomChange(index, 0, e.target.value)} 
+                  className="w-full border focus:outline-none" 
+                  style={{ 
+                    padding: 'var(--input-padding)', 
+                    borderColor: 'var(--input-border)', 
+                    borderRadius: 'var(--radius-md)', 
+                    fontSize: 'var(--font-size-sm)',
+                    backgroundColor: 'var(--input-bg)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--input-border-focus)';
+                    e.target.style.boxShadow = 'var(--input-focus-ring)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--input-border)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                  placeholder="101" 
+                />
               </div>
             )}
 
             <div className="flex items-end space-x-1 pb-0.5">
               {index === allocatedRooms.length - 1 && (
-                <button type="button" onClick={onAddRoom} className="p-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 focus:outline-none" title="Add another room">
+                <button 
+                  type="button" 
+                  onClick={onAddRoom} 
+                  className="focus:outline-none transition-all" 
+                  style={{ 
+                    padding: 'var(--spacing-2)', 
+                    backgroundColor: 'var(--color-primary-bg)', 
+                    color: 'var(--color-primary)', 
+                    borderRadius: 'var(--radius-md)',
+                    transition: 'var(--transition-colors)'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}
+                  title="Add another room"
+                >
                   <FaPlus size={14} />
                 </button>
               )}
               {allocatedRooms.length > 1 && (
-                <button type="button" onClick={() => onRemoveRoom(index)} className="p-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 focus:outline-none" title="Remove room">
+                <button 
+                  type="button" 
+                  onClick={() => onRemoveRoom(index)} 
+                  className="focus:outline-none transition-all" 
+                  style={{ 
+                    padding: 'var(--spacing-2)', 
+                    backgroundColor: 'var(--color-danger-bg)', 
+                    color: 'var(--color-danger-text)', 
+                    borderRadius: 'var(--radius-md)',
+                    transition: 'var(--transition-colors)'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg-light)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'}
+                  title="Remove room"
+                >
                   <FaTrash size={14} />
                 </button>
               )}
@@ -53,10 +147,45 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
       </div>
 
       <div className="flex justify-end space-x-2 mt-4">
-        <button onClick={onCancel} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <button 
+          onClick={onCancel} 
+          className="transition-all" 
+          style={{ 
+            padding: 'var(--button-padding-md)', 
+            backgroundColor: 'var(--color-bg-muted)', 
+            color: 'var(--color-text-secondary)', 
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)',
+            transition: 'var(--transition-colors)'
+          }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+        >
           Cancel
         </button>
-        <button onClick={onSubmit} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <button 
+          onClick={onSubmit} 
+          className="transition-all" 
+          style={{ 
+            padding: 'var(--button-padding-md)', 
+            backgroundColor: 'var(--button-primary-bg)', 
+            color: 'var(--color-white)', 
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)',
+            transition: 'var(--transition-colors)',
+            boxShadow: 'var(--shadow-button-primary)'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = 'var(--button-primary-hover)';
+            e.target.style.boxShadow = 'var(--shadow-button-primary-hover)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'var(--button-primary-bg)';
+            e.target.style.boxShadow = 'var(--shadow-button-primary)';
+          }}
+        >
           Allocate Rooms
         </button>
       </div>
