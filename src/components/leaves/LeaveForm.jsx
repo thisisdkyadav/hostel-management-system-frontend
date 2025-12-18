@@ -30,33 +30,190 @@ const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
 
   return (
     <Modal title="Create Leave" onClose={() => setIsOpen(false)} width={600}>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {error && <div className="bg-red-50 p-3 rounded text-red-600 text-sm">{error}</div>}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+        {error && (
+          <div style={{
+            backgroundColor: 'var(--color-danger-bg-light)',
+            padding: 'var(--spacing-3)',
+            borderRadius: 'var(--radius-md)',
+            color: 'var(--color-danger-text)',
+            fontSize: 'var(--font-size-sm)'
+          }}>{error}</div>
+        )}
 
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">Reason</label>
-          <textarea name="reason" placeholder="Reason for leave" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all resize-none h-24" value={formData.reason} onChange={handleChange} required />
+          <label style={{
+            display: 'block',
+            color: 'var(--color-text-secondary)',
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-medium)',
+            marginBottom: 'var(--spacing-2)'
+          }}>Reason</label>
+          <textarea 
+            name="reason" 
+            placeholder="Reason for leave" 
+            style={{
+              width: '100%',
+              padding: 'var(--spacing-3)',
+              border: `var(--border-1) solid var(--color-border-input)`,
+              borderRadius: 'var(--radius-input)',
+              outline: 'none',
+              transition: 'var(--transition-all)',
+              resize: 'none',
+              height: '6rem'
+            }}
+            onFocus={(e) => {
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--input-border-focus)';
+            }}
+            onBlur={(e) => {
+              e.target.style.boxShadow = 'none';
+              e.target.style.borderColor = 'var(--color-border-input)';
+            }}
+            value={formData.reason} 
+            onChange={handleChange} 
+            required 
+          />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--gap-md)' }}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Start Date</label>
-            <input type="date" name="startDate" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.startDate} onChange={handleChange} required />
+            <label style={{
+              display: 'block',
+              color: 'var(--color-text-secondary)',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              marginBottom: 'var(--spacing-2)'
+            }}>Start Date</label>
+            <input 
+              type="date" 
+              name="startDate" 
+              style={{
+                width: '100%',
+                padding: 'var(--spacing-3)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                borderRadius: 'var(--radius-input)',
+                outline: 'none',
+                transition: 'var(--transition-all)'
+              }}
+              onFocus={(e) => {
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
+              onBlur={(e) => {
+                e.target.style.boxShadow = 'none';
+                e.target.style.borderColor = 'var(--color-border-input)';
+              }}
+              value={formData.startDate} 
+              onChange={handleChange} 
+              required 
+            />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">End Date</label>
-            <input type="date" name="endDate" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.endDate} onChange={handleChange} required />
+            <label style={{
+              display: 'block',
+              color: 'var(--color-text-secondary)',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              marginBottom: 'var(--spacing-2)'
+            }}>End Date</label>
+            <input 
+              type="date" 
+              name="endDate" 
+              style={{
+                width: '100%',
+                padding: 'var(--spacing-3)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                borderRadius: 'var(--radius-input)',
+                outline: 'none',
+                transition: 'var(--transition-all)'
+              }}
+              onFocus={(e) => {
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
+              onBlur={(e) => {
+                e.target.style.boxShadow = 'none';
+                e.target.style.borderColor = 'var(--color-border-input)';
+              }}
+              value={formData.endDate} 
+              onChange={handleChange} 
+              required 
+            />
           </div>
         </div>
 
-        <div className="flex justify-end pt-5 mt-6 border-t border-gray-100 space-x-3">
-          <button type="button" className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium" onClick={() => setIsOpen(false)}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          paddingTop: 'var(--spacing-5)',
+          marginTop: 'var(--spacing-6)',
+          borderTop: `var(--border-1) solid var(--color-border-light)`,
+          gap: 'var(--gap-sm)'
+        }}>
+          <button 
+            type="button" 
+            style={{
+              paddingLeft: 'var(--spacing-5)',
+              paddingRight: 'var(--spacing-5)',
+              paddingTop: 'var(--spacing-2-5)',
+              paddingBottom: 'var(--spacing-2-5)',
+              backgroundColor: 'var(--color-bg-muted)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-all)',
+              fontWeight: 'var(--font-weight-medium)',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-gray)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+            onClick={() => setIsOpen(false)}
+          >
             Cancel
           </button>
-          <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium flex items-center justify-center" disabled={loading}>
+          <button 
+            type="submit" 
+            style={{
+              paddingLeft: 'var(--spacing-5)',
+              paddingRight: 'var(--spacing-5)',
+              paddingTop: 'var(--spacing-2-5)',
+              paddingBottom: 'var(--spacing-2-5)',
+              backgroundColor: 'var(--color-primary)',
+              color: 'var(--color-white)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-all)',
+              boxShadow: 'var(--shadow-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.target.style.backgroundColor = 'var(--color-primary-hover)';
+                e.target.style.boxShadow = 'var(--shadow-md)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'var(--color-primary)';
+              e.target.style.boxShadow = 'var(--shadow-sm)';
+            }}
+            disabled={loading}
+          >
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                <div style={{
+                  width: 'var(--icon-lg)',
+                  height: 'var(--icon-lg)',
+                  border: '2px solid var(--color-white)',
+                  borderTopColor: 'transparent',
+                  borderRadius: 'var(--radius-full)',
+                  animation: 'spin 1s linear infinite',
+                  marginRight: 'var(--spacing-2)'
+                }}></div>
                 Submitting...
               </>
             ) : (

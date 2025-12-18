@@ -9,32 +9,110 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
 
   return (
     <PageHeader title={title}>
-      <Button onClick={() => setShowFilters(!showFilters)} variant={showFilters ? "primary" : "white"} size="small" icon={<FaFilter className="mr-2" />} className={`transition-all duration-300 ${showFilters ? "" : ""}`}>
+      <Button 
+        onClick={() => setShowFilters(!showFilters)} 
+        variant={showFilters ? "primary" : "white"} 
+        size="small" 
+        icon={<FaFilter />} 
+        style={{ transition: 'var(--transition-all)' }}
+      >
         Filters
       </Button>
 
       {isAdmin && (
-        <div className="flex border border-gray-200 rounded-full overflow-hidden bg-white">
-          <Button onClick={() => setViewSelfOnly(false)} variant={!viewSelfOnly ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200`}>
+        <div 
+          style={{
+            display: 'flex',
+            border: `var(--border-1) solid var(--color-border-gray)`,
+            borderRadius: 'var(--radius-full)',
+            overflow: 'hidden',
+            backgroundColor: 'var(--color-bg-primary)'
+          }}
+        >
+          <Button 
+            onClick={() => setViewSelfOnly(false)} 
+            variant={!viewSelfOnly ? "primary" : "white"} 
+            size="small" 
+            style={{
+              borderRadius: 'var(--radius-none)',
+              paddingLeft: 'var(--spacing-3)',
+              paddingRight: 'var(--spacing-3)',
+              paddingTop: 'var(--spacing-1-5)',
+              paddingBottom: 'var(--spacing-1-5)',
+              transition: 'var(--transition-colors)'
+            }}
+          >
             All
           </Button>
-          <Button onClick={() => setViewSelfOnly(true)} variant={viewSelfOnly ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200`}>
+          <Button 
+            onClick={() => setViewSelfOnly(true)} 
+            variant={viewSelfOnly ? "primary" : "white"} 
+            size="small" 
+            style={{
+              borderRadius: 'var(--radius-none)',
+              paddingLeft: 'var(--spacing-3)',
+              paddingRight: 'var(--spacing-3)',
+              paddingTop: 'var(--spacing-1-5)',
+              paddingBottom: 'var(--spacing-1-5)',
+              transition: 'var(--transition-colors)'
+            }}
+          >
             Mine
           </Button>
         </div>
       )}
 
-      <div className="flex border border-gray-200 rounded-full overflow-hidden bg-white">
-        <Button onClick={() => setViewMode("list")} variant={viewMode === "list" ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200`} icon={<FaList className="mr-2" />}>
+      <div 
+        style={{
+          display: 'flex',
+          border: `var(--border-1) solid var(--color-border-gray)`,
+          borderRadius: 'var(--radius-full)',
+          overflow: 'hidden',
+          backgroundColor: 'var(--color-bg-primary)'
+        }}
+      >
+        <Button 
+          onClick={() => setViewMode("list")} 
+          variant={viewMode === "list" ? "primary" : "white"} 
+          size="small" 
+          style={{
+            borderRadius: 'var(--radius-none)',
+            paddingLeft: 'var(--spacing-3)',
+            paddingRight: 'var(--spacing-3)',
+            paddingTop: 'var(--spacing-1-5)',
+            paddingBottom: 'var(--spacing-1-5)',
+            transition: 'var(--transition-colors)'
+          }}
+          icon={<FaList />}
+        >
           List
         </Button>
-        <Button onClick={() => setViewMode("cards")} variant={viewMode === "cards" ? "primary" : "white"} size="small" className={`rounded-none px-3 py-1.5 transition-colors duration-200`} icon={<FaTh className="mr-2" />}>
+        <Button 
+          onClick={() => setViewMode("cards")} 
+          variant={viewMode === "cards" ? "primary" : "white"} 
+          size="small" 
+          style={{
+            borderRadius: 'var(--radius-none)',
+            paddingLeft: 'var(--spacing-3)',
+            paddingRight: 'var(--spacing-3)',
+            paddingTop: 'var(--spacing-1-5)',
+            paddingBottom: 'var(--spacing-1-5)',
+            transition: 'var(--transition-colors)'
+          }}
+          icon={<FaTh />}
+        >
           Grid
         </Button>
       </div>
 
       {canCreate && (
-        <Button onClick={onCreate} variant="primary" size="small" icon={<FaPlus className="mr-2" />} className="transition-all duration-300">
+        <Button 
+          onClick={onCreate} 
+          variant="primary" 
+          size="small" 
+          icon={<FaPlus />} 
+          style={{ transition: 'var(--transition-all)' }}
+        >
           Create Leave
         </Button>
       )}
