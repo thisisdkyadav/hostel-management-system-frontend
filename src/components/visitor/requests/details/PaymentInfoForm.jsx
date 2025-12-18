@@ -137,25 +137,57 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   }
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-      <div className="flex items-center space-x-3 mb-4">
-        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-          <svg className="w-4 h-4 text-[#1360AB]" fill="currentColor" viewBox="0 0 20 20">
+    <div style={{
+      backgroundColor: 'var(--color-info-bg-light)',
+      border: `var(--border-1) solid var(--color-info-bg)`,
+      borderRadius: 'var(--radius-lg)',
+      padding: 'var(--spacing-6)'
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--spacing-3)',
+        marginBottom: 'var(--spacing-4)'
+      }}>
+        <div style={{
+          width: 'var(--avatar-sm)',
+          height: 'var(--avatar-sm)',
+          backgroundColor: 'var(--color-info-bg)',
+          borderRadius: 'var(--radius-full)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
           </svg>
         </div>
         <div>
-          <h4 className="font-semibold text-gray-800">Submit Payment Information</h4>
-          <p className="text-sm text-gray-600">Upload your payment details and screenshot for verification</p>
+          <h4 style={{
+            fontWeight: 'var(--font-weight-semibold)',
+            color: 'var(--color-text-secondary)',
+            fontSize: 'var(--font-size-base)'
+          }}>Submit Payment Information</h4>
+          <p style={{
+            fontSize: 'var(--font-size-sm)',
+            color: 'var(--color-text-muted)',
+            marginTop: 'var(--spacing-0-5)'
+          }}>Upload your payment details and screenshot for verification</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           {/* Payment Amount */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Payment Amount <span className="text-red-500">*</span>
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>
+              Payment Amount <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
             <input
               type="number"
@@ -164,16 +196,32 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
               onChange={handleInputChange}
               step="0.01"
               min="0"
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.amount ? "border-red-500" : "border-gray-300"}`}
+              style={{
+                width: '100%',
+                padding: 'var(--spacing-2) var(--spacing-3)',
+                border: `var(--border-1) solid ${errors.amount ? 'var(--color-danger)' : 'var(--color-border-input)'}`,
+                borderRadius: 'var(--radius-lg)',
+                fontSize: 'var(--font-size-base)',
+                outline: 'none',
+                transition: 'var(--transition-colors)'
+              }}
               placeholder="Enter payment amount"
+              onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
-            {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
+            {errors.amount && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.amount}</p>}
           </div>
 
           {/* Date of Payment */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Date of Payment <span className="text-red-500">*</span>
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>
+              Date of Payment <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
             <input
               type="date"
@@ -181,65 +229,138 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
               value={formData.dateOfPayment}
               onChange={handleInputChange}
               max={new Date().toISOString().split("T")[0]}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.dateOfPayment ? "border-red-500" : "border-gray-300"}`}
+              style={{
+                width: '100%',
+                padding: 'var(--spacing-2) var(--spacing-3)',
+                border: `var(--border-1) solid ${errors.dateOfPayment ? 'var(--color-danger)' : 'var(--color-border-input)'}`,
+                borderRadius: 'var(--radius-lg)',
+                fontSize: 'var(--font-size-base)',
+                outline: 'none',
+                transition: 'var(--transition-colors)'
+              }}
+              onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
+              onBlur={(e) => e.target.style.boxShadow = 'none'}
             />
-            {errors.dateOfPayment && <p className="text-red-500 text-xs mt-1">{errors.dateOfPayment}</p>}
+            {errors.dateOfPayment && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.dateOfPayment}</p>}
           </div>
         </div>
 
         {/* Transaction ID */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Transaction ID <span className="text-red-500">*</span>
+          <label style={{
+            display: 'block',
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-medium)',
+            color: 'var(--color-text-body)',
+            marginBottom: 'var(--spacing-1)'
+          }}>
+            Transaction ID <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
           <input
             type="text"
             name="transactionId"
             value={formData.transactionId}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.transactionId ? "border-red-500" : "border-gray-300"}`}
+            style={{
+              width: '100%',
+              padding: 'var(--spacing-2) var(--spacing-3)',
+              border: `var(--border-1) solid ${errors.transactionId ? 'var(--color-danger)' : 'var(--color-border-input)'}`,
+              borderRadius: 'var(--radius-lg)',
+              fontSize: 'var(--font-size-base)',
+              outline: 'none',
+              transition: 'var(--transition-colors)'
+            }}
             placeholder="Enter transaction ID"
+            onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
+            onBlur={(e) => e.target.style.boxShadow = 'none'}
           />
-          {errors.transactionId && <p className="text-red-500 text-xs mt-1">{errors.transactionId}</p>}
+          {errors.transactionId && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.transactionId}</p>}
         </div>
 
         {/* Payment Screenshot */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Payment Screenshot <span className="text-red-500">*</span>
+          <label style={{
+            display: 'block',
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-medium)',
+            color: 'var(--color-text-body)',
+            marginBottom: 'var(--spacing-1)'
+          }}>
+            Payment Screenshot <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
 
           {!formData.screenshot ? (
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
-              <div className="space-y-1 text-center">
-                <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+            <div style={{
+              marginTop: 'var(--spacing-1)',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-6)',
+              border: `var(--border-2) dashed var(--color-border-input)`,
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-colors)',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-dark)'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border-input)'}>
+              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-1)' }}>
+                <svg style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-placeholder)' }} stroke="currentColor" fill="none" viewBox="0 0 48 48">
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <div className="flex text-sm text-gray-600">
-                  <label htmlFor="screenshot-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-[#1360AB] hover:text-blue-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                <div style={{ display: 'flex', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', justifyContent: 'center' }}>
+                  <label htmlFor="screenshot-upload" style={{
+                    position: 'relative',
+                    cursor: 'pointer',
+                    backgroundColor: 'var(--color-bg-primary)',
+                    borderRadius: 'var(--radius-md)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    color: 'var(--color-primary)'
+                  }}>
                     <span>Upload a file</span>
-                    <input id="screenshot-upload" name="screenshot-upload" type="file" className="sr-only" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleFileChange} disabled={uploading} />
+                    <input id="screenshot-upload" name="screenshot-upload" type="file" style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: '0' }} accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" onChange={handleFileChange} disabled={uploading} />
                   </label>
-                  <p className="pl-1">or drag and drop</p>
+                  <p style={{ paddingLeft: 'var(--spacing-1)' }}>or drag and drop</p>
                 </div>
-                <p className="text-xs text-gray-500">JPEG, PNG, GIF, WebP up to 5MB</p>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-light)' }}>JPEG, PNG, GIF, WebP up to 5MB</p>
               </div>
             </div>
           ) : (
-            <div className="mt-1 border border-gray-300 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <div style={{
+              marginTop: 'var(--spacing-1)',
+              border: `var(--border-1) solid var(--color-border-input)`,
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--spacing-4)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                  <div style={{
+                    width: 'var(--avatar-md)',
+                    height: 'var(--avatar-md)',
+                    backgroundColor: 'var(--color-success-bg)',
+                    borderRadius: 'var(--radius-lg)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <svg style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-success)' }} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">Payment screenshot uploaded</p>
-                    <p className="text-xs text-gray-500">Click to view or change</p>
+                    <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Payment screenshot uploaded</p>
+                    <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-light)' }}>Click to view or change</p>
                   </div>
                 </div>
-                <button type="button" onClick={removeScreenshot} className="text-red-600 hover:text-red-800 text-sm font-medium">
+                <button type="button" onClick={removeScreenshot} style={{
+                  color: 'var(--color-danger)',
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'var(--transition-colors)'
+                }}
+                onMouseEnter={(e) => e.target.style.color = 'var(--color-danger-hover)'}
+                onMouseLeave={(e) => e.target.style.color = 'var(--color-danger)'}>
                   Remove
                 </button>
               </div>
@@ -247,32 +368,98 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
           )}
 
           {uploading && (
-            <div className="mt-2 flex items-center space-x-2">
-              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-sm text-gray-600">Uploading...</span>
+            <div style={{ marginTop: 'var(--spacing-2)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+              <div style={{
+                width: 'var(--icon-md)',
+                height: 'var(--icon-md)',
+                border: `var(--border-2) solid var(--color-primary)`,
+                borderTopColor: 'transparent',
+                borderRadius: 'var(--radius-full)',
+                animation: 'spin 1s linear infinite'
+              }}></div>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Uploading...</span>
             </div>
           )}
 
-          {errors.screenshot && <p className="text-red-500 text-xs mt-1">{errors.screenshot}</p>}
+          {errors.screenshot && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.screenshot}</p>}
         </div>
 
         {/* Additional Information */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Additional Information <span className="text-gray-500">(Optional)</span>
+          <label style={{
+            display: 'block',
+            fontSize: 'var(--font-size-sm)',
+            fontWeight: 'var(--font-weight-medium)',
+            color: 'var(--color-text-body)',
+            marginBottom: 'var(--spacing-1)'
+          }}>
+            Additional Information <span style={{ color: 'var(--color-text-light)' }}>(Optional)</span>
           </label>
-          <textarea name="additionalInfo" value={formData.additionalInfo} onChange={handleInputChange} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Any additional notes about the payment..." />
+          <textarea
+            name="additionalInfo"
+            value={formData.additionalInfo}
+            onChange={handleInputChange}
+            rows={3}
+            style={{
+              width: '100%',
+              padding: 'var(--spacing-2) var(--spacing-3)',
+              border: `var(--border-1) solid var(--color-border-input)`,
+              borderRadius: 'var(--radius-lg)',
+              fontSize: 'var(--font-size-base)',
+              outline: 'none',
+              transition: 'var(--transition-colors)',
+              resize: 'vertical'
+            }}
+            placeholder="Any additional notes about the payment..."
+            onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
+            onBlur={(e) => e.target.style.boxShadow = 'none'}
+          />
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end space-x-3 pt-4">
-          <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
+          <button type="button" onClick={onCancel} style={{
+            padding: 'var(--spacing-2) var(--spacing-4)',
+            color: 'var(--color-text-muted)',
+            border: `var(--border-1) solid var(--color-border-input)`,
+            borderRadius: 'var(--radius-lg)',
+            backgroundColor: 'var(--color-bg-primary)',
+            cursor: 'pointer',
+            transition: 'var(--transition-colors)',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)'
+          }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
             Cancel
           </button>
-          <button type="submit" disabled={uploading} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
+          <button type="submit" disabled={uploading} style={{
+            padding: 'var(--spacing-2) var(--spacing-4)',
+            backgroundColor: uploading ? 'var(--color-bg-disabled)' : 'var(--color-primary)',
+            color: 'var(--color-white)',
+            borderRadius: 'var(--radius-lg)',
+            border: 'none',
+            cursor: uploading ? 'not-allowed' : 'pointer',
+            transition: 'var(--transition-colors)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-2)',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)',
+            opacity: uploading ? 'var(--opacity-disabled)' : '1'
+          }}
+          onMouseEnter={(e) => !uploading && (e.target.style.backgroundColor = 'var(--color-primary-hover)')}
+          onMouseLeave={(e) => !uploading && (e.target.style.backgroundColor = 'var(--color-primary)')}>
             {uploading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div style={{
+                  width: 'var(--icon-md)',
+                  height: 'var(--icon-md)',
+                  border: `var(--border-2) solid var(--color-white)`,
+                  borderTopColor: 'transparent',
+                  borderRadius: 'var(--radius-full)',
+                  animation: 'spin 1s linear infinite'
+                }}></div>
                 <span>Processing...</span>
               </>
             ) : (
