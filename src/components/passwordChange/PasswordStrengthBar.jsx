@@ -23,16 +23,35 @@ const PasswordStrengthBar = ({ password }) => {
   }
 
   const labels = ["Weak", "Fair", "Good", "Strong"]
-  const colors = ["bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500"]
+  const colors = [
+    'var(--color-danger)',
+    'var(--color-warning)',
+    'var(--color-warning-light)',
+    'var(--color-success)'
+  ]
 
   return (
-    <div className="space-y-1">
-      <div className="flex gap-1 h-1.5">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-1)' }}>
+      <div style={{ display: 'flex', gap: 'var(--spacing-1)', height: 'var(--spacing-1-5)' }}>
         {[1, 2, 3, 4].map((level) => (
-          <div key={level} className={`h-full rounded-full flex-1 ${level <= strength ? colors[strength - 1] : "bg-gray-200"}`}></div>
+          <div 
+            key={level} 
+            style={{
+              height: '100%',
+              borderRadius: 'var(--radius-full)',
+              flex: 1,
+              backgroundColor: level <= strength ? colors[strength - 1] : 'var(--color-bg-muted)',
+              transition: 'var(--transition-colors)'
+            }}
+          ></div>
         ))}
       </div>
-      <p className="text-xs text-gray-500">Password strength: {strength > 0 ? labels[strength - 1] : "Too weak"}</p>
+      <p style={{
+        fontSize: 'var(--font-size-xs)',
+        color: 'var(--color-text-muted)'
+      }}>
+        Password strength: {strength > 0 ? labels[strength - 1] : "Too weak"}
+      </p>
     </div>
   )
 }
