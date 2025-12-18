@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
 //--------------------------------below is student---------------------
 import StudentDashboard from "../pages/student/Dashboard.jsx"
-import Settings from "../pages/student/Settings.jsx"
 import VisitorRequests from "../pages/VisitorRequests.jsx"
 import IDCard from "../pages/student/IDCard.jsx"
 import Undertakings from "../pages/student/Undertakings.jsx"
@@ -122,7 +121,6 @@ const AppRoutes = () => {
         <Route path="events" element={<Events />} />
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="notifications" element={<NotificationCenter />} />
-        <Route path="settings" element={<Settings />} />
         <Route path="visitors" element={<VisitorRequests />} />
         <Route path="security" element={<Security />} />
         <Route path="id-card" element={<IDCard />} />
