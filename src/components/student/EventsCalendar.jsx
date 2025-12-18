@@ -17,10 +17,10 @@ const EventsCalendar = ({ events = [] }) => {
     <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
         <h3 className="font-medium text-gray-800 text-sm flex items-center">
-          <FaCalendarAlt className="mr-1.5 text-[#1360AB]" />
+          <FaCalendarAlt className="mr-1.5" style={{ color: 'var(--color-primary)' }} />
           Upcoming Events
         </h3>
-        <Link to="events" className="text-xs text-[#1360AB] hover:underline">
+        <Link to="events" className="text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
           View All
         </Link>
       </div>
@@ -37,9 +37,9 @@ const EventsCalendar = ({ events = [] }) => {
 
             return (
               <div key={event._id} className="flex items-start px-3 py-2 border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
-                <div className="mr-2 flex-shrink-0 w-10 h-12 bg-blue-50 rounded-lg flex flex-col items-center justify-center">
-                  <span className="text-[10px] text-[#1360AB] font-medium">{month}</span>
-                  <span className="text-base font-bold text-[#1360AB]">{day}</span>
+                <div className="mr-2 flex-shrink-0 w-10 h-12 rounded-lg flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--color-primary-bg-light)' }}>
+                  <span className="text-[10px] font-medium" style={{ color: 'var(--color-primary)' }}>{month}</span>
+                  <span className="text-base font-bold" style={{ color: 'var(--color-primary)' }}>{day}</span>
                 </div>
 
                 <div className="flex-1 min-w-0">

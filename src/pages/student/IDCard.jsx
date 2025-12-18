@@ -48,21 +48,21 @@ const IDCard = () => {
     const imageUrl = idCardData[side]
 
     return (
-      <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
+      <div className="transition-all" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border-light)', transitionDuration: 'var(--transition-slow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+        <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-4)' }}>{title}</h3>
 
         <div className="flex flex-col items-center justify-center">
           {imageUrl ? (
-            <div className="relative mb-4 w-full">
-              <img src={getMediaUrl(imageUrl)} alt={`ID Card ${title}`} className="w-full h-auto rounded-lg border border-gray-200 shadow-sm" />
-              <button onClick={() => handleUploadClick(side)} className="absolute bottom-3 right-3 bg-[#1360AB] text-white p-2 rounded-full hover:bg-[#0F4C81] transition-colors shadow-md">
-                <HiCamera className="w-5 h-5" />
+            <div className="relative w-full" style={{ marginBottom: 'var(--spacing-4)' }}>
+              <img src={getMediaUrl(imageUrl)} alt={`ID Card ${title}`} className="w-full h-auto" style={{ borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border-primary)', boxShadow: 'var(--shadow-sm)' }} />
+              <button onClick={() => handleUploadClick(side)} className="absolute rounded-full transition-colors" style={{ bottom: 'var(--spacing-3)', right: 'var(--spacing-3)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', padding: 'var(--spacing-2)', boxShadow: 'var(--shadow-md)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
+                <HiCamera style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)' }} />
               </button>
             </div>
           ) : (
-            <div className="w-full h-48 bg-gray-100 rounded-lg flex flex-col items-center justify-center mb-4 border-2 border-dashed border-gray-300">
-              <HiCamera className="w-10 h-10 text-gray-400 mb-2" />
-              <p className="text-gray-500 text-center">No image uploaded</p>
+            <div className="w-full flex flex-col items-center justify-center" style={{ height: '12rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)', border: '2px dashed var(--color-border-input)' }}>
+              <HiCamera style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', color: 'var(--color-text-placeholder)', marginBottom: 'var(--spacing-2)' }} />
+              <p className="text-center" style={{ color: 'var(--color-text-muted)' }}>No image uploaded</p>
             </div>
           )}
 
@@ -75,35 +75,35 @@ const IDCard = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 md:px-6 lg:px-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Student ID Card</h1>
-        <p className="text-gray-600">Upload and manage your ID card images for verification purposes.</p>
+    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }}>
+      <div style={{ marginBottom: 'var(--spacing-6)' }}>
+        <h1 className="font-bold" style={{ fontSize: 'var(--font-size-2xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Student ID Card</h1>
+        <p style={{ color: 'var(--color-text-muted)' }}>Upload and manage your ID card images for verification purposes.</p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md">
+        <div style={{ backgroundColor: 'var(--color-danger-bg-light)', borderLeft: '4px solid var(--color-danger)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-sm)' }}>
           <div className="flex items-center">
-            <HiInformationCircle className="text-red-500 mr-2" size={20} />
-            <p className="text-red-700">{error}</p>
+            <HiInformationCircle style={{ color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }} size={20} />
+            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         </div>
       )}
 
-      <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start">
-        <HiInformationCircle className="text-[#1360AB] mt-0.5 mr-2 flex-shrink-0" size={20} />
-        <div className="text-sm text-gray-700">
+      <div className="flex items-start" style={{ backgroundColor: 'var(--color-primary-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-6)' }}>
+        <HiInformationCircle className="flex-shrink-0" style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)' }} size={20} />
+        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>
           <p>Please upload clear images of both sides of your student ID card. These images will be used for verification purposes by hostel staff and security personnel.</p>
-          <p className="mt-2 font-medium">Maximum file size: 1MB per image</p>
+          <p className="font-medium" style={{ marginTop: 'var(--spacing-2)' }}>Maximum file size: 1MB per image</p>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1360AB]"></div>
+        <div className="flex justify-center items-center" style={{ height: '16rem' }}>
+          <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: '2px solid var(--color-primary)', borderBottom: '2px solid var(--color-primary)' }}></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--spacing-6)' }}>
           {renderIDCardSide("front", "ID Card Front")}
           {renderIDCardSide("back", "ID Card Back")}
         </div>

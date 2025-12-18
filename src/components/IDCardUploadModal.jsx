@@ -103,8 +103,8 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
         {!image ? (
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
             <div className="space-y-4">
-              <div className="mx-auto w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
-                <HiUpload className="w-8 h-8 text-[#1360AB]" />
+              <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary-bg-light)' }}>
+                <HiUpload className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
               </div>
               <div>
                 <p className="text-gray-700 mb-2">Drag and drop an image or click to browse</p>
@@ -113,7 +113,7 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
               </div>
               <label className="inline-block">
                 <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-                <span className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] cursor-pointer inline-block transition-colors">Select Image</span>
+                <span className="px-4 py-2 text-white rounded-lg cursor-pointer inline-block transition-colors" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>Select Image</span>
               </label>
             </div>
           </div>
@@ -137,7 +137,7 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
                   <button type="button" onClick={handleReset} className="order-last sm:order-first flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium">
                     <HiX className="mr-1.5" /> Reset
                   </button>
-                  <button type="button" onClick={uploadImage} disabled={uploading} className="flex items-center justify-center px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium disabled:bg-blue-300 disabled:cursor-not-allowed">
+                  <button type="button" onClick={uploadImage} disabled={uploading} className="flex items-center justify-center px-5 py-2.5 text-white rounded-lg transition-all shadow-sm hover:shadow font-medium disabled:cursor-not-allowed" style={{ backgroundColor: uploading ? 'var(--color-info-light)' : 'var(--button-primary-bg)' }} onMouseEnter={(e) => { if (!uploading) e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)' }} onMouseLeave={(e) => { if (!uploading) e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)' }}>
                     {uploading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>

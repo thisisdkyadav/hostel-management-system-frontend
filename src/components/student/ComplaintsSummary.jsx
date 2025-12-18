@@ -22,14 +22,14 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
       <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-medium text-gray-800 text-sm">Your Complaints</h3>
-          <Link to="complaints" className="text-xs text-[#1360AB] hover:underline">
+          <Link to="complaints" className="text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
             View All
           </Link>
         </div>
         <div className="flex flex-col items-center justify-center py-4 text-gray-500">
           <FaExclamationCircle className="text-gray-300 text-2xl mb-1" />
           <p className="text-xs">No active complaints</p>
-          <Link to="complaints" className="mt-1 text-xs text-[#1360AB] hover:underline">
+          <Link to="complaints" className="mt-1 text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
             Submit a new complaint
           </Link>
         </div>
@@ -41,10 +41,10 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
     <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
         <h3 className="font-medium text-gray-800 text-sm flex items-center">
-          <MdPendingActions className="mr-1.5 text-[#1360AB]" />
+          <MdPendingActions className="mr-1.5" style={{ color: 'var(--color-primary)' }} />
           Your Active Complaints
         </h3>
-        <Link to="complaints" className="text-xs text-[#1360AB] hover:underline">
+        <Link to="complaints" className="text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
           View All
         </Link>
       </div>
@@ -66,7 +66,7 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
 
             <div className="mt-1 flex justify-between items-center">
               <p className="text-[11px] text-gray-600 line-clamp-1 max-w-[70%]">{complaint.description}</p>
-              <Link to={`complaints`} className="text-[#1360AB] hover:bg-blue-100 p-1 rounded-full transition-colors">
+              <Link to={`complaints`} className="p-1 rounded-full transition-colors" style={{ color: 'var(--color-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                 <FaEye className="h-3 w-3" />
               </Link>
             </div>

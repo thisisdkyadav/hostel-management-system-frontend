@@ -20,28 +20,28 @@ const DASHBOARD_CACHE_KEY = "student_dashboard_data"
 const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
 // Enhanced shimmer loader components
-const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-[var(--skeleton-base)] via-[var(--skeleton-highlight)] to-[var(--skeleton-base)] ${className}`} style={{ height, width, borderRadius: 'var(--radius-md)' }}></div>
 
 // Shimmer with blurred preview for cards
 const CardShimmer = ({ height, className = "" }) => (
-  <div className={`relative overflow-hidden rounded-lg ${className}`} style={{ height }}>
-    <div className="absolute inset-0 bg-gray-100 backdrop-blur-sm"></div>
+  <div className={`relative overflow-hidden ${className}`} style={{ height, borderRadius: 'var(--radius-lg)' }}>
+    <div className="absolute inset-0 backdrop-blur-sm" style={{ backgroundColor: 'var(--color-bg-muted)' }}></div>
     <div className="absolute inset-0 flex items-center justify-center">
-      <ShimmerLoader height="70%" width="90%" className="rounded-lg" />
+      <ShimmerLoader height="70%" width="90%" />
     </div>
-    <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-200 to-transparent"></div>
-    <div className="absolute inset-0 animate-pulse opacity-20 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200"></div>
+    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t to-transparent" style={{ height: 'var(--spacing-8)', backgroundColor: 'var(--skeleton-base)' }}></div>
+    <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[var(--skeleton-base)] via-[var(--skeleton-highlight)] to-[var(--skeleton-base)]" style={{ opacity: 'var(--opacity-20)' }}></div>
   </div>
 )
 
 // Shimmer for profile card
 const ProfileShimmer = () => (
-  <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-    <div className="flex flex-col md:flex-row gap-4">
+  <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
+    <div className="flex flex-col md:flex-row" style={{ gap: 'var(--gap-md)' }}>
       <ShimmerLoader height="120px" width="120px" className="rounded-full" />
-      <div className="flex-1 space-y-4">
+      <div className="flex-1" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
         <ShimmerLoader height="2rem" width="60%" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--gap-md)' }}>
           <ShimmerLoader height="1.5rem" width="80%" />
           <ShimmerLoader height="1.5rem" width="70%" />
           <ShimmerLoader height="1.5rem" width="60%" />
@@ -54,9 +54,9 @@ const ProfileShimmer = () => (
 
 // Shimmer for stats cards
 const StatsShimmer = () => (
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+  <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 'var(--gap-md)', marginBottom: 'var(--spacing-6)' }}>
     {[...Array(4)].map((_, i) => (
-      <div key={i} className="bg-white rounded-xl shadow-sm p-4">
+      <div key={i} style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)' }}>
         <ShimmerLoader height="1rem" width="60%" className="mb-2" />
         <ShimmerLoader height="2rem" width="40%" />
       </div>
@@ -335,7 +335,13 @@ const Dashboard = () => {
       let width = (canvas.width = window.innerWidth)
       let height = (canvas.height = window.innerHeight)
 
-      const colors = ["#1360AB", "#0d4b86", "#1a5fb8", "#ffffff", "#e0f2fe"]
+      const colors = [
+        getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-primary-dark').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-primary-light').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-white').trim(),
+        getComputedStyle(document.documentElement).getPropertyValue('--color-primary-bg').trim()
+      ]
 
       const createParticle = () => {
         return {
@@ -414,33 +420,36 @@ const Dashboard = () => {
     }, [])
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ zIndex: 'var(--z-modal)' }}>
+        <div className="absolute inset-0" style={{ backgroundColor: 'var(--color-bg-modal-overlay)', opacity: 'var(--opacity-overlay)' }} onClick={onClose}></div>
 
         {/* full-screen canvas for confetti */}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
-        <div className="relative bg-gradient-to-br from-[#1360AB] via-[#0d4b86] to-[#1a5fb8] text-white rounded-2xl p-6 w-[min(95%,720px)] mx-4 shadow-2xl overflow-hidden">
-          <button onClick={onClose} className="absolute top-4 right-4 text-white/90 bg-white/10 rounded-full p-2 hover:bg-white/20 transition-colors">
+        <div className="relative text-white overflow-hidden" style={{ background: 'var(--gradient-primary)', borderRadius: 'var(--radius-2xl)', padding: 'var(--spacing-6)', width: 'min(95%, 720px)', margin: '0 var(--spacing-4)', boxShadow: 'var(--shadow-xl)' }}>
+          <button onClick={onClose} className="absolute rounded-full transition-colors" style={{ top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: 'var(--spacing-2)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}>
             ✕
           </button>
-          <div className="flex flex-col items-center text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-extrabold">Happy Birthday{name ? `, ${name.split(" ")[0]}` : "!"}</h2>
-            <p className="text-sm md:text-base max-w-md">Wishing you a day filled with joy, success and unforgettable moments. Have a fantastic year ahead!</p>
+          <div className="flex flex-col items-center text-center" style={{ gap: 'var(--gap-md)' }}>
+            <h2 className="font-extrabold" style={{ fontSize: 'clamp(var(--font-size-3xl), 5vw, var(--font-size-4xl))' }}>Happy Birthday{name ? `, ${name.split(" ")[0]}` : "!"}</h2>
+            <p className="max-w-md" style={{ fontSize: 'clamp(var(--font-size-sm), 2vw, var(--font-size-base))' }}>Wishing you a day filled with joy, success and unforgettable moments. Have a fantastic year ahead!</p>
 
-            <div className="mt-2 w-full flex items-center justify-center">
-              <div className="bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">Enjoy your special day 🎉</div>
+            <div className="w-full flex items-center justify-center" style={{ marginTop: 'var(--spacing-2)' }}>
+              <div className="rounded-full backdrop-blur-sm" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)' }}>Enjoy your special day 🎉</div>
             </div>
 
-            <div className="w-full mt-4 grid grid-cols-2 gap-3">
-              <button onClick={onClose} className="py-2 bg-white text-[#1360AB] rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <div className="w-full grid grid-cols-2" style={{ marginTop: 'var(--spacing-4)', gap: 'var(--gap-sm)' }}>
+              <button onClick={onClose} className="font-semibold transition-colors" style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-white)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-white)'}>
                 Thanks!
               </button>
               <button
                 onClick={() => {
                   onClose()
                 }}
-                className="py-2 bg-white/20 border border-white/30 rounded-lg hover:bg-white/30 transition-colors"
+                className="transition-colors"
+                style={{ padding: 'var(--spacing-2)', backgroundColor: 'rgba(255, 255, 255, 0.2)', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: 'var(--radius-lg)' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
               >
                 Celebrate
               </button>
@@ -453,26 +462,26 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-        <div className="flex items-center justify-between mb-6">
+      <div className="px-4 sm:px-6 lg:px-8 flex-1" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-6)' }}>
           <ShimmerLoader height="2rem" width="12rem" />
-          <ShimmerLoader height="2.5rem" width="8rem" className="rounded-lg md:hidden" />
+          <ShimmerLoader height="2.5rem" width="8rem" className="md:hidden" />
         </div>
 
         <ProfileShimmer />
         <StatsShimmer />
 
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
-          <div className="lg:col-span-2 space-y-4">
-            <CardShimmer height="12rem" className="mb-4" />
+        <div className="grid grid-cols-1 lg:grid-cols-6" style={{ gap: 'var(--gap-md)' }}>
+          <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
+            <CardShimmer height="12rem" style={{ marginBottom: 'var(--spacing-4)' }} />
             <CardShimmer height="12rem" />
           </div>
 
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
             <CardShimmer height="24rem" />
           </div>
 
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
             <CardShimmer height="24rem" />
           </div>
         </div>
@@ -482,12 +491,12 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="p-6 flex flex-col items-center justify-center h-full">
-        <div className="bg-white rounded-xl shadow-sm p-6 max-w-md w-full text-center">
-          <BiError className="mx-auto text-red-500 text-5xl mb-4" />
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Unable to Load Dashboard</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button onClick={fetchDashboardData} className="bg-[#1360AB] text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+      <div className="flex flex-col items-center justify-center h-full" style={{ padding: 'var(--spacing-6)' }}>
+        <div className="max-w-md w-full text-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6)' }}>
+          <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+          <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Unable to Load Dashboard</h2>
+          <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>{error}</p>
+          <button onClick={fetchDashboardData} className="font-medium transition-colors" style={{ backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
             Try Again
           </button>
         </div>
@@ -496,7 +505,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1 relative">
+    <div className="px-4 sm:px-6 lg:px-8 flex-1 relative" style={{ paddingTop: 'var(--spacing-6)', paddingBottom: 'var(--spacing-6)' }}>
       {/* <button onClick={() => authApi.redirectToWellness()}>wellness</button> */}
       {/* Offline notification banner */}
       {isOfflineData && <OfflineBanner message="You're offline. Viewing cached dashboard data." className="mb-4" showDismiss={true} />}
@@ -504,28 +513,28 @@ const Dashboard = () => {
       {/* Undertakings Banner */}
       <UndertakingsBanner />
 
-      <section className="mb-6">
+      <section style={{ marginBottom: 'var(--spacing-6)' }}>
         <StudentProfile profile={dashboardData.profile} />
       </section>
 
-      <section className="mb-6">
+      <section style={{ marginBottom: 'var(--spacing-6)' }}>
         <DashboardStats stats={dashboardData.stats} />
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-6" style={{ gap: 'var(--gap-md)' }}>
         {/* Left sidebar - takes 2 columns */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
           <RoomInfoCard roomData={dashboardData.roomInfo} />
           <LostFoundSummary lostAndFoundStats={dashboardData.stats.lostAndFound} />
         </div>
 
         {/* Middle section - Complaints takes 2 columns */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
           <ComplaintsSummary complaints={dashboardData.activeComplaints} />
         </div>
 
         {/* Right section - Events takes 2 columns */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
           <EventsCalendar events={dashboardData.upcomingEvents} />
         </div>
       </div>
@@ -533,20 +542,28 @@ const Dashboard = () => {
       {/* Only keep the mobile QR button and modal */}
       <button
         onClick={() => setShowQRModal(true)}
-        className={`
-          fixed md:hidden bg-[#1360AB] rounded-full p-4 shadow-lg hover:bg-[#0d4b86] transition-all duration-300 z-10
-          ${isPwaMobile ? "bottom-20" : "bottom-6"} right-6
-        `}
+        className={`fixed md:hidden rounded-full transition-all ${isPwaMobile ? "bottom-20" : ""}`}
+        style={{
+          backgroundColor: 'var(--button-primary-bg)',
+          padding: 'var(--spacing-4)',
+          boxShadow: 'var(--shadow-lg)',
+          zIndex: 'var(--z-dropdown)',
+          bottom: isPwaMobile ? '5rem' : 'var(--spacing-6)',
+          right: 'var(--spacing-6)',
+          transitionDuration: 'var(--transition-slow)'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'}
+        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}
       >
-        <FaQrcode className="text-white text-2xl" />
+        <FaQrcode style={{ color: 'var(--color-white)', fontSize: 'var(--font-size-2xl)' }} />
       </button>
 
       {/* QR Code Modal */}
       {showQRModal && (
         <Modal title="Campus Access QR" onClose={() => setShowQRModal(false)} width={480}>
-          <div className="space-y-6">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
             <QRCodeGenerator />
-            <button onClick={() => setShowQRModal(false)} className="w-full py-2 bg-gray-200 rounded-lg text-gray-800 font-medium hover:bg-gray-300 transition-colors">
+            <button onClick={() => setShowQRModal(false)} className="w-full font-medium transition-colors" style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-secondary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
               Close
             </button>
           </div>
