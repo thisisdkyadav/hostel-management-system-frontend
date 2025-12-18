@@ -19,29 +19,29 @@ const RoomStats = ({ rooms, totalCount }) => {
       title: "Total Rooms",
       value: totalRooms,
       subtitle: "Available for allocation",
-      icon: <FaDoorOpen className="text-2xl" />,
-      color: "#1360AB",
+      icon: <FaDoorOpen style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-primary)",
     },
     {
       title: "Active Rooms",
       value: activeRooms,
       subtitle: `${totalRooms > 0 ? ((activeRooms / totalRooms) * 100).toFixed(1) : 0}% of total`,
-      icon: <FaUserCheck className="text-2xl" />,
-      color: "#22c55e", // green-500
+      icon: <FaUserCheck style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-success)",
     },
     {
       title: "Full Rooms",
       value: fullRooms,
       subtitle: `${totalRooms > 0 ? ((fullRooms / totalRooms) * 100).toFixed(1) : 0}% at capacity`,
-      icon: <FaUserAltSlash className="text-2xl" />,
-      color: "#ef4444", // red-500
+      icon: <FaUserAltSlash style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-danger)",
     },
     {
       title: "Occupancy Rate",
       value: `${occupiedPercentage}%`,
       subtitle: "Room utilization",
-      icon: <IoStatsChart className="text-2xl" />,
-      color: "#eab308", // yellow-500
+      icon: <IoStatsChart style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-warning)",
     },
   ]
 

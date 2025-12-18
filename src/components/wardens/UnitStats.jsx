@@ -33,29 +33,29 @@ const UnitStats = ({ units, rooms, currentView, totalCount }) => {
       title: "Total Units",
       value: stats.totalUnits,
       subtitle: "Hostel units",
-      icon: <FaBuilding className="text-2xl" />,
-      color: "#1360AB",
+      icon: <FaBuilding style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-primary)",
     },
     {
       title: "Total Rooms",
       value: stats.totalRooms,
       subtitle: "Across all units",
-      icon: <FaDoorOpen className="text-2xl" />,
-      color: "#22c55e", // green-500
+      icon: <FaDoorOpen style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-success)",
     },
     {
       title: "Total Occupancy",
       value: stats.occupancy,
       subtitle: `${stats.totalRooms > 0 ? ((stats.occupancy / stats.totalRooms) * 100).toFixed(1) : 0}% of total`,
-      icon: <FaUserCheck className="text-2xl" />,
-      color: "#6366f1", // indigo-500
+      icon: <FaUserCheck style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-info)",
     },
     {
       title: "Occupancy Rate",
       value: `${stats.occupancyRate}%`,
       subtitle: "Room utilization",
-      icon: <IoStatsChart className="text-2xl" />,
-      color: "#eab308", // yellow-500
+      icon: <IoStatsChart style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-warning)",
     },
   ]
 
@@ -64,29 +64,29 @@ const UnitStats = ({ units, rooms, currentView, totalCount }) => {
       title: "Total Rooms",
       value: stats.totalRooms,
       subtitle: "Available for allocation",
-      icon: <FaDoorOpen className="text-2xl" />,
-      color: "#1360AB",
+      icon: <FaDoorOpen style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-primary)",
     },
     {
       title: "Active Rooms",
       value: stats.activeRooms,
       subtitle: `${stats.totalRooms > 0 ? ((stats.activeRooms / stats.totalRooms) * 100).toFixed(1) : 0}% of total`,
-      icon: <FaUserCheck className="text-2xl" />,
-      color: "#22c55e", // green-500
+      icon: <FaUserCheck style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-success)",
     },
     {
       title: "Full Rooms",
       value: stats.fullRooms,
       subtitle: `${stats.totalRooms > 0 ? ((stats.fullRooms / stats.totalRooms) * 100).toFixed(1) : 0}% at capacity`,
-      icon: <FaUserAltSlash className="text-2xl" />,
-      color: "#ef4444", // red-500
+      icon: <FaUserAltSlash style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-danger)",
     },
     {
       title: "Occupancy Rate",
       value: `${stats.occupancyRate}%`,
       subtitle: "Room utilization",
-      icon: <IoStatsChart className="text-2xl" />,
-      color: "#eab308", // yellow-500
+      icon: <IoStatsChart style={{ fontSize: "var(--font-size-3xl)" }} />,
+      color: "var(--color-warning)",
     },
   ]
 

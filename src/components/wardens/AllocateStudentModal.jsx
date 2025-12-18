@@ -94,44 +94,92 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
   return (
     <Modal title={`Allocate Student to Room ${room.roomNumber}`} onClose={onClose} width={650}>
-      <div className="space-y-6">
-        <div className="bg-blue-50 p-5 rounded-xl">
-          <h3 className="font-medium text-[#1360AB] flex items-center mb-3">
-            <FaHome className="mr-2" /> Room Details
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <div style={{ 
+          backgroundColor: 'var(--color-primary-bg)', 
+          padding: 'var(--spacing-5)', 
+          borderRadius: 'var(--radius-xl)' 
+        }}>
+          <h3 style={{ 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-primary)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            marginBottom: 'var(--spacing-3)',
+            fontSize: 'var(--font-size-base)'
+          }}>
+            <FaHome style={{ marginRight: 'var(--spacing-2)' }} /> Room Details
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-4">
             <div>
-              <p className="text-xs text-gray-500 mb-1">Room Number</p>
-              <p className="font-medium">{room.roomNumber}</p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Room Number</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.roomNumber}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 mb-1">Floor</p>
-              <p className="font-medium">{room.floorNumber || room.floor || "Ground"}</p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Floor</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.floorNumber || room.floor || "Ground"}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 mb-1">Capacity</p>
-              <p className="font-medium">{room.capacity}</p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Capacity</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.capacity}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500 mb-1">Currently Occupied</p>
-              <p className="font-medium">
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>Currently Occupied</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>
                 {room.occupiedCount || room.currentOccupancy} / {room.capacity}
               </p>
             </div>
           </div>
 
           {(room.occupiedCount >= room.capacity || room.currentOccupancy >= room.capacity) && (
-            <div className="flex items-center mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md">
-              <FaExclamationTriangle className="mr-2 flex-shrink-0" />
-              <p className="text-sm">This room is already at full capacity.</p>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              marginTop: 'var(--spacing-4)', 
+              padding: 'var(--spacing-3)', 
+              backgroundColor: 'var(--color-warning-bg)', 
+              color: 'var(--color-warning-text)', 
+              borderRadius: 'var(--radius-md)' 
+            }}>
+              <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <p style={{ fontSize: 'var(--font-size-sm)' }}>This room is already at full capacity.</p>
             </div>
           )}
         </div>
 
         <div>
-          <div className="relative">
-            <input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" />
-            <span className="absolute left-3 top-3 text-gray-400">
+          <div style={{ position: 'relative' }}>
+            <input 
+              type="text" 
+              placeholder="Search student by name, ID or email..." 
+              value={filters.searchTerm} 
+              onChange={handleSearchChange} 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--spacing-3)', 
+                paddingLeft: 'var(--spacing-10)', 
+                border: `var(--border-1) solid var(--color-border-input)`, 
+                borderRadius: 'var(--radius-lg)', 
+                outline: 'none', 
+                transition: 'var(--transition-all)',
+                fontSize: 'var(--font-size-base)'
+              }} 
+              onFocus={(e) => {
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
+              onBlur={(e) => {
+                e.target.style.boxShadow = 'none';
+                e.target.style.borderColor = 'var(--color-border-input)';
+              }}
+            />
+            <span style={{ 
+              position: 'absolute', 
+              left: 'var(--spacing-3)', 
+              top: 'var(--spacing-3)', 
+              color: 'var(--color-text-placeholder)',
+              fontSize: 'var(--icon-md)'
+            }}>
               <FaSearch />
             </span>
           </div>
@@ -139,21 +187,59 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
         {/* Bed Selection Section */}
         <div>
-          <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-            <FaBed className="mr-2 text-[#1360AB]" /> Select Bed Number
+          <h3 style={{ 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-3)', 
+            display: 'flex', 
+            alignItems: 'center',
+            fontSize: 'var(--font-size-base)'
+          }}>
+            <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Select Bed Number
           </h3>
           {availableBeds.length === 0 ? (
-            <div className="p-4 bg-yellow-50 text-yellow-800 rounded-lg flex items-center">
-              <FaExclamationTriangle className="mr-2 flex-shrink-0" />
-              <p>No beds available in this room</p>
+            <div style={{ 
+              padding: 'var(--spacing-4)', 
+              backgroundColor: 'var(--color-warning-bg-light)', 
+              color: 'var(--color-warning-text)', 
+              borderRadius: 'var(--radius-lg)', 
+              display: 'flex', 
+              alignItems: 'center' 
+            }}>
+              <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <p style={{ fontSize: 'var(--font-size-base)' }}>No beds available in this room</p>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
               {availableBeds.map((bedNumber) => (
                 <button
                   key={bedNumber}
                   onClick={() => handleBedSelect(bedNumber)}
-                  className={`px-4 py-2 rounded-lg border flex items-center justify-center w-14 transition-colors ${selectedBed === bedNumber ? "bg-[#1360AB] text-white border-[#1360AB]" : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"}`}
+                  style={{ 
+                    padding: `var(--spacing-2) var(--spacing-4)`, 
+                    borderRadius: 'var(--radius-lg)', 
+                    border: `var(--border-1) solid ${selectedBed === bedNumber ? 'var(--color-primary)' : 'var(--color-border-input)'}`, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    width: 'var(--spacing-14)', 
+                    transition: 'var(--transition-colors)',
+                    backgroundColor: selectedBed === bedNumber ? 'var(--color-primary)' : 'var(--color-bg-primary)',
+                    color: selectedBed === bedNumber ? 'var(--color-white)' : 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                    fontSize: 'var(--font-size-base)',
+                    fontWeight: 'var(--font-weight-medium)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedBed !== bedNumber) {
+                      e.target.style.backgroundColor = 'var(--color-bg-hover)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedBed !== bedNumber) {
+                      e.target.style.backgroundColor = 'var(--color-bg-primary)';
+                    }
+                  }}
                 >
                   {bedNumber}
                 </button>
@@ -163,53 +249,181 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         {error && (
-          <div className="p-4 bg-red-50 text-red-800 rounded-lg flex items-start">
-            <FaExclamationTriangle className="mt-0.5 mr-2 flex-shrink-0" />
-            <p>{error}</p>
+          <div style={{ 
+            padding: 'var(--spacing-4)', 
+            backgroundColor: 'var(--color-danger-bg)', 
+            color: 'var(--color-danger-text)', 
+            borderRadius: 'var(--radius-lg)', 
+            display: 'flex', 
+            alignItems: 'flex-start' 
+          }}>
+            <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+            <p style={{ fontSize: 'var(--font-size-base)' }}>{error}</p>
           </div>
         )}
 
         <div>
-          <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-            <FaUserGraduate className="mr-2 text-[#1360AB]" /> Unallocated Students
+          <h3 style={{ 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-3)', 
+            display: 'flex', 
+            alignItems: 'center',
+            fontSize: 'var(--font-size-base)'
+          }}>
+            <FaUserGraduate style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Unallocated Students
           </h3>
 
           {loading ? (
-            <div className="flex justify-center py-8">
-              <div className="relative w-12 h-12">
-                <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-                <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-8) 0' }}>
+              <div style={{ position: 'relative', width: 'var(--spacing-12)', height: 'var(--spacing-12)' }}>
+                <div style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  width: '100%', 
+                  height: '100%', 
+                  border: `var(--border-4) solid var(--color-border-primary)`, 
+                  borderRadius: 'var(--radius-full)' 
+                }}></div>
+                <div style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  left: 0, 
+                  width: '100%', 
+                  height: '100%', 
+                  border: `var(--border-4) solid var(--color-primary)`, 
+                  borderRadius: 'var(--radius-full)', 
+                  animation: 'spin 1s linear infinite', 
+                  borderTopColor: 'transparent' 
+                }}></div>
               </div>
             </div>
           ) : (
             <>
               {unallocatedStudents.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">No unallocated students found</div>
+                <div style={{ 
+                  textAlign: 'center', 
+                  padding: 'var(--spacing-8) 0', 
+                  color: 'var(--color-text-muted)',
+                  fontSize: 'var(--font-size-base)'
+                }}>No unallocated students found</div>
               ) : (
-                <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50 sticky top-0">
+                <div style={{ 
+                  maxHeight: '256px', 
+                  overflowY: 'auto', 
+                  border: `var(--border-1) solid var(--color-border-primary)`, 
+                  borderRadius: 'var(--radius-lg)' 
+                }}>
+                  <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                    <thead style={{ backgroundColor: 'var(--color-bg-tertiary)', position: 'sticky', top: 0 }}>
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">ID</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        <th style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'left', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase', 
+                          letterSpacing: 'var(--letter-spacing-wide)' 
+                        }}>Student</th>
+                        <th className="hidden sm:table-cell" style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'left', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase', 
+                          letterSpacing: 'var(--letter-spacing-wide)' 
+                        }}>ID</th>
+                        <th style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'right', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase', 
+                          letterSpacing: 'var(--letter-spacing-wide)' 
+                        }}>Action</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                       {unallocatedStudents.map((student) => (
-                        <tr key={student.id} className={`hover:bg-gray-50 transition-colors ${selectedStudent?.id === student.id ? "bg-blue-50" : ""}`}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">{student.fullName?.charAt(0) || "S"}</div>
-                              <div className="ml-3">
-                                <div className="text-sm font-medium text-gray-900">{student.fullName}</div>
-                                <div className="text-sm text-gray-500">{student.email}</div>
+                        <tr 
+                          key={student.id} 
+                          style={{ 
+                            transition: 'var(--transition-colors)',
+                            backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary-bg)' : 'var(--color-bg-primary)',
+                            borderTop: `var(--border-1) solid var(--color-border-primary)`
+                          }}
+                          onMouseEnter={(e) => {
+                            if (selectedStudent?.id !== student.id) {
+                              e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (selectedStudent?.id !== student.id) {
+                              e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+                            }
+                          }}
+                        >
+                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <div style={{ 
+                                height: 'var(--spacing-9)', 
+                                width: 'var(--spacing-9)', 
+                                borderRadius: 'var(--radius-full)', 
+                                backgroundColor: 'var(--color-bg-muted)', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                color: 'var(--color-text-tertiary)', 
+                                fontWeight: 'var(--font-weight-semibold)',
+                                fontSize: 'var(--font-size-base)'
+                              }}>{student.fullName?.charAt(0) || "S"}</div>
+                              <div style={{ marginLeft: 'var(--spacing-3)' }}>
+                                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{student.fullName}</div>
+                                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">{student.studentId || student.rollNumber}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onClick={() => handleStudentSelect(student)} className={`px-3 py-1 rounded-md ${selectedStudent?.id === student.id ? "bg-[#1360AB] text-white" : "bg-blue-50 text-[#1360AB] hover:bg-blue-100"}`}>
+                          <td className="hidden sm:table-cell" style={{ 
+                            padding: 'var(--spacing-4) var(--spacing-6)', 
+                            whiteSpace: 'nowrap', 
+                            fontSize: 'var(--font-size-sm)', 
+                            color: 'var(--color-text-muted)' 
+                          }}>{student.studentId || student.rollNumber}</td>
+                          <td style={{ 
+                            padding: 'var(--spacing-4) var(--spacing-6)', 
+                            whiteSpace: 'nowrap', 
+                            textAlign: 'right', 
+                            fontSize: 'var(--font-size-sm)', 
+                            fontWeight: 'var(--font-weight-medium)' 
+                          }}>
+                            <button 
+                              onClick={() => handleStudentSelect(student)} 
+                              style={{ 
+                                padding: 'var(--spacing-1) var(--spacing-3)', 
+                                borderRadius: 'var(--radius-md)', 
+                                backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary)' : 'var(--color-primary-bg)',
+                                color: selectedStudent?.id === student.id ? 'var(--color-white)' : 'var(--color-primary)',
+                                border: 'none',
+                                cursor: 'pointer',
+                                transition: 'var(--transition-colors)',
+                                fontSize: 'var(--font-size-sm)',
+                                fontWeight: 'var(--font-weight-medium)'
+                              }}
+                              onMouseEnter={(e) => {
+                                if (selectedStudent?.id !== student.id) {
+                                  e.target.style.backgroundColor = 'var(--color-primary-bg-hover)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (selectedStudent?.id !== student.id) {
+                                  e.target.style.backgroundColor = 'var(--color-primary-bg)';
+                                }
+                              }}
+                            >
                               Select
                             </button>
                           </td>
@@ -223,23 +437,79 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           )}
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-end space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3 pt-4 mt-3 border-t border-gray-100">
-          <button onClick={onClose} className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 font-medium transition-colors">
+        <div className="flex flex-col-reverse sm:flex-row" style={{ 
+          justifyContent: 'flex-end', 
+          gap: 'var(--spacing-3)', 
+          paddingTop: 'var(--spacing-4)', 
+          marginTop: 'var(--spacing-3)', 
+          borderTop: `var(--border-1) solid var(--color-border-light)` 
+        }}>
+          <button 
+            onClick={onClose} 
+            style={{ 
+              padding: 'var(--spacing-2-5) var(--spacing-4)', 
+              backgroundColor: 'var(--color-bg-muted)', 
+              borderRadius: 'var(--radius-lg)', 
+              color: 'var(--color-text-secondary)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              transition: 'var(--transition-colors)',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: 'var(--font-size-base)'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--color-bg-disabled)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'var(--color-bg-muted)';
+            }}
+          >
             Cancel
           </button>
           <button
             onClick={handleAllocateStudent}
             disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity}
-            className={`flex items-center justify-center px-4 py-2.5 rounded-lg font-medium transition-colors ${!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-[#1360AB] text-white hover:bg-[#0d4b86]"}`}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              padding: 'var(--spacing-2-5) var(--spacing-4)', 
+              borderRadius: 'var(--radius-lg)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              transition: 'var(--transition-colors)',
+              backgroundColor: (!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity) ? 'var(--color-bg-muted)' : 'var(--color-primary)',
+              color: (!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity) ? 'var(--color-text-disabled)' : 'var(--color-white)',
+              cursor: (!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity) ? 'not-allowed' : 'pointer',
+              border: 'none',
+              fontSize: 'var(--font-size-base)'
+            }}
+            onMouseEnter={(e) => {
+              if (!(!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity)) {
+                e.target.style.backgroundColor = 'var(--color-primary-hover)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!(!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity)) {
+                e.target.style.backgroundColor = 'var(--color-primary)';
+              }
+            }}
           >
             {allocating ? (
               <>
-                <div className="animate-spin h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full"></div>
+                <div style={{ 
+                  animation: 'spin 1s linear infinite', 
+                  height: 'var(--spacing-4)', 
+                  width: 'var(--spacing-4)', 
+                  marginRight: 'var(--spacing-2)', 
+                  border: `var(--border-2) solid var(--color-white)`, 
+                  borderTopColor: 'transparent', 
+                  borderRadius: 'var(--radius-full)' 
+                }}></div>
                 Allocating...
               </>
             ) : (
               <>
-                <FaUserPlus className="mr-2" />
+                <FaUserPlus style={{ marginRight: 'var(--spacing-2)' }} />
                 Allocate Student
               </>
             )}

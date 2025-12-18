@@ -9,13 +9,28 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       header: "Unit Number",
       key: "unitNumber",
       render: (unit) => (
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 flex items-center justify-center rounded-full">
-            <FaBuilding className="text-[#1360AB]" />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              flexShrink: 0,
+              height: "var(--spacing-10)",
+              width: "var(--spacing-10)",
+              backgroundColor: "var(--color-info-bg)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "var(--radius-full)",
+            }}
+          >
+            <FaBuilding style={{ color: "var(--color-primary)" }} />
           </div>
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900">{unit.unitNumber || unit.name}</div>
-            <div className="text-xs text-gray-500 sm:hidden">{unit.hostel}</div>
+          <div style={{ marginLeft: "var(--spacing-4)" }}>
+            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+              {unit.unitNumber || unit.name}
+            </div>
+            <div className="sm:hidden" style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              {unit.hostel}
+            </div>
           </div>
         </div>
       ),
@@ -37,8 +52,8 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       key: "roomCount",
       className: "hidden lg:table-cell",
       render: (unit) => (
-        <div className="flex items-center">
-          <FaDoorOpen className="mr-2 text-gray-400" />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FaDoorOpen style={{ marginRight: "var(--spacing-2)", color: "var(--color-text-disabled)" }} />
           {unit.roomCount || 0} rooms
         </div>
       ),
@@ -47,16 +62,27 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       header: "Occupancy",
       key: "occupancy",
       render: (unit) => (
-        <div className="flex items-center">
-          <div className="w-20 bg-gray-200 rounded-full h-2.5 mr-2 hidden sm:block">
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div
+            className="hidden sm:block"
+            style={{
+              width: "var(--spacing-20)",
+              backgroundColor: "var(--color-bg-muted)",
+              borderRadius: "var(--radius-full)",
+              height: "var(--spacing-2-5)",
+              marginRight: "var(--spacing-2)",
+            }}
+          >
             <div
-              className={`h-2.5 rounded-full ${unit.capacity && unit.occupancy >= unit.capacity ? "bg-green-500" : "bg-[#1360AB]"}`}
               style={{
+                height: "var(--spacing-2-5)",
+                borderRadius: "var(--radius-full)",
+                backgroundColor: unit.capacity && unit.occupancy >= unit.capacity ? "var(--color-success)" : "var(--color-primary)",
                 width: `${unit.capacity ? Math.min(100, Math.round(((unit.occupancy || 0) / unit.capacity) * 100)) : 0}%`,
               }}
             ></div>
           </div>
-          <span className="text-sm text-gray-700">
+          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
             {unit.occupancy || 0}/{unit.capacity || 0}
           </span>
         </div>
@@ -72,9 +98,24 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
             e.stopPropagation()
             onUnitClick(unit)
           }}
-          className="text-[#1360AB] hover:bg-blue-50 p-2 rounded-full transition-colors"
+          style={{
+            color: "var(--color-primary)",
+            padding: "var(--spacing-2)",
+            borderRadius: "var(--radius-full)",
+            transition: "var(--transition-colors)",
+            backgroundColor: "transparent",
+            border: "none",
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-info-bg-light)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ height: "var(--icon-lg)", width: "var(--icon-lg)" }}
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
             <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
           </svg>
@@ -88,11 +129,29 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       {viewMode === "table" ? (
         <BaseTable columns={columns} data={units} onRowClick={onUnitClick} emptyMessage="No units to display" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
+            gap: "var(--gap-md)",
+          }}
+          className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
           {units.map((unit) => (
             <UnitCard key={unit.id} unit={unit} onClick={() => onUnitClick(unit)} />
           ))}
-          {units.length === 0 && <div className="col-span-full text-center py-8 text-gray-500">No units to display</div>}
+          {units.length === 0 && (
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                textAlign: "center",
+                padding: "var(--spacing-8) 0",
+                color: "var(--color-text-muted)",
+              }}
+            >
+              No units to display
+            </div>
+          )}
         </div>
       )}
     </>

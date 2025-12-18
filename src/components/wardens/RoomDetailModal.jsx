@@ -62,53 +62,74 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   return (
     <>
       <Modal title={`Room ${room.roomNumber} Details`} onClose={onClose} width={800}>
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-50 p-5 rounded-xl">
-              <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-                <FaBed className="mr-2 text-[#1360AB]" /> Room Information
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--spacing-6)' }}>
+            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
+              <h3 style={{ 
+                fontWeight: 'var(--font-weight-medium)', 
+                color: 'var(--color-text-secondary)', 
+                marginBottom: 'var(--spacing-3)', 
+                display: 'flex', 
+                alignItems: 'center',
+                fontSize: 'var(--font-size-base)'
+              }}>
+                <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Room Information
               </h3>
-              <ul className="space-y-3">
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Room Number:</span>
-                  <span className="font-medium">{room.roomNumber}</span>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Room Number:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.roomNumber}</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Type:</span>
-                  <span className="font-medium">{room.type || "Standard"}</span>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Type:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.type || "Standard"}</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Capacity:</span>
-                  <span className="font-medium">{room.capacity} students</span>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Capacity:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.capacity} students</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Current Occupancy:</span>
-                  <span className="font-medium">{room.status === "Inactive" ? "Inactive" : `${room.currentOccupancy}/${room.capacity}`}</span>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Current Occupancy:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.status === "Inactive" ? "Inactive" : `${room.currentOccupancy}/${room.capacity}`}</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Floor:</span>
-                  <span className="font-medium">{room.floor || "Ground"}</span>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Floor:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.floor || "Ground"}</span>
                 </li>
               </ul>
             </div>
 
-            <div className="bg-gray-50 p-5 rounded-xl">
-              <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-                <FaBuilding className="mr-2 text-[#1360AB]" /> Additional Details
+            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
+              <h3 style={{ 
+                fontWeight: 'var(--font-weight-medium)', 
+                color: 'var(--color-text-secondary)', 
+                marginBottom: 'var(--spacing-3)', 
+                display: 'flex', 
+                alignItems: 'center',
+                fontSize: 'var(--font-size-base)'
+              }}>
+                <FaBuilding style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Additional Details
               </h3>
-              <ul className="space-y-3">
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Hostel:</span>
-                  <span className="font-medium">{room.hostel?.name || "N/A"}</span>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Hostel:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.hostel?.name || "N/A"}</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Unit:</span>
-                  <span className="font-medium">{room.unit?.name || "N/A"}</span>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Unit:</span>
+                  <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>{room.unit?.name || "N/A"}</span>
                 </li>
-                <li className="flex justify-between">
-                  <span className="text-gray-500">Status:</span>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Status:</span>
                   <span
-                    className={`font-medium px-2.5 py-0.5 rounded-full text-sm ${room.status === "Inactive" ? "bg-red-100 text-red-800" : room.currentOccupancy >= room.capacity ? "bg-green-100 text-green-800" : room.currentOccupancy > 0 ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}`}
+                    style={{
+                      fontWeight: 'var(--font-weight-medium)', 
+                      padding: 'var(--spacing-0-5) var(--spacing-2-5)', 
+                      borderRadius: 'var(--radius-full)', 
+                      fontSize: 'var(--font-size-sm)',
+                      backgroundColor: room.status === "Inactive" ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
+                      color: room.status === "Inactive" ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
+                    }}
                   >
                     {room.status === "Inactive" ? "Inactive" : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partially Occupied" : "Empty"}
                   </span>
@@ -118,70 +139,271 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
           </div>
 
           {["Admin"].includes(user.role) && (
-            <div className="mt-4">
-              <button onClick={handleToggleStatus} disabled={loading} className={`flex items-center px-4 py-2.5 rounded-lg transition-colors ${room.status === "Inactive" ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-red-50 text-red-700 hover:bg-red-100"}`}>
+            <div style={{ marginTop: 'var(--spacing-4)' }}>
+              <button 
+                onClick={handleToggleStatus} 
+                disabled={loading} 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  padding: 'var(--spacing-2-5) var(--spacing-4)', 
+                  borderRadius: 'var(--radius-lg)', 
+                  transition: 'var(--transition-colors)',
+                  backgroundColor: room.status === "Inactive" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)',
+                  color: room.status === "Inactive" ? 'var(--color-success)' : 'var(--color-danger)',
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  fontSize: 'var(--font-size-base)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) {
+                    e.target.style.backgroundColor = room.status === "Inactive" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading) {
+                    e.target.style.backgroundColor = room.status === "Inactive" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)';
+                  }
+                }}
+              >
                 {room.status === "Inactive" ? (
                   <>
-                    <FaToggleOff className="mr-2" /> Activate Room
+                    <FaToggleOff style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} /> Activate Room
                   </>
                 ) : (
                   <>
-                    <FaToggleOn className="mr-2" /> Mark as Inactive
+                    <FaToggleOn style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} /> Mark as Inactive
                   </>
                 )}
               </button>
             </div>
           )}
 
-          <div className="mt-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium flex items-center">
-                <FaUserAlt className="mr-2 text-[#1360AB]" /> Allocated Students
+          <div style={{ marginTop: 'var(--spacing-6)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+              <h3 style={{ 
+                fontSize: 'var(--font-size-lg)', 
+                fontWeight: 'var(--font-weight-medium)', 
+                display: 'flex', 
+                alignItems: 'center' 
+              }}>
+                <FaUserAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Allocated Students
               </h3>
               {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-                <button onClick={onAllocate} className="flex items-center text-sm bg-green-50 text-green-700 px-4 py-2 rounded-lg hover:bg-green-100 transition-colors">
-                  <FaUserPlus className="mr-2" /> Allocate Student
+                <button 
+                  onClick={onAllocate} 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    fontSize: 'var(--font-size-sm)', 
+                    backgroundColor: 'var(--color-success-bg-light)', 
+                    color: 'var(--color-success)', 
+                    padding: 'var(--spacing-2) var(--spacing-4)', 
+                    borderRadius: 'var(--radius-lg)', 
+                    transition: 'var(--transition-colors)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontWeight: 'var(--font-weight-medium)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'var(--color-success-bg)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'var(--color-success-bg-light)';
+                  }}
+                >
+                  <FaUserPlus style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} /> Allocate Student
                 </button>
               )}
             </div>
 
             {room.status === "Inactive" ? (
-              <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <FaToggleOff className="mx-auto text-gray-300 text-4xl mb-3" />
-                <p className="text-gray-500">This room is currently inactive and not available for allocation</p>
+              <div style={{ 
+                backgroundColor: 'var(--color-bg-tertiary)', 
+                borderRadius: 'var(--radius-lg)', 
+                padding: 'var(--spacing-8)', 
+                textAlign: 'center' 
+              }}>
+                <FaToggleOff style={{ 
+                  margin: '0 auto', 
+                  color: 'var(--color-border-primary)', 
+                  fontSize: 'var(--icon-4xl)', 
+                  marginBottom: 'var(--spacing-3)' 
+                }} />
+                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>This room is currently inactive and not available for allocation</p>
               </div>
             ) : room.students && room.students.length > 0 ? (
-              <div className="bg-white border rounded-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+              <div style={{ 
+                backgroundColor: 'var(--color-bg-primary)', 
+                border: `var(--border-1) solid var(--color-border-primary)`, 
+                borderRadius: 'var(--radius-lg)', 
+                overflow: 'hidden' 
+              }}>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                    <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Roll Number</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Bed Number</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Department</th>
-                        {["Admin"].includes(user.role) && <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Action</th>}
+                        <th style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'left', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase' 
+                        }}>Student</th>
+                        <th className="hidden sm:table-cell" style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'left', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase' 
+                        }}>Roll Number</th>
+                        <th className="hidden lg:table-cell" style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'left', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase' 
+                        }}>Bed Number</th>
+                        <th className="hidden md:table-cell" style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'left', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase' 
+                        }}>Department</th>
+                        {["Admin"].includes(user.role) && <th style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-6)', 
+                          textAlign: 'right', 
+                          fontSize: 'var(--font-size-xs)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          color: 'var(--color-text-muted)', 
+                          textTransform: 'uppercase' 
+                        }}>Action</th>}
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                       {room.students.map((student, index) => (
-                        <tr key={student.id || index} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap cursor-pointer" onClick={() => handleStudentClick(student)}>
-                            <div className="flex items-center">
-                              <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">{student.profileImage ? <img src={getMediaUrl(student.profileImage)} alt="Profile" className="w-full h-full rounded-full object-cover" /> : <FaUserAlt className="text-gray-500" />}</div>
-                              <div className="ml-3">
-                                <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                                <div className="text-xs text-gray-500 sm:hidden">{student.rollNumber}</div>
-                                <div className="text-xs text-gray-500">{student.email}</div>
+                        <tr 
+                          key={student.id || index} 
+                          style={{ 
+                            borderTop: `var(--border-1) solid var(--color-border-primary)`,
+                            transition: 'var(--transition-colors)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
+                          }}
+                        >
+                          <td 
+                            style={{ 
+                              padding: 'var(--spacing-4) var(--spacing-6)', 
+                              whiteSpace: 'nowrap', 
+                              cursor: 'pointer' 
+                            }} 
+                            onClick={() => handleStudentClick(student)}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <div style={{ 
+                                height: 'var(--spacing-8)', 
+                                width: 'var(--spacing-8)', 
+                                borderRadius: 'var(--radius-full)', 
+                                backgroundColor: 'var(--color-bg-muted)', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                overflow: 'hidden'
+                              }}>
+                                {student.profileImage ? (
+                                  <img 
+                                    src={getMediaUrl(student.profileImage)} 
+                                    alt="Profile" 
+                                    style={{ 
+                                      width: '100%', 
+                                      height: '100%', 
+                                      borderRadius: 'var(--radius-full)', 
+                                      objectFit: 'cover' 
+                                    }} 
+                                  />
+                                ) : (
+                                  <FaUserAlt style={{ color: 'var(--color-text-muted)', fontSize: 'var(--icon-sm)' }} />
+                                )}
+                              </div>
+                              <div style={{ marginLeft: 'var(--spacing-3)' }}>
+                                <div style={{ 
+                                  fontSize: 'var(--font-size-sm)', 
+                                  fontWeight: 'var(--font-weight-medium)', 
+                                  color: 'var(--color-text-primary)' 
+                                }}>{student.name}</div>
+                                <div className="sm:hidden" style={{ 
+                                  fontSize: 'var(--font-size-xs)', 
+                                  color: 'var(--color-text-muted)' 
+                                }}>{student.rollNumber}</div>
+                                <div style={{ 
+                                  fontSize: 'var(--font-size-xs)', 
+                                  color: 'var(--color-text-muted)' 
+                                }}>{student.email}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden sm:table-cell">{student.rollNumber}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden lg:table-cell">{student.bedNumber}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 hidden md:table-cell">{student.department}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                          <td className="hidden sm:table-cell" style={{ 
+                            padding: 'var(--spacing-4) var(--spacing-6)', 
+                            whiteSpace: 'nowrap', 
+                            fontSize: 'var(--font-size-sm)', 
+                            color: 'var(--color-text-secondary)' 
+                          }}>{student.rollNumber}</td>
+                          <td className="hidden lg:table-cell" style={{ 
+                            padding: 'var(--spacing-4) var(--spacing-6)', 
+                            whiteSpace: 'nowrap', 
+                            fontSize: 'var(--font-size-sm)', 
+                            color: 'var(--color-text-secondary)' 
+                          }}>{student.bedNumber}</td>
+                          <td className="hidden md:table-cell" style={{ 
+                            padding: 'var(--spacing-4) var(--spacing-6)', 
+                            whiteSpace: 'nowrap', 
+                            fontSize: 'var(--font-size-sm)', 
+                            color: 'var(--color-text-secondary)' 
+                          }}>{student.department}</td>
+                          <td style={{ 
+                            padding: 'var(--spacing-4) var(--spacing-6)', 
+                            whiteSpace: 'nowrap', 
+                            fontSize: 'var(--font-size-sm)', 
+                            textAlign: 'right' 
+                          }}>
                             {["Admin"].includes(user.role) && (
-                              <button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} className="text-red-600 hover:bg-red-50 p-2 rounded-full transition-colors" title="Remove from Room">
+                              <button 
+                                onClick={() => handleRemoveStudent(student.allocationId)} 
+                                disabled={loading} 
+                                style={{ 
+                                  color: 'var(--color-danger)', 
+                                  padding: 'var(--spacing-2)', 
+                                  borderRadius: 'var(--radius-full)', 
+                                  transition: 'var(--transition-colors)',
+                                  border: 'none',
+                                  backgroundColor: 'transparent',
+                                  cursor: loading ? 'not-allowed' : 'pointer',
+                                  opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
+                                  fontSize: 'var(--icon-md)'
+                                }} 
+                                title="Remove from Room"
+                                onMouseEnter={(e) => {
+                                  if (!loading) {
+                                    e.target.style.backgroundColor = 'var(--color-danger-bg-light)';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (!loading) {
+                                    e.target.style.backgroundColor = 'transparent';
+                                  }
+                                }}
+                              >
                                 <FaTrash />
                               </button>
                             )}
@@ -193,12 +415,44 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 </div>
               </div>
             ) : (
-              <div className="bg-gray-50 rounded-lg p-8 text-center">
-                <FaUserAlt className="mx-auto text-gray-300 text-4xl mb-3" />
-                <p className="text-gray-500">No students allocated to this room</p>
+              <div style={{ 
+                backgroundColor: 'var(--color-bg-tertiary)', 
+                borderRadius: 'var(--radius-lg)', 
+                padding: 'var(--spacing-8)', 
+                textAlign: 'center' 
+              }}>
+                <FaUserAlt style={{ 
+                  margin: '0 auto', 
+                  color: 'var(--color-border-primary)', 
+                  fontSize: 'var(--icon-4xl)', 
+                  marginBottom: 'var(--spacing-3)' 
+                }} />
+                <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No students allocated to this room</p>
                 {room.capacity > 0 && (
-                  <button onClick={onAllocate} className="mt-4 bg-blue-50 text-[#1360AB] px-4 py-2 rounded-lg hover:bg-blue-100 inline-flex items-center transition-colors">
-                    <FaUserPlus className="mr-2" /> Allocate Student
+                  <button 
+                    onClick={onAllocate} 
+                    style={{ 
+                      marginTop: 'var(--spacing-4)', 
+                      backgroundColor: 'var(--color-primary-bg)', 
+                      color: 'var(--color-primary)', 
+                      padding: 'var(--spacing-2) var(--spacing-4)', 
+                      borderRadius: 'var(--radius-lg)', 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      transition: 'var(--transition-colors)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: 'var(--font-size-base)',
+                      fontWeight: 'var(--font-weight-medium)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = 'var(--color-primary-bg-hover)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'var(--color-primary-bg)';
+                    }}
+                  >
+                    <FaUserPlus style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} /> Allocate Student
                   </button>
                 )}
               </div>
