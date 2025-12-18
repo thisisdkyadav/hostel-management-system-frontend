@@ -84,18 +84,18 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
   return (
     <Modal title="Add New Administrator" onClose={onClose} width={500}>
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="bg-blue-50 p-4 rounded-lg mb-4">
-          <div className="flex items-center text-blue-800">
-            <FaUserShield className="mr-2" />
-            <h4 className="font-medium">Administrator Information</h4>
+        <div className="bg-[var(--color-primary-bg)] p-[var(--spacing-4)] rounded-[var(--radius-lg)] mb-[var(--spacing-4)]">
+          <div className="flex items-center text-[var(--color-primary)]">
+            <FaUserShield className="mr-[var(--spacing-2)]" />
+            <h4 className="font-[var(--font-weight-medium)]">Administrator Information</h4>
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Name *</label>
+            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Name *</label>
             <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiUser />
               </div>
               <input
@@ -103,18 +103,18 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all ${errors.name ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.name ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
                 placeholder="Enter full name"
                 required
               />
-              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+              {errors.name && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.name}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Email *</label>
+            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Email *</label>
             <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiMail />
               </div>
               <input
@@ -122,18 +122,18 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all ${errors.email ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.email ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
                 placeholder="admin@example.com"
                 required
               />
-              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+              {errors.email && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.email}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Password *</label>
+            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Password *</label>
             <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiLock />
               </div>
               <input
@@ -141,34 +141,34 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all ${errors.password ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.password ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
                 placeholder="Enter password"
                 required
               />
-              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
+              {errors.password && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.password}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Category *</label>
+            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category *</label>
             <div className="relative">
               <input
                 type="text"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all ${errors.category ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
                 placeholder="Admin"
                 required
               />
-              {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
+              {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Phone (Optional)</label>
+            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Phone (Optional)</label>
             <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiPhone />
               </div>
               <input
@@ -176,19 +176,19 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className={`w-full p-3 pl-10 border rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all ${errors.phone ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
                 placeholder="+91 9876543210"
               />
-              {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+              {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 sm:space-y-0 sm:space-x-3">
-          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all" onClick={onClose} disabled={isSubmitting}>
+        <div className="flex flex-col sm:flex-row justify-end pt-[var(--spacing-5)] mt-[var(--spacing-6)] border-t border-[var(--color-border-light)] space-y-[var(--spacing-3)] sm:space-y-0 sm:space-x-[var(--spacing-3)]">
+          <button type="button" className="order-last sm:order-first px-[var(--spacing-5)] py-[var(--spacing-2-5)] bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-lg)] transition-[var(--transition-all)]" onClick={onClose} disabled={isSubmitting}>
             Cancel
           </button>
-          <button type="submit" className={`px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`} disabled={isSubmitting}>
+          <button type="submit" className={`px-[var(--spacing-5)] py-[var(--spacing-2-5)] bg-[var(--color-primary)] text-[var(--color-white)] rounded-[var(--radius-lg)] hover:bg-[var(--color-primary-hover)] transition-[var(--transition-all)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] ${isSubmitting ? "opacity-[var(--opacity-disabled)] cursor-not-allowed" : ""}`} disabled={isSubmitting}>
             {isSubmitting ? "Adding..." : "Add Administrator"}
           </button>
         </div>

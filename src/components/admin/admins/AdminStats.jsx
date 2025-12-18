@@ -17,39 +17,39 @@ const AdminStats = ({ admins }) => {
       title: "Total Admins",
       value: totalAdmins,
       icon: FaUsers,
-      color: "bg-blue-500",
-      lightColor: "bg-blue-50",
-      textColor: "text-blue-700",
+      color: "bg-[var(--color-primary)]",
+      lightColor: "bg-[var(--color-primary-bg)]",
+      textColor: "text-[var(--color-primary)]",
     },
     {
       title: "Active Admins",
       value: activeAdmins,
       icon: FaUserCheck,
-      color: "bg-green-500",
-      lightColor: "bg-green-50",
-      textColor: "text-green-700",
+      color: "bg-[var(--color-success)]",
+      lightColor: "bg-[var(--color-success-bg)]",
+      textColor: "text-[var(--color-success-text)]",
     },
     {
       title: "New This Month",
       value: recentAdmins,
       icon: FaUserShield,
-      color: "bg-purple-500",
-      lightColor: "bg-purple-50",
-      textColor: "text-purple-700",
+      color: "bg-[var(--color-purple-text)]",
+      lightColor: "bg-[var(--color-purple-bg)]",
+      textColor: "text-[var(--color-purple-text)]",
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-4)] mb-[var(--spacing-6)]">
       {stats.map((stat, index) => (
-        <div key={index} className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div key={index} className="bg-[var(--color-bg-primary)] rounded-[var(--radius-xl)] p-[var(--spacing-6)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-[var(--transition-shadow)] duration-[var(--duration-normal)]">
           <div className="flex items-center">
-            <div className={`${stat.lightColor} p-3 rounded-lg`}>
-              <stat.icon className={`text-xl ${stat.textColor}`} />
+            <div className={`${stat.lightColor} p-[var(--spacing-3)] rounded-[var(--radius-lg)]`}>
+              <stat.icon className={`text-[var(--font-size-xl)] ${stat.textColor}`} />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <div className="ml-[var(--spacing-4)]">
+              <p className="text-[var(--font-size-sm)] font-[var(--font-weight-medium)] text-[var(--color-text-muted)]">{stat.title}</p>
+              <p className="text-[var(--font-size-2xl)] font-[var(--font-weight-bold)] text-[var(--color-text-primary)]">{stat.value}</p>
             </div>
           </div>
         </div>
