@@ -139,30 +139,30 @@ const InventoryManagement = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 className="text-lg font-medium text-gray-800">Assign Inventory to Students</h3>
-          <p className="text-sm text-gray-500">Select a student to assign inventory items</p>
+          <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Assign Inventory to Students</h3>
+          <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Select a student to assign inventory items</p>
         </div>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg">{error}</div>}
+      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex justify-center items-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
+          <div className="animate-spin" style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: 'var(--border-4) solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--gap-md)' }}>
           {students.map((student) => (
-            <div key={student._id} className="bg-white rounded-lg p-4 border border-gray-200 hover:shadow-md transition-shadow flex items-center cursor-pointer" onClick={() => handleSelectStudent(student)}>
-              <div className="w-12 h-12 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-4">
-                <FaUserGraduate className="text-[#1360AB] text-xl" />
+            <div key={student._id} className="flex items-center cursor-pointer" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-shadow)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'} onClick={() => handleSelectStudent(student)}>
+              <div className="flex items-center justify-center" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-4)' }}>
+                <FaUserGraduate style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </div>
               <div>
-                <h4 className="font-medium text-gray-800">{student.userId.name}</h4>
-                <p className="text-sm text-gray-500">{student.rollNumber}</p>
+                <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.userId.name}</h4>
+                <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</p>
               </div>
               <div className="ml-auto">
-                <button className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB]">
+                <button className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', border: 'none', cursor: 'pointer' }}>
                   <FaPlus />
                 </button>
               </div>
@@ -175,9 +175,9 @@ const InventoryManagement = () => {
       {showModal && selectedStudent && (
         <Modal title={`Assign Inventory to ${selectedStudent.userId.name}`} onClose={closeModal}>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Item</label>
-              <select name="hostelInventoryId" value={assignFormData.hostelInventoryId} onChange={handleAssignFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item</label>
+              <select name="hostelInventoryId" value={assignFormData.hostelInventoryId} onChange={handleAssignFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
                 <option value="">Select Item</option>
                 {hostelInventory.map((item) => (
                   <option key={item._id} value={item._id}>
@@ -187,32 +187,32 @@ const InventoryManagement = () => {
               </select>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Count</label>
-              <input type="number" name="count" value={assignFormData.count} onChange={handleAssignFormChange} min="1" max={getMaxCount()} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required />
-              {assignFormData.hostelInventoryId && <p className="text-xs text-gray-500 mt-1">Maximum available: {getMaxCount()}</p>}
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Count</label>
+              <input type="number" name="count" value={assignFormData.count} onChange={handleAssignFormChange} min="1" max={getMaxCount()} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required />
+              {assignFormData.hostelInventoryId && <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum available: {getMaxCount()}</p>}
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Condition</label>
-              <select name="condition" value={assignFormData.condition} onChange={handleAssignFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <select name="condition" value={assignFormData.condition} onChange={handleAssignFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
                 <option value="Good">Good</option>
                 <option value="Fair">Fair</option>
                 <option value="Poor">Poor</option>
               </select>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-              <textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" placeholder="Any additional notes..."></textarea>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows="3" className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} placeholder="Any additional notes..."></textarea>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+            <div className="flex justify-end" style={{ gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-2)' }}>
+              <button type="button" onClick={closeModal} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
                 Cancel
               </button>
-              <button type="submit" disabled={loading || !assignFormData.hostelInventoryId} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Assign Item"}
+              <button type="submit" disabled={loading || !assignFormData.hostelInventoryId} className="flex items-center justify-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: loading || !assignFormData.hostelInventoryId ? 'not-allowed' : 'pointer', opacity: loading || !assignFormData.hostelInventoryId ? 'var(--opacity-disabled)' : '1', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && assignFormData.hostelInventoryId && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
+                {loading ? <div className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div> : "Assign Item"}
               </button>
             </div>
           </form>
