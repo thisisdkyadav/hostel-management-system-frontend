@@ -35,9 +35,6 @@ import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
 import AdminHostels from "../pages/admin/Hostels"
 import AdminWarden from "../pages/admin/Wardens"
-// import VisitorRequest from "../pages/admin/VisitorRequest"
-// import AdminStudents from "../pages/admin/Students"
-// import AdminComplaints from "../pages/admin/Complaints"
 import SecurityLogins from "../pages/admin/SecurityLogins"
 import LostAndFound from "../pages/LostAndFound.jsx"
 import StudentLayout from "../layouts/StudentLayout.jsx"
@@ -45,7 +42,6 @@ import StudentLayout from "../layouts/StudentLayout.jsx"
 import UpdatePassword from "../pages/admin/UpdatePassword.jsx"
 import StudentEntries from "../pages/guard/StudentEntries.jsx"
 import AddStudentEntry from "../pages/guard/AddStudentEntry.jsx"
-import RoomChangeRequests from "../pages/warden/RoomChangeRequests.jsx"
 import UnitsAndRooms from "../pages/UnitsAndRooms.jsx"
 import Profile from "../pages/Profile.jsx"
 import MaintenanceStaff from "../pages/admin/MaintenanceStaff.jsx"
@@ -114,7 +110,6 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<StudentDashboard />} />
-        {/* <Route index element={<Profile />} /> */}
         <Route path="complaints" element={<Complaint />} />
         <Route path="profile" element={<Profile />} />
         <Route path="lost-and-found" element={<LostAndFound />} />
@@ -160,7 +155,6 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="student-inventory" element={<StudentInventory />} />
-        {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="undertakings" element={<WardenUndertakings />} />
@@ -185,7 +179,6 @@ const AppRoutes = () => {
         <Route path="lost-and-found" element={<LostAndFound />} />
         <Route path="events" element={<Events />} />
         <Route path="student-inventory" element={<StudentInventory />} />
-        {/* <Route path="room-change-requests" element={<RoomChangeRequests />} /> */}
         <Route path="profile" element={<Profile />} />
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="undertakings" element={<WardenUndertakings />} />
