@@ -8,9 +8,6 @@ import { MdChangeCircle, MdDashboard } from "react-icons/md"
 import { FiSearch } from "react-icons/fi"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useWarden } from "../../contexts/WardenProvider"
-import VisitorStatsChart from "../../components/charts/VisitorStatsChart"
-import EventsChart from "../../components/charts/EventsChart"
-import LostFoundChart from "../../components/charts/LostFoundChart"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, LogarithmicScale } from "chart.js"
 import { Bar } from "react-chartjs-2"
@@ -180,35 +177,6 @@ const DashboardWarden = () => {
               <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin" />
             </div>
           )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <LostFoundChart lostFoundStats={lostFoundStats} />
-          <div className="grid grid-cols-3 mt-3 gap-4 text-center">
-            <StatInfo label="Active" value={lostFoundStats?.active || 0} color="#F59E0B" />
-            <StatInfo label="Claimed" value={lostFoundStats?.claimed || 0} color="#10B981" />
-            <StatInfo label="Total" value={lostFoundStats?.total || 0} color="#3B82F6" isBold />
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <VisitorStatsChart visitorStats={visitorStats} />
-          <div className="grid grid-cols-3 mt-3 gap-4 text-center">
-            <StatInfo label="Checked In" value={visitorStats?.checkedIn || 0} color="#22C55E" />
-            <StatInfo label="Checked Out" value={visitorStats?.checkedOut || 0} color="#6B7280" />
-            <StatInfo label="Today" value={visitorStats?.today || 0} color="#F59E0B" />
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
-          <EventsChart eventStats={eventStats} />
-          <div className="grid grid-cols-3 mt-3 gap-4 text-center">
-            <StatInfo label="Upcoming" value={eventStats?.upcoming || 0} color="#4F46E5" />
-            <StatInfo label="Past" value={eventStats?.past || 0} color="#8B5CF6" />
-            <StatInfo label="Total" value={eventStats?.total || 0} color="#6366F1" isBold />
-          </div>
         </div>
       </div>
     </div>
