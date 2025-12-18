@@ -84,99 +84,212 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
     })
   }
 
-  const renderFooter = () => (
-    <div className="flex flex-col-reverse sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-      {/* Status Update Buttons for Users */}
-      {isUserView && (
-        <div className="flex space-x-2 flex-grow justify-start">
-          {allowedStatusUpdates
-            .filter((status) => status !== currentStatus)
-            .map((status) => (
-              <button
-                key={status}
-                onClick={() => handleStatusChange(status)}
-                disabled={loading}
-                className={`px-3 py-1 text-xs font-medium rounded-md transition-all
-                  ${status === "In Progress" ? "bg-blue-50 text-[#1360AB] hover:bg-blue-100" : ""}
-                  ${status === "Completed" ? "bg-green-50 text-green-700 hover:bg-green-100" : ""}
-                  ${status === "Created" ? "bg-gray-50 text-gray-700 hover:bg-gray-100" : ""}
-                  ${status === "Assigned" ? "bg-blue-50 text-[#1360AB] hover:bg-blue-100" : ""}
-                  focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed
-                `}
-              >
-                {status === "In Progress" ? "Start Task" : `Mark as ${status}`}
-              </button>
-            ))}
-        </div>
-      )}
+  const renderFooter = () => {
+    const getStatusButtonStyle = (status) => {
+      const baseStyle = {
+        padding: 'var(--spacing-3) var(--spacing-3)',
+        fontSize: 'var(--font-size-xs)',
+        fontWeight: 'var(--font-weight-medium)',
+        borderRadius: 'var(--radius-md)',
+        transition: 'var(--transition-all)',
+        outline: 'none',
+        border: 'none',
+        cursor: loading ? 'not-allowed' : 'pointer',
+        opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)'
+      };
 
-      {/* Admin Actions */}
-      <div className="flex space-x-3">
-        {canEditTask && !isUserView && (
-          <>
-            <button onClick={handleEditTask} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow flex items-center">
-              <FaEdit className="mr-2" /> Edit Task
-            </button>
-            <button onClick={handleDeleteTask} disabled={loading} className="px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all flex items-center disabled:opacity-50">
-              <FaTrash className="mr-2" /> Delete
-            </button>
-          </>
+      if (status === "In Progress" || status === "Assigned") {
+        return { ...baseStyle, backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' };
+      } else if (status === "Completed") {
+        return { ...baseStyle, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
+      } else if (status === "Created") {
+        return { ...baseStyle, backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)' };
+      }
+      return baseStyle;
+    };
+
+    const getStatusButtonHoverStyle = (status) => {
+      if (status === "In Progress" || status === "Assigned") {
+        return { backgroundColor: 'var(--color-primary-bg-hover)' };
+      } else if (status === "Completed") {
+        return { backgroundColor: 'var(--color-success-bg-light)' };
+      } else if (status === "Created") {
+        return { backgroundColor: 'var(--color-bg-hover)' };
+      }
+      return {};
+    };
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column-reverse', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }} className="sm:flex-row sm:space-y-0">
+        {/* Status Update Buttons for Users */}
+        {isUserView && (
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', flexGrow: 1, justifyContent: 'flex-start' }}>
+            {allowedStatusUpdates
+              .filter((status) => status !== currentStatus)
+              .map((status) => (
+                <button
+                  key={status}
+                  onClick={() => handleStatusChange(status)}
+                  disabled={loading}
+                  style={getStatusButtonStyle(status)}
+                  onMouseEnter={(e) => {
+                    if (!loading) {
+                      Object.assign(e.target.style, getStatusButtonHoverStyle(status));
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!loading) {
+                      Object.assign(e.target.style, getStatusButtonStyle(status));
+                    }
+                  }}
+                >
+                  {status === "In Progress" ? "Start Task" : `Mark as ${status}`}
+                </button>
+              ))}
+          </div>
         )}
 
-        <button onClick={() => setShowDetailModal(false)} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
-          Close
-        </button>
+        {/* Admin Actions */}
+        <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
+          {canEditTask && !isUserView && (
+            <>
+              <button
+                onClick={handleEditTask}
+                style={{
+                  padding: 'var(--button-padding-md)',
+                  backgroundColor: 'var(--button-primary-bg)',
+                  color: 'var(--color-white)',
+                  borderRadius: 'var(--radius-lg)',
+                  transition: 'var(--transition-all)',
+                  boxShadow: 'var(--shadow-sm)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--button-primary-hover)';
+                  e.target.style.boxShadow = 'var(--shadow-md)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--button-primary-bg)';
+                  e.target.style.boxShadow = 'var(--shadow-sm)';
+                }}
+              >
+                <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit Task
+              </button>
+              <button
+                onClick={handleDeleteTask}
+                disabled={loading}
+                style={{
+                  padding: 'var(--button-padding-md)',
+                  backgroundColor: 'var(--color-danger-bg)',
+                  color: 'var(--color-danger-text)',
+                  borderRadius: 'var(--radius-lg)',
+                  transition: 'var(--transition-all)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!loading) e.target.style.backgroundColor = 'var(--color-danger-bg-light)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!loading) e.target.style.backgroundColor = 'var(--color-danger-bg)';
+                }}
+              >
+                <FaTrash style={{ marginRight: 'var(--spacing-2)' }} /> Delete
+              </button>
+            </>
+          )}
+
+          <button
+            onClick={() => setShowDetailModal(false)}
+            style={{
+              padding: 'var(--button-padding-md)',
+              backgroundColor: 'var(--color-bg-muted)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-all)',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+          >
+            Close
+          </button>
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 
   return (
     <>
       <Modal title="Task Details" onClose={() => setShowDetailModal(false)} width={700} footer={renderFooter()}>
-        <div className="grid grid-cols-1 gap-5">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-5)' }}>
           {/* Task Header */}
           <div>
-            <div className="flex justify-between items-start">
-              <h2 className="text-xl font-semibold text-gray-900">{selectedTask.title}</h2>
-              <div className="flex space-x-2">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)' }}>{selectedTask.title}</h2>
+              <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
                 {getPriorityBadge(selectedTask.priority)}
                 {getStatusBadge(currentStatus)}
               </div>
             </div>
-            {isPastDue && <div className="mt-2 text-sm text-red-600 font-medium">This task is past due!</div>}
+            {isPastDue && <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)' }}>This task is past due!</div>}
           </div>
 
           {/* Task Description */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Description</h4>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-600 whitespace-pre-line">{selectedTask.description}</p>
+            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Description</h4>
+            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+              <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{selectedTask.description}</p>
             </div>
           </div>
 
           {/* Task Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Category</h4>
-              <div className="bg-blue-50 text-[#1360AB] p-4 rounded-lg font-medium">{selectedTask.category}</div>
+              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Category</h4>
+              <div style={{ backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)' }}>{selectedTask.category}</div>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Due Date</h4>
-              <div className={`p-4 rounded-lg font-medium ${isPastDue ? "bg-red-50 text-red-700" : "bg-gray-50 text-gray-700"}`}>{formatDate(selectedTask.dueDate)}</div>
+              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Due Date</h4>
+              <div style={{
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-lg)',
+                fontWeight: 'var(--font-weight-medium)',
+                backgroundColor: isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)',
+                color: isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)'
+              }}>{formatDate(selectedTask.dueDate)}</div>
             </div>
           </div>
 
           {/* Assigned Users */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Assigned To</h4>
+            <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Assigned To</h4>
             {selectedTask.assignedUsers && selectedTask.assignedUsers.length > 0 ? (
-              <div className="space-y-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                 {selectedTask.assignedUsers.map((user, idx) => (
-                  <div key={user._id || idx} className="flex items-center p-4 bg-blue-50 rounded-lg">
-                    <div className="mr-3 h-8 w-8 rounded-full bg-blue-100 text-[#1360AB] flex items-center justify-center text-sm font-medium">{user.name ? user.name.charAt(0) : "U"}</div>
+                  <div key={user._id || idx} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)' }}>
+                    <div style={{
+                      marginRight: 'var(--spacing-3)',
+                      height: 'var(--avatar-sm)',
+                      width: 'var(--avatar-sm)',
+                      borderRadius: 'var(--radius-full)',
+                      backgroundColor: 'var(--color-primary-bg-hover)',
+                      color: 'var(--color-primary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 'var(--font-size-sm)',
+                      fontWeight: 'var(--font-weight-medium)'
+                    }}>{user.name ? user.name.charAt(0) : "U"}</div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{user.name}</p>
+                      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                         {user.email} - {user.role}
                       </p>
                     </div>
@@ -184,19 +297,19 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
                 ))}
               </div>
             ) : (
-              <div className="bg-gray-50 p-4 rounded-lg text-gray-500">No users assigned</div>
+              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-muted)' }}>No users assigned</div>
             )}
           </div>
 
           {/* Task Metadata */}
-          <div className="border-t border-gray-200 pt-4 text-xs text-gray-500">
+          <div style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, paddingTop: 'var(--spacing-4)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
             <p>Created by: {selectedTask.createdBy?.name || "Admin"}</p>
             <p>Created at: {formatDate(selectedTask.createdAt)}</p>
             <p>Last updated: {formatDate(selectedTask.updatedAt)}</p>
           </div>
 
           {/* Error Message */}
-          {error && <div className="p-4 bg-red-50 text-red-700 text-sm rounded-lg">{error}</div>}
+          {error && <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
         </div>
       </Modal>
 
