@@ -3,8 +3,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { maintenanceApi } from "../../services/apiService"
 import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants"
-import ComplaintsStatsM from "../../components/maintenance/ComplaintsStatsM"
-import ComplaintDetailModal from "../../components/maintenance/ComplaintDetailModal"
+import ComplaintStats from "../../components/complaints/ComplaintStats"
+import ComplaintDetailModal from "../../components/complaints/ComplaintDetailModal"
 import ComplaintsHeader from "../../components/headers/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
@@ -44,6 +44,8 @@ const MaintenancePage = () => {
   const [loading, setLoading] = useState(false)
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
+  const [statsData, setStatsData] = useState(null)
+  const [statsLoading, setStatsLoading] = useState(false)
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -98,12 +100,42 @@ const MaintenancePage = () => {
     }
   }
 
+  const fetchComplaintStats = async () => {
+    try {
+      setStatsLoading(true)
+      const queryParams = {}
+
+      // Add category filter if selected
+      if (filters.category !== "all") {
+        queryParams.category = filters.category
+      }
+
+      // Add hostelId filter if selected
+      if (filters.hostelId !== "all") {
+        queryParams.hostelId = filters.hostelId
+      }
+
+      const queryString = new URLSearchParams(queryParams).toString()
+      const response = await maintenanceApi.getStats(queryString)
+      setStatsData(response || null)
+    } catch (error) {
+      console.error("Error fetching complaint stats:", error)
+      setStatsData(null)
+    } finally {
+      setStatsLoading(false)
+    }
+  }
+
   useEffect(() => {
     const delay = setTimeout(() => {
       fetchComplaints()
     }, 500)
     return () => clearTimeout(delay)
   }, [filters])
+
+  useEffect(() => {
+    fetchComplaintStats()
+  }, [filters.category, filters.hostelId])
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
@@ -123,7 +155,7 @@ const MaintenancePage = () => {
         </div>
       </div>
 
-      <ComplaintsStatsM filter={filters.category !== "all" ? filters.category : null} />
+      <ComplaintStats statsData={statsData} loading={statsLoading} />
 
       {showFilters && (
         <ComplaintsFilterPanel 
@@ -169,7 +201,7 @@ const MaintenancePage = () => {
         <ComplaintDetailModal 
           selectedComplaint={selectedComplaint} 
           setShowDetailModal={setShowDetailModal} 
-          onUpdate={fetchComplaints}
+          onComplaintUpdate={fetchComplaints}
         />
       )}
     </div>
