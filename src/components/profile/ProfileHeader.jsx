@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
-import RoomChangeForm from "../students/RoomChangeForm"
 import ManageSessionsButton from "../sessions/ManageSessionsButton"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"

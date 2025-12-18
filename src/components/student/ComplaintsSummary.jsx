@@ -7,11 +7,11 @@ import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/admi
 const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-3 animate-pulse">
-        <div className="h-5 bg-gray-200 rounded mb-3 w-1/3"></div>
-        <div className="space-y-2">
-          <div className="h-12 bg-gray-200 rounded"></div>
-          <div className="h-12 bg-gray-200 rounded"></div>
+      <div className="animate-pulse" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-3)' }}>
+        <div style={{ height: 'var(--spacing-5)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-3)', width: '33.333333%' }}></div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+          <div style={{ height: 'var(--spacing-12)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)' }}></div>
+          <div style={{ height: 'var(--spacing-12)', backgroundColor: 'var(--skeleton-base)', borderRadius: 'var(--radius-md)' }}></div>
         </div>
       </div>
     )
@@ -19,17 +19,17 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
 
   if (!complaints || complaints.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-medium text-gray-800 text-sm">Your Complaints</h3>
-          <Link to="complaints" className="text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
+      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)' }}>
+        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--spacing-3)' }}>
+          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>Your Complaints</h3>
+          <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
             View All
           </Link>
         </div>
-        <div className="flex flex-col items-center justify-center py-4 text-gray-500">
-          <FaExclamationCircle className="text-gray-300 text-2xl mb-1" />
-          <p className="text-xs">No active complaints</p>
-          <Link to="complaints" className="mt-1 text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
+        <div className="flex flex-col items-center justify-center" style={{ paddingTop: 'var(--spacing-4)', paddingBottom: 'var(--spacing-4)', color: 'var(--color-text-muted)' }}>
+          <FaExclamationCircle style={{ color: 'var(--color-bg-muted)', fontSize: 'var(--font-size-3xl)', marginBottom: 'var(--spacing-1)' }} />
+          <p style={{ fontSize: 'var(--font-size-xs)' }}>No active complaints</p>
+          <Link to="complaints" className="hover:underline" style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
             Submit a new complaint
           </Link>
         </div>
@@ -38,36 +38,36 @@ const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-      <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-        <h3 className="font-medium text-gray-800 text-sm flex items-center">
-          <MdPendingActions className="mr-1.5" style={{ color: 'var(--color-primary)' }} />
+    <div className="overflow-hidden" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', border: 'var(--border-1) solid var(--color-border-light)' }}>
+      <div className="flex justify-between items-center" style={{ padding: 'var(--spacing-3) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+        <h3 className="flex items-center" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>
+          <MdPendingActions style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)' }} />
           Your Active Complaints
         </h3>
-        <Link to="complaints" className="text-xs hover:underline" style={{ color: 'var(--color-primary)' }}>
+        <Link to="complaints" className="hover:underline" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)' }}>
           View All
         </Link>
       </div>
-      <div className="max-h-[250px] overflow-y-auto">
+      <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
         {complaints.map((complaint) => (
-          <div key={complaint.id} className="px-4 py-2 border-b border-gray-100 last:border-0 hover:bg-blue-50 transition-colors">
+          <div key={complaint.id} className="last:border-0" style={{ padding: 'var(--spacing-2) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg-light)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
             <div className="flex justify-between items-start">
               <div>
-                <h4 className="font-medium text-gray-800 text-sm line-clamp-1">{complaint.title}</h4>
-                <div className="text-xs text-gray-500 mt-0.5">
+                <h4 className="line-clamp-1" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-sm)' }}>{complaint.title}</h4>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>
                   {complaint.hostel} · Room {complaint.roomNumber} · {complaint.category}
                 </div>
               </div>
               <div className="flex flex-col items-end">
-                <span className={`px-1.5 py-0.5 text-[10px] rounded-full ${getStatusColor(complaint.status)}`}>{complaint.status}</span>
-                <span className="text-[10px] text-gray-500 mt-0.5">{getTimeSince(complaint.createdDate)}</span>
+                <span className={getStatusColor(complaint.status)} style={{ padding: 'var(--spacing-0-5) var(--spacing-1-5)', fontSize: 'var(--font-size-2xs)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>
+                <span style={{ fontSize: 'var(--font-size-2xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-0-5)' }}>{getTimeSince(complaint.createdDate)}</span>
               </div>
             </div>
 
-            <div className="mt-1 flex justify-between items-center">
-              <p className="text-[11px] text-gray-600 line-clamp-1 max-w-[70%]">{complaint.description}</p>
-              <Link to={`complaints`} className="p-1 rounded-full transition-colors" style={{ color: 'var(--color-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                <FaEye className="h-3 w-3" />
+            <div className="flex justify-between items-center" style={{ marginTop: 'var(--spacing-1)' }}>
+              <p className="line-clamp-1" style={{ fontSize: 'var(--badge-font-xs)', color: 'var(--color-text-tertiary)', maxWidth: '70%' }}>{complaint.description}</p>
+              <Link to={`complaints`} className="transition-colors" style={{ padding: 'var(--spacing-1)', borderRadius: 'var(--radius-full)', color: 'var(--color-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                <FaEye style={{ height: 'var(--icon-xs)', width: 'var(--icon-xs)' }} />
               </Link>
             </div>
           </div>

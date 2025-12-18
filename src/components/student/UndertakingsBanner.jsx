@@ -31,21 +31,77 @@ const UndertakingsBanner = () => {
   }
 
   return (
-    <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-lg shadow-sm">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          <FaExclamationTriangle className="text-amber-500 mr-3 text-xl" />
+    <div style={{ 
+      backgroundColor: 'var(--color-warning-bg-light)', 
+      borderLeft: `var(--border-4) solid var(--color-warning)`, 
+      padding: 'var(--spacing-4)', 
+      marginBottom: 'var(--spacing-6)', 
+      borderRadius: 'var(--radius-lg)', 
+      boxShadow: 'var(--shadow-sm)' 
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <FaExclamationTriangle style={{ 
+            color: 'var(--color-warning)', 
+            marginRight: 'var(--spacing-3)', 
+            fontSize: 'var(--icon-xl)' 
+          }} />
           <div>
-            <h3 className="font-medium text-amber-800">{pendingCount === 1 ? "You have 1 pending undertaking" : `You have ${pendingCount} pending undertakings`}</h3>
-            <p className="text-sm text-amber-700">Please review and accept your pending undertakings.</p>
+            <h3 style={{ 
+              fontWeight: 'var(--font-weight-medium)', 
+              color: 'var(--color-warning-text)', 
+              fontSize: 'var(--font-size-lg)' 
+            }}>
+              {pendingCount === 1 ? "You have 1 pending undertaking" : `You have ${pendingCount} pending undertakings`}
+            </h3>
+            <p style={{ 
+              fontSize: 'var(--font-size-sm)', 
+              color: 'var(--color-warning-text)', 
+              opacity: 'var(--opacity-90)' 
+            }}>
+              Please review and accept your pending undertakings.
+            </p>
           </div>
         </div>
-        <div className="flex items-center">
-          <Link to="/student/undertakings" className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium mr-2 flex items-center">
-            <FaFileSignature className="mr-2" />
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Link 
+            to="/student/undertakings" 
+            style={{ 
+              backgroundColor: 'var(--color-warning)', 
+              color: 'var(--color-white)', 
+              padding: `var(--spacing-2) var(--spacing-4)`, 
+              borderRadius: 'var(--radius-lg)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              marginRight: 'var(--spacing-2)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              textDecoration: 'none',
+              transition: 'var(--transition-colors)',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-warning-hover)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-warning)'}
+          >
+            <FaFileSignature style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} />
             View Undertakings
           </Link>
-          <button onClick={() => setDismissed(true)} className="text-amber-700 hover:text-amber-900 p-1" aria-label="Dismiss">
+          <button 
+            onClick={() => setDismissed(true)} 
+            style={{ 
+              color: 'var(--color-warning-text)', 
+              padding: 'var(--spacing-1)', 
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'var(--transition-colors)',
+              fontSize: 'var(--icon-md)'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-warning)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-warning-text)'}
+            aria-label="Dismiss"
+          >
             <FaTimes />
           </button>
         </div>
