@@ -86,51 +86,124 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
   return (
     <Modal title="Edit Visitor Request" onClose={onClose} width={600}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
-          <div className="bg-red-50 p-4 rounded-lg flex items-start">
-            <FaExclamationTriangle className="text-red-500 mt-1 mr-3 flex-shrink-0" />
-            <p className="text-red-600">{error}</p>
+          <div style={{ 
+            backgroundColor: 'var(--color-danger-bg-light)', 
+            padding: 'var(--spacing-4)', 
+            borderRadius: 'var(--radius-lg)', 
+            display: 'flex', 
+            alignItems: 'flex-start' 
+          }}>
+            <FaExclamationTriangle style={{ 
+              color: 'var(--color-danger)', 
+              marginTop: 'var(--spacing-1)', 
+              marginRight: 'var(--spacing-3)', 
+              flexShrink: 0 
+            }} />
+            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <p className="text-sm text-blue-700">
+        <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-info-text)' }}>
             <strong>Note:</strong> You can only modify the dates and reason for your visit. If you need to change visitors, please cancel this request and create a new one.
           </p>
         </div>
 
         {/* Visitor Information (Non-editable) */}
         <div>
-          <h3 className="font-medium text-gray-700 mb-3">Visitor Information</h3>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-medium">Visitors:</span> {request.visitors?.map((v) => v.name).join(", ")}
+          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>Visitor Information</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
+              <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Visitors:</span> {request.visitors?.map((v) => v.name).join(", ")}
             </p>
           </div>
         </div>
 
         {/* Visit Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">From Date</label>
-            <input type="date" name="fromDate" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p className="text-xs text-gray-500 mt-1">Must be at least 2 days from today</p>
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
+            <input 
+              type="date" 
+              name="fromDate" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.fromDate} 
+              onChange={handleChange} 
+              min={minDateString} 
+              required 
+            />
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Must be at least 2 days from today</p>
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">To Date</label>
-            <input type="date" name="toDate" className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
+            <input 
+              type="date" 
+              name="toDate" 
+              style={{ 
+                width: '100%', 
+                padding: 'var(--input-padding)', 
+                border: 'var(--border-1) solid var(--input-border)', 
+                borderRadius: 'var(--input-radius)', 
+                outline: 'none', 
+                transition: 'var(--transition-colors)' 
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--input-border-focus)';
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--input-border)';
+                e.target.style.boxShadow = 'none';
+              }}
+              value={formData.toDate} 
+              onChange={handleChange} 
+              min={formData.fromDate || minDateString} 
+              required 
+            />
           </div>
         </div>
 
         {/* Reason for Visit */}
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2">Reason for Visit</label>
+          <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
           <textarea
             name="reason"
             rows="4"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition resize-none"
+            style={{ 
+              width: '100%', 
+              padding: 'var(--input-padding)', 
+              border: 'var(--border-1) solid var(--input-border)', 
+              borderRadius: 'var(--input-radius)', 
+              outline: 'none', 
+              transition: 'var(--transition-colors)',
+              resize: 'none'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--input-border-focus)';
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--input-border)';
+              e.target.style.boxShadow = 'none';
+            }}
             value={formData.reason}
             onChange={handleChange}
             placeholder="Please provide details about the purpose of the visit"
@@ -139,11 +212,41 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
         </div>
 
         {/* Submit Section */}
-        <div className="flex justify-end pt-4 border-t border-gray-100">
-          <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mr-3">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button 
+            type="button" 
+            onClick={onClose} 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: 'var(--color-bg-muted)', 
+              color: 'var(--color-text-secondary)', 
+              borderRadius: 'var(--radius-lg)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'var(--transition-colors)', 
+              marginRight: 'var(--spacing-3)' 
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+          >
             Cancel
           </button>
-          <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors" disabled={loading}>
+          <button 
+            type="submit" 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: loading ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', 
+              color: 'var(--color-white)', 
+              borderRadius: 'var(--radius-lg)',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'var(--transition-colors)',
+              opacity: loading ? 'var(--opacity-disabled)' : '1'
+            }}
+            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
+            onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}
+            disabled={loading}
+          >
             {loading ? "Saving..." : "Update Request"}
           </button>
         </div>
