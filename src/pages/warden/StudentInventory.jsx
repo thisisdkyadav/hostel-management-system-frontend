@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import AvailableInventory from "../../components/warden/inventory/AvailableInventory"
-import StudentAssignments from "../../components/warden/inventory/StudentAssignments"
-// import InventoryManagement from "../../components/warden/inventory/InventoryManagement"
+import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
+import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
+// import InventoryManagement from "../../components/wardens/inventory/InventoryManagement"
 
 const StudentInventory = () => {
   const [activeTab, setActiveTab] = useState("available")
