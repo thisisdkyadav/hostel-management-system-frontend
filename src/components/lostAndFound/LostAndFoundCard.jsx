@@ -16,14 +16,23 @@ const LostAndFoundCard = ({ item, refresh }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [showDetailModal, setShowDetailModal] = useState(false)
 
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     switch (status) {
       case "Active":
-        return "bg-green-100 text-green-600"
+        return {
+          backgroundColor: 'var(--color-success-bg)',
+          color: 'var(--color-success-text)'
+        }
       case "Claimed":
-        return "bg-blue-100 text-blue-600"
+        return {
+          backgroundColor: 'var(--color-info-bg)',
+          color: 'var(--color-info-text)'
+        }
       default:
-        return "bg-gray-100 text-gray-600"
+        return {
+          backgroundColor: 'var(--color-bg-muted)',
+          color: 'var(--color-text-tertiary)'
+        }
     }
   }
 
@@ -79,48 +88,131 @@ const LostAndFoundCard = ({ item, refresh }) => {
         className="cursor-pointer"
         onClick={handleCardClick}
       >
-        <Card.Header className="mb-0">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center">
-              <div className={`p-2.5 mr-3 rounded-lg ${getStatusColor(item.status)}`}>
+        <Card.Header style={{ marginBottom: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                ...getStatusStyle(item.status),
+                padding: 'var(--spacing-2-5)',
+                marginRight: 'var(--spacing-3)',
+                borderRadius: 'var(--radius-lg)'
+              }}>
                 <MdInventory size={20} />
               </div>
               <div>
-                <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{item.itemName}</h3>
-                <span className="text-xs text-gray-500">ID: {item._id.substring(0, 8)}</span>
+                <h3 style={{
+                  fontWeight: 'var(--font-weight-bold)',
+                  color: 'var(--color-text-primary)',
+                  fontSize: 'var(--font-size-base)',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: 'vertical'
+                }}>{item.itemName}</h3>
+                <span style={{
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--color-text-muted)'
+                }}>ID: {item._id.substring(0, 8)}</span>
               </div>
             </div>
-            <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(item.status)}`}>{item.status}</span>
+            <span style={{
+              ...getStatusStyle(item.status),
+              fontSize: 'var(--font-size-xs)',
+              padding: 'var(--badge-padding-sm)',
+              borderRadius: 'var(--radius-full)'
+            }}>{item.status}</span>
           </div>
         </Card.Header>
 
         <Card.Body>
           {item.images && item.images.length > 0 && (
-            <div className="mt-4">
-              <div className="grid grid-cols-3 gap-2">
+            <div style={{ marginTop: 'var(--spacing-4)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
                 {item.images.slice(0, 3).map((imageUrl, index) => (
-                  <img key={index} src={getMediaUrl(imageUrl)} alt={`${item.itemName} ${index + 1}`} className="w-full h-20 object-cover rounded-lg border border-gray-200" />
+                  <img 
+                    key={index} 
+                    src={getMediaUrl(imageUrl)} 
+                    alt={`${item.itemName} ${index + 1}`} 
+                    style={{
+                      width: '100%',
+                      height: '5rem',
+                      objectFit: 'cover',
+                      borderRadius: 'var(--radius-lg)',
+                      border: `var(--border-1) solid var(--color-border-gray)`
+                    }} 
+                  />
                 ))}
               </div>
-              {item.images.length > 3 && <p className="text-xs text-gray-500 mt-2">+{item.images.length - 3} more images</p>}
+              {item.images.length > 3 && (
+                <p style={{
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--color-text-muted)',
+                  marginTop: 'var(--spacing-2)'
+                }}>+{item.images.length - 3} more images</p>
+              )}
             </div>
           )}
 
-          <div className="mt-4 space-y-3">
-            <div className="flex items-center">
-              <BsCalendarDate className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-              <span className="text-sm text-gray-700">{formatDate(item.dateFound)}</span>
+          <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', flexDirection: 'column', gap: 'var(--gap-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <BsCalendarDate style={{ 
+                color: 'var(--color-primary)', 
+                opacity: 0.7, 
+                marginRight: 'var(--spacing-2)', 
+                flexShrink: 0 
+              }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{formatDate(item.dateFound)}</span>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-sm text-gray-700 line-clamp-3">{item.description}</p>
+            <div style={{
+              backgroundColor: 'var(--table-header-bg)',
+              padding: 'var(--spacing-3)',
+              borderRadius: 'var(--radius-lg)'
+            }}>
+              <p style={{
+                fontSize: 'var(--font-size-sm)',
+                color: 'var(--color-text-secondary)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical'
+              }}>{item.description}</p>
             </div>
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+        <Card.Footer style={{
+          marginTop: 'var(--spacing-4)',
+          paddingTop: 'var(--spacing-3)',
+          borderTop: `var(--border-1) solid var(--color-border-light)`,
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}>
           {user && canAccess("lost_and_found", "edit") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
-            <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
-              <FaEdit className="mr-2" /> Edit
+            <button 
+              onClick={handleEditClick} 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: 'var(--spacing-2) var(--spacing-4)',
+                backgroundColor: 'var(--color-primary-bg)',
+                color: 'var(--color-primary)',
+                borderRadius: 'var(--radius-lg)',
+                transition: 'var(--transition-all)',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'var(--color-primary)';
+                e.target.style.color = 'var(--color-white)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'var(--color-primary-bg)';
+                e.target.style.color = 'var(--color-primary)';
+              }}
+            >
+              <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit
             </button>
           )}
         </Card.Footer>

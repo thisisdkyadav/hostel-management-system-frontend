@@ -28,28 +28,28 @@ const LostAndFoundStats = ({ items }) => {
       value: totalItems,
       subtitle: "In inventory",
       icon: <MdInventory className="text-2xl" />,
-      color: "#1360AB",
+      color: "var(--color-primary)",
     },
     {
       title: "Active Items",
       value: activeItems,
       subtitle: "Awaiting claim",
       icon: <FaSearch className="text-2xl" />,
-      color: "#22c55e",
+      color: "var(--color-success)",
     },
     {
       title: "Claimed Items",
       value: claimedItems,
       subtitle: "Retrieved by owners",
       icon: <MdCheckCircle className="text-2xl" />,
-      color: "#f97316",
+      color: "var(--color-warning)",
     },
     {
       title: "Latest Item",
       value: getNewestItemDate(),
       subtitle: "Most recent finding",
       icon: <FaCalendarAlt className="text-2xl" />,
-      color: "#8b5cf6",
+      color: "var(--color-purple-text)",
     },
   ]
 
