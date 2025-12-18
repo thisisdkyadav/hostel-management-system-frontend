@@ -56,7 +56,15 @@ const AdminProfile = () => {
     <div>
       <ProfileHeader user={adminData} role="Administrator" subtitle={`${adminData.role}`} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: "var(--gap-lg)",
+          marginTop: "var(--spacing-8)",
+        }}
+        className="lg:grid-cols-2"
+      >
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={adminData.email} icon={FiMail} />

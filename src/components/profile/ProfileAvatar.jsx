@@ -11,30 +11,75 @@ const ProfileAvatar = ({ user, size = "medium" }) => {
       .slice(0, 2)
   }
 
-  const sizeClasses = {
-    small: "w-10 h-10 text-sm",
-    medium: "w-16 h-16 text-lg",
-    large: "w-24 h-24 text-2xl",
+  const sizeStyles = {
+    small: {
+      width: "var(--avatar-sm)",
+      height: "var(--avatar-sm)",
+      fontSize: "var(--font-size-sm)",
+    },
+    medium: {
+      width: "var(--avatar-xl)",
+      height: "var(--avatar-xl)",
+      fontSize: "var(--font-size-lg)",
+    },
+    large: {
+      width: "var(--avatar-3xl)",
+      height: "var(--avatar-3xl)",
+      fontSize: "var(--font-size-2xl)",
+    },
   }
 
   if (user?.profileImage) {
     return (
-      <div className={`${sizeClasses[size]} rounded-full overflow-hidden bg-gray-200 flex-shrink-0`}>
-        <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s avatar`} className="w-full h-full object-cover" />
+      <div
+        style={{
+          ...sizeStyles[size],
+          borderRadius: "var(--radius-avatar)",
+          overflow: "hidden",
+          backgroundColor: "var(--color-bg-muted)",
+          flexShrink: 0,
+        }}
+      >
+        <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s avatar`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
     )
   }
 
-  const getColorClass = (name) => {
-    if (!name) return "bg-blue-100 text-[#1360AB]"
+  const getColorStyle = (name) => {
+    if (!name)
+      return {
+        backgroundColor: "var(--color-primary-bg)",
+        color: "var(--color-primary)",
+      }
 
-    const colorOptions = ["bg-blue-100 text-[#1360AB]", "bg-purple-100 text-purple-700", "bg-green-100 text-green-700", "bg-amber-100 text-amber-700", "bg-rose-100 text-rose-700"]
+    const colorOptions = [
+      { backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)" },
+      { backgroundColor: "var(--color-purple-light-bg)", color: "var(--color-purple-text)" },
+      { backgroundColor: "var(--color-success-bg)", color: "var(--color-success-text)" },
+      { backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)" },
+      { backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)" },
+    ]
 
     const index = name.length % colorOptions.length
     return colorOptions[index]
   }
 
-  return <div className={`${sizeClasses[size]} rounded-full ${getColorClass(user?.name)} flex items-center justify-center font-bold flex-shrink-0`}>{getInitials(user?.name || "User")}</div>
+  return (
+    <div
+      style={{
+        ...sizeStyles[size],
+        ...getColorStyle(user?.name),
+        borderRadius: "var(--radius-avatar)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "var(--font-weight-bold)",
+        flexShrink: 0,
+      }}
+    >
+      {getInitials(user?.name || "User")}
+    </div>
+  )
 }
 
 export default ProfileAvatar

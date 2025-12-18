@@ -62,7 +62,7 @@ const WardenProfile = () => {
     <div>
       <ProfileHeader user={wardenData} role={roleDisplay} subtitle={wardenData.hostel || "No hostel assigned"} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--gap-lg)", marginTop: "var(--spacing-8)" }}>
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={wardenData.email} icon={FiMail} />

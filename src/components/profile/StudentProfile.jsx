@@ -73,13 +73,26 @@ const StudentProfile = ({ user }) => {
       <div className="flex justify-between items-start">
         <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree}`} />
 
-        <button onClick={() => setIsEditModalOpen(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center">
-          <FiEdit2 className="mr-2" size={16} />
+        <button
+          onClick={() => setIsEditModalOpen(true)}
+          className="flex items-center text-white transition-colors"
+          style={{
+            padding: "var(--spacing-2) var(--spacing-4)",
+            backgroundColor: "var(--button-primary-bg)",
+            borderRadius: "var(--radius-lg)",
+            fontSize: "var(--font-size-sm)",
+            fontWeight: "var(--font-weight-medium)",
+            transition: "var(--transition-colors)",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-hover)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-bg)")}
+        >
+          <FiEdit2 style={{ marginRight: "var(--spacing-2)", width: "var(--icon-md)", height: "var(--icon-md)" }} />
           Edit Profile
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--gap-lg)", marginTop: "var(--spacing-8)" }}>
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={studentData.email} icon={FiMail} />

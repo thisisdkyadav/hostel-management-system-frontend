@@ -3,19 +3,56 @@ import { FiEdit } from "react-icons/fi"
 
 const ProfileInfo = ({ label, value, icon: Icon, isEditable }) => {
   return (
-    <div className="flex items-start py-3 border-b border-gray-100 last:border-0">
-      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">{Icon && <Icon className="h-5 w-5 text-[#1360AB]" />}</div>
-      <div className="ml-4 flex-grow">
-        <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-500">{label}</p>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        padding: "var(--spacing-3) 0",
+        borderBottom: `var(--border-1) solid var(--color-border-light)`,
+      }}
+      className="last:border-0"
+    >
+      <div
+        style={{
+          width: "var(--avatar-md)",
+          height: "var(--avatar-md)",
+          borderRadius: "var(--radius-full)",
+          backgroundColor: "var(--color-primary-bg)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        {Icon && <Icon style={{ height: "var(--icon-lg)", width: "var(--icon-lg)", color: "var(--color-primary)" }} />}
+      </div>
+      <div style={{ marginLeft: "var(--spacing-4)", flexGrow: 1 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{label}</p>
           {isEditable && (
-            <div className="flex items-center text-xs text-blue-600">
-              <FiEdit size={12} className="mr-1" />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-info)",
+              }}
+            >
+              <FiEdit size={12} style={{ marginRight: "var(--spacing-1)" }} />
               <span>Editable</span>
             </div>
           )}
         </div>
-        <p className="font-medium text-gray-800 mt-0.5">{value || "N/A"}</p>
+        <p
+          style={{
+            fontWeight: "var(--font-weight-medium)",
+            color: "var(--color-text-secondary)",
+            marginTop: "var(--spacing-0-5)",
+            fontSize: "var(--font-size-base)",
+          }}
+        >
+          {value || "N/A"}
+        </p>
       </div>
     </div>
   )
