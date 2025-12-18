@@ -51,35 +51,140 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
     return "Security Check-out"
   }
 
-  return (
-    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
-      <h3 className="text-lg font-medium text-gray-900">{getFormTitle()}</h3>
+  const containerStyle = {
+    backgroundColor: "var(--color-bg-muted)",
+    padding: "var(--spacing-4)",
+    borderRadius: "var(--radius-lg)",
+    border: `var(--border-1) solid var(--color-border-primary)`,
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-4)",
+  }
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  const headingStyle = {
+    fontSize: "var(--font-size-lg)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-primary)",
+  }
+
+  const labelStyle = {
+    display: "block",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-secondary)",
+    marginBottom: "var(--spacing-1)",
+  }
+
+  const inputStyle = {
+    display: "block",
+    width: "100%",
+    border: `var(--border-1) solid var(--color-border-input)`,
+    borderRadius: "var(--radius-md)",
+    boxShadow: "var(--shadow-sm)",
+    fontSize: "var(--font-size-sm)",
+    padding: "var(--spacing-2)",
+    outline: "none",
+    transition: "var(--transition-colors)",
+  }
+
+  const readOnlyStyle = {
+    ...inputStyle,
+    padding: "var(--spacing-2)",
+    backgroundColor: "var(--color-bg-disabled)",
+    borderRadius: "var(--radius-md)",
+    fontSize: "var(--font-size-sm)",
+  }
+
+  const buttonBaseStyle = {
+    padding: "var(--spacing-2) var(--spacing-4)",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "var(--border-1) solid transparent",
+    borderRadius: "var(--radius-md)",
+    boxShadow: "var(--shadow-sm)",
+    cursor: "pointer",
+    outline: "none",
+    transition: "var(--transition-colors)",
+  }
+
+  const cancelButtonStyle = {
+    ...buttonBaseStyle,
+    color: "var(--color-text-secondary)",
+    backgroundColor: "var(--color-bg-primary)",
+    borderColor: "var(--color-border-input)",
+  }
+
+  const primaryButtonStyle = {
+    ...buttonBaseStyle,
+    color: "var(--color-white)",
+    backgroundColor: "var(--color-primary)",
+    borderColor: "transparent",
+  }
+
+  const successButtonStyle = {
+    ...buttonBaseStyle,
+    color: "var(--color-white)",
+    backgroundColor: "var(--color-success-hover)",
+    borderColor: "transparent",
+  }
+
+  return (
+    <div style={containerStyle}>
+      <h3 style={headingStyle}>{getFormTitle()}</h3>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "var(--spacing-4)",
+        }}
+      >
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Visitor Name(s)</label>
-          <div className="p-2 bg-gray-100 rounded text-sm">{visitorInfo}</div>
+          <label style={labelStyle}>Visitor Name(s)</label>
+          <div style={readOnlyStyle}>{visitorInfo}</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "var(--spacing-4)",
+        }}
+      >
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Check-in Date</label>
+          <label style={labelStyle}>Check-in Date</label>
           <input
             type="date"
             value={newCheckInDate}
             onChange={(e) => setNewCheckInDate(e.target.value)}
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            style={inputStyle}
+            onFocus={(e) => {
+              e.target.style.borderColor = "var(--color-primary)"
+              e.target.style.boxShadow = "var(--input-focus-ring)"
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "var(--color-border-input)"
+              e.target.style.boxShadow = "var(--shadow-sm)"
+            }}
             disabled={!isEditMode && isCheckedIn} // Only editable if in edit mode
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Check-in Time</label>
+          <label style={labelStyle}>Check-in Time</label>
           <input
             type="time"
             value={newCheckInTime}
             onChange={(e) => setNewCheckInTime(e.target.value)}
-            className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            style={inputStyle}
+            onFocus={(e) => {
+              e.target.style.borderColor = "var(--color-primary)"
+              e.target.style.boxShadow = "var(--input-focus-ring)"
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "var(--color-border-input)"
+              e.target.style.boxShadow = "var(--shadow-sm)"
+            }}
             disabled={!isEditMode && isCheckedIn} // Only editable if in edit mode
           />
         </div>
@@ -87,46 +192,102 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
 
       {/* Show check-out fields if already checked in or checked out */}
       {isCheckedIn && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "var(--spacing-4)",
+          }}
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Check-out Date</label>
-            <input type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)} className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <label style={labelStyle}>Check-out Date</label>
+            <input
+              type="date"
+              value={newCheckOutDate}
+              onChange={(e) => setNewCheckOutDate(e.target.value)}
+              style={inputStyle}
+              onFocus={(e) => {
+                e.target.style.borderColor = "var(--color-primary)"
+                e.target.style.boxShadow = "var(--input-focus-ring)"
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "var(--color-border-input)"
+                e.target.style.boxShadow = "var(--shadow-sm)"
+              }}
+            />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Check-out Time</label>
-            <input type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)} className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <label style={labelStyle}>Check-out Time</label>
+            <input
+              type="time"
+              value={newCheckOutTime}
+              onChange={(e) => setNewCheckOutTime(e.target.value)}
+              style={inputStyle}
+              onFocus={(e) => {
+                e.target.style.borderColor = "var(--color-primary)"
+                e.target.style.boxShadow = "var(--input-focus-ring)"
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "var(--color-border-input)"
+                e.target.style.boxShadow = "var(--shadow-sm)"
+              }}
+            />
           </div>
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Security Notes (optional)</label>
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows="2" className="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Add any security notes about the visitors..."></textarea>
+        <label style={labelStyle}>Security Notes (optional)</label>
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          rows="2"
+          style={{
+            ...inputStyle,
+            resize: "vertical",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "var(--color-primary)"
+            e.target.style.boxShadow = "var(--input-focus-ring)"
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "var(--color-border-input)"
+            e.target.style.boxShadow = "var(--shadow-sm)"
+          }}
+          placeholder="Add any security notes about the visitors..."
+        ></textarea>
       </div>
 
-      <div className="flex justify-end space-x-3 pt-2">
-        <button type="button" onClick={onCancel} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "var(--spacing-3)",
+          paddingTop: "var(--spacing-2)",
+        }}
+      >
+        <button type="button" onClick={onCancel} style={cancelButtonStyle}>
           Cancel
         </button>
 
         {/* Show appropriate action button based on the current state */}
         {!isCheckedIn ? (
           // Case 1: Initial check-in (not checked in yet)
-          <button type="button" onClick={handleCheckIn} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <button type="button" onClick={handleCheckIn} style={primaryButtonStyle}>
             Check-in Visitor
           </button>
         ) : isCheckedOut ? (
           // Case 2: Already checked out, only edit allowed
-          <button type="button" onClick={handleUpdateTimes} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <button type="button" onClick={handleUpdateTimes} style={primaryButtonStyle}>
             Update Times
           </button>
         ) : (
           // Case 3: Checked in but not checked out, show both options
-          <div className="flex space-x-3">
-            <button type="button" onClick={handleUpdateTimes} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+            <button type="button" onClick={handleUpdateTimes} style={primaryButtonStyle}>
               Update Check-in
             </button>
-            <button type="button" onClick={handleCheckOut} className="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            <button type="button" onClick={handleCheckOut} style={successButtonStyle}>
               Check-out Visitor
             </button>
           </div>
