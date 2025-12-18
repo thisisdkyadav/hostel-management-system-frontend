@@ -169,45 +169,102 @@ const QRScanner = ({ onRefresh }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-      <div className="flex items-center mb-4">
-        <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
-          <FaQrcode size={20} />
+    <div style={{
+      backgroundColor: 'var(--color-bg-primary)',
+      borderRadius: 'var(--radius-xl)',
+      padding: 'var(--spacing-6)',
+      boxShadow: 'var(--shadow-sm)',
+      border: `var(--border-1) solid var(--color-border-light)`,
+      transition: 'var(--transition-all)'
+    }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+        <div style={{
+          padding: 'var(--spacing-2-5)',
+          marginRight: 'var(--spacing-3)',
+          borderRadius: 'var(--radius-xl)',
+          backgroundColor: 'var(--color-primary-bg)',
+          color: 'var(--color-primary)'
+        }}>
+          <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
-        <h2 className="text-xl font-bold text-gray-800">Scan Student QR Code</h2>
+        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Scan Student QR Code</h2>
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 text-red-700 p-3 rounded-lg border-l-4 border-red-500 flex items-start">
-          <FaTimes className="mr-2 mt-0.5 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
+        <div style={{
+          marginBottom: 'var(--spacing-4)',
+          backgroundColor: 'var(--color-danger-bg-light)',
+          color: 'var(--color-danger-text)',
+          padding: 'var(--spacing-3)',
+          borderRadius: 'var(--radius-lg)',
+          borderLeft: `var(--border-4) solid var(--color-danger)`,
+          display: 'flex',
+          alignItems: 'flex-start'
+        }}>
+          <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
+          <p style={{ fontSize: 'var(--font-size-sm)' }}>{error}</p>
         </div>
       )}
 
       {!scanning && !scannedStudent && !loading && (
-        <button onClick={startScanner} className="w-full py-3 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm hover:shadow-md flex items-center justify-center">
-          <FaQrcode className="mr-2" /> Start QR Scanner
+        <button onClick={startScanner} style={{
+          width: '100%',
+          padding: 'var(--spacing-3) 0',
+          backgroundColor: 'var(--button-primary-bg)',
+          color: 'var(--color-white)',
+          borderRadius: 'var(--radius-lg)',
+          transition: 'var(--transition-colors)',
+          boxShadow: 'var(--shadow-sm)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: 'var(--font-size-base)',
+          fontWeight: 'var(--font-weight-medium)'
+        }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}>
+          <FaQrcode style={{ marginRight: 'var(--spacing-2)' }} /> Start QR Scanner
         </button>
       )}
 
-      <div className="mb-4">
-        <div id="qr-reader" className="w-full max-w-sm mx-auto rounded-lg overflow-hidden"></div>
+      <div style={{ marginBottom: 'var(--spacing-4)' }}>
+        <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <button onClick={stopScanner} className="w-full mt-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-            <FaTimes className="mr-2 inline" /> Stop Scanner
+          <button onClick={stopScanner} style={{
+            width: '100%',
+            marginTop: 'var(--spacing-4)',
+            padding: 'var(--spacing-2) 0',
+            backgroundColor: 'var(--color-danger)',
+            color: 'var(--color-white)',
+            borderRadius: 'var(--radius-lg)',
+            transition: 'var(--transition-colors)',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: 'var(--font-size-base)',
+            fontWeight: 'var(--font-weight-medium)'
+          }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}>
+            <FaTimes style={{ marginRight: 'var(--spacing-2)', display: 'inline' }} /> Stop Scanner
           </button>
         )}
       </div>
 
       {loading && (
-        <div className="text-center py-8">
-          <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Processing QR code...</p>
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+          <div style={{
+            width: 'var(--spacing-12)',
+            height: 'var(--spacing-12)',
+            border: `var(--border-4) solid var(--color-primary)`,
+            borderTopColor: 'transparent',
+            borderRadius: 'var(--radius-full)',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto var(--spacing-4)'
+          }}></div>
+          <p style={{ color: 'var(--color-text-muted)' }}>Processing QR code...</p>
         </div>
       )}
 
       {scannedStudent && !loading && (
-        <div className="mt-4" ref={studentInfoRef}>
+        <div style={{ marginTop: 'var(--spacing-4)' }} ref={studentInfoRef}>
           <ScannedStudentInfo student={scannedStudent} lastCheckInOut={lastCheckInOut} onReset={handleReset} onRecordEntry={recordEntry} recordingEntry={recordingEntry} getNextStatus={getNextStatus} />
         </div>
       )}

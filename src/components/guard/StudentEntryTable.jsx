@@ -58,60 +58,184 @@ const StudentEntryTable = ({ entries, refresh }) => {
 
   if (entries.length === 0) {
     return (
-      <div className="bg-white rounded-[20px] shadow-[0px_1px_20px_rgba(0,0,0,0.06)] p-6 text-center">
-        <p className="text-gray-500">No student entries found</p>
+      <div style={{
+        backgroundColor: 'var(--color-bg-primary)',
+        borderRadius: 'var(--radius-card)',
+        boxShadow: 'var(--shadow-card)',
+        padding: 'var(--spacing-6)',
+        textAlign: 'center'
+      }}>
+        <p style={{ color: 'var(--color-text-muted)' }}>No student entries found</p>
       </div>
     )
   }
 
   return (
     <>
-      <div className="bg-white rounded-[20px] shadow-[0px_1px_20px_rgba(0,0,0,0.06)] overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
+      <div style={{
+        backgroundColor: 'var(--color-bg-primary)',
+        borderRadius: 'var(--radius-card)',
+        boxShadow: 'var(--shadow-card)',
+        overflow: 'hidden'
+      }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
               <tr>
-                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th> */}
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Student Name</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Unit</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Room</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Date</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Time</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Status</th>
+                <th style={{
+                  padding: 'var(--spacing-3) var(--spacing-6)',
+                  textAlign: 'left',
+                  fontSize: 'var(--font-size-xs)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--table-header-text)',
+                  textTransform: 'uppercase',
+                  letterSpacing: 'var(--letter-spacing-wide)'
+                }}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody style={{ borderTop: `var(--border-1) solid var(--table-border)` }}>
               {entries.map((entry) => {
                 const { date, time } = formatDateTime(entry.dateAndTime)
                 return (
-                  <tr key={entry._id} className="hover:bg-gray-50 transition-colors">
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{entry.studentId}</div>
-                    </td> */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{entry.userId.name}</div>
+                  <tr
+                    key={entry._id}
+                    style={{
+                      borderBottom: `var(--border-1) solid var(--table-border)`,
+                      transition: 'var(--transition-colors)'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  >
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      <div style={{
+                        fontSize: 'var(--font-size-sm)',
+                        fontWeight: 'var(--font-weight-medium)',
+                        color: 'var(--color-text-primary)'
+                      }}>{entry.userId.name}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{entry.unit || "-"}</div>
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      <div style={{
+                        fontSize: 'var(--font-size-sm)',
+                        color: 'var(--color-text-muted)'
+                      }}>{entry.unit || "-"}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      <div style={{
+                        fontSize: 'var(--font-size-sm)',
+                        color: 'var(--color-text-muted)'
+                      }}>
                         {entry.room}
                         {entry.bed}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{date}</div>
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      <div style={{
+                        fontSize: 'var(--font-size-sm)',
+                        color: 'var(--color-text-muted)'
+                      }}>{date}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{time}</div>
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      <div style={{
+                        fontSize: 'var(--font-size-sm)',
+                        color: 'var(--color-text-muted)'
+                      }}>{time}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap'
+                    }}>
                       <StatusBadge status={entry.status} />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button onClick={() => handleEditClick(entry)} className="text-[#1360AB] hover:text-[#0d4c8b] bg-[#E4F1FF] p-2 rounded-lg">
+                    <td style={{
+                      padding: 'var(--spacing-4) var(--spacing-6)',
+                      whiteSpace: 'nowrap',
+                      textAlign: 'right',
+                      fontSize: 'var(--font-size-sm)',
+                      fontWeight: 'var(--font-weight-medium)'
+                    }}>
+                      <button
+                        onClick={() => handleEditClick(entry)}
+                        style={{
+                          color: 'var(--color-primary)',
+                          backgroundColor: 'var(--color-primary-bg)',
+                          padding: 'var(--spacing-2)',
+                          borderRadius: 'var(--radius-lg)',
+                          border: 'none',
+                          cursor: 'pointer',
+                          transition: 'var(--transition-colors)'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary-hover)'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
+                      >
                         <FaEdit />
                       </button>
                     </td>

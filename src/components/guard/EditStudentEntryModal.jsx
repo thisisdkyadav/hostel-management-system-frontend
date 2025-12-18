@@ -48,61 +48,260 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
   return (
     <Modal title="Edit Student Entry" onClose={onClose}>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <div className="flex border border-gray-200 rounded-lg overflow-hidden mb-4 w-fit">
-            <button type="button" className={`py-2 px-4 text-sm flex items-center gap-1 ${formData.status === "Checked In" ? "bg-[#1360AB] text-white" : "bg-gray-50 text-gray-700 hover:bg-gray-100"}`} onClick={() => handleStatusChange("Checked In")}>
-              <FaSignInAlt size={14} /> Checked In
+        <div style={{ marginBottom: 'var(--spacing-4)' }}>
+          <div style={{
+            display: 'flex',
+            border: `var(--border-1) solid var(--color-border-primary)`,
+            borderRadius: 'var(--radius-lg)',
+            overflow: 'hidden',
+            marginBottom: 'var(--spacing-4)',
+            width: 'fit-content'
+          }}>
+            <button
+              type="button"
+              style={{
+                padding: 'var(--spacing-2) var(--spacing-4)',
+                fontSize: 'var(--font-size-sm)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-1)',
+                backgroundColor: formData.status === "Checked In" ? 'var(--button-primary-bg)' : 'var(--color-bg-tertiary)',
+                color: formData.status === "Checked In" ? 'var(--color-white)' : 'var(--color-text-body)',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 'var(--font-weight-medium)',
+                transition: 'var(--transition-colors)'
+              }}
+              onClick={() => handleStatusChange("Checked In")}
+              onMouseEnter={(e) => formData.status !== "Checked In" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')}
+              onMouseLeave={(e) => formData.status !== "Checked In" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)')}
+            >
+              <FaSignInAlt size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-sm'))} /> Checked In
             </button>
-            <button type="button" className={`py-2 px-4 text-sm flex items-center gap-1 ${formData.status === "Checked Out" ? "bg-[#1360AB] text-white" : "bg-gray-50 text-gray-700 hover:bg-gray-100"}`} onClick={() => handleStatusChange("Checked Out")}>
-              <FaSignOutAlt size={14} /> Checked Out
+            <button
+              type="button"
+              style={{
+                padding: 'var(--spacing-2) var(--spacing-4)',
+                fontSize: 'var(--font-size-sm)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-1)',
+                backgroundColor: formData.status === "Checked Out" ? 'var(--button-primary-bg)' : 'var(--color-bg-tertiary)',
+                color: formData.status === "Checked Out" ? 'var(--color-white)' : 'var(--color-text-body)',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 'var(--font-weight-medium)',
+                transition: 'var(--transition-colors)'
+              }}
+              onClick={() => handleStatusChange("Checked Out")}
+              onMouseEnter={(e) => formData.status !== "Checked Out" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')}
+              onMouseLeave={(e) => formData.status !== "Checked Out" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)')}
+            >
+              <FaSignOutAlt size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-sm'))} /> Checked Out
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: 'var(--spacing-4)',
+          marginBottom: 'var(--spacing-4)'
+        }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Student Email</label>
-            <input type="text" name="studentId" value={formData.userId.email} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>Student Email</label>
+            <input
+              type="text"
+              name="studentId"
+              value={formData.userId.email}
+              onChange={handleChange}
+              readOnly
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--color-bg-muted)',
+                color: 'var(--color-text-secondary)',
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-input)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                fontSize: 'var(--font-size-base)'
+              }}
+              required
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Student Name</label>
-            <input type="text" name="studentName" value={formData.userId.name} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>Student Name</label>
+            <input
+              type="text"
+              name="studentName"
+              value={formData.userId.name}
+              onChange={handleChange}
+              readOnly
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--color-bg-muted)',
+                color: 'var(--color-text-secondary)',
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-input)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                fontSize: 'var(--font-size-base)'
+              }}
+              required
+            />
           </div>
 
           {hostelType === "unit-based" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-              <input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" />
+              <label style={{
+                display: 'block',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-medium)',
+                color: 'var(--color-text-body)',
+                marginBottom: 'var(--spacing-1)'
+              }}>Unit</label>
+              <input
+                type="text"
+                name="unit"
+                value={formData.unit || ""}
+                onChange={handleChange}
+                readOnly
+                style={{
+                  width: '100%',
+                  backgroundColor: 'var(--color-bg-muted)',
+                  color: 'var(--color-text-secondary)',
+                  padding: 'var(--spacing-4)',
+                  borderRadius: 'var(--radius-input)',
+                  border: `var(--border-1) solid var(--color-border-input)`,
+                  fontSize: 'var(--font-size-base)'
+                }}
+              />
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Room</label>
-            <input type="text" name="room" value={formData.room} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>Room</label>
+            <input
+              type="text"
+              name="room"
+              value={formData.room}
+              onChange={handleChange}
+              readOnly
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--color-bg-muted)',
+                color: 'var(--color-text-secondary)',
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-input)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                fontSize: 'var(--font-size-base)'
+              }}
+              required
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bed</label>
-            <input type="text" name="bed" value={formData.bed} onChange={handleChange} readOnly className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>Bed</label>
+            <input
+              type="text"
+              name="bed"
+              value={formData.bed}
+              onChange={handleChange}
+              readOnly
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--color-bg-muted)',
+                color: 'var(--color-text-secondary)',
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-input)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                fontSize: 'var(--font-size-base)'
+              }}
+              required
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-            <input type="date" name="date" value={formData.date} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>Date</label>
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--input-bg)',
+                color: 'var(--color-text-secondary)',
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-input)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                fontSize: 'var(--font-size-base)'
+              }}
+              required
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-            <input type="time" name="time" value={formData.time} onChange={handleChange} className="w-full bg-[#EFF3F4] text-gray-800 px-4 py-2 rounded-md" required />
+            <label style={{
+              display: 'block',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              color: 'var(--color-text-body)',
+              marginBottom: 'var(--spacing-1)'
+            }}>Time</label>
+            <input
+              type="time"
+              name="time"
+              value={formData.time}
+              onChange={handleChange}
+              style={{
+                width: '100%',
+                backgroundColor: 'var(--input-bg)',
+                color: 'var(--color-text-secondary)',
+                padding: 'var(--spacing-4)',
+                borderRadius: 'var(--radius-input)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                fontSize: 'var(--font-size-base)'
+              }}
+              required
+            />
           </div>
         </div>
 
-        <div className="flex justify-between gap-2">
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--spacing-2)' }}>
           <Button type="button" variant="danger" onClick={handleDelete}>
             Delete Entry
           </Button>
-          <div className="flex gap-2">
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button>

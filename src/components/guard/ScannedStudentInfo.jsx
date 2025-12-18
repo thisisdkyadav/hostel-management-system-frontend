@@ -1,8 +1,10 @@
 import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
+
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
+  
   const formatDate = (dateString) => {
     if (!dateString) return "N/A"
     const date = new Date(dateString)
@@ -23,31 +25,87 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6">
-      <div className="bg-green-50 p-3 rounded-lg border-l-4 border-green-500 mb-6">
-        <p className="text-green-700 font-medium">Student verified successfully!</p>
+    <div style={{
+      backgroundColor: 'var(--color-bg-primary)',
+      borderRadius: 'var(--radius-xl)',
+      boxShadow: 'var(--shadow-md)',
+      padding: 'var(--spacing-6)'
+    }}>
+      <div style={{
+        backgroundColor: 'var(--color-success-bg-light)',
+        padding: 'var(--spacing-3)',
+        borderRadius: 'var(--radius-lg)',
+        borderLeft: `var(--border-4) solid var(--color-success)`,
+        marginBottom: 'var(--spacing-6)'
+      }}>
+        <p style={{
+          color: 'var(--color-success-text)',
+          fontWeight: 'var(--font-weight-medium)'
+        }}>Student verified successfully!</p>
       </div>
 
       {/* Cross-Hostel Alert */}
       {student.isSameHostel === false && (
-        <div className="bg-orange-50 border-2 border-orange-400 rounded-lg p-4 mb-6">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <FaExclamationTriangle className="h-6 w-6 text-orange-600 mt-0.5" />
+        <div style={{
+          backgroundColor: 'var(--color-warning-bg-light)',
+          border: `var(--border-2) solid var(--color-warning)`,
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--spacing-4)',
+          marginBottom: 'var(--spacing-6)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{ flexShrink: 0 }}>
+              <FaExclamationTriangle style={{
+                height: 'var(--icon-xl)',
+                width: 'var(--icon-xl)',
+                color: 'var(--color-warning)',
+                marginTop: 'var(--spacing-0-5)'
+              }} />
             </div>
-            <div className="ml-3 flex-1">
-              <h3 className="text-lg font-semibold text-orange-800 mb-2">Cross-Hostel Entry Alert</h3>
-              <p className="text-orange-700 text-sm mb-3">This student belongs to a different hostel. Please provide a reason for allowing entry.</p>
-              <div className="space-y-2">
-                <label htmlFor="crossHostelReason" className="block text-sm font-medium text-orange-800">
-                  Reason for Cross-Hostel Entry <span className="text-red-500">*</span>
+            <div style={{ marginLeft: 'var(--spacing-3)', flex: 1 }}>
+              <h3 style={{
+                fontSize: 'var(--font-size-lg)',
+                fontWeight: 'var(--font-weight-semibold)',
+                color: 'var(--color-warning-text)',
+                marginBottom: 'var(--spacing-2)'
+              }}>Cross-Hostel Entry Alert</h3>
+              <p style={{
+                color: 'var(--color-warning-text)',
+                fontSize: 'var(--font-size-sm)',
+                marginBottom: 'var(--spacing-3)'
+              }}>This student belongs to a different hostel. Please provide a reason for allowing entry.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+                <label htmlFor="crossHostelReason" style={{
+                  display: 'block',
+                  fontSize: 'var(--font-size-sm)',
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--color-warning-text)'
+                }}>
+                  Reason for Cross-Hostel Entry <span style={{ color: 'var(--color-danger)' }}>*</span>
                 </label>
                 <textarea
                   id="crossHostelReason"
                   value={crossHostelReason}
                   onChange={(e) => setCrossHostelReason(e.target.value)}
                   placeholder="Enter reason for allowing this cross-hostel entry..."
-                  className="w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
+                  style={{
+                    width: '100%',
+                    padding: 'var(--spacing-3)',
+                    border: `var(--border-1) solid var(--color-warning)`,
+                    borderRadius: 'var(--radius-input)',
+                    boxShadow: 'var(--shadow-sm)',
+                    outline: 'none',
+                    fontSize: 'var(--font-size-sm)',
+                    fontFamily: 'var(--font-family-primary)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.boxShadow = 'var(--shadow-focus)'
+                    e.currentTarget.style.borderColor = 'var(--color-warning)'
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)'
+                    e.currentTarget.style.borderColor = 'var(--color-warning)'
+                  }}
                   rows="3"
                   required
                 />
@@ -57,113 +115,291 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row gap-6">
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--spacing-6)'
+      }}>
         {/* Profile Image Section */}
-        <div className="md:w-1/3">
-          <div className="aspect-square w-full max-w-[250px] mx-auto rounded-full overflow-hidden bg-gray-100">
-            {student.profileImage ? (
-              <img src={getMediaUrl(student.profileImage)} alt={student.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-blue-50">
-                <FaUser className="text-[#1360AB] w-1/3 h-1/3" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          <div style={{ width: '100%', maxWidth: '250px', margin: '0 auto' }}>
+            <div style={{
+              aspectRatio: '1',
+              width: '100%',
+              borderRadius: 'var(--radius-full)',
+              overflow: 'hidden',
+              backgroundColor: 'var(--color-bg-hover)'
+            }}>
+              {student.profileImage ? (
+                <img src={getMediaUrl(student.profileImage)} alt={student.name} style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }} />
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'var(--color-info-bg-light)'
+                }}>
+                  <FaUser style={{
+                    color: 'var(--color-primary)',
+                    width: '33%',
+                    height: '33%'
+                  }} />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Student Details Section */}
+          <div>
+            <h3 style={{
+              fontSize: 'var(--font-size-2xl)',
+              fontWeight: 'var(--font-weight-bold)',
+              color: 'var(--color-text-secondary)',
+              marginBottom: 'var(--spacing-4)',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <FaUser style={{
+                marginRight: 'var(--spacing-3)',
+                color: 'var(--color-primary)'
+              }} />
+              {student.name}
+            </h3>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: 'var(--spacing-4)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+                <FaIdCard style={{
+                  color: 'var(--color-primary)',
+                  width: 'var(--icon-lg)',
+                  marginTop: 'var(--spacing-1)'
+                }} />
+                <div>
+                  <p style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-muted)'
+                  }}>Roll Number</p>
+                  <p style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    color: 'var(--color-text-primary)'
+                  }}>{student.rollNumber}</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+                <FaEnvelope style={{
+                  color: 'var(--color-primary)',
+                  width: 'var(--icon-lg)',
+                  marginTop: 'var(--spacing-1)'
+                }} />
+                <div>
+                  <p style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-muted)'
+                  }}>Email</p>
+                  <p style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    color: 'var(--color-text-primary)',
+                    wordBreak: 'break-all'
+                  }}>{student.email}</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+                <FaPhone style={{
+                  color: 'var(--color-primary)',
+                  width: 'var(--icon-lg)',
+                  marginTop: 'var(--spacing-1)'
+                }} />
+                <div>
+                  <p style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-muted)'
+                  }}>Phone</p>
+                  <p style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    color: 'var(--color-text-primary)'
+                  }}>{student.phone || "N/A"}</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+                <FaVenusMars style={{
+                  color: 'var(--color-primary)',
+                  width: 'var(--icon-lg)',
+                  marginTop: 'var(--spacing-1)'
+                }} />
+                <div>
+                  <p style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-muted)'
+                  }}>Gender</p>
+                  <p style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    color: 'var(--color-text-primary)',
+                    textTransform: 'capitalize'
+                  }}>{student.gender || "N/A"}</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--spacing-3)' }}>
+                <FaBuilding style={{
+                  color: 'var(--color-primary)',
+                  width: 'var(--icon-lg)',
+                  marginTop: 'var(--spacing-1)'
+                }} />
+                <div>
+                  <p style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-muted)'
+                  }}>Hostel & Room</p>
+                  <p style={{
+                    fontSize: 'var(--font-size-sm)',
+                    fontWeight: 'var(--font-weight-medium)',
+                    color: 'var(--color-text-primary)'
+                  }}>
+                    {student.hostel}, Room {student.displayRoom}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Last Check In/Out Section */}
+            {lastCheckInOut && (
+              <div style={{
+                marginTop: 'var(--spacing-6)',
+                padding: 'var(--spacing-4)',
+                backgroundColor: 'var(--color-info-bg-light)',
+                borderRadius: 'var(--radius-lg)'
+              }}>
+                <h4 style={{
+                  fontWeight: 'var(--font-weight-medium)',
+                  color: 'var(--color-text-body)',
+                  marginBottom: 'var(--spacing-3)'
+                }}>Last {lastCheckInOut.status}</h4>
+                <div style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 'var(--spacing-4)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FaCalendarAlt style={{
+                      color: 'var(--color-primary)',
+                      marginRight: 'var(--spacing-2)'
+                    }} />
+                    <span style={{ fontSize: 'var(--font-size-sm)' }}>{formatDate(lastCheckInOut.dateAndTime)}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FaClock style={{
+                      color: 'var(--color-primary)',
+                      marginRight: 'var(--spacing-2)'
+                    }} />
+                    <span style={{ fontSize: 'var(--font-size-sm)' }}>{formatTime(lastCheckInOut.dateAndTime)}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {lastCheckInOut.status === "Checked In" ? (
+                      <FaSignInAlt style={{
+                        color: 'var(--color-success)',
+                        marginRight: 'var(--spacing-2)'
+                      }} />
+                    ) : (
+                      <FaSignOutAlt style={{
+                        color: 'var(--color-warning)',
+                        marginRight: 'var(--spacing-2)'
+                      }} />
+                    )}
+                    <span style={{
+                      fontSize: 'var(--font-size-sm)',
+                      fontWeight: 'var(--font-weight-medium)'
+                    }}>{lastCheckInOut.status}</span>
+                  </div>
+                </div>
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Student Details Section */}
-        <div className="md:w-2/3">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-            <FaUser className="mr-3 text-[#1360AB]" />
-            {student.name}
-          </h3>
+            {/* Action Buttons */}
+            <div style={{
+              marginTop: 'var(--spacing-6)',
+              display: 'flex',
+              gap: 'var(--spacing-4)'
+            }}>
+              <button
+                onClick={onReset}
+                style={{
+                  flex: 1,
+                  padding: 'var(--spacing-2-5) 0',
+                  backgroundColor: 'var(--color-bg-muted)',
+                  color: 'var(--color-text-body)',
+                  borderRadius: 'var(--radius-lg)',
+                  transition: 'var(--transition-colors)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 'var(--font-size-base)',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}
+              >
+                <FaTimes style={{ marginRight: 'var(--spacing-2)' }} /> Reset
+              </button>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start space-x-3">
-              <FaIdCard className="text-[#1360AB] w-5 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Roll Number</p>
-                <p className="text-sm font-medium">{student.rollNumber}</p>
-              </div>
+              <button
+                onClick={() => onRecordEntry(student.isSameHostel === false ? crossHostelReason.trim() : null)}
+                disabled={recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())}
+                style={{
+                  flex: 1,
+                  padding: 'var(--spacing-2-5) 0',
+                  backgroundColor: 'var(--button-primary-bg)',
+                  color: 'var(--color-white)',
+                  borderRadius: 'var(--radius-lg)',
+                  transition: 'var(--transition-colors)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: 'none',
+                  cursor: (recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())) ? 'not-allowed' : 'pointer',
+                  opacity: (recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())) ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
+                  fontSize: 'var(--font-size-base)',
+                  fontWeight: 'var(--font-weight-medium)'
+                }}
+                onMouseEnter={(e) => {
+                  if (!recordingEntry && !(student.isSameHostel === false && !crossHostelReason.trim())) {
+                    e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!recordingEntry && !(student.isSameHostel === false && !crossHostelReason.trim())) {
+                    e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'
+                  }
+                }}
+              >
+                {getNextStatus() === "Checked In" ? (
+                  <>
+                    <FaSignInAlt style={{ marginRight: 'var(--spacing-2)' }} /> Check In
+                  </>
+                ) : (
+                  <>
+                    <FaSignOutAlt style={{ marginRight: 'var(--spacing-2)' }} /> Check Out
+                  </>
+                )}
+              </button>
             </div>
-
-            <div className="flex items-start space-x-3">
-              <FaEnvelope className="text-[#1360AB] w-5 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Email</p>
-                <p className="text-sm font-medium">{student.email}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <FaPhone className="text-[#1360AB] w-5 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Phone</p>
-                <p className="text-sm font-medium">{student.phone || "N/A"}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <FaVenusMars className="text-[#1360AB] w-5 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Gender</p>
-                <p className="text-sm font-medium capitalize">{student.gender || "N/A"}</p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <FaBuilding className="text-[#1360AB] w-5 mt-1" />
-              <div>
-                <p className="text-xs text-gray-500">Hostel & Room</p>
-                <p className="text-sm font-medium">
-                  {student.hostel}, Room {student.displayRoom}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Last Check In/Out Section */}
-          {lastCheckInOut && (
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-medium text-gray-700 mb-3">Last {lastCheckInOut.status}</h4>
-              <div className="flex flex-wrap gap-4">
-                <div className="flex items-center">
-                  <FaCalendarAlt className="text-[#1360AB] mr-2" />
-                  <span className="text-sm">{formatDate(lastCheckInOut.dateAndTime)}</span>
-                </div>
-                <div className="flex items-center">
-                  <FaClock className="text-[#1360AB] mr-2" />
-                  <span className="text-sm">{formatTime(lastCheckInOut.dateAndTime)}</span>
-                </div>
-                <div className="flex items-center">
-                  {lastCheckInOut.status === "Checked In" ? <FaSignInAlt className="text-green-600 mr-2" /> : <FaSignOutAlt className="text-orange-600 mr-2" />}
-                  <span className="text-sm font-medium">{lastCheckInOut.status}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="mt-6 flex gap-4">
-            <button onClick={onReset} className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center">
-              <FaTimes className="mr-2" /> Reset
-            </button>
-
-            <button
-              onClick={() => onRecordEntry(student.isSameHostel === false ? crossHostelReason.trim() : null)}
-              disabled={recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())}
-              className="flex-1 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors flex items-center justify-center disabled:bg-blue-300 disabled:cursor-not-allowed"
-            >
-              {getNextStatus() === "Checked In" ? (
-                <>
-                  <FaSignInAlt className="mr-2" /> Check In
-                </>
-              ) : (
-                <>
-                  <FaSignOutAlt className="mr-2" /> Check Out
-                </>
-              )}
-            </button>
           </div>
         </div>
       </div>
