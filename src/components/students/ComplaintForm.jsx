@@ -63,26 +63,91 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
 
   return (
     <Modal title="Submit New Complaint" onClose={() => setIsOpen(false)} width={650}>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {error && (
-          <div className="bg-red-50 p-4 rounded-lg flex items-start">
-            <FaExclamationTriangle className="text-red-500 mt-1 mr-3 flex-shrink-0" />
-            <p className="text-red-600">{error}</p>
+          <div style={{
+            backgroundColor: 'var(--color-danger-bg)',
+            padding: 'var(--spacing-4)',
+            borderRadius: 'var(--radius-lg)',
+            display: 'flex',
+            alignItems: 'flex-start'
+          }}>
+            <FaExclamationTriangle style={{
+              color: 'var(--color-danger)',
+              marginTop: 'var(--spacing-1)',
+              marginRight: 'var(--spacing-3)',
+              flexShrink: 0
+            }} />
+            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Complaint Title</label>
-            <input type="text" name="title" placeholder="Brief summary of the issue" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.title} onChange={handleChange} required />
+            <label style={{
+              display: 'block',
+              color: 'var(--color-text-secondary)',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              marginBottom: 'var(--spacing-2)'
+            }}>Complaint Title</label>
+            <input
+              type="text"
+              name="title"
+              placeholder="Brief summary of the issue"
+              style={{
+                width: '100%',
+                padding: 'var(--input-padding)',
+                border: `var(--border-1) solid var(--input-border)`,
+                borderRadius: 'var(--input-radius)',
+                outline: 'none',
+                transition: 'var(--transition-all)',
+                backgroundColor: 'var(--input-bg)'
+              }}
+              onFocus={(e) => {
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
+              onBlur={(e) => {
+                e.target.style.boxShadow = 'none';
+                e.target.style.borderColor = 'var(--input-border)';
+              }}
+              value={formData.title}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+            <label style={{
+              display: 'block',
+              color: 'var(--color-text-secondary)',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              marginBottom: 'var(--spacing-2)'
+            }}>Description</label>
             <textarea
               name="description"
               placeholder="Please provide details about the issue..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all resize-none h-28"
+              style={{
+                width: '100%',
+                padding: 'var(--input-padding)',
+                border: `var(--border-1) solid var(--input-border)`,
+                borderRadius: 'var(--input-radius)',
+                outline: 'none',
+                transition: 'var(--transition-all)',
+                resize: 'none',
+                height: '112px',
+                backgroundColor: 'var(--input-bg)'
+              }}
+              onFocus={(e) => {
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
+              onBlur={(e) => {
+                e.target.style.boxShadow = 'none';
+                e.target.style.borderColor = 'var(--input-border)';
+              }}
               value={formData.description}
               onChange={handleChange}
               required
@@ -92,19 +157,83 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
           {/* location only for warden, associate warden, hostel supervisor, admin */}
           {["Warden", "Associate Warden", "Hostel Supervisor", "Admin"].includes(user?.role) && (
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">Location</label>
-              <input type="text" name="location" placeholder="Location" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" value={formData.location} onChange={handleChange} required />
+              <label style={{
+                display: 'block',
+                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-medium)',
+                marginBottom: 'var(--spacing-2)'
+              }}>Location</label>
+              <input
+                type="text"
+                name="location"
+                placeholder="Location"
+                style={{
+                  width: '100%',
+                  padding: 'var(--input-padding)',
+                  border: `var(--border-1) solid var(--input-border)`,
+                  borderRadius: 'var(--input-radius)',
+                  outline: 'none',
+                  transition: 'var(--transition-all)',
+                  backgroundColor: 'var(--input-bg)'
+                }}
+                onFocus={(e) => {
+                  e.target.style.boxShadow = 'var(--input-focus-ring)';
+                  e.target.style.borderColor = 'var(--input-border-focus)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.boxShadow = 'none';
+                  e.target.style.borderColor = 'var(--input-border)';
+                }}
+                value={formData.location}
+                onChange={handleChange}
+                required
+              />
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-4)' }} className="sm:grid-cols-2">
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">Category</label>
-              <div className="relative">
-                <div className="absolute left-3 top-3 text-gray-400">
+              <label style={{
+                display: 'block',
+                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-medium)',
+                marginBottom: 'var(--spacing-2)'
+              }}>Category</label>
+              <div style={{ position: 'relative' }}>
+                <div style={{
+                  position: 'absolute',
+                  left: 'var(--spacing-3)',
+                  top: 'var(--spacing-3)',
+                  color: 'var(--color-text-placeholder)'
+                }}>
                   <FaClipboardList />
                 </div>
-                <select name="category" className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" value={formData.category} onChange={handleChange} required>
+                <select
+                  name="category"
+                  style={{
+                    width: '100%',
+                    padding: 'var(--input-padding)',
+                    paddingLeft: 'var(--spacing-10)',
+                    border: `var(--border-1) solid var(--input-border)`,
+                    borderRadius: 'var(--input-radius)',
+                    outline: 'none',
+                    transition: 'var(--transition-all)',
+                    backgroundColor: 'var(--input-bg)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.boxShadow = 'var(--input-focus-ring)';
+                    e.target.style.borderColor = 'var(--input-border-focus)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.boxShadow = 'none';
+                    e.target.style.borderColor = 'var(--input-border)';
+                  }}
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                >
                   <option value="" disabled>
                     Select Category
                   </option>
@@ -119,8 +248,36 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">Priority</label>
-              <select name="priority" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all bg-white" value={formData.priority} onChange={handleChange} required>
+              <label style={{
+                display: 'block',
+                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--font-size-sm)',
+                fontWeight: 'var(--font-weight-medium)',
+                marginBottom: 'var(--spacing-2)'
+              }}>Priority</label>
+              <select
+                name="priority"
+                style={{
+                  width: '100%',
+                  padding: 'var(--input-padding)',
+                  border: `var(--border-1) solid var(--input-border)`,
+                  borderRadius: 'var(--input-radius)',
+                  outline: 'none',
+                  transition: 'var(--transition-all)',
+                  backgroundColor: 'var(--input-bg)'
+                }}
+                onFocus={(e) => {
+                  e.target.style.boxShadow = 'var(--input-focus-ring)';
+                  e.target.style.borderColor = 'var(--input-border-focus)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.boxShadow = 'none';
+                  e.target.style.borderColor = 'var(--input-border)';
+                }}
+                value={formData.priority}
+                onChange={handleChange}
+                required
+              >
                 <option value="" disabled>
                   Select Priority
                 </option>
@@ -132,14 +289,74 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
           </div>
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 space-y-reverse sm:space-y-0 sm:space-x-3">
-          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium" onClick={() => setIsOpen(false)}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          paddingTop: 'var(--spacing-5)',
+          marginTop: 'var(--spacing-6)',
+          borderTop: `var(--border-1) solid var(--color-border-light)`,
+          gap: 'var(--spacing-3)'
+        }}>
+          <button
+            type="button"
+            style={{
+              padding: 'var(--button-padding-md)',
+              backgroundColor: 'var(--color-bg-muted)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-all)',
+              fontWeight: 'var(--font-weight-medium)',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+            onClick={() => setIsOpen(false)}
+          >
             Cancel
           </button>
-          <button type="submit" className="px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium flex items-center justify-center" disabled={loading}>
+          <button
+            type="submit"
+            style={{
+              padding: 'var(--button-padding-md)',
+              backgroundColor: 'var(--button-primary-bg)',
+              color: 'var(--color-white)',
+              borderRadius: 'var(--radius-lg)',
+              transition: 'var(--transition-all)',
+              boxShadow: 'var(--shadow-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)'
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.target.style.backgroundColor = 'var(--button-primary-hover)';
+                e.target.style.boxShadow = 'var(--shadow-md)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) {
+                e.target.style.backgroundColor = 'var(--button-primary-bg)';
+                e.target.style.boxShadow = 'var(--shadow-sm)';
+              }
+            }}
+            disabled={loading}
+          >
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                <div style={{
+                  width: 'var(--icon-lg)',
+                  height: 'var(--icon-lg)',
+                  border: `var(--border-2) solid var(--color-white)`,
+                  borderTopColor: 'transparent',
+                  borderRadius: 'var(--radius-full)',
+                  animation: 'spin 1s linear infinite',
+                  marginRight: 'var(--spacing-2)'
+                }}></div>
                 Submitting...
               </>
             ) : (
