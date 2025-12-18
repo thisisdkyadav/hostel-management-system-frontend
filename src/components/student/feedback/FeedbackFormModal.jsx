@@ -73,12 +73,12 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
 
   return (
     <Modal title={isEditing ? "Edit Feedback" : "Submit Feedback"} onClose={onClose} width={600}>
-      <div className="space-y-5">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Feedback Title</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Feedback Title</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                 <HiPencil size={20} />
               </div>
               <input
@@ -86,21 +86,38 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className={`w-full pl-10 p-3 border ${errors.title ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`}
+                style={{
+                  width: '100%',
+                  paddingLeft: 'var(--spacing-10)',
+                  padding: 'var(--spacing-3)',
+                  border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`,
+                  backgroundColor: errors.title ? 'var(--color-danger-bg)' : 'var(--input-bg)',
+                  borderRadius: 'var(--radius-input)',
+                  outline: 'none',
+                  transition: 'var(--transition-colors)',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = errors.title ? 'var(--color-danger)' : 'var(--input-border-focus)';
+                  e.target.style.boxShadow = errors.title ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = errors.title ? 'var(--color-danger-border)' : 'var(--color-border-input)';
+                  e.target.style.boxShadow = 'none';
+                }}
                 placeholder="Enter feedback title"
               />
             </div>
             {errors.title && (
-              <p className="text-red-600 text-sm mt-1.5 flex items-center">
-                <HiExclamationCircle className="mr-1.5 flex-shrink-0" /> {errors.title}
+              <p style={{ color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-1-5)', display: 'flex', alignItems: 'center' }}>
+                <HiExclamationCircle style={{ marginRight: 'var(--spacing-1-5)', flexShrink: 0 }} /> {errors.title}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Description</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                 <HiDocumentText size={20} />
               </div>
               <textarea
@@ -108,33 +125,110 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
                 value={formData.description}
                 onChange={handleChange}
                 rows={5}
-                className={`w-full pl-10 p-3 border ${errors.description ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`}
+                style={{
+                  width: '100%',
+                  paddingLeft: 'var(--spacing-10)',
+                  padding: 'var(--spacing-3)',
+                  border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`,
+                  backgroundColor: errors.description ? 'var(--color-danger-bg)' : 'var(--input-bg)',
+                  borderRadius: 'var(--radius-input)',
+                  outline: 'none',
+                  transition: 'var(--transition-colors)',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = errors.description ? 'var(--color-danger)' : 'var(--input-border-focus)';
+                  e.target.style.boxShadow = errors.description ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = errors.description ? 'var(--color-danger-border)' : 'var(--color-border-input)';
+                  e.target.style.boxShadow = 'none';
+                }}
                 placeholder="Describe your feedback in detail"
               />
             </div>
             {errors.description && (
-              <p className="text-red-600 text-sm mt-1.5 flex items-center">
-                <HiExclamationCircle className="mr-1.5 flex-shrink-0" /> {errors.description}
+              <p style={{ color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-1-5)', display: 'flex', alignItems: 'center' }}>
+                <HiExclamationCircle style={{ marginRight: 'var(--spacing-1-5)', flexShrink: 0 }} /> {errors.description}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 sm:space-y-0 sm:space-x-3">
-            <button type="button" onClick={onClose} className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium">
-              Cancel
-            </button>
-            <button type="submit" disabled={isSubmitting} className="flex items-center justify-center px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium disabled:bg-blue-300 disabled:cursor-not-allowed">
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  {isEditing ? "Updating..." : "Submitting..."}
-                </>
-              ) : isEditing ? (
-                "Update Feedback"
-              ) : (
-                "Submit Feedback"
-              )}
-            </button>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)', justifyContent: 'flex-end' }}>
+              <button 
+                type="button" 
+                onClick={onClose} 
+                style={{
+                  padding: 'var(--button-padding-md)',
+                  backgroundColor: 'var(--color-bg-muted)',
+                  color: 'var(--color-text-body)',
+                  borderRadius: 'var(--radius-input)',
+                  border: 'none',
+                  transition: 'var(--transition-all)',
+                  cursor: 'pointer',
+                  fontWeight: 'var(--font-weight-medium)',
+                  fontSize: 'var(--font-size-base)',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'var(--color-bg-hover)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'var(--color-bg-muted)';
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                disabled={isSubmitting} 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 'var(--button-padding-md)',
+                  backgroundColor: isSubmitting ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)',
+                  color: 'var(--color-white)',
+                  borderRadius: 'var(--radius-input)',
+                  border: 'none',
+                  transition: 'var(--transition-all)',
+                  boxShadow: 'var(--shadow-button)',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  fontWeight: 'var(--font-weight-medium)',
+                  fontSize: 'var(--font-size-base)',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSubmitting) {
+                    e.target.style.backgroundColor = 'var(--button-primary-hover)';
+                    e.target.style.boxShadow = 'var(--shadow-button-hover)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSubmitting) {
+                    e.target.style.backgroundColor = 'var(--button-primary-bg)';
+                    e.target.style.boxShadow = 'var(--shadow-button)';
+                  }
+                }}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div style={{ 
+                      width: 'var(--icon-md)', 
+                      height: 'var(--icon-md)', 
+                      border: 'var(--border-2) solid var(--color-white)', 
+                      borderTopColor: 'transparent', 
+                      borderRadius: 'var(--radius-full)', 
+                      animation: 'spin 1s linear infinite',
+                      marginRight: 'var(--spacing-2)'
+                    }}></div>
+                    {isEditing ? "Updating..." : "Submitting..."}
+                  </>
+                ) : isEditing ? (
+                  "Update Feedback"
+                ) : (
+                  "Submit Feedback"
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>

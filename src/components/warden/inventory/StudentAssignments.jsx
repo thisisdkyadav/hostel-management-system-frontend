@@ -160,20 +160,20 @@ const StudentAssignments = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 className="text-lg font-medium text-gray-800">Student Inventory Assignments</h3>
-          <p className="text-sm text-gray-500">View and manage items assigned to students</p>
+          <h3 style={{ fontSize: 'var(--text-heading-3)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Student Inventory Assignments</h3>
+          <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>View and manage items assigned to students</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-        <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-          <FaFilter className="mr-2 text-gray-500" /> Filter Assignments
+      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-light)` }}>
+        <h3 className="flex items-center" style={{ fontSize: 'var(--text-body-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>
+          <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Assignments
         </h3>
-        <div className="flex flex-col md:flex-row gap-4 items-end">
+        <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]">
+            <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
+            <select name="status" value={filters.status} onChange={handleFilterChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }}>
               <option value="">All Statuses</option>
               <option value="Issued">Issued</option>
               <option value="Returned">Returned</option>
@@ -182,83 +182,83 @@ const StudentAssignments = () => {
             </select>
           </div>
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number</label>
-            <input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" />
+            <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Roll Number</label>
+            <input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} />
           </div>
-          <div className="flex gap-2 self-end">
-            <button onClick={resetFilters} className="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-gray-700">
+          <div className="flex self-end" style={{ gap: 'var(--gap-sm)' }}>
+            <button onClick={resetFilters} style={{ padding: 'var(--button-padding-md)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-button-rect)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
               Reset
             </button>
-            <button onClick={() => fetchStudentInventory(1)} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
+            <button onClick={() => fetchStudentInventory(1)} className="flex items-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', gap: 'var(--gap-sm)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
               <FaFilter /> Filter
             </button>
           </div>
         </div>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg">{error}</div>}
+      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {/* Students List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)` }}>
         {loading && !studentInventory.length ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex justify-center items-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
+            <div className="animate-spin" style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: `var(--border-4) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div>
           </div>
         ) : studentInventory.length === 0 ? (
-          <div className="text-center py-12">
-            <FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />
-            <p className="text-gray-500">No inventory assignments found</p>
+          <div className="text-center" style={{ paddingTop: 'var(--spacing-12)', paddingBottom: 'var(--spacing-12)' }}>
+            <FaUserGraduate className="mx-auto" style={{ color: 'var(--color-border-dark)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-4)' }} />
+            <p style={{ color: 'var(--color-text-muted)' }}>No inventory assignments found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full" style={{ borderCollapse: 'collapse' }}>
+              <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Count</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Student</th>
+                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Item</th>
+                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Count</th>
+                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Issue Date</th>
+                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Status</th>
+                  <th className="text-left uppercase" style={{ padding: 'var(--table-cell-padding-md)', fontSize: 'var(--text-caption)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', letterSpacing: 'var(--letter-spacing-wider)' }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                 {studentInventory.map((item) => (
-                  <tr key={item._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={item._id} style={{ borderTop: `var(--border-1) solid var(--table-border)`, transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                          <FaUserGraduate className="text-[#1360AB]" />
+                        <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                          <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <div>
-                          <div className="font-medium text-gray-800">{item.studentProfileId.userId.name}</div>
-                          <div className="text-xs text-gray-500">{item.studentProfileId.rollNumber}</div>
+                          <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.studentProfileId.userId.name}</div>
+                          <div style={{ fontSize: 'var(--text-caption)', color: 'var(--color-text-muted)' }}>{item.studentProfileId.rollNumber}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                          <FaBoxes className="text-[#1360AB]" />
+                        <div className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                          <FaBoxes style={{ color: 'var(--color-primary)' }} />
                         </div>
-                        <span className="font-medium text-gray-800">{item.itemTypeId.name}</span>
+                        <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.itemTypeId.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{item.count}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">{formatDate(item.issueDate)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${item.status === "Issued" ? "bg-green-100 text-green-800" : item.status === "Damaged" ? "bg-red-100 text-red-800" : item.status === "Lost" ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-800"}`}>
+                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.count}</td>
+                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)', color: 'var(--color-text-tertiary)' }}>{formatDate(item.issueDate)}</td>
+                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
+                      <span style={{ padding: 'var(--badge-padding-md)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-md)', fontWeight: 'var(--font-weight-medium)', backgroundColor: item.status === "Issued" ? 'var(--color-success-bg)' : item.status === "Damaged" ? 'var(--color-danger-bg)' : item.status === "Lost" ? 'var(--color-purple-light-bg)' : 'var(--color-bg-muted)', color: item.status === "Issued" ? 'var(--color-success-text)' : item.status === "Damaged" ? 'var(--color-danger-text)' : item.status === "Lost" ? 'var(--color-purple-text)' : 'var(--color-text-secondary)' }}>
                         {item.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
                       {canAccess("student_inventory", "edit") && (
-                        <div className="flex items-center space-x-3">
-                          <button onClick={() => handleViewEditItem(item)} className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all" title="View/Edit Details">
+                        <div className="flex items-center" style={{ gap: 'var(--gap-sm)' }}>
+                          <button onClick={() => handleViewEditItem(item)} className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)'; }} title="View/Edit Details">
                             <FaEdit />
                           </button>
                           {item.status === "Issued" && (
-                            <button onClick={() => handleReturnItem(item)} className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition-all" title="Return Item">
+                            <button onClick={() => handleReturnItem(item)} className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-success)'; e.target.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-success-bg-light)'; e.target.style.color = 'var(--color-success)'; }} title="Return Item">
                               <FaUndo />
                             </button>
                           )}
@@ -280,61 +280,61 @@ const StudentAssignments = () => {
       {showModal && modalType === "edit" && currentItem && (
         <Modal title="Inventory Item Details" onClose={closeModal}>
           <form onSubmit={submitUpdateForm} className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center mb-4">
-                <div className="w-10 h-10 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                  <FaUserGraduate className="text-[#1360AB]" />
+            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+              <div className="flex items-center" style={{ marginBottom: 'var(--spacing-4)' }}>
+                <div className="flex items-center justify-center" style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                  <FaUserGraduate style={{ color: 'var(--color-primary)' }} />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">{currentItem.studentProfileId.userId.name}</h3>
-                  <p className="text-sm text-gray-500">{currentItem.studentProfileId.rollNumber}</p>
+                  <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.studentProfileId.userId.name}</h3>
+                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{currentItem.studentProfileId.rollNumber}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'var(--gap-md)', marginBottom: 'var(--spacing-4)' }}>
                 <div>
-                  <p className="text-sm text-gray-500">Item</p>
-                  <p className="font-medium">{currentItem.itemTypeId.name}</p>
+                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Item</p>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.itemTypeId.name}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Count</p>
-                  <p className="font-medium">{currentItem.count}</p>
+                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Count</p>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.count}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Issue Date</p>
-                  <p className="font-medium">{formatDate(currentItem.issueDate)}</p>
+                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Issue Date</p>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{formatDate(currentItem.issueDate)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Issued By</p>
-                  <p className="font-medium">{currentItem.issuedBy?.name || "Unknown"}</p>
+                  <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Issued By</p>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.issuedBy?.name || "Unknown"}</p>
                 </div>
                 {currentItem.returnDate && (
                   <div>
-                    <p className="text-sm text-gray-500">Return Date</p>
-                    <p className="font-medium">{formatDate(currentItem.returnDate)}</p>
+                    <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Return Date</p>
+                    <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{formatDate(currentItem.returnDate)}</p>
                   </div>
                 )}
                 {currentItem.returnedBy && (
                   <div>
-                    <p className="text-sm text-gray-500">Returned By</p>
-                    <p className="font-medium">{currentItem.returnedBy.name}</p>
+                    <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>Returned By</p>
+                    <p style={{ fontWeight: 'var(--font-weight-medium)' }}>{currentItem.returnedBy.name}</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select name="status" value={formData.status} onChange={handleFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
+              <select name="status" value={formData.status} onChange={handleFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
                 <option value="Issued">Issued</option>
                 <option value="Damaged">Damaged</option>
                 <option value="Lost">Lost</option>
               </select>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Condition</label>
-              <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
                 <option value="Excellent">Excellent</option>
                 <option value="Good">Good</option>
                 <option value="Fair">Fair</option>
@@ -342,17 +342,17 @@ const StudentAssignments = () => {
               </select>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" placeholder="Update notes..."></textarea>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} placeholder="Update notes..."></textarea>
             </div>
 
-            <div className="flex justify-end gap-3">
-              <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+            <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
+              <button type="button" onClick={closeModal} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
                 Cancel
               </button>
-              <button type="submit" disabled={loading} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Update Item"}
+              <button type="submit" disabled={loading} className="flex items-center justify-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
+                {loading ? <div className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div> : "Update Item"}
               </button>
             </div>
           </form>
@@ -363,25 +363,25 @@ const StudentAssignments = () => {
       {showModal && modalType === "return" && currentItem && (
         <Modal title="Return Inventory Item" onClose={closeModal}>
           <form onSubmit={submitReturnForm} className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <div className="flex items-center mb-3">
-                <div className="w-10 h-10 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                  <FaBoxes className="text-[#1360AB]" />
+            <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+              <div className="flex items-center" style={{ marginBottom: 'var(--spacing-3)' }}>
+                <div className="flex items-center justify-center" style={{ width: 'var(--avatar-md)', height: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', marginRight: 'var(--spacing-3)' }}>
+                  <FaBoxes style={{ color: 'var(--color-primary)' }} />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">{currentItem.itemTypeId.name}</h3>
-                  <div className="flex space-x-2 text-sm">
-                    <span className="text-gray-500">Qty: {currentItem.count}</span>
-                    <span className="text-gray-500">•</span>
-                    <span className="text-gray-500">Assigned to: {currentItem.studentProfileId.userId.name}</span>
+                  <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{currentItem.itemTypeId.name}</h3>
+                  <div className="flex" style={{ gap: 'var(--gap-sm)', fontSize: 'var(--text-body-sm)' }}>
+                    <span style={{ color: 'var(--color-text-muted)' }}>Qty: {currentItem.count}</span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>•</span>
+                    <span style={{ color: 'var(--color-text-muted)' }}>Assigned to: {currentItem.studentProfileId.userId.name}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Condition</label>
-              <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
                 <option value="Excellent">Excellent</option>
                 <option value="Good">Good</option>
                 <option value="Fair">Fair</option>
@@ -389,17 +389,17 @@ const StudentAssignments = () => {
               </select>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" placeholder="Notes about returned item..."></textarea>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} placeholder="Notes about returned item..."></textarea>
             </div>
 
-            <div className="flex justify-end gap-3">
-              <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+            <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
+              <button type="button" onClick={closeModal} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
                 Cancel
               </button>
-              <button type="submit" disabled={loading} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Return Item"}
+              <button type="submit" disabled={loading} className="flex items-center justify-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-success-hover)')} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success)'}>
+                {loading ? <div className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div> : "Return Item"}
               </button>
             </div>
           </form>
