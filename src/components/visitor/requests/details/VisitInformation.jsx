@@ -17,22 +17,22 @@ const VisitInformation = ({ fromDate, toDate }) => {
   }
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg">
-      <h3 className="font-medium text-gray-700 mb-3 flex items-center">
-        <FaCalendarAlt className="mr-2 text-[#1360AB]" /> Visit Information
+    <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+      <h3 className="font-medium mb-3 flex items-center" style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
+        <FaCalendarAlt className="mr-2" style={{ color: 'var(--color-primary)' }} /> Visit Information
       </h3>
       <div className="space-y-2">
         <div className="flex justify-between">
-          <span className="text-gray-600 text-sm">From Date:</span>
-          <span className="font-medium text-sm">{formatDate(fromDate)}</span>
+          <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>From Date:</span>
+          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDate(fromDate)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600 text-sm">To Date:</span>
-          <span className="font-medium text-sm">{formatDate(toDate)}</span>
+          <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>To Date:</span>
+          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDate(toDate)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-600 text-sm">Duration:</span>
-          <span className="font-medium text-sm">{calculateDuration(fromDate, toDate)} days</span>
+          <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Duration:</span>
+          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{calculateDuration(fromDate, toDate)} days</span>
         </div>
       </div>
     </div>
