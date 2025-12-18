@@ -2,6 +2,7 @@ import React from "react"
 import { BsDoorOpenFill } from "react-icons/bs"
 import { FaUserFriends } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
+
 const RoomInfoCard = ({ roomData }) => {
   if (!roomData) return null
 
@@ -13,19 +14,36 @@ const RoomInfoCard = ({ roomData }) => {
   }
 
   return (
-    <div className="bg-white shadow-sm p-4 rounded-xl w-full border border-gray-100">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <BsDoorOpenFill className="text-lg" style={{ color: 'var(--color-primary)' }} />
-          <h3 className="text-gray-600 font-medium">Your Room</h3>
+    <div style={{ 
+      backgroundColor: 'var(--color-bg-primary)', 
+      boxShadow: 'var(--shadow-sm)', 
+      padding: 'var(--spacing-4)', 
+      borderRadius: 'var(--radius-xl)', 
+      width: '100%', 
+      border: `var(--border-1) solid var(--color-border-light)` 
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-sm)' }}>
+          <BsDoorOpenFill style={{ fontSize: 'var(--icon-lg)', color: 'var(--color-primary)' }} />
+          <h3 style={{ color: 'var(--color-text-tertiary)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-lg)' }}>Your Room</h3>
         </div>
-        <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>{roomData.hostelName}</span>
+        <span style={{ 
+          fontSize: 'var(--font-size-xs)', 
+          padding: `var(--spacing-0-5) var(--spacing-2)`, 
+          borderRadius: 'var(--radius-full)', 
+          backgroundColor: 'var(--color-info-bg)', 
+          color: 'var(--color-primary)' 
+        }}>{roomData.hostelName}</span>
       </div>
 
-      <div className="flex items-center gap-3 mt-3">
-        <p className="text-4xl font-medium" style={{ color: 'var(--color-primary)' }}>{roomData.roomNumber}</p>
-        <div className="flex items-center text-xs text-gray-600">
-          <FaUserFriends className="text-gray-500 mr-1" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--gap-md)', marginTop: 'var(--spacing-3)' }}>
+        <p style={{ 
+          fontSize: 'var(--font-size-4xl)', 
+          fontWeight: 'var(--font-weight-medium)', 
+          color: 'var(--color-primary)' 
+        }}>{roomData.roomNumber}</p>
+        <div style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>
+          <FaUserFriends style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} />
           <span>
             {roomData.occupiedBeds}/{roomData.totalBeds} Occupied
           </span>
@@ -33,13 +51,55 @@ const RoomInfoCard = ({ roomData }) => {
       </div>
 
       {roomData?.roommates?.length > 0 && (
-        <div className="mt-3 border-t border-gray-100 pt-2">
-          <h4 className="text-xs text-gray-600 mb-1.5">Roommates:</h4>
-          <div className="flex flex-wrap gap-1.5">
+        <div style={{ 
+          marginTop: 'var(--spacing-3)', 
+          borderTop: `var(--border-1) solid var(--color-border-light)`, 
+          paddingTop: 'var(--spacing-2)' 
+        }}>
+          <h4 style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Roommates:</h4>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-1-5)' }}>
             {roomData.roommates.map((roommate) => (
-              <div key={roommate.rollNumber} className="flex items-center text-xs bg-gray-50 px-1.5 py-0.5 rounded-md">
-                {roommate.avatar ? <img src={getMediaUrl(roommate.avatar)} alt={roommate.name} className="w-4 h-4 rounded-full mr-1" /> : <div className="w-4 h-4 rounded-full flex items-center justify-center text-[9px] mr-1" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>{getOccupantInitials(roommate.name)}</div>}
-                <span className="truncate max-w-[80px]">{roommate.name}</span>
+              <div key={roommate.rollNumber} style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                fontSize: 'var(--font-size-xs)', 
+                backgroundColor: 'var(--color-bg-tertiary)', 
+                padding: `var(--spacing-0-5) var(--spacing-1-5)`, 
+                borderRadius: 'var(--radius-md)' 
+              }}>
+                {roommate.avatar ? (
+                  <img 
+                    src={getMediaUrl(roommate.avatar)} 
+                    alt={roommate.name} 
+                    style={{ 
+                      width: 'var(--avatar-xs)', 
+                      height: 'var(--avatar-xs)', 
+                      borderRadius: 'var(--radius-full)', 
+                      marginRight: 'var(--spacing-1)' 
+                    }} 
+                  />
+                ) : (
+                  <div style={{ 
+                    width: 'var(--avatar-xs)', 
+                    height: 'var(--avatar-xs)', 
+                    borderRadius: 'var(--radius-full)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    fontSize: 'var(--font-size-2xs)', 
+                    marginRight: 'var(--spacing-1)', 
+                    backgroundColor: 'var(--color-info-bg)', 
+                    color: 'var(--color-primary)' 
+                  }}>
+                    {getOccupantInitials(roommate.name)}
+                  </div>
+                )}
+                <span style={{ 
+                  overflow: 'hidden', 
+                  textOverflow: 'ellipsis', 
+                  whiteSpace: 'nowrap', 
+                  maxWidth: '80px' 
+                }}>{roommate.name}</span>
               </div>
             ))}
           </div>

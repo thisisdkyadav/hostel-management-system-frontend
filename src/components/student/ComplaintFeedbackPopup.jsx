@@ -40,16 +40,16 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
   }
 
   const footerContent = (
-    <div className="flex justify-end gap-3">
-      <button type="button" onClick={onClose} disabled={isSubmitting} className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition-colors disabled:opacity-50">
+    <div className="flex justify-end" style={{ gap: 'var(--spacing-3)' }}>
+      <button type="button" onClick={onClose} disabled={isSubmitting} className="font-medium transition-colors disabled:cursor-not-allowed" style={{ padding: 'var(--spacing-2-5) var(--spacing-6)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', opacity: isSubmitting ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)' }} onMouseLeave={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)' }}>
         Skip for Now
       </button>
-      <button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} className="px-6 py-2.5 text-white rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)' }} onMouseLeave={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)' }}>
+      <button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} className="font-medium transition-all disabled:cursor-not-allowed flex items-center" style={{ padding: 'var(--spacing-2-5) var(--spacing-6)', gap: 'var(--gap-sm)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--button-primary-bg)', opacity: (isSubmitting || feedbackRating === 0) ? 'var(--opacity-disabled)' : '1', border: 'none' }} onMouseEnter={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)' }} onMouseLeave={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)' }}>
         {isSubmitting ? (
           <>
-            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            <svg className="animate-spin" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-white)' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle style={{ opacity: 'var(--opacity-25)' }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path style={{ opacity: 'var(--opacity-75)' }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             Submitting...
           </>
@@ -64,43 +64,43 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
   return (
     <Modal title="Rate Your Resolution" onClose={onClose} width={650} footer={footerContent}>
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded">
-            <p className="text-red-700 text-sm">{error}</p>
+          <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)' }}>
+            <p style={{ color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)' }}>{error}</p>
           </div>
         )}
 
         {/* Complaint Info - Compact */}
-        <div className="bg-gray-50 p-4 rounded-lg space-y-2.5">
-          <div className="flex items-start justify-between gap-3">
+        <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
+          <div className="flex items-start justify-between" style={{ gap: 'var(--spacing-3)' }}>
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium flex items-center mb-1" style={{ color: 'var(--color-primary)' }}>
-                <FaClipboardList className="mr-1.5 flex-shrink-0" size={14} /> Complaint
+              <h4 className="flex items-center" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-1)' }}>
+                <FaClipboardList className="flex-shrink-0" style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} /> Complaint
               </h4>
-              <p className="font-semibold text-gray-800 text-base leading-tight">{complaint.title}</p>
+              <p style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-tight)' }}>{complaint.title}</p>
             </div>
-            <div className="flex gap-1.5 flex-shrink-0">
-              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 whitespace-nowrap">{complaint.category}</span>
-              <span className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-green-100 text-green-800 whitespace-nowrap">{complaint.status}</span>
+            <div className="flex flex-shrink-0" style={{ gap: 'var(--spacing-1-5)' }}>
+              <span className="whitespace-nowrap" style={{ padding: 'var(--spacing-0-5) var(--spacing-2-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)' }}>{complaint.category}</span>
+              <span className="whitespace-nowrap" style={{ padding: 'var(--spacing-0-5) var(--spacing-2-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>{complaint.status}</span>
             </div>
           </div>
 
           {(complaint.description || complaint.resolutionNotes) && (
-            <div className="grid grid-cols-1 gap-2.5 pt-1">
+            <div className="grid grid-cols-1" style={{ gap: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-1)' }}>
               {complaint.description && (
                 <div>
-                  <h5 className="text-xs font-medium text-gray-500 mb-0.5">Description</h5>
-                  <p className="text-gray-700 text-sm leading-snug line-clamp-2">{complaint.description}</p>
+                  <h5 style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-0-5)' }}>Description</h5>
+                  <p className="line-clamp-2" style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-snug)' }}>{complaint.description}</p>
                 </div>
               )}
 
               {complaint.resolutionNotes && (
                 <div>
-                  <h5 className="text-xs font-medium flex items-center mb-0.5" style={{ color: 'var(--color-primary)' }}>
-                    <FaInfoCircle className="mr-1" size={12} /> Resolution
+                  <h5 className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-0-5)' }}>
+                    <FaInfoCircle style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-xs)' }} /> Resolution
                   </h5>
-                  <p className="text-gray-700 text-sm leading-snug line-clamp-2">{complaint.resolutionNotes}</p>
+                  <p className="line-clamp-2" style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', lineHeight: 'var(--line-height-snug)' }}>{complaint.resolutionNotes}</p>
                 </div>
               )}
             </div>
@@ -109,17 +109,17 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
         {/* Rating Section - Compact */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Rate the resolution <span className="text-red-500">*</span>
+          <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
+            Rate the resolution <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center" style={{ gap: 'var(--spacing-1-5)' }}>
             {[1, 2, 3, 4, 5].map((rating) => (
-              <button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)} className="transition-transform hover:scale-110 focus:outline-none">
-                <FaStar size={32} className={`${rating <= (hoveredRating || feedbackRating) ? "text-yellow-400" : "text-gray-300"} transition-colors`} />
+              <button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)} className="focus:outline-none" style={{ transition: 'var(--transition-transform)' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                <FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} />
               </button>
             ))}
             {feedbackRating > 0 && (
-              <span className="ml-2 text-gray-700 font-medium text-sm">
+              <span style={{ marginLeft: 'var(--spacing-2)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>
                 {feedbackRating === 1 && "Poor"}
                 {feedbackRating === 2 && "Fair"}
                 {feedbackRating === 3 && "Good"}
@@ -132,28 +132,34 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
         {/* Satisfaction Status - Compact */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Satisfaction status <span className="text-red-500">*</span>
+          <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
+            Satisfaction status <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3" style={{ gap: 'var(--spacing-2)' }}>
             <button
               type="button"
               onClick={() => setSatisfactionStatus("Satisfied")}
-              className={`px-3 py-2 rounded-lg border-2 transition-all font-medium text-sm ${satisfactionStatus === "Satisfied" ? "border-green-500 bg-green-50 text-green-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
+              style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "Satisfied" ? 'var(--border-2) solid var(--color-success)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "Satisfied" ? 'var(--color-success-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "Satisfied" ? 'var(--color-success-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
+              onMouseEnter={(e) => { if (satisfactionStatus !== "Satisfied") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
+              onMouseLeave={(e) => { if (satisfactionStatus !== "Satisfied") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
             >
               Satisfied
             </button>
             <button
               type="button"
               onClick={() => setSatisfactionStatus("Unsatisfied")}
-              className={`px-3 py-2 rounded-lg border-2 transition-all font-medium text-sm ${satisfactionStatus === "Unsatisfied" ? "border-red-500 bg-red-50 text-red-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
+              style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "Unsatisfied" ? 'var(--border-2) solid var(--color-danger)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "Unsatisfied" ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "Unsatisfied" ? 'var(--color-danger-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
+              onMouseEnter={(e) => { if (satisfactionStatus !== "Unsatisfied") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
+              onMouseLeave={(e) => { if (satisfactionStatus !== "Unsatisfied") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
             >
               Unsatisfied
             </button>
             <button
               type="button"
               onClick={() => setSatisfactionStatus("False Resolution")}
-              className={`px-3 py-2 rounded-lg border-2 transition-all font-medium text-sm ${satisfactionStatus === "False Resolution" ? "border-yellow-500 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"}`}
+              style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "False Resolution" ? 'var(--border-2) solid var(--color-warning)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "False Resolution" ? 'var(--color-warning-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "False Resolution" ? 'var(--color-warning-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
+              onMouseEnter={(e) => { if (satisfactionStatus !== "False Resolution") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
+              onMouseLeave={(e) => { if (satisfactionStatus !== "False Resolution") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
             >
               False Fix
             </button>
@@ -162,7 +168,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
         {/* Feedback Text - Compact */}
         <div>
-          <label htmlFor="feedback" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="feedback" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
             Comments (Optional)
           </label>
           <textarea
@@ -170,10 +176,10 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 transition-colors resize-none text-sm"
-            style={{ '--tw-ring-color': 'var(--color-primary)' }}
-            onFocus={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
-            onBlur={(e) => e.currentTarget.style.borderColor = ''}
+            className="w-full resize-none"
+            style={{ padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-sm)' }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.boxShadow = 'var(--input-focus-ring)' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-input)'; e.currentTarget.style.boxShadow = 'none' }}
             placeholder="Share your thoughts..."
           />
         </div>
