@@ -288,10 +288,10 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   if (loading) {
     return (
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <div className="flex justify-center items-center h-64">
-          <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
+          <div style={{ position: 'relative', width: 'var(--avatar-4xl)', height: 'var(--avatar-4xl)' }}>
+            <div style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-border-primary)', borderRadius: 'var(--radius-full)' }}></div>
+            <div style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
           </div>
         </div>
       </Modal>
@@ -302,8 +302,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   if (!request) {
     return (
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <div className="p-8 text-center">
-          <p className="text-gray-500">No request details found.</p>
+        <div style={{ padding: 'var(--spacing-8)', textAlign: 'center' }}>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No request details found.</p>
         </div>
       </Modal>
     )
@@ -312,7 +312,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   // Main render with request data
   return (
     <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-      <div className="space-y-6">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {/* Status Badge */}
         {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
 
@@ -320,7 +320,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         <StudentDetails studentName={request.studentName} studentEmail={request.studentEmail} studentProfileImage={request.studentProfileImage} />
 
         {/* Visit Information and Accommodation Details */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           <VisitInformation fromDate={request.fromDate} toDate={request.toDate} />
 
           {request.status === "Approved" && <AccommodationDetails hostelName={request.hostelName} allocatedRooms={request.allocatedRooms} />}
@@ -331,21 +331,38 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* H2 Form Section */}
         {request.h2FormUrl && (
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-[#1360AB]" fill="currentColor" viewBox="0 0 20 20">
+          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                <div style={{ width: 'var(--icon-2xl)', height: 'var(--icon-2xl)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-800">H2 Form Document</h4>
-                  <p className="text-sm text-gray-600">Guest Room Booking Form</p>
+                  <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>H2 Form Document</h4>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Guest Room Booking Form</p>
                 </div>
               </div>
-              <button onClick={() => setShowH2FormModal(true)} className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <button 
+                onClick={() => setShowH2FormModal(true)} 
+                style={{ 
+                  padding: 'var(--spacing-2) var(--spacing-4)', 
+                  backgroundColor: 'var(--color-primary)', 
+                  color: 'var(--color-white)', 
+                  fontSize: 'var(--font-size-sm)', 
+                  borderRadius: 'var(--radius-lg)', 
+                  transition: 'var(--transition-colors)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 'var(--spacing-2)',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
+              >
+                <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                   <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
                 </svg>
@@ -360,17 +377,31 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Status */}
         {request.paymentStatus && (
-          <div className="text-sm mb-2">
-            <span className="font-semibold text-gray-700 mr-2">Payment Status:</span>
-            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${request.paymentStatus === "paid" ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}`}>{request.paymentStatus === "paid" ? "Paid" : "Pending"}</span>
+          <div style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-2)' }}>
+            <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginRight: 'var(--spacing-2)' }}>Payment Status:</span>
+            <span style={{ 
+              padding: 'var(--spacing-2) var(--badge-padding-sm)', 
+              borderRadius: 'var(--radius-full)', 
+              fontSize: 'var(--font-size-xs)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              backgroundColor: request.paymentStatus === "paid" ? 'var(--color-success-bg)' : 'var(--color-warning-bg)', 
+              color: request.paymentStatus === "paid" ? 'var(--color-success-text)' : 'var(--color-warning-text)' 
+            }}>{request.paymentStatus === "paid" ? "Paid" : "Pending"}</span>
           </div>
         )}
 
         {/* Payment Link (Student only) */}
         {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
-          <div className="text-sm">
-            <span className="font-semibold text-blue-700 mr-2">Payment Link:</span>
-            <a href={request.visitorPaymentLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+          <div style={{ fontSize: 'var(--font-size-sm)' }}>
+            <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }}>Payment Link:</span>
+            <a 
+              href={request.visitorPaymentLink} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style={{ color: 'var(--color-primary)', textDecoration: 'none', wordBreak: 'break-all' }}
+              onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
+              onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
+            >
               {request.visitorPaymentLink}
             </a>
           </div>
@@ -378,20 +409,34 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Information Submission (Student only) */}
         {user.role === "Student" && request.status === "Approved" && !request.paymentInfo.transactionId && !showPaymentForm && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-[#1360AB]" fill="currentColor" viewBox="0 0 20 20">
+          <div style={{ backgroundColor: 'var(--color-info-bg-light)', border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                <div style={{ width: 'var(--icon-2xl)', height: 'var(--icon-2xl)', backgroundColor: 'var(--color-info-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="font-medium text-blue-800">Payment Information Required</h4>
-                  <p className="text-sm text-blue-600">Submit your payment details for verification</p>
+                  <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-info-text)' }}>Payment Information Required</h4>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>Submit your payment details for verification</p>
                 </div>
               </div>
-              <button onClick={() => setShowPaymentForm(true)} className="px-4 py-2 bg-[#1360AB] text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
+              <button 
+                onClick={() => setShowPaymentForm(true)} 
+                style={{ 
+                  padding: 'var(--spacing-2) var(--spacing-4)', 
+                  backgroundColor: 'var(--color-primary)', 
+                  color: 'var(--color-white)', 
+                  fontSize: 'var(--font-size-sm)', 
+                  borderRadius: 'var(--radius-lg)', 
+                  transition: 'var(--transition-colors)',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
+              >
                 Submit Payment Info
               </button>
             </div>
