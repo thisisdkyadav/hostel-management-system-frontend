@@ -18,92 +18,92 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
 
   return (
     <Modal title="Notification Details" onClose={onClose} width={700} isOpen={isOpen}>
-      <div className="space-y-5">
-        <header className="flex flex-col sm:flex-row justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2 sm:mb-0">{notification.title}</h2>
-          <div>{isExpired ? <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">Expired</span> : <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+        <header style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
+          <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>{notification.title}</h2>
+          <div>{isExpired ? <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)' }}>Expired</span> : <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--badge-font-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Active</span>}</div>
         </header>
 
-        <div className="bg-gray-50 p-4 rounded-xl">
-          <p className="text-gray-700 whitespace-pre-line">{notification.message}</p>
+        <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)' }}>
+          <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{notification.message}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start">
-            <div className="mr-3 mt-0.5 text-green-500">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-success)' }}>
               <FaRegClock />
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700">Created</h4>
-              <p className="text-gray-600">{formatDate(notification.createdAt)}</p>
+              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Created</h4>
+              <p style={{ color: 'var(--color-text-muted)' }}>{formatDate(notification.createdAt)}</p>
             </div>
           </div>
 
-          <div className="flex items-start">
-            <div className="mr-3 mt-0.5 text-orange-500">
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{ marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-0-5)', color: 'var(--color-warning)' }}>
               <FaRegClock />
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700">Expires</h4>
-              <p className="text-gray-600">{formatDate(notification.expiryDate)}</p>
+              <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Expires</h4>
+              <p style={{ color: 'var(--color-text-muted)' }}>{formatDate(notification.expiryDate)}</p>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">Target Audience</h3>
-          <div className="space-y-3">
+        <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: 'var(--spacing-4)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Target Audience</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
             {notification.hostelId && notification.hostelId.length > 0 ? (
-              <div className="flex items-start bg-gray-50 rounded-lg p-3">
-                <FaBuilding className="text-blue-500 mr-3 mt-1 flex-shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
+                <FaBuilding style={{ color: 'var(--color-info)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span className="text-sm font-medium">Hostels:</span>
-                  <span className="text-sm ml-1">{notification.hostelId.map((h) => h.name).join(", ")}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Hostels:</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.hostelId.map((h) => h.name).join(", ")}</span>
                 </div>
               </div>
             ) : null}
 
             {notification.department && notification.department.length > 0 ? (
-              <div className="flex items-start bg-gray-50 rounded-lg p-3">
-                <FaGraduationCap className="text-indigo-500 mr-3 mt-1 flex-shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
+                <FaGraduationCap style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span className="text-sm font-medium">Departments:</span>
-                  <span className="text-sm ml-1">{notification.department.join(", ")}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Departments:</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.department.join(", ")}</span>
                 </div>
               </div>
             ) : null}
 
             {notification.degree && notification.degree.length > 0 ? (
-              <div className="flex items-start bg-gray-50 rounded-lg p-3">
-                <FaUserAlt className="text-purple-500 mr-3 mt-1 flex-shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
+                <FaUserAlt style={{ color: 'var(--color-purple-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span className="text-sm font-medium">Degrees:</span>
-                  <span className="text-sm ml-1">{notification.degree.join(", ")}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Degrees:</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.degree.join(", ")}</span>
                 </div>
               </div>
             ) : null}
 
             {notification.gender ? (
-              <div className="flex items-start bg-gray-50 rounded-lg p-3">
-                <FaVenusMars className="text-pink-500 mr-3 mt-1 flex-shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'flex-start', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
+                <FaVenusMars style={{ color: 'var(--color-girls-text)', marginRight: 'var(--spacing-3)', marginTop: 'var(--spacing-1)', flexShrink: 0 }} />
                 <div>
-                  <span className="text-sm font-medium">Gender:</span>
-                  <span className="text-sm ml-1">{notification.gender}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>Gender:</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-1)' }}>{notification.gender}</span>
                 </div>
               </div>
             ) : null}
 
             {!notification.hostelId?.length && !notification.department?.length && !notification.degree?.length && !notification.gender && (
-              <div className="flex items-center bg-gray-50 rounded-lg p-3">
-                <FaUserAlt className="text-gray-500 mr-2" />
-                <span className="text-sm">All Students</span>
+              <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
+                <FaUserAlt style={{ color: 'var(--color-text-muted)', marginRight: 'var(--spacing-2)' }} />
+                <span style={{ fontSize: 'var(--font-size-sm)' }}>All Students</span>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 border-t border-gray-100">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+          <button onClick={onClose} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', cursor: 'pointer', border: 'none' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
             Close
           </button>
         </div>
