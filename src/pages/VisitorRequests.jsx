@@ -105,7 +105,7 @@ const VisitorRequests = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <VisitorRequestsHeader 
         showFilters={showFilters}
         onToggleFilters={() => setShowFilters(!showFilters)}
@@ -115,22 +115,78 @@ const VisitorRequests = () => {
         userRole={user.role}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div style={{ flex: '1', overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
 
       {showFilters && (
-        <div className="bg-white p-4 rounded-xl shadow-sm mb-6">
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div style={{ 
+          backgroundColor: 'var(--color-bg-primary)', 
+          padding: 'var(--spacing-4)', 
+          borderRadius: 'var(--radius-xl)', 
+          boxShadow: 'var(--shadow-sm)', 
+          marginBottom: 'var(--spacing-6)' 
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
             <div>
-              <h3 className="font-medium text-gray-700 mb-2">Filter by Status:</h3>
-              <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+              <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Status:</h3>
+              <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
                 {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
                   ? ["all", "approved"].map((status) => (
-                      <button key={status} onClick={() => setStatusFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${statusFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                      <button 
+                        key={status} 
+                        onClick={() => setStatusFilter(status)} 
+                        style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-1-5)', 
+                          borderRadius: 'var(--radius-lg)', 
+                          fontSize: 'var(--font-size-sm)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          transition: 'var(--transition-colors)',
+                          backgroundColor: statusFilter === status ? 'var(--color-primary)' : 'transparent',
+                          color: statusFilter === status ? 'var(--color-white)' : 'var(--color-text-muted)',
+                          boxShadow: statusFilter === status ? 'var(--shadow-sm)' : 'none',
+                          border: 'none',
+                          cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                          if (statusFilter !== status) {
+                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (statusFilter !== status) {
+                            e.currentTarget.style.backgroundColor = 'transparent'
+                          }
+                        }}
+                      >
                         {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
                       </button>
                     ))
                   : ["all", "pending", "approved", "rejected"].map((status) => (
-                      <button key={status} onClick={() => setStatusFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${statusFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                      <button 
+                        key={status} 
+                        onClick={() => setStatusFilter(status)} 
+                        style={{ 
+                          padding: 'var(--spacing-3) var(--spacing-1-5)', 
+                          borderRadius: 'var(--radius-lg)', 
+                          fontSize: 'var(--font-size-sm)', 
+                          fontWeight: 'var(--font-weight-medium)', 
+                          transition: 'var(--transition-colors)',
+                          backgroundColor: statusFilter === status ? 'var(--color-primary)' : 'transparent',
+                          color: statusFilter === status ? 'var(--color-white)' : 'var(--color-text-muted)',
+                          boxShadow: statusFilter === status ? 'var(--shadow-sm)' : 'none',
+                          border: 'none',
+                          cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                          if (statusFilter !== status) {
+                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (statusFilter !== status) {
+                            e.currentTarget.style.backgroundColor = 'transparent'
+                          }
+                        }}
+                      >
                         {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
                       </button>
                     ))}
@@ -139,10 +195,35 @@ const VisitorRequests = () => {
 
             {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
               <div>
-                <h3 className="font-medium text-gray-700 mb-2">Filter by Allocation:</h3>
-                <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Allocation:</h3>
+                <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
                   {["all", "allocated", "unallocated"].map((status) => (
-                    <button key={status} onClick={() => setAllocationFilter(status)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${allocationFilter === status ? "bg-[#1360AB] text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+                    <button 
+                      key={status} 
+                      onClick={() => setAllocationFilter(status)} 
+                      style={{ 
+                        padding: 'var(--spacing-3) var(--spacing-1-5)', 
+                        borderRadius: 'var(--radius-lg)', 
+                        fontSize: 'var(--font-size-sm)', 
+                        fontWeight: 'var(--font-weight-medium)', 
+                        transition: 'var(--transition-colors)',
+                        backgroundColor: allocationFilter === status ? 'var(--color-primary)' : 'transparent',
+                        color: allocationFilter === status ? 'var(--color-white)' : 'var(--color-text-muted)',
+                        boxShadow: allocationFilter === status ? 'var(--shadow-sm)' : 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      onMouseOver={(e) => {
+                        if (allocationFilter !== status) {
+                          e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (allocationFilter !== status) {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                        }
+                      }}
+                    >
                       {status.charAt(0).toUpperCase() + status.slice(1)}
                     </button>
                   ))}
@@ -155,15 +236,21 @@ const VisitorRequests = () => {
 
       {visitorRequests.length === 0 ? (
         <EmptyState
-          icon={() => <FaUserFriends className="text-gray-400" size={48} />}
+          icon={() => <FaUserFriends style={{ color: 'var(--color-text-placeholder)' }} size={48} />}
           title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
           message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
           buttonText={user.role === "Student" ? "Create Request" : null}
           buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
         />
       ) : filteredRequests.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-          <p className="text-gray-500">No requests found matching your filters.</p>
+        <div style={{ 
+          backgroundColor: 'var(--color-bg-primary)', 
+          borderRadius: 'var(--radius-xl)', 
+          boxShadow: 'var(--shadow-sm)', 
+          padding: 'var(--spacing-8)', 
+          textAlign: 'center' 
+        }}>
+          <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No requests found matching your filters.</p>
         </div>
       ) : (
         <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />
