@@ -95,71 +95,112 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     const fieldConfig = {
       profileImage: {
         label: "Profile Image",
-        icon: <HiCamera className="text-blue-600" size={20} />,
+        icon: <HiCamera style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       name: {
         label: "Full Name",
-        icon: <HiUser className="text-blue-600" size={20} />,
+        icon: <HiUser style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       dateOfBirth: {
         label: "Date of Birth",
-        icon: <HiCalendar className="text-blue-600" size={20} />,
+        icon: <HiCalendar style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       admissionDate: {
         label: "Admission Date",
-        icon: <HiCalendar className="text-blue-600" size={20} />,
+        icon: <HiCalendar style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       phone: {
         label: "Phone Number",
-        icon: <HiPhone className="text-blue-600" size={20} />,
+        icon: <HiPhone style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       address: {
         label: "Address",
-        icon: <HiHome className="text-blue-600" size={20} />,
+        icon: <HiHome style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       gender: {
         label: "Gender",
-        icon: <HiUser className="text-blue-600" size={20} />,
+        icon: <HiUser style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       bloodGroup: {
         label: "Blood Group",
-        icon: <GiDroplets className="text-blue-600" size={20} />,
+        icon: <GiDroplets style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       guardian: {
         label: "Guardian Name",
-        icon: <FaUserShield className="text-blue-600" size={20} />,
+        icon: <FaUserShield style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       guardianPhone: {
         label: "Guardian Phone",
-        icon: <HiPhone className="text-blue-600" size={20} />,
+        icon: <HiPhone style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
       guardianEmail: {
         label: "Guardian Email",
-        icon: <HiMail className="text-blue-600" size={20} />,
+        icon: <HiMail style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
       },
     }
 
     const config = fieldConfig[field] || {
       label: field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, " $1"),
-      icon: <HiUser className="text-blue-600" size={20} />,
+      icon: <HiUser style={{ color: 'var(--color-primary)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />,
     }
 
     if (field === "profileImage") {
       return (
-        <div key={field} className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+        <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
+          <label style={{ 
+            display: 'block', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-2)' 
+          }} className="flex items-center">
             {config.icon}
-            <span className="ml-2">{config.label}</span>
+            <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
           <div className="flex items-center">
-            <div className="relative h-20 w-20 rounded-full overflow-hidden mr-4">
-              <img src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} alt="Profile" className="h-20 w-20 object-cover" />
+            <div style={{ 
+              position: 'relative', 
+              height: 'var(--avatar-2xl)', 
+              width: 'var(--avatar-2xl)', 
+              borderRadius: 'var(--radius-avatar)', 
+              overflow: 'hidden', 
+              marginRight: 'var(--spacing-4)' 
+            }}>
+              <img 
+                src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} 
+                alt="Profile" 
+                style={{ 
+                  height: 'var(--avatar-2xl)', 
+                  width: 'var(--avatar-2xl)', 
+                  objectFit: 'cover' 
+                }} 
+              />
             </div>
             <div>
-              <button type="button" onClick={() => setIsImageModalOpen(true)} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-md text-sm font-medium hover:bg-blue-200 transition-colors">
+              <button 
+                type="button" 
+                onClick={() => setIsImageModalOpen(true)} 
+                style={{ 
+                  padding: 'var(--spacing-2) var(--spacing-3)', 
+                  backgroundColor: 'var(--color-primary-bg)', 
+                  color: 'var(--color-primary)', 
+                  borderRadius: 'var(--radius-md)', 
+                  fontSize: 'var(--font-size-sm)', 
+                  fontWeight: 'var(--font-weight-medium)', 
+                  transition: 'var(--transition-colors)',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}
+              >
                 Change Photo
               </button>
-              <p className="text-xs text-gray-500 mt-1">Maximum file size: 500KB</p>
+              <p style={{ 
+                fontSize: 'var(--font-size-xs)', 
+                color: 'var(--color-text-muted)', 
+                marginTop: 'var(--spacing-1)' 
+              }}>Maximum file size: 500KB</p>
             </div>
           </div>
         </div>
@@ -168,12 +209,38 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
     if (field === "gender") {
       return (
-        <div key={field} className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+        <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
+          <label style={{ 
+            display: 'block', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-2)' 
+          }} className="flex items-center">
             {config.icon}
-            <span className="ml-2">{config.label}</span>
+            <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+          <select 
+            value={editableData[field] || ""} 
+            onChange={(e) => handleChange(field, e.target.value)} 
+            style={{ 
+              width: '100%', 
+              padding: 'var(--input-padding)', 
+              border: `var(--border-1) solid var(--input-border)`, 
+              borderRadius: 'var(--input-radius)', 
+              fontSize: 'var(--font-size-sm)',
+              backgroundColor: 'var(--input-bg)',
+              color: 'var(--color-text-body)'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--input-border-focus)'
+              e.target.style.boxShadow = 'var(--input-focus-ring)'
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--input-border)'
+              e.target.style.boxShadow = 'none'
+            }}
+          >
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -185,12 +252,38 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
     if (field === "bloodGroup") {
       return (
-        <div key={field} className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+        <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
+          <label style={{ 
+            display: 'block', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-2)' 
+          }} className="flex items-center">
             {config.icon}
-            <span className="ml-2">{config.label}</span>
+            <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+          <select 
+            value={editableData[field] || ""} 
+            onChange={(e) => handleChange(field, e.target.value)} 
+            style={{ 
+              width: '100%', 
+              padding: 'var(--input-padding)', 
+              border: `var(--border-1) solid var(--input-border)`, 
+              borderRadius: 'var(--input-radius)', 
+              fontSize: 'var(--font-size-sm)',
+              backgroundColor: 'var(--input-bg)',
+              color: 'var(--color-text-body)'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--input-border-focus)'
+              e.target.style.boxShadow = 'var(--input-focus-ring)'
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--input-border)'
+              e.target.style.boxShadow = 'none'
+            }}
+          >
             <option value="">Select Blood Group</option>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
@@ -207,55 +300,180 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
     if (type === "date") {
       return (
-        <div key={field} className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+        <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
+          <label style={{ 
+            display: 'block', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-2)' 
+          }} className="flex items-center">
             {config.icon}
-            <span className="ml-2">{config.label}</span>
+            <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <input type="date" value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} onChange={(e) => handleChange(field, e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" />
+          <input 
+            type="date" 
+            value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} 
+            onChange={(e) => handleChange(field, e.target.value)} 
+            style={{ 
+              width: '100%', 
+              padding: 'var(--input-padding)', 
+              border: `var(--border-1) solid var(--input-border)`, 
+              borderRadius: 'var(--input-radius)', 
+              fontSize: 'var(--font-size-sm)',
+              backgroundColor: 'var(--input-bg)',
+              color: 'var(--color-text-body)'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--input-border-focus)'
+              e.target.style.boxShadow = 'var(--input-focus-ring)'
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--input-border)'
+              e.target.style.boxShadow = 'none'
+            }}
+          />
         </div>
       )
     }
 
     if (field === "address") {
       return (
-        <div key={field} className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+        <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
+          <label style={{ 
+            display: 'block', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)', 
+            color: 'var(--color-text-secondary)', 
+            marginBottom: 'var(--spacing-2)' 
+          }} className="flex items-center">
             {config.icon}
-            <span className="ml-2">{config.label}</span>
+            <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <textarea value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} rows={3} className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" />
+          <textarea 
+            value={editableData[field] || ""} 
+            onChange={(e) => handleChange(field, e.target.value)} 
+            rows={3} 
+            style={{ 
+              width: '100%', 
+              padding: 'var(--input-padding)', 
+              border: `var(--border-1) solid var(--input-border)`, 
+              borderRadius: 'var(--input-radius)', 
+              fontSize: 'var(--font-size-sm)',
+              backgroundColor: 'var(--input-bg)',
+              color: 'var(--color-text-body)'
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--input-border-focus)'
+              e.target.style.boxShadow = 'var(--input-focus-ring)'
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--input-border)'
+              e.target.style.boxShadow = 'none'
+            }}
+          />
         </div>
       )
     }
 
     return (
-      <div key={field} className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+      <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
+        <label style={{ 
+          display: 'block', 
+          fontSize: 'var(--font-size-sm)', 
+          fontWeight: 'var(--font-weight-medium)', 
+          color: 'var(--color-text-secondary)', 
+          marginBottom: 'var(--spacing-2)' 
+        }} className="flex items-center">
           {config.icon}
-          <span className="ml-2">{config.label}</span>
+          <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
         </label>
-        <input type={type} value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500" />
+        <input 
+          type={type} 
+          value={editableData[field] || ""} 
+          onChange={(e) => handleChange(field, e.target.value)} 
+          style={{ 
+            width: '100%', 
+            padding: 'var(--input-padding)', 
+            border: `var(--border-1) solid var(--input-border)`, 
+            borderRadius: 'var(--input-radius)', 
+            fontSize: 'var(--font-size-sm)',
+            backgroundColor: 'var(--input-bg)',
+            color: 'var(--color-text-body)'
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = 'var(--input-border-focus)'
+            e.target.style.boxShadow = 'var(--input-focus-ring)'
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--input-border)'
+            e.target.style.boxShadow = 'none'
+          }}
+        />
       </div>
     )
   }
 
   const renderFooter = () => {
     return (
-      <div className="flex justify-end space-x-3">
-        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" disabled={saving}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
+        <button 
+          type="button" 
+          onClick={onClose} 
+          style={{ 
+            padding: 'var(--spacing-2) var(--spacing-4)', 
+            backgroundColor: 'var(--color-bg-muted)', 
+            color: 'var(--color-text-secondary)', 
+            borderRadius: 'var(--radius-lg)', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)', 
+            transition: 'var(--transition-colors)',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+          disabled={saving}
+        >
           Cancel
         </button>
         {activeTab === "profile" && (
-          <button type="submit" form="edit-profile-form" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center" disabled={saving}>
+          <button 
+            type="submit" 
+            form="edit-profile-form" 
+            style={{ 
+              padding: 'var(--spacing-2) var(--spacing-4)', 
+              backgroundColor: 'var(--button-primary-bg)', 
+              color: 'var(--color-white)', 
+              borderRadius: 'var(--radius-lg)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              transition: 'var(--transition-colors)',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}
+            disabled={saving}
+          >
             {saving ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                <div style={{ 
+                  animation: 'spin 1s linear infinite', 
+                  borderRadius: 'var(--radius-full)', 
+                  height: 'var(--spacing-4)', 
+                  width: 'var(--spacing-4)', 
+                  border: `var(--border-2) solid var(--color-white)`, 
+                  borderTopColor: 'transparent', 
+                  marginRight: 'var(--spacing-2)' 
+                }}></div>
                 Saving...
               </>
             ) : (
               <>
-                <FiSave className="mr-2" size={16} />
+                <FiSave style={{ marginRight: 'var(--spacing-2)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-md'))} />
                 Save Changes
               </>
             )}
@@ -278,15 +496,28 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   const renderTabContent = () => {
     if (loading) {
       return (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-[#1360AB]"></div>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-12) 0' }}>
+          <div style={{ 
+            animation: 'spin 1s linear infinite', 
+            borderRadius: 'var(--radius-full)', 
+            height: 'var(--spacing-12)', 
+            width: 'var(--spacing-12)', 
+            border: `var(--border-4) solid var(--color-primary-pale)`, 
+            borderTopColor: 'var(--color-primary)' 
+          }}></div>
         </div>
       )
     }
 
     if (error) {
       return (
-        <div className="bg-red-50 text-red-700 p-4 rounded-md mb-4">
+        <div style={{ 
+          backgroundColor: 'var(--color-danger-bg)', 
+          color: 'var(--color-danger-text)', 
+          padding: 'var(--spacing-4)', 
+          borderRadius: 'var(--radius-md)', 
+          marginBottom: 'var(--spacing-4)' 
+        }}>
           <p>{error}</p>
         </div>
       )
@@ -296,18 +527,29 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
       return (
         <form id="edit-profile-form" onSubmit={handleSubmit}>
           {editableFields.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="bg-yellow-50 text-yellow-700 p-4 rounded-md">
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+              <div style={{ 
+                backgroundColor: 'var(--color-warning-bg)', 
+                color: 'var(--color-warning-text)', 
+                padding: 'var(--spacing-4)', 
+                borderRadius: 'var(--radius-md)' 
+              }}>
                 <p>You don't have permission to edit any profile fields. Contact an administrator for assistance.</p>
               </div>
             </div>
           ) : (
             <>
-              <div className="bg-blue-50 text-blue-700 p-4 rounded-md mb-6">
-                <p className="text-sm">You can edit the following fields in your profile. Any changes will be saved once you submit the form.</p>
+              <div style={{ 
+                backgroundColor: 'var(--color-info-bg)', 
+                color: 'var(--color-info-text)', 
+                padding: 'var(--spacing-4)', 
+                borderRadius: 'var(--radius-md)', 
+                marginBottom: 'var(--spacing-6)' 
+              }}>
+                <p style={{ fontSize: 'var(--font-size-sm)' }}>You can edit the following fields in your profile. Any changes will be saved once you submit the form.</p>
               </div>
 
-              <div className="space-y-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                 {editableFields.includes("profileImage") && renderField("profileImage")}
                 {editableFields.includes("name") && renderField("name")}
                 {editableFields.includes("gender") && renderField("gender")}
@@ -319,8 +561,18 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
                 {editableFields.includes("emergencyContact") && (
                   <>
-                    <div className="mt-6 mb-4 border-t pt-4">
-                      <h3 className="text-md font-medium text-gray-800 mb-3">Emergency Contact Information</h3>
+                    <div style={{ 
+                      marginTop: 'var(--spacing-6)', 
+                      marginBottom: 'var(--spacing-4)', 
+                      borderTop: `var(--border-1) solid var(--color-border-primary)`, 
+                      paddingTop: 'var(--spacing-4)' 
+                    }}>
+                      <h3 style={{ 
+                        fontSize: 'var(--font-size-md)', 
+                        fontWeight: 'var(--font-weight-medium)', 
+                        color: 'var(--color-text-secondary)', 
+                        marginBottom: 'var(--spacing-3)' 
+                      }}>Emergency Contact Information</h3>
                     </div>
                     {renderField("guardian")}
                     {renderField("guardianPhone", "tel")}

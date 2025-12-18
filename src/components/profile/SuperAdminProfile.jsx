@@ -67,7 +67,7 @@ const SuperAdminProfile = () => {
     <div>
       <ProfileHeader user={superAdminData} role="Super Administrator" subtitle="System Owner" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--gap-lg)", marginTop: "var(--spacing-8)" }}>
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={superAdminData.email} icon={FiMail} />

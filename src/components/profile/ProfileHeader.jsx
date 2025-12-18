@@ -47,25 +47,78 @@ const ProfileHeader = ({ user, role, subtitle }) => {
       <ProfileAvatar user={user} size="large" />
       <div>
         <div className="flex flex-col sm:flex-row items-center sm:items-start">
-          <h2 className="text-xl font-bold text-gray-800">{user.name}</h2>
-          <div className="mt-1 sm:mt-0 sm:ml-4 py-1 px-3 rounded-full bg-blue-100 text-[#1360AB] text-xs font-medium">{role}</div>
+          <h2
+            style={{
+              fontSize: "var(--font-size-xl)",
+              fontWeight: "var(--font-weight-bold)",
+              color: "var(--color-text-secondary)",
+            }}
+          >
+            {user.name}
+          </h2>
+          <div
+            style={{
+              marginTop: "var(--spacing-1)",
+              padding: "var(--spacing-1) var(--spacing-3)",
+              borderRadius: "var(--radius-full)",
+              backgroundColor: "var(--color-primary-bg)",
+              color: "var(--color-primary)",
+              fontSize: "var(--font-size-xs)",
+              fontWeight: "var(--font-weight-medium)",
+            }}
+            className="sm:mt-0 sm:ml-4"
+          >
+            {role}
+          </div>
         </div>
-        <p className="text-gray-500 mt-1">{subtitle}</p>
-        <div className="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
+        <p
+          style={{
+            color: "var(--color-text-muted)",
+            marginTop: "var(--spacing-1)",
+            fontSize: "var(--font-size-base)",
+          }}
+        >
+          {subtitle}
+        </p>
+        <div
+          style={{
+            marginTop: "var(--spacing-3)",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "var(--gap-sm)",
+          }}
+          className="justify-center sm:justify-start"
+        >
           <ChangePasswordButton email={user.email} />
           <ManageSessionsButton email={user.email} />
           {/* {role === "Student" && <RoomChangeForm student={user} />} */}
 
           {showLayoutToggle && (
-            <button onClick={toggleLayout} className="inline-flex items-center px-3 py-1.5 rounded-md bg-blue-100 hover:bg-blue-200 text-[#1360AB] text-sm transition-colors">
+            <button
+              onClick={toggleLayout}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "var(--spacing-1-5) var(--spacing-3)",
+                borderRadius: "var(--radius-md)",
+                backgroundColor: "var(--color-primary-bg)",
+                color: "var(--color-primary)",
+                fontSize: "var(--font-size-sm)",
+                transition: "var(--transition-colors)",
+                border: "none",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg)")}
+            >
               {layoutPreference === "sidebar" ? (
                 <>
-                  <MdOutlineMenu className="mr-1.5" />
+                  <MdOutlineMenu style={{ marginRight: "var(--spacing-1-5)" }} />
                   <span>Switch to Bottom Bar</span>
                 </>
               ) : (
                 <>
-                  <MdOutlineViewSidebar className="mr-1.5" />
+                  <MdOutlineViewSidebar style={{ marginRight: "var(--spacing-1-5)" }} />
                   <span>Switch to Sidebar</span>
                 </>
               )}
