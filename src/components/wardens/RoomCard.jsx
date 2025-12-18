@@ -9,75 +9,161 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
 
   const getStatusBadge = () => {
     if (room.status === "Inactive") {
-      return <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Inactive</span>
+      return <span style={{ 
+        backgroundColor: 'var(--color-danger-bg)', 
+        color: 'var(--color-danger-text)', 
+        fontSize: 'var(--font-size-xs)', 
+        padding: 'var(--spacing-1) var(--spacing-2)', 
+        borderRadius: 'var(--radius-full)',
+        fontWeight: 'var(--font-weight-medium)'
+      }}>Inactive</span>
     } else if (room.currentOccupancy >= room.capacity) {
-      return <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Full</span>
+      return <span style={{ 
+        backgroundColor: 'var(--color-success-bg)', 
+        color: 'var(--color-success-text)', 
+        fontSize: 'var(--font-size-xs)', 
+        padding: 'var(--spacing-1) var(--spacing-2)', 
+        borderRadius: 'var(--radius-full)',
+        fontWeight: 'var(--font-weight-medium)'
+      }}>Full</span>
     } else if (room.currentOccupancy > 0) {
-      return <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Partial</span>
+      return <span style={{ 
+        backgroundColor: 'var(--color-info-bg)', 
+        color: 'var(--color-info-text)', 
+        fontSize: 'var(--font-size-xs)', 
+        padding: 'var(--spacing-1) var(--spacing-2)', 
+        borderRadius: 'var(--radius-full)',
+        fontWeight: 'var(--font-weight-medium)'
+      }}>Partial</span>
     } else {
-      return <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Empty</span>
+      return <span style={{ 
+        backgroundColor: 'var(--color-bg-muted)', 
+        color: 'var(--color-text-secondary)', 
+        fontSize: 'var(--font-size-xs)', 
+        padding: 'var(--spacing-1) var(--spacing-2)', 
+        borderRadius: 'var(--radius-full)',
+        fontWeight: 'var(--font-weight-medium)'
+      }}>Empty</span>
     }
   }
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100" onClick={onClick}>
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center">
-          <div className="p-2.5 rounded-xl bg-indigo-100 text-indigo-600 mr-3">
+    <div style={{ 
+      backgroundColor: 'var(--color-bg-primary)', 
+      borderRadius: 'var(--radius-xl)', 
+      padding: 'var(--spacing-5)', 
+      boxShadow: 'var(--shadow-sm)', 
+      transition: 'var(--transition-all)', 
+      border: `var(--border-1) solid var(--color-border-light)`,
+      cursor: 'pointer'
+    }} 
+    onClick={onClick}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+    }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-4)' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ 
+            padding: 'var(--spacing-2-5)', 
+            borderRadius: 'var(--radius-xl)', 
+            backgroundColor: 'var(--color-primary-bg)', 
+            color: 'var(--color-primary)', 
+            marginRight: 'var(--spacing-3)' 
+          }}>
             <FaDoorOpen size={20} />
           </div>
           <div>
-            <h3 className="font-bold text-gray-800 text-base md:text-lg">Room {room.roomNumber}</h3>
-            <span className="text-xs text-gray-500">{room.type || "Standard"}</span>
+            <h3 style={{ 
+              fontWeight: 'var(--font-weight-bold)', 
+              color: 'var(--color-text-primary)', 
+              fontSize: 'var(--font-size-lg)',
+              marginBottom: 'var(--spacing-0-5)'
+            }} className="md:text-lg">Room {room.roomNumber}</h3>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{room.type || "Standard"}</span>
           </div>
         </div>
         {room.status === "Inactive" ? (
-          <span className="px-2.5 py-1 text-xs rounded-full bg-red-100 text-red-800 font-medium">Inactive</span>
+          <span style={{ 
+            padding: 'var(--spacing-1) var(--spacing-2-5)', 
+            fontSize: 'var(--font-size-xs)', 
+            borderRadius: 'var(--radius-full)', 
+            backgroundColor: 'var(--color-danger-bg)', 
+            color: 'var(--color-danger-text)', 
+            fontWeight: 'var(--font-weight-medium)' 
+          }}>Inactive</span>
         ) : room.currentOccupancy >= room.capacity ? (
-          <span className="px-2.5 py-1 text-xs rounded-full bg-green-100 text-green-800 font-medium">Full</span>
+          <span style={{ 
+            padding: 'var(--spacing-1) var(--spacing-2-5)', 
+            fontSize: 'var(--font-size-xs)', 
+            borderRadius: 'var(--radius-full)', 
+            backgroundColor: 'var(--color-success-bg)', 
+            color: 'var(--color-success-text)', 
+            fontWeight: 'var(--font-weight-medium)' 
+          }}>Full</span>
         ) : room.currentOccupancy > 0 ? (
-          <span className="px-2.5 py-1 text-xs rounded-full bg-blue-100 text-blue-800 font-medium">Partial</span>
+          <span style={{ 
+            padding: 'var(--spacing-1) var(--spacing-2-5)', 
+            fontSize: 'var(--font-size-xs)', 
+            borderRadius: 'var(--radius-full)', 
+            backgroundColor: 'var(--color-info-bg)', 
+            color: 'var(--color-info-text)', 
+            fontWeight: 'var(--font-weight-medium)' 
+          }}>Partial</span>
         ) : (
-          <span className="px-2.5 py-1 text-xs rounded-full bg-gray-100 text-gray-800 font-medium">Empty</span>
+          <span style={{ 
+            padding: 'var(--spacing-1) var(--spacing-2-5)', 
+            fontSize: 'var(--font-size-xs)', 
+            borderRadius: 'var(--radius-full)', 
+            backgroundColor: 'var(--color-bg-muted)', 
+            color: 'var(--color-text-secondary)', 
+            fontWeight: 'var(--font-weight-medium)' 
+          }}>Empty</span>
         )}
       </div>
 
-      <div className="mt-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center text-gray-600">
-            <span className="text-sm">Capacity</span>
+      <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-tertiary)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)' }}>Capacity</span>
           </div>
-          <span className="font-medium text-sm">{room.capacity || 0} students</span>
+          <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>{room.capacity || 0} students</span>
         </div>
 
         {room.status === "Inactive" ? (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center text-gray-600">
-              <span className="text-sm">Status</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-tertiary)' }}>
+              <span style={{ fontSize: 'var(--font-size-sm)' }}>Status</span>
             </div>
-            <span className="font-medium text-sm text-red-600">Inactive room</span>
+            <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>Inactive room</span>
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center text-gray-600">
-                <FaUserGraduate className="mr-2 text-[#1360AB] text-opacity-70" />
-                <span className="text-sm">Current Occupancy</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-text-tertiary)' }}>
+                <FaUserGraduate style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', opacity: 'var(--opacity-70)', fontSize: 'var(--icon-md)' }} />
+                <span style={{ fontSize: 'var(--font-size-sm)' }}>Current Occupancy</span>
               </div>
-              <span className="font-medium text-sm">
+              <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>
                 {room.currentOccupancy || 0}/{room.capacity || 0}
               </span>
             </div>
 
-            <div className="pt-1">
-              <div className="flex justify-between mb-1.5">
-                <span className="text-xs text-gray-500">Occupancy Rate</span>
-                <span className="text-xs font-medium text-gray-700">{room.capacity ? Math.round(((room.currentOccupancy || 0) / room.capacity) * 100) : 0}%</span>
+            <div style={{ paddingTop: 'var(--spacing-1)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-1-5)' }}>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Occupancy Rate</span>
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{room.capacity ? Math.round(((room.currentOccupancy || 0) / room.capacity) * 100) : 0}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-1.5">
+              <div style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', height: 'var(--spacing-1-5)' }}>
                 <div
-                  className={`h-1.5 rounded-full ${room.currentOccupancy >= room.capacity ? "bg-green-500" : room.currentOccupancy > 0 ? "bg-[#1360AB]" : "bg-gray-400"}`}
                   style={{
+                    height: 'var(--spacing-1-5)', 
+                    borderRadius: 'var(--radius-full)', 
+                    backgroundColor: room.currentOccupancy >= room.capacity ? 'var(--color-success)' : room.currentOccupancy > 0 ? 'var(--color-primary)' : 'var(--color-text-disabled)',
                     width: `${room.capacity ? Math.min(100, Math.round(((room.currentOccupancy || 0) / room.capacity) * 100)) : 0}%`,
+                    transition: 'var(--transition-all)'
                   }}
                 ></div>
               </div>
@@ -86,8 +172,30 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
         )}
       </div>
 
-      <div className="mt-5 flex space-x-2">
-        <button onClick={() => onClick()} className="flex-1 py-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 text-sm font-medium">
+      <div style={{ marginTop: 'var(--spacing-5)', display: 'flex', gap: 'var(--spacing-2)' }}>
+        <button 
+          onClick={() => onClick()} 
+          style={{ 
+            flex: 1, 
+            padding: 'var(--spacing-2-5) 0', 
+            backgroundColor: 'var(--color-primary-bg)', 
+            color: 'var(--color-primary)', 
+            borderRadius: 'var(--radius-lg)', 
+            transition: 'var(--transition-all)', 
+            fontSize: 'var(--font-size-sm)', 
+            fontWeight: 'var(--font-weight-medium)',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = 'var(--color-primary)';
+            e.target.style.color = 'var(--color-white)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'var(--color-primary-bg)';
+            e.target.style.color = 'var(--color-primary)';
+          }}
+        >
           View Details
         </button>
 
@@ -97,9 +205,31 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
               e.stopPropagation()
               onAllocate()
             }}
-            className="flex-1 py-2.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-600 hover:text-white transition-all duration-300 text-sm font-medium flex items-center justify-center"
+            style={{ 
+              flex: 1, 
+              padding: 'var(--spacing-2-5) 0', 
+              backgroundColor: 'var(--color-success-bg-light)', 
+              color: 'var(--color-success)', 
+              borderRadius: 'var(--radius-lg)', 
+              transition: 'var(--transition-all)', 
+              fontSize: 'var(--font-size-sm)', 
+              fontWeight: 'var(--font-weight-medium)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'var(--color-success-hover)';
+              e.target.style.color = 'var(--color-white)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'var(--color-success-bg-light)';
+              e.target.style.color = 'var(--color-success)';
+            }}
           >
-            <FaUserPlus className="mr-1.5" /> Allocate
+            <FaUserPlus style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} /> Allocate
           </button>
         )}
       </div>

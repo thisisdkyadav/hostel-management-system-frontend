@@ -19,20 +19,86 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
     setFilters((prev) => ({ ...prev, [name]: value }))
   }
 
+  const selectStyle = {
+    width: "100%",
+    padding: "var(--spacing-2)",
+    border: `var(--border-1) solid var(--input-border)`,
+    borderRadius: "var(--radius-input)",
+    fontSize: "var(--font-size-base)",
+    color: "var(--color-text-body)",
+    backgroundColor: "var(--input-bg)",
+    outline: "none",
+    transition: "var(--transition-colors)",
+  }
+
+  const selectFocusStyle = {
+    borderColor: "var(--input-border-focus)",
+    boxShadow: "var(--input-focus-ring)",
+  }
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm mb-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-lg">Filter {currentView === "units" ? "Units" : "Rooms"}</h2>
-        <button onClick={resetFilters} className="text-sm text-[#1360AB] hover:text-blue-700">
+    <div
+      style={{
+        backgroundColor: "var(--card-bg)",
+        padding: "var(--spacing-6)",
+        borderRadius: "var(--radius-card)",
+        boxShadow: "var(--shadow-card)",
+        marginBottom: "var(--spacing-6)",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
+        <h2 style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xl)" }}>
+          Filter {currentView === "units" ? "Units" : "Rooms"}
+        </h2>
+        <button
+          onClick={resetFilters}
+          style={{
+            fontSize: "var(--font-size-sm)",
+            color: "var(--color-primary)",
+            backgroundColor: "transparent",
+            border: "none",
+            cursor: "pointer",
+            transition: "var(--transition-colors)",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary-hover)")}
+          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
+        >
           Reset Filters
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
+          gap: "var(--gap-md)",
+        }}
+        className="md:grid-cols-3 lg:grid-cols-4"
+      >
         {/* Hostel Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Hostel</label>
-          <select name="hostelId" value={filters.hostelId} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+          <label
+            style={{
+              display: "block",
+              fontSize: "var(--font-size-sm)",
+              fontWeight: "var(--font-weight-medium)",
+              color: "var(--color-text-body)",
+              marginBottom: "var(--spacing-1)",
+            }}
+          >
+            Hostel
+          </label>
+          <select
+            name="hostelId"
+            value={filters.hostelId}
+            onChange={handleFilterChange}
+            style={selectStyle}
+            onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "var(--input-border)"
+              e.currentTarget.style.boxShadow = "none"
+            }}
+          >
             <option value="">All Hostels</option>
             {hostels.map((hostel) => (
               <option key={hostel.id} value={hostel.id}>
@@ -44,8 +110,28 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
 
         {/* Floor Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Floor</label>
-          <select name="floorNumber" value={filters.floorNumber} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+          <label
+            style={{
+              display: "block",
+              fontSize: "var(--font-size-sm)",
+              fontWeight: "var(--font-weight-medium)",
+              color: "var(--color-text-body)",
+              marginBottom: "var(--spacing-1)",
+            }}
+          >
+            Floor
+          </label>
+          <select
+            name="floorNumber"
+            value={filters.floorNumber}
+            onChange={handleFilterChange}
+            style={selectStyle}
+            onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "var(--input-border)"
+              e.currentTarget.style.boxShadow = "none"
+            }}
+          >
             <option value="">All Floors</option>
             {floorNumbers.map((floor) => (
               <option key={floor} value={floor}>
@@ -60,8 +146,28 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
           <>
             {/* Room Type Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
-              <select name="roomType" value={filters.roomType} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "var(--font-size-sm)",
+                  fontWeight: "var(--font-weight-medium)",
+                  color: "var(--color-text-body)",
+                  marginBottom: "var(--spacing-1)",
+                }}
+              >
+                Room Type
+              </label>
+              <select
+                name="roomType"
+                value={filters.roomType}
+                onChange={handleFilterChange}
+                style={selectStyle}
+                onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "var(--input-border)"
+                  e.currentTarget.style.boxShadow = "none"
+                }}
+              >
                 <option value="">All Types</option>
                 {roomTypes.map((type) => (
                   <option key={type} value={type.toLowerCase()}>
@@ -73,8 +179,28 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
 
             {/* Occupancy Status Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Occupancy Status</label>
-              <select name="occupancyStatus" value={filters.occupancyStatus} onChange={handleFilterChange} className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "var(--font-size-sm)",
+                  fontWeight: "var(--font-weight-medium)",
+                  color: "var(--color-text-body)",
+                  marginBottom: "var(--spacing-1)",
+                }}
+              >
+                Occupancy Status
+              </label>
+              <select
+                name="occupancyStatus"
+                value={filters.occupancyStatus}
+                onChange={handleFilterChange}
+                style={selectStyle}
+                onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "var(--input-border)"
+                  e.currentTarget.style.boxShadow = "none"
+                }}
+              >
                 <option value="">All Statuses</option>
                 {occupancyStatuses.map((status) => (
                   <option key={status.value} value={status.value}>
@@ -88,8 +214,33 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
 
         {/* Search Box */}
         <div className={currentView === "rooms" ? "md:col-span-3 lg:col-span-1" : "md:col-span-1"}>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-          <input type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+          <label
+            style={{
+              display: "block",
+              fontSize: "var(--font-size-sm)",
+              fontWeight: "var(--font-weight-medium)",
+              color: "var(--color-text-body)",
+              marginBottom: "var(--spacing-1)",
+            }}
+          >
+            Search
+          </label>
+          <input
+            type="text"
+            name="searchTerm"
+            value={filters.searchTerm}
+            onChange={handleFilterChange}
+            placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`}
+            style={{
+              ...selectStyle,
+              color: filters.searchTerm ? "var(--color-text-body)" : "var(--color-text-placeholder)",
+            }}
+            onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "var(--input-border)"
+              e.currentTarget.style.boxShadow = "none"
+            }}
+          />
         </div>
       </div>
     </div>
