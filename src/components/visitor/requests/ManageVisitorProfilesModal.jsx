@@ -35,80 +35,148 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
   return (
     <>
       <Modal title="Manage Visitor Profiles" onClose={onClose} width={800}>
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
           {/* Search Bar */}
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="h-5 w-5 text-gray-400" />
+          <div style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '0', bottom: '0', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+              <FaSearch style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} />
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:border-[#1360AB] focus:ring-1 focus:ring-[#1360AB] outline-none transition"
+              style={{
+                display: 'block',
+                width: '100%',
+                paddingLeft: 'var(--spacing-10)',
+                paddingRight: 'var(--spacing-10)',
+                paddingTop: 'var(--spacing-3)',
+                paddingBottom: 'var(--spacing-3)',
+                border: `var(--border-1) solid var(--color-border-input)`,
+                borderRadius: 'var(--radius-lg)',
+                outline: 'none',
+                transition: 'var(--transition-colors)',
+                fontSize: 'var(--font-size-base)'
+              }}
               placeholder="Search profiles by name, relation, email, or phone"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--color-primary)'
+                e.target.style.boxShadow = 'var(--input-focus-ring)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'var(--color-border-input)'
+                e.target.style.boxShadow = 'none'
+              }}
             />
             {searchQuery && (
-              <button className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={() => setSearchQuery("")}>
-                <FaTimesCircle className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+              <button 
+                style={{ 
+                  position: 'absolute', 
+                  top: '0', 
+                  bottom: '0', 
+                  right: 'var(--spacing-3)', 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer'
+                }} 
+                onClick={() => setSearchQuery("")}
+              >
+                <FaTimesCircle style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} 
+                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-placeholder)'}
+                />
               </button>
             )}
           </div>
 
           {filteredProfiles.length === 0 ? (
-            <div className="py-8 text-center">
-              <FaUserAlt className="mx-auto h-12 w-12 text-gray-300" />
-              <h3 className="mt-4 text-lg font-medium text-gray-900">No visitor profiles found</h3>
-              <p className="mt-1 text-sm text-gray-500">{searchQuery ? "No profiles match your search criteria. Try a different search." : "You have not added any visitor profiles yet."}</p>
+            <div style={{ paddingTop: 'var(--spacing-8)', paddingBottom: 'var(--spacing-8)', textAlign: 'center' }}>
+              <FaUserAlt style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-border-primary)' }} />
+              <h3 style={{ marginTop: 'var(--spacing-4)', fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>No visitor profiles found</h3>
+              <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{searchQuery ? "No profiles match your search criteria. Try a different search." : "You have not added any visitor profiles yet."}</p>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-lg border border-gray-200">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+              <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                       Visitor Details
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                       Contact
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                       Relation
                     </th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'right', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                   {filteredProfiles.map((profile) => (
-                    <tr key={profile._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                            <FaUserAlt className="h-5 w-5 text-gray-500" />
+                    <tr key={profile._id} style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-colors)' }}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}
+                    >
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <div style={{ flexShrink: '0', height: 'var(--avatar-md)', width: 'var(--avatar-md)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <FaUserAlt style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-muted)' }} />
                           </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{profile.name}</div>
+                          <div style={{ marginLeft: 'var(--spacing-4)' }}>
+                            <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{profile.name}</div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{profile.email}</div>
-                        <div className="text-sm text-gray-500">{profile.phone}</div>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{profile.email}</div>
+                        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{profile.phone}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-blue-100 text-blue-800">{profile.relation}</span>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <span style={{ padding: 'var(--badge-padding-sm)', display: 'inline-flex', fontSize: 'var(--badge-font-sm)', lineHeight: 'var(--line-height-tight)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>{profile.relation}</span>
                       </td>
                       {profile.requests && profile.requests.length ? (
-                        <div className="">Can't edit a used Visitor.</div>
+                        <div style={{ padding: 'var(--spacing-4) var(--spacing-6)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Can't edit a used Visitor.</div>
                       ) : (
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button onClick={() => handleEditProfile(profile)} className="text-amber-500 hover:text-amber-600 p-1 rounded-full transition-colors" title="Edit profile">
-                            <FaEdit className="h-5 w-5" />
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+                          <button 
+                            onClick={() => handleEditProfile(profile)} 
+                            style={{ 
+                              color: 'var(--color-warning)', 
+                              padding: 'var(--spacing-1)', 
+                              borderRadius: 'var(--radius-full)', 
+                              transition: 'var(--transition-colors)',
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }} 
+                            title="Edit profile"
+                            onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-warning-hover)'}
+                            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-warning)'}
+                          >
+                            <FaEdit style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
                           </button>
-                          <button onClick={() => handleDeleteProfile(profile._id)} className="text-red-500 hover:text-red-600 p-1 rounded-full transition-colors ml-2" title="Delete profile">
-                            <FaTrash className="h-5 w-5" />
+                          <button 
+                            onClick={() => handleDeleteProfile(profile._id)} 
+                            style={{ 
+                              color: 'var(--color-danger)', 
+                              padding: 'var(--spacing-1)', 
+                              borderRadius: 'var(--radius-full)', 
+                              transition: 'var(--transition-colors)',
+                              marginLeft: 'var(--spacing-2)',
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }} 
+                            title="Delete profile"
+                            onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-danger-hover)'}
+                            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-danger)'}
+                          >
+                            <FaTrash style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
                           </button>
                         </td>
                       )}
@@ -119,8 +187,22 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
             </div>
           )}
 
-          <div className="flex justify-end pt-4 border-t border-gray-100">
-            <button onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+            <button 
+              onClick={onClose} 
+              style={{ 
+                padding: 'var(--spacing-2) var(--spacing-4)', 
+                backgroundColor: 'var(--color-bg-muted)', 
+                color: 'var(--color-text-body)', 
+                borderRadius: 'var(--radius-lg)', 
+                transition: 'var(--transition-colors)',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 'var(--font-size-base)'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}
+            >
               Close
             </button>
           </div>
