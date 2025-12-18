@@ -48,21 +48,21 @@ const NotificationTable = ({ notifications, onRefresh }) => {
       header: "Title",
       key: "title",
       render: (notification) => (
-        <div className="flex items-start flex-col">
-          <div className="text-sm font-medium text-gray-900 mb-1">{notification.title}</div>
-          <div className="text-xs text-gray-500">{getTargetAudience(notification)}</div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+          <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)', marginBottom: 'var(--spacing-1)' }}>{notification.title}</div>
+          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>{getTargetAudience(notification)}</div>
         </div>
       ),
     },
     {
       header: "Created",
       key: "createdAt",
-      render: (notification) => <span className="text-sm text-gray-500">{formatDate(notification.createdAt)}</span>,
+      render: (notification) => <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(notification.createdAt)}</span>,
     },
     {
       header: "Expires",
       key: "expiryDate",
-      render: (notification) => <span className="text-sm text-gray-500">{formatDate(notification.expiryDate)}</span>,
+      render: (notification) => <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(notification.expiryDate)}</span>,
     },
   ]
 
