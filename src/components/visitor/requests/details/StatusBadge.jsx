@@ -12,36 +12,70 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
     })
   }
 
-  const getStatusColor = (status) => {
-    if (!status) return "bg-gray-100 text-gray-800 border-gray-200"
-
-    const statusColors = {
-      Pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      Approved: "bg-green-100 text-green-800 border-green-200",
-      Rejected: "bg-red-100 text-red-800 border-red-200",
-      Completed: "bg-blue-100 text-blue-800 border-blue-200",
+  const getStatusStyles = (status) => {
+    if (!status) return {
+      backgroundColor: 'var(--color-bg-muted)',
+      color: 'var(--color-text-secondary)',
+      borderColor: 'var(--color-border-primary)'
     }
-    return statusColors[status] || statusColors.Pending
+
+    const statusStyles = {
+      Pending: {
+        backgroundColor: 'var(--color-warning-bg)',
+        color: 'var(--color-warning-text)',
+        borderColor: 'var(--color-warning-bg)'
+      },
+      Approved: {
+        backgroundColor: 'var(--color-success-bg)',
+        color: 'var(--color-success-text)',
+        borderColor: 'var(--color-success-bg)'
+      },
+      Rejected: {
+        backgroundColor: 'var(--color-danger-bg)',
+        color: 'var(--color-danger-text)',
+        borderColor: 'var(--color-danger-border)'
+      },
+      Completed: {
+        backgroundColor: 'var(--color-info-bg)',
+        color: 'var(--color-info-text)',
+        borderColor: 'var(--color-info-bg)'
+      },
+    }
+    return statusStyles[status] || statusStyles.Pending
   }
+
+  const statusStyles = getStatusStyles(status)
 
   return (
     <>
-      <div className={`p-4 rounded-lg border ${getStatusColor(status)}`}>
+      <div 
+        className="p-4 rounded-lg border" 
+        style={{ 
+          backgroundColor: statusStyles.backgroundColor,
+          color: statusStyles.color,
+          borderColor: statusStyles.borderColor,
+          padding: 'var(--spacing-4)',
+          borderRadius: 'var(--radius-lg)',
+          borderWidth: 'var(--border-1)'
+        }}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <FaInfoCircle className="mr-2" />
-            <span className="font-medium">Status: {status.charAt(0).toUpperCase() + status.slice(1)}</span>
+            <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)' }}>
+              Status: {status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
           </div>
-          <div className="text-sm">Request ID: #{requestId?.substring(0, 8)}</div>
+          <div style={{ fontSize: 'var(--font-size-sm)' }}>Request ID: #{requestId?.substring(0, 8)}</div>
         </div>
         {status === "Rejected" && rejectionReason && (
-          <div className="mt-2 text-sm">
-            <span className="font-medium">Reason for rejection:</span> {rejectionReason}
+          <div className="mt-2" style={{ fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-2)' }}>
+            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Reason for rejection:</span> {rejectionReason}
           </div>
         )}
         {/* {status === "Approved" && (
-          <div className="mt-2 text-sm">
-            <span className="font-medium">Approved on:</span> {formatDate(approvedAt || new Date())}
+          <div className="mt-2" style={{ fontSize: 'var(--font-size-sm)', marginTop: 'var(--spacing-2)' }}>
+            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Approved on:</span> {formatDate(approvedAt || new Date())}
           </div>
         )} */}
       </div>
