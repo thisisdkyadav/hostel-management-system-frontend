@@ -69,51 +69,51 @@ const EventCard = ({ event, refresh }) => {
         className="cursor-pointer"
         onClick={handleCardClick}
       >
-        <Card.Header className="mb-0">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center">
-              <div className={`p-2.5 mr-3 rounded-xl ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>
+        <Card.Header style={{ marginBottom: 'var(--spacing-0)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>
                 <FaCalendarAlt size={20} />
               </div>
               <div>
-                <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{event.eventName}</h3>
-                <span className="text-xs text-gray-500">ID: {event._id.substring(0, 8)}</span>
+                <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-base)', lineHeight: 'var(--line-height-tight)' }} className="md:text-lg line-clamp-1">{event.eventName}</h3>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {event._id.substring(0, 8)}</span>
               </div>
             </div>
-            <span className={`text-xs px-2.5 py-1 rounded-full ${isEventUpcoming ? "bg-green-100 text-green-600" : "bg-purple-100 text-purple-600"}`}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--spacing-1) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', backgroundColor: isEventUpcoming ? 'var(--color-success-bg)' : 'var(--color-purple-light-bg)', color: isEventUpcoming ? 'var(--color-success-text)' : 'var(--color-purple-text)' }}>{isEventUpcoming ? "Upcoming" : "Past"}</span>
           </div>
         </Card.Header>
 
         <Card.Body className="mt-4 space-y-3">
-          <div className="flex items-center flex-wrap">
-            <div className="flex items-center mr-4 mb-1">
-              <FaCalendarAlt className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-              <span className="text-sm text-gray-700">{date}</span>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
+              <FaCalendarAlt style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{date}</span>
             </div>
-            <div className="flex items-center mr-4 mb-1">
-              <BsClock className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-              <span className="text-sm text-gray-700">{time}</span>
+            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
+              <BsClock style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{time}</span>
             </div>
-            <div className="flex items-center mr-4 mb-1">
-              <FaBuilding className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-              <span className="text-sm text-gray-700 font-medium">{event.hostel?.name || "All Hostels"}</span>
+            <div style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)', marginBottom: 'var(--spacing-1)' }}>
+              <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{event.hostel?.name || "All Hostels"}</span>
             </div>
             {event.gender && (
-              <div className="flex items-center mb-1">
-                <FaUserFriends className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-                <span className="text-sm text-gray-700 font-medium">{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</span>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-1)' }}>
+                <FaUserFriends style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{event.gender.charAt(0).toUpperCase() + event.gender.slice(1) + " Only"}</span>
               </div>
             )}
           </div>
-          <div className="bg-gray-50 p-3 rounded-lg min-h-[80px]">
-            <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>
+          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', minHeight: '80px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="line-clamp-3">{event.description}</p>
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
+        <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', justifyContent: 'flex-end' }}>
           {["Admin"].includes(user.role) && (
-            <button onClick={handleEditClick} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
-              <FaEdit className="mr-2" /> Edit
+            <button onClick={handleEditClick} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)'; }}>
+              <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit
             </button>
           )}
         </Card.Footer>

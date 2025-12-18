@@ -34,28 +34,28 @@ const EventStats = ({ events }) => {
       value: totalEvents,
       subtitle: "All scheduled events",
       icon: <FaCalendarAlt className="text-2xl" />,
-      color: "#1360AB",
+      color: "var(--color-primary)",
     },
     {
       title: "Upcoming Events",
       value: upcomingEvents,
       subtitle: "Yet to happen",
       icon: <MdEventAvailable className="text-2xl" />,
-      color: "#22c55e",
+      color: "var(--color-success)",
     },
     {
       title: "Past Events",
       value: pastEvents,
       subtitle: "Already conducted",
       icon: <FaCalendarCheck className="text-2xl" />,
-      color: "#f97316",
+      color: "var(--color-warning)",
     },
     {
       title: "Next Event",
       value: getNextEventDate(),
       subtitle: "Mark your calendar",
       icon: <FaCalendarDay className="text-2xl" />,
-      color: "#8b5cf6",
+      color: "var(--color-purple-text)",
     },
   ]
 
