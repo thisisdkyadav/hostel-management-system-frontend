@@ -48,15 +48,15 @@ const ManageSessionsModal = ({ onClose, email }) => {
   }
 
   const getDeviceIcon = (userAgent) => {
-    if (!userAgent) return <HiGlobeAlt className="h-6 w-6" />
+    if (!userAgent) return <HiGlobeAlt style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)' }} />
 
     const userAgentLower = userAgent.toLowerCase()
     if (userAgentLower.includes("mobile") || userAgentLower.includes("android") || userAgentLower.includes("iphone")) {
-      return <HiDeviceMobile className="h-6 w-6" />
+      return <HiDeviceMobile style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)' }} />
     } else if (userAgentLower.includes("tablet") || userAgentLower.includes("ipad")) {
-      return <HiDeviceMobile className="h-6 w-6" />
+      return <HiDeviceMobile style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)' }} />
     } else {
-      return <HiDesktopComputer className="h-6 w-6" />
+      return <HiDesktopComputer style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)' }} />
     }
   }
 
@@ -93,47 +93,200 @@ const ManageSessionsModal = ({ onClose, email }) => {
 
   return (
     <Modal title="Manage Your Sessions" onClose={onClose} width={600}>
-      <div className="space-y-6">
-        {error && <div className="bg-red-50 text-red-700 p-4 rounded-lg text-sm">{error}</div>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-lg)' }}>
+        {error && (
+          <div 
+            style={{
+              backgroundColor: 'var(--color-danger-bg)',
+              color: 'var(--color-danger-text)',
+              padding: 'var(--spacing-4)',
+              borderRadius: 'var(--radius-lg)',
+              fontSize: 'var(--font-size-sm)',
+            }}
+          >
+            {error}
+          </div>
+        )}
 
-        <div className="text-gray-600 text-sm">
+        <div 
+          style={{
+            color: 'var(--color-text-muted)',
+            fontSize: 'var(--font-size-sm)',
+          }}
+        >
           <p>Below are all your active sessions across different devices. You can log out from any session that you don't recognize or no longer need.</p>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="w-8 h-8 border-4 border-blue-200 border-t-[#1360AB] rounded-full animate-spin"></div>
-            <span className="ml-3 text-gray-600">Loading your sessions...</span>
+          <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 'var(--spacing-8) 0',
+            }}
+          >
+            <div 
+              style={{
+                width: 'var(--spacing-8)',
+                height: 'var(--spacing-8)',
+                border: 'var(--border-4) solid var(--color-primary-pale)',
+                borderTopColor: 'var(--color-primary)',
+                borderRadius: 'var(--radius-full)',
+                animation: 'spin 1s linear infinite',
+              }}
+            ></div>
+            <span 
+              style={{
+                marginLeft: 'var(--spacing-3)',
+                color: 'var(--color-text-muted)',
+              }}
+            >
+              Loading your sessions...
+            </span>
           </div>
         ) : devices.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="mx-auto bg-gray-100 text-gray-500 w-16 h-16 flex items-center justify-center rounded-full mb-4">
+          <div 
+            style={{
+              textAlign: 'center',
+              padding: 'var(--spacing-8) 0',
+            }}
+          >
+            <div 
+              style={{
+                margin: '0 auto',
+                backgroundColor: 'var(--color-bg-muted)',
+                color: 'var(--color-text-placeholder)',
+                width: 'var(--avatar-xl)',
+                height: 'var(--avatar-xl)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 'var(--radius-full)',
+                marginBottom: 'var(--spacing-4)',
+              }}
+            >
               <HiDesktopComputer size={30} />
             </div>
-            <h3 className="text-lg font-medium text-gray-800">No Active Sessions</h3>
-            <p className="text-gray-500 mt-2">You don't have any other active sessions at the moment.</p>
+            <h3 
+              style={{
+                fontSize: 'var(--font-size-lg)',
+                fontWeight: 'var(--font-weight-medium)',
+                color: 'var(--color-text-secondary)',
+              }}
+            >
+              No Active Sessions
+            </h3>
+            <p 
+              style={{
+                color: 'var(--color-text-placeholder)',
+                marginTop: 'var(--spacing-2)',
+              }}
+            >
+              You don't have any other active sessions at the moment.
+            </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
             {devices.map((device) => (
-              <div key={device.sessionId} className="border rounded-lg p-4 flex justify-between items-center">
-                <div className="flex items-center">
-                  <div className="bg-blue-50 text-[#1360AB] p-2 rounded-lg mr-4">{getDeviceIcon(device.userAgent)}</div>
+              <div 
+                key={device.sessionId} 
+                style={{
+                  border: `var(--border-1) solid var(--color-border-primary)`,
+                  borderRadius: 'var(--radius-lg)',
+                  padding: 'var(--spacing-4)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div 
+                    style={{
+                      backgroundColor: 'var(--color-primary-bg)',
+                      color: 'var(--color-primary)',
+                      padding: 'var(--spacing-2)',
+                      borderRadius: 'var(--radius-lg)',
+                      marginRight: 'var(--spacing-4)',
+                    }}
+                  >
+                    {getDeviceIcon(device.userAgent)}
+                  </div>
                   <div>
-                    <h4 className="font-medium text-gray-800">{device.deviceName || "Unknown Device"}</h4>
-                    <div className="text-xs text-gray-500 mt-1">
+                    <h4 
+                      style={{
+                        fontWeight: 'var(--font-weight-medium)',
+                        color: 'var(--color-text-secondary)',
+                      }}
+                    >
+                      {device.deviceName || "Unknown Device"}
+                    </h4>
+                    <div 
+                      style={{
+                        fontSize: 'var(--font-size-xs)',
+                        color: 'var(--color-text-placeholder)',
+                        marginTop: 'var(--spacing-1)',
+                      }}
+                    >
                       <p>IP: {device.ip || "Unknown"}</p>
                       <p>Login time: {device.loginTime ? new Date(device.loginTime).toLocaleString() : "Unknown"}</p>
                       <p>Last active: {device.lastActive ? new Date(device.lastActive).toLocaleString() : "Unknown"}</p>
                       <p>Browser: {getBrowserInfo(device.userAgent)}</p>
-                      {device.isCurrent && <span className="inline-block mt-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">Current Session</span>}
+                      {device.isCurrent && (
+                        <span 
+                          style={{
+                            display: 'inline-block',
+                            marginTop: 'var(--spacing-1)',
+                            backgroundColor: 'var(--color-success-bg)',
+                            color: 'var(--color-success-text)',
+                            padding: 'var(--badge-padding-xs)',
+                            borderRadius: 'var(--radius-full)',
+                            fontSize: 'var(--font-size-xs)',
+                          }}
+                        >
+                          Current Session
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div>
                   {!device.isCurrent && (
-                    <button onClick={() => handleLogout(device.sessionId, device.deviceName)} disabled={loggingOut === device.sessionId} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50">
-                      {loggingOut === device.sessionId ? <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div> : <HiOutlineLogout className="h-5 w-5" />}
+                    <button 
+                      onClick={() => handleLogout(device.sessionId, device.deviceName)} 
+                      disabled={loggingOut === device.sessionId} 
+                      style={{
+                        padding: 'var(--spacing-2)',
+                        color: 'var(--color-danger)',
+                        backgroundColor: 'transparent',
+                        borderRadius: 'var(--radius-lg)',
+                        transition: 'var(--transition-colors)',
+                        opacity: loggingOut === device.sessionId ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
+                        cursor: loggingOut === device.sessionId ? 'not-allowed' : 'pointer',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (loggingOut !== device.sessionId) {
+                          e.currentTarget.style.backgroundColor = 'var(--color-danger-bg)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}
+                    >
+                      {loggingOut === device.sessionId ? (
+                        <div 
+                          style={{
+                            width: 'var(--icon-lg)',
+                            height: 'var(--icon-lg)',
+                            border: `var(--border-2) solid var(--color-danger)`,
+                            borderTopColor: 'transparent',
+                            borderRadius: 'var(--radius-full)',
+                            animation: 'spin 1s linear infinite',
+                          }}
+                        ></div>
+                      ) : (
+                        <HiOutlineLogout style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
+                      )}
                     </button>
                   )}
                 </div>
@@ -142,8 +295,31 @@ const ManageSessionsModal = ({ onClose, email }) => {
           </div>
         )}
 
-        <div className="pt-4 flex justify-end">
-          <button onClick={onClose} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+        <div 
+          style={{
+            paddingTop: 'var(--spacing-4)',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <button 
+            onClick={onClose} 
+            style={{
+              padding: `var(--spacing-2-5) var(--spacing-4)`,
+              backgroundColor: 'var(--color-bg-muted)',
+              color: 'var(--color-text-body)',
+              borderRadius: 'var(--radius-lg)',
+              fontSize: 'var(--font-size-sm)',
+              fontWeight: 'var(--font-weight-medium)',
+              transition: 'var(--transition-colors)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)';
+            }}
+          >
             Close
           </button>
         </div>
