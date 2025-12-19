@@ -82,53 +82,53 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
   const renderAttendanceEntries = () => {
     if (loading) {
       return (
-        <div className="flex justify-center items-center py-12">
-          <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
+          <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: 'var(--border-4) solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
         </div>
       )
     }
 
     if (attendanceRecords.length === 0) {
       return (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No attendance records found.</p>
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+          <p style={{ color: 'var(--color-text-muted)' }}>No attendance records found.</p>
         </div>
       )
     }
 
     return (
       <>
-        <div className="overflow-x-auto mt-4">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div style={{ overflowX: 'auto', marginTop: 'var(--spacing-4)' }}>
+          <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                   Name
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                   Role
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                   Time
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
               {attendanceRecords.map((record) => (
-                <tr key={record._id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{record.userId.name}</div>
-                    <div className="text-sm text-gray-500">{record.userId.email}</div>
+                <tr key={record._id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{record.userId.name}</div>
+                    <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.userId.email}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.userId.role === "Security" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"}`}>{record.userId.role}</span>
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: record.userId.role === "Security" ? 'var(--color-purple-light-bg)' : 'var(--color-primary-bg)', color: record.userId.role === "Security" ? 'var(--color-purple-text)' : 'var(--color-primary-dark)' }}>{record.userId.role}</span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(record.createdAt)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.type === "checkIn" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{record.type === "checkIn" ? "Check In" : "Check Out"}</span>
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(record.createdAt)}</td>
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: record.type === "checkIn" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)', color: record.type === "checkIn" ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}>{record.type === "checkIn" ? "Check In" : "Check Out"}</span>
                   </td>
                 </tr>
               ))}
@@ -138,7 +138,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="mt-4">
+          <div style={{ marginTop: 'var(--spacing-4)' }}>
             <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
           </div>
         )}
@@ -149,52 +149,52 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
   const renderPresentStaff = () => {
     if (loading) {
       return (
-        <div className="flex justify-center items-center py-12">
-          <div className="w-12 h-12 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
+          <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: 'var(--border-4) solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
         </div>
       )
     }
 
     if (presentStaff.length === 0) {
       return (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No staff present during the selected time period.</p>
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
+          <p style={{ color: 'var(--color-text-muted)' }}>No staff present during the selected time period.</p>
         </div>
       )
     }
 
     return (
-      <div className="overflow-x-auto mt-4">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div style={{ overflowX: 'auto', marginTop: 'var(--spacing-4)' }}>
+        <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+          <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                 Name
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                 Role
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                 Email
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
                 Status
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
             {presentStaff.map((staff) => (
-              <tr key={staff._id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{staff.name}</div>
+              <tr key={staff._id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
+                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{staff.name}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${staff.role === "Security" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"}`}>{staff.role}</span>
+                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                  <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: staff.role === "Security" ? 'var(--color-purple-light-bg)' : 'var(--color-primary-bg)', color: staff.role === "Security" ? 'var(--color-purple-text)' : 'var(--color-primary-dark)' }}>{staff.role}</span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{staff.email}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    <FaCheck className="mr-1" /> Present
+                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{staff.email}</td>
+                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                  <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>
+                    <FaCheck style={{ marginRight: 'var(--spacing-1)' }} /> Present
                   </span>
                 </td>
               </tr>
@@ -207,7 +207,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
 
   return (
     <Modal title={`${hostel.name} - Staff Attendance`} onClose={onClose} width={900}>
-      <div className="space-y-6">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {/* View Type Selector - Hidden for now */}
         {/* <div className="flex justify-center mb-4">
           <div className="inline-flex p-1 bg-gray-100 rounded-lg">
@@ -225,25 +225,25 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
         </div> */}
 
         {/* Filters */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-            <FaFilter className="mr-2 text-gray-500" /> Filter Records
+        <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
+            <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
           </h3>
-          <div className="flex flex-col md:flex-row gap-4 items-end">
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Staff Type</label>
-              <select value={staffType} onChange={(e) => setStaffType(e.target.value)} className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-4)', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: '150px' }}>
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Staff Type</label>
+              <select value={staffType} onChange={(e) => setStaffType(e.target.value)} style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }}>
                 <option value="all">All Staff</option>
                 <option value="security">Security Guards</option>
                 <option value="maintenance">Maintenance Staff</option>
               </select>
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <div style={{ flex: 1, minWidth: '150px' }}>
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Start Date</label>
               <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholderText="Select start date & time" />
             </div>
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+            <div style={{ flex: 1, minWidth: '150px' }}>
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>End Date</label>
               <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
@@ -253,15 +253,15 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
               />
             </div>
             <div>
-              <button onClick={clearFilters} className="p-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-                <FaTimes className="mr-1 inline" /> Clear
+              <button onClick={clearFilters} style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+                <FaTimes style={{ marginRight: 'var(--spacing-1)', display: 'inline' }} /> Clear
               </button>
             </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-lg border border-gray-200">{renderAttendanceEntries()}</div>
+        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) solid var(--color-border-primary)' }}>{renderAttendanceEntries()}</div>
       </div>
     </Modal>
   )
