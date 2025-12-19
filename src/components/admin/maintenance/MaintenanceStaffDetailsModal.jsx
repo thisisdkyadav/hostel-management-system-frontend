@@ -156,8 +156,8 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                   />
                 </div>
                 <div>
-                  <button onClick={clearFilters} style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-body)", borderRadius: "var(--radius-md)", border: "none", cursor: "pointer", transition: "var(--transition-colors)" }}>
-                    <FaTimes style={{ marginRight: "var(--spacing-1)", display: "inline" }} /> Clear
+                  <button onClick={clearFilters} className="p-2 bg-[var(--color-bg-muted)] hover:bg-[var(--color-border-dark)] text-[var(--color-text-body)] rounded-md border-0 cursor-pointer transition-colors">
+                    <FaTimes className="mr-1 inline" /> Clear
                   </button>
                 </div>
               </div>

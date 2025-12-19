@@ -140,15 +140,16 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
         </div>
 
 
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-5)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-          <button type="button" style={{ padding: "var(--spacing-2-5) var(--spacing-5)", backgroundColor: "var(--color-bg-hover)", borderRadius: "var(--radius-lg)", color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)", transition: "var(--transition-colors)", border: "none", cursor: "pointer" }} onClick={onClose}>
+
+        <div className="flex flex-row justify-end gap-3 pt-4 mt-5 border-t" style={{ borderColor: "var(--color-border-light)" }}>
+          <button type="button" className="px-5 py-2.5 bg-[var(--color-bg-hover)] hover:bg-[var(--color-bg-muted)] text-[var(--color-text-body)] rounded-lg font-medium transition-colors border-0 cursor-pointer" onClick={onClose}>
             Cancel
           </button>
 
-          <button type="submit" disabled={loading} style={{ padding: "var(--spacing-2-5) var(--spacing-5)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", fontWeight: "var(--font-weight-medium)", transition: "var(--transition-colors)", display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
+          <button type="submit" disabled={loading} className="px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-lg font-medium transition-colors flex items-center justify-center border-0 disabled:cursor-not-allowed disabled:opacity-50">
             {loading ? (
               <>
-                <span style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", border: "var(--border-2) solid var(--color-white)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></span>
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
                 Adding...
               </>
             ) : (

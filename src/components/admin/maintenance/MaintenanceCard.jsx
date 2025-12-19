@@ -104,12 +104,14 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
         </Card.Body>
 
 
+
+
         <Card.Footer className="pt-4 border-t flex gap-2" style={{ borderColor: "var(--color-border-light)" }}>
-          <button onClick={() => setShowDetailsModal(true)} className="flex-1 flex items-center justify-center gap-1 border-0 cursor-pointer" style={{ padding: "var(--spacing-2-5)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", borderRadius: "var(--radius-lg)", transition: "var(--transition-all)", fontWeight: "var(--font-weight-medium)" }}>
-            <FaEye /> <span style={{ fontSize: "var(--font-size-sm)" }}>View Details</span>
+          <button onClick={() => setShowDetailsModal(true)} className="flex-1 p-2.5 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 flex items-center justify-center font-medium">
+            <FaEye className="mr-1" /> <span className="text-sm">View Details</span>
           </button>
-          <button onClick={() => setShowEditForm(true)} className="flex-1 flex items-center justify-center gap-1 border-0 cursor-pointer" style={{ padding: "var(--spacing-2-5)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", borderRadius: "var(--radius-lg)", transition: "var(--transition-all)", fontWeight: "var(--font-weight-medium)" }}>
-            <FaEdit /> <span style={{ fontSize: "var(--font-size-sm)" }}>Edit</span>
+          <button onClick={() => setShowEditForm(true)} className="flex-1 p-2.5 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 flex items-center justify-center font-medium">
+            <FaEdit className="mr-1" /> <span className="text-sm">Edit</span>
           </button>
         </Card.Footer>
       </Card>
