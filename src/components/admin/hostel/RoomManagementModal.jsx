@@ -43,35 +43,35 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
     if (!showDeleteConfirmation) return null
 
     return createPortal(
-      <div className="fixed inset-0 bg-[var(--color-bg-modal-overlay)] backdrop-blur-sm flex items-center justify-center z-[60] p-4 md:p-6">
-        <div className="bg-[var(--color-bg-primary)] rounded-2xl overflow-auto animate-fadeIn w-full max-w-md" style={{ boxShadow: 'var(--shadow-modal)' }}>
-          <div className="px-6 py-4 border-b border-gray-100">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">Delete All Allocations</h3>
-              <button onClick={() => setShowDeleteConfirmation(false)} className="text-[var(--color-text-light)] hover:text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] rounded-full p-2 transition-all duration-200">
-                <FaTimes className="text-lg" />
+      <div style={{ position: 'fixed', inset: 0, backgroundColor: 'var(--color-bg-modal-overlay)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60, padding: 'var(--spacing-4)' }}>
+        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-2xl)', overflow: 'auto', animation: 'fadeIn 0.2s', width: '100%', maxWidth: '28rem', boxShadow: 'var(--shadow-modal)' }}>
+          <div style={{ padding: 'var(--spacing-4) var(--spacing-6)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-primary)' }}>Delete All Allocations</h3>
+              <button onClick={() => setShowDeleteConfirmation(false)} style={{ color: 'var(--color-text-light)', borderRadius: 'var(--radius-full)', padding: 'var(--spacing-2)', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'var(--color-bg-hover)'; }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-light)'; e.target.style.backgroundColor = 'transparent'; }}>
+                <FaTimes style={{ fontSize: 'var(--font-size-lg)' }} />
               </button>
             </div>
           </div>
 
-          <div className="px-6 py-5">
-            <div className="py-4">
-              <div className="flex justify-center mb-6">
-                <div className="p-4 bg-red-100 text-red-700 rounded-full">
+          <div style={{ padding: 'var(--spacing-5) var(--spacing-6)' }}>
+            <div style={{ padding: 'var(--spacing-4) 0' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-6)' }}>
+                <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
                   <FiAlertTriangle size={32} />
                 </div>
               </div>
 
-              <div className="text-center space-y-4 mb-6">
-                <p className="text-red-600 font-bold text-lg">CRITICAL WARNING</p>
-                <p className="text-gray-800">
-                  This will remove <span className="font-bold">ALL</span> student room allocations from <span className="font-bold">{hostel.name}</span>.
+              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
+                <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)' }}>CRITICAL WARNING</p>
+                <p style={{ color: 'var(--color-text-secondary)' }}>
+                  This will remove <span style={{ fontWeight: 'var(--font-weight-bold)' }}>ALL</span> student room allocations from <span style={{ fontWeight: 'var(--font-weight-bold)' }}>{hostel.name}</span>.
                 </p>
-                <p className="text-gray-800">All students will be immediately removed from their rooms.</p>
-                <p className="text-red-600 font-semibold">This action CANNOT be undone.</p>
+                <p style={{ color: 'var(--color-text-secondary)' }}>All students will be immediately removed from their rooms.</p>
+                <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-semibold)' }}>This action CANNOT be undone.</p>
               </div>
 
-              <div className="flex justify-center space-x-4 pt-4">
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
                 <Button onClick={() => setShowDeleteConfirmation(false)} variant="outline" disabled={isLoading}>
                   Cancel
                 </Button>
@@ -90,13 +90,13 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
   return (
     <>
       <Modal title={`Manage Rooms - ${hostel.name}`} onClose={onClose} width={800}>
-        <div className="space-y-6">
-          <div className="pb-4 border-b border-gray-200 flex justify-between items-center">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+          <div style={{ paddingBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <FilterTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {activeTab === "view" && (
-              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} className="flex items-center" animation="pulse" size="small">
-                <FaTrash className="mr-2" />
+              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} style={{ display: 'flex', alignItems: 'center' }} animation="pulse" size="small">
+                <FaTrash style={{ marginRight: 'var(--spacing-2)' }} />
                 Delete All Allocations
               </Button>
             )}
@@ -105,15 +105,15 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
           {activeTab === "view" && <ExistingRoomsList hostel={hostel} onRoomsUpdated={onRoomsUpdated} setIsLoading={setIsLoading} />}
 
           {activeTab === "add" && (
-            <div className="space-y-6">
-              <div className="flex justify-center mb-6">
-                <div className="inline-flex rounded-md shadow-sm" role="group">
-                  <button type="button" className={`px-4 py-2 text-sm font-medium rounded-l-lg ${inputMethod === "form" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"} border border-gray-300`} onClick={() => setInputMethod("form")}>
-                    <FaEdit className="inline mr-2" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-6)' }}>
+                <div style={{ display: 'inline-flex', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }} role="group">
+                  <button type="button" style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', borderTopLeftRadius: 'var(--radius-lg)', borderBottomLeftRadius: 'var(--radius-lg)', backgroundColor: inputMethod === "form" ? 'var(--color-primary)' : 'var(--color-bg-primary)', color: inputMethod === "form" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', transition: 'var(--transition-colors)' }} onClick={() => setInputMethod("form")} onMouseEnter={(e) => { if (inputMethod !== "form") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }} onMouseLeave={(e) => { if (inputMethod !== "form") e.target.style.backgroundColor = 'var(--color-bg-primary)'; }}>
+                    <FaEdit style={{ display: 'inline', marginRight: 'var(--spacing-2)' }} />
                     Form Input
                   </button>
-                  <button type="button" className={`px-4 py-2 text-sm font-medium rounded-r-lg ${inputMethod === "csv" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"} border border-gray-300`} onClick={() => setInputMethod("csv")}>
-                    <FaTable className="inline mr-2" />
+                  <button type="button" style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', borderTopRightRadius: 'var(--radius-lg)', borderBottomRightRadius: 'var(--radius-lg)', backgroundColor: inputMethod === "csv" ? 'var(--color-primary)' : 'var(--color-bg-primary)', color: inputMethod === "csv" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', transition: 'var(--transition-colors)' }} onClick={() => setInputMethod("csv")} onMouseEnter={(e) => { if (inputMethod !== "csv") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }} onMouseLeave={(e) => { if (inputMethod !== "csv") e.target.style.backgroundColor = 'var(--color-bg-primary)'; }}>
+                    <FaTable style={{ display: 'inline', marginRight: 'var(--spacing-2)' }} />
                     CSV Import
                   </button>
                 </div>
@@ -123,7 +123,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
             </div>
           )}
 
-          <div className="pt-4 border-t border-gray-100 flex justify-end">
+          <div style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', justifyContent: 'flex-end' }}>
             <Button onClick={onClose} variant="outline" animation="ripple">
               Close
             </Button>
