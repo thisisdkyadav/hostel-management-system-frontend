@@ -3,6 +3,199 @@ import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
 import Modal from "../../common/Modal"
 import ConfirmationDialog from "../../common/ConfirmationDialog"
 
+const styles = {
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-4)",
+  },
+  title: {
+    fontSize: "var(--font-size-lg)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-secondary)",
+  },
+  description: {
+    fontSize: "var(--font-size-sm)",
+    color: "var(--color-text-muted)",
+    marginBottom: "var(--spacing-4)",
+  },
+  inputContainer: {
+    marginBottom: "var(--spacing-6)",
+  },
+  inputWrapper: {
+    display: "flex",
+    alignItems: "center",
+  },
+  input: {
+    flex: 1,
+    border: "var(--border-1) solid var(--color-border-input)",
+    borderRadius: "var(--radius-lg) 0 0 var(--radius-lg)",
+    padding: "var(--spacing-2) var(--spacing-4)",
+    outline: "none",
+    backgroundColor: "var(--color-bg-primary)",
+    color: "var(--color-text-body)",
+    fontSize: "var(--font-size-base)",
+  },
+  addButton: {
+    padding: "var(--spacing-2) var(--spacing-4)",
+    backgroundColor: "var(--color-primary)",
+    color: "var(--color-white)",
+    borderRadius: "0 var(--radius-lg) var(--radius-lg) 0",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "var(--transition-all)",
+  },
+  errorText: {
+    color: "var(--color-danger)",
+    fontSize: "var(--font-size-xs)",
+    marginTop: "var(--spacing-1)",
+  },
+  itemsContainer: {
+    backgroundColor: "var(--color-bg-tertiary)",
+    borderRadius: "var(--radius-lg)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    padding: "var(--spacing-4)",
+  },
+  itemsTitle: {
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-tertiary)",
+    marginBottom: "var(--spacing-3)",
+  },
+  emptyText: {
+    fontSize: "var(--font-size-sm)",
+    color: "var(--color-text-muted)",
+  },
+  itemsGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "var(--spacing-2)",
+  },
+  itemChip: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "var(--color-bg-primary)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    borderRadius: "var(--radius-full)",
+    padding: "var(--spacing-1-5) var(--spacing-3)",
+    cursor: "pointer",
+    transition: "var(--transition-all)",
+  },
+  itemChipText: {
+    fontSize: "var(--font-size-sm)",
+    color: "var(--color-text-secondary)",
+    marginRight: "var(--spacing-2)",
+  },
+  submitContainer: {
+    paddingTop: "var(--spacing-4)",
+  },
+  submitButton: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "var(--spacing-3) var(--spacing-4)",
+    color: "var(--color-white)",
+    fontWeight: "var(--font-weight-medium)",
+    borderRadius: "var(--radius-lg)",
+    border: "none",
+    cursor: "pointer",
+    transition: "var(--transition-all)",
+  },
+  spinner: {
+    width: "var(--icon-lg)",
+    height: "var(--icon-lg)",
+    borderRadius: "var(--radius-full)",
+    borderBottom: "var(--border-2) solid var(--color-white)",
+    marginRight: "var(--spacing-2)",
+    animation: "spin 1s linear infinite",
+  },
+  spinnerSm: {
+    width: "var(--icon-md)",
+    height: "var(--icon-md)",
+    borderRadius: "var(--radius-full)",
+    borderBottom: "var(--border-2) solid var(--color-white)",
+    marginRight: "var(--spacing-1)",
+    animation: "spin 1s linear infinite",
+  },
+  saveIcon: {
+    marginRight: "var(--spacing-2)",
+  },
+  modalContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-4)",
+  },
+  modalText: {
+    color: "var(--color-text-body)",
+  },
+  modalLabel: {
+    display: "block",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-tertiary)",
+  },
+  modalInput: {
+    flex: 1,
+    border: "var(--border-1) solid var(--color-border-input)",
+    borderRadius: "var(--radius-lg)",
+    padding: "var(--spacing-2) var(--spacing-4)",
+    outline: "none",
+    backgroundColor: "var(--color-bg-primary)",
+    color: "var(--color-text-body)",
+    fontSize: "var(--font-size-base)",
+  },
+  modalActions: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "var(--spacing-3)",
+    paddingTop: "var(--spacing-4)",
+  },
+  cancelButton: {
+    padding: "var(--spacing-2) var(--spacing-4)",
+    backgroundColor: "var(--color-bg-hover)",
+    color: "var(--color-text-tertiary)",
+    borderRadius: "var(--radius-lg)",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "none",
+    cursor: "pointer",
+    transition: "var(--transition-all)",
+  },
+  deleteButton: {
+    padding: "var(--spacing-2) var(--spacing-4)",
+    backgroundColor: "var(--color-danger)",
+    color: "var(--color-white)",
+    borderRadius: "var(--radius-lg)",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    transition: "var(--transition-all)",
+  },
+  renameButton: {
+    padding: "var(--spacing-2) var(--spacing-4)",
+    backgroundColor: "var(--color-primary)",
+    color: "var(--color-white)",
+    borderRadius: "var(--radius-lg)",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    transition: "var(--transition-all)",
+  },
+  iconSm: {
+    marginRight: "var(--spacing-1)",
+  },
+}
+
 const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description, itemLabel, placeholder, onRename }) => {
   const [localItems, setLocalItems] = useState(items)
   const [newItem, setNewItem] = useState("")
@@ -14,7 +207,6 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
   const [renameLoading, setRenameLoading] = useState(false)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
-  // Update local items when props change
   useEffect(() => {
     setLocalItems(items)
     setHasUnsavedChanges(false)
@@ -27,7 +219,6 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
       return
     }
 
-    // Check for duplicates
     if (localItems.some((item) => item.toLowerCase() === newItem.trim().toLowerCase())) {
       setError(`This ${itemLabel.toLowerCase()} already exists`)
       return
@@ -59,16 +250,12 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
   }
 
   const handleRename = async () => {
-    if (!newItemName.trim()) {
-      return
-    }
-
+    if (!newItemName.trim()) return
     if (newItemName === selectedItem) {
       setShowItemModal(false)
       return
     }
 
-    // Check for duplicates
     if (localItems.some((item) => item.toLowerCase() === newItemName.trim().toLowerCase())) {
       setError(`This ${itemLabel.toLowerCase()} already exists`)
       return
@@ -76,12 +263,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
 
     setRenameLoading(true)
     try {
-      if (onRename) {
-        await onRename(selectedItem, newItemName.trim())
-      }
-
-      // Let the parent component handle the state update
-      // Don't set hasUnsavedChanges to true since this is saved directly to the database
+      if (onRename) await onRename(selectedItem, newItemName.trim())
       setShowItemModal(false)
       setSelectedItem(null)
       setError("")
@@ -95,63 +277,63 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
-    // Only trigger onUpdate if there are unsaved changes
     if (hasUnsavedChanges) {
       onUpdate(localItems)
       setHasUnsavedChanges(false)
     }
   }
 
+  const getSubmitButtonStyle = () => {
+    if (isLoading) return { ...styles.submitButton, backgroundColor: "var(--color-text-disabled)", cursor: "not-allowed" }
+    if (hasUnsavedChanges) return { ...styles.submitButton, backgroundColor: "var(--color-primary)" }
+    return { ...styles.submitButton, backgroundColor: "var(--color-border-dark)", color: "var(--color-text-body)", cursor: "not-allowed" }
+  }
+
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {title && <h3 className="text-lg font-medium text-gray-800">{title}</h3>}
-        {description && <p className="text-sm text-gray-500 mb-4">{description}</p>}
+      <form onSubmit={handleSubmit} style={styles.form}>
+        {title && <h3 style={styles.title}>{title}</h3>}
+        {description && <p style={styles.description}>{description}</p>}
 
-        <div className="mb-6">
-          <div className="flex items-center">
-            <input type="text" value={newItem} onChange={(e) => {
-                setNewItem(e.target.value)
-                setError("")
-              }}
+        <div style={styles.inputContainer}>
+          <div style={styles.inputWrapper}>
+            <input type="text" value={newItem} onChange={(e) => { setNewItem(e.target.value); setError("") }}
               placeholder={placeholder || `Enter ${itemLabel}`}
-              className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              style={styles.input}
               disabled={isLoading}
             />
-            <button type="button" onClick={handleAddItem} disabled={isLoading} className={`px-4 py-2 ${isLoading ? "bg-gray-400" : "bg-[#1360AB] hover:bg-[#0d4b86]"} text-white rounded-r-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}>
+            <button type="button" onClick={handleAddItem} disabled={isLoading} style={{ ...styles.addButton, backgroundColor: isLoading ? "var(--color-text-disabled)" : "var(--color-primary)" }}>
               <HiPlus />
             </button>
           </div>
-          {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+          {error && <p style={styles.errorText}>{error}</p>}
         </div>
 
-        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Current {itemLabel}s</h4>
-
+        <div style={styles.itemsContainer}>
+          <h4 style={styles.itemsTitle}>Current {itemLabel}s</h4>
           {localItems.length === 0 ? (
-            <p className="text-sm text-gray-500">No {itemLabel.toLowerCase()}s added yet</p>
+            <p style={styles.emptyText}>No {itemLabel.toLowerCase()}s added yet</p>
           ) : (
-            <div className="flex flex-wrap gap-2">
+            <div style={styles.itemsGrid}>
               {localItems.map((item, index) => (
-                <div key={index} className="flex items-center bg-white border border-gray-200 rounded-full px-3 py-1.5 cursor-pointer hover:bg-gray-100" onClick={() => handleItemClick(item)}>
-                  <span className="text-sm text-gray-800 mr-2">{item}</span>
+                <div key={index} style={styles.itemChip} onClick={() => handleItemClick(item)}>
+                  <span style={styles.itemChipText}>{item}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <div className="pt-4">
-          <button type="submit" className={`w-full flex justify-center items-center px-4 py-3 ${ isLoading ? "bg-gray-400 cursor-not-allowed" : hasUnsavedChanges ? "bg-[#1360AB] hover:bg-[#0d4b86]" : "bg-gray-300 text-gray-600 cursor-not-allowed" } text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`} disabled={isLoading || !hasUnsavedChanges} >
+        <div style={styles.submitContainer}>
+          <button type="submit" style={getSubmitButtonStyle()} disabled={isLoading || !hasUnsavedChanges}>
             {isLoading ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                <div style={styles.spinner}></div>
                 Updating...
               </>
             ) : (
               <>
-                <HiSave className="mr-2" size={20} />
+                <HiSave style={styles.saveIcon} size={20} />
                 {hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
               </>
             )}
@@ -159,61 +341,36 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         </div>
       </form>
 
-      {/* Item Management Modal */}
       {showItemModal && (
-        <Modal title={`Manage ${itemLabel}`} onClose={() => {
-            setShowItemModal(false)
-            setError("")
-          }}
-          width={400}
-        >
-          <div className="space-y-4">
-            <p className="text-gray-600">
-              Current {itemLabel}: <span className="font-medium">{selectedItem}</span>
+        <Modal title={`Manage ${itemLabel}`} onClose={() => { setShowItemModal(false); setError("") }} width={400}>
+          <div style={styles.modalContent}>
+            <p style={styles.modalText}>
+              Current {itemLabel}: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{selectedItem}</span>
             </p>
-
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-gray-700">Rename {itemLabel}</label>
-              <div className="flex items-center">
-                <input type="text" value={newItemName} onChange={(e) => {
-                    setNewItemName(e.target.value)
-                    setError("")
-                  }}
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <label style={styles.modalLabel}>Rename {itemLabel}</label>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <input type="text" value={newItemName} onChange={(e) => { setNewItemName(e.target.value); setError("") }}
                   placeholder={`Enter new ${itemLabel.toLowerCase()} name`}
-                  className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  style={styles.modalInput}
                   disabled={renameLoading}
                 />
               </div>
-              {error && <p className="text-red-500 text-xs">{error}</p>}
+              {error && <p style={styles.errorText}>{error}</p>}
             </div>
-
-            <div className="flex justify-end space-x-3 pt-4">
-              <button type="button" onClick={() => setShowItemModal(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" disabled={renameLoading}>
-                Cancel
+            <div style={styles.modalActions}>
+              <button type="button" onClick={() => setShowItemModal(false)} style={styles.cancelButton} disabled={renameLoading}>Cancel</button>
+              <button type="button" onClick={handleDeleteRequest} style={styles.deleteButton} disabled={renameLoading}>
+                <HiTrash style={styles.iconSm} />Delete
               </button>
-              <button type="button" onClick={handleDeleteRequest} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center" disabled={renameLoading}>
-                <HiTrash className="mr-1" />
-                Delete
-              </button>
-              <button type="button" onClick={handleRename} className="px-4 py-2 bg-[#1360AB] hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center" disabled={renameLoading}>
-                {renameLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-1"></div>
-                    Renaming...
-                  </>
-                ) : (
-                  <>
-                    <HiPencil className="mr-1" />
-                    Rename
-                  </>
-                )}
+              <button type="button" onClick={handleRename} style={styles.renameButton} disabled={renameLoading}>
+                {renameLoading ? (<><div style={styles.spinnerSm}></div>Renaming...</>) : (<><HiPencil style={styles.iconSm} />Rename</>)}
               </button>
             </div>
           </div>
         </Modal>
       )}
 
-      {/* Delete Confirmation Dialog */}
       <ConfirmationDialog isOpen={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}
         onConfirm={handleRemoveItem}
         title={`Delete ${itemLabel}`}
