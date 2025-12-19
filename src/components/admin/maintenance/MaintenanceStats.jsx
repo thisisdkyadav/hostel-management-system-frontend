@@ -14,60 +14,60 @@ const MaintenanceStats = ({ maintenanceStaff }) => {
     {
       name: "Total Staff",
       value: totalStaff,
-      icon: <FaTools className="text-gray-700" />,
-      bgColor: "bg-gray-100",
+      icon: <FaTools style={{ color: "var(--color-text-body)" }} />,
+      bgColor: "var(--color-bg-hover)",
     },
     {
       name: "Plumbing",
       value: countByCategory.Plumbing || 0,
-      icon: <FaWrench className="text-blue-500" />,
-      bgColor: "bg-blue-50",
+      icon: <FaWrench style={{ color: "var(--color-info)" }} />,
+      bgColor: "var(--color-info-bg-light)",
     },
     {
       name: "Electrical",
       value: countByCategory.Electrical || 0,
-      icon: <FaBolt className="text-yellow-500" />,
-      bgColor: "bg-yellow-50",
+      icon: <FaBolt style={{ color: "var(--color-warning)" }} />,
+      bgColor: "var(--color-warning-bg-light)",
     },
     {
       name: "Civil",
       value: countByCategory.Civil || 0,
-      icon: <FaBuilding className="text-orange-500" />,
-      bgColor: "bg-orange-50",
+      icon: <FaBuilding style={{ color: "var(--color-orange-text)" }} />,
+      bgColor: "var(--color-orange-bg)",
     },
     {
       name: "Cleanliness",
       value: countByCategory.Cleanliness || 0,
-      icon: <FaBroom className="text-green-500" />,
-      bgColor: "bg-green-50",
+      icon: <FaBroom style={{ color: "var(--color-success)" }} />,
+      bgColor: "var(--color-success-bg-light)",
     },
     {
       name: "Internet",
       value: countByCategory.Internet || 0,
-      icon: <FaWifi className="text-purple-500" />,
-      bgColor: "bg-purple-50",
+      icon: <FaWifi style={{ color: "var(--color-purple-text)" }} />,
+      bgColor: "var(--color-purple-bg)",
     },
     {
       name: "Attendant",
       value: countByCategory.Attendant || 0,
-      icon: <FaUserTie className="text-pink-500" />,
-      bgColor: "bg-pink-50",
+      icon: <FaUserTie style={{ color: "var(--color-girls-text)" }} />,
+      bgColor: "var(--color-girls-bg)",
     },
     {
       name: "Other",
       value: countByCategory.Other || 0,
-      icon: <FaEllipsisH className="text-gray-500" />,
-      bgColor: "bg-gray-50",
+      icon: <FaEllipsisH style={{ color: "var(--color-text-muted)" }} />,
+      bgColor: "var(--color-bg-tertiary)",
     },
   ]
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
       {statCards.map((stat) => (
-        <div key={stat.name} className={`${stat.bgColor} rounded-xl p-4 flex flex-col items-center justify-center shadow-sm`}>
-          <div className="w-10 h-10 flex items-center justify-center mb-2">{stat.icon}</div>
-          <div className="text-2xl font-bold">{stat.value}</div>
-          <div className="text-sm text-gray-600 mt-1">{stat.name}</div>
+        <div key={stat.name} style={{ backgroundColor: stat.bgColor, borderRadius: "var(--radius-xl)", padding: "var(--spacing-4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", boxShadow: "var(--shadow-sm)" }}>
+          <div style={{ width: "var(--spacing-10)", height: "var(--spacing-10)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "var(--spacing-2)" }}>{stat.icon}</div>
+          <div style={{ fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)" }}>{stat.value}</div>
+          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>{stat.name}</div>
         </div>
       ))}
     </div>
