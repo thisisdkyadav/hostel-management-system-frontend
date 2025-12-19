@@ -16,7 +16,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
   }
 
   const getStatusColor = () => {
-    return security.hostelId ? { bg: "bg-green-500", light: "bg-green-100", text: "text-green-700" } : { bg: "bg-orange-500", light: "bg-orange-100", text: "text-orange-700" }
+    return security.hostelId ? { bg: 'var(--color-success)', light: 'var(--color-success-bg)', text: 'var(--color-success-text)' } : { bg: 'var(--color-warning)', light: 'var(--color-warning-bg)', text: 'var(--color-warning-text)' }
   }
 
   const statusColor = getStatusColor()
@@ -25,51 +25,51 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
   return (
     <>
       <Card className="group relative">
-        <div className="absolute top-3 right-3 flex items-center">
-          <div className={` right-4 h-3 w-3 rounded-full ${statusColor.bg}`}></div>
+        <div style={{ position: 'absolute', top: 'var(--spacing-3)', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
+          <div style={{ height: 'var(--spacing-3)', width: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', backgroundColor: statusColor.bg }}></div>
 
-          <span className={`ml-1.5 text-xs font-medium ${statusColor.text}`}>{security.hostelId ? "Assigned" : "Unassigned"}</span>
+          <span style={{ marginLeft: 'var(--spacing-1-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: statusColor.text }}>{security.hostelId ? "Assigned" : "Unassigned"}</span>
         </div>
 
-        <Card.Header className="mb-0">
-          <div className="flex items-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#1360AB] flex items-center justify-center text-[#ffffff] text-xl mr-4">
+        <Card.Header style={{ marginBottom: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-white)', fontSize: 'var(--font-size-xl)', marginRight: 'var(--spacing-4)' }} className="sm:w-16 sm:h-16">
               <FaShieldAlt />
             </div>
             <div>
-              <h3 className="font-bold text-gray-800 text-lg">{security.name}</h3>
-              <div className="flex items-center mt-1 text-sm text-gray-500">
-                <FaIdCard className="mr-1.5 text-[#1360AB] opacity-70" />
+              <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)', fontSize: 'var(--font-size-lg)' }}>{security.name}</h3>
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+                <FaIdCard style={{ marginRight: 'var(--spacing-1-5)', color: 'var(--color-primary)', opacity: 'var(--opacity-70)' }} />
                 <span>Security Staff</span>
               </div>
             </div>
           </div>
         </Card.Header>
 
-        <Card.Body className="mt-5 pt-4 border-t border-gray-100 space-y-3">
-          <div className="flex items-center">
-            <div className="w-7 h-7 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-              <FaEnvelope className="text-[#1360AB] text-xs" />
+        <Card.Body style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: 'var(--spacing-7)', height: 'var(--spacing-7)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+              <FaEnvelope style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
             </div>
-            <span className="text-sm text-gray-700 truncate">{security.email}</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{security.email}</span>
           </div>
 
-          <div className="flex items-center">
-            <div className="w-7 h-7 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-              <FaBuilding className="text-[#1360AB] text-xs" />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: 'var(--spacing-7)', height: 'var(--spacing-7)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+              <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
             </div>
             <div>
-              <span className="text-sm text-gray-700 font-medium">{hostelName}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{hostelName}</span>
             </div>
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-5 pt-4 border-t border-gray-100 flex gap-2">
-          <button onClick={() => setShowDetailsModal(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
-            <FaEye className="mr-1" /> <span className="text-sm">View Details</span>
+        <Card.Footer style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', gap: 'var(--spacing-2)' }}>
+          <button onClick={() => setShowDetailsModal(true)} style={{ flex: 1, padding: 'var(--spacing-2-5)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'all var(--transition-slow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)' }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)' }}>
+            <FaEye style={{ marginRight: 'var(--spacing-1)' }} /> <span style={{ fontSize: 'var(--font-size-sm)' }}>View Details</span>
           </button>
-          <button onClick={() => setShowEditForm(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
-            <FaEdit className="mr-1" /> <span className="text-sm">Edit</span>
+          <button onClick={() => setShowEditForm(true)} style={{ flex: 1, padding: 'var(--spacing-2-5)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'all var(--transition-slow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)' }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)' }}>
+            <FaEdit style={{ marginRight: 'var(--spacing-1)' }} /> <span style={{ fontSize: 'var(--font-size-sm)' }}>Edit</span>
           </button>
         </Card.Footer>
       </Card>
