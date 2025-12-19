@@ -110,21 +110,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
     <div>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--spacing-6)" }}>
         <div style={{ display: "inline-flex", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }} role="group">
-          <button
-            type="button"
-            style={{
-              padding: "var(--spacing-2) var(--spacing-4)",
-              fontSize: "var(--font-size-sm)",
-              fontWeight: "var(--font-weight-medium)",
-              borderTopLeftRadius: "var(--radius-lg)",
-              borderBottomLeftRadius: "var(--radius-lg)",
-              backgroundColor: inputMethod === "form" ? "var(--color-primary)" : "var(--color-bg-primary)",
-              color: inputMethod === "form" ? "var(--color-white)" : "var(--color-text-body)",
-              border: `var(--border-1) solid var(--color-border-input)`,
-              cursor: "pointer",
-              transition: "var(--transition-colors)",
-            }}
-            onMouseEnter={(e) => {
+          <button type="button" style={{ padding: "var(--spacing-2) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderTopLeftRadius: "var(--radius-lg)", borderBottomLeftRadius: "var(--radius-lg)", backgroundColor: inputMethod === "form" ? "var(--color-primary)" : "var(--color-bg-primary)", color: inputMethod === "form" ? "var(--color-white)" : "var(--color-text-body)", border: `var(--border-1) solid var(--color-border-input)`, cursor: "pointer", transition: "var(--transition-colors)", }} onMouseEnter={(e) => {
               if (inputMethod !== "form") {
                 e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
               }
@@ -139,21 +125,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             <FaEdit style={{ display: "inline", marginRight: "var(--spacing-2)" }} />
             Form Input
           </button>
-          <button
-            type="button"
-            style={{
-              padding: "var(--spacing-2) var(--spacing-4)",
-              fontSize: "var(--font-size-sm)",
-              fontWeight: "var(--font-weight-medium)",
-              borderTopRightRadius: "var(--radius-lg)",
-              borderBottomRightRadius: "var(--radius-lg)",
-              backgroundColor: inputMethod === "csv" ? "var(--color-primary)" : "var(--color-bg-primary)",
-              color: inputMethod === "csv" ? "var(--color-white)" : "var(--color-text-body)",
-              border: `var(--border-1) solid var(--color-border-input)`,
-              cursor: "pointer",
-              transition: "var(--transition-colors)",
-            }}
-            onMouseEnter={(e) => {
+          <button type="button" style={{ padding: "var(--spacing-2) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderTopRightRadius: "var(--radius-lg)", borderBottomRightRadius: "var(--radius-lg)", backgroundColor: inputMethod === "csv" ? "var(--color-primary)" : "var(--color-bg-primary)", color: inputMethod === "csv" ? "var(--color-white)" : "var(--color-text-body)", border: `var(--border-1) solid var(--color-border-input)`, cursor: "pointer", transition: "var(--transition-colors)", }} onMouseEnter={(e) => {
               if (inputMethod !== "csv") {
                 e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
               }
@@ -176,24 +148,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
             <div style={{ marginBottom: "var(--spacing-4)" }}>
               <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Number of Floors</label>
-              <input
-                type="number"
-                name="floors"
-                value={roomConfig.floors}
-                onChange={handleChange}
-                min="1"
-                style={{
-                  width: "100%",
-                  padding: "var(--input-padding)",
-                  border: `var(--border-1) solid var(--input-border)`,
-                  borderRadius: "var(--input-radius)",
-                  fontSize: "var(--font-size-base)",
-                  color: "var(--color-text-primary)",
-                  backgroundColor: "var(--input-bg)",
-                  outline: "none",
-                  transition: "var(--transition-colors)",
-                }}
-                onFocus={(e) => {
+              <input type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
                   e.currentTarget.style.borderColor = "var(--input-border-focus)"
                   e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
                 }}
@@ -206,24 +161,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
             <div style={{ marginBottom: "var(--spacing-4)" }}>
               <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Default Rooms per Floor</label>
-              <input
-                type="number"
-                name="defaultRoomsPerFloor"
-                value={roomConfig.defaultRoomsPerFloor}
-                onChange={handleChange}
-                min="1"
-                style={{
-                  width: "100%",
-                  padding: "var(--input-padding)",
-                  border: `var(--border-1) solid var(--input-border)`,
-                  borderRadius: "var(--input-radius)",
-                  fontSize: "var(--font-size-base)",
-                  color: "var(--color-text-primary)",
-                  backgroundColor: "var(--input-bg)",
-                  outline: "none",
-                  transition: "var(--transition-colors)",
-                }}
-                onFocus={(e) => {
+              <input type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
                   e.currentTarget.style.borderColor = "var(--input-border-focus)"
                   e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
                 }}
@@ -238,24 +176,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
 
           <div style={{ marginBottom: "var(--spacing-4)" }}>
             <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Standard Room Capacity</label>
-            <input
-              type="number"
-              name="standardCapacity"
-              value={roomConfig.standardCapacity}
-              onChange={handleChange}
-              min="1"
-              style={{
-                width: "100%",
-                padding: "var(--input-padding)",
-                border: `var(--border-1) solid var(--input-border)`,
-                borderRadius: "var(--input-radius)",
-                fontSize: "var(--font-size-base)",
-                color: "var(--color-text-primary)",
-                backgroundColor: "var(--input-bg)",
-                outline: "none",
-                transition: "var(--transition-colors)",
-              }}
-              onFocus={(e) => {
+            <input type="number" name="standardCapacity" value={roomConfig.standardCapacity} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
                 e.currentTarget.style.borderColor = "var(--input-border-focus)"
                 e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
               }}
@@ -273,11 +194,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             </div>
             {roomConfig.exceptions.map((ex, index) => (
               <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
-                <input
-                  type="number"
-                  placeholder="Floor Number"
-                  value={ex.floor}
-                  onChange={(e) => handleExceptionChange(index, "floor", e.target.value)}
+                <input type="number" placeholder="Floor Number" value={ex.floor} onChange={(e) => handleExceptionChange(index, "floor", e.target.value)}
                   min="1"
                   style={{
                     padding: "var(--input-padding)",
@@ -298,11 +215,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
                     e.currentTarget.style.boxShadow = "none"
                   }}
                 />
-                <input
-                  type="number"
-                  placeholder="Rooms on Floor"
-                  value={ex.roomsOverride}
-                  onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)}
+                <input type="number" placeholder="Rooms on Floor" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)}
                   min="1"
                   style={{
                     padding: "var(--input-padding)",
@@ -323,9 +236,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
                     e.currentTarget.style.boxShadow = "none"
                   }}
                 />
-                <button
-                  type="button"
-                  onClick={() => removeException(index)}
+                <button type="button" onClick={() => removeException(index)}
                   style={{
                     gridColumn: "span 2",
                     color: "var(--color-danger)",
@@ -348,22 +259,7 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
                 </button>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={addException}
-              style={{
-                marginTop: "var(--spacing-2)",
-                padding: "var(--spacing-1) var(--spacing-3)",
-                backgroundColor: "var(--color-success-bg)",
-                color: "var(--color-success-text)",
-                borderRadius: "var(--radius-lg)",
-                fontSize: "var(--font-size-sm)",
-                fontWeight: "var(--font-weight-medium)",
-                border: "none",
-                cursor: "pointer",
-                transition: "var(--transition-colors)",
-              }}
-              onMouseEnter={(e) => {
+            <button type="button" onClick={addException} style={{ marginTop: "var(--spacing-2)", padding: "var(--spacing-1) var(--spacing-3)", backgroundColor: "var(--color-success-bg)", color: "var(--color-success-text)", borderRadius: "var(--radius-lg)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", border: "none", cursor: "pointer", transition: "var(--transition-colors)", }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = "var(--color-success-bg-light)"
               }}
               onMouseLeave={(e) => {
