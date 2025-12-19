@@ -41,64 +41,64 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
   return (
     <>
       <Card>
-        <Card.Header className="mb-0">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center">
-              <div className="bg-blue-100 p-2 rounded-lg mr-3">
-                <FaFileSignature className="text-[#1360AB]" size={20} />
+        <Card.Header style={{ marginBottom: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
+                <FaFileSignature style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </div>
-              <h3 className="font-semibold text-lg text-gray-800">{undertaking.title}</h3>
+              <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
             </div>
             {!isReadOnly && (
-              <div className="flex space-x-2">
-                <button onClick={() => setShowEditModal(true)} className="p-2 text-gray-500 hover:text-[#1360AB] hover:bg-blue-50 rounded-lg transition-colors" title="Edit undertaking">
+              <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+                <button onClick={() => setShowEditModal(true)} style={{ padding: 'var(--spacing-2)', color: 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', background: 'none' }} onMouseEnter={(e) => { e.target.style.color = 'var(--color-primary)'; e.target.style.backgroundColor = 'var(--color-primary-bg)'; }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Edit undertaking">
                   <FaEdit />
                 </button>
-                <button onClick={handleDelete} disabled={isDeleting} className={`p-2 ${isDeleting ? "text-gray-400" : "text-gray-500 hover:text-red-600 hover:bg-red-50"} rounded-lg transition-colors`} title="Delete undertaking">
-                  {isDeleting ? <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin"></span> : <FaTrash />}
+                <button onClick={handleDelete} disabled={isDeleting} style={{ padding: 'var(--spacing-2)', color: isDeleting ? 'var(--color-text-muted)' : 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: isDeleting ? 'not-allowed' : 'pointer', background: 'none' }} onMouseEnter={(e) => { if (!isDeleting) { e.target.style.color = 'var(--color-danger)'; e.target.style.backgroundColor = 'var(--color-danger-bg)'; } }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Delete undertaking">
+                  {isDeleting ? <span style={{ display: 'inline-block', width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-border-input)', borderTopColor: 'var(--color-text-muted)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></span> : <FaTrash />}
                 </button>
               </div>
             )}
           </div>
         </Card.Header>
 
-        <Card.Body className="space-y-3 mt-4">
-          <div className="text-gray-600">
-            <p className="line-clamp-2">{undertaking.description}</p>
+        <Card.Body style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
+          <div style={{ color: 'var(--color-text-muted)' }}>
+            <p style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{undertaking.description}</p>
           </div>
-          <div className="flex items-start">
-            <FaCalendarAlt className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
-            <div className="text-gray-600">
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <div style={{ color: 'var(--color-text-muted)' }}>
               <span>Deadline: {formatDate(undertaking.deadline)}</span>
             </div>
           </div>
-          <div className="flex items-start">
-            <FaUsers className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
-            <div className="text-gray-600">
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaUsers style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <div style={{ color: 'var(--color-text-muted)' }}>
               <span>Students: {undertaking.totalStudents || 0}</span>
             </div>
           </div>
 
           {/* Acceptance progress bar */}
-          <div className="mt-2">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+          <div style={{ marginTop: 'var(--spacing-2)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
               <span>Acceptance Status</span>
               <span>{acceptancePercentage}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
-              <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${acceptancePercentage}%` }}></div>
+            <div style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', height: '0.625rem' }}>
+              <div style={{ backgroundColor: 'var(--color-success)', height: '0.625rem', borderRadius: 'var(--radius-full)', width: `${acceptancePercentage}%` }}></div>
             </div>
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-6 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
+        <Card.Footer style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'grid', gridTemplateColumns: isReadOnly ? '1fr' : 'repeat(2, 1fr)', gap: 'var(--spacing-3)' }}>
           {!isReadOnly && (
-            <button onClick={() => setShowManageStudentsModal(true)} className="py-2 px-3 bg-blue-50 hover:bg-blue-100 text-[#1360AB] rounded-lg transition-colors flex items-center justify-center font-medium text-sm">
-              <FaUsers className="mr-1" /> Manage Students
+            <button onClick={() => setShowManageStudentsModal(true)} style={{ padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}>
+              <FaUsers style={{ marginRight: 'var(--spacing-1)' }} /> Manage Students
             </button>
           )}
-          <button onClick={() => setShowStatusModal(true)} className={`py-2 px-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors flex items-center justify-center font-medium text-sm ${isReadOnly ? "col-span-2" : ""}`}>
-            <FaClipboardCheck className="mr-1" /> View Status
+          <button onClick={() => setShowStatusModal(true)} style={{ padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-dark)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', gridColumn: isReadOnly ? 'span 1' : 'auto' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-success-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success-bg)'}>
+            <FaClipboardCheck style={{ marginRight: 'var(--spacing-1)' }} /> View Status
           </button>
         </Card.Footer>
       </Card>
