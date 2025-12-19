@@ -77,113 +77,113 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
 
   return (
     <Modal title={`Acceptance Status - ${undertakingTitle}`} onClose={onClose} size="lg" width={900}>
-      <div className="space-y-5">
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+        {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }}>{error}</div>}
 
         {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="text-sm text-blue-600 font-medium">Total Students</div>
-            <div className="text-2xl font-bold text-blue-800">{totalStudents}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-4)' }}>
+          <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)', fontWeight: 'var(--font-weight-medium)' }}>Total Students</div>
+            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-primary-dark)' }}>{totalStudents}</div>
           </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <div className="text-sm text-green-600 font-medium">Accepted</div>
-            <div className="text-2xl font-bold text-green-800">{acceptedCount}</div>
+          <div style={{ backgroundColor: 'var(--color-success-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-success)', fontWeight: 'var(--font-weight-medium)' }}>Accepted</div>
+            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-success-dark)' }}>{acceptedCount}</div>
           </div>
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <div className="text-sm text-yellow-600 font-medium">Pending</div>
-            <div className="text-2xl font-bold text-yellow-800">{pendingCount}</div>
+          <div style={{ backgroundColor: 'var(--color-warning-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)', fontWeight: 'var(--font-weight-medium)' }}>Pending</div>
+            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-warning-dark)' }}>{pendingCount}</div>
           </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="text-sm text-gray-600 font-medium">Not Viewed</div>
-            <div className="text-2xl font-bold text-gray-800">{notViewedCount}</div>
+          <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Not Viewed</div>
+            <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{notViewedCount}</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="mt-2">
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
+        <div style={{ marginTop: 'var(--spacing-2)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
             <span>Overall Acceptance</span>
             <span>{acceptancePercentage}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${acceptancePercentage}%` }}></div>
+          <div style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', height: '0.625rem' }}>
+            <div style={{ backgroundColor: 'var(--color-success)', height: '0.625rem', borderRadius: 'var(--radius-full)', width: `${acceptancePercentage}%` }}></div>
           </div>
         </div>
 
         {/* Filters and search */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div className="flex space-x-2">
-            <button onClick={() => setStatusFilter("all")} className={`px-3 py-1.5 rounded-lg text-sm ${statusFilter === "all" ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+            <button onClick={() => setStatusFilter("all")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "all" ? 'var(--color-text-secondary)' : 'var(--color-bg-hover)', color: statusFilter === "all" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "all") e.target.style.backgroundColor = 'var(--color-bg-muted)'; }} onMouseLeave={(e) => { if (statusFilter !== "all") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }}>
               All
             </button>
-            <button onClick={() => setStatusFilter("accepted")} className={`px-3 py-1.5 rounded-lg text-sm ${statusFilter === "accepted" ? "bg-green-600 text-white" : "bg-green-50 text-green-700 hover:bg-green-100"}`}>
+            <button onClick={() => setStatusFilter("accepted")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "accepted" ? 'var(--color-success)' : 'var(--color-success-bg)', color: statusFilter === "accepted" ? 'var(--color-white)' : 'var(--color-success-dark)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "accepted") e.target.style.backgroundColor = 'var(--color-success-bg-hover)'; }} onMouseLeave={(e) => { if (statusFilter !== "accepted") e.target.style.backgroundColor = 'var(--color-success-bg)'; }}>
               Accepted
             </button>
-            <button onClick={() => setStatusFilter("pending")} className={`px-3 py-1.5 rounded-lg text-sm ${statusFilter === "pending" ? "bg-yellow-600 text-white" : "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"}`}>
+            <button onClick={() => setStatusFilter("pending")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "pending" ? 'var(--color-warning)' : 'var(--color-warning-bg)', color: statusFilter === "pending" ? 'var(--color-white)' : 'var(--color-warning-dark)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "pending") e.target.style.backgroundColor = 'var(--color-warning-bg-hover)'; }} onMouseLeave={(e) => { if (statusFilter !== "pending") e.target.style.backgroundColor = 'var(--color-warning-bg)'; }}>
               Pending
             </button>
-            <button onClick={() => setStatusFilter("not_viewed")} className={`px-3 py-1.5 rounded-lg text-sm ${statusFilter === "not_viewed" ? "bg-gray-600 text-white" : "bg-gray-50 text-gray-700 hover:bg-gray-100"}`}>
+            <button onClick={() => setStatusFilter("not_viewed")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "not_viewed" ? 'var(--color-text-muted)' : 'var(--color-bg-hover)', color: statusFilter === "not_viewed" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "not_viewed") e.target.style.backgroundColor = 'var(--color-bg-muted)'; }} onMouseLeave={(e) => { if (statusFilter !== "not_viewed") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }}>
               Not Viewed
             </button>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
+            <div style={{ position: 'relative' }}>
+              <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
+              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." style={{ width: '100%', paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
             </div>
-            <button onClick={exportToCSV} className="bg-[#1360AB] text-white flex items-center px-4 py-2 rounded-lg hover:bg-[#0F4C81] transition-colors" title="Export to CSV">
-              <FaFileDownload className="mr-2" /> Export
+            <button onClick={exportToCSV} style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'} title="Export to CSV">
+              <FaFileDownload style={{ marginRight: 'var(--spacing-2)' }} /> Export
             </button>
           </div>
         </div>
 
         {/* Students list */}
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1360AB]"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
+            <div style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: 'var(--border-2) solid transparent', borderTopColor: 'var(--color-primary)', borderBottomColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
           </div>
         ) : filteredStudents.length === 0 ? (
-          <NoResults icon={<FaClipboardCheck className="text-gray-300 text-3xl" />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />
+          <NoResults icon={<FaClipboardCheck style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No students found" suggestion={searchTerm ? "Try changing your search term or filter" : "No students match the selected filter"} />
         ) : (
-          <div className="mt-4 border border-gray-200 rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div style={{ marginTop: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+            <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ backgroundColor: 'var(--color-bg-hover)' }}>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Student
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Roll Number
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Acceptance Date
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
-                  <tr key={student.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 mr-3">{student.name ? student.name.charAt(0).toUpperCase() : "S"}</div>
+              <tbody>
+                {filteredStudents.map((student, index) => (
+                  <tr key={student.id} style={{ backgroundColor: index % 2 === 0 ? 'var(--color-bg-primary)' : 'var(--color-bg-hover)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ height: 'var(--icon-xl)', width: 'var(--icon-xl)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', marginRight: 'var(--spacing-3)' }}>{student.name ? student.name.charAt(0).toUpperCase() : "S"}</div>
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                          <div className="text-sm text-gray-500">{student.email}</div>
+                          <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.name}</div>
+                          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.rollNumber || "N/A"}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${student.status === "accepted" ? "bg-green-100 text-green-800" : student.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"}`}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.rollNumber || "N/A"}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <span style={{ padding: 'var(--spacing-1) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: student.status === "accepted" ? 'var(--color-success-bg)' : student.status === "pending" ? 'var(--color-warning-bg)' : 'var(--color-bg-muted)', color: student.status === "accepted" ? 'var(--color-success-dark)' : student.status === "pending" ? 'var(--color-warning-dark)' : 'var(--color-text-secondary)' }}>
                         {student.status === "accepted" ? "Accepted" : student.status === "pending" ? "Pending" : "Not Viewed"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.acceptedAt ? new Date(student.acceptedAt).toLocaleString() : "N/A"}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.acceptedAt ? new Date(student.acceptedAt).toLocaleString() : "N/A"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -191,8 +191,8 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
           </div>
         )}
 
-        <div className="flex justify-end pt-4 mt-6 border-t border-gray-100">
-          <button type="button" onClick={onClose} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}>
             Close
           </button>
         </div>

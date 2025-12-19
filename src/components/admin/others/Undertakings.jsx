@@ -50,27 +50,27 @@ const Undertakings = () => {
 
   return (
     <div>
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-        <h2 className="text-xl font-semibold text-gray-700">Undertakings</h2>
-        <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
-          <FaPlus className="mr-2" /> Add Undertaking
+      <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
+        <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Undertakings</h2>
+        <button onClick={() => setShowAddModal(true)} style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-xl)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary-hover)'; e.target.style.boxShadow = 'var(--shadow-md)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.boxShadow = 'var(--shadow-sm)'; }}>
+          <FaPlus style={{ marginRight: 'var(--spacing-2)' }} /> Add Undertaking
         </button>
       </header>
 
-      <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+      <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
         <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="w-full sm:w-64 md:w-72" />
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1360AB]"></div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
+          <div style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', border: 'var(--border-2) solid transparent', borderTopColor: 'var(--color-primary)', borderBottomColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
         </div>
       ) : error ? (
-        <div className="text-center p-8 text-red-600">{error}</div>
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-8)', color: 'var(--color-danger)' }}>{error}</div>
       ) : filteredUndertakings.length === 0 ? (
-        <NoResults icon={<FaFileSignature className="text-gray-300 text-3xl" />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
+        <NoResults icon={<FaFileSignature style={{ color: 'var(--color-border-primary)', fontSize: 'var(--icon-3xl)' }} />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
       ) : (
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div style={{ marginTop: 'var(--spacing-6)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--spacing-6)' }}>
           {filteredUndertakings.map((undertaking) => (
             <UndertakingCard key={undertaking.id} undertaking={undertaking} onUpdate={fetchUndertakings} onDelete={fetchUndertakings} />
           ))}
