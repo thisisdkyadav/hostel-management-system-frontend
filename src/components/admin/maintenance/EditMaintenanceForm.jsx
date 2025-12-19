@@ -94,54 +94,54 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
 
   return (
     <Modal title="Edit Maintenance Staff" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
         {error && (
-          <div className="p-4 bg-red-50 text-red-800 rounded-lg flex items-start">
-            <FaExclamationTriangle className="mt-0.5 mr-2 flex-shrink-0" />
+          <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
+            <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
             <p>{error}</p>
           </div>
         )}
 
-        <div className="flex flex-col items-center mb-6">
-          <div className="relative h-24 w-24 rounded-full mb-2">
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "var(--spacing-6)" }}>
+          <div style={{ position: "relative", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
             {formData.profileImage ? (
-              <img src={getMediaUrl(formData.profileImage)} alt={formData.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+              <img src={getMediaUrl(formData.profileImage)} alt={formData.name} style={{ height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }} />
             ) : (
-              <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
-                <FaTools className="h-12 w-12 text-[#1360AB]" />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
+                <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-primary)" }} />
               </div>
             )}
-            <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 bg-[#1360AB] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#0F4C81] transition-colors">
-              <HiCamera className="w-4 h-4" />
+            <div onClick={() => setIsImageModalOpen(true)} style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", color: "var(--color-white)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }}>
+              <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
             </div>
           </div>
-          <span className="text-sm text-gray-500">Click the camera icon to change profile photo</span>
+          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Click the camera icon to change profile photo</span>
         </div>
 
         {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Staff Name</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="Enter staff name" required />
+          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Staff Name</label>
+          <input type="text" name="name" value={formData.name} onChange={handleChange} style={{ width: "100%", padding: "var(--spacing-3)", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", outline: "none", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }} placeholder="Enter staff name" required />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
+          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Phone Number</label>
+          <div style={{ position: "relative" }}>
+            <div style={{ position: "absolute", left: "var(--spacing-3)", top: "var(--spacing-3)", color: "var(--color-text-placeholder)" }}>
               <FaPhone />
             </div>
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="+91 9876543210" />
+            <input type="text" name="phone" value={formData.phone} onChange={handleChange} style={{ width: "100%", padding: "var(--spacing-3)", paddingLeft: "var(--spacing-10)", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", outline: "none", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }} placeholder="+91 9876543210" />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Specialty Category</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
+          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Specialty Category</label>
+          <div style={{ position: "relative" }}>
+            <div style={{ position: "absolute", left: "var(--spacing-3)", top: "var(--spacing-3)", color: "var(--color-text-placeholder)" }}>
               <FaTools />
             </div>
-            <select name="category" value={formData.category} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] appearance-none bg-white" required>
+            <select name="category" value={formData.category} onChange={handleChange} style={{ width: "100%", padding: "var(--spacing-3)", paddingLeft: "var(--spacing-10)", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", outline: "none", appearance: "none", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }} required>
               <option value="">Select a category</option>
               {MAINTENANCE_CATEGORIES.map((category) => (
                 <option key={category} value={category}>
@@ -152,14 +152,15 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
           </div>
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between pt-4 mt-5 border-t border-gray-100">
-          <button type="button" onClick={handleDelete} disabled={loading} className="mt-3 sm:mt-0 px-4 py-2.5 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center sm:justify-start">
-            {loading ? <span className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin mr-2"></span> : <FaTrash className="mr-2" />}
+
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-5)", borderTop: "var(--border-1) solid var(--color-border-light)", gap: "var(--spacing-3)" }}>
+          <button type="button" onClick={handleDelete} disabled={loading} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", transition: "var(--transition-colors)", display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
+            {loading ? <span style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", border: "var(--border-2) solid var(--color-danger)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></span> : <FaTrash style={{ marginRight: "var(--spacing-2)" }} />}
             Delete Account
           </button>
 
-          <button type="submit" disabled={loading} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4d8a] transition-colors flex items-center justify-center sm:justify-start">
-            {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span> : <FaSave className="mr-2" />}
+          <button type="submit" disabled={loading} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", transition: "var(--transition-colors)", display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
+            {loading ? <span style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", border: "var(--border-2) solid var(--color-white)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></span> : <FaSave style={{ marginRight: "var(--spacing-2)" }} />}
             Save Changes
           </button>
         </div>

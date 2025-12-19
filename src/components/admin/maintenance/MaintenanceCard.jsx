@@ -22,38 +22,38 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
   const getCategoryIcon = (category) => {
     switch (category) {
       case "Plumbing":
-        return <FaWrench className="text-blue-500" />
+        return <FaWrench style={{ color: "var(--color-info)" }} />
       case "Electrical":
-        return <FaBolt className="text-yellow-500" />
+        return <FaBolt style={{ color: "var(--color-warning)" }} />
       case "Civil":
-        return <FaBuilding className="text-orange-500" />
+        return <FaBuilding style={{ color: "var(--color-orange-text)" }} />
       case "Cleanliness":
-        return <FaBroom className="text-green-500" />
+        return <FaBroom style={{ color: "var(--color-success)" }} />
       case "Internet":
-        return <FaWifi className="text-purple-500" />
+        return <FaWifi style={{ color: "var(--color-purple-text)" }} />
       case "Attendant":
-        return <FaUserTie className="text-pink-500" />
+        return <FaUserTie style={{ color: "var(--color-girls-text)" }} />
       default:
-        return <FaEllipsisH className="text-gray-500" />
+        return <FaEllipsisH style={{ color: "var(--color-text-muted)" }} />
     }
   }
 
   const getCategoryColor = (category) => {
     switch (category) {
       case "Plumbing":
-        return { bg: "bg-blue-100", text: "text-blue-700" }
+        return { bg: "var(--color-info-bg)", text: "var(--color-info-text)" }
       case "Electrical":
-        return { bg: "bg-yellow-100", text: "text-yellow-700" }
+        return { bg: "var(--color-warning-bg)", text: "var(--color-warning-text)" }
       case "Civil":
-        return { bg: "bg-orange-100", text: "text-orange-700" }
+        return { bg: "var(--color-orange-bg)", text: "var(--color-orange-text)" }
       case "Cleanliness":
-        return { bg: "bg-green-100", text: "text-green-700" }
+        return { bg: "var(--color-success-bg)", text: "var(--color-success-text)" }
       case "Internet":
-        return { bg: "bg-purple-100", text: "text-purple-700" }
+        return { bg: "var(--color-purple-light-bg)", text: "var(--color-purple-text)" }
       case "Attendant":
-        return { bg: "bg-pink-100", text: "text-pink-700" }
+        return { bg: "var(--color-girls-bg)", text: "var(--color-girls-text)" }
       default:
-        return { bg: "bg-gray-100", text: "text-gray-700" }
+        return { bg: "var(--color-bg-hover)", text: "var(--color-text-body)" }
     }
   }
 
@@ -62,53 +62,54 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
   return (
     <>
       <Card className="group relative">
-        <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium ${categoryColor.bg} ${categoryColor.text}`}>{getCategoryDisplayLabel(staff.category)}</span>
+        <div style={{ position: "absolute", top: "var(--spacing-3)", right: "var(--spacing-3)" }}>
+          <span style={{ padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: categoryColor.bg, color: categoryColor.text }}>{getCategoryDisplayLabel(staff.category)}</span>
         </div>
 
         <Card.Header className="mb-0">
-          <div className="flex items-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mr-4 overflow-hidden">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ width: "var(--avatar-lg)", height: "var(--avatar-lg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-4)", overflow: "hidden" }}>
               {staff.profileImage ? (
-                <img src={getMediaUrl(staff.profileImage)} alt={staff.name} className="w-full h-full object-cover" />
+                <img src={getMediaUrl(staff.profileImage)} alt={staff.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               ) : (
-                <div className="w-full h-full bg-[#1360AB] flex items-center justify-center text-[#ffffff] text-xl">
+                <div style={{ width: "100%", height: "100%", backgroundColor: "var(--color-primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-white)", fontSize: "var(--font-size-xl)" }}>
                   <FaUserCog />
                 </div>
               )}
             </div>
             <div>
-              <h3 className="font-bold text-gray-800 text-lg">{staff.name}</h3>
-              <div className="flex items-center mt-1 text-sm text-gray-500">
+              <h3 style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", fontSize: "var(--font-size-lg)" }}>{staff.name}</h3>
+              <div style={{ display: "flex", alignItems: "center", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                 {getCategoryIcon(staff.category)}
-                <span className="ml-1.5">{getCategoryDisplayLabel(staff.category)}</span>
+                <span style={{ marginLeft: "var(--spacing-1-5)" }}>{getCategoryDisplayLabel(staff.category)}</span>
               </div>
             </div>
           </div>
         </Card.Header>
 
-        <Card.Body className="mt-5 pt-4 border-t border-gray-100 space-y-3">
-          <div className="flex items-center">
-            <div className="w-7 h-7 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-              <FaEnvelope className="text-[#1360AB] text-xs" />
+        <Card.Body style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+              <FaEnvelope style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
             </div>
-            <span className="text-sm text-gray-700 truncate">{staff.email}</span>
+            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.email}</span>
           </div>
 
-          <div className="flex items-center">
-            <div className="w-7 h-7 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-              <FaPhone className="text-[#1360AB] text-xs" />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
+              <FaPhone style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
             </div>
-            <span className="text-sm text-gray-700 truncate">{staff.phone || "Not provided"}</span>
+            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</span>
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-5 pt-4 border-t border-gray-100 flex gap-2">
-          <button onClick={() => setShowDetailsModal(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
-            <FaEye className="mr-1" /> <span className="text-sm">View Details</span>
+
+        <Card.Footer className="pt-4 border-t flex gap-2" style={{ borderColor: "var(--color-border-light)" }}>
+          <button onClick={() => setShowDetailsModal(true)} className="flex-1 flex items-center justify-center gap-1 border-0 cursor-pointer" style={{ padding: "var(--spacing-2-5)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", borderRadius: "var(--radius-lg)", transition: "var(--transition-all)", fontWeight: "var(--font-weight-medium)" }}>
+            <FaEye /> <span style={{ fontSize: "var(--font-size-sm)" }}>View Details</span>
           </button>
-          <button onClick={() => setShowEditForm(true)} className="flex-1 p-2.5 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300 flex items-center justify-center">
-            <FaEdit className="mr-1" /> <span className="text-sm">Edit</span>
+          <button onClick={() => setShowEditForm(true)} className="flex-1 flex items-center justify-center gap-1 border-0 cursor-pointer" style={{ padding: "var(--spacing-2-5)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", borderRadius: "var(--radius-lg)", transition: "var(--transition-all)", fontWeight: "var(--font-weight-medium)" }}>
+            <FaEdit /> <span style={{ fontSize: "var(--font-size-sm)" }}>Edit</span>
           </button>
         </Card.Footer>
       </Card>
