@@ -48,41 +48,41 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   return (
     <>
       <Card>
-        <Card.Header className="mb-0">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center">
-              <div className="bg-blue-100 p-2 rounded-lg mr-3">
-                <FaBuilding className="text-[#1360AB]" size={20} />
+        <Card.Header style={{ marginBottom: 0 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
+                <FaBuilding style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-lg)' }} />
               </div>
-              <h3 className="font-semibold text-lg text-gray-800">{provider.name}</h3>
+              <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{provider.name}</h3>
             </div>
-            <div className="flex space-x-2">
-              <button onClick={() => setShowEditModal(true)} className="p-2 text-gray-500 hover:text-[#1360AB] hover:bg-blue-50 rounded-lg transition-colors" title="Edit provider">
+            <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+              <button onClick={() => setShowEditModal(true)} style={{ padding: 'var(--spacing-2)', color: 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', background: 'none' }} onMouseEnter={(e) => { e.target.style.color = 'var(--color-primary)'; e.target.style.backgroundColor = 'var(--color-primary-bg)'; }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Edit provider">
                 <FaEdit />
               </button>
-              <button onClick={handleDelete} disabled={isDeleting} className={`p-2 ${isDeleting ? "text-gray-400" : "text-gray-500 hover:text-red-600 hover:bg-red-50"} rounded-lg transition-colors`} title="Delete provider">
-                {isDeleting ? <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-gray-500 rounded-full animate-spin"></span> : <FaTrash />}
+              <button onClick={handleDelete} disabled={isDeleting} style={{ padding: 'var(--spacing-2)', color: isDeleting ? 'var(--color-text-muted)' : 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: isDeleting ? 'not-allowed' : 'pointer', background: 'none' }} onMouseEnter={(e) => { if (!isDeleting) { e.target.style.color = 'var(--color-danger)'; e.target.style.backgroundColor = 'var(--color-danger-bg)'; } }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Delete provider">
+                {isDeleting ? <span style={{ display: 'inline-block', width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-border-input)', borderTopColor: 'var(--color-text-muted)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></span> : <FaTrash />}
               </button>
             </div>
           </div>
         </Card.Header>
 
-        <Card.Body className="space-y-3 mt-4">
-          <div className="flex items-start">
-            <FaEnvelope className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
-            <span className="text-gray-600 break-all">{provider.email}</span>
+        <Card.Body style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <span style={{ color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>{provider.email}</span>
           </div>
-          <div className="flex items-start">
-            <FaPhone className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
-            <span className="text-gray-600">{provider.phone}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaPhone style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <span style={{ color: 'var(--color-text-muted)' }}>{provider.phone}</span>
           </div>
-          <div className="flex items-start">
-            <FaMapMarkerAlt className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
-            <span className="text-gray-600">{provider.address}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaMapMarkerAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <span style={{ color: 'var(--color-text-muted)' }}>{provider.address}</span>
           </div>
-          <div className="flex items-start">
-            <FaCalendarAlt className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
-            <div className="text-gray-600">
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaCalendarAlt style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+            <div style={{ color: 'var(--color-text-muted)' }}>
               <span>
                 Valid: {formatDate(provider.startDate)} - {formatDate(provider.endDate)}
               </span>
@@ -90,9 +90,9 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
           </div>
         </Card.Body>
 
-        <Card.Footer className="mt-6 pt-4 border-t border-gray-100">
-          <button onClick={() => setShowBulkUpdateModal(true)} className="w-full py-2.5 px-4 bg-blue-50 hover:bg-blue-100 text-[#1360AB] rounded-lg transition-colors flex items-center justify-center font-medium">
-            <FaUsers className="mr-2" /> Update Student Insurance Details
+        <Card.Footer style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button onClick={() => setShowBulkUpdateModal(true)} style={{ width: '100%', padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}>
+            <FaUsers style={{ marginRight: 'var(--spacing-2)' }} /> Update Student Insurance Details
           </button>
         </Card.Footer>
       </Card>
