@@ -3,6 +3,278 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
 
+const styles = {
+  spaceY5: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-5)',
+  },
+  dropzone: {
+    border: 'var(--border-2) dashed var(--color-border-primary)',
+    borderRadius: 'var(--radius-xl)',
+    padding: 'var(--spacing-8)',
+    textAlign: 'center',
+    cursor: 'pointer',
+    backgroundColor: 'var(--color-bg-tertiary)',
+    transition: 'var(--transition-colors)',
+  },
+  dropzoneHover: {
+    backgroundColor: 'var(--color-bg-hover)',
+  },
+  uploadIcon: {
+    margin: '0 auto',
+    height: 'var(--icon-4xl)',
+    width: 'var(--icon-4xl)',
+    color: 'var(--color-text-disabled)',
+  },
+  dropzoneText: {
+    marginTop: 'var(--spacing-2)',
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-text-muted)',
+  },
+  dropzoneHint: {
+    marginTop: 'var(--spacing-3)',
+    fontSize: 'var(--font-size-xs)',
+    color: 'var(--color-text-light)',
+  },
+  hiddenInput: {
+    display: 'none',
+  },
+  centerColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  downloadButton: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-info)',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    marginBottom: 'var(--spacing-2)',
+    transition: 'var(--transition-colors)',
+    padding: 'var(--spacing-1)',
+  },
+  downloadButtonHover: {
+    color: 'var(--color-info-hover)',
+  },
+  downloadIcon: {
+    marginRight: 'var(--spacing-1)',
+  },
+  infoBox: {
+    fontSize: 'var(--font-size-xs)',
+    color: 'var(--color-text-muted)',
+    marginTop: 'var(--spacing-2)',
+    backgroundColor: 'var(--color-bg-tertiary)',
+    padding: 'var(--spacing-3)',
+    borderRadius: 'var(--radius-lg)',
+    maxWidth: '28rem',
+  },
+  infoTitle: {
+    fontWeight: 'var(--font-weight-medium)',
+    marginBottom: 'var(--spacing-1)',
+  },
+  infoGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    columnGap: 'var(--spacing-4)',
+    rowGap: 'var(--spacing-1)',
+    listStyle: 'none',
+    padding: 0,
+    margin: 0,
+  },
+  fieldLabel: {
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  infoNote: {
+    marginTop: 'var(--spacing-2)',
+    fontSize: 'var(--font-size-xs)',
+    color: 'var(--color-text-light)',
+  },
+  fileSelected: {
+    padding: 'var(--spacing-2) var(--spacing-4)',
+    backgroundColor: 'var(--color-info-bg)',
+    borderRadius: 'var(--radius-lg)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  fileSelectedText: {
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-info-text)',
+  },
+  fileName: {
+    fontWeight: 'var(--font-weight-medium)',
+  },
+  removeFileButton: {
+    color: 'var(--color-text-light)',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 'var(--spacing-1)',
+    transition: 'var(--transition-colors)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  removeFileButtonHover: {
+    color: 'var(--color-text-body)',
+  },
+  errorBox: {
+    padding: 'var(--spacing-2) var(--spacing-4)',
+    backgroundColor: 'var(--color-danger-bg)',
+    color: 'var(--color-danger)',
+    borderRadius: 'var(--radius-lg)',
+    borderLeft: '4px solid var(--color-danger)',
+  },
+  loadingContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'var(--spacing-4) 0',
+  },
+  spinner: {
+    width: 'var(--spacing-6)',
+    height: 'var(--spacing-6)',
+    border: 'var(--border-2) solid var(--color-border-primary)',
+    borderTopColor: 'var(--color-primary)',
+    borderRadius: 'var(--radius-full)',
+    animation: 'spin 1s linear infinite',
+  },
+  loadingText: {
+    marginLeft: 'var(--spacing-2)',
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-text-muted)',
+  },
+  previewHeader: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 'var(--spacing-4)',
+  },
+  previewHeaderRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  previewTitle: {
+    fontSize: 'var(--font-size-lg)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-text-secondary)',
+  },
+  countBadge: {
+    marginTop: 'var(--spacing-2)',
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-text-muted)',
+    backgroundColor: 'var(--color-info-bg)',
+    padding: 'var(--spacing-1) var(--spacing-3)',
+    borderRadius: 'var(--radius-full)',
+  },
+  tableContainer: {
+    border: 'var(--border-1) solid var(--color-border-primary)',
+    borderRadius: 'var(--radius-lg)',
+    overflow: 'hidden',
+    maxHeight: '24rem',
+    overflowY: 'auto',
+  },
+  table: {
+    minWidth: '100%',
+    borderCollapse: 'collapse',
+  },
+  tableHeader: {
+    backgroundColor: 'var(--color-bg-tertiary)',
+    position: 'sticky',
+    top: 0,
+  },
+  tableHeaderCell: {
+    padding: 'var(--spacing-3) var(--spacing-6)',
+    textAlign: 'left',
+    fontSize: 'var(--font-size-xs)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-text-light)',
+    textTransform: 'uppercase',
+    letterSpacing: 'var(--letter-spacing-wider)',
+  },
+  tableBody: {
+    backgroundColor: 'var(--color-bg-primary)',
+  },
+  tableRowEven: {
+    backgroundColor: 'var(--color-bg-primary)',
+  },
+  tableRowOdd: {
+    backgroundColor: 'var(--color-bg-tertiary)',
+  },
+  tableCell: {
+    padding: 'var(--spacing-4) var(--spacing-6)',
+    whiteSpace: 'nowrap',
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-text-primary)',
+    borderBottom: 'var(--border-1) solid var(--color-border-primary)',
+  },
+  removePasswordText: {
+    color: 'var(--color-danger)',
+  },
+  passwordMask: {
+    color: 'var(--color-text-primary)',
+  },
+  footer: {
+    marginTop: 'var(--spacing-6)',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'var(--spacing-3)',
+    paddingTop: 'var(--spacing-4)',
+    borderTop: 'var(--border-1) solid var(--color-border-light)',
+  },
+  cancelButton: {
+    padding: 'var(--spacing-2-5) var(--spacing-4)',
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-text-body)',
+    backgroundColor: 'var(--color-bg-primary)',
+    border: 'var(--border-1) solid var(--color-border-input)',
+    borderRadius: 'var(--radius-lg)',
+    cursor: 'pointer',
+    transition: 'var(--transition-colors)',
+  },
+  cancelButtonHover: {
+    backgroundColor: 'var(--color-bg-tertiary)',
+  },
+  confirmButton: {
+    padding: 'var(--spacing-2-5) var(--spacing-4)',
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-white)',
+    backgroundColor: 'var(--color-primary)',
+    border: 'none',
+    borderRadius: 'var(--radius-lg)',
+    cursor: 'pointer',
+    transition: 'var(--transition-colors)',
+    boxShadow: 'var(--shadow-sm)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--spacing-2)',
+  },
+  confirmButtonHover: {
+    backgroundColor: 'var(--color-primary-hover)',
+  },
+  confirmButtonDisabled: {
+    opacity: 'var(--opacity-disabled)',
+    cursor: 'not-allowed',
+  },
+  buttonSpinner: {
+    width: 'var(--spacing-4)',
+    height: 'var(--spacing-4)',
+    border: 'var(--border-2) solid var(--color-white)',
+    borderTopColor: 'transparent',
+    borderRadius: 'var(--radius-full)',
+    animation: 'spin 1s linear infinite',
+  },
+}
+
 const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -11,6 +283,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
   const [error, setError] = useState("")
   const [step, setStep] = useState(1)
   const fileInputRef = useRef(null)
+  const [dropzoneHover, setDropzoneHover] = useState(false)
 
   const requiredFields = ["email", "password"]
 
@@ -42,10 +315,16 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
 
   const handleDragOver = (e) => {
     e.preventDefault()
+    setDropzoneHover(true)
+  }
+
+  const handleDragLeave = () => {
+    setDropzoneHover(false)
   }
 
   const handleDrop = (e) => {
     e.preventDefault()
+    setDropzoneHover(false)
     const file = e.dataTransfer.files[0]
     if (file) {
       if (file.type !== "text/csv") {
@@ -132,114 +411,127 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
   return (
     <Modal title="Bulk Password Update" onClose={onClose} width={700}>
       {step === 1 && (
-        <div className="space-y-5">
-          <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-            <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
-            <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
-            <p className="mt-3 text-xs text-gray-500">
+        <div style={styles.spaceY5}>
+          <div
+            style={{ ...styles.dropzone, ...(dropzoneHover ? styles.dropzoneHover : {}) }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current.click()}
+          >
+            <FaFileUpload style={styles.uploadIcon} />
+            <p style={styles.dropzoneText}>Drag and drop a CSV file here, or click to select a file</p>
+            <p style={styles.dropzoneHint}>
               <strong>Required fields:</strong> email, password
             </p>
-            <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+            <input type="file" ref={fileInputRef} style={styles.hiddenInput} accept=".csv" onChange={handleFileUpload} />
           </div>
-          <div className="flex flex-col items-center">
-            <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
-              <FaFileDownload className="mr-1" />
+          <div style={styles.centerColumn}>
+            <button onClick={generateCsvTemplate} style={styles.downloadButton}>
+              <FaFileDownload style={styles.downloadIcon} />
               Download CSV Template
             </button>
 
-            <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
-              <p className="font-medium mb-1">Field Input Types:</p>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div style={styles.infoBox}>
+              <p style={styles.infoTitle}>Field Input Types:</p>
+              <ul style={styles.infoGrid}>
                 <li>
-                  <span className="font-medium">email:</span> String (Required)
+                  <span style={styles.fieldLabel}>email:</span> String (Required)
                 </li>
                 <li>
-                  <span className="font-medium">password:</span> String (Required)
+                  <span style={styles.fieldLabel}>password:</span> String (Required)
                 </li>
               </ul>
-              <p className="mt-2 text-xs text-gray-500">Set password to empty string or "null" to remove password</p>
+              <p style={styles.infoNote}>Set password to empty string or "null" to remove password</p>
             </div>
           </div>
           {csvFile && (
-            <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
-              <span className="text-sm text-blue-700">
-                Selected file: <span className="font-medium">{csvFile.name}</span>
+            <div style={styles.fileSelected}>
+              <span style={styles.fileSelectedText}>
+                Selected file: <span style={styles.fileName}>{csvFile.name}</span>
               </span>
               <button onClick={(e) => {
-                  e.stopPropagation()
-                  setCsvFile(null)
-                }}
-                className="text-gray-500 hover:text-gray-700"
+                e.stopPropagation()
+                setCsvFile(null)
+              }}
+                style={styles.removeFileButton}
               >
                 <FaTimes />
               </button>
             </div>
           )}
-          {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+          {error && <div style={styles.errorBox}>{error}</div>}
           {isLoading && (
-            <div className="flex items-center justify-center py-4">
-              <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-              <span className="ml-2 text-sm text-gray-600">Processing file...</span>
+            <div style={styles.loadingContainer}>
+              <div style={styles.spinner}></div>
+              <span style={styles.loadingText}>Processing file...</span>
             </div>
           )}
         </div>
       )}
 
       {step === 2 && (
-        <div className="space-y-5">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-800">Preview Password Updates</h3>
-            <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} users will be updated</div>
+        <div style={styles.spaceY5}>
+          <div style={styles.previewHeaderRow}>
+            <h3 style={styles.previewTitle}>Preview Password Updates</h3>
+            <div style={styles.countBadge}>{parsedData.length} users will be updated</div>
           </div>
 
-          <div className="border rounded-lg overflow-hidden max-h-96 overflow-y-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0">
+          <div style={styles.tableContainer}>
+            <table style={styles.table}>
+              <thead style={styles.tableHeader}>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" style={styles.tableHeaderCell}>
                     Email
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" style={styles.tableHeaderCell}>
                     Password
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={styles.tableBody}>
                 {parsedData.map((user, index) => (
-                  <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.password === "" || user.password === "null" || user.password === null ? <span className="text-red-500">Remove password</span> : <span className="text-gray-900">••••••••</span>}</td>
+                  <tr key={index} style={index % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd}>
+                    <td style={styles.tableCell}>{user.email}</td>
+                    <td style={styles.tableCell}>{user.password === "" || user.password === "null" || user.password === null ? <span style={styles.removePasswordText}>Remove password</span> : <span style={styles.passwordMask}>••••••••</span>}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+          {error && <div style={styles.errorBox}>{error}</div>}
         </div>
       )}
 
-      <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
+      <div style={styles.footer}>
         {step === 1 ? (
-          <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onClose} style={styles.cancelButton}>
             Cancel
           </button>
         ) : (
-          <button onClick={resetForm} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={resetForm} style={styles.cancelButton}>
             Back
           </button>
         )}
 
         {step === 2 && (
-          <button onClick={handleUpdate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading || isUpdating}>
+          <button
+            onClick={handleUpdate}
+            style={{
+              ...styles.confirmButton,
+              ...(parsedData.length === 0 || isLoading || isUpdating ? styles.confirmButtonDisabled : {})
+            }}
+            disabled={parsedData.length === 0 || isLoading || isUpdating}
+          >
             {isUpdating ? (
               <>
-                <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div style={styles.buttonSpinner}></div>
                 Updating Passwords...
               </>
             ) : (
               <>
-                <FaCheck className="mr-2" /> Confirm Update
+                <FaCheck /> Confirm Update
               </>
             )}
           </button>
