@@ -231,6 +231,7 @@
   --spacing-14: 3.5rem;     /* 56px */
   --spacing-16: 4rem;       /* 64px */
   --spacing-20: 5rem;       /* 80px */
+  --spacing-24: 6rem;       /* 96px */
 
   /* ============================================
      TYPOGRAPHY
@@ -358,6 +359,9 @@
   --modal-shadow: var(--shadow-modal);
   --modal-backdrop: var(--color-bg-modal-overlay);
   --modal-title-color: #1360AB;
+  --modal-width-sm: 500px;
+  --modal-width-md: 600px;
+  --modal-width-lg: 800px;
 
   /* Scrollbar */
   --scrollbar-width: 6px;
