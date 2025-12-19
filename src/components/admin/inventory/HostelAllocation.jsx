@@ -199,23 +199,23 @@ const HostelAllocation = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 className="text-lg font-medium text-gray-800">Hostel Inventory Allocation</h3>
-          <p className="text-sm text-gray-500">Allocate inventory items to hostels</p>
+          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Hostel Inventory Allocation</h3>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Allocate inventory items to hostels</p>
         </div>
-        <button onClick={openNewAllocationModal} className="flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+        <button onClick={openNewAllocationModal} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
           <FaPlus /> Allocate Items
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-        <h3 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
-          <FaFilter className="mr-2 text-gray-500" /> Filter Allocations
+      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-border-light)' }}>
+        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
+          <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Allocations
         </h3>
         <div className="flex flex-col md:flex-row gap-4 items-end">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Hostel</label>
-            <select name="hostelId" value={filters.hostelId} onChange={handleFilterChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]">
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hostel</label>
+            <select name="hostelId" value={filters.hostelId} onChange={handleFilterChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
               <option value="">All Hostels</option>
               {hostelList &&
                 hostelList.map((hostel) => (
@@ -226,8 +226,8 @@ const HostelAllocation = () => {
             </select>
           </div>
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
-            <select name="itemTypeId" value={filters.itemTypeId} onChange={handleFilterChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]">
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item Type</label>
+            <select name="itemTypeId" value={filters.itemTypeId} onChange={handleFilterChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
               <option value="">All Item Types</option>
               {itemTypes.map((item) => (
                 <option key={item._id} value={item._id}>
@@ -237,76 +237,76 @@ const HostelAllocation = () => {
             </select>
           </div>
           <div className="flex gap-2">
-            <button onClick={resetFilters} className="px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-gray-700">
+            <button onClick={resetFilters} style={{ padding: 'var(--spacing-2) var(--spacing-4)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)')}>
               Reset
             </button>
-            <button onClick={() => fetchHostelInventory(1)} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
+            <button onClick={() => fetchHostelInventory(1)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
               <FaFilter /> Filter
             </button>
           </div>
         </div>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg">{error}</div>}
+      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {/* Items List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+      <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>
         {loading && !hostelInventory.length ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
+            <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: '4px solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
           </div>
         ) : hostelInventory.length === 0 ? (
-          <div className="text-center py-12">
-            <FaWarehouse className="mx-auto text-gray-300 text-5xl mb-4" />
-            <p className="text-gray-500">No hostel inventory allocations found</p>
-            <button onClick={openNewAllocationModal} className="mt-4 inline-flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors text-sm">
+          <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+            <FaWarehouse style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+            <p style={{ color: 'var(--color-text-muted)' }}>No hostel inventory allocations found</p>
+            <button onClick={openNewAllocationModal} style={{ marginTop: 'var(--spacing-4)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
               <FaPlus /> Allocate your first item
             </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hostel</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Allocated Count</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available Count</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Hostel</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Item Type</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Allocated Count</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Available Count</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{ backgroundColor: 'var(--color-bg-primary)', borderTop: '1px solid var(--table-border)' }}>
                 {hostelInventory.map((allocation) => (
-                  <tr key={allocation._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                          <FaBuilding className="text-[#1360AB]" />
+                  <tr key={allocation._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--table-row-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                          <FaBuilding style={{ color: 'var(--color-primary)' }} />
                         </div>
-                        <span className="font-medium text-gray-800">{allocation.hostelId.name}</span>
+                        <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.hostelId.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                          <FaBox className="text-[#1360AB]" />
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                          <FaBox style={{ color: 'var(--color-primary)' }} />
                         </div>
                         <div>
-                          <div className="font-medium text-gray-800">{allocation.itemTypeId.name}</div>
-                          <div className="text-sm text-gray-500">{allocation.itemTypeId.description}</div>
+                          <div style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.itemTypeId.name}</div>
+                          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{allocation.itemTypeId.description}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{allocation.allocatedCount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${allocation.availableCount < 10 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}>{allocation.availableCount}</span>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{allocation.allocatedCount}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: allocation.availableCount < 10 ? 'var(--color-danger-bg)' : 'var(--color-success-bg)', color: allocation.availableCount < 10 ? 'var(--color-danger-text)' : 'var(--color-success-text)' }}>{allocation.availableCount}</span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-3">
-                        <button onClick={() => handleEdit(allocation)} className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all">
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                        <button onClick={() => handleEdit(allocation)} style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary)'; e.currentTarget.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary-bg)'; e.currentTarget.style.color = 'var(--color-primary)'; }}>
                           <FaEdit />
                         </button>
-                        <button onClick={() => handleDelete(allocation._id)} className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                        <button onClick={() => handleDelete(allocation._id)} style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-danger-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-danger)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-danger)'; e.currentTarget.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-danger-bg)'; e.currentTarget.style.color = 'var(--color-danger)'; }}>
                           <FaTrash />
                         </button>
                       </div>
@@ -327,8 +327,8 @@ const HostelAllocation = () => {
         <Modal title={isEditMode ? "Edit Allocation" : "Allocate Inventory to Hostel"} onClose={closeModal}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hostel</label>
-              <select name="hostelId" value={currentAllocation.hostelId} onChange={handleInputChange} required disabled={isEditMode} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB] disabled:bg-gray-100">
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hostel</label>
+              <select name="hostelId" value={currentAllocation.hostelId} onChange={handleInputChange} required disabled={isEditMode} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: isEditMode ? 'var(--color-bg-disabled)' : 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => !isEditMode && (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
                 <option value="">Select Hostel</option>
                 {hostelList &&
                   hostelList.map((hostel) => (
@@ -339,8 +339,8 @@ const HostelAllocation = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
-              <select name="itemTypeId" value={currentAllocation.itemTypeId} onChange={handleInputChange} required disabled={isEditMode} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB] disabled:bg-gray-100">
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item Type</label>
+              <select name="itemTypeId" value={currentAllocation.itemTypeId} onChange={handleInputChange} required disabled={isEditMode} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: isEditMode ? 'var(--color-bg-disabled)' : 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => !isEditMode && (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
                 <option value="">Select Item Type</option>
                 {itemTypes.map((item) => (
                   <option key={item._id} value={item._id}>
@@ -357,18 +357,18 @@ const HostelAllocation = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
                 Allocated Count
-                {currentAllocation.itemTypeId && <span className="text-sm ml-2 text-gray-500">(Max: {calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)})</span>}
+                {currentAllocation.itemTypeId && <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-2)', color: 'var(--color-text-muted)' }}>(Max: {calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)})</span>}
               </label>
-              <input type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min="1" max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" />
+              <input type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min="1" max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
             </div>
-            <div className="flex justify-end gap-3 pt-4">
-              <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
+              <button type="button" onClick={closeModal} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-border-dark)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)')}>
                 Cancel
               </button>
-              <button type="submit" disabled={loading} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : isEditMode ? "Update" : "Allocate"}
+              <button type="submit" disabled={loading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
+                {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: '2px solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : isEditMode ? "Update" : "Allocate"}
               </button>
             </div>
           </form>

@@ -149,60 +149,60 @@ const ItemTypes = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="relative">
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB] focus:border-[#1360AB] w-full md:w-64" />
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <button onClick={handleSearch} className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[#1360AB] hover:text-blue-700">
+          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'; }} onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-input)'; e.currentTarget.style.boxShadow = 'none'; }} />
+          <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-placeholder)' }} />
+          <button onClick={handleSearch} style={{ position: 'absolute', right: 'var(--spacing-2)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-primary)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-primary)')}>
             Search
           </button>
         </div>
-        <button onClick={openNewItemModal} className="flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+        <button onClick={openNewItemModal} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
           <FaPlus /> Add New Item
         </button>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg">{error}</div>}
+      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {/* Items List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+      <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>
         {loading && !itemTypes.length ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
+            <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: '4px solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
           </div>
         ) : itemTypes.length === 0 ? (
-          <div className="text-center py-12">
-            <FaBoxOpen className="mx-auto text-gray-300 text-5xl mb-4" />
-            <p className="text-gray-500">No inventory item types found</p>
-            <button onClick={openNewItemModal} className="mt-4 inline-flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors text-sm">
+          <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+            <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+            <p style={{ color: 'var(--color-text-muted)' }}>No inventory item types found</p>
+            <button onClick={openNewItemModal} style={{ marginTop: 'var(--spacing-4)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
               <FaPlus /> Add your first item
             </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Count</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Name</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Description</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Total Count</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{ backgroundColor: 'var(--color-bg-primary)', borderTop: '1px solid var(--table-border)' }}>
                 {itemTypes.map((item) => (
-                  <tr key={item._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{item.name}</td>
-                    <td className="px-6 py-4 text-gray-600">{item.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button onClick={() => handleUpdateCount(item._id, item.totalCount)} className="font-medium text-[#1360AB] hover:underline">
+                  <tr key={item._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--table-row-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.name}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', color: 'var(--color-text-tertiary)' }}>{item.description}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <button onClick={() => handleUpdateCount(item._id, item.totalCount)} style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')} onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}>
                         {item.totalCount}
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-3">
-                        <button onClick={() => handleEdit(item)} className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all">
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
+                        <button onClick={() => handleEdit(item)} style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary)'; e.currentTarget.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary-bg)'; e.currentTarget.style.color = 'var(--color-primary)'; }}>
                           <FaEdit />
                         </button>
-                        <button onClick={() => handleDelete(item._id)} className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                        <button onClick={() => handleDelete(item._id)} style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-danger-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-danger)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-danger)'; e.currentTarget.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-danger-bg)'; e.currentTarget.style.color = 'var(--color-danger)'; }}>
                           <FaTrash />
                         </button>
                       </div>
@@ -223,23 +223,23 @@ const ItemTypes = () => {
         <Modal title={isEditMode ? "Edit Item Type" : "Add New Item Type"} onClose={closeModal}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-              <input type="text" name="name" value={currentItemType.name} onChange={handleInputChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" />
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Name</label>
+              <input type="text" name="name" value={currentItemType.name} onChange={handleInputChange} required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea name="description" value={currentItemType.description} onChange={handleInputChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]"></textarea>
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Description</label>
+              <textarea name="description" value={currentItemType.description} onChange={handleInputChange} rows="3" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}></textarea>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Total Count</label>
-              <input type="number" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" />
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Total Count</label>
+              <input type="number" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
             </div>
-            <div className="flex justify-end gap-3 pt-4">
-              <button type="button" onClick={closeModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
+              <button type="button" onClick={closeModal} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-border-dark)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)')}>
                 Cancel
               </button>
-              <button type="submit" disabled={loading} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : isEditMode ? "Update" : "Create"}
+              <button type="submit" disabled={loading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
+                {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: '2px solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : isEditMode ? "Update" : "Create"}
               </button>
             </div>
           </form>

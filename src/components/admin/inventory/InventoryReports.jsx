@@ -85,15 +85,15 @@ const InventoryReports = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h3 className="text-lg font-medium text-gray-800">Inventory Reports</h3>
-          <p className="text-sm text-gray-500">View inventory distribution across hostels and students</p>
+          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Inventory Reports</h3>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>View inventory distribution across hostels and students</p>
         </div>
 
         {/* Hostel Filter (only for student and item type tabs) */}
         {activeTab !== "hostel" && (
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Filter by Hostel:</label>
-            <select value={selectedHostel} onChange={handleHostelChange} className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]">
+            <label style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Filter by Hostel:</label>
+            <select value={selectedHostel} onChange={handleHostelChange} style={{ padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
               <option value="">All Hostels</option>
               {hostelList &&
                 hostelList.map((hostel) => (
@@ -109,19 +109,19 @@ const InventoryReports = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="flex space-x-8">
-          <button onClick={() => setActiveTab("hostel")} className={`py-4 px-1 flex items-center font-medium text-sm border-b-2 ${activeTab === "hostel" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-            <FaBuilding className="mr-2" /> By Hostel
+          <button onClick={() => setActiveTab("hostel")} style={{ padding: 'var(--spacing-4) var(--spacing-1)', display: 'flex', alignItems: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "hostel" ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === "hostel" ? 'var(--color-primary)' : 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => activeTab !== "hostel" && (e.currentTarget.style.color = 'var(--color-text-body)')} onMouseLeave={(e) => activeTab !== "hostel" && (e.currentTarget.style.color = 'var(--color-text-muted)')}>
+            <FaBuilding style={{ marginRight: 'var(--spacing-2)' }} /> By Hostel
           </button>
-          <button onClick={() => setActiveTab("student")} className={`py-4 px-1 flex items-center font-medium text-sm border-b-2 ${activeTab === "student" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-            <FaUserGraduate className="mr-2" /> By Student
+          <button onClick={() => setActiveTab("student")} style={{ padding: 'var(--spacing-4) var(--spacing-1)', display: 'flex', alignItems: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "student" ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === "student" ? 'var(--color-primary)' : 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => activeTab !== "student" && (e.currentTarget.style.color = 'var(--color-text-body)')} onMouseLeave={(e) => activeTab !== "student" && (e.currentTarget.style.color = 'var(--color-text-muted)')}>
+            <FaUserGraduate style={{ marginRight: 'var(--spacing-2)' }} /> By Student
           </button>
-          <button onClick={() => setActiveTab("itemType")} className={`py-4 px-1 flex items-center font-medium text-sm border-b-2 ${activeTab === "itemType" ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-            <FaListAlt className="mr-2" /> By Item Type
+          <button onClick={() => setActiveTab("itemType")} style={{ padding: 'var(--spacing-4) var(--spacing-1)', display: 'flex', alignItems: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "itemType" ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === "itemType" ? 'var(--color-primary)' : 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => activeTab !== "itemType" && (e.currentTarget.style.color = 'var(--color-text-body)')} onMouseLeave={(e) => activeTab !== "itemType" && (e.currentTarget.style.color = 'var(--color-text-muted)')}>
+            <FaListAlt style={{ marginRight: 'var(--spacing-2)' }} /> By Item Type
           </button>
         </nav>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg">{error}</div>}
+      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
 
       {/* Loading Indicator */}
       {loading && (
@@ -134,43 +134,43 @@ const InventoryReports = () => {
       {activeTab === "hostel" && !loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {hostelSummary.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <FaBoxes className="mx-auto text-gray-300 text-5xl mb-4" />
-              <p className="text-gray-500">No hostel inventory data available</p>
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+              <FaBoxes style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+              <p style={{ color: 'var(--color-text-muted)' }}>No hostel inventory data available</p>
             </div>
           ) : (
             hostelSummary.map((hostel) => (
-              <div key={hostel._id} className="bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                    <FaBuilding className="text-[#1360AB]" />
+              <div key={hostel._id} style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', transition: 'var(--transition-all)' }} onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)')} onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-card)')}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+                  <div style={{ width: 'var(--spacing-10)', height: 'var(--spacing-10)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                    <FaBuilding style={{ color: 'var(--color-primary)' }} />
                   </div>
-                  <div className="text-lg font-medium text-gray-800">{hostel.hostelName}</div>
+                  <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{hostel.hostelName}</div>
                 </div>
-                <div className="flex justify-between items-center mb-4 p-3 bg-gray-50 rounded-lg">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
                   <div>
-                    <div className="text-sm text-gray-500">Total Allocated</div>
-                    <div className="text-lg font-semibold">{hostel.totalAllocated}</div>
+                    <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Total Allocated</div>
+                    <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)' }}>{hostel.totalAllocated}</div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Available</div>
-                    <div className="text-lg font-semibold text-green-600">{hostel.totalAvailable}</div>
+                    <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Available</div>
+                    <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-success)' }}>{hostel.totalAvailable}</div>
                   </div>
                 </div>
-                <div className="border-t border-gray-100 pt-3">
-                  <div className="text-sm font-medium text-gray-700 mb-2">Item Distribution</div>
+                <div style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: 'var(--spacing-3)' }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Item Distribution</div>
                   <div className="space-y-2">
                     {hostel.items.map((item) => (
-                      <div key={item.itemTypeId} className="flex justify-between items-center p-2 hover:bg-gray-50 rounded">
-                        <div className="flex items-center">
-                          <div className="w-6 h-6 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-2">
-                            <FaBox className="text-[#1360AB] text-xs" />
+                      <div key={item.itemTypeId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <div style={{ width: 'var(--spacing-6)', height: 'var(--spacing-6)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-2)' }}>
+                            <FaBox style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
                           </div>
-                          <span className="text-sm">{item.itemName}</span>
+                          <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.itemName}</span>
                         </div>
-                        <div className="text-sm">
-                          <span className={`font-medium ${item.available < 10 ? "text-red-500" : "text-green-500"}`}>{item.available}</span>
-                          <span className="text-gray-500"> / {item.allocated}</span>
+                        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+                          <span style={{ fontWeight: 'var(--font-weight-medium)', color: item.available < 10 ? 'var(--color-danger)' : 'var(--color-success)' }}>{item.available}</span>
+                          <span style={{ color: 'var(--color-text-muted)' }}> / {item.allocated}</span>
                         </div>
                       </div>
                     ))}
@@ -184,43 +184,43 @@ const InventoryReports = () => {
 
       {/* Student Summary */}
       {activeTab === "student" && !loading && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+        <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>
           {studentSummary.length === 0 ? (
-            <div className="text-center py-12">
-              <FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />
-              <p className="text-gray-500">No student inventory data available</p>
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+              <FaUserGraduate style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+              <p style={{ color: 'var(--color-text-muted)' }}>No student inventory data available</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Roll Number</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Items</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Student</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Roll Number</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Total Items</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Details</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{ backgroundColor: 'var(--color-bg-primary)', borderTop: '1px solid var(--table-border)' }}>
                   {studentSummary.map((student) => (
-                    <tr key={student._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{student.studentName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-600">{student.rollNumber}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{student.totalItems}</span>
+                    <tr key={student._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--table-row-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{student.studentName}</td>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', color: 'var(--color-text-tertiary)' }}>{student.rollNumber}</td>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>{student.totalItems}</span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)' }}>
                         <div className="space-y-1">
                           {student.items.map((item) => (
-                            <div key={item.id} className="flex items-center text-sm">
-                              <div className="w-6 h-6 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-2">
-                                <FaBox className="text-[#1360AB] text-xs" />
+                            <div key={item.id} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)' }}>
+                              <div style={{ width: 'var(--spacing-6)', height: 'var(--spacing-6)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-2)' }}>
+                                <FaBox style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
                               </div>
-                              <span className="font-medium text-gray-700">{item.itemName}</span>
-                              <span className="mx-1 text-gray-400">•</span>
-                              <span className="text-gray-600">{item.count}</span>
-                              <span className="mx-1 text-gray-400">•</span>
-                              <span className={`text-xs px-2 py-0.5 rounded-full ${item.status === "Issued" ? "bg-green-100 text-green-800" : item.status === "Damaged" ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-800"}`}>{item.status}</span>
+                              <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{item.itemName}</span>
+                              <span style={{ margin: '0 var(--spacing-1)', color: 'var(--color-text-placeholder)' }}>•</span>
+                              <span style={{ color: 'var(--color-text-tertiary)' }}>{item.count}</span>
+                              <span style={{ margin: '0 var(--spacing-1)', color: 'var(--color-text-placeholder)' }}>•</span>
+                              <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--spacing-1) var(--spacing-2)', borderRadius: 'var(--radius-full)', backgroundColor: item.status === "Issued" ? 'var(--color-success-bg)' : item.status === "Damaged" ? 'var(--color-danger-bg)' : 'var(--color-bg-muted)', color: item.status === "Issued" ? 'var(--color-success-text)' : item.status === "Damaged" ? 'var(--color-danger-text)' : 'var(--color-text-secondary)' }}>{item.status}</span>
                             </div>
                           ))}
                         </div>
@@ -236,36 +236,36 @@ const InventoryReports = () => {
 
       {/* Item Type Summary */}
       {activeTab === "itemType" && !loading && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100">
+        <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>
           {itemTypeSummary.length === 0 ? (
-            <div className="text-center py-12">
-              <FaBox className="mx-auto text-gray-300 text-5xl mb-4" />
-              <p className="text-gray-500">No item type summary data available</p>
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
+              <FaBox style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+              <p style={{ color: 'var(--color-text-muted)' }}>No item type summary data available</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Assigned</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Count</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Item Type</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Total Assigned</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Student Count</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{ backgroundColor: 'var(--color-bg-primary)', borderTop: '1px solid var(--table-border)' }}>
                   {itemTypeSummary.map((item) => (
-                    <tr key={item._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                            <FaBox className="text-[#1360AB]" />
+                    <tr key={item._id} style={{ borderBottom: '1px solid var(--table-border)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--table-row-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                            <FaBox style={{ color: 'var(--color-primary)' }} />
                           </div>
-                          <span className="font-medium text-gray-800">{item.itemName}</span>
+                          <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.itemName}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{item.totalAssigned}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{item.studentCount}</span>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.totalAssigned}</td>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>{item.studentCount}</span>
                       </td>
                     </tr>
                   ))}
