@@ -4,6 +4,201 @@ import Modal from "../../common/Modal"
 
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
 
+const styles = {
+  spaceY6: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-6)',
+  },
+  warningBanner: {
+    backgroundColor: 'var(--color-warning-bg)',
+    borderLeft: '4px solid var(--color-warning)',
+    padding: 'var(--spacing-4)',
+    marginBottom: 'var(--spacing-4)',
+  },
+  bannerFlex: {
+    display: 'flex',
+  },
+  iconWrapper: {
+    flexShrink: 0,
+  },
+  warningIcon: {
+    height: 'var(--icon-lg)',
+    width: 'var(--icon-lg)',
+    color: 'var(--color-warning)',
+  },
+  bannerContent: {
+    marginLeft: 'var(--spacing-3)',
+  },
+  bannerText: {
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-warning-text)',
+  },
+  formGroup: {},
+  label: {
+    display: 'block',
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-text-body)',
+    marginBottom: 'var(--spacing-1)',
+  },
+  select: {
+    marginTop: 'var(--spacing-1)',
+    display: 'block',
+    width: '100%',
+    paddingLeft: 'var(--spacing-3)',
+    paddingRight: 'var(--spacing-10)',
+    paddingTop: 'var(--spacing-2)',
+    paddingBottom: 'var(--spacing-2)',
+    fontSize: 'var(--font-size-base)',
+    borderColor: 'var(--color-border-input)',
+    border: 'var(--border-1) solid var(--color-border-input)',
+    borderRadius: 'var(--radius-md)',
+    backgroundColor: 'var(--color-bg-primary)',
+    color: 'var(--color-text-primary)',
+    outline: 'none',
+    transition: 'var(--transition-colors)',
+  },
+  selectFocus: {
+    borderColor: 'var(--color-primary)',
+    boxShadow: 'var(--input-focus-ring)',
+  },
+  errorBanner: {
+    backgroundColor: 'var(--color-danger-bg)',
+    borderLeft: '4px solid var(--color-danger)',
+    padding: 'var(--spacing-4)',
+  },
+  errorIcon: {
+    height: 'var(--icon-lg)',
+    width: 'var(--icon-lg)',
+    color: 'var(--color-danger)',
+  },
+  errorText: {
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-danger-text)',
+  },
+  footer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: 'var(--spacing-3)',
+    paddingTop: 'var(--spacing-4)',
+    borderTop: 'var(--border-1) solid var(--color-border-light)',
+  },
+  cancelButton: {
+    padding: 'var(--spacing-2) var(--spacing-4)',
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-text-body)',
+    backgroundColor: 'var(--color-bg-primary)',
+    border: 'var(--border-1) solid var(--color-border-input)',
+    borderRadius: 'var(--radius-lg)',
+    cursor: 'pointer',
+    transition: 'var(--transition-colors)',
+  },
+  cancelButtonHover: {
+    backgroundColor: 'var(--color-bg-tertiary)',
+  },
+  cancelButtonDisabled: {
+    opacity: 'var(--opacity-disabled)',
+    cursor: 'not-allowed',
+  },
+  proceedButton: {
+    padding: 'var(--spacing-2) var(--spacing-4)',
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-white)',
+    backgroundColor: 'var(--color-primary)',
+    border: 'none',
+    borderRadius: 'var(--radius-lg)',
+    cursor: 'pointer',
+    transition: 'var(--transition-colors)',
+  },
+  proceedButtonHover: {
+    backgroundColor: 'var(--color-primary-hover)',
+  },
+  proceedButtonDisabled: {
+    backgroundColor: 'var(--color-primary-muted)',
+    cursor: 'not-allowed',
+  },
+  dangerBanner: {
+    backgroundColor: 'var(--color-danger-bg)',
+    borderLeft: '4px solid var(--color-danger)',
+    padding: 'var(--spacing-4)',
+    marginBottom: 'var(--spacing-4)',
+  },
+  dangerIcon: {
+    height: 'var(--icon-lg)',
+    width: 'var(--icon-lg)',
+    color: 'var(--color-danger)',
+  },
+  dangerTitle: {
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-danger-text)',
+  },
+  dangerContent: {
+    marginTop: 'var(--spacing-2)',
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-danger-text)',
+  },
+  confirmBox: {
+    backgroundColor: 'var(--color-bg-tertiary)',
+    padding: 'var(--spacing-4)',
+    borderRadius: 'var(--radius-lg)',
+  },
+  confirmText: {
+    fontSize: 'var(--font-size-sm)',
+    color: 'var(--color-text-muted)',
+  },
+  confirmInput: {
+    marginTop: 'var(--spacing-2)',
+    display: 'block',
+    width: '100%',
+    padding: 'var(--spacing-2) var(--spacing-3)',
+    border: 'var(--border-1) solid var(--color-border-input)',
+    borderRadius: 'var(--radius-md)',
+    boxShadow: 'var(--shadow-sm)',
+    fontSize: 'var(--font-size-sm)',
+    outline: 'none',
+    backgroundColor: 'var(--color-bg-primary)',
+    color: 'var(--color-text-primary)',
+    transition: 'var(--transition-colors)',
+  },
+  confirmInputFocus: {
+    borderColor: 'var(--color-primary)',
+    boxShadow: 'var(--input-focus-ring)',
+  },
+  dangerButton: {
+    padding: 'var(--spacing-2) var(--spacing-4)',
+    fontSize: 'var(--font-size-sm)',
+    fontWeight: 'var(--font-weight-medium)',
+    color: 'var(--color-white)',
+    backgroundColor: 'var(--color-danger)',
+    border: 'none',
+    borderRadius: 'var(--radius-lg)',
+    cursor: 'pointer',
+    transition: 'var(--transition-colors)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--spacing-2)',
+  },
+  dangerButtonHover: {
+    backgroundColor: 'var(--color-danger-hover)',
+  },
+  dangerButtonDisabled: {
+    backgroundColor: 'var(--color-danger-light)',
+    cursor: 'not-allowed',
+  },
+  spinner: {
+    width: 'var(--spacing-4)',
+    height: 'var(--spacing-4)',
+    border: 'var(--border-2) solid var(--color-white)',
+    borderTopColor: 'transparent',
+    borderRadius: 'var(--radius-full)',
+    animation: 'spin 1s linear infinite',
+  },
+}
+
 const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
   const [selectedRole, setSelectedRole] = useState("")
   const [confirmText, setConfirmText] = useState("")
@@ -63,25 +258,25 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
   return (
     <Modal title="Remove Passwords by Role" onClose={handleClose} width={500}>
       {!isConfirming ? (
-        <div className="space-y-6">
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <HiExclamationCircle className="h-5 w-5 text-yellow-400" />
+        <div style={styles.spaceY6}>
+          <div style={styles.warningBanner}>
+            <div style={styles.bannerFlex}>
+              <div style={styles.iconWrapper}>
+                <HiExclamationCircle style={styles.warningIcon} />
               </div>
-              <div className="ml-3">
-                <p className="text-sm text-yellow-700">
+              <div style={styles.bannerContent}>
+                <p style={styles.bannerText}>
                   This action will remove passwords for <strong>all users</strong> with the selected role. Users will need to use password recovery to regain access.
                 </p>
               </div>
             </div>
           </div>
 
-          <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+          <div style={styles.formGroup}>
+            <label htmlFor="role" style={styles.label}>
               Select Role
             </label>
-            <select id="role" name="role" value={selectedRole} onChange={handleRoleChange} className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+            <select id="role" name="role" value={selectedRole} onChange={handleRoleChange} style={styles.select}>
               <option value="">Select a role</option>
               {ROLES.map((role) => (
                 <option key={role} value={role}>
@@ -92,37 +287,44 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           </div>
 
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <HiExclamationCircle className="h-5 w-5 text-red-400" />
+            <div style={styles.errorBanner}>
+              <div style={styles.bannerFlex}>
+                <div style={styles.iconWrapper}>
+                  <HiExclamationCircle style={styles.errorIcon} />
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{error}</p>
+                <div style={styles.bannerContent}>
+                  <p style={styles.errorText}>{error}</p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-100">
-            <button onClick={handleClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+          <div style={styles.footer}>
+            <button onClick={handleClose} style={styles.cancelButton}>
               Cancel
             </button>
-            <button onClick={handleProceed} disabled={!selectedRole} className="px-4 py-2 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] disabled:bg-blue-300 disabled:cursor-not-allowed">
+            <button
+              onClick={handleProceed}
+              disabled={!selectedRole}
+              style={{
+                ...styles.proceedButton,
+                ...(!selectedRole ? styles.proceedButtonDisabled : {})
+              }}
+            >
               Proceed
             </button>
           </div>
         </div>
       ) : (
-        <div className="space-y-6">
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <HiShieldExclamation className="h-5 w-5 text-red-500" />
+        <div style={styles.spaceY6}>
+          <div style={styles.dangerBanner}>
+            <div style={styles.bannerFlex}>
+              <div style={styles.iconWrapper}>
+                <HiShieldExclamation style={styles.dangerIcon} />
               </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Warning: This action cannot be undone</h3>
-                <div className="mt-2 text-sm text-red-700">
+              <div style={styles.bannerContent}>
+                <h3 style={styles.dangerTitle}>Warning: This action cannot be undone</h3>
+                <div style={styles.dangerContent}>
                   <p>
                     You are about to remove passwords for <strong>all {selectedRole}</strong> users. They will need to use password recovery to regain access.
                   </p>
@@ -131,34 +333,54 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             </div>
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600">
+          <div style={styles.confirmBox}>
+            <p style={styles.confirmText}>
               Please type <strong>{selectedRole}</strong> below to confirm:
             </p>
-            <input type="text" className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder={`Type "${selectedRole}" to confirm`} value={confirmText} onChange={handleConfirmTextChange} />
+            <input
+              type="text"
+              style={styles.confirmInput}
+              placeholder={`Type "${selectedRole}" to confirm`}
+              value={confirmText}
+              onChange={handleConfirmTextChange}
+            />
           </div>
 
           {error && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <HiExclamationCircle className="h-5 w-5 text-red-400" />
+            <div style={styles.errorBanner}>
+              <div style={styles.bannerFlex}>
+                <div style={styles.iconWrapper}>
+                  <HiExclamationCircle style={styles.errorIcon} />
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700">{error}</p>
+                <div style={styles.bannerContent}>
+                  <p style={styles.errorText}>{error}</p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-100">
-            <button onClick={handleBack} disabled={isProcessing} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+          <div style={styles.footer}>
+            <button
+              onClick={handleBack}
+              disabled={isProcessing}
+              style={{
+                ...styles.cancelButton,
+                ...(isProcessing ? styles.cancelButtonDisabled : {})
+              }}
+            >
               Back
             </button>
-            <button onClick={handleConfirmRemove} disabled={isProcessing || confirmText !== selectedRole} className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:bg-red-300 disabled:cursor-not-allowed flex items-center">
+            <button
+              onClick={handleConfirmRemove}
+              disabled={isProcessing || confirmText !== selectedRole}
+              style={{
+                ...styles.dangerButton,
+                ...(isProcessing || confirmText !== selectedRole ? styles.dangerButtonDisabled : {})
+              }}
+            >
               {isProcessing ? (
                 <>
-                  <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div style={styles.spinner}></div>
                   Processing...
                 </>
               ) : (
