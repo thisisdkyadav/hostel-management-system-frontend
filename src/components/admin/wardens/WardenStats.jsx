@@ -14,22 +14,22 @@ const WardenStats = ({ wardens, staffType = "warden" }) => {
       title: `Total ${staffTitle}s`,
       value: totalWardens,
       subtitle: staffType === "warden" ? "Managing faculty members" : staffType === "associateWarden" ? "Supporting faculty members" : "Supervising staff members",
-      icon: <FaUsers className="text-2xl" />,
-      color: "#1360AB",
+      icon: <FaUsers style={{ fontSize: 'var(--icon-xl)' }} />,
+      color: "var(--color-primary)",
     },
     {
       title: "Assigned",
       value: assignedWardens,
       subtitle: "Currently assigned",
-      icon: <MdVerified className="text-2xl" />,
-      color: "#22c55e",
+      icon: <MdVerified style={{ fontSize: 'var(--icon-xl)' }} />,
+      color: "var(--color-success)",
     },
     {
       title: "Unassigned",
       value: unassignedWardens,
       subtitle: "Available to assign",
-      icon: <FaBuilding className="text-2xl" />,
-      color: "#f97316",
+      icon: <FaBuilding style={{ fontSize: 'var(--icon-xl)' }} />,
+      color: "var(--color-warning)",
     },
   ]
 

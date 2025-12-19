@@ -207,91 +207,91 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
 
   return (
     <Modal title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={activeTab === "permissions" ? 800 : 500}>
-      <div className="mb-4 border-b">
-        <div className="flex">
-          <button className={`px-4 py-2 font-medium ${activeTab === "basic" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500"}`} onClick={() => setActiveTab("basic")}>
+      <div style={{ marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
+        <div style={{ display: 'flex' }}>
+          <button style={{ padding: 'var(--spacing-4)', fontWeight: 'var(--font-weight-medium)', color: activeTab === "basic" ? 'var(--color-primary)' : 'var(--color-text-muted)', borderBottom: activeTab === "basic" ? 'var(--border-2) solid var(--color-primary)' : 'none' }} onClick={() => setActiveTab("basic")}>
             Basic Information
           </button>
-          <button className={`px-4 py-2 font-medium ${activeTab === "permissions" ? "text-[#1360AB] border-b-2 border-[#1360AB]" : "text-gray-500"}`} onClick={() => setActiveTab("permissions")}>
+          <button style={{ padding: 'var(--spacing-4)', fontWeight: 'var(--font-weight-medium)', color: activeTab === "permissions" ? 'var(--color-primary)' : 'var(--color-text-muted)', borderBottom: activeTab === "permissions" ? 'var(--border-2) solid var(--color-primary)' : 'none' }} onClick={() => setActiveTab("permissions")}>
             Permissions
           </button>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {activeTab === "basic" && (
           <>
-            <div className="bg-blue-50 p-4 rounded-lg mb-4">
-              <div className="flex items-center text-blue-800">
-                <FaBuilding className="mr-2" />
-                <h4 className="font-medium">{staffTitle} Information</h4>
+            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
+                <FaBuilding style={{ marginRight: 'var(--spacing-2)' }} />
+                <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>{staffTitle} Information</h4>
               </div>
             </div>
 
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative h-24 w-24 rounded-full mb-2">
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
+              <div style={{ position: 'relative', height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-2)' }}>
                 {formData.profileImage ? (
-                  <img src={getMediaUrl(formData.profileImage)} alt={warden.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+                  <img src={getMediaUrl(formData.profileImage)} alt={warden.name} style={{ height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)' }} />
                 ) : (
-                  <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
-                    <FaBuilding className="h-12 w-12 text-[#1360AB]" />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg-hover)', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)' }}>
+                    <FaBuilding style={{ height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-primary)' }} />
                   </div>
                 )}
-                <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 bg-[#1360AB] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#0F4C81] transition-colors">
-                  <HiCamera className="w-4 h-4" />
+                <div onClick={() => setIsImageModalOpen(true)} style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
+                  <HiCamera style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
                 </div>
               </div>
-              <span className="text-sm text-gray-500">Click the camera icon to change profile photo</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Click the camera icon to change profile photo</span>
             </div>
 
             {isImageModalOpen && <ImageUploadModal userId={warden.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
-                <div className="relative">
-                  <div className="absolute left-3 top-3 text-gray-400">
+                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone Number</label>
+                <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
                     <FaPhone />
                   </div>
-                  <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="Enter phone number" />
+                  <input type="text" name="phone" value={formData.phone} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="Enter phone number" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Category</label>
-                <div className="relative">
-                  <div className="absolute left-3 top-3 text-gray-400">
+                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
+                <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
                     <FiTag />
                   </div>
-                  <input type="text" name="category" value={formData.category} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" placeholder="e.g., Senior, Junior" />
+                  <input type="text" name="category" value={formData.category} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="e.g., Senior, Junior" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Hostel Assignments</label>
-                <div className="mt-2 space-y-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Hostel Assignments</label>
+                <div style={{ marginTop: 'var(--spacing-2)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', maxHeight: '12rem', overflowY: 'auto', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                   {hostelList.length > 0 ? (
                     hostelList.map((hostel) => (
-                      <div key={hostel._id} className="flex items-center">
-                        <input id={`hostel-${hostel._id}`} name="hostelIds" type="checkbox" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} className="h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB]" />
-                        <label htmlFor={`hostel-${hostel._id}`} className="ml-3 block text-sm text-gray-700">
+                      <div key={hostel._id} style={{ display: 'flex', alignItems: 'center' }}>
+                        <input id={`hostel-${hostel._id}`} name="hostelIds" type="checkbox" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', borderRadius: 'var(--radius-sm)' }} />
+                        <label htmlFor={`hostel-${hostel._id}`} style={{ marginLeft: 'var(--spacing-3)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>
                           {hostel.name}
                         </label>
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">No hostels available.</p>
+                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>No hostels available.</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 text-sm font-medium mb-2">Join Date</label>
-                <div className="relative">
-                  <div className="absolute left-3 top-3 text-gray-400">
+                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Join Date</label>
+                <div style={{ position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
                     <FaCalendarAlt />
                   </div>
-                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" />
+                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
                 </div>
               </div>
             </div>
@@ -300,52 +300,52 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
 
         {activeTab === "permissions" && (
           <>
-            <div className="bg-blue-50 p-4 rounded-lg mb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center text-blue-800">
-                  <FaShieldAlt className="mr-2" />
-                  <h4 className="font-medium">Manage Permissions</h4>
+            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
+                  <FaShieldAlt style={{ marginRight: 'var(--spacing-2)' }} />
+                  <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Manage Permissions</h4>
                 </div>
-                <button type="button" onClick={handleResetPermissions} className="flex items-center text-sm text-gray-600 hover:text-gray-800">
-                  <FaRedo className="mr-1" /> Reset to Default
+                <button type="button" onClick={handleResetPermissions} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-text-secondary)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-text-tertiary)'}>
+                  <FaRedo style={{ marginRight: 'var(--spacing-1)' }} /> Reset to Default
                 </button>
               </div>
-              <p className="text-sm text-gray-600 mt-1">Configure what {warden.name} can access and modify in the system.</p>
-              <div className="mt-3 flex items-center text-xs text-gray-500">
-                <span className="flex items-center mr-4">
-                  <span className="w-3 h-3 bg-gray-200 rounded-sm mr-1"></span>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>Configure what {warden.name} can access and modify in the system.</p>
+              <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
+                <span style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)' }}>
+                  <span style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-sm)', marginRight: 'var(--spacing-1)' }}></span>
                   Locked (system default)
                 </span>
-                <span className="flex items-center">
-                  <span className="w-3 h-3 bg-white border border-gray-300 rounded-sm mr-1"></span>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-sm)', marginRight: 'var(--spacing-1)' }}></span>
                   Configurable
                 </span>
               </div>
             </div>
 
             {isLoading && !permissions ? (
-              <div className="text-center p-4">Loading permissions...</div>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-4)' }}>Loading permissions...</div>
             ) : permissions ? (
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white rounded-lg overflow-hidden">
-                  <thead className="bg-gray-100">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ minWidth: '100%', backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                  <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                     <tr>
-                      <th className="text-left p-3 text-sm font-medium text-gray-600">Resource</th>
+                      <th style={{ textAlign: 'left', padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)' }}>Resource</th>
                       {actions.map((action) => (
-                        <th key={action.id} className="text-center p-3 text-sm font-medium text-gray-600">
+                        <th key={action.id} style={{ textAlign: 'center', padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)' }}>
                           {action.label}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
                     {resources.map((resource) => (
-                      <tr key={resource.id} className="hover:bg-gray-50">
-                        <td className="p-3 text-sm text-gray-700 font-medium">{resource.label}</td>
+                      <tr key={resource.id} style={{ borderBottom: 'var(--border-1) solid var(--color-border-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                        <td style={{ padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{resource.label}</td>
                         {actions.map((action) => (
-                          <td key={`${resource.id}-${action.id}`} className="p-3 text-center">
+                          <td key={`${resource.id}-${action.id}`} style={{ padding: 'var(--spacing-3)', textAlign: 'center' }}>
                             <input type="checkbox" checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
-                              className={`h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB] ${!currentAllowedChanges[resource.id]?.includes(action.id) ? "opacity-60 bg-gray-100" : ""}`}
+                              style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', borderRadius: 'var(--radius-sm)', opacity: !currentAllowedChanges[resource.id]?.includes(action.id) ? 'var(--opacity-60)' : 'var(--opacity-100)', backgroundColor: !currentAllowedChanges[resource.id]?.includes(action.id) ? 'var(--color-bg-hover)' : 'transparent' }}
                               disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
                             />
                           </td>
@@ -356,18 +356,18 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                 </table>
               </div>
             ) : (
-              <div className="text-center p-4 text-red-500">Failed to load permissions. Please try again.</div>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-danger)' }}>Failed to load permissions. Please try again.</div>
             )}
           </>
         )}
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between pt-5 mt-6 border-t border-gray-100">
-          <button type="button" onClick={handleDelete} disabled={isLoading} className="mt-3 sm:mt-0 px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all flex items-center justify-center disabled:opacity-50">
-            <FaTrash className="mr-2" /> Delete {staffTitle}
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button type="button" onClick={handleDelete} disabled={isLoading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isLoading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => { if (!isLoading) e.target.style.backgroundColor = 'var(--color-danger-bg-light)'; }} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'}>
+            <FaTrash style={{ marginRight: 'var(--spacing-2)' }} /> Delete {staffTitle}
           </button>
 
-          <button type="submit" disabled={isLoading} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow flex items-center justify-center disabled:opacity-50">
-            <FaSave className="mr-2" /> {isLoading ? "Saving..." : "Save Changes"}
+          <button type="submit" disabled={isLoading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isLoading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => { if (!isLoading) { e.target.style.backgroundColor = 'var(--color-primary-hover)'; e.target.style.boxShadow = 'var(--shadow-md)'; } }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.boxShadow = 'var(--shadow-sm)'; }}>
+            <FaSave style={{ marginRight: 'var(--spacing-2)' }} /> {isLoading ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </form>
