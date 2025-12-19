@@ -48,17 +48,7 @@ const StatusBadge = ({ status, rejectionReason, approvedAt, requestId }) => {
 
   return (
     <>
-      <div 
-        className="p-4 rounded-lg border" 
-        style={{ 
-          backgroundColor: statusStyles.backgroundColor,
-          color: statusStyles.color,
-          borderColor: statusStyles.borderColor,
-          padding: 'var(--spacing-4)',
-          borderRadius: 'var(--radius-lg)',
-          borderWidth: 'var(--border-1)'
-        }}
-      >
+      <div className="p-4 rounded-lg border" style={{ backgroundColor: statusStyles.backgroundColor, color: statusStyles.color, borderColor: statusStyles.borderColor, padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', borderWidth: 'var(--border-1)' }} >
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <FaInfoCircle className="mr-2" />

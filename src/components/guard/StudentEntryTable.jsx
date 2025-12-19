@@ -58,13 +58,7 @@ const StudentEntryTable = ({ entries, refresh }) => {
 
   if (entries.length === 0) {
     return (
-      <div style={{
-        backgroundColor: 'var(--color-bg-primary)',
-        borderRadius: 'var(--radius-card)',
-        boxShadow: 'var(--shadow-card)',
-        padding: 'var(--spacing-6)',
-        textAlign: 'center'
-      }}>
+      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)', padding: 'var(--spacing-6)', textAlign: 'center' }}>
         <p style={{ color: 'var(--color-text-muted)' }}>No student entries found</p>
       </div>
     )
@@ -72,158 +66,50 @@ const StudentEntryTable = ({ entries, refresh }) => {
 
   return (
     <>
-      <div style={{
-        backgroundColor: 'var(--color-bg-primary)',
-        borderRadius: 'var(--radius-card)',
-        boxShadow: 'var(--shadow-card)',
-        overflow: 'hidden'
-      }}>
+      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-card)', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
               <tr>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Student Name</th>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Unit</th>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Room</th>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Date</th>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Time</th>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Status</th>
-                <th style={{
-                  padding: 'var(--spacing-3) var(--spacing-6)',
-                  textAlign: 'left',
-                  fontSize: 'var(--font-size-xs)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--table-header-text)',
-                  textTransform: 'uppercase',
-                  letterSpacing: 'var(--letter-spacing-wide)'
-                }}>Actions</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Student Name</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Unit</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Room</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Date</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Time</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Status</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--table-header-text)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Actions</th>
               </tr>
             </thead>
             <tbody style={{ borderTop: `var(--border-1) solid var(--table-border)` }}>
               {entries.map((entry) => {
                 const { date, time } = formatDateTime(entry.dateAndTime)
                 return (
-                  <tr
-                    key={entry._id}
-                    style={{
-                      borderBottom: `var(--border-1) solid var(--table-border)`,
-                      transition: 'var(--transition-colors)'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
+                  <tr key={entry._id} style={{ borderBottom: `var(--border-1) solid var(--table-border)`, transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--table-row-hover)'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      <div style={{
-                        fontSize: 'var(--font-size-sm)',
-                        fontWeight: 'var(--font-weight-medium)',
-                        color: 'var(--color-text-primary)'
-                      }}>{entry.userId.name}</div>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{entry.userId.name}</div>
                     </td>
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      <div style={{
-                        fontSize: 'var(--font-size-sm)',
-                        color: 'var(--color-text-muted)'
-                      }}>{entry.unit || "-"}</div>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{entry.unit || "-"}</div>
                     </td>
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      <div style={{
-                        fontSize: 'var(--font-size-sm)',
-                        color: 'var(--color-text-muted)'
-                      }}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
                         {entry.room}
                         {entry.bed}
                       </div>
                     </td>
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      <div style={{
-                        fontSize: 'var(--font-size-sm)',
-                        color: 'var(--color-text-muted)'
-                      }}>{date}</div>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{date}</div>
                     </td>
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      <div style={{
-                        fontSize: 'var(--font-size-sm)',
-                        color: 'var(--color-text-muted)'
-                      }}>{time}</div>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{time}</div>
                     </td>
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap'
-                    }}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
                       <StatusBadge status={entry.status} />
                     </td>
-                    <td style={{
-                      padding: 'var(--spacing-4) var(--spacing-6)',
-                      whiteSpace: 'nowrap',
-                      textAlign: 'right',
-                      fontSize: 'var(--font-size-sm)',
-                      fontWeight: 'var(--font-weight-medium)'
-                    }}>
-                      <button
-                        onClick={() => handleEditClick(entry)}
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+                      <button onClick={() => handleEditClick(entry)}
                         style={{
                           color: 'var(--color-primary)',
                           backgroundColor: 'var(--color-primary-bg)',

@@ -123,15 +123,7 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaUsers className="h-5 w-5" />
               </div>
-              <input
-                type="number"
-                name="capacity"
-                value={formData.capacity}
-                onChange={handleChange}
-                min="1"
-                className={`w-full p-3 pl-10 border ${errors.capacity ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`}
-                placeholder="Room capacity"
-              />
+              <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" className={`w-full p-3 pl-10 border ${errors.capacity ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder="Room capacity" />
             </div>
             {errors.capacity && <p className="mt-1.5 text-sm text-red-600">{errors.capacity}</p>}
           </div>
@@ -139,12 +131,7 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <div className="relative">
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className={`w-full p-3 border ${errors.status ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] bg-white appearance-none`}
-              >
+              <select name="status" value={formData.status} onChange={handleChange} className={`w-full p-3 border ${errors.status ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] bg-white appearance-none`} >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
                 <option value="Maintenance">Maintenance</option>

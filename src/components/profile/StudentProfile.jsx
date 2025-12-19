@@ -73,8 +73,7 @@ const StudentProfile = ({ user }) => {
       <div className="flex justify-between items-start">
         <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree}`} />
 
-        <button
-          onClick={() => setIsEditModalOpen(true)}
+        <button onClick={() => setIsEditModalOpen(true)}
           className="flex items-center text-white transition-colors"
           style={{
             padding: "var(--spacing-2) var(--spacing-4)",

@@ -29,10 +29,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-          <input
-            type="text"
-            value={manualStudent.name}
-            onChange={(e) => handleManualInputChange("name", e.target.value)}
+          <input type="text" value={manualStudent.name} onChange={(e) => handleManualInputChange("name", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter student's full name"
             required
@@ -41,10 +38,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-          <input
-            type="email"
-            value={manualStudent.email}
-            onChange={(e) => handleManualInputChange("email", e.target.value)}
+          <input type="email" value={manualStudent.email} onChange={(e) => handleManualInputChange("email", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter email address"
             required
@@ -53,10 +47,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
-          <input
-            type="text"
-            value={manualStudent.rollNumber}
-            onChange={(e) => handleManualInputChange("rollNumber", e.target.value)}
+          <input type="text" value={manualStudent.rollNumber} onChange={(e) => handleManualInputChange("rollNumber", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter roll number"
             required
@@ -65,10 +56,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-          <input
-            type="tel"
-            value={manualStudent.phone}
-            onChange={(e) => handleManualInputChange("phone", e.target.value)}
+          <input type="tel" value={manualStudent.phone} onChange={(e) => handleManualInputChange("phone", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter phone number"
           />
@@ -81,10 +69,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input
-            type="password"
-            value={manualStudent.password}
-            onChange={(e) => handleManualInputChange("password", e.target.value)}
+          <input type="password" value={manualStudent.password} onChange={(e) => handleManualInputChange("password", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter password"
           />
@@ -116,10 +101,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
               ))}
             </select>
           ) : (
-            <input
-              type="text"
-              value={manualStudent.degree}
-              onChange={(e) => handleManualInputChange("degree", e.target.value)}
+            <input type="text" value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)}
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
               placeholder="Enter degree"
             />
@@ -138,10 +120,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
               ))}
             </select>
           ) : (
-            <input
-              type="text"
-              value={manualStudent.department}
-              onChange={(e) => handleManualInputChange("department", e.target.value)}
+            <input type="text" value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)}
               className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
               placeholder="Enter department"
             />
@@ -150,10 +129,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-          <input
-            type="number"
-            value={manualStudent.year}
-            onChange={(e) => handleManualInputChange("year", e.target.value)}
+          <input type="number" value={manualStudent.year} onChange={(e) => handleManualInputChange("year", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter year"
             min="1"
@@ -168,9 +144,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-          <textarea
-            value={manualStudent.address}
-            onChange={(e) => handleManualInputChange("address", e.target.value)}
+          <textarea value={manualStudent.address} onChange={(e) => handleManualInputChange("address", e.target.value)}
             rows={3}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter address"
@@ -184,10 +158,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Name</label>
-          <input
-            type="text"
-            value={manualStudent.guardian}
-            onChange={(e) => handleManualInputChange("guardian", e.target.value)}
+          <input type="text" value={manualStudent.guardian} onChange={(e) => handleManualInputChange("guardian", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter guardian's name"
           />
@@ -195,10 +166,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Phone</label>
-          <input
-            type="tel"
-            value={manualStudent.guardianPhone}
-            onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)}
+          <input type="tel" value={manualStudent.guardianPhone} onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter guardian's phone"
           />
@@ -206,10 +174,7 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Email</label>
-          <input
-            type="email"
-            value={manualStudent.guardianEmail}
-            onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)}
+          <input type="email" value={manualStudent.guardianEmail} onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
             placeholder="Enter guardian's email"
           />
@@ -669,8 +634,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <span className="text-sm text-blue-700">
                     Selected file: <span className="font-medium">{csvFile.name}</span>
                   </span>
-                  <button
-                    onClick={(e) => {
+                  <button onClick={(e) => {
                       e.stopPropagation()
                       setCsvFile(null)
                     }}
@@ -750,11 +714,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               Cancel
             </button>
 
-            <button
-              onClick={handleManualImport}
-              className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center"
-              disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}
-            >
+            <button onClick={handleManualImport} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading} >
               {isImporting ? (
                 <>
                   <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>

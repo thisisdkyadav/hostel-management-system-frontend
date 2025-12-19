@@ -154,9 +154,7 @@ const Sidebar = ({ navItems }) => {
     }
 
     return (
-      <li
-        key={item.name}
-        onClick={() => handleNavigation(item)}
+      <li key={item.name} onClick={() => handleNavigation(item)}
         title={!isOpen ? item.name : ""}
         className={`
           group relative rounded-[10px] transition-all duration-200 cursor-pointer
@@ -173,10 +171,7 @@ const Sidebar = ({ navItems }) => {
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
-                <div
-                  className={`
-                  min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center shadow-md
-                  ${item.badge > 99 ? "min-w-6" : ""}
+                <div className={` min-w-5 h-5 px-1 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center shadow-md ${item.badge > 99 ? "min-w-6" : ""}
                 `}
                 >
                   {item.badge > 99 ? "99+" : item.badge}
@@ -204,8 +199,7 @@ const Sidebar = ({ navItems }) => {
       // Minimized view - show just profile icon
       return (
         <div className="relative group" title={user.name || "Profile"}>
-          <div
-            onClick={() => profileItem && handleNavigation(profileItem)}
+          <div onClick={() => profileItem && handleNavigation(profileItem)}
             className={`
               relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center border border-transparent
               ${isProfileActive ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/20 border-[var(--color-primary)]/70" : "text-slate-600 hover:bg-white/60 hover:border-slate-200 hover:text-[var(--color-primary)]"}
@@ -215,12 +209,7 @@ const Sidebar = ({ navItems }) => {
               {user.profileImage ? (
                 <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
               ) : user.name?.charAt(0).toUpperCase() ? (
-                <div
-                  className={`
-                    w-full h-full flex items-center justify-center font-semibold
-                    ${isProfileActive ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"}
-                  `}
-                >
+                <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[#1360AB]" : "bg-[#1360AB] text-white"} `} >
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               ) : (
@@ -235,8 +224,7 @@ const Sidebar = ({ navItems }) => {
 
     return (
       <div className="relative">
-        <div
-          onClick={() => profileItem && handleNavigation(profileItem)}
+        <div onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
             group relative rounded-xl transition-all duration-200 cursor-pointer border
             ${isProfileActive ? "bg-[#1360aa] text-white border-transparent shadow-sm" : "text-[#64748b] border-transparent hover:bg-[#f8fafc] hover:border-[#e2e8f0]"}
@@ -249,12 +237,7 @@ const Sidebar = ({ navItems }) => {
                   {user.profileImage ? (
                     <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
                   ) : user.name?.charAt(0).toUpperCase() ? (
-                    <div
-                      className={`
-                      w-full h-full flex items-center justify-center font-semibold
-                      ${isProfileActive ? "bg-white text-[#1360aa]" : "bg-[#1360aa] text-white"}
-                    `}
-                    >
+                    <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[#1360aa]" : "bg-[#1360aa] text-white"} `} >
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   ) : (
@@ -271,8 +254,7 @@ const Sidebar = ({ navItems }) => {
 
             {logoutItem && (
               <div className="relative flex-shrink-0 ml-3 group/logout">
-                <button
-                  onClick={(e) => {
+                <button onClick={(e) => {
                     e.stopPropagation()
                     handleNavigation(logoutItem)
                   }}
@@ -305,14 +287,7 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
-          isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
-        } overflow-hidden`}
-        style={{
-          boxShadow: 'var(--shadow-sm)',
-        }}
-      >
+      <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${ isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen" } overflow-hidden`} style={{ boxShadow: 'var(--shadow-sm)', }} >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
           <div className={`border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] ${isMobile ? "hidden" : ""} h-16`}>
@@ -348,13 +323,7 @@ const Sidebar = ({ navItems }) => {
               {isOpen ? (
                 <>
                   <div className="relative">
-                    <select
-                      id="activeHostelSelect"
-                      value={activeHostelId || ""}
-                      onChange={handleHostelChange}
-                      disabled={isUpdatingHostel}
-                      className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB]/60 focus:border-[#1360AB]/60 bg-white/70 shadow-sm appearance-none pr-9 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-                    >
+                    <select id="activeHostelSelect" value={activeHostelId || ""} onChange={handleHostelChange} disabled={isUpdatingHostel} className="w-full p-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1360AB]/60 focus:border-[#1360AB]/60 bg-white/70 shadow-sm appearance-none pr-9 transition-all disabled:opacity-70 disabled:cursor-not-allowed" >
                       {!activeHostelId && assignedHostels.length > 0 && (
                         <option value="" disabled>
                           Select Active Hostel

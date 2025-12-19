@@ -117,10 +117,7 @@ const ContactPage = () => {
 
           {/* Back to Home button */}
           <div className="text-center mt-8">
-            <Link
-              to="/"
-              className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-medium rounded-xl hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-blue-400/20 items-center relative overflow-hidden mx-auto inline-flex"
-            >
+            <Link to="/" className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-medium rounded-xl hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-blue-400/20 items-center relative overflow-hidden mx-auto inline-flex" >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
               <FaArrowLeft className="mr-3 transform transition-transform duration-300 group-hover:-translate-x-1.5 relative" />
               <span className="relative">Back to Home</span>

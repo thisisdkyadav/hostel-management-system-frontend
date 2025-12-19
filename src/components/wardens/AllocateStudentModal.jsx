@@ -95,19 +95,8 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   return (
     <Modal title={`Allocate Student to Room ${room.roomNumber}`} onClose={onClose} width={650}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-        <div style={{ 
-          backgroundColor: 'var(--color-primary-bg)', 
-          padding: 'var(--spacing-5)', 
-          borderRadius: 'var(--radius-xl)' 
-        }}>
-          <h3 style={{ 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-primary)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            marginBottom: 'var(--spacing-3)',
-            fontSize: 'var(--font-size-base)'
-          }}>
+        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
+          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', fontSize: 'var(--font-size-base)' }}>
             <FaHome style={{ marginRight: 'var(--spacing-2)' }} /> Room Details
           </h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-4">
@@ -132,15 +121,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           </div>
 
           {(room.occupiedCount >= room.capacity || room.currentOccupancy >= room.capacity) && (
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              marginTop: 'var(--spacing-4)', 
-              padding: 'var(--spacing-3)', 
-              backgroundColor: 'var(--color-warning-bg)', 
-              color: 'var(--color-warning-text)', 
-              borderRadius: 'var(--radius-md)' 
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)' }}>
               <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <p style={{ fontSize: 'var(--font-size-sm)' }}>This room is already at full capacity.</p>
             </div>
@@ -149,22 +130,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
         <div>
           <div style={{ position: 'relative' }}>
-            <input 
-              type="text" 
-              placeholder="Search student by name, ID or email..." 
-              value={filters.searchTerm} 
-              onChange={handleSearchChange} 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--spacing-3)', 
-                paddingLeft: 'var(--spacing-10)', 
-                border: `var(--border-1) solid var(--color-border-input)`, 
-                borderRadius: 'var(--radius-lg)', 
-                outline: 'none', 
-                transition: 'var(--transition-all)',
-                fontSize: 'var(--font-size-base)'
-              }} 
-              onFocus={(e) => {
+            <input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', fontSize: 'var(--font-size-base)' }} onFocus={(e) => {
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
                 e.target.style.borderColor = 'var(--input-border-focus)';
               }}
@@ -173,13 +139,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                 e.target.style.borderColor = 'var(--color-border-input)';
               }}
             />
-            <span style={{ 
-              position: 'absolute', 
-              left: 'var(--spacing-3)', 
-              top: 'var(--spacing-3)', 
-              color: 'var(--color-text-placeholder)',
-              fontSize: 'var(--icon-md)'
-            }}>
+            <span style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)', fontSize: 'var(--icon-md)' }}>
               <FaSearch />
             </span>
           </div>
@@ -187,34 +147,18 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
 
         {/* Bed Selection Section */}
         <div>
-          <h3 style={{ 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-3)', 
-            display: 'flex', 
-            alignItems: 'center',
-            fontSize: 'var(--font-size-base)'
-          }}>
+          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
             <FaBed style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Select Bed Number
           </h3>
           {availableBeds.length === 0 ? (
-            <div style={{ 
-              padding: 'var(--spacing-4)', 
-              backgroundColor: 'var(--color-warning-bg-light)', 
-              color: 'var(--color-warning-text)', 
-              borderRadius: 'var(--radius-lg)', 
-              display: 'flex', 
-              alignItems: 'center' 
-            }}>
+            <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-warning-bg-light)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center' }}>
               <FaExclamationTriangle style={{ marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
               <p style={{ fontSize: 'var(--font-size-base)' }}>No beds available in this room</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
               {availableBeds.map((bedNumber) => (
-                <button
-                  key={bedNumber}
-                  onClick={() => handleBedSelect(bedNumber)}
+                <button key={bedNumber} onClick={() => handleBedSelect(bedNumber)}
                   style={{ 
                     padding: `var(--spacing-2) var(--spacing-4)`, 
                     borderRadius: 'var(--radius-lg)', 
@@ -249,114 +193,41 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         {error && (
-          <div style={{ 
-            padding: 'var(--spacing-4)', 
-            backgroundColor: 'var(--color-danger-bg)', 
-            color: 'var(--color-danger-text)', 
-            borderRadius: 'var(--radius-lg)', 
-            display: 'flex', 
-            alignItems: 'flex-start' 
-          }}>
+          <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
             <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
             <p style={{ fontSize: 'var(--font-size-base)' }}>{error}</p>
           </div>
         )}
 
         <div>
-          <h3 style={{ 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-3)', 
-            display: 'flex', 
-            alignItems: 'center',
-            fontSize: 'var(--font-size-base)'
-          }}>
+          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-base)' }}>
             <FaUserGraduate style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Unallocated Students
           </h3>
 
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-8) 0' }}>
               <div style={{ position: 'relative', width: 'var(--spacing-12)', height: 'var(--spacing-12)' }}>
-                <div style={{ 
-                  position: 'absolute', 
-                  top: 0, 
-                  left: 0, 
-                  width: '100%', 
-                  height: '100%', 
-                  border: `var(--border-4) solid var(--color-border-primary)`, 
-                  borderRadius: 'var(--radius-full)' 
-                }}></div>
-                <div style={{ 
-                  position: 'absolute', 
-                  top: 0, 
-                  left: 0, 
-                  width: '100%', 
-                  height: '100%', 
-                  border: `var(--border-4) solid var(--color-primary)`, 
-                  borderRadius: 'var(--radius-full)', 
-                  animation: 'spin 1s linear infinite', 
-                  borderTopColor: 'transparent' 
-                }}></div>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: `var(--border-4) solid var(--color-border-primary)`, borderRadius: 'var(--radius-full)' }}></div>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: `var(--border-4) solid var(--color-primary)`, borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
               </div>
             </div>
           ) : (
             <>
               {unallocatedStudents.length === 0 ? (
-                <div style={{ 
-                  textAlign: 'center', 
-                  padding: 'var(--spacing-8) 0', 
-                  color: 'var(--color-text-muted)',
-                  fontSize: 'var(--font-size-base)'
-                }}>No unallocated students found</div>
+                <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0', color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No unallocated students found</div>
               ) : (
-                <div style={{ 
-                  maxHeight: '256px', 
-                  overflowY: 'auto', 
-                  border: `var(--border-1) solid var(--color-border-primary)`, 
-                  borderRadius: 'var(--radius-lg)' 
-                }}>
+                <div style={{ maxHeight: '256px', overflowY: 'auto', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)' }}>
                   <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
                     <thead style={{ backgroundColor: 'var(--color-bg-tertiary)', position: 'sticky', top: 0 }}>
                       <tr>
-                        <th style={{ 
-                          padding: 'var(--spacing-3) var(--spacing-6)', 
-                          textAlign: 'left', 
-                          fontSize: 'var(--font-size-xs)', 
-                          fontWeight: 'var(--font-weight-medium)', 
-                          color: 'var(--color-text-muted)', 
-                          textTransform: 'uppercase', 
-                          letterSpacing: 'var(--letter-spacing-wide)' 
-                        }}>Student</th>
-                        <th className="hidden sm:table-cell" style={{ 
-                          padding: 'var(--spacing-3) var(--spacing-6)', 
-                          textAlign: 'left', 
-                          fontSize: 'var(--font-size-xs)', 
-                          fontWeight: 'var(--font-weight-medium)', 
-                          color: 'var(--color-text-muted)', 
-                          textTransform: 'uppercase', 
-                          letterSpacing: 'var(--letter-spacing-wide)' 
-                        }}>ID</th>
-                        <th style={{ 
-                          padding: 'var(--spacing-3) var(--spacing-6)', 
-                          textAlign: 'right', 
-                          fontSize: 'var(--font-size-xs)', 
-                          fontWeight: 'var(--font-weight-medium)', 
-                          color: 'var(--color-text-muted)', 
-                          textTransform: 'uppercase', 
-                          letterSpacing: 'var(--letter-spacing-wide)' 
-                        }}>Action</th>
+                        <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Student</th>
+                        <th className="hidden sm:table-cell" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>ID</th>
+                        <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'right', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wide)' }}>Action</th>
                       </tr>
                     </thead>
                     <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                       {unallocatedStudents.map((student) => (
-                        <tr 
-                          key={student.id} 
-                          style={{ 
-                            transition: 'var(--transition-colors)',
-                            backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary-bg)' : 'var(--color-bg-primary)',
-                            borderTop: `var(--border-1) solid var(--color-border-primary)`
-                          }}
-                          onMouseEnter={(e) => {
+                        <tr key={student.id} style={{ transition: 'var(--transition-colors)', backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary-bg)' : 'var(--color-bg-primary)', borderTop: `var(--border-1) solid var(--color-border-primary)` }} onMouseEnter={(e) => {
                             if (selectedStudent?.id !== student.id) {
                               e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
                             }
@@ -369,39 +240,16 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                         >
                           <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              <div style={{ 
-                                height: 'var(--spacing-9)', 
-                                width: 'var(--spacing-9)', 
-                                borderRadius: 'var(--radius-full)', 
-                                backgroundColor: 'var(--color-bg-muted)', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'center', 
-                                color: 'var(--color-text-tertiary)', 
-                                fontWeight: 'var(--font-weight-semibold)',
-                                fontSize: 'var(--font-size-base)'
-                              }}>{student.fullName?.charAt(0) || "S"}</div>
+                              <div style={{ height: 'var(--spacing-9)', width: 'var(--spacing-9)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-bg-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-tertiary)', fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-base)' }}>{student.fullName?.charAt(0) || "S"}</div>
                               <div style={{ marginLeft: 'var(--spacing-3)' }}>
                                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{student.fullName}</div>
                                 <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.email}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="hidden sm:table-cell" style={{ 
-                            padding: 'var(--spacing-4) var(--spacing-6)', 
-                            whiteSpace: 'nowrap', 
-                            fontSize: 'var(--font-size-sm)', 
-                            color: 'var(--color-text-muted)' 
-                          }}>{student.studentId || student.rollNumber}</td>
-                          <td style={{ 
-                            padding: 'var(--spacing-4) var(--spacing-6)', 
-                            whiteSpace: 'nowrap', 
-                            textAlign: 'right', 
-                            fontSize: 'var(--font-size-sm)', 
-                            fontWeight: 'var(--font-weight-medium)' 
-                          }}>
-                            <button 
-                              onClick={() => handleStudentSelect(student)} 
+                          <td className="hidden sm:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.studentId || student.rollNumber}</td>
+                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+                            <button onClick={() => handleStudentSelect(student)} 
                               style={{ 
                                 padding: 'var(--spacing-1) var(--spacing-3)', 
                                 borderRadius: 'var(--radius-md)', 
@@ -437,27 +285,8 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           )}
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row" style={{ 
-          justifyContent: 'flex-end', 
-          gap: 'var(--spacing-3)', 
-          paddingTop: 'var(--spacing-4)', 
-          marginTop: 'var(--spacing-3)', 
-          borderTop: `var(--border-1) solid var(--color-border-light)` 
-        }}>
-          <button 
-            onClick={onClose} 
-            style={{ 
-              padding: 'var(--spacing-2-5) var(--spacing-4)', 
-              backgroundColor: 'var(--color-bg-muted)', 
-              borderRadius: 'var(--radius-lg)', 
-              color: 'var(--color-text-secondary)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              transition: 'var(--transition-colors)',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: 'var(--font-size-base)'
-            }}
-            onMouseEnter={(e) => {
+        <div className="flex flex-col-reverse sm:flex-row" style={{ justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+          <button onClick={onClose} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)' }} onMouseEnter={(e) => {
               e.target.style.backgroundColor = 'var(--color-bg-disabled)';
             }}
             onMouseLeave={(e) => {
@@ -466,9 +295,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           >
             Cancel
           </button>
-          <button
-            onClick={handleAllocateStudent}
-            disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity}
+          <button onClick={handleAllocateStudent} disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity}
             style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -496,15 +323,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
           >
             {allocating ? (
               <>
-                <div style={{ 
-                  animation: 'spin 1s linear infinite', 
-                  height: 'var(--spacing-4)', 
-                  width: 'var(--spacing-4)', 
-                  marginRight: 'var(--spacing-2)', 
-                  border: `var(--border-2) solid var(--color-white)`, 
-                  borderTopColor: 'transparent', 
-                  borderRadius: 'var(--radius-full)' 
-                }}></div>
+                <div style={{ animation: 'spin 1s linear infinite', height: 'var(--spacing-4)', width: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div>
                 Allocating...
               </>
             ) : (

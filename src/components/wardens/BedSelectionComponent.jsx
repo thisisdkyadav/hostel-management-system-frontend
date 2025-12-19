@@ -18,25 +18,13 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
   return (
     <div>
       {availableBeds.length === 0 ? (
-        <div style={{ 
-          padding: 'var(--spacing-3)', 
-          backgroundColor: 'var(--color-warning-bg)', 
-          color: 'var(--color-warning-text)', 
-          borderRadius: 'var(--radius-md)',
-          fontSize: 'var(--font-size-base)'
-        }}>No beds available in this room</div>
+        <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-base)' }}>No beds available in this room</div>
       ) : (
         <>
-          <p style={{ 
-            fontSize: 'var(--font-size-sm)', 
-            color: 'var(--color-text-tertiary)', 
-            marginBottom: 'var(--spacing-3)' 
-          }}>Select a bed number for the student in the new room:</p>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-3)' }}>Select a bed number for the student in the new room:</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
             {availableBeds.map((bedNumber) => (
-              <button
-                key={bedNumber}
-                onClick={() => onSelectBed(bedNumber)}
+              <button key={bedNumber} onClick={() => onSelectBed(bedNumber)}
                 style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
@@ -63,11 +51,7 @@ const BedSelectionComponent = ({ roomDetails, selectedBed, onSelectBed }) => {
                   }
                 }}
               >
-                <FaBed style={{ 
-                  marginRight: 'var(--spacing-1)', 
-                  color: selectedBed === bedNumber ? 'var(--color-white)' : 'var(--color-text-muted)',
-                  fontSize: 'var(--icon-md)'
-                }} />
+                <FaBed style={{ marginRight: 'var(--spacing-1)', color: selectedBed === bedNumber ? 'var(--color-white)' : 'var(--color-text-muted)', fontSize: 'var(--icon-md)' }} />
                 {bedNumber}
               </button>
             ))}

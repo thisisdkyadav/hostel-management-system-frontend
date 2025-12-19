@@ -192,8 +192,7 @@ const AccessHistory = ({ cachedData }) => {
             </div>
           </div>
         ) : entries.length === 0 ? (
-          <NoResults
-            icon={<FaHistory className="text-gray-300 text-5xl" />}
+          <NoResults icon={<FaHistory className="text-gray-300 text-5xl" />}
             message={!isOnline && !cachedData ? "No data available while offline" : "No entry records found"}
             suggestion={!isOnline && !cachedData ? "Connect to the internet to view your access history" : "Try changing your filter criteria"}
           />

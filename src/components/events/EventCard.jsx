@@ -65,10 +65,7 @@ const EventCard = ({ event, refresh }) => {
 
   return (
     <>
-      <Card 
-        className="cursor-pointer"
-        onClick={handleCardClick}
-      >
+      <Card className="cursor-pointer" onClick={handleCardClick} >
         <Card.Header style={{ marginBottom: 'var(--spacing-0)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>

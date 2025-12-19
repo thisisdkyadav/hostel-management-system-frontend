@@ -135,8 +135,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
     if (isEditing) {
       return (
         <div key={member.id} style={{ backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)', boxShadow: 'var(--shadow-sm)' }}>
-          <form
-            onSubmit={(e) => {
+          <form onSubmit={(e) => {
               e.preventDefault()
               handleUpdate(member.id)
             }}
@@ -270,9 +269,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-            <button
-              type="button"
-              onClick={() => {
+            <button type="button" onClick={() => {
                 setShowAddForm(false)
                 resetForm()
               }}
@@ -336,9 +333,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
       )}
 
       {showDeleteDialog && (
-        <ConfirmationDialog
-          isOpen={showDeleteDialog}
-          onClose={() => setShowDeleteDialog(false)}
+        <ConfirmationDialog isOpen={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}
           onConfirm={handleDelete}
           title="Delete Family Member"
           message={`Are you sure you want to remove ${memberToDelete?.name || "this family member"}? This action cannot be undone.`}

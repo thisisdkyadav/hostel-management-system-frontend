@@ -147,39 +147,16 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     if (field === "profileImage") {
       return (
         <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
-          <label style={{ 
-            display: 'block', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-2)' 
-          }} className="flex items-center">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
           <div className="flex items-center">
-            <div style={{ 
-              position: 'relative', 
-              height: 'var(--avatar-2xl)', 
-              width: 'var(--avatar-2xl)', 
-              borderRadius: 'var(--radius-avatar)', 
-              overflow: 'hidden', 
-              marginRight: 'var(--spacing-4)' 
-            }}>
-              <img 
-                src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} 
-                alt="Profile" 
-                style={{ 
-                  height: 'var(--avatar-2xl)', 
-                  width: 'var(--avatar-2xl)', 
-                  objectFit: 'cover' 
-                }} 
-              />
+            <div style={{ position: 'relative', height: 'var(--avatar-2xl)', width: 'var(--avatar-2xl)', borderRadius: 'var(--radius-avatar)', overflow: 'hidden', marginRight: 'var(--spacing-4)' }}>
+              <img src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} alt="Profile" style={{ height: 'var(--avatar-2xl)', width: 'var(--avatar-2xl)', objectFit: 'cover' }} />
             </div>
             <div>
-              <button 
-                type="button" 
-                onClick={() => setIsImageModalOpen(true)} 
+              <button type="button" onClick={() => setIsImageModalOpen(true)} 
                 style={{ 
                   padding: 'var(--spacing-2) var(--spacing-3)', 
                   backgroundColor: 'var(--color-primary-bg)', 
@@ -196,11 +173,7 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
               >
                 Change Photo
               </button>
-              <p style={{ 
-                fontSize: 'var(--font-size-xs)', 
-                color: 'var(--color-text-muted)', 
-                marginTop: 'var(--spacing-1)' 
-              }}>Maximum file size: 500KB</p>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum file size: 500KB</p>
             </div>
           </div>
         </div>
@@ -210,19 +183,11 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     if (field === "gender") {
       return (
         <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
-          <label style={{ 
-            display: 'block', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-2)' 
-          }} className="flex items-center">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <select 
-            value={editableData[field] || ""} 
-            onChange={(e) => handleChange(field, e.target.value)} 
+          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
             style={{ 
               width: '100%', 
               padding: 'var(--input-padding)', 
@@ -253,19 +218,11 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     if (field === "bloodGroup") {
       return (
         <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
-          <label style={{ 
-            display: 'block', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-2)' 
-          }} className="flex items-center">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <select 
-            value={editableData[field] || ""} 
-            onChange={(e) => handleChange(field, e.target.value)} 
+          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
             style={{ 
               width: '100%', 
               padding: 'var(--input-padding)', 
@@ -301,20 +258,11 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     if (type === "date") {
       return (
         <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
-          <label style={{ 
-            display: 'block', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-2)' 
-          }} className="flex items-center">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <input 
-            type="date" 
-            value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} 
-            onChange={(e) => handleChange(field, e.target.value)} 
+          <input type="date" value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} onChange={(e) => handleChange(field, e.target.value)} 
             style={{ 
               width: '100%', 
               padding: 'var(--input-padding)', 
@@ -340,19 +288,11 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     if (field === "address") {
       return (
         <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
-          <label style={{ 
-            display: 'block', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-secondary)', 
-            marginBottom: 'var(--spacing-2)' 
-          }} className="flex items-center">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }} className="flex items-center">
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <textarea 
-            value={editableData[field] || ""} 
-            onChange={(e) => handleChange(field, e.target.value)} 
+          <textarea value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
             rows={3} 
             style={{ 
               width: '100%', 
@@ -378,20 +318,11 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
     return (
       <div key={field} style={{ marginBottom: 'var(--spacing-6)' }}>
-        <label style={{ 
-          display: 'block', 
-          fontSize: 'var(--font-size-sm)', 
-          fontWeight: 'var(--font-weight-medium)', 
-          color: 'var(--color-text-secondary)', 
-          marginBottom: 'var(--spacing-2)' 
-        }} className="flex items-center">
+        <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }} className="flex items-center">
           {config.icon}
           <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
         </label>
-        <input 
-          type={type} 
-          value={editableData[field] || ""} 
-          onChange={(e) => handleChange(field, e.target.value)} 
+        <input type={type} value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
           style={{ 
             width: '100%', 
             padding: 'var(--input-padding)', 
@@ -417,58 +348,20 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   const renderFooter = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-        <button 
-          type="button" 
-          onClick={onClose} 
-          style={{ 
-            padding: 'var(--spacing-2) var(--spacing-4)', 
-            backgroundColor: 'var(--color-bg-muted)', 
-            color: 'var(--color-text-secondary)', 
-            borderRadius: 'var(--radius-lg)', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            transition: 'var(--transition-colors)',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+        <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
           onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
           disabled={saving}
         >
           Cancel
         </button>
         {activeTab === "profile" && (
-          <button 
-            type="submit" 
-            form="edit-profile-form" 
-            style={{ 
-              padding: 'var(--spacing-2) var(--spacing-4)', 
-              backgroundColor: 'var(--button-primary-bg)', 
-              color: 'var(--color-white)', 
-              borderRadius: 'var(--radius-lg)', 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              transition: 'var(--transition-colors)',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
+          <button type="submit" form="edit-profile-form" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}
             disabled={saving}
           >
             {saving ? (
               <>
-                <div style={{ 
-                  animation: 'spin 1s linear infinite', 
-                  borderRadius: 'var(--radius-full)', 
-                  height: 'var(--spacing-4)', 
-                  width: 'var(--spacing-4)', 
-                  border: `var(--border-2) solid var(--color-white)`, 
-                  borderTopColor: 'transparent', 
-                  marginRight: 'var(--spacing-2)' 
-                }}></div>
+                <div style={{ animation: 'spin 1s linear infinite', borderRadius: 'var(--radius-full)', height: 'var(--spacing-4)', width: 'var(--spacing-4)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', marginRight: 'var(--spacing-2)' }}></div>
                 Saving...
               </>
             ) : (
@@ -497,27 +390,14 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     if (loading) {
       return (
         <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-12) 0' }}>
-          <div style={{ 
-            animation: 'spin 1s linear infinite', 
-            borderRadius: 'var(--radius-full)', 
-            height: 'var(--spacing-12)', 
-            width: 'var(--spacing-12)', 
-            border: `var(--border-4) solid var(--color-primary-pale)`, 
-            borderTopColor: 'var(--color-primary)' 
-          }}></div>
+          <div style={{ animation: 'spin 1s linear infinite', borderRadius: 'var(--radius-full)', height: 'var(--spacing-12)', width: 'var(--spacing-12)', border: `var(--border-4) solid var(--color-primary-pale)`, borderTopColor: 'var(--color-primary)' }}></div>
         </div>
       )
     }
 
     if (error) {
       return (
-        <div style={{ 
-          backgroundColor: 'var(--color-danger-bg)', 
-          color: 'var(--color-danger-text)', 
-          padding: 'var(--spacing-4)', 
-          borderRadius: 'var(--radius-md)', 
-          marginBottom: 'var(--spacing-4)' 
-        }}>
+        <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-4)' }}>
           <p>{error}</p>
         </div>
       )
@@ -528,24 +408,13 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
         <form id="edit-profile-form" onSubmit={handleSubmit}>
           {editableFields.length === 0 ? (
             <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
-              <div style={{ 
-                backgroundColor: 'var(--color-warning-bg)', 
-                color: 'var(--color-warning-text)', 
-                padding: 'var(--spacing-4)', 
-                borderRadius: 'var(--radius-md)' 
-              }}>
+              <div style={{ backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)' }}>
                 <p>You don't have permission to edit any profile fields. Contact an administrator for assistance.</p>
               </div>
             </div>
           ) : (
             <>
-              <div style={{ 
-                backgroundColor: 'var(--color-info-bg)', 
-                color: 'var(--color-info-text)', 
-                padding: 'var(--spacing-4)', 
-                borderRadius: 'var(--radius-md)', 
-                marginBottom: 'var(--spacing-6)' 
-              }}>
+              <div style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--spacing-6)' }}>
                 <p style={{ fontSize: 'var(--font-size-sm)' }}>You can edit the following fields in your profile. Any changes will be saved once you submit the form.</p>
               </div>
 
@@ -561,18 +430,8 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
 
                 {editableFields.includes("emergencyContact") && (
                   <>
-                    <div style={{ 
-                      marginTop: 'var(--spacing-6)', 
-                      marginBottom: 'var(--spacing-4)', 
-                      borderTop: `var(--border-1) solid var(--color-border-primary)`, 
-                      paddingTop: 'var(--spacing-4)' 
-                    }}>
-                      <h3 style={{ 
-                        fontSize: 'var(--font-size-md)', 
-                        fontWeight: 'var(--font-weight-medium)', 
-                        color: 'var(--color-text-secondary)', 
-                        marginBottom: 'var(--spacing-3)' 
-                      }}>Emergency Contact Information</h3>
+                    <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-primary)`, paddingTop: 'var(--spacing-4)' }}>
+                      <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>Emergency Contact Information</h3>
                     </div>
                     {renderField("guardian")}
                     {renderField("guardianPhone", "tel")}

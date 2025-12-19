@@ -6,8 +6,7 @@ const ChangePasswordButton = ({ email }) => {
 
   return (
     <>
-      <button 
-        onClick={() => setShowModal(true)} 
+      <button onClick={() => setShowModal(true)} 
         style={{
           padding: 'var(--button-padding-md)',
           backgroundColor: 'var(--button-primary-bg)',

@@ -46,23 +46,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
 
   return createPortal(
     <div className="fixed inset-0 bg-[var(--color-bg-modal-overlay)] backdrop-blur-sm flex items-center justify-center z-50 p-4 md:p-6" onClick={handleBackdropClick}>
-      <div
-        ref={modalRef}
-        className={`
-          bg-[var(--color-bg-primary)] rounded-[var(--radius-modal)] 
-          overflow-auto
-          animate-fadeIn
-          ${autoWidth ? "w-auto" : "w-full"} ${fullHeight ? "h-[calc(100vh-32px)]" : "max-h-[90vh]"}
-          ${width ? `max-w-[${width}px]` : "max-w-2xl"}
-        `}
-        style={{
-          width: autoWidth ? "auto" : width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%",
-          maxWidth: autoWidth ? "90vw" : undefined,
-          display: fullHeight ? "flex" : "block",
-          flexDirection: fullHeight ? "column" : "initial",
-          boxShadow: 'var(--shadow-modal)',
-        }}
-        onClick={(e) => e.stopPropagation()}
+      <div ref={modalRef} className={` bg-[var(--color-bg-primary)] rounded-[var(--radius-modal)] overflow-auto animate-fadeIn ${autoWidth ? "w-auto" : "w-full"} ${fullHeight ? "h-[calc(100vh-32px)]" : "max-h-[90vh]"} ${width ? `max-w-[${width}px]` : "max-w-2xl"} `} style={{ width: autoWidth ? "auto" : width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%", maxWidth: autoWidth ? "90vw" : undefined, display: fullHeight ? "flex" : "block", flexDirection: fullHeight ? "column" : "initial", boxShadow: 'var(--shadow-modal)', }} onClick={(e) => e.stopPropagation()}
       >
         <div className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] px-6 py-4 border-b border-[var(--color-border-light)] ${fullHeight ? "flex-shrink-0" : ""}`}>
           {tabs ? (
@@ -94,9 +78,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
                     }
                   `}</style>
                   {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => onTabChange && onTabChange(tab.id)}
+                    <button key={tab.id} onClick={() => onTabChange && onTabChange(tab.id)}
                       className={`
                         py-3 px-1 border-b-2 font-medium text-sm flex items-center whitespace-nowrap
                         ${activeTab === tab.id ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-tertiary)] hover:border-[var(--color-border-dark)]"}
@@ -124,15 +106,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
           )}
         </div>
 
-        <div
-          className={`px-6 py-5 overflow-y-auto custom-scrollbar ${fullHeight ? "flex-grow" : "max-h-[calc(90vh-150px)]"}`}
-          style={{
-            minHeight: minHeight && !fullHeight ? `${minHeight}px` : undefined,
-            height: fullHeight ? contentHeight : "auto",
-            scrollbarWidth: "thin",
-            scrollbarColor: "var(--scrollbar-thumb-active) var(--color-border-gray)",
-          }}
-        >
+        <div className={`px-6 py-5 overflow-y-auto custom-scrollbar ${fullHeight ? "flex-grow" : "max-h-[calc(90vh-150px)]"}`} style={{ minHeight: minHeight && !fullHeight ? `${minHeight}px` : undefined, height: fullHeight ? contentHeight : "auto", scrollbarWidth: "thin", scrollbarColor: "var(--scrollbar-thumb-active) var(--color-border-gray)", }} >
           <style jsx>{`
             .custom-scrollbar::-webkit-scrollbar {
               width: 8px;

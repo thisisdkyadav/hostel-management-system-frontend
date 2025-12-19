@@ -111,9 +111,7 @@ const Leaves = () => {
       </div>
 
       {showDetailModal && selectedLeave && (
-        <LeaveDetailModal
-          leave={selectedLeave}
-          onClose={() => setShowDetailModal(false)}
+        <LeaveDetailModal leave={selectedLeave} onClose={() => setShowDetailModal(false)}
           isAdmin={isAdmin}
           isSelfView={!isAdmin || viewSelfOnly}
           onUpdated={() => {
@@ -124,10 +122,7 @@ const Leaves = () => {
       )}
 
       {showCreateModal && (
-        <LeaveForm
-          isOpen={showCreateModal}
-          setIsOpen={setShowCreateModal}
-          onSuccess={() => {
+        <LeaveForm isOpen={showCreateModal} setIsOpen={setShowCreateModal} onSuccess={() => {
             setShowCreateModal(false)
             fetchLeaves()
           }}

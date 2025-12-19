@@ -414,16 +414,7 @@ const Settings = () => {
                     <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
                   </div>
                 ) : (
-                  <ConfigListManager
-                    items={degrees}
-                    onUpdate={handleUpdateDegrees}
-                    onRename={handleRenameDegree}
-                    isLoading={loading.degrees}
-                    title="Degree Management"
-                    description="Add or rename academic degrees available in the system. Click on a degree to edit it."
-                    itemLabel="Degree"
-                    placeholder="Enter degree name (e.g., B.Tech, M.Tech, Ph.D)"
-                  />
+                  <ConfigListManager items={degrees} onUpdate={handleUpdateDegrees} onRename={handleRenameDegree} isLoading={loading.degrees} title="Degree Management" description="Add or rename academic degrees available in the system. Click on a degree to edit it." itemLabel="Degree" placeholder="Enter degree name (e.g., B.Tech, M.Tech, Ph.D)" />
                 )}
               </>
             )}
@@ -445,16 +436,7 @@ const Settings = () => {
                     <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#1360AB]"></div>
                   </div>
                 ) : (
-                  <ConfigListManager
-                    items={departments}
-                    onUpdate={handleUpdateDepartments}
-                    onRename={handleRenameDepartment}
-                    isLoading={loading.departments}
-                    title="Department Management"
-                    description="Add or rename academic departments available in the system. Click on a department to edit it."
-                    itemLabel="Department"
-                    placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)"
-                  />
+                  <ConfigListManager items={departments} onUpdate={handleUpdateDepartments} onRename={handleRenameDepartment} isLoading={loading.departments} title="Department Management" description="Add or rename academic departments available in the system. Click on a department to edit it." itemLabel="Department" placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)" />
                 )}
               </>
             )}

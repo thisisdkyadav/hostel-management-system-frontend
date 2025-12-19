@@ -88,15 +88,7 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
             <div className="absolute left-3 top-3 text-gray-400">
               <FaInfoCircle />
             </div>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={2}
-              className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
-              placeholder="Brief description of this undertaking"
-              required
-            />
+            <textarea name="description" value={formData.description} onChange={handleChange} rows={2} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="Brief description of this undertaking" required />
           </div>
         </div>
 
@@ -106,35 +98,14 @@ const AddUndertakingModal = ({ show, onClose, onSuccess }) => {
             <div className="absolute left-3 top-3 text-gray-400">
               <FaCalendarAlt />
             </div>
-            <DatePicker
-              selected={formData.deadline}
-              onChange={handleDateChange}
-              dateFormat="MM-dd-yyyy"
-              className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
-              placeholderText="mm-dd-yyyy"
-              required
-              popperPlacement="bottom"
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              autoComplete="off"
-              wrapperClassName="w-full"
-            />
+            <DatePicker selected={formData.deadline} onChange={handleDateChange} dateFormat="MM-dd-yyyy" className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholderText="mm-dd-yyyy" required popperPlacement="bottom" showMonthDropdown showYearDropdown dropdownMode="select" autoComplete="off" wrapperClassName="w-full" />
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Undertaking Content</label>
           <div className="relative">
-            <textarea
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              rows={6}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
-              placeholder="Full text of the undertaking that students will need to read and accept"
-              required
-            />
+            <textarea name="content" value={formData.content} onChange={handleChange} rows={6} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="Full text of the undertaking that students will need to read and accept" required />
           </div>
           <p className="text-xs text-gray-500 mt-1">This is the full text that students will be required to read and accept.</p>
         </div>

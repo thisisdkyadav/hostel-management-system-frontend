@@ -60,35 +60,18 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
     <div className="fixed bottom-0 left-0 right-0 bg-white/70 backdrop-blur-lg border-t border-blue-100/50 z-50 pb-safe shadow-lg">
       <div className="flex h-16">
         {mainButtons.map((item) => (
-          <button
-            key={item.name || `nav-item-${Math.random()}`}
-            onClick={() => safeHandleNavigation(item)}
+          <button key={item.name || `nav-item-${Math.random()}`} onClick={() => safeHandleNavigation(item)}
             className={`
               flex-1 flex flex-col items-center justify-center relative transition-all duration-200
               ${isActive(item) ? "text-[#1360AB]" : "text-gray-500 hover:text-gray-700"}
             `}
           >
-            <div
-              className={`
-              relative p-1.5 rounded-full transition-all duration-200
-              ${isActive(item) ? "bg-blue-100/80" : "hover:bg-gray-100/80"}
-            `}
-            >
+            <div className={` relative p-1.5 rounded-full transition-all duration-200 ${isActive(item) ? "bg-blue-100/80" : "hover:bg-gray-100/80"} `} >
               {item.icon && (
-                <item.icon
-                  className={`
-                  text-xl transition-all duration-200
-                  ${isActive(item) ? "text-[#1360AB]" : "text-gray-500"}
-                `}
-                />
+                <item.icon className={` text-xl transition-all duration-200 ${isActive(item) ? "text-[#1360AB]" : "text-gray-500"} `} />
               )}
             </div>
-            <span
-              className={`
-              text-[10px] mt-0.5 transition-all duration-200
-              ${isActive(item) ? "font-medium" : ""}
-            `}
-            >
+            <span className={` text-[10px] mt-0.5 transition-all duration-200 ${isActive(item) ? "font-medium" : ""} `} >
               {item.name || ""}
             </span>
             {item.badge > 0 && <div className="absolute top-0 right-1/3 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-semibold flex items-center justify-center shadow-sm border border-white">{item.badge > 99 ? "99+" : item.badge}</div>}
@@ -97,26 +80,14 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
 
         {/* Profile button */}
         <div className="flex-1 relative" ref={dropdownRef}>
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
+          <button onClick={() => setDropdownOpen(!dropdownOpen)}
             className={`
               w-full h-full flex flex-col items-center justify-center relative transition-all duration-200
               ${dropdownOpen ? "text-[#1360AB]" : "text-gray-500 hover:text-gray-700"}
             `}
           >
-            <div
-              className={`
-              relative p-0.5 rounded-full transition-all duration-200
-              ${dropdownOpen ? "bg-blue-100/80" : "hover:bg-gray-100/80"}
-            `}
-            >
-              <div
-                className={`
-                w-8 h-8 rounded-full flex items-center justify-center overflow-hidden
-                ${dropdownOpen ? "border-2 border-[#1360AB]" : "border border-gray-200"}
-                shadow-sm
-              `}
-              >
+            <div className={` relative p-0.5 rounded-full transition-all duration-200 ${dropdownOpen ? "bg-blue-100/80" : "hover:bg-gray-100/80"} `} >
+              <div className={` w-8 h-8 rounded-full flex items-center justify-center overflow-hidden ${dropdownOpen ? "border-2 border-[#1360AB]" : "border border-gray-200"} shadow-sm `} >
                 {user?.profileImage ? (
                   <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
                 ) : user?.name?.charAt(0).toUpperCase() ? (
@@ -128,12 +99,7 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
                 )}
               </div>
             </div>
-            <span
-              className={`
-              text-[10px] mt-0.5 transition-all duration-200
-              ${dropdownOpen ? "font-medium text-[#1360AB]" : ""}
-            `}
-            >
+            <span className={` text-[10px] mt-0.5 transition-all duration-200 ${dropdownOpen ? "font-medium text-[#1360AB]" : ""} `} >
               More
             </span>
           </button>
@@ -152,27 +118,15 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
                 </div>
                 <div className="pb-safe">
                   {safeHiddenNavItems.map((item) => (
-                    <div
-                      key={item.name || `hidden-nav-${Math.random()}`}
-                      onClick={() => safeHandleNavigation(item)}
+                    <div key={item.name || `hidden-nav-${Math.random()}`} onClick={() => safeHandleNavigation(item)}
                       className={`
                         flex items-center px-5 py-3.5 text-sm cursor-pointer transition-all duration-200
                         ${item.name === "Logout" ? "text-red-500 hover:bg-red-50 active:bg-red-100" : "text-gray-700 hover:bg-[#1360AB]/10 active:bg-[#1360AB]/20 hover:text-[#1360AB]"}
                       `}
                     >
                       {item.icon && (
-                        <div
-                          className={`
-                          p-2.5 rounded-full mr-4 flex items-center justify-center
-                          ${item.name === "Logout" ? "bg-red-100" : "bg-blue-100/80"}
-                        `}
-                        >
-                          <item.icon
-                            className={`
-                              text-lg
-                              ${item.name === "Logout" ? "text-red-500" : "text-[#1360AB]"}
-                            `}
-                          />
+                        <div className={` p-2.5 rounded-full mr-4 flex items-center justify-center ${item.name === "Logout" ? "bg-red-100" : "bg-blue-100/80"} `} >
+                          <item.icon className={` text-lg ${item.name === "Logout" ? "text-red-500" : "text-[#1360AB]"} `} />
                         </div>
                       )}
                       <span className="font-medium">{item.name || ""}</span>

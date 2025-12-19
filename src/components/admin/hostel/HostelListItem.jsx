@@ -39,9 +39,7 @@ const HostelListItem = ({ hostel, onUpdate, onDelete }) => {
 
       {/* Modals */}
       {showEditModal && (
-        <EditHostelModal
-          hostel={hostel}
-          onClose={() => setShowEditModal(false)}
+        <EditHostelModal hostel={hostel} onClose={() => setShowEditModal(false)}
           onSave={(updatedHostel) => {
             onUpdate(updatedHostel)
             setShowEditModal(false)

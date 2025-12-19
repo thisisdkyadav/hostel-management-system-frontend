@@ -81,22 +81,7 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
               <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                 <HiPencil size={20} />
               </div>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                style={{
-                  width: '100%',
-                  paddingLeft: 'var(--spacing-10)',
-                  padding: 'var(--spacing-3)',
-                  border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`,
-                  backgroundColor: errors.title ? 'var(--color-danger-bg)' : 'var(--input-bg)',
-                  borderRadius: 'var(--radius-input)',
-                  outline: 'none',
-                  transition: 'var(--transition-colors)',
-                }}
-                onFocus={(e) => {
+              <input type="text" name="title" value={formData.title} onChange={handleChange} style={{ width: '100%', paddingLeft: 'var(--spacing-10)', padding: 'var(--spacing-3)', border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`, backgroundColor: errors.title ? 'var(--color-danger-bg)' : 'var(--input-bg)', borderRadius: 'var(--radius-input)', outline: 'none', transition: 'var(--transition-colors)', }} onFocus={(e) => {
                   e.target.style.borderColor = errors.title ? 'var(--color-danger)' : 'var(--input-border-focus)';
                   e.target.style.boxShadow = errors.title ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
                 }}
@@ -120,22 +105,7 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
               <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                 <HiDocumentText size={20} />
               </div>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={5}
-                style={{
-                  width: '100%',
-                  paddingLeft: 'var(--spacing-10)',
-                  padding: 'var(--spacing-3)',
-                  border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`,
-                  backgroundColor: errors.description ? 'var(--color-danger-bg)' : 'var(--input-bg)',
-                  borderRadius: 'var(--radius-input)',
-                  outline: 'none',
-                  transition: 'var(--transition-colors)',
-                }}
-                onFocus={(e) => {
+              <textarea name="description" value={formData.description} onChange={handleChange} rows={5} style={{ width: '100%', paddingLeft: 'var(--spacing-10)', padding: 'var(--spacing-3)', border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`, backgroundColor: errors.description ? 'var(--color-danger-bg)' : 'var(--input-bg)', borderRadius: 'var(--radius-input)', outline: 'none', transition: 'var(--transition-colors)', }} onFocus={(e) => {
                   e.target.style.borderColor = errors.description ? 'var(--color-danger)' : 'var(--input-border-focus)';
                   e.target.style.boxShadow = errors.description ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
                 }}
@@ -155,21 +125,7 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
 
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>
             <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)', justifyContent: 'flex-end' }}>
-              <button 
-                type="button" 
-                onClick={onClose} 
-                style={{
-                  padding: 'var(--button-padding-md)',
-                  backgroundColor: 'var(--color-bg-muted)',
-                  color: 'var(--color-text-body)',
-                  borderRadius: 'var(--radius-input)',
-                  border: 'none',
-                  transition: 'var(--transition-all)',
-                  cursor: 'pointer',
-                  fontWeight: 'var(--font-weight-medium)',
-                  fontSize: 'var(--font-size-base)',
-                }}
-                onMouseEnter={(e) => {
+              <button type="button" onClick={onClose} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-input)', border: 'none', transition: 'var(--transition-all)', cursor: 'pointer', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => {
                   e.target.style.backgroundColor = 'var(--color-bg-hover)';
                 }}
                 onMouseLeave={(e) => {
@@ -178,25 +134,7 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
               >
                 Cancel
               </button>
-              <button 
-                type="submit" 
-                disabled={isSubmitting} 
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 'var(--button-padding-md)',
-                  backgroundColor: isSubmitting ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)',
-                  color: 'var(--color-white)',
-                  borderRadius: 'var(--radius-input)',
-                  border: 'none',
-                  transition: 'var(--transition-all)',
-                  boxShadow: 'var(--shadow-button)',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  fontWeight: 'var(--font-weight-medium)',
-                  fontSize: 'var(--font-size-base)',
-                }}
-                onMouseEnter={(e) => {
+              <button type="submit" disabled={isSubmitting} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--button-padding-md)', backgroundColor: isSubmitting ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-input)', border: 'none', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-button)', cursor: isSubmitting ? 'not-allowed' : 'pointer', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => {
                   if (!isSubmitting) {
                     e.target.style.backgroundColor = 'var(--button-primary-hover)';
                     e.target.style.boxShadow = 'var(--shadow-button-hover)';
@@ -211,15 +149,7 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
               >
                 {isSubmitting ? (
                   <>
-                    <div style={{ 
-                      width: 'var(--icon-md)', 
-                      height: 'var(--icon-md)', 
-                      border: 'var(--border-2) solid var(--color-white)', 
-                      borderTopColor: 'transparent', 
-                      borderRadius: 'var(--radius-full)', 
-                      animation: 'spin 1s linear infinite',
-                      marginRight: 'var(--spacing-2)'
-                    }}></div>
+                    <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></div>
                     {isEditing ? "Updating..." : "Submitting..."}
                   </>
                 ) : isEditing ? (

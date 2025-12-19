@@ -367,10 +367,7 @@ const UnitsAndRooms = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <UnitsAndRoomsHeader 
-        title={dynamicTitle}
-        showFilters={showFilters}
-        onToggleFilters={() => setShowFilters(!showFilters)}
+      <UnitsAndRoomsHeader title={dynamicTitle} showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
         onBackToUnits={goBackToUnits}
         onUpdateAllocations={() => setShowUploadModal(true)}
         showBackToUnits={hostelType === "unit-based" && currentView === "rooms"}
@@ -517,8 +514,7 @@ const UnitsAndRooms = () => {
           <div className="mt-4">{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} viewMode={viewMode} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} viewMode={viewMode} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
 
           {((hostelType === "unit-based" && currentView === "units" && units.length === 0) || (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length === 0)) && !loading && (
-            <NoResults
-              icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding className="text-gray-300 text-4xl" /> : <MdMeetingRoom className="text-gray-300 text-4xl" />}
+            <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding className="text-gray-300 text-4xl" /> : <MdMeetingRoom className="text-gray-300 text-4xl" />}
               message={`No ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"} found`}
               suggestion="Try changing your search or filter criteria"
             />

@@ -136,27 +136,21 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             Satisfaction status <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
           <div className="grid grid-cols-3" style={{ gap: 'var(--spacing-2)' }}>
-            <button
-              type="button"
-              onClick={() => setSatisfactionStatus("Satisfied")}
+            <button type="button" onClick={() => setSatisfactionStatus("Satisfied")}
               style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "Satisfied" ? 'var(--border-2) solid var(--color-success)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "Satisfied" ? 'var(--color-success-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "Satisfied" ? 'var(--color-success-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
               onMouseEnter={(e) => { if (satisfactionStatus !== "Satisfied") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
               onMouseLeave={(e) => { if (satisfactionStatus !== "Satisfied") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
             >
               Satisfied
             </button>
-            <button
-              type="button"
-              onClick={() => setSatisfactionStatus("Unsatisfied")}
+            <button type="button" onClick={() => setSatisfactionStatus("Unsatisfied")}
               style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "Unsatisfied" ? 'var(--border-2) solid var(--color-danger)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "Unsatisfied" ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "Unsatisfied" ? 'var(--color-danger-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
               onMouseEnter={(e) => { if (satisfactionStatus !== "Unsatisfied") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
               onMouseLeave={(e) => { if (satisfactionStatus !== "Unsatisfied") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
             >
               Unsatisfied
             </button>
-            <button
-              type="button"
-              onClick={() => setSatisfactionStatus("False Resolution")}
+            <button type="button" onClick={() => setSatisfactionStatus("False Resolution")}
               style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "False Resolution" ? 'var(--border-2) solid var(--color-warning)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "False Resolution" ? 'var(--color-warning-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "False Resolution" ? 'var(--color-warning-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
               onMouseEnter={(e) => { if (satisfactionStatus !== "False Resolution") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
               onMouseLeave={(e) => { if (satisfactionStatus !== "False Resolution") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
@@ -171,10 +165,7 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
           <label htmlFor="feedback" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>
             Comments (Optional)
           </label>
-          <textarea
-            id="feedback"
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
+          <textarea id="feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)}
             rows={3}
             className="w-full resize-none"
             style={{ padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-sm)' }}

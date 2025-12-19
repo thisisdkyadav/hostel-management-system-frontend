@@ -132,32 +132,17 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
     <div style={containerStyle}>
       <h3 style={headingStyle}>{getFormTitle()}</h3>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "var(--spacing-4)",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
         <div>
           <label style={labelStyle}>Visitor Name(s)</label>
           <div style={readOnlyStyle}>{visitorInfo}</div>
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "var(--spacing-4)",
-        }}
-      >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
         <div>
           <label style={labelStyle}>Check-in Date</label>
-          <input
-            type="date"
-            value={newCheckInDate}
-            onChange={(e) => setNewCheckInDate(e.target.value)}
+          <input type="date" value={newCheckInDate} onChange={(e) => setNewCheckInDate(e.target.value)}
             style={inputStyle}
             onFocus={(e) => {
               e.target.style.borderColor = "var(--color-primary)"
@@ -172,10 +157,7 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
         </div>
         <div>
           <label style={labelStyle}>Check-in Time</label>
-          <input
-            type="time"
-            value={newCheckInTime}
-            onChange={(e) => setNewCheckInTime(e.target.value)}
+          <input type="time" value={newCheckInTime} onChange={(e) => setNewCheckInTime(e.target.value)}
             style={inputStyle}
             onFocus={(e) => {
               e.target.style.borderColor = "var(--color-primary)"
@@ -192,19 +174,10 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
 
       {/* Show check-out fields if already checked in or checked out */}
       {isCheckedIn && (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "var(--spacing-4)",
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
           <div>
             <label style={labelStyle}>Check-out Date</label>
-            <input
-              type="date"
-              value={newCheckOutDate}
-              onChange={(e) => setNewCheckOutDate(e.target.value)}
+            <input type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)}
               style={inputStyle}
               onFocus={(e) => {
                 e.target.style.borderColor = "var(--color-primary)"
@@ -218,10 +191,7 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
           </div>
           <div>
             <label style={labelStyle}>Check-out Time</label>
-            <input
-              type="time"
-              value={newCheckOutTime}
-              onChange={(e) => setNewCheckOutTime(e.target.value)}
+            <input type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)}
               style={inputStyle}
               onFocus={(e) => {
                 e.target.style.borderColor = "var(--color-primary)"
@@ -238,9 +208,7 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
 
       <div>
         <label style={labelStyle}>Security Notes (optional)</label>
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
+        <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
           rows="2"
           style={{
             ...inputStyle,
@@ -258,14 +226,7 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
         ></textarea>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "var(--spacing-3)",
-          paddingTop: "var(--spacing-2)",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-2)", }} >
         <button type="button" onClick={onCancel} style={cancelButtonStyle}>
           Cancel
         </button>

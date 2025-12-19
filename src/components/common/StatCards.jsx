@@ -10,20 +10,10 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
   const colorValue = getColorValue(color) || '#1360AB'
   
   return (
-    <div 
-      className="bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group"
-      style={{ 
-        boxShadow: 'var(--shadow-xs)',
-      }}
-    >
+    <div className="bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group" style={{ boxShadow: 'var(--shadow-xs)', }} >
       <div className="flex justify-between items-start mb-1.5">
         <span className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wide">{title}</span>
-        <div 
-          className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110"
-          style={{ 
-            backgroundColor: `${colorValue}15`,
-          }}
-        >
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110" style={{ backgroundColor: `${colorValue}15`, }} >
           {React.cloneElement(icon, {
             style: { color: colorValue },
             className: "text-base",
@@ -31,10 +21,7 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
         </div>
       </div>
       <div>
-        <h3 
-          className="text-xl md:text-2xl font-bold leading-none" 
-          style={{ color: colorValue }}
-        >
+        <h3 className="text-xl md:text-2xl font-bold leading-none" style={{ color: colorValue }} >
           {value}
         </h3>
         <p className="text-xs text-[var(--color-text-light)] mt-0.5">{subtitle}</p>

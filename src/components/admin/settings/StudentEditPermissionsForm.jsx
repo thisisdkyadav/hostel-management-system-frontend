@@ -90,11 +90,7 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
       </div>
 
       <div className="pt-4">
-        <button
-          type="submit"
-          className={`w-full flex justify-center items-center px-4 py-3 ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1360AB] hover:bg-[#0d4b86]"} text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`}
-          disabled={isLoading}
-        >
+        <button type="submit" className={`w-full flex justify-center items-center px-4 py-3 ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1360AB] hover:bg-[#0d4b86]"} text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`} disabled={isLoading} >
           {isLoading ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>

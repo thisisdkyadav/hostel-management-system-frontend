@@ -88,8 +88,7 @@ const SSOLogin = () => {
             <p className="text-gray-600 text-lg md:text-xl mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed animate-fadeIn">{error}</p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 animate-fadeIn">
-              <button
-                onClick={() => navigate("/login")}
+              <button onClick={() => navigate("/login")}
                 className="group px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white text-lg font-medium rounded-xl hover:from-red-600 hover:to-red-700 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-red-400/20 flex items-center relative overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>

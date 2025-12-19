@@ -138,9 +138,7 @@ const NotificationCenter = () => {
         </div>
       )}
 
-      <NotificationCenterHeader 
-        showFilters={showFilters}
-        onToggleFilters={() => setShowFilters(!showFilters)}
+      <NotificationCenterHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
         onCreateNotification={() => setShowCreateModal(true)}
         userRole={user.role}
       />

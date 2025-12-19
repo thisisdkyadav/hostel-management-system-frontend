@@ -126,11 +126,7 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
             <button type="button" onClick={onClose} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={loading || !formData.password || !formData.confirmPassword}
-              className={`px-4 py-2 bg-[#1360AB] text-white rounded-lg transition-colors flex items-center ${!formData.password || !formData.confirmPassword ? "opacity-50 cursor-not-allowed" : "hover:bg-[#0F4C81]"}`}
-            >
+            <button type="submit" disabled={loading || !formData.password || !formData.confirmPassword} className={`px-4 py-2 bg-[#1360AB] text-white rounded-lg transition-colors flex items-center ${!formData.password || !formData.confirmPassword ? "opacity-50 cursor-not-allowed" : "hover:bg-[#0F4C81]"}`} >
               {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span> : <FaSave className="mr-2" />}
               Update Password
             </button>

@@ -43,8 +43,7 @@ const LostAndFound = () => {
   return (
     <>
       <div className="flex flex-col h-full">
-        <LostAndFoundHeader 
-          onAddItem={() => setShowAddModal(true)}
+        <LostAndFoundHeader onAddItem={() => setShowAddModal(true)}
           canCreate={canAccess("lost_and_found", "create")}
           userRole={user?.role}
         />

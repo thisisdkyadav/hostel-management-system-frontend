@@ -127,9 +127,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
             {allowedStatusUpdates
               .filter((status) => status !== currentStatus)
               .map((status) => (
-                <button
-                  key={status}
-                  onClick={() => handleStatusChange(status)}
+                <button key={status} onClick={() => handleStatusChange(status)}
                   disabled={loading}
                   style={getStatusButtonStyle(status)}
                   onMouseEnter={(e) => {
@@ -153,21 +151,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
         <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
           {canEditTask && !isUserView && (
             <>
-              <button
-                onClick={handleEditTask}
-                style={{
-                  padding: 'var(--button-padding-md)',
-                  backgroundColor: 'var(--button-primary-bg)',
-                  color: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
-                  transition: 'var(--transition-all)',
-                  boxShadow: 'var(--shadow-sm)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
+              <button onClick={handleEditTask} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => {
                   e.target.style.backgroundColor = 'var(--button-primary-hover)';
                   e.target.style.boxShadow = 'var(--shadow-md)';
                 }}
@@ -178,22 +162,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
               >
                 <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit Task
               </button>
-              <button
-                onClick={handleDeleteTask}
-                disabled={loading}
-                style={{
-                  padding: 'var(--button-padding-md)',
-                  backgroundColor: 'var(--color-danger-bg)',
-                  color: 'var(--color-danger-text)',
-                  borderRadius: 'var(--radius-lg)',
-                  transition: 'var(--transition-all)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  border: 'none',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)'
-                }}
-                onMouseEnter={(e) => {
+              <button onClick={handleDeleteTask} disabled={loading} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => {
                   if (!loading) e.target.style.backgroundColor = 'var(--color-danger-bg-light)';
                 }}
                 onMouseLeave={(e) => {
@@ -205,8 +174,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
             </>
           )}
 
-          <button
-            onClick={() => setShowDetailModal(false)}
+          <button onClick={() => setShowDetailModal(false)}
             style={{
               padding: 'var(--button-padding-md)',
               backgroundColor: 'var(--color-bg-muted)',
@@ -257,13 +225,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
             </div>
             <div>
               <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Due Date</h4>
-              <div style={{
-                padding: 'var(--spacing-4)',
-                borderRadius: 'var(--radius-lg)',
-                fontWeight: 'var(--font-weight-medium)',
-                backgroundColor: isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)',
-                color: isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)'
-              }}>{formatDate(selectedTask.dueDate)}</div>
+              <div style={{ padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)', backgroundColor: isPastDue ? 'var(--color-danger-bg)' : 'var(--color-bg-tertiary)', color: isPastDue ? 'var(--color-danger-text)' : 'var(--color-text-secondary)' }}>{formatDate(selectedTask.dueDate)}</div>
             </div>
           </div>
 
@@ -274,19 +236,7 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                 {selectedTask.assignedUsers.map((user, idx) => (
                   <div key={user._id || idx} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)' }}>
-                    <div style={{
-                      marginRight: 'var(--spacing-3)',
-                      height: 'var(--avatar-sm)',
-                      width: 'var(--avatar-sm)',
-                      borderRadius: 'var(--radius-full)',
-                      backgroundColor: 'var(--color-primary-bg-hover)',
-                      color: 'var(--color-primary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 'var(--font-size-sm)',
-                      fontWeight: 'var(--font-weight-medium)'
-                    }}>{user.name ? user.name.charAt(0) : "U"}</div>
+                    <div style={{ marginRight: 'var(--spacing-3)', height: 'var(--avatar-sm)', width: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg-hover)', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{user.name ? user.name.charAt(0) : "U"}</div>
                     <div>
                       <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{user.name}</p>
                       <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>

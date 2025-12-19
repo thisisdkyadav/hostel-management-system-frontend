@@ -150,28 +150,14 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
               <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FaPhone />
               </div>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-                placeholder="Enter phone number"
-              />
+              <input type="text" name="phone" value={formData.phone} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Enter phone number" />
               {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
             </div>
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category</label>
-            <input
-              type="text"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-              placeholder="Admin"
-            />
+            <input type="text" name="category" value={formData.category} onChange={handleChange} className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Admin" />
             {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
           </div>
         </div>

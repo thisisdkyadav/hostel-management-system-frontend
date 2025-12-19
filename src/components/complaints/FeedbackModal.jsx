@@ -40,36 +40,16 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
     <Modal title="Give Feedback" onClose={onClose} width={MODAL_WIDTH}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
-          <div 
-            className="border-l-4" 
-            style={{ 
-              backgroundColor: 'var(--color-danger-bg)', 
-              borderColor: 'var(--color-danger)', 
-              padding: 'var(--spacing-4)', 
-              marginBottom: 'var(--spacing-4)' 
-            }}
-          >
+          <div className="border-l-4" style={{ backgroundColor: 'var(--color-danger-bg)', borderColor: 'var(--color-danger)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }} >
             <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
         <div>
-          <label 
-            htmlFor="feedback" 
-            className="block" 
-            style={{ 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              color: 'var(--color-text-secondary)', 
-              marginBottom: 'var(--spacing-1)' 
-            }}
-          >
+          <label htmlFor="feedback" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
             Feedback
           </label>
-          <textarea 
-            id="feedback" 
-            value={feedback} 
-            onChange={(e) => setFeedback(e.target.value)} 
+          <textarea id="feedback" value={feedback} onChange={(e) => setFeedback(e.target.value)} 
             rows={TEXTAREA_ROWS} 
             className="w-full focus:outline-none" 
             style={{ 
@@ -94,22 +74,10 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
         </div>
 
         <div>
-          <label 
-            htmlFor="feedbackRating" 
-            className="block" 
-            style={{ 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              color: 'var(--color-text-secondary)', 
-              marginBottom: 'var(--spacing-1)' 
-            }}
-          >
+          <label htmlFor="feedbackRating" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
             Rating
           </label>
-          <select 
-            id="feedbackRating" 
-            value={feedbackRating} 
-            onChange={(e) => setFeedbackRating(Number(e.target.value))} 
+          <select id="feedbackRating" value={feedbackRating} onChange={(e) => setFeedbackRating(Number(e.target.value))} 
             className="w-full focus:outline-none" 
             style={{ 
               paddingLeft: 'var(--spacing-4)', 
@@ -138,22 +106,10 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
         </div>
 
         <div>
-          <label 
-            htmlFor="satisfactionStatus" 
-            className="block" 
-            style={{ 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              color: 'var(--color-text-secondary)', 
-              marginBottom: 'var(--spacing-1)' 
-            }}
-          >
+          <label htmlFor="satisfactionStatus" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
             Satisfaction Status
           </label>
-          <select 
-            id="satisfactionStatus" 
-            value={satisfactionStatus} 
-            onChange={(e) => setSatisfactionStatus(e.target.value)} 
+          <select id="satisfactionStatus" value={satisfactionStatus} onChange={(e) => setSatisfactionStatus(e.target.value)} 
             className="w-full focus:outline-none" 
             style={{ 
               paddingLeft: 'var(--spacing-4)', 
@@ -180,19 +136,10 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
         </div>
 
         <div className="flex justify-end" style={{ gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
-          <Button 
-            type="button" 
-            onClick={onClose} 
-            variant="outline"
-          >
+          <Button type="button" onClick={onClose} variant="outline" >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="primary"
-            isLoading={isSubmitting}
-            disabled={isSubmitting}
-            icon={!isSubmitting && <FaStar />}
+          <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting} icon={!isSubmitting && <FaStar />}
           >
             {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
           </Button>

@@ -140,13 +140,7 @@ const MaintenancePage = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <div className="flex justify-between items-center">
-        <ComplaintsHeader 
-          showFilters={showFilters} 
-          setShowFilters={setShowFilters} 
-          viewMode={viewMode} 
-          setViewMode={setViewMode} 
-          showCraftComplaint={false}
-          setShowCraftComplaint={() => {}}
+        <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={false} setShowCraftComplaint={() => {}}
           userRole={user?.role}
           title="Maintenance Dashboard"
         />
@@ -158,14 +152,7 @@ const MaintenancePage = () => {
       <ComplaintStats statsData={statsData} loading={statsLoading} />
 
       {showFilters && (
-        <ComplaintsFilterPanel 
-          filters={filters} 
-          updateFilter={updateFilter} 
-          resetFilters={resetFilters} 
-          hostels={hostels} 
-          categories={categories} 
-          priorities={priorities} 
-        />
+        <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} priorities={priorities} />
       )}
 
       <div className="mt-6 bg-white p-4 rounded-lg shadow-sm">
@@ -185,24 +172,10 @@ const MaintenancePage = () => {
         </div>
       </div>
 
-      <ComplaintsContent 
-        loading={loading} 
-        complaints={complaints} 
-        viewMode={viewMode} 
-        filters={filters} 
-        totalPages={totalPages}
-        COMPLAINT_FILTER_TABS={[]}
-        updateFilter={updateFilter} 
-        onViewDetails={viewComplaintDetails} 
-        paginate={paginate} 
-      />
+      <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={[]} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
 
       {showDetailModal && selectedComplaint && (
-        <ComplaintDetailModal 
-          selectedComplaint={selectedComplaint} 
-          setShowDetailModal={setShowDetailModal} 
-          onComplaintUpdate={fetchComplaints}
-        />
+        <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />
       )}
     </div>
   )

@@ -21,10 +21,7 @@ const SSOLoginButton = ({ className, buttonText = "Login with SSO" }) => {
   }, [])
 
   return (
-    <button
-      onClick={handleSSOLogin}
-      className={`group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-blue-400/20 flex items-center justify-center relative overflow-hidden ${className}`}
-    >
+    <button onClick={handleSSOLogin} className={`group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-blue-400/20 flex items-center justify-center relative overflow-hidden ${className}`} >
       <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
       <FiLogIn className="mr-2 relative" />
       <span className="relative">{buttonText}</span>

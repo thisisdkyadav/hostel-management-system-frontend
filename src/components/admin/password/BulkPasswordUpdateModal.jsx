@@ -165,8 +165,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
               <span className="text-sm text-blue-700">
                 Selected file: <span className="font-medium">{csvFile.name}</span>
               </span>
-              <button
-                onClick={(e) => {
+              <button onClick={(e) => {
                   e.stopPropagation()
                   setCsvFile(null)
                 }}

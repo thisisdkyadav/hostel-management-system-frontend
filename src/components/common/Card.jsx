@@ -29,24 +29,7 @@ const Card = ({
   }
 
   return (
-    <div
-      className={`
-        bg-[var(--color-bg-primary)] 
-        ${rounded} 
-        ${padding} 
-        ${transition ? "transition-all duration-300" : ""} 
-        ${border ? "border" : ""} 
-        ${className}
-      `}
-      style={{
-        boxShadow: isHovered ? hoverShadow : shadow,
-        borderColor: isHovered ? hoverBorderColor : borderColor,
-      }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      {...props}
-    >
+    <div className={` bg-[var(--color-bg-primary)] ${rounded} ${padding} ${transition ? "transition-all duration-300" : ""} ${border ? "border" : ""} ${className} `} style={{ boxShadow: isHovered ? hoverShadow : shadow, borderColor: isHovered ? hoverBorderColor : borderColor, }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick} {...props} >
       {children}
     </div>
   )

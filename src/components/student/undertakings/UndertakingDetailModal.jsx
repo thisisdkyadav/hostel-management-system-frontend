@@ -48,27 +48,12 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
     <Modal title={undertaking.title} onClose={handleClose} size="lg">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {/* Undertaking metadata */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between', 
-          backgroundColor: 'var(--color-bg-tertiary)', 
-          padding: 'var(--spacing-4)', 
-          borderRadius: 'var(--radius-input)' 
-        }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ 
-              padding: 'var(--spacing-2)', 
-              borderRadius: 'var(--radius-full)', 
-              backgroundColor: 'var(--color-info-bg)' 
-            }}>
+            <div style={{ padding: 'var(--spacing-2)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-info-bg)' }}>
               <FaFileSignature style={{ color: 'var(--color-info)' }} />
             </div>
-            <span style={{ 
-              marginLeft: 'var(--spacing-2)', 
-              fontSize: 'var(--font-size-sm)', 
-              color: 'var(--color-text-tertiary)' 
-            }}>
+            <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
               {undertaking.status === "not_viewed" ? "New" : "Pending Acceptance"}
             </span>
           </div>
@@ -76,63 +61,28 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
             <FaCalendarAlt style={{ color: 'var(--color-text-placeholder)', marginRight: 'var(--spacing-2)' }} />
             <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
               Deadline: {formatDate(undertaking.deadline)}
-              {deadlinePassed && <span style={{ 
-                marginLeft: 'var(--spacing-2)', 
-                fontSize: 'var(--font-size-xs)', 
-                color: 'var(--color-danger-text)' 
-              }}>(Overdue)</span>}
+              {deadlinePassed && <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-danger-text)' }}>(Overdue)</span>}
             </span>
           </div>
         </div>
 
         {/* Description */}
         <div>
-          <h3 style={{ 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-body)', 
-            marginBottom: 'var(--spacing-2)' 
-          }}>Description</h3>
-          <p style={{ 
-            color: 'var(--color-text-tertiary)', 
-            fontSize: 'var(--font-size-sm)', 
-            backgroundColor: 'var(--color-bg-tertiary)', 
-            padding: 'var(--spacing-4)', 
-            borderRadius: 'var(--radius-input)' 
-          }}>{undertaking.description}</p>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Description</h3>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: 'var(--font-size-sm)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)' }}>{undertaking.description}</p>
         </div>
 
         {/* Content */}
         <div>
-          <h3 style={{ 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)', 
-            color: 'var(--color-text-body)', 
-            marginBottom: 'var(--spacing-2)' 
-          }}>Undertaking Content</h3>
-          <div style={{ 
-            backgroundColor: 'var(--color-bg-tertiary)', 
-            padding: 'var(--spacing-4)', 
-            borderRadius: 'var(--radius-input)', 
-            border: `var(--border-1) solid var(--color-border-primary)`, 
-            maxHeight: '15rem', 
-            overflowY: 'auto' 
-          }}>
-            <div style={{ 
-              color: 'var(--color-text-body)', 
-              fontSize: 'var(--font-size-sm)', 
-              whiteSpace: 'pre-wrap' 
-            }}>{undertaking.content}</div>
+          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Undertaking Content</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-primary)`, maxHeight: '15rem', overflowY: 'auto' }}>
+            <div style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', whiteSpace: 'pre-wrap' }}>{undertaking.content}</div>
           </div>
         </div>
 
         {/* Confirmation checkbox */}
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <input 
-            type="checkbox" 
-            id="confirm-read" 
-            checked={hasConfirmed} 
-            onChange={() => setHasConfirmed(!hasConfirmed)} 
+          <input type="checkbox" id="confirm-read" checked={hasConfirmed} onChange={() => setHasConfirmed(!hasConfirmed)} 
             style={{ 
               marginTop: 'var(--spacing-1)', 
               height: 'var(--icon-md)', 
@@ -143,44 +93,14 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
               cursor: 'pointer'
             }} 
           />
-          <label 
-            htmlFor="confirm-read" 
-            style={{ 
-              marginLeft: 'var(--spacing-2)', 
-              fontSize: 'var(--font-size-sm)', 
-              color: 'var(--color-text-body)',
-              cursor: 'pointer'
-            }}
-          >
+          <label htmlFor="confirm-read" style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', cursor: 'pointer' }} >
             I confirm that I have read and understood the above undertaking and agree to abide by it.
           </label>
         </div>
 
         {/* Action buttons */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          gap: 'var(--spacing-3)', 
-          paddingTop: 'var(--spacing-4)', 
-          borderTop: `var(--border-1) solid var(--color-border-light)` 
-        }}>
-          <button 
-            type="button" 
-            onClick={handleClose} 
-            style={{
-              padding: 'var(--button-padding-md)',
-              color: 'var(--color-text-body)',
-              backgroundColor: 'var(--color-bg-muted)',
-              borderRadius: 'var(--radius-input)',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              transition: 'var(--transition-all)',
-              fontWeight: 'var(--font-weight-medium)',
-              fontSize: 'var(--font-size-base)',
-            }}
-            onMouseEnter={(e) => {
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+          <button type="button" onClick={handleClose} style={{ padding: 'var(--button-padding-md)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-input)', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => {
               e.target.style.backgroundColor = 'var(--color-bg-hover)';
             }}
             onMouseLeave={(e) => {
@@ -189,24 +109,7 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
           >
             <FaTimes style={{ marginRight: 'var(--spacing-2)' }} /> Close
           </button>
-          <button 
-            type="button" 
-            onClick={handleAccept} 
-            disabled={isAccepting || !hasConfirmed} 
-            style={{
-              padding: 'var(--button-padding-md)',
-              borderRadius: 'var(--radius-input)',
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: hasConfirmed ? 'var(--color-success)' : 'var(--color-bg-muted)',
-              color: hasConfirmed ? 'var(--color-white)' : 'var(--color-text-muted)',
-              cursor: hasConfirmed ? 'pointer' : 'not-allowed',
-              transition: 'var(--transition-all)',
-              fontWeight: 'var(--font-weight-medium)',
-              fontSize: 'var(--font-size-base)',
-            }}
-            onMouseEnter={(e) => { 
+          <button type="button" onClick={handleAccept} disabled={isAccepting || !hasConfirmed} style={{ padding: 'var(--button-padding-md)', borderRadius: 'var(--radius-input)', border: 'none', display: 'flex', alignItems: 'center', backgroundColor: hasConfirmed ? 'var(--color-success)' : 'var(--color-bg-muted)', color: hasConfirmed ? 'var(--color-white)' : 'var(--color-text-muted)', cursor: hasConfirmed ? 'pointer' : 'not-allowed', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => { 
               if (hasConfirmed) {
                 e.target.style.backgroundColor = 'var(--color-success-hover)';
               }
@@ -218,16 +121,7 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
             }}
           >
             {isAccepting ? (
-              <span style={{ 
-                width: 'var(--icon-md)', 
-                height: 'var(--icon-md)', 
-                border: 'var(--border-2) solid var(--color-white)', 
-                borderTopColor: 'transparent', 
-                borderRadius: 'var(--radius-full)', 
-                animation: 'spin 1s linear infinite',
-                marginRight: 'var(--spacing-2)',
-                display: 'inline-block'
-              }}></span>
+              <span style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)', display: 'inline-block' }}></span>
             ) : (
               <FaCheck style={{ marginRight: 'var(--spacing-2)' }} />
             )}

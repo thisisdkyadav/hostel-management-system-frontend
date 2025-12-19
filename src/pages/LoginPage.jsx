@@ -128,12 +128,7 @@ const LoginPage = () => {
                   Email Address
                 </label>
                 <div className="relative">
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                  <input id="email" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full p-2.5 sm:p-3 md:p-3.5 text-sm sm:text-base rounded-lg sm:rounded-xl bg-blue-50/50 border border-blue-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300"
                   />
@@ -146,12 +141,7 @@ const LoginPage = () => {
                   Password
                 </label>
                 <div className="relative">
-                  <input
-                    id="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                  <input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full p-2.5 sm:p-3 md:p-3.5 text-sm sm:text-base rounded-lg sm:rounded-xl bg-blue-50/50 border border-blue-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all duration-300"
                   />
@@ -160,11 +150,7 @@ const LoginPage = () => {
               </div>
 
               {/* Login Button with responsive sizing */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="group w-full relative px-5 sm:px-8 py-2.5 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-base md:text-lg font-medium rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-indigo-600 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-blue-400/20 mt-3 sm:mt-6"
-              >
+              <button type="submit" disabled={loading} className="group w-full relative px-5 sm:px-8 py-2.5 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-base md:text-lg font-medium rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-indigo-600 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-blue-400/20 mt-3 sm:mt-6" >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                 <span className="flex items-center justify-center relative">
                   {loading ? (
@@ -212,8 +198,7 @@ const LoginPage = () => {
             </div>
             <p className="text-gray-700 mb-5 sm:mb-6 text-sm sm:text-base">Please contact the administrator to reset your password.</p>
             <div className="flex justify-end">
-              <button
-                onClick={() => setShowForgotPasswordMsg(false)}
+              <button onClick={() => setShowForgotPasswordMsg(false)}
                 className="group px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium text-sm sm:text-base rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-indigo-600 transition-all duration-300 relative overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>

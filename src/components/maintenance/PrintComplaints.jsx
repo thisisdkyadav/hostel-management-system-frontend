@@ -101,32 +101,13 @@ const PrintComplaints = ({ complaints }) => {
   return (
     <>
       {/* Print Button */}
-      <Button 
-        variant="primary"
-        size="small"
-        onClick={handlePrint}
-        icon={<FaPrint />}
+      <Button variant="primary" size="small" onClick={handlePrint} icon={<FaPrint />}
         style={{ display: 'none' }}
         className="no-print"
       >
         <span style={{ display: 'none' }}>Print</span>
       </Button>
-      <button 
-        style={{
-          backgroundColor: 'var(--color-primary)',
-          color: 'var(--color-white)',
-          padding: 'var(--spacing-2) var(--spacing-3)',
-          borderRadius: 'var(--radius-md)',
-          fontSize: 'var(--font-size-sm)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--gap-xs)',
-          border: 'none',
-          cursor: 'pointer',
-          transition: 'var(--transition-all)',
-          fontWeight: 'var(--font-weight-medium)'
-        }}
-        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
+      <button style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center', gap: 'var(--gap-xs)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
         onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
         onClick={handlePrint}
         className="no-print"
@@ -137,89 +118,30 @@ const PrintComplaints = ({ complaints }) => {
 
       {/* Print Modal */}
       {showPrintModal && (
-        <Modal 
-          title="Select Complaint Statuses" 
-          onClose={() => setShowPrintModal(false)}
+        <Modal title="Select Complaint Statuses" onClose={() => setShowPrintModal(false)}
           width={450}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
               {printStatusOptions.map(status => (
-                <label 
-                  key={status} 
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--spacing-2)',
-                    padding: 'var(--spacing-2)',
-                    borderRadius: 'var(--radius-md)',
-                    cursor: 'pointer',
-                    transition: 'var(--transition-colors)'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
+                <label key={status} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-md)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <input 
-                    type="checkbox"
-                    style={{
-                      width: 'var(--icon-md)',
-                      height: 'var(--icon-md)',
-                      cursor: 'pointer',
-                      accentColor: 'var(--color-primary)'
-                    }}
-                    checked={selectedPrintStatuses.includes(status)}
-                    onChange={() => togglePrintStatus(status)}
+                  <input type="checkbox" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', cursor: 'pointer', accentColor: 'var(--color-primary)' }} checked={selectedPrintStatuses.includes(status)} onChange={() => togglePrintStatus(status)}
                   />
-                  <span style={{
-                    fontSize: 'var(--font-size-sm)',
-                    color: 'var(--color-text-body)',
-                    fontWeight: 'var(--font-weight-medium)'
-                  }}>{status}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{status}</span>
                 </label>
               ))}
             </div>
             
-            <div style={{
-              marginTop: 'var(--spacing-6)',
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 'var(--gap-sm)',
-              justifyContent: 'flex-end',
-              flexWrap: 'wrap'
-            }}>
-              <button 
-                style={{
-                  padding: 'var(--button-padding-md)',
-                  border: `var(--border-1) solid var(--color-border-input)`,
-                  borderRadius: 'var(--radius-lg)',
-                  backgroundColor: 'var(--color-bg-primary)',
-                  color: 'var(--color-text-secondary)',
-                  fontSize: 'var(--font-size-sm)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  cursor: 'pointer',
-                  transition: 'var(--transition-all)',
-                  minWidth: '100px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+            <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', gap: 'var(--gap-sm)', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+              <button style={{ padding: 'var(--button-padding-md)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', cursor: 'pointer', transition: 'var(--transition-all)', minWidth: '100px' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}
                 onClick={() => setShowPrintModal(false)}
               >
                 Cancel
               </button>
-              <button 
-                style={{
-                  padding: 'var(--button-padding-md)',
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
-                  fontSize: 'var(--font-size-sm)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  transition: 'var(--transition-all)',
-                  minWidth: '100px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
+              <button style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', minWidth: '100px' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
                 onClick={confirmPrint}
               >

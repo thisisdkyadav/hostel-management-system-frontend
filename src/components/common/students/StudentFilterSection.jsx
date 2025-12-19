@@ -71,12 +71,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
       <div className="space-y-4">
         <div>
           <div className="relative">
-            <input
-              type="text"
-              placeholder="Search by name, roll number, or email..."
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]"
-              value={filters.searchTerm}
-              onChange={(e) => updateFilter("searchTerm", e.target.value)}
+            <input type="text" placeholder="Search by name, roll number, or email..." className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
             />
             <FaSearch className="absolute left-3 top-3.5 text-gray-400" />
           </div>

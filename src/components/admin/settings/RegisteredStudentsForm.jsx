@@ -129,12 +129,7 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
                   <label htmlFor={`total-${degree}`} className="block text-xs font-medium text-gray-600 mb-1">
                     Total
                   </label>
-                  <input
-                    type="number"
-                    id={`total-${degree}`}
-                    min="0"
-                    value={counts[degree]?.total || 0}
-                    onChange={(e) => handleCountChange(degree, "total", e.target.value)}
+                  <input type="number" id={`total-${degree}`} min="0" value={counts[degree]?.total || 0} onChange={(e) => handleCountChange(degree, "total", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#1360AB] focus:border-[#1360AB] text-center"
                     disabled={isLoading}
                   />
@@ -143,12 +138,7 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
                   <label htmlFor={`boys-${degree}`} className="block text-xs font-medium text-gray-600 mb-1">
                     Boys
                   </label>
-                  <input
-                    type="number"
-                    id={`boys-${degree}`}
-                    min="0"
-                    value={counts[degree]?.boys || 0}
-                    onChange={(e) => handleCountChange(degree, "boys", e.target.value)}
+                  <input type="number" id={`boys-${degree}`} min="0" value={counts[degree]?.boys || 0} onChange={(e) => handleCountChange(degree, "boys", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#1360AB] focus:border-[#1360AB] text-center"
                     disabled={isLoading}
                   />
@@ -157,12 +147,7 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
                   <label htmlFor={`girls-${degree}`} className="block text-xs font-medium text-gray-600 mb-1">
                     Girls
                   </label>
-                  <input
-                    type="number"
-                    id={`girls-${degree}`}
-                    min="0"
-                    value={counts[degree]?.girls || 0}
-                    onChange={(e) => handleCountChange(degree, "girls", e.target.value)}
+                  <input type="number" id={`girls-${degree}`} min="0" value={counts[degree]?.girls || 0} onChange={(e) => handleCountChange(degree, "girls", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#1360AB] focus:border-[#1360AB] text-center"
                     disabled={isLoading}
                   />

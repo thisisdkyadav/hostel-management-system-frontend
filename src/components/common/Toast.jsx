@@ -17,8 +17,7 @@ const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
     <div className="fixed bottom-4 right-4 z-50 flex items-center bg-white border border-gray-200 px-4 py-3 rounded-lg shadow-lg max-w-sm animate-fade-in">
       <div className="mr-3 flex-grow">{message}</div>
       {action && (
-        <button
-          onClick={() => {
+        <button onClick={() => {
             if (onAction) onAction()
             setVisible(false)
           }}
@@ -28,8 +27,7 @@ const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
         </button>
       )}
       {onClose && (
-        <button
-          onClick={() => {
+        <button onClick={() => {
             setVisible(false)
             onClose()
           }}

@@ -4,40 +4,12 @@ import Button from "../common/Button"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
   return (
-    <div style={{
-      marginTop: 'var(--spacing-4)',
-      backgroundColor: 'var(--color-bg-primary)',
-      padding: 'var(--spacing-5)',
-      borderRadius: 'var(--radius-xl)',
-      boxShadow: 'var(--shadow-sm)',
-      border: `var(--border-1) solid var(--color-border-light)`
-    }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 'var(--spacing-4)',
-        paddingBottom: 'var(--spacing-3)',
-        borderBottom: `var(--border-1) solid var(--color-border-light)`,
-        gap: 'var(--gap-md)',
-        flexWrap: 'wrap'
-      }}>
-        <h3 style={{
-          fontWeight: 'var(--font-weight-bold)',
-          color: 'var(--color-text-secondary)',
-          display: 'flex',
-          alignItems: 'center',
-          marginBottom: 0
-        }}>
+    <div style={{ marginTop: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)` }}>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderBottom: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-md)', flexWrap: 'wrap' }}>
+        <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', marginBottom: 0 }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
         </h3>
-        <Button 
-          onClick={resetFilters} 
-          variant="outline" 
-          size="small" 
-          style={{ color: 'var(--color-text-muted)' }}
-          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
+        <Button onClick={resetFilters} variant="outline" size="small" style={{ color: 'var(--color-text-muted)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
           onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
           icon={<MdClearAll />}
         >
@@ -47,23 +19,8 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--gap-md)' }}>
         <div>
-          <label style={{
-            display: 'block',
-            fontSize: 'var(--font-size-sm)',
-            fontWeight: 'var(--font-weight-medium)',
-            color: 'var(--color-text-tertiary)',
-            marginBottom: 'var(--spacing-1-5)'
-          }}>Status</label>
-          <select 
-            style={{
-              width: '100%',
-              padding: 'var(--spacing-2-5)',
-              border: `var(--border-1) solid var(--color-border-input)`,
-              borderRadius: 'var(--radius-lg)',
-              outline: 'none',
-              backgroundColor: 'var(--color-bg-primary)'
-            }}
-            onFocus={(e) => {
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Status</label>
+          <select style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
               e.target.style.boxShadow = 'var(--input-focus-ring)';
               e.target.style.borderColor = 'var(--input-border-focus)';
             }}
@@ -82,24 +39,8 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         </div>
 
         <div>
-          <label style={{
-            display: 'block',
-            fontSize: 'var(--font-size-sm)',
-            fontWeight: 'var(--font-weight-medium)',
-            color: 'var(--color-text-tertiary)',
-            marginBottom: 'var(--spacing-1-5)'
-          }}>Start Date</label>
-          <input 
-            type="date" 
-            style={{
-              width: '100%',
-              padding: 'var(--spacing-2-5)',
-              border: `var(--border-1) solid var(--color-border-input)`,
-              borderRadius: 'var(--radius-lg)',
-              outline: 'none',
-              backgroundColor: 'var(--color-bg-primary)'
-            }}
-            onFocus={(e) => {
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Start Date</label>
+          <input type="date" style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
               e.target.style.boxShadow = 'var(--input-focus-ring)';
               e.target.style.borderColor = 'var(--input-border-focus)';
             }}
@@ -113,24 +54,8 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         </div>
 
         <div>
-          <label style={{
-            display: 'block',
-            fontSize: 'var(--font-size-sm)',
-            fontWeight: 'var(--font-weight-medium)',
-            color: 'var(--color-text-tertiary)',
-            marginBottom: 'var(--spacing-1-5)'
-          }}>End Date</label>
-          <input 
-            type="date" 
-            style={{
-              width: '100%',
-              padding: 'var(--spacing-2-5)',
-              border: `var(--border-1) solid var(--color-border-input)`,
-              borderRadius: 'var(--radius-lg)',
-              outline: 'none',
-              backgroundColor: 'var(--color-bg-primary)'
-            }}
-            onFocus={(e) => {
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>End Date</label>
+          <input type="date" style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
               e.target.style.boxShadow = 'var(--input-focus-ring)';
               e.target.style.borderColor = 'var(--input-border-focus)';
             }}
@@ -144,23 +69,8 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         </div>
 
         <div>
-          <label style={{
-            display: 'block',
-            fontSize: 'var(--font-size-sm)',
-            fontWeight: 'var(--font-weight-medium)',
-            color: 'var(--color-text-tertiary)',
-            marginBottom: 'var(--spacing-1-5)'
-          }}>Items Per Page</label>
-          <select 
-            style={{
-              width: '100%',
-              padding: 'var(--spacing-2-5)',
-              border: `var(--border-1) solid var(--color-border-input)`,
-              borderRadius: 'var(--radius-lg)',
-              outline: 'none',
-              backgroundColor: 'var(--color-bg-primary)'
-            }}
-            onFocus={(e) => {
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Items Per Page</label>
+          <select style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
               e.target.style.boxShadow = 'var(--input-focus-ring)';
               e.target.style.borderColor = 'var(--input-border-focus)';
             }}

@@ -57,9 +57,7 @@ const StudentCard = ({ student, onClick }) => {
       </Card.Body>
 
       <Card.Footer className="mt-4 pt-3 border-t border-gray-100 flex justify-end items-center">
-        <button
-          className="text-[#1360AB] hover:bg-blue-50 p-2 rounded-full transition-colors"
-          onClick={(e) => {
+        <button className="text-[#1360AB] hover:bg-blue-50 p-2 rounded-full transition-colors" onClick={(e) => {
             e.stopPropagation()
             onClick()
           }}

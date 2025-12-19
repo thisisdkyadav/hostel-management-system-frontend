@@ -137,13 +137,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
                 <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                   <FaCalendarAlt />
                 </div>
-                <input
-                  type="number"
-                  min="2000"
-                  max="2099"
-                  step="1"
-                  value={targets.admissionYearStart}
-                  onChange={(e) => onChange("admissionYearStart", e.target.value)}
+                <input type="number" min="2000" max="2099" step="1" value={targets.admissionYearStart} onChange={(e) => onChange("admissionYearStart", e.target.value)}
                   style={{ width: '100%', padding: 'var(--input-padding)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-colors)' }}
                   onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }}
                   onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }}
@@ -157,13 +151,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
                 <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
                   <FaCalendarAlt />
                 </div>
-                <input
-                  type="number"
-                  min="2000"
-                  max="2099"
-                  step="1"
-                  value={targets.admissionYearEnd}
-                  onChange={(e) => onChange("admissionYearEnd", e.target.value)}
+                <input type="number" min="2000" max="2099" step="1" value={targets.admissionYearEnd} onChange={(e) => onChange("admissionYearEnd", e.target.value)}
                   style={{ width: '100%', padding: 'var(--input-padding)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-colors)' }}
                   onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }}
                   onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }}
@@ -184,10 +172,7 @@ const SelectStudentsForm = ({ targetType, targets, onChange, hostels, department
             <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
               <FaSearch />
             </div>
-            <input
-              type="text"
-              value={filters.searchTerm}
-              onChange={(e) => updateFilter("searchTerm", e.target.value)}
+            <input type="text" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
               style={{ width: '100%', padding: 'var(--input-padding)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-colors)' }}
               onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }}
               onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }}

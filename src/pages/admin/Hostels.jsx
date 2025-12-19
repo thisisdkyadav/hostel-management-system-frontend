@@ -55,8 +55,7 @@ const Hostels = () => {
     <>
       <div className="flex flex-col h-full">
         {/* Fixed Header */}
-        <HostelsHeader 
-          onAddHostel={() => setShowAddModal(true)}
+        <HostelsHeader onAddHostel={() => setShowAddModal(true)}
           onArchiveToggle={handleArchiveToggle}
           fetchArchive={fetchArchive}
         />

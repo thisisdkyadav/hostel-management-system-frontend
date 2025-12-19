@@ -41,24 +41,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
             <div style={{ position: 'absolute', top: '0', bottom: '0', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
               <FaSearch style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} />
             </div>
-            <input
-              type="text"
-              style={{
-                display: 'block',
-                width: '100%',
-                paddingLeft: 'var(--spacing-10)',
-                paddingRight: 'var(--spacing-10)',
-                paddingTop: 'var(--spacing-3)',
-                paddingBottom: 'var(--spacing-3)',
-                border: `var(--border-1) solid var(--color-border-input)`,
-                borderRadius: 'var(--radius-lg)',
-                outline: 'none',
-                transition: 'var(--transition-colors)',
-                fontSize: 'var(--font-size-base)'
-              }}
-              placeholder="Search profiles by name, relation, email, or phone"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+            <input type="text" style={{ display: 'block', width: '100%', paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-10)', paddingTop: 'var(--spacing-3)', paddingBottom: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-base)' }} placeholder="Search profiles by name, relation, email, or phone" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={(e) => {
                 e.target.style.borderColor = 'var(--color-primary)'
                 e.target.style.boxShadow = 'var(--input-focus-ring)'
@@ -69,22 +52,9 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
               }}
             />
             {searchQuery && (
-              <button 
-                style={{ 
-                  position: 'absolute', 
-                  top: '0', 
-                  bottom: '0', 
-                  right: 'var(--spacing-3)', 
-                  display: 'flex', 
-                  alignItems: 'center',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer'
-                }} 
-                onClick={() => setSearchQuery("")}
+              <button style={{ position: 'absolute', top: '0', bottom: '0', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setSearchQuery("")}
               >
-                <FaTimesCircle style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} 
-                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                <FaTimesCircle style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
                   onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-placeholder)'}
                 />
               </button>
@@ -118,8 +88,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                 </thead>
                 <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                   {filteredProfiles.map((profile) => (
-                    <tr key={profile._id} style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-colors)' }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
+                    <tr key={profile._id} style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}
                     >
                       <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
@@ -143,8 +112,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                         <div style={{ padding: 'var(--spacing-4) var(--spacing-6)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Can't edit a used Visitor.</div>
                       ) : (
                         <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                          <button 
-                            onClick={() => handleEditProfile(profile)} 
+                          <button onClick={() => handleEditProfile(profile)} 
                             style={{ 
                               color: 'var(--color-warning)', 
                               padding: 'var(--spacing-1)', 
@@ -160,8 +128,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                           >
                             <FaEdit style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
                           </button>
-                          <button 
-                            onClick={() => handleDeleteProfile(profile._id)} 
+                          <button onClick={() => handleDeleteProfile(profile._id)} 
                             style={{ 
                               color: 'var(--color-danger)', 
                               padding: 'var(--spacing-1)', 
@@ -188,19 +155,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
           )}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <button 
-              onClick={onClose} 
-              style={{ 
-                padding: 'var(--spacing-2) var(--spacing-4)', 
-                backgroundColor: 'var(--color-bg-muted)', 
-                color: 'var(--color-text-body)', 
-                borderRadius: 'var(--radius-lg)', 
-                transition: 'var(--transition-colors)',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: 'var(--font-size-base)'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
+            <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}
             >
               Close
@@ -210,9 +165,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
       </Modal>
 
       {showEditModal && selectedProfile && (
-        <EditVisitorProfileModal
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
+        <EditVisitorProfileModal isOpen={showEditModal} onClose={() => setShowEditModal(false)}
           profile={selectedProfile}
           onSubmit={async (updatedData) => {
             try {

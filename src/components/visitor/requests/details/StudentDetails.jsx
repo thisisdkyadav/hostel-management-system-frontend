@@ -6,22 +6,9 @@ const StudentDetails = ({ studentName, studentEmail, studentProfileImage }) => {
       <h3 className="font-medium mb-3" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>Student Information</h3>
       <div className="flex items-center">
         {studentProfileImage ? (
-          <img 
-            src={getMediaUrl(studentProfileImage)} 
-            alt={studentName} 
-            className="rounded-full object-cover mr-4" 
-            style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-avatar)' }} 
-          />
+          <img src={getMediaUrl(studentProfileImage)} alt={studentName} className="rounded-full object-cover mr-4" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-avatar)' }} />
         ) : (
-          <div 
-            className="rounded-full flex items-center justify-center mr-4" 
-            style={{ 
-              width: 'var(--avatar-lg)', 
-              height: 'var(--avatar-lg)', 
-              backgroundColor: 'var(--color-bg-muted)', 
-              borderRadius: 'var(--radius-avatar)' 
-            }}
-          >
+          <div className="rounded-full flex items-center justify-center mr-4" style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-avatar)' }} >
             <span style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)' }}>
               {studentName ? studentName.charAt(0).toUpperCase() : "?"}
             </span>

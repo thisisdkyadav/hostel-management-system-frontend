@@ -82,10 +82,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
                 {options.map((option) => (
                   <div key={option} className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${selectedValues.includes(option) ? "bg-blue-50 text-blue-700" : "text-gray-700"}`} onClick={() => handleToggleOption(option)}>
                     <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedValues.includes(option)}
-                        onChange={() => {}} // Handled by onClick above
+                      <input type="checkbox" checked={selectedValues.includes(option)} onChange={() => {}} // Handled by onClick above
                         className="mr-2 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                       {option}

@@ -344,10 +344,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                         <td className="p-3 text-sm text-gray-700 font-medium">{resource.label}</td>
                         {actions.map((action) => (
                           <td key={`${resource.id}-${action.id}`} className="p-3 text-center">
-                            <input
-                              type="checkbox"
-                              checked={permissions[resource.id]?.[action.id] || false}
-                              onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
+                            <input type="checkbox" checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
                               className={`h-4 w-4 text-[#1360AB] border-gray-300 rounded focus:ring-[#1360AB] ${!currentAllowedChanges[resource.id]?.includes(action.id) ? "opacity-60 bg-gray-100" : ""}`}
                               disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
                             />

@@ -135,16 +135,7 @@ const Button = ({
   }
 
   return (
-    <button 
-      type={type} 
-      onClick={handleClick} 
-      disabled={disabled || isLoading} 
-      className={buttonStyles} 
-      style={gradientStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      {...rest}
-    >
+    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonStyles} style={gradientStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} {...rest} >
       {isLoading ? (
         <>
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>

@@ -173,9 +173,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   }
 
   return (
-    <Modal
-      title={step === 1 ? "Create New Notification" : "Review & Send Notification"}
-      onClose={() => {
+    <Modal title={step === 1 ? "Create New Notification" : "Review & Send Notification"} onClose={() => {
         onClose()
         handleReset()
       }}
@@ -286,9 +284,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div style={{ paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-4)' }}>
-              <button
-                type="button"
-                onClick={() => {
+              <button type="button" onClick={() => {
                   onClose()
                   handleReset()
                 }}

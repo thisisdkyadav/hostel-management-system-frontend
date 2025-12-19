@@ -14,37 +14,16 @@ const StatusBadge = ({ status }) => {
   }
   const { bgColor, textColor, label } = statusMap[status] || statusMap.Pending
   return (
-    <span style={{ 
-      padding: 'var(--badge-padding-sm)', 
-      borderRadius: 'var(--radius-full)', 
-      fontSize: 'var(--font-size-xs)', 
-      fontWeight: 'var(--font-weight-medium)', 
-      backgroundColor: bgColor, 
-      color: textColor 
-    }}>{label}</span>
+    <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: bgColor, color: textColor }}>{label}</span>
   )
 }
 
 const AllocationBadge = ({ request }) => {
   const isAllocated = request.isAllocated
   return isAllocated ? (
-    <span style={{ 
-      padding: 'var(--badge-padding-sm)', 
-      borderRadius: 'var(--radius-full)', 
-      fontSize: 'var(--font-size-xs)', 
-      fontWeight: 'var(--font-weight-medium)', 
-      backgroundColor: 'var(--color-info-bg)', 
-      color: 'var(--color-info-text)' 
-    }}>Allocated</span>
+    <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>Allocated</span>
   ) : (
-    <span style={{ 
-      padding: 'var(--badge-padding-sm)', 
-      borderRadius: 'var(--radius-full)', 
-      fontSize: 'var(--font-size-xs)', 
-      fontWeight: 'var(--font-weight-medium)', 
-      backgroundColor: 'var(--color-bg-muted)', 
-      color: 'var(--color-text-secondary)' 
-    }}>Unallocated</span>
+    <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)' }}>Unallocated</span>
   )
 }
 
@@ -53,34 +32,13 @@ const CheckInOutBadge = ({ request }) => {
   const hasCheckedOut = request.checkOutTime
 
   if (hasCheckedOut) return (
-    <span style={{ 
-      padding: 'var(--badge-padding-sm)', 
-      borderRadius: 'var(--radius-full)', 
-      fontSize: 'var(--font-size-xs)', 
-      fontWeight: 'var(--font-weight-medium)', 
-      backgroundColor: 'var(--color-purple-light-bg)', 
-      color: 'var(--color-purple-text)' 
-    }}>Checked Out</span>
+    <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-purple-light-bg)', color: 'var(--color-purple-text)' }}>Checked Out</span>
   )
   if (hasCheckedIn) return (
-    <span style={{ 
-      padding: 'var(--badge-padding-sm)', 
-      borderRadius: 'var(--radius-full)', 
-      fontSize: 'var(--font-size-xs)', 
-      fontWeight: 'var(--font-weight-medium)', 
-      backgroundColor: 'var(--color-info-bg)', 
-      color: 'var(--color-info-text)' 
-    }}>Checked In</span>
+    <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }}>Checked In</span>
   )
   return (
-    <span style={{ 
-      padding: 'var(--badge-padding-sm)', 
-      borderRadius: 'var(--radius-full)', 
-      fontSize: 'var(--font-size-xs)', 
-      fontWeight: 'var(--font-weight-medium)', 
-      backgroundColor: 'var(--color-bg-muted)', 
-      color: 'var(--color-text-secondary)' 
-    }}>Not Checked</span>
+    <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)' }}>Not Checked</span>
   )
 }
 
@@ -160,8 +118,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       align: "right",
       render: (request) => (
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-          <button 
-            onClick={() => handleViewDetails(request)} 
+          <button onClick={() => handleViewDetails(request)} 
             style={{ 
               color: 'var(--color-primary)', 
               padding: 'var(--spacing-1)', 
@@ -179,8 +136,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
           </button>
 
           {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
-            <button 
-              onClick={() => handleViewDetails(request)} 
+            <button onClick={() => handleViewDetails(request)} 
               style={{ 
                 color: 'var(--color-success)', 
                 padding: 'var(--spacing-1)', 
@@ -201,8 +157,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
           {["Security", "Hostel Gate"].includes(user.role) && request.status === "Approved" && request.isAllocated && (
             <>
               {!request.checkInTime && (
-                <button 
-                  onClick={() => handleViewDetails(request)} 
+                <button onClick={() => handleViewDetails(request)} 
                   style={{ 
                     color: 'var(--color-info)', 
                     padding: 'var(--spacing-1)', 
@@ -220,8 +175,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                 </button>
               )}
               {request.checkInTime && !request.checkOutTime && (
-                <button 
-                  onClick={() => handleViewDetails(request)} 
+                <button onClick={() => handleViewDetails(request)} 
                   style={{ 
                     color: 'var(--color-success)', 
                     padding: 'var(--spacing-1)', 
@@ -239,8 +193,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
                 </button>
               )}
               {request.checkInTime && (
-                <button 
-                  onClick={() => handleViewDetails(request)} 
+                <button onClick={() => handleViewDetails(request)} 
                   style={{ 
                     color: 'var(--color-warning)', 
                     padding: 'var(--spacing-1)', 
@@ -266,13 +219,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
 
   if (!requests || requests.length === 0) {
     return (
-      <div style={{ 
-        backgroundColor: 'var(--color-bg-primary)', 
-        borderRadius: 'var(--radius-xl)', 
-        boxShadow: 'var(--shadow-sm)', 
-        padding: 'var(--spacing-8)', 
-        textAlign: 'center' 
-      }}>
+      <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
         <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No requests found matching your filters.</p>
       </div>
     )
@@ -283,9 +230,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       <BaseTable columns={columns} data={requests} emptyMessage="No visitor requests to display" />
 
       {selectedRequestId && (
-        <VisitorRequestDetailsModal
-          isOpen={showDetails}
-          onClose={() => {
+        <VisitorRequestDetailsModal isOpen={showDetails} onClose={() => {
             setShowDetails(false)
             setSelectedRequestId(null)
           }}

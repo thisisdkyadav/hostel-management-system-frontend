@@ -88,19 +88,8 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
     <Modal title="Edit Visitor Request" onClose={onClose} width={600}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
-          <div style={{ 
-            backgroundColor: 'var(--color-danger-bg-light)', 
-            padding: 'var(--spacing-4)', 
-            borderRadius: 'var(--radius-lg)', 
-            display: 'flex', 
-            alignItems: 'flex-start' 
-          }}>
-            <FaExclamationTriangle style={{ 
-              color: 'var(--color-danger)', 
-              marginTop: 'var(--spacing-1)', 
-              marginRight: 'var(--spacing-3)', 
-              flexShrink: 0 
-            }} />
+          <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
+            <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
@@ -125,18 +114,7 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
-            <input 
-              type="date" 
-              name="fromDate" 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--input-padding)', 
-                border: 'var(--border-1) solid var(--input-border)', 
-                borderRadius: 'var(--input-radius)', 
-                outline: 'none', 
-                transition: 'var(--transition-colors)' 
-              }}
-              onFocus={(e) => {
+            <input type="date" name="fromDate" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
                 e.target.style.borderColor = 'var(--input-border-focus)';
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
               }}
@@ -154,18 +132,7 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
-            <input 
-              type="date" 
-              name="toDate" 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--input-padding)', 
-                border: 'var(--border-1) solid var(--input-border)', 
-                borderRadius: 'var(--input-radius)', 
-                outline: 'none', 
-                transition: 'var(--transition-colors)' 
-              }}
-              onFocus={(e) => {
+            <input type="date" name="toDate" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
                 e.target.style.borderColor = 'var(--input-border-focus)';
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
               }}
@@ -184,19 +151,7 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
         {/* Reason for Visit */}
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
-          <textarea
-            name="reason"
-            rows="4"
-            style={{ 
-              width: '100%', 
-              padding: 'var(--input-padding)', 
-              border: 'var(--border-1) solid var(--input-border)', 
-              borderRadius: 'var(--input-radius)', 
-              outline: 'none', 
-              transition: 'var(--transition-colors)',
-              resize: 'none'
-            }}
-            onFocus={(e) => {
+          <textarea name="reason" rows="4" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)', resize: 'none' }} onFocus={(e) => {
               e.target.style.borderColor = 'var(--input-border-focus)';
               e.target.style.boxShadow = 'var(--input-focus-ring)';
             }}
@@ -213,37 +168,12 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
         {/* Submit Section */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <button 
-            type="button" 
-            onClick={onClose} 
-            style={{ 
-              padding: 'var(--spacing-2) var(--spacing-4)', 
-              backgroundColor: 'var(--color-bg-muted)', 
-              color: 'var(--color-text-secondary)', 
-              borderRadius: 'var(--radius-lg)',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'var(--transition-colors)', 
-              marginRight: 'var(--spacing-3)' 
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+          <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)', marginRight: 'var(--spacing-3)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
           >
             Cancel
           </button>
-          <button 
-            type="submit" 
-            style={{ 
-              padding: 'var(--spacing-2) var(--spacing-4)', 
-              backgroundColor: loading ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', 
-              color: 'var(--color-white)', 
-              borderRadius: 'var(--radius-lg)',
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'var(--transition-colors)',
-              opacity: loading ? 'var(--opacity-disabled)' : '1'
-            }}
-            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
+          <button type="submit" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: loading ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', transition: 'var(--transition-colors)', opacity: loading ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
             onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}
             disabled={loading}
           >

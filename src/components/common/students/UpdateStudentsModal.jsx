@@ -879,14 +879,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <div className="flex flex-col space-y-4">
           <div className="border-b border-gray-200 pb-4">
             <h4 className="text-base font-medium text-gray-700 mb-2">Option 1: Upload CSV</h4>
-            <CsvUploader
-              onDataParsed={handleDayScholarDataParsed}
-              requiredFields={["rollNumber"]}
-              templateFileName={dayScholarMode === "add" ? "day_scholar_add_template.csv" : "day_scholar_remove_template.csv"}
-              templateHeaders={dayScholarTemplateHeaders}
-              maxRecords={900}
-              instructionText={dayScholarInstructionsText}
-            />
+            <CsvUploader onDataParsed={handleDayScholarDataParsed} requiredFields={["rollNumber"]} templateFileName={dayScholarMode === "add" ? "day_scholar_add_template.csv" : "day_scholar_remove_template.csv"} templateHeaders={dayScholarTemplateHeaders} maxRecords={900} instructionText={dayScholarInstructionsText} />
 
             {dayScholarData.length > 0 && (
               <div className="mt-4 p-4 bg-green-50 rounded-lg">
@@ -1101,8 +1094,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <span className="text-sm text-blue-700">
                     Selected file: <span className="font-medium">{csvFile.name}</span>
                   </span>
-                  <button
-                    onClick={(e) => {
+                  <button onClick={(e) => {
                       e.stopPropagation()
                       setCsvFile(null)
                     }}
@@ -1167,19 +1159,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <button
-            onClick={handleUpdate}
-            className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center"
-            disabled={
-              (activeTab === "basic" && parsedData.length === 0) ||
-              (activeTab === "health" && healthData.length === 0) ||
-              (activeTab === "family" && familyData.length === 0) ||
-              (activeTab === "status" && statusData.length === 0) ||
-              (activeTab === "dayScholar" && dayScholarData.length === 0) ||
-              isLoading ||
-              isUpdating
-            }
-          >
+          <button onClick={handleUpdate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={ (activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating } >
             {isUpdating ? (
               <>
                 <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>

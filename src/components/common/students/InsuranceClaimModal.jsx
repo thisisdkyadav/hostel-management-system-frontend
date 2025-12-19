@@ -221,9 +221,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
         <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
           <FaSave className="mr-2" /> {isNew ? "Add Claim" : "Save Changes"}
         </button>
-        <button
-          type="button"
-          onClick={() => {
+        <button type="button" onClick={() => {
             if (isNew) {
               onClose()
             } else {

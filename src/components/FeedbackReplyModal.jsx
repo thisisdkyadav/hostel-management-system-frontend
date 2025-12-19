@@ -52,13 +52,7 @@ const FeedbackReplyModal = ({ isOpen, onClose, feedback, onReply }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaReply />
               </div>
-              <textarea
-                id="reply"
-                rows={4}
-                className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all resize-none"
-                placeholder="Type your response here..."
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
+              <textarea id="reply" rows={4} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all resize-none" placeholder="Type your response here..." value={replyText} onChange={(e) => setReplyText(e.target.value)}
               ></textarea>
             </div>
           </div>

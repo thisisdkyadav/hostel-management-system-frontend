@@ -141,9 +141,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
       </Modal>
 
       {/* Bulk Upload Modal */}
-      <BulkStudentUndertakingModal
-        isOpen={showBulkUpload}
-        onClose={() => setShowBulkUpload(false)}
+      <BulkStudentUndertakingModal isOpen={showBulkUpload} onClose={() => setShowBulkUpload(false)}
         undertakingId={undertakingId}
         undertakingTitle={undertakingTitle}
         onUpdate={() => {

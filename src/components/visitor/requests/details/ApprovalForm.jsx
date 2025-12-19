@@ -65,10 +65,7 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
         <label htmlFor="hostel-select" style={labelStyle}>
           Assign Hostel <span style={{ color: "var(--color-danger)" }}>*</span>
         </label>
-        <select
-          id="hostel-select"
-          value={selectedHostel}
-          onChange={(e) => onHostelChange(e.target.value)}
+        <select id="hostel-select" value={selectedHostel} onChange={(e) => onHostelChange(e.target.value)}
           style={{
             ...inputStyle,
           }}
@@ -104,10 +101,7 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
         <label htmlFor="approval-information" style={labelStyle}>
           Approval Information
         </label>
-        <textarea
-          id="approval-information"
-          value={approvalInformation}
-          onChange={(e) => onApprovalInformationChange(e.target.value)}
+        <textarea id="approval-information" value={approvalInformation} onChange={(e) => onApprovalInformationChange(e.target.value)}
           style={{
             ...inputStyle,
             minHeight: "80px",

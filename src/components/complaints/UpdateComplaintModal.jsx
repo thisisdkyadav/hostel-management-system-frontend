@@ -50,36 +50,16 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
     <Modal title="Update Complaint" onClose={onClose} width={MODAL_WIDTH}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
         {error && (
-          <div 
-            className="border-l-4" 
-            style={{ 
-              backgroundColor: 'var(--color-danger-bg)', 
-              borderColor: 'var(--color-danger)', 
-              padding: 'var(--spacing-4)', 
-              marginBottom: 'var(--spacing-4)' 
-            }}
-          >
+          <div className="border-l-4" style={{ backgroundColor: 'var(--color-danger-bg)', borderColor: 'var(--color-danger)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }} >
             <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
         <div>
-          <label 
-            htmlFor="status" 
-            className="block" 
-            style={{ 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              color: 'var(--color-text-secondary)', 
-              marginBottom: 'var(--spacing-1)' 
-            }}
-          >
+          <label htmlFor="status" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
             Status
           </label>
-          <select 
-            id="status" 
-            value={status} 
-            onChange={(e) => setStatus(e.target.value)} 
+          <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} 
             className="w-full focus:outline-none" 
             style={{ 
               paddingLeft: 'var(--spacing-4)', 
@@ -109,22 +89,10 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
         </div>
 
         <div>
-          <label 
-            htmlFor="resolutionNotes" 
-            className="block" 
-            style={{ 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              color: 'var(--color-text-secondary)', 
-              marginBottom: 'var(--spacing-1)' 
-            }}
-          >
+          <label htmlFor="resolutionNotes" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
             Resolution Notes
           </label>
-          <textarea 
-            id="resolutionNotes" 
-            value={resolutionNotes} 
-            onChange={(e) => setResolutionNotes(e.target.value)} 
+          <textarea id="resolutionNotes" value={resolutionNotes} onChange={(e) => setResolutionNotes(e.target.value)} 
             rows={TEXTAREA_ROWS} 
             className="w-full focus:outline-none" 
             style={{ 
@@ -149,19 +117,10 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
         </div>
 
         <div className="flex justify-end" style={{ gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
-          <Button 
-            type="button" 
-            onClick={onClose} 
-            variant="outline"
-          >
+          <Button type="button" onClick={onClose} variant="outline" >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="primary"
-            isLoading={isSubmitting}
-            disabled={isSubmitting}
-            icon={!isSubmitting && <FaEdit />}
+          <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting} icon={!isSubmitting && <FaEdit />}
           >
             {isSubmitting ? 'Updating...' : 'Update Complaint'}
           </Button>

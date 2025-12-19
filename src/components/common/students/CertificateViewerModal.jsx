@@ -70,11 +70,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
         <div className="flex-1 bg-white border-2 border-gray-200 rounded-lg overflow-hidden" style={{ height: "calc(100% - 100px)" }}>
           {fileType === "image" ? (
             <div className="w-full h-full flex items-center justify-center p-4 overflow-auto">
-              <img
-                src={fullUrl}
-                alt="Certificate Document"
-                className="w-full h-auto object-contain"
-                onLoad={() => setIsLoading(false)}
+              <img src={fullUrl} alt="Certificate Document" className="w-full h-auto object-contain" onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
                   setIsLoading(false)
@@ -93,11 +89,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
                 </div>
               )}
 
-              <object
-                data={fullUrl}
-                type="application/pdf"
-                className="w-full h-full"
-                onLoad={() => setIsLoading(false)}
+              <object data={fullUrl} type="application/pdf" className="w-full h-full" onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
                   setIsLoading(false)
