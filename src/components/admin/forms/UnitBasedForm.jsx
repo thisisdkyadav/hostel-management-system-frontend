@@ -143,16 +143,16 @@ const UnitBasedForm = ({ formData, setFormData }) => {
   const requiredFields = ["unitNumber", "roomNumber", "capacity"]
   const templateInstructions = (
     <div>
-      <p className="font-medium mb-1">Field Input Types:</p>
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+      <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+      <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", columnGap: "var(--spacing-4)", rowGap: "var(--spacing-1)" }}>
         <li>
-          <span className="font-medium">unitNumber:</span> String (e.g., 101)
+          <span style={{ fontWeight: "var(--font-weight-medium)" }}>unitNumber:</span> String (e.g., 101)
         </li>
         <li>
-          <span className="font-medium">roomNumber:</span> String (e.g., A)
+          <span style={{ fontWeight: "var(--font-weight-medium)" }}>roomNumber:</span> String (e.g., A)
         </li>
         <li>
-          <span className="font-medium">capacity:</span> Number
+          <span style={{ fontWeight: "var(--font-weight-medium)" }}>capacity:</span> Number
         </li>
       </ul>
     </div>
@@ -160,14 +160,64 @@ const UnitBasedForm = ({ formData, setFormData }) => {
 
   return (
     <div>
-      <div className="flex justify-center mb-6">
-        <div className="inline-flex rounded-md shadow-sm" role="group">
-          <button type="button" className={`px-4 py-2 text-sm font-medium rounded-l-lg ${inputMethod === "form" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"} border border-gray-300`} onClick={() => setInputMethod("form")}>
-            <FaEdit className="inline mr-2" />
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--spacing-6)" }}>
+        <div style={{ display: "inline-flex", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }} role="group">
+          <button
+            type="button"
+            style={{
+              padding: "var(--spacing-2) var(--spacing-4)",
+              fontSize: "var(--font-size-sm)",
+              fontWeight: "var(--font-weight-medium)",
+              borderTopLeftRadius: "var(--radius-lg)",
+              borderBottomLeftRadius: "var(--radius-lg)",
+              backgroundColor: inputMethod === "form" ? "var(--color-primary)" : "var(--color-bg-primary)",
+              color: inputMethod === "form" ? "var(--color-white)" : "var(--color-text-body)",
+              border: `var(--border-1) solid var(--color-border-input)`,
+              cursor: "pointer",
+              transition: "var(--transition-colors)",
+            }}
+            onMouseEnter={(e) => {
+              if (inputMethod !== "form") {
+                e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (inputMethod !== "form") {
+                e.currentTarget.style.backgroundColor = "var(--color-bg-primary)"
+              }
+            }}
+            onClick={() => setInputMethod("form")}
+          >
+            <FaEdit style={{ display: "inline", marginRight: "var(--spacing-2)" }} />
             Form Input
           </button>
-          <button type="button" className={`px-4 py-2 text-sm font-medium rounded-r-lg ${inputMethod === "csv" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"} border border-gray-300`} onClick={() => setInputMethod("csv")}>
-            <FaTable className="inline mr-2" />
+          <button
+            type="button"
+            style={{
+              padding: "var(--spacing-2) var(--spacing-4)",
+              fontSize: "var(--font-size-sm)",
+              fontWeight: "var(--font-weight-medium)",
+              borderTopRightRadius: "var(--radius-lg)",
+              borderBottomRightRadius: "var(--radius-lg)",
+              backgroundColor: inputMethod === "csv" ? "var(--color-primary)" : "var(--color-bg-primary)",
+              color: inputMethod === "csv" ? "var(--color-white)" : "var(--color-text-body)",
+              border: `var(--border-1) solid var(--color-border-input)`,
+              cursor: "pointer",
+              transition: "var(--transition-colors)",
+            }}
+            onMouseEnter={(e) => {
+              if (inputMethod !== "csv") {
+                e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (inputMethod !== "csv") {
+                e.currentTarget.style.backgroundColor = "var(--color-bg-primary)"
+              }
+            }}
+            onClick={() => setInputMethod("csv")}
+          >
+            <FaTable style={{ display: "inline", marginRight: "var(--spacing-2)" }} />
             CSV Import
           </button>
         </div>
@@ -175,60 +225,248 @@ const UnitBasedForm = ({ formData, setFormData }) => {
 
       {inputMethod === "form" ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Number of Floors</label>
-              <input type="number" name="floors" value={unitConfig.floors} onChange={handleChange} min="1" className="w-full p-2 border border-gray-300 rounded-lg" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
+            <div style={{ marginBottom: "var(--spacing-4)" }}>
+              <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Number of Floors</label>
+              <input
+                type="number"
+                name="floors"
+                value={unitConfig.floors}
+                onChange={handleChange}
+                min="1"
+                style={{
+                  width: "100%",
+                  padding: "var(--input-padding)",
+                  border: `var(--border-1) solid var(--input-border)`,
+                  borderRadius: "var(--input-radius)",
+                  fontSize: "var(--font-size-base)",
+                  color: "var(--color-text-primary)",
+                  backgroundColor: "var(--input-bg)",
+                  outline: "none",
+                  transition: "var(--transition-colors)",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "var(--input-border-focus)"
+                  e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "var(--input-border)"
+                  e.currentTarget.style.boxShadow = "none"
+                }}
+              />
             </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2">Default Rooms per Unit</label>
-              <input type="number" name="defaultRoomsPerUnit" value={unitConfig.defaultRoomsPerUnit} onChange={handleChange} min="1" className="w-full p-2 border border-gray-300 rounded-lg" />
+            <div style={{ marginBottom: "var(--spacing-4)" }}>
+              <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Default Rooms per Unit</label>
+              <input
+                type="number"
+                name="defaultRoomsPerUnit"
+                value={unitConfig.defaultRoomsPerUnit}
+                onChange={handleChange}
+                min="1"
+                style={{
+                  width: "100%",
+                  padding: "var(--input-padding)",
+                  border: `var(--border-1) solid var(--input-border)`,
+                  borderRadius: "var(--input-radius)",
+                  fontSize: "var(--font-size-base)",
+                  color: "var(--color-text-primary)",
+                  backgroundColor: "var(--input-bg)",
+                  outline: "none",
+                  transition: "var(--transition-colors)",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "var(--input-border-focus)"
+                  e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "var(--input-border)"
+                  e.currentTarget.style.boxShadow = "none"
+                }}
+              />
             </div>
           </div>
 
-          <div className="mb-4">
-            <h5 className="text-gray-700 mb-2">Floor wise Units:</h5>
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <h5 style={{ color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Floor wise Units:</h5>
             {Array.from({ length: unitConfig.floors }, (_, i) => {
               const floor = i + 1
               return (
-                <div key={floor} className="mb-2">
-                  <label className="block text-gray-700 text-sm mb-1">{`Floor ${floor}`}</label>
-                  <input type="number" name={`floor-${floor}`} value={unitConfig.unitsPerFloor[floor] || ""} onChange={handleChange} min="1" className="w-full p-2 border border-gray-300 rounded-lg" />
+                <div key={floor} style={{ marginBottom: "var(--spacing-2)" }}>
+                  <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)", fontWeight: "var(--font-weight-medium)" }}>{`Floor ${floor}`}</label>
+                  <input
+                    type="number"
+                    name={`floor-${floor}`}
+                    value={unitConfig.unitsPerFloor[floor] || ""}
+                    onChange={handleChange}
+                    min="1"
+                    style={{
+                      width: "100%",
+                      padding: "var(--input-padding)",
+                      border: `var(--border-1) solid var(--input-border)`,
+                      borderRadius: "var(--input-radius)",
+                      fontSize: "var(--font-size-base)",
+                      color: "var(--color-text-primary)",
+                      backgroundColor: "var(--input-bg)",
+                      outline: "none",
+                      transition: "var(--transition-colors)",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = "var(--input-border-focus)"
+                      e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = "var(--input-border)"
+                      e.currentTarget.style.boxShadow = "none"
+                    }}
+                  />
                 </div>
               )
             })}
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Standard Room Capacity</label>
-            <input type="number" name="standardCapacity" value={unitConfig.standardCapacity} onChange={handleChange} min="1" className="w-full p-2 border border-gray-300 rounded-lg" />
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Standard Room Capacity</label>
+            <input
+              type="number"
+              name="standardCapacity"
+              value={unitConfig.standardCapacity}
+              onChange={handleChange}
+              min="1"
+              style={{
+                width: "100%",
+                padding: "var(--input-padding)",
+                border: `var(--border-1) solid var(--input-border)`,
+                borderRadius: "var(--input-radius)",
+                fontSize: "var(--font-size-base)",
+                color: "var(--color-text-primary)",
+                backgroundColor: "var(--input-bg)",
+                outline: "none",
+                transition: "var(--transition-colors)",
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = "var(--input-border-focus)"
+                e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = "var(--input-border)"
+                e.currentTarget.style.boxShadow = "none"
+              }}
+            />
           </div>
 
-          <div className="mt-4">
-            <div className="bg-blue-50 px-3 py-2 rounded-lg mb-2">
-              <h5 className="text-sm font-medium text-blue-800">Unit Room Exceptions</h5>
-              <p className="text-xs text-gray-600">Override default rooms per unit for a specific unit</p>
+          <div style={{ marginTop: "var(--spacing-4)" }}>
+            <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-2)" }}>
+              <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Unit Room Exceptions</h5>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Override default rooms per unit for a specific unit</p>
             </div>
             {unitConfig.exceptions.map((ex, index) => (
-              <div key={index} className="grid grid-cols-2 gap-4 mb-2">
-                <input type="text" placeholder="Unit Number (e.g., 101)" value={ex.unitNumber} onChange={(e) => handleExceptionChange(index, "unitNumber", e.target.value)} className="p-2 border border-gray-300 rounded-lg" />
-                <input type="number" placeholder="Rooms in Unit" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)} min="1" className="p-2 border border-gray-300 rounded-lg" />
-                <button type="button" onClick={() => removeException(index)} className="col-span-2 text-red-600 text-sm">
+              <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
+                <input
+                  type="text"
+                  placeholder="Unit Number (e.g., 101)"
+                  value={ex.unitNumber}
+                  onChange={(e) => handleExceptionChange(index, "unitNumber", e.target.value)}
+                  style={{
+                    padding: "var(--input-padding)",
+                    border: `var(--border-1) solid var(--input-border)`,
+                    borderRadius: "var(--input-radius)",
+                    fontSize: "var(--font-size-base)",
+                    color: "var(--color-text-primary)",
+                    backgroundColor: "var(--input-bg)",
+                    outline: "none",
+                    transition: "var(--transition-colors)",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
+                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "var(--input-border)"
+                    e.currentTarget.style.boxShadow = "none"
+                  }}
+                />
+                <input
+                  type="number"
+                  placeholder="Rooms in Unit"
+                  value={ex.roomsOverride}
+                  onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)}
+                  min="1"
+                  style={{
+                    padding: "var(--input-padding)",
+                    border: `var(--border-1) solid var(--input-border)`,
+                    borderRadius: "var(--input-radius)",
+                    fontSize: "var(--font-size-base)",
+                    color: "var(--color-text-primary)",
+                    backgroundColor: "var(--input-bg)",
+                    outline: "none",
+                    transition: "var(--transition-colors)",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
+                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "var(--input-border)"
+                    e.currentTarget.style.boxShadow = "none"
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeException(index)}
+                  style={{
+                    gridColumn: "span 2",
+                    color: "var(--color-danger)",
+                    fontSize: "var(--font-size-sm)",
+                    fontWeight: "var(--font-weight-medium)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "var(--spacing-1)",
+                    transition: "var(--transition-colors)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "var(--color-danger-hover)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = "var(--color-danger)"
+                  }}
+                >
                   Remove Exception
                 </button>
               </div>
             ))}
-            <button type="button" onClick={addException} className="mt-2 px-3 py-1 bg-green-100 text-green-800 rounded-lg text-sm">
+            <button
+              type="button"
+              onClick={addException}
+              style={{
+                marginTop: "var(--spacing-2)",
+                padding: "var(--spacing-1) var(--spacing-3)",
+                backgroundColor: "var(--color-success-bg)",
+                color: "var(--color-success-text)",
+                borderRadius: "var(--radius-lg)",
+                fontSize: "var(--font-size-sm)",
+                fontWeight: "var(--font-weight-medium)",
+                border: "none",
+                cursor: "pointer",
+                transition: "var(--transition-colors)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--color-success-bg-light)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--color-success-bg)"
+              }}
+            >
               Add Exception
             </button>
           </div>
 
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-sm">
+          <div style={{ marginTop: "var(--spacing-4)", padding: "var(--spacing-3)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)" }}>
+            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
               This will create {unitConfig.floors} floors with custom units per floor and {unitConfig.defaultRoomsPerUnit} rooms per unit by default.
             </p>
-            <p className="text-sm mt-2">
+            <p style={{ fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)", color: "var(--color-text-body)" }}>
               Total capacity:{" "}
               {(() => {
                 let total = 0
@@ -250,13 +488,13 @@ const UnitBasedForm = ({ formData, setFormData }) => {
           </div>
         </>
       ) : (
-        <div className="space-y-6">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
           <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity"]} instructionText={templateInstructions} maxRecords={900} />
 
           {parsedCsvData.length > 0 && (
-            <div className="mt-4">
-              <div className="bg-blue-50 px-3 py-2 rounded-lg mb-3">
-                <h5 className="text-sm font-medium text-blue-800">Imported Room Data Summary</h5>
+            <div style={{ marginTop: "var(--spacing-4)" }}>
+              <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-3)" }}>
+                <h5 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>Imported Room Data Summary</h5>
               </div>
               <RoomStatsSummary data={parsedCsvData} isUnitBased={true} />
             </div>
