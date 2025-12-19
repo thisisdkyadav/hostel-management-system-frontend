@@ -47,120 +47,227 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
     fetchStudentId()
   }, [complaintData.reportedBy.id])
 
+  const getSatisfactionStatusStyle = (status) => {
+    switch (status) {
+      case "Satisfied":
+        return {
+          backgroundColor: "var(--color-success-bg)",
+          color: "var(--color-success-text)",
+        }
+      case "Unsatisfied":
+        return {
+          backgroundColor: "var(--color-danger-bg)",
+          color: "var(--color-danger-text)",
+        }
+      default:
+        return {
+          backgroundColor: "var(--color-warning-bg)",
+          color: "var(--color-warning-text)",
+        }
+    }
+  }
+
   return (
     <>
       <Modal title="Complaint Details" onClose={() => setShowDetailModal(false)} width={800}>
-        <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-3 border-b border-gray-100">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "var(--spacing-3)", borderBottom: `var(--border-1) solid var(--color-border-light)`, }} className="sm:flex-row sm:items-center" >
             <div>
-              <span className="text-xs text-gray-500">{complaintData.id}</span>
-              <h2 className="text-xl font-bold text-gray-800">{complaintData.title}</h2>
+              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", }} >
+                {complaintData.id}
+              </span>
+              <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", }} >
+                {complaintData.title}
+              </h2>
             </div>
 
-            <div className="flex items-center space-x-3 mt-3 sm:mt-0">
-              <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(complaintData.status)}`}>{complaintData.status}</span>
-              <span className={`px-3 py-1 text-sm font-medium rounded-full ${getPriorityColor(complaintData.priority)}`}>{complaintData.priority}</span>
-              <span className="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">{complaintData.category}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", marginTop: "var(--spacing-3)", }} className="sm:mt-0" >
+              <span className={`${getStatusColor(complaintData.status)}`} style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
+                {complaintData.status}
+              </span>
+              <span className={`${getPriorityColor(complaintData.priority)}`} style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
+                {complaintData.priority}
+              </span>
+              <span style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-body)", }} >
+                {complaintData.category}
+              </span>
 
               {canUpdateComplaint && (
-                <button onClick={() => setShowUpdateModal(true)} className="flex items-center text-sm text-blue-600 hover:text-blue-800 transition-colors px-3 py-1 border border-blue-200 rounded-full hover:bg-blue-50">
-                  <FaEdit className="mr-1" /> Update Status & Notes
+                <button onClick={() => setShowUpdateModal(true)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "var(--font-size-sm)",
+                    color: "var(--color-primary)",
+                    transition: "var(--transition-colors)",
+                    paddingTop: "var(--spacing-1)",
+                    paddingBottom: "var(--spacing-1)",
+                    paddingLeft: "var(--spacing-3)",
+                    paddingRight: "var(--spacing-3)",
+                    border: `var(--border-1) solid var(--color-primary-pale)`,
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "transparent",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = "var(--color-primary-hover)"
+                    e.target.style.backgroundColor = "var(--color-primary-bg)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = "var(--color-primary)"
+                    e.target.style.backgroundColor = "transparent"
+                  }}
+                >
+                  <FaEdit style={{ marginRight: "var(--spacing-1)" }} /> Update Status & Notes
                 </button>
               )}
 
               {user && user._id === complaintData.reportedBy.id && (
-                <button onClick={() => setShowFeedbackModal(true)} className="flex items-center text-sm text-green-600 hover:text-green-800 transition-colors px-3 py-1 border border-green-200 rounded-full hover:bg-green-50">
-                  <FaStar className="mr-1" /> Give Feedback
+                <button onClick={() => setShowFeedbackModal(true)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontSize: "var(--font-size-sm)",
+                    color: "var(--color-success)",
+                    transition: "var(--transition-colors)",
+                    paddingTop: "var(--spacing-1)",
+                    paddingBottom: "var(--spacing-1)",
+                    paddingLeft: "var(--spacing-3)",
+                    paddingRight: "var(--spacing-3)",
+                    border: `var(--border-1) solid var(--color-success-light)`,
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "transparent",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.color = "var(--color-success-hover)"
+                    e.target.style.backgroundColor = "var(--color-success-bg)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.color = "var(--color-success)"
+                    e.target.style.backgroundColor = "transparent"
+                  }}
+                >
+                  <FaStar style={{ marginRight: "var(--spacing-1)" }} /> Give Feedback
                 </button>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-50 p-5 rounded-xl">
-              <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-4">
-                <FaMapMarkerAlt className="mr-2" /> Location Details
+          <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-6)" }}>
+            <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", }} >
+              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)", }} >
+                <FaMapMarkerAlt style={{ marginRight: "var(--spacing-2)" }} /> Location Details
               </h4>
-              <div className="space-y-3">
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
                 {complaintData.hostel && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Hostel:</span>
-                    <span className="font-medium">{complaintData.hostel}</span>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--color-text-tertiary)" }}>Hostel:</span>
+                    <span style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.hostel}</span>
                   </div>
                 )}
                 {complaintData.roomNumber && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Room Number:</span>
-                    <span className="font-medium">{complaintData.roomNumber}</span>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--color-text-tertiary)" }}>Room Number:</span>
+                    <span style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.roomNumber}</span>
                   </div>
                 )}
                 {complaintData.location && (
-                  <div className="flex justify-between">
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span className="break-words">{complaintData.location}</span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div onClick={() => handleReporterClick()} className="bg-gray-50 p-5 rounded-xl cursor-pointer">
-              <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-4">
-                <FaUserCircle className="mr-2" /> Reported By
+            <div onClick={() => handleReporterClick()}
+              style={{
+                backgroundColor: "var(--color-bg-tertiary)",
+                padding: "var(--spacing-5)",
+                borderRadius: "var(--radius-xl)",
+                cursor: "pointer",
+              }}
+            >
+              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)", }} >
+                <FaUserCircle style={{ marginRight: "var(--spacing-2)" }} /> Reported By
               </h4>
-              <div className="flex items-center">
+              <div style={{ display: "flex", alignItems: "center" }}>
                 {complaintData.reportedBy?.profileImage ? (
-                  <img src={getMediaUrl(complaintData.reportedBy.profileImage)} alt={complaintData.reportedBy.name} className="h-12 w-12 rounded-full object-cover mr-4" />
+                  <img src={getMediaUrl(complaintData.reportedBy.profileImage)} alt={complaintData.reportedBy.name} style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", objectFit: "cover", marginRight: "var(--spacing-4)", }} />
                 ) : (
-                  <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 font-medium mr-4">{complaintData.reportedBy?.name?.charAt(0) || "U"}</div>
+                  <div style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-primary)", fontWeight: "var(--font-weight-medium)", marginRight: "var(--spacing-4)", }} >
+                    {complaintData.reportedBy?.name?.charAt(0) || "U"}
+                  </div>
                 )}
                 <div>
-                  <div className="font-medium">{complaintData.reportedBy?.name}</div>
-                  <div className="text-sm text-gray-500">Email: {complaintData.reportedBy?.email}</div>
-                  <div className="text-sm text-gray-500">{complaintData.reportedBy?.phone}</div>
+                  <div style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.reportedBy?.name}</div>
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
+                    Email: {complaintData.reportedBy?.email}
+                  </div>
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
+                    {complaintData.reportedBy?.phone}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
-              <FaClipboardList className="mr-2" /> Description
+            <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
+              <FaClipboardList style={{ marginRight: "var(--spacing-2)" }} /> Description
             </h4>
-            <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{complaintData.description}</div>
+            <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", color: "var(--color-text-body)", }} >
+              {complaintData.description}
+            </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
-              <FaInfoCircle className="mr-2" /> Resolution Notes
+            <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
+              <FaInfoCircle style={{ marginRight: "var(--spacing-2)" }} /> Resolution Notes
             </h4>
-            {complaintData.resolutionNotes ? <div className="bg-gray-50 p-5 rounded-xl text-gray-700">{complaintData.resolutionNotes}</div> : <div className="bg-gray-50 p-5 rounded-xl text-gray-500 italic">No resolution notes yet.</div>}
+            {complaintData.resolutionNotes ? (
+              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", color: "var(--color-text-body)", }} >
+                {complaintData.resolutionNotes}
+              </div>
+            ) : (
+              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", color: "var(--color-text-muted)", fontStyle: "italic", }} >
+                No resolution notes yet.
+              </div>
+            )}
           </div>
 
           {complaintData.feedbackRating && (
             <div>
-              <h4 className="text-sm font-medium text-[#1360AB] flex items-center mb-3">
-                <FaStar className="mr-2" /> User Feedback
+              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
+                <FaStar style={{ marginRight: "var(--spacing-2)" }} /> User Feedback
               </h4>
-              <div className="bg-gray-50 p-5 rounded-xl">
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <span className="text-gray-600 mr-2">Rating:</span>
-                    <div className="flex items-center">
+              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", }} >
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <span style={{ color: "var(--color-text-tertiary)", marginRight: "var(--spacing-2)", }} >
+                      Rating:
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center" }}>
                       {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className={`text-sm ${i < complaintData.feedbackRating ? "text-yellow-400" : "text-gray-300"}`} />
+                        <FaStar key={i} style={{ fontSize: "var(--font-size-sm)", color: i < complaintData.feedbackRating ? "var(--color-warning)" : "var(--color-border-primary)", }} />
                       ))}
-                      <span className="ml-2 text-gray-700">({complaintData.feedbackRating}/5)</span>
+                      <span style={{ marginLeft: "var(--spacing-2)", color: "var(--color-text-body)", }} >
+                        ({complaintData.feedbackRating}/5)
+                      </span>
                     </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Satisfaction:</span>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${complaintData.satisfactionStatus === "Satisfied" ? "bg-green-100 text-green-800" : complaintData.satisfactionStatus === "Unsatisfied" ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}`}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--color-text-tertiary)" }}>Satisfaction:</span>
+                    <span style={{ ...getSatisfactionStatusStyle(complaintData.satisfactionStatus), padding: "var(--badge-padding-sm)", fontSize: "var(--badge-font-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
                       {complaintData.satisfactionStatus}
                     </span>
                   </div>
                   {complaintData.feedback && (
                     <div>
-                      <span className="text-gray-600 block mb-1">Comments:</span>
-                      <div className="text-gray-700">{complaintData.feedback}</div>
+                      <span style={{ color: "var(--color-text-tertiary)", display: "block", marginBottom: "var(--spacing-1)", }} >
+                        Comments:
+                      </span>
+                      <div style={{ color: "var(--color-text-body)" }}>{complaintData.feedback}</div>
                     </div>
                   )}
                 </div>
@@ -168,7 +275,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             </div>
           )}
 
-          <div className="flex flex-wrap justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)`, }} >
             <div>Created: {new Date(complaintData.createdDate).toLocaleString()}</div>
             {complaintData.lastUpdated !== complaintData.createdDate && <div>Last Updated: {new Date(complaintData.lastUpdated).toLocaleString()}</div>}
           </div>
@@ -177,7 +284,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
 
       {showUpdateModal && <UpdateComplaintModal complaint={complaintData} onClose={() => setShowUpdateModal(false)} onUpdate={handleComplaintUpdate} />}
       {showStudentDetailModal && studentId && <StudentDetailModal selectedStudent={{ _id: studentId, userId: complaintData.reportedBy.id }} setShowStudentDetail={setShowStudentDetailModal} onUpdate={handleStudentUpdate} />}
-      {showFeedbackModal && <FeedbackModal complaint={complaintData} onClose={() => setShowFeedbackModal(false)} onFeedback={() => {}} />}
+      {showFeedbackModal && <FeedbackModal complaint={complaintData} onClose={() => setShowFeedbackModal(false)} onFeedback={() => { }} />}
     </>
   )
 }
