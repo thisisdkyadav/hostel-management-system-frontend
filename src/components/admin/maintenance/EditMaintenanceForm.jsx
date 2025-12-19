@@ -153,14 +153,15 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
         </div>
 
 
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-5)", borderTop: "var(--border-1) solid var(--color-border-light)", gap: "var(--spacing-3)" }}>
-          <button type="button" onClick={handleDelete} disabled={loading} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", transition: "var(--transition-colors)", display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
-            {loading ? <span style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", border: "var(--border-2) solid var(--color-danger)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></span> : <FaTrash style={{ marginRight: "var(--spacing-2)" }} />}
+
+        <div className="flex flex-row justify-between pt-4 mt-5 border-t gap-3" style={{ borderColor: "var(--color-border-light)" }}>
+          <button type="button" onClick={handleDelete} disabled={loading} className="px-4 py-2.5 bg-[var(--color-danger-bg)] hover:bg-[var(--color-danger-bg-light)] text-[var(--color-danger-text)] rounded-lg transition-colors flex items-center justify-center border-0 disabled:cursor-not-allowed disabled:opacity-50">
+            {loading ? <span className="w-5 h-5 border-2 border-[var(--color-danger)] border-t-transparent rounded-full animate-spin mr-2"></span> : <FaTrash className="mr-2" />}
             Delete Account
           </button>
 
-          <button type="submit" disabled={loading} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", transition: "var(--transition-colors)", display: "flex", alignItems: "center", justifyContent: "center", border: "none", cursor: loading ? "not-allowed" : "pointer", opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
-            {loading ? <span style={{ width: "var(--spacing-5)", height: "var(--spacing-5)", border: "var(--border-2) solid var(--color-white)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></span> : <FaSave style={{ marginRight: "var(--spacing-2)" }} />}
+          <button type="submit" disabled={loading} className="px-4 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-lg transition-colors flex items-center justify-center border-0 disabled:cursor-not-allowed disabled:opacity-50">
+            {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span> : <FaSave className="mr-2" />}
             Save Changes
           </button>
         </div>
