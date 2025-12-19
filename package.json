@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "node scripts/generate-meta.js && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "flatten-jsx": "node scripts/flatten-jsx.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
