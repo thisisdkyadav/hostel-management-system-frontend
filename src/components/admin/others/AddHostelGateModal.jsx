@@ -96,17 +96,17 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
   if (!show) return null
 
   return (
-    <Modal title="Add Hostel Gate Login" onClose={onClose}>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>}
+    <Modal title="Add Hostel Gate Login" onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+        {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }}>{error}</div>}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Hostel</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Select Hostel</label>
+          <div style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
               <FaBuilding />
             </div>
-            <select name="hostelId" value={formData.hostelId} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" required>
+            <select name="hostelId" value={formData.hostelId} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} required>
               <option value="">Select a hostel</option>
               {availableHostels.map((hostel) => (
                 <option key={hostel._id} value={hostel._id}>
@@ -115,48 +115,48 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
               ))}
             </select>
           </div>
-          {availableHostels.length === 0 && <p className="mt-2 text-sm text-amber-600">All hostels already have gate logins created.</p>}
+          {availableHostels.length === 0 && <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)' }}>All hostels already have gate logins created.</p>}
         </div>
 
         {generatedEmail && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Generated Email</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Generated Email</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
                 <FaEnvelope />
               </div>
-              <input type="text" value={generatedEmail} className="w-full p-3 pl-10 border border-gray-300 rounded-lg bg-gray-50" readOnly />
-              <p className="mt-1 text-xs text-gray-500">This email will be automatically created for the hostel gate login.</p>
+              <input type="text" value={generatedEmail} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-hover)' }} readOnly />
+              <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>This email will be automatically created for the hostel gate login.</p>
             </div>
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Password</label>
+          <div style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
               <FaKey />
             </div>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="Enter password" required />
+            <input type="password" name="password" value={formData.password} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="Enter password" required />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Confirm Password</label>
+          <div style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
               <FaKey />
             </div>
-            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" placeholder="Confirm password" required />
+            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="Confirm password" required />
           </div>
         </div>
 
-        <div className="flex justify-end pt-4 mt-6 border-t border-gray-100">
-          <button type="button" onClick={onClose} className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 mr-2">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-2)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}>
             Cancel
           </button>
-          <button type="submit" disabled={loading || !formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0} className={`px-4 py-2 bg-[#1360AB] text-white rounded-lg transition-colors flex items-center ${!formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#0F4C81]"}`} >
-            {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span> : null}
+          <button type="submit" disabled={loading || !formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', opacity: (!formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0) ? 'var(--opacity-disabled)' : 'var(--opacity-100)', cursor: (!formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0) ? 'not-allowed' : 'pointer' }} onMouseEnter={(e) => { if (formData.hostelId && formData.password && formData.confirmPassword && availableHostels.length > 0) e.target.style.backgroundColor = 'var(--color-primary-hover)'; }} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
+            {loading ? <span style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : null}
             Create Gate Login
           </button>
         </div>
