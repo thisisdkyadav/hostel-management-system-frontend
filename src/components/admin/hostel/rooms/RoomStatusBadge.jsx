@@ -4,21 +4,21 @@ const RoomStatusBadge = ({ status }) => {
   const getBadgeStyles = () => {
     switch (status) {
       case "Active":
-        return "bg-green-100 text-green-800"
+        return { backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }
       case "Inactive":
-        return "bg-gray-100 text-gray-800"
+        return { backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-secondary)' }
       case "Maintenance":
-        return "bg-yellow-100 text-yellow-800"
+        return { backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' }
       case "Occupied":
-        return "bg-blue-100 text-blue-800"
+        return { backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }
       case "Reserved":
-        return "bg-purple-100 text-purple-800"
+        return { backgroundColor: 'var(--color-purple-light-bg)', color: 'var(--color-purple-text)' }
       default:
-        return "bg-gray-100 text-gray-800"
+        return { backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-secondary)' }
     }
   }
 
-  return <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBadgeStyles()}`}>{status}</span>
+  return <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', ...getBadgeStyles() }}>{status}</span>
 }
 
 export default RoomStatusBadge

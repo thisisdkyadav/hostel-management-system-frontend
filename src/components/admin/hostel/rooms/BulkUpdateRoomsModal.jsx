@@ -62,25 +62,25 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
 
   const templateInstructions = (
     <div>
-      <p className="font-medium mb-1">Field Input Types:</p>
-      <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+      <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
+      <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
         {isUnitBased && (
           <li>
-            <span className="font-medium">unitNumber:</span> String (e.g., 101) <span className="text-red-600">*</span>
+            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>unitNumber:</span> String (e.g., 101) <span style={{ color: 'var(--color-danger)' }}>*</span>
           </li>
         )}
         <li>
-          <span className="font-medium">roomNumber:</span> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"} <span className="text-red-600">*</span>
+          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>roomNumber:</span> {isUnitBased ? "String (e.g., A)" : "String (e.g., 101)"} <span style={{ color: 'var(--color-danger)' }}>*</span>
         </li>
         <li>
-          <span className="font-medium">capacity:</span> Number (optional)
+          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>capacity:</span> Number (optional)
         </li>
         <li>
-          <span className="font-medium">status:</span> "Active" or "Inactive" (optional)
+          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>status:</span> "Active" or "Inactive" (optional)
         </li>
       </ul>
-      <p className="text-xs mt-2">
-        <span className="text-red-600">*</span> Required fields
+      <p style={{ fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-2)' }}>
+        <span style={{ color: 'var(--color-danger)' }}>*</span> Required fields
       </p>
     </div>
   )
@@ -89,33 +89,33 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
 
   return (
     <Modal title="Bulk Update Rooms" onClose={onClose} width={800}>
-      <div className="space-y-6">
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <FaExclamationTriangle className="h-5 w-5 text-yellow-600" />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <div style={{ backgroundColor: 'var(--color-warning-bg-light)', borderLeft: 'var(--border-4) solid var(--color-warning)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-md)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{ flexShrink: 0 }}>
+              <FaExclamationTriangle style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-warning-hover)' }} />
             </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">Important Warnings</h3>
-              <div className="mt-2 text-sm text-yellow-700">
+            <div style={{ marginLeft: 'var(--spacing-3)' }}>
+              <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning-text)' }}>Important Warnings</h3>
+              <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-warning-text)' }}>
                 <p>
                   <strong>1. Allocation Loss:</strong> Updating rooms will <strong>delete all allocations</strong> associated with these rooms. This action cannot be undone.
                 </p>
-                <p className="mt-1">
+                <p style={{ marginTop: 'var(--spacing-1)' }}>
                   <strong>2. Update Limitations:</strong> Only one attribute can be updated for a room at a time. If data is provided for multiple attributes, priority will be given to status changes.
                 </p>
-                <p className="mt-1">
+                <p style={{ marginTop: 'var(--spacing-1)' }}>
                   <strong>3. Capacity Restrictions:</strong> The capacity of a room cannot be changed if the room is inactive.
                 </p>
-                <p className="mt-1">Please ensure you have backed up any necessary allocation data before proceeding.</p>
+                <p style={{ marginTop: 'var(--spacing-1)' }}>Please ensure you have backed up any necessary allocation data before proceeding.</p>
               </div>
             </div>
           </div>
         </div>
 
         {successMessage && (
-          <div className="bg-green-50 text-green-700 p-4 rounded-lg text-sm flex items-start">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+          <div style={{ backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             {successMessage}
@@ -123,8 +123,8 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
         )}
 
         {error && (
-          <div className="bg-red-50 text-red-700 p-4 rounded-lg text-sm flex items-start">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+          <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
             {error}
@@ -134,51 +134,51 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
         <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName={isUnitBased ? "update_unit_rooms_template.csv" : "update_rooms_template.csv"} templateHeaders={requiredFields} instructionText={templateInstructions} maxRecords={1000} />
 
         {parsedCsvData.length > 0 && (
-          <div className="space-y-4">
-            <div className="bg-blue-50 px-4 py-3 rounded-lg">
-              <h5 className="text-sm font-medium text-blue-800">CSV Data Preview</h5>
-              <p className="text-xs text-gray-600 mt-1">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4) var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+              <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>
                 Ready to update {parsedCsvData.length} room(s) in {hostel.name}
               </p>
             </div>
 
-            <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div style={{ overflowX: 'auto', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-primary)', borderRadius: 'var(--radius-lg)' }}>
+              <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    {isUnitBased && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>}
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>ID</th>
+                    {isUnitBased && <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Unit</th>}
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Room</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Capacity</th>
+                    <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                   {parsedCsvData.slice(0, 5).map((room, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.id}</td>
-                      {isUnitBased && <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.unitNumber}</td>}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.roomNumber}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.capacity}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${room.status === "Active" ? "bg-green-100 text-green-800" : room.status === "Inactive" ? "bg-gray-100 text-gray-800" : "bg-yellow-100 text-yellow-800"}`}>{room.status}</span>
+                    <tr key={index} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.id}</td>
+                      {isUnitBased && <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.unitNumber}</td>}
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.roomNumber}</td>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.capacity}</td>
+                      <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: room.status === "Active" ? 'var(--color-success-bg)' : room.status === "Inactive" ? 'var(--color-bg-hover)' : 'var(--color-warning-bg)', color: room.status === "Active" ? 'var(--color-success-text)' : room.status === "Inactive" ? 'var(--color-text-secondary)' : 'var(--color-warning-text)' }}>{room.status}</span>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {parsedCsvData.length > 5 && <div className="px-6 py-3 bg-gray-50 text-xs text-gray-500">Showing 5 of {parsedCsvData.length} rooms</div>}
+              {parsedCsvData.length > 5 && <div style={{ padding: 'var(--spacing-3) var(--spacing-6)', backgroundColor: 'var(--table-header-bg)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Showing 5 of {parsedCsvData.length} rooms</div>}
             </div>
 
-            <div className="flex flex-col space-y-4">
-              <div className="flex items-center">
-                <input type="checkbox" id="confirm-delete" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
-                <label htmlFor="confirm-delete" className="ml-2 block text-sm text-red-700 font-medium">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input type="checkbox" id="confirm-delete" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', borderRadius: 'var(--radius-sm)' }} />
+                <label htmlFor="confirm-delete" style={{ marginLeft: 'var(--spacing-2)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)' }}>
                   I understand that updating these rooms will delete all associated allocations
                 </label>
               </div>
 
-              <div className="flex justify-end space-x-3">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
                 <Button variant="secondary" onClick={onClose}>
                   Cancel
                 </Button>

@@ -104,67 +104,67 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-3 justify-between items-end">
-        <div className="flex flex-col sm:flex-row gap-3 flex-1">
-          <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="text-gray-400" />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)', flex: 1 }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
+            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+              <FaSearch style={{ color: 'var(--color-text-muted)' }} />
             </div>
-            <input type="text" placeholder={`Search ${isUnitBased ? "units/rooms" : "rooms"}...`} className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+            <input type="text" placeholder={`Search ${isUnitBased ? "units/rooms" : "rooms"}...`} style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-3)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', width: '100%', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaFilter className="text-gray-400" />
+          <div style={{ position: 'relative', minWidth: '150px' }}>
+            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+              <FaFilter style={{ color: 'var(--color-text-muted)' }} />
             </div>
-            <select className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none appearance-none bg-white" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <select style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-8)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', width: '100%', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', appearance: 'none', backgroundColor: 'var(--color-bg-primary)', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="all">All Status</option>
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
               <option value="Maintenance">Maintenance</option>
             </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 'var(--spacing-2)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+              <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-text-muted)' }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </div>
           </div>
         </div>
 
-        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FaFileUpload />} className="whitespace-nowrap">
+        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FaFileUpload />} style={{ whiteSpace: 'nowrap' }}>
           Bulk Update via CSV
         </Button>
       </div>
 
       {filteredRooms.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No rooms found. Add rooms or adjust your filters.</p>
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-8)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)' }}>
+          <p style={{ color: 'var(--color-text-muted)' }}>No rooms found. Add rooms or adjust your filters.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+            <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
               <tr>
-                {isUnitBased && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>}
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Room</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                {isUnitBased && <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Unit</th>}
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Room</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Capacity</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Status</th>
+                <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
               {filteredRooms.map((room) => (
-                <tr key={room.id} className="hover:bg-gray-50">
-                  {isUnitBased && <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.unitNumber}</td>}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.roomNumber}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{room.capacity}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${room.status === "Active" ? "bg-green-100 text-green-800" : room.status === "Inactive" ? "bg-gray-100 text-gray-800" : "bg-yellow-100 text-yellow-800"}`}>{room.status}</span>
+                <tr key={room.id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}>
+                  {isUnitBased && <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.unitNumber}</td>}
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.roomNumber}</td>
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{room.capacity}</td>
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: room.status === "Active" ? 'var(--color-success-bg)' : room.status === "Inactive" ? 'var(--color-bg-hover)' : 'var(--color-warning-bg)', color: room.status === "Active" ? 'var(--color-success-text)' : room.status === "Inactive" ? 'var(--color-text-secondary)' : 'var(--color-warning-text)' }}>{room.status}</span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button onClick={() => handleEditRoom(room)} className="text-blue-600 hover:text-blue-800">
+                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+                    <button onClick={() => handleEditRoom(room)} style={{ color: 'var(--color-primary)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}>
                       <FaEdit />
                     </button>
                   </td>
