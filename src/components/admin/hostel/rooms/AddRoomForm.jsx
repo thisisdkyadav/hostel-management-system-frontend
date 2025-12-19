@@ -163,15 +163,15 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="bg-blue-50 p-4 rounded-lg mb-4">
-        <h4 className="text-sm font-medium text-blue-800">Add New {isUnitBased ? "Unit Rooms" : "Rooms"}</h4>
-        <p className="text-xs text-gray-600 mt-1">{isUnitBased ? "Enter a unit number and specify room letters to add multiple rooms to a unit" : "Add one or multiple rooms at once"}</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+      <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+        <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>Add New {isUnitBased ? "Unit Rooms" : "Rooms"}</h4>
+        <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>{isUnitBased ? "Enter a unit number and specify room letters to add multiple rooms to a unit" : "Add one or multiple rooms at once"}</p>
       </div>
 
       {successMessage && (
-        <div className="bg-green-50 text-green-700 p-4 rounded-lg text-sm flex items-start">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+        <div style={{ backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
           {successMessage}
@@ -179,78 +179,78 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
       )}
 
       {errors.form && (
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg text-sm flex items-start">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+        <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
+          <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
           {errors.form}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         {isUnitBased && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Unit Number</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
-                <FaDoorOpen className="h-5 w-5" />
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Unit Number</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
+                <FaDoorOpen style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
               </div>
-              <input type="text" name="unitNumber" value={formData.unitNumber} onChange={handleChange} className={`w-full p-3 pl-10 border ${errors.unitNumber ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder="e.g., 101" />
+              <input type="text" name="unitNumber" value={formData.unitNumber} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid ${errors.unitNumber ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.unitNumber ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { if (!errors.unitNumber) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.unitNumber) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }} placeholder="e.g., 101" />
             </div>
-            {errors.unitNumber && <p className="mt-1.5 text-sm text-red-600">{errors.unitNumber}</p>}
+            {errors.unitNumber && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.unitNumber}</p>}
           </div>
         )}
 
         {isUnitBased && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Common Area Details (Optional)</label>
-            <textarea name="commonAreaDetails" value={formData.commonAreaDetails} onChange={handleChange} rows="2" className="w-full p-3 border border-gray-300 focus:ring-blue-100 rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]" placeholder="e.g., Common kitchen, TV area" />
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Common Area Details (Optional)</label>
+            <textarea name="commonAreaDetails" value={formData.commonAreaDetails} onChange={handleChange} rows="2" style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="e.g., Common kitchen, TV area" />
           </div>
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Room {isUnitBased ? "Letter(s)" : "Number(s)"}</label>
-          <div className="relative">
-            <div className="absolute left-3 top-3 text-gray-400">
-              <FaDoorOpen className="h-5 w-5" />
+          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Room {isUnitBased ? "Letter(s)" : "Number(s)"}</label>
+          <div style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
+              <FaDoorOpen style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
             </div>
-            <input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} className={`w-full p-3 pl-10 border ${errors.roomNumbers ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} />
+            <input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid ${errors.roomNumbers ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.roomNumbers ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { if (!errors.roomNumbers) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.roomNumbers) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} />
           </div>
-          <p className="mt-1 text-xs text-gray-500">You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</p>
-          {errors.roomNumbers && <p className="mt-1 text-sm text-red-600">{errors.roomNumbers}</p>}
+          <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</p>
+          {errors.roomNumbers && <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.roomNumbers}</p>}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Capacity</label>
-            <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
-                <FaUsers className="h-5 w-5" />
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Capacity</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
+                <FaUsers style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
               </div>
-              <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" className={`w-full p-3 pl-10 border ${errors.capacity ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder="Room capacity" />
+              <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid ${errors.capacity ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.capacity ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { if (!errors.capacity) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.capacity) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }} placeholder="Room capacity" />
             </div>
-            {errors.capacity && <p className="mt-1.5 text-sm text-red-600">{errors.capacity}</p>}
+            {errors.capacity && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.capacity}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <div className="relative">
-              <select name="status" value={formData.status} onChange={handleChange} className={`w-full p-3 border ${errors.status ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] bg-white appearance-none`} >
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Status</label>
+            <div style={{ position: 'relative' }}>
+              <select name="status" value={formData.status} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid ${errors.status ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.status ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)', appearance: 'none' }} onFocus={(e) => { if (!errors.status) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.status) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }}>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
                 <option value="Maintenance">Maintenance</option>
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, display: 'flex', alignItems: 'center', padding: '0 var(--spacing-2)', pointerEvents: 'none' }}>
+                <svg style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-text-muted)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </div>
             </div>
-            {errors.status && <p className="mt-1.5 text-sm text-red-600">{errors.status}</p>}
+            {errors.status && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.status}</p>}
           </div>
         </div>
 
-        <div className="pt-4">
+        <div style={{ paddingTop: 'var(--spacing-4)' }}>
           <Button type="submit" variant="primary" size="medium" icon={<FaPlusCircle />} animation="ripple">
             Add Room(s)
           </Button>
