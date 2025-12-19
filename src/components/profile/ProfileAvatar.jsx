@@ -31,15 +31,7 @@ const ProfileAvatar = ({ user, size = "medium" }) => {
 
   if (user?.profileImage) {
     return (
-      <div
-        style={{
-          ...sizeStyles[size],
-          borderRadius: "var(--radius-avatar)",
-          overflow: "hidden",
-          backgroundColor: "var(--color-bg-muted)",
-          flexShrink: 0,
-        }}
-      >
+      <div style={{ ...sizeStyles[size], borderRadius: "var(--radius-avatar)", overflow: "hidden", backgroundColor: "var(--color-bg-muted)", flexShrink: 0, }} >
         <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s avatar`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
     )
@@ -65,18 +57,7 @@ const ProfileAvatar = ({ user, size = "medium" }) => {
   }
 
   return (
-    <div
-      style={{
-        ...sizeStyles[size],
-        ...getColorStyle(user?.name),
-        borderRadius: "var(--radius-avatar)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontWeight: "var(--font-weight-bold)",
-        flexShrink: 0,
-      }}
-    >
+    <div style={{ ...sizeStyles[size], ...getColorStyle(user?.name), borderRadius: "var(--radius-avatar)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "var(--font-weight-bold)", flexShrink: 0, }} >
       {getInitials(user?.name || "User")}
     </div>
   )

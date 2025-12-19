@@ -8,8 +8,7 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
       </div>
 
       <nav className="flex flex-wrap justify-center gap-2">
-        <button
-          onClick={() => paginate(Math.max(1, currentPage - 1))}
+        <button onClick={() => paginate(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
           className={`px-3 py-1.5 rounded-md transition-colors text-sm ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-600 hover:bg-[#1360AB] hover:text-white border border-gray-200"}`}
         >
@@ -36,8 +35,7 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
           )
         })}
 
-        <button
-          onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+        <button onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
           className={`px-3 py-1.5 rounded-md transition-colors text-sm ${currentPage === totalPages ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-gray-600 hover:bg-[#1360AB] hover:text-white border border-gray-200"}`}
         >

@@ -92,16 +92,7 @@ const ActionButtons = ({
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "flex-end",
-        gap: "var(--spacing-3)",
-        paddingTop: "var(--spacing-4)",
-        borderTop: `var(--border-1) solid var(--color-border-primary)`,
-      }}
-    >
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-primary)`, }} >
       {/* Student actions */}
       {userRole === "Student" && isPending && (
         <>

@@ -124,9 +124,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
+                  <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}
                     showTimeSelect
                     dateFormat="MMMM d, yyyy h:mm aa"
                     className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

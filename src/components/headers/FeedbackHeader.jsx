@@ -9,11 +9,7 @@ const FeedbackHeader = ({ userRole, onAddFeedback }) => {
   return (
     <PageHeader title={title}>
       {isStudent && (
-        <Button 
-          variant="primary" 
-          size="medium" 
-          onClick={onAddFeedback} 
-          icon={<HiPlus style={{ fontSize: 'var(--icon-sm)' }} />}
+        <Button variant="primary" size="medium" onClick={onAddFeedback} icon={<HiPlus style={{ fontSize: 'var(--icon-sm)' }} />}
         >
           Add Feedback
         </Button>

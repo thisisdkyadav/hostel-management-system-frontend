@@ -81,19 +81,13 @@ const HomePage = () => {
             {/* Enhanced CTA button with more interactive hover effect */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 animate-fadeIn">
               {user ? (
-                <Link
-                  to={getHomeRoute()}
-                  className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-2xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden"
-                >
+                <Link to={getHomeRoute()} className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-2xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden" >
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   <span className="relative">Go to Dashboard</span>
                   <FaArrowRight className="ml-3 transform transition-transform duration-300 group-hover:translate-x-1.5 relative" />
                 </Link>
               ) : (
-                <Link
-                  to="/login"
-                  className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-2xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden"
-                >
+                <Link to="/login" className="group px-8 py-4 bg-blue-600 text-white text-lg font-medium rounded-2xl hover:bg-blue-700 transform hover:scale-[1.03] transition-all duration-300 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 flex items-center relative overflow-hidden" >
                   <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   <span className="relative">Login Now</span>
                   <FaArrowRight className="ml-3 transform transition-transform duration-300 group-hover:translate-x-1.5 relative" />

@@ -87,10 +87,7 @@ const AppRoutes = () => {
       <Route path="/contact" element={<ContactPage />} />
 
       {/* Routes for Super Admin related pages */}
-      <Route
-        path="/super-admin"
-        element={
-          <ProtectedRoute allowedRoles={["Super Admin"]}>
+      <Route path="/super-admin" element={ <ProtectedRoute allowedRoles={["Super Admin"]}>
             <SuperAdminLayout />
           </ProtectedRoute>
         }
@@ -101,10 +98,7 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
       </Route>
 
-      <Route
-        path="/student"
-        element={
-          <ProtectedRoute allowedRoles={["Student"]}>
+      <Route path="/student" element={ <ProtectedRoute allowedRoles={["Student"]}>
             <StudentLayout />
           </ProtectedRoute>
         }
@@ -123,10 +117,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for Maintenance related pages*/}
-      <Route
-        path="/maintenance"
-        element={
-          <ProtectedRoute allowedRoles={["Maintenance Staff"]}>
+      <Route path="/maintenance" element={ <ProtectedRoute allowedRoles={["Maintenance Staff"]}>
             <MaintenanceLayout />
           </ProtectedRoute>
         }
@@ -137,10 +128,7 @@ const AppRoutes = () => {
         <Route path="leaves" element={<Leaves />} />
       </Route>
 
-      <Route
-        path="/warden"
-        element={
-          <ProtectedRoute allowedRoles={["Warden"]}>
+      <Route path="/warden" element={ <ProtectedRoute allowedRoles={["Warden"]}>
             <WardenLayout />
           </ProtectedRoute>
         }
@@ -161,10 +149,7 @@ const AppRoutes = () => {
         <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
-      <Route
-        path="/associate-warden"
-        element={
-          <ProtectedRoute allowedRoles={["Associate Warden"]}>
+      <Route path="/associate-warden" element={ <ProtectedRoute allowedRoles={["Associate Warden"]}>
             <AssociateWardenLayout />
           </ProtectedRoute>
         }
@@ -186,10 +171,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for Hostel Supervisor related pages */}
-      <Route
-        path="/hostel-supervisor"
-        element={
-          <ProtectedRoute allowedRoles={["Hostel Supervisor"]}>
+      <Route path="/hostel-supervisor" element={ <ProtectedRoute allowedRoles={["Hostel Supervisor"]}>
             <HostelSupervisorLayout />
           </ProtectedRoute>
         }
@@ -212,10 +194,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for security related pages */}
-      <Route
-        path="/guard"
-        element={
-          <ProtectedRoute allowedRoles={["Security"]}>
+      <Route path="/guard" element={ <ProtectedRoute allowedRoles={["Security"]}>
             <SecurityLayout />
           </ProtectedRoute>
         }
@@ -229,10 +208,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for hostel gate related pages */}
-      <Route
-        path="/hostel-gate"
-        element={
-          <ProtectedRoute allowedRoles={["Hostel Gate"]}>
+      <Route path="/hostel-gate" element={ <ProtectedRoute allowedRoles={["Hostel Gate"]}>
             <HostelGateLayout />
           </ProtectedRoute>
         }
@@ -247,10 +223,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for admin related pages */}
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute allowedRoles={["Admin"]}>
+      <Route path="/admin" element={ <ProtectedRoute allowedRoles={["Admin"]}>
             <AdminLayout />
           </ProtectedRoute>
         }

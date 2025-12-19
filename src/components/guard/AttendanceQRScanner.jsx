@@ -149,76 +149,30 @@ const AttendanceQRScanner = ({ onRefresh }) => {
   }
 
   return (
-    <div style={{
-      backgroundColor: 'var(--color-bg-primary)',
-      borderRadius: 'var(--radius-xl)',
-      padding: 'var(--spacing-6)',
-      boxShadow: 'var(--shadow-sm)',
-      border: `var(--border-1) solid var(--color-border-light)`,
-      transition: 'var(--transition-all)'
-    }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-        <div style={{
-          padding: 'var(--spacing-2-5)',
-          marginRight: 'var(--spacing-3)',
-          borderRadius: 'var(--radius-xl)',
-          backgroundColor: 'var(--color-primary-bg)',
-          color: 'var(--color-primary)'
-        }}>
+        <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Scan Staff Attendance QR Code</h2>
       </div>
 
       {error && (
-        <div style={{
-          marginBottom: 'var(--spacing-4)',
-          backgroundColor: 'var(--color-danger-bg-light)',
-          color: 'var(--color-danger-text)',
-          padding: 'var(--spacing-3)',
-          borderRadius: 'var(--radius-lg)',
-          borderLeft: `var(--border-4) solid var(--color-danger)`,
-          display: 'flex',
-          alignItems: 'flex-start'
-        }}>
+        <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-danger)`, display: 'flex', alignItems: 'flex-start' }}>
           <FaTimes style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
           <p style={{ fontSize: 'var(--font-size-sm)' }}>{error}</p>
         </div>
       )}
 
       {success && (
-        <div style={{
-          marginBottom: 'var(--spacing-4)',
-          backgroundColor: 'var(--color-success-bg-light)',
-          color: 'var(--color-success-text)',
-          padding: 'var(--spacing-3)',
-          borderRadius: 'var(--radius-lg)',
-          borderLeft: `var(--border-4) solid var(--color-success)`,
-          display: 'flex',
-          alignItems: 'flex-start'
-        }}>
+        <div style={{ marginBottom: 'var(--spacing-4)', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', borderLeft: `var(--border-4) solid var(--color-success)`, display: 'flex', alignItems: 'flex-start' }}>
           <FaUser style={{ marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} />
           <p style={{ fontSize: 'var(--font-size-sm)' }}>{success}</p>
         </div>
       )}
 
       {!scanning && !scannedPerson && !loading && (
-        <button onClick={startScanner} style={{
-          width: '100%',
-          padding: 'var(--spacing-3) 0',
-          backgroundColor: 'var(--button-primary-bg)',
-          color: 'var(--color-white)',
-          borderRadius: 'var(--radius-lg)',
-          transition: 'var(--transition-colors)',
-          boxShadow: 'var(--shadow-sm)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: 'var(--font-size-base)',
-          fontWeight: 'var(--font-weight-medium)'
-        }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}>
+        <button onClick={startScanner} style={{ width: '100%', padding: 'var(--spacing-3) 0', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}>
           <FaQrcode style={{ marginRight: 'var(--spacing-2)' }} /> Start QR Scanner
         </button>
       )}
@@ -226,19 +180,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       <div style={{ marginBottom: 'var(--spacing-4)' }}>
         <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <button onClick={stopScanner} style={{
-            width: '100%',
-            marginTop: 'var(--spacing-4)',
-            padding: 'var(--spacing-2) 0',
-            backgroundColor: 'var(--color-danger)',
-            color: 'var(--color-white)',
-            borderRadius: 'var(--radius-lg)',
-            transition: 'var(--transition-colors)',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 'var(--font-size-base)',
-            fontWeight: 'var(--font-weight-medium)'
-          }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}>
+          <button onClick={stopScanner} style={{ width: '100%', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-2) 0', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}>
             <FaTimes style={{ marginRight: 'var(--spacing-2)', display: 'inline' }} /> Stop Scanner
           </button>
         )}
@@ -246,82 +188,25 @@ const AttendanceQRScanner = ({ onRefresh }) => {
 
       {loading && (
         <div style={{ textAlign: 'center', padding: 'var(--spacing-8) 0' }}>
-          <div style={{
-            width: 'var(--spacing-12)',
-            height: 'var(--spacing-12)',
-            border: `var(--border-4) solid var(--color-primary)`,
-            borderTopColor: 'transparent',
-            borderRadius: 'var(--radius-full)',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto var(--spacing-4)'
-          }}></div>
+          <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: `var(--border-4) solid var(--color-primary)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', margin: '0 auto var(--spacing-4)' }}></div>
           <p style={{ color: 'var(--color-text-muted)' }}>Processing QR code...</p>
         </div>
       )}
 
       {scannedPerson && !loading && (
-        <div style={{
-          marginTop: 'var(--spacing-4)',
-          padding: 'var(--spacing-4)',
-          border: `var(--border-1) solid var(--color-border-primary)`,
-          borderRadius: 'var(--radius-lg)',
-          backgroundColor: 'var(--color-bg-tertiary)'
-        }}>
+        <div style={{ marginTop: 'var(--spacing-4)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-tertiary)' }}>
           <div style={{ marginBottom: 'var(--spacing-4)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>{scannedPerson.name}</h3>
             <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>{scannedPerson.email}</p>
-            <div style={{
-              marginTop: 'var(--spacing-2)',
-              display: 'inline-block',
-              padding: 'var(--spacing-1) var(--spacing-2)',
-              backgroundColor: 'var(--color-info-bg)',
-              color: 'var(--color-info-text)',
-              fontSize: 'var(--font-size-xs)',
-              fontWeight: 'var(--font-weight-medium)',
-              borderRadius: 'var(--radius-full)'
-            }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
+            <div style={{ marginTop: 'var(--spacing-2)', display: 'inline-block', padding: 'var(--spacing-1) var(--spacing-2)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{scannedPerson.type === "security" ? "Security Guard" : "Maintenance Staff"}</div>
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
-            <button onClick={recordAttendance} disabled={recordingAttendance} style={{
-              flex: 1,
-              padding: 'var(--spacing-2) 0',
-              backgroundColor: 'var(--color-success)',
-              color: 'var(--color-white)',
-              borderRadius: 'var(--radius-lg)',
-              transition: 'var(--transition-colors)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: 'none',
-              cursor: recordingAttendance ? 'not-allowed' : 'pointer',
-              opacity: recordingAttendance ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
-              fontSize: 'var(--font-size-base)',
-              fontWeight: 'var(--font-weight-medium)'
-            }} onMouseEnter={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success-hover)')} onMouseLeave={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success)')}>
-              {recordingAttendance ? <span style={{
-                display: 'inline-block',
-                width: 'var(--spacing-4)',
-                height: 'var(--spacing-4)',
-                border: `var(--border-2) solid var(--color-white)`,
-                borderTopColor: 'transparent',
-                borderRadius: 'var(--radius-full)',
-                animation: 'spin 1s linear infinite',
-                marginRight: 'var(--spacing-2)'
-              }}></span> : <FaUser style={{ marginRight: 'var(--spacing-2)' }} />}
+            <button onClick={recordAttendance} disabled={recordingAttendance} style={{ flex: 1, padding: 'var(--spacing-2) 0', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: recordingAttendance ? 'not-allowed' : 'pointer', opacity: recordingAttendance ? 'var(--opacity-disabled)' : 'var(--opacity-100)', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success-hover)')} onMouseLeave={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success)')}>
+              {recordingAttendance ? <span style={{ display: 'inline-block', width: 'var(--spacing-4)', height: 'var(--spacing-4)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : <FaUser style={{ marginRight: 'var(--spacing-2)' }} />}
               Record Attendance
             </button>
-            <button onClick={handleReset} style={{
-              padding: '0 var(--spacing-4)',
-              backgroundColor: 'var(--color-bg-muted)',
-              color: 'var(--color-text-secondary)',
-              borderRadius: 'var(--radius-lg)',
-              transition: 'var(--transition-colors)',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: 'var(--font-size-base)',
-              fontWeight: 'var(--font-weight-medium)'
-            }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
+            <button onClick={handleReset} style={{ padding: '0 var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
               Cancel
             </button>
           </div>

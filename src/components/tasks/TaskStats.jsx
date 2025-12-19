@@ -51,8 +51,7 @@ const TaskStats = ({ stats }) => {
     <div style={{ marginBottom: 'var(--spacing-6)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
         <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Task Overview</h2>
-        <button
-          onClick={() => setShowDetailed(!showDetailed)}
+        <button onClick={() => setShowDetailed(!showDetailed)}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -77,11 +76,7 @@ const TaskStats = ({ stats }) => {
       {showDetailed ? (
         <DetailedTaskStats stats={stats} />
       ) : (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: 'var(--spacing-4)' 
-        }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--spacing-4)' }}>
           {statsData.map((stat, index) => (
             <StatCard key={index} title={stat.title} value={stat.value} subtitle={stat.subtitle} icon={stat.icon} color={stat.color} />
           ))}

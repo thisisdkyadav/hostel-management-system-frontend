@@ -83,41 +83,16 @@ const SecurityQRGenerator = () => {
   }
 
   return (
-    <div style={{
-      backgroundColor: 'var(--color-bg-primary)',
-      borderRadius: 'var(--radius-xl)',
-      padding: 'var(--spacing-6)',
-      boxShadow: 'var(--shadow-sm)',
-      border: `var(--border-1) solid var(--color-border-light)`,
-      transition: 'var(--transition-all)'
-    }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)', border: `var(--border-1) solid var(--color-border-light)`, transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-        <div style={{
-          padding: 'var(--spacing-2-5)',
-          marginRight: 'var(--spacing-3)',
-          borderRadius: 'var(--radius-xl)',
-          backgroundColor: 'var(--color-primary-bg)',
-          color: 'var(--color-primary)'
-        }}>
+        <div style={{ padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}>
           <FaQrcode size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
         </div>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>Security Attendance QR Code</h2>
       </div>
 
-      <div style={{
-        backgroundColor: 'var(--color-info-bg-light)',
-        padding: 'var(--spacing-4)',
-        borderRadius: 'var(--radius-lg)',
-        marginBottom: 'var(--spacing-5)',
-        display: 'flex',
-        alignItems: 'flex-start'
-      }}>
-        <FaInfoCircle style={{
-          color: 'var(--color-primary)',
-          marginTop: 'var(--spacing-0-5)',
-          marginRight: 'var(--spacing-2)',
-          flexShrink: 0
-        }} />
+      <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-5)', display: 'flex', alignItems: 'flex-start' }}>
+        <FaInfoCircle style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
         <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>Generate your QR code for attendance tracking. Hostel gate personnel will scan this code to mark your attendance. For security reasons, each code expires after 5 minutes.</p>
       </div>
 
@@ -127,45 +102,20 @@ const SecurityQRGenerator = () => {
         </Button>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)',
-            padding: 'var(--spacing-4)',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-md)',
-            border: `var(--border-1) solid var(--color-border-primary)`,
-            display: 'inline-block'
-          }}>
+          <div style={{ backgroundColor: 'var(--color-white)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: `var(--border-1) solid var(--color-border-primary)`, display: 'inline-block' }}>
             <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={"#1360AB"} level={"H"} includeMargin={true} />
           </div>
 
           {countdown !== null && (
-            <div style={{
-              marginTop: 'var(--spacing-3)',
-              display: 'flex',
-              alignItems: 'center',
-              fontSize: 'var(--font-size-sm)',
-              fontWeight: 'var(--font-weight-medium)'
-            }}>
-              <div style={{
-                display: 'inline-block',
-                width: 'var(--spacing-3)',
-                height: 'var(--spacing-3)',
-                borderRadius: 'var(--radius-full)',
-                marginRight: 'var(--spacing-2)',
-                backgroundColor: countdown > 60 ? 'var(--color-success)' : 'var(--color-danger)',
+            <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
+              <div style={{ display: 'inline-block', width: 'var(--spacing-3)', height: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-2)', backgroundColor: countdown > 60 ? 'var(--color-success)' : 'var(--color-danger)',
                 animation: countdown > 60 ? 'none' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
               }}></div>
               <span>Expires in {formatCountdown(countdown)} minutes</span>
             </div>
           )}
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr',
-            gap: 'var(--spacing-3)',
-            width: '100%',
-            marginTop: 'var(--spacing-4)'
-          }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-3)', width: '100%', marginTop: 'var(--spacing-4)' }}>
             <Button onClick={generateQR} variant="secondary" icon={<FaSyncAlt />}>
               Refresh
             </Button>

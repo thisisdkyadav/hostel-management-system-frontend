@@ -75,14 +75,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <div className="absolute left-3 top-3 text-gray-400">
             <HiMail size={20} />
           </div>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={`w-full pl-10 p-3 border ${errors.email ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`}
-            placeholder="Enter user's email address"
-          />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} className={`w-full pl-10 p-3 border ${errors.email ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`} placeholder="Enter user's email address" />
         </div>
         {errors.email && (
           <p className="text-red-600 text-sm mt-1.5 flex items-center">
@@ -97,14 +90,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <div className="absolute left-3 top-3 text-gray-400">
             <HiLockClosed size={20} />
           </div>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleChange}
-            className={`w-full pl-10 p-3 border ${errors.newPassword ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`}
-            placeholder="Enter new password"
-          />
+          <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} className={`w-full pl-10 p-3 border ${errors.newPassword ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`} placeholder="Enter new password" />
         </div>
         {errors.newPassword ? (
           <p className="text-red-600 text-sm mt-1.5 flex items-center">
@@ -121,14 +107,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <div className="absolute left-3 top-3 text-gray-400">
             <HiLockClosed size={20} />
           </div>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className={`w-full pl-10 p-3 border ${errors.confirmPassword ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`}
-            placeholder="Confirm new password"
-          />
+          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className={`w-full pl-10 p-3 border ${errors.confirmPassword ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] transition-colors`} placeholder="Confirm new password" />
         </div>
         {errors.confirmPassword && (
           <p className="text-red-600 text-sm mt-1.5 flex items-center">

@@ -226,10 +226,7 @@ const LiveCheckInOut = () => {
         <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2">
           <div className="relative min-w-[200px] flex-1">
             <FiSearch className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400" />
-            <input
-              type="text"
-              value={filters.search}
-              onChange={(e) => handleFilterChange("search", e.target.value)}
+            <input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
               placeholder="Search student, room, reason..."
               className="w-full rounded border border-gray-200 bg-white py-1 pl-7 pr-2 text-xs text-gray-900 placeholder:text-gray-400 focus:border-[#1360AB] focus:outline-none focus:ring-1 focus:ring-[#1360AB]"
             />
@@ -432,10 +429,7 @@ const LiveCheckInOut = () => {
                 <label className="mb-1 block font-medium text-gray-700">Search</label>
                 <div className="relative">
                   <FiSearch className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400" />
-                  <input
-                    type="text"
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange("search", e.target.value)}
+                  <input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
                     className="w-full rounded border border-gray-300 bg-white py-1.5 pl-7 pr-2 text-xs focus:border-[#1360AB] focus:outline-none focus:ring-1 focus:ring-[#1360AB]"
                     placeholder="Student, room, reason..."
                   />
@@ -499,8 +493,7 @@ const LiveCheckInOut = () => {
                 <button onClick={resetFilters} className="flex-1 rounded border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
                   Reset All
                 </button>
-                <button
-                  onClick={() => {
+                <button onClick={() => {
                     refresh()
                     setShowFilters(false)
                   }}

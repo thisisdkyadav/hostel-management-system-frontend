@@ -13,18 +13,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
       key: "roomNumber",
       render: (room) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            style={{
-              flexShrink: 0,
-              height: "var(--spacing-10)",
-              width: "var(--spacing-10)",
-              backgroundColor: "var(--color-info-bg)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "var(--radius-full)",
-            }}
-          >
+          <div style={{ flexShrink: 0, height: "var(--spacing-10)", width: "var(--spacing-10)", backgroundColor: "var(--color-info-bg)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-full)", }} >
             <FaDoorOpen style={{ color: "var(--color-info)" }} />
           </div>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
@@ -60,21 +49,8 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
           <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Inactive room</span>
         ) : (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                width: "var(--spacing-16)",
-                backgroundColor: "var(--color-bg-muted)",
-                borderRadius: "var(--radius-full)",
-                height: "var(--spacing-2)",
-                marginRight: "var(--spacing-2)",
-              }}
-            >
-              <div
-                style={{
-                  height: "var(--spacing-2)",
-                  borderRadius: "var(--radius-full)",
-                  backgroundColor:
-                    room.currentOccupancy >= room.capacity
+            <div style={{ width: "var(--spacing-16)", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-2)", marginRight: "var(--spacing-2)", }} >
+              <div style={{ height: "var(--spacing-2)", borderRadius: "var(--radius-full)", backgroundColor: room.currentOccupancy >= room.capacity
                       ? "var(--color-success)"
                       : room.currentOccupancy > 0
                         ? "var(--color-primary)"
@@ -94,18 +70,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
       key: "status",
       className: "hidden lg:table-cell",
       render: (room) => (
-        <span
-          style={{
-            padding: "var(--badge-padding-sm)",
-            display: "inline-flex",
-            fontSize: "var(--font-size-xs)",
-            lineHeight: "var(--line-height-tight)",
-            fontWeight: "var(--font-weight-medium)",
-            borderRadius: "var(--radius-full)",
-            backgroundColor:
-              room.status === "Inactive"
-                ? "var(--color-danger-bg)"
-                : room.currentOccupancy >= room.capacity
+        <span style={{ padding: "var(--badge-padding-sm)", display: "inline-flex", fontSize: "var(--font-size-xs)", lineHeight: "var(--line-height-tight)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: room.status === "Inactive" ? "var(--color-danger-bg)" : room.currentOccupancy >= room.capacity
                   ? "var(--color-success-bg)"
                   : room.currentOccupancy > 0
                     ? "var(--color-info-bg)"
@@ -130,8 +95,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
       align: "right",
       render: (room) => (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--gap-sm)" }}>
-          <button
-            onClick={(e) => {
+          <button onClick={(e) => {
               e.stopPropagation()
               onRoomClick(room)
             }}
@@ -151,8 +115,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
             <FaEye style={{ height: "var(--icon-md)", width: "var(--icon-md)" }} />
           </button>
           {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-            <button
-              onClick={(e) => {
+            <button onClick={(e) => {
                 e.stopPropagation()
                 onAllocateClick(room)
               }}
@@ -182,26 +145,12 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
       {viewMode === "table" ? (
         <BaseTable columns={columns} data={rooms} onRowClick={onRoomClick} emptyMessage="No rooms to display" />
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
-            gap: "var(--gap-md)",
-          }}
-          className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" >
           {rooms.map((room) => (
             <RoomCard key={room.id} room={room} onClick={() => onRoomClick(room)} onAllocate={() => onAllocateClick(room)} />
           ))}
           {rooms.length === 0 && (
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                textAlign: "center",
-                padding: "var(--spacing-8) 0",
-                color: "var(--color-text-muted)",
-              }}
-            >
+            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-8) 0", color: "var(--color-text-muted)", }} >
               No rooms to display
             </div>
           )}

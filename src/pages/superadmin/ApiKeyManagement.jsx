@@ -188,8 +188,7 @@ const ApiKeyManagement = () => {
       align: "right",
       render: (apiKey) => (
         <div className="flex justify-end space-x-2">
-          <button
-            onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
+          <button onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
             className={`inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded ${apiKey.isActive ? "text-red-700 bg-red-100 hover:bg-red-200" : "text-green-700 bg-green-100 hover:bg-green-200"}`}
           >
             {apiKey.isActive ? "Deactivate" : "Activate"}
@@ -306,15 +305,7 @@ const ApiKeyModal = ({ onClose, onSubmit }) => {
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               API Key Name *
             </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="e.g., Mobile App Integration"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.name ? "border-red-300" : "border-gray-300"}`}
-            />
+            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Mobile App Integration" className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.name ? "border-red-300" : "border-gray-300"}`} />
             {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
           </div>
         </div>
@@ -323,11 +314,7 @@ const ApiKeyModal = ({ onClose, onSubmit }) => {
           <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Cancel
           </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1360AB] hover:bg-[#0F4C81] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
-          >
+          <button type="submit" disabled={isSubmitting} className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1360AB] hover:bg-[#0F4C81] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`} >
             {isSubmitting ? "Processing..." : "Generate"}
           </button>
         </div>

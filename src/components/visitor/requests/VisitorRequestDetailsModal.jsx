@@ -344,8 +344,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Guest Room Booking Form</p>
                 </div>
               </div>
-              <button 
-                onClick={() => setShowH2FormModal(true)} 
+              <button onClick={() => setShowH2FormModal(true)} 
                 style={{ 
                   padding: 'var(--spacing-2) var(--spacing-4)', 
                   backgroundColor: 'var(--color-primary)', 
@@ -379,14 +378,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {request.paymentStatus && (
           <div style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-2)' }}>
             <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginRight: 'var(--spacing-2)' }}>Payment Status:</span>
-            <span style={{ 
-              padding: 'var(--spacing-2) var(--badge-padding-sm)', 
-              borderRadius: 'var(--radius-full)', 
-              fontSize: 'var(--font-size-xs)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              backgroundColor: request.paymentStatus === "paid" ? 'var(--color-success-bg)' : 'var(--color-warning-bg)', 
-              color: request.paymentStatus === "paid" ? 'var(--color-success-text)' : 'var(--color-warning-text)' 
-            }}>{request.paymentStatus === "paid" ? "Paid" : "Pending"}</span>
+            <span style={{ padding: 'var(--spacing-2) var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: request.paymentStatus === "paid" ? 'var(--color-success-bg)' : 'var(--color-warning-bg)', color: request.paymentStatus === "paid" ? 'var(--color-success-text)' : 'var(--color-warning-text)' }}>{request.paymentStatus === "paid" ? "Paid" : "Pending"}</span>
           </div>
         )}
 
@@ -394,12 +386,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
           <div style={{ fontSize: 'var(--font-size-sm)' }}>
             <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }}>Payment Link:</span>
-            <a 
-              href={request.visitorPaymentLink} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              style={{ color: 'var(--color-primary)', textDecoration: 'none', wordBreak: 'break-all' }}
-              onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
+            <a href={request.visitorPaymentLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none', wordBreak: 'break-all' }} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
               onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
             >
               {request.visitorPaymentLink}
@@ -422,8 +409,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>Submit your payment details for verification</p>
                 </div>
               </div>
-              <button 
-                onClick={() => setShowPaymentForm(true)} 
+              <button onClick={() => setShowPaymentForm(true)} 
                 style={{ 
                   padding: 'var(--spacing-2) var(--spacing-4)', 
                   backgroundColor: 'var(--color-primary)', 
@@ -471,12 +457,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {["Admin"].includes(user.role) && request.status === "Pending" && showRejectForm && <RejectionForm rejectionReason={rejectionReason} onReasonChange={setRejectionReason} onCancel={() => setShowRejectForm(false)} onSubmit={handleRejectRequest} />}
 
         {/* Action Buttons */}
-        <ActionButtons
-          userRole={user.role}
-          requestStatus={request.status}
-          onClose={onClose}
-          onCancelRequest={handleCancelRequest}
-          onEditRequest={() => setShowEditModal(true)}
+        <ActionButtons userRole={user.role} requestStatus={request.status} onClose={onClose} onCancelRequest={handleCancelRequest} onEditRequest={() => setShowEditModal(true)}
           onShowApproveForm={toggleApproveForm}
           onShowRejectForm={toggleRejectForm}
           showApproveForm={showApproveForm}
@@ -493,9 +474,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         />
       </div>
 
-      <EditVisitorRequestModal
-        isOpen={showEditModal}
-        onClose={() => {
+      <EditVisitorRequestModal isOpen={showEditModal} onClose={() => {
           setShowEditModal(false)
         }}
         request={request}

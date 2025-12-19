@@ -195,14 +195,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaDoorOpen className="h-5 w-5" />
               </div>
-              <input
-                type="text"
-                name="unitNumber"
-                value={formData.unitNumber}
-                onChange={handleChange}
-                className={`w-full p-3 pl-10 border ${errors.unitNumber ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`}
-                placeholder="e.g., 101"
-              />
+              <input type="text" name="unitNumber" value={formData.unitNumber} onChange={handleChange} className={`w-full p-3 pl-10 border ${errors.unitNumber ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder="e.g., 101" />
             </div>
             {errors.unitNumber && <p className="mt-1.5 text-sm text-red-600">{errors.unitNumber}</p>}
           </div>
@@ -221,14 +214,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
             <div className="absolute left-3 top-3 text-gray-400">
               <FaDoorOpen className="h-5 w-5" />
             </div>
-            <input
-              type="text"
-              name="roomNumbers"
-              value={formData.roomNumbers}
-              onChange={handleChange}
-              className={`w-full p-3 pl-10 border ${errors.roomNumbers ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`}
-              placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"}
-            />
+            <input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} className={`w-full p-3 pl-10 border ${errors.roomNumbers ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} />
           </div>
           <p className="mt-1 text-xs text-gray-500">You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</p>
           {errors.roomNumbers && <p className="mt-1 text-sm text-red-600">{errors.roomNumbers}</p>}
@@ -241,15 +227,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaUsers className="h-5 w-5" />
               </div>
-              <input
-                type="number"
-                name="capacity"
-                value={formData.capacity}
-                onChange={handleChange}
-                min="1"
-                className={`w-full p-3 pl-10 border ${errors.capacity ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`}
-                placeholder="Room capacity"
-              />
+              <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" className={`w-full p-3 pl-10 border ${errors.capacity ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB]`} placeholder="Room capacity" />
             </div>
             {errors.capacity && <p className="mt-1.5 text-sm text-red-600">{errors.capacity}</p>}
           </div>
@@ -257,12 +235,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <div className="relative">
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className={`w-full p-3 border ${errors.status ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] bg-white appearance-none`}
-              >
+              <select name="status" value={formData.status} onChange={handleChange} className={`w-full p-3 border ${errors.status ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-gray-300 focus:ring-blue-100"} rounded-lg focus:outline-none focus:ring-2 focus:border-[#1360AB] bg-white appearance-none`} >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
                 <option value="Maintenance">Maintenance</option>

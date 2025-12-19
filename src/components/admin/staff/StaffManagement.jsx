@@ -41,9 +41,7 @@ const StaffManagement = ({ staffType = "warden" }) => {
 
   return (
     <div className="flex flex-col h-full">
-      <StaffManagementHeader 
-        staffTitle={staffTitle}
-        onAddStaff={() => setShowAddModal(true)}
+      <StaffManagementHeader staffTitle={staffTitle} onAddStaff={() => setShowAddModal(true)}
       />
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">

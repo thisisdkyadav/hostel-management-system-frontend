@@ -50,20 +50,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
 
         <FormField label="Phone Number" name="phone" type="tel" value={data.phone || ""} onChange={handleChange} />
 
-        <FormField
-          label="Gender"
-          name="gender"
-          type="select"
-          value={data.gender || ""}
-          onChange={handleChange}
-          options={[
-            { value: "", label: "Select Gender" },
-            { value: "Male", label: "Male" },
-            { value: "Female", label: "Female" },
-            { value: "Other", label: "Other" },
-          ]}
-          required
-        />
+        <FormField label="Gender" name="gender" type="select" value={data.gender || ""} onChange={handleChange} options={[ { value: "", label: "Select Gender" }, { value: "Male", label: "Male" }, { value: "Female", label: "Female" }, { value: "Other", label: "Other" }, ]} required />
 
         <FormField label="Date of Birth" name="dateOfBirth" type="date" value={data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split("T")[0] : ""} onChange={handleChange} />
       </div>

@@ -30,25 +30,10 @@ const DetailedTaskStats = ({ stats }) => {
   }
 
   return (
-    <div style={{ 
-      display: 'grid', 
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      gap: 'var(--spacing-4)'
-    }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
       {/* Status Statistics */}
-      <div style={{
-        backgroundColor: 'var(--card-bg)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-sm)',
-        padding: 'var(--spacing-4)',
-        border: `var(--border-1) solid var(--color-border-primary)`
-      }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-sm)',
-          fontWeight: 'var(--font-weight-medium)',
-          color: 'var(--color-text-muted)',
-          marginBottom: 'var(--spacing-3)'
-        }}>By Status</h3>
+      <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Status</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
           {Object.entries(statusCounts || {}).map(([status, count]) => (
             <div key={status} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -60,19 +45,8 @@ const DetailedTaskStats = ({ stats }) => {
       </div>
 
       {/* Priority Statistics */}
-      <div style={{
-        backgroundColor: 'var(--card-bg)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-sm)',
-        padding: 'var(--spacing-4)',
-        border: `var(--border-1) solid var(--color-border-primary)`
-      }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-sm)',
-          fontWeight: 'var(--font-weight-medium)',
-          color: 'var(--color-text-muted)',
-          marginBottom: 'var(--spacing-3)'
-        }}>By Priority</h3>
+      <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Priority</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
           {Object.entries(priorityCounts || {}).map(([priority, count]) => (
             <div key={priority} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -84,30 +58,12 @@ const DetailedTaskStats = ({ stats }) => {
       </div>
 
       {/* Category Statistics */}
-      <div style={{
-        backgroundColor: 'var(--card-bg)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-sm)',
-        padding: 'var(--spacing-4)',
-        border: `var(--border-1) solid var(--color-border-primary)`
-      }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-sm)',
-          fontWeight: 'var(--font-weight-medium)',
-          color: 'var(--color-text-muted)',
-          marginBottom: 'var(--spacing-3)'
-        }}>By Category</h3>
+      <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>By Category</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
           {Object.entries(categoryCounts || {}).map(([category, count]) => (
             <div key={category} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{
-                padding: 'var(--badge-padding-sm)',
-                borderRadius: 'var(--radius-full)',
-                fontSize: 'var(--font-size-xs)',
-                fontWeight: 'var(--font-weight-medium)',
-                backgroundColor: categoryColors[category]?.bg || 'var(--color-bg-muted)',
-                color: categoryColors[category]?.text || 'var(--color-text-muted)'
-              }}>{category}</span>
+              <span style={{ padding: 'var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: categoryColors[category]?.bg || 'var(--color-bg-muted)', color: categoryColors[category]?.text || 'var(--color-text-muted)' }}>{category}</span>
               <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>{count}</span>
             </div>
           ))}
@@ -115,19 +71,8 @@ const DetailedTaskStats = ({ stats }) => {
       </div>
 
       {/* Overdue Tasks Alert */}
-      <div style={{
-        backgroundColor: 'var(--card-bg)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-sm)',
-        padding: 'var(--spacing-4)',
-        border: `var(--border-1) solid var(--color-border-primary)`
-      }}>
-        <h3 style={{
-          fontSize: 'var(--font-size-sm)',
-          fontWeight: 'var(--font-weight-medium)',
-          color: 'var(--color-text-muted)',
-          marginBottom: 'var(--spacing-3)'
-        }}>Overview</h3>
+      <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: `var(--border-1) solid var(--color-border-primary)` }}>
+        <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-3)' }}>Overview</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: 'var(--font-size-sm)' }}>Total Tasks</span>

@@ -97,10 +97,7 @@ const ScannerEntries = () => {
                 <label htmlFor={`reason-${entry._id}`} className="block text-sm font-medium text-orange-800 mb-1">
                   Reason for Cross-Hostel Check-In <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  id={`reason-${entry._id}`}
-                  value={currentReason}
-                  onChange={(e) => handleReasonChange(entry._id, e.target.value)}
+                <textarea id={`reason-${entry._id}`} value={currentReason} onChange={(e) => handleReasonChange(entry._id, e.target.value)}
                   placeholder="Enter reason for allowing this cross-hostel check-in..."
                   className="w-full px-3 py-2 border border-orange-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
                   rows="3"
@@ -110,8 +107,7 @@ const ScannerEntries = () => {
               </div>
 
               <div className="flex space-x-3">
-                <button
-                  onClick={() => handleUpdateReason(entry)}
+                <button onClick={() => handleUpdateReason(entry)}
                   disabled={!currentReason.trim() || isUpdating}
                   className="flex items-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-orange-300 disabled:cursor-not-allowed text-sm"
                 >

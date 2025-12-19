@@ -98,15 +98,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiUser />
               </div>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.name ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-                placeholder="Enter full name"
-                required
-              />
+              <input type="text" name="name" value={formData.name} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.name ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Enter full name" required />
               {errors.name && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.name}</p>}
             </div>
           </div>
@@ -117,15 +109,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiMail />
               </div>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.email ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-                placeholder="admin@example.com"
-                required
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.email ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="admin@example.com" required />
               {errors.email && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.email}</p>}
             </div>
           </div>
@@ -136,15 +120,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiLock />
               </div>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.password ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-                placeholder="Enter password"
-                required
-              />
+              <input type="password" name="password" value={formData.password} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.password ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Enter password" required />
               {errors.password && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.password}</p>}
             </div>
           </div>
@@ -152,15 +128,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category *</label>
             <div className="relative">
-              <input
-                type="text"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-                placeholder="Admin"
-                required
-              />
+              <input type="text" name="category" value={formData.category} onChange={handleChange} className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Admin" required />
               {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
             </div>
           </div>
@@ -171,14 +139,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
                 <FiPhone />
               </div>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`}
-                placeholder="+91 9876543210"
-              />
+              <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="+91 9876543210" />
               {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
             </div>
           </div>

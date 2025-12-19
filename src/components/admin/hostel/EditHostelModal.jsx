@@ -110,14 +110,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaBuilding className="h-5 w-5" />
               </div>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`w-full p-3 pl-10 border ${errors.name ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-[var(--color-border-input)] focus:ring-[var(--color-primary-bg-hover)]"} rounded-lg focus:outline-none focus:ring-2 focus:border-[var(--color-primary)]`}
-                placeholder="Enter hostel name"
-              />
+              <input type="text" name="name" value={formData.name} onChange={handleChange} className={`w-full p-3 pl-10 border ${errors.name ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-[var(--color-border-input)] focus:ring-[var(--color-primary-bg-hover)]"} rounded-lg focus:outline-none focus:ring-2 focus:border-[var(--color-primary)]`} placeholder="Enter hostel name" />
             </div>
             {errors.name && <p className="mt-1.5 text-sm text-red-600">{errors.name}</p>}
           </div>
@@ -128,12 +121,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
               <div className="absolute left-3 top-3 text-gray-400">
                 <FaUser className="h-5 w-5" />
               </div>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className={`w-full p-3 pl-10 border ${errors.gender ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-[var(--color-border-input)] focus:ring-[var(--color-primary-bg-hover)]"} rounded-lg focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] bg-[var(--color-bg-primary)] appearance-none`}
-              >
+              <select name="gender" value={formData.gender} onChange={handleChange} className={`w-full p-3 pl-10 border ${errors.gender ? "border-red-500 bg-red-50 focus:ring-red-200" : "border-[var(--color-border-input)] focus:ring-[var(--color-primary-bg-hover)]"} rounded-lg focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] bg-[var(--color-bg-primary)] appearance-none`} >
                 <option value="">Select Gender</option>
                 <option value="Boys">Boys</option>
                 <option value="Girls">Girls</option>

@@ -108,8 +108,7 @@ const UpdatePassword = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <UpdatePasswordHeader 
-        onBulkUpdate={() => setShowBulkModal(true)}
+      <UpdatePasswordHeader onBulkUpdate={() => setShowBulkModal(true)}
         onRemoveByRole={() => setShowRemoveByRoleModal(true)}
       />
 
@@ -135,9 +134,7 @@ const UpdatePassword = () => {
 
       {/* Single Password Update Success Modal */}
       {showSuccessModal && (
-        <CommonSuccessModal
-          show={showSuccessModal}
-          onClose={() => setShowSuccessModal(false)}
+        <CommonSuccessModal show={showSuccessModal} onClose={() => setShowSuccessModal(false)}
           title="Password Updated Successfully"
           message="The password has been successfully updated. The user will need to use this new password for their next login."
           infoText={updatedEmail}
@@ -154,9 +151,7 @@ const UpdatePassword = () => {
 
       {/* Bulk Update Success Modal */}
       {bulkSuccessModalOpen && bulkUpdateResults && (
-        <CommonSuccessModal
-          show={bulkSuccessModalOpen}
-          onClose={() => setBulkSuccessModalOpen(false)}
+        <CommonSuccessModal show={bulkSuccessModalOpen} onClose={() => setBulkSuccessModalOpen(false)}
           title="Bulk Password Update Completed"
           message={`Successfully updated ${bulkUpdateResults.successful.length} user passwords. ${bulkUpdateResults.failed.length > 0 ? `Failed to update ${bulkUpdateResults.failed.length} users.` : ""}`}
           infoText={`${bulkUpdateResults.successful.length} updates successful, ${bulkUpdateResults.failed.length} failed`}
@@ -168,9 +163,7 @@ const UpdatePassword = () => {
 
       {/* Remove by Role Success Modal */}
       {removeByRoleSuccessModalOpen && removeByRoleResults && (
-        <CommonSuccessModal
-          show={removeByRoleSuccessModalOpen}
-          onClose={() => setRemoveByRoleSuccessModalOpen(false)}
+        <CommonSuccessModal show={removeByRoleSuccessModalOpen} onClose={() => setRemoveByRoleSuccessModalOpen(false)}
           title="Passwords Removed by Role"
           message={removeByRoleResults.message}
           infoText={`${removeByRoleResults.count} users with role: ${removeByRoleResults.role}`}

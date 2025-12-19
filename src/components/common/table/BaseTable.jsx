@@ -2,12 +2,7 @@ import React from "react"
 
 const BaseTable = ({ columns, data, onRowClick, emptyMessage = "No data to display", isLoading = false, stickyHeader = false, title, className = "" }) => {
   return (
-    <div 
-      className={`rounded-2xl overflow-hidden border border-[#e2e8f0] bg-white ${className}`}
-      style={{
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-      }}
-    >
+    <div className={`rounded-2xl overflow-hidden border border-[#e2e8f0] bg-white ${className}`} style={{ boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)', }} >
       {title && (
         <div className="px-6 py-4 border-b border-[#e2e8f0] bg-[#fafbfc]">
           <h3 className="text-base font-semibold text-[#1a1a2e]">{title}</h3>
@@ -18,15 +13,7 @@ const BaseTable = ({ columns, data, onRowClick, emptyMessage = "No data to displ
           <thead>
             <tr className={`bg-[#f8fafc] ${stickyHeader ? "sticky top-0 z-10" : ""}`}>
               {columns.map((column, index) => (
-                <th 
-                  key={index} 
-                  className={`
-                    px-6 py-3 text-xs font-semibold text-[#64748b] uppercase tracking-wider
-                    border-b border-[#e2e8f0]
-                    ${column.className || ""} 
-                    ${column.align === "right" ? "text-right" : "text-left"}
-                  `}
-                >
+                <th key={index} className={` px-6 py-3 text-xs font-semibold text-[#64748b] uppercase tracking-wider border-b border-[#e2e8f0] ${column.className || ""} ${column.align === "right" ? "text-right" : "text-left"} `} >
                   {column.customHeaderRender ? column.customHeaderRender() : column.header}
                 </th>
               ))}
@@ -47,9 +34,7 @@ const BaseTable = ({ columns, data, onRowClick, emptyMessage = "No data to displ
               </tr>
             ) : data.length > 0 ? (
               data.map((item, index) => (
-                <tr 
-                  key={item.id || index} 
-                  onClick={() => onRowClick && onRowClick(item)} 
+                <tr key={item.id || index} onClick={() => onRowClick && onRowClick(item)} 
                   className={`
                     transition-colors duration-150 
                     border-b border-[#f1f5f9] last:border-b-0
@@ -59,14 +44,7 @@ const BaseTable = ({ columns, data, onRowClick, emptyMessage = "No data to displ
                   `}
                 >
                   {columns.map((column, colIndex) => (
-                    <td 
-                      key={colIndex} 
-                      className={`
-                        px-6 py-4 text-sm text-[#334155]
-                        ${column.className || ""} 
-                        ${column.align === "right" ? "text-right" : "text-left"}
-                      `}
-                    >
+                    <td key={colIndex} className={` px-6 py-4 text-sm text-[#334155] ${column.className || ""} ${column.align === "right" ? "text-right" : "text-left"} `} >
                       {column.render ? column.render(item) : item[column.key]}
                     </td>
                   ))}

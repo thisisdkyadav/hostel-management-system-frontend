@@ -46,17 +46,13 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
 
   return (
     <>
-      <Card 
-        className="group"
-        onMouseEnter={() => setIsHovered(true)}
+      <Card className="group" onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Header with Icon and Title */}
         <Card.Header>
           <div className="flex items-center gap-4">
-            <div 
-              className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`}
-            >
+            <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`} >
               <FaBuilding />
             </div>
             <div>
@@ -98,26 +94,9 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               style={{ transform: 'rotate(-90deg)' }}
             >
               {/* Background circle */}
-              <circle
-                cx="18"
-                cy="18"
-                r={radius}
-                fill="none"
-                stroke="var(--occupancy-ring-bg)"
-                strokeWidth="2.5"
-              />
+              <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-bg)" strokeWidth="2.5" />
               {/* Progress circle */}
-              <circle
-                cx="18"
-                cy="18"
-                r={radius}
-                fill="none"
-                stroke="var(--occupancy-ring-fill)"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeDasharray={strokeDasharray}
-                style={{ transition: 'stroke-dasharray 0.5s ease' }}
-              />
+              <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-fill)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={strokeDasharray} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
             </svg>
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -130,8 +109,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
         {/* Action Buttons */}
         <Card.Footer className="flex flex-col gap-2 mt-0">
           <div className="flex gap-2">
-            <button 
-              onClick={() => setShowEditModal(true)}
+            <button onClick={() => setShowEditModal(true)}
               className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
               style={{ transition: 'all 0.3s ease' }}
               onMouseEnter={(e) => {
@@ -148,11 +126,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <FaEdit />
               Edit Details
             </button>
-            <Link 
-              to={`/admin/hostels/${hostel.name}`} 
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
-              style={{ transition: 'all 0.3s ease' }}
-              onMouseEnter={(e) => {
+            <Link to={`/admin/hostels/${hostel.name}`} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]" style={{ transition: 'all 0.3s ease' }} onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'var(--gradient-primary)'
                 e.currentTarget.style.color = '#fff'
                 e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
@@ -167,8 +141,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               View {hostel.type === "room-only" ? "Rooms" : "Units"}
             </Link>
           </div>
-          <button 
-            onClick={() => setShowDetailsModal(true)} 
+          <button onClick={() => setShowDetailsModal(true)} 
             className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
             style={{ transition: 'all 0.3s ease' }}
             onMouseEnter={(e) => {

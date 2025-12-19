@@ -15,8 +15,7 @@ function LoginWithGoogle({ callback, className }) {
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <div className="flex justify-center items-center">
-        <GoogleLogin
-          onSuccess={async (tokenResponse) => {
+        <GoogleLogin onSuccess={async (tokenResponse) => {
             const token = tokenResponse.credential
             await callback(token)
           }}

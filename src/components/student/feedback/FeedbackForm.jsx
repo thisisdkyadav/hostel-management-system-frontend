@@ -67,22 +67,7 @@ const FeedbackForm = ({ onSubmit }) => {
           <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
             <HiPencil size={20} />
           </div>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            style={{
-              width: '100%',
-              paddingLeft: 'var(--spacing-10)',
-              padding: 'var(--spacing-3)',
-              border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`,
-              backgroundColor: errors.title ? 'var(--color-danger-bg)' : 'var(--input-bg)',
-              borderRadius: 'var(--radius-input)',
-              outline: 'none',
-              transition: 'var(--transition-colors)',
-            }}
-            onFocus={(e) => {
+          <input type="text" name="title" value={formData.title} onChange={handleChange} style={{ width: '100%', paddingLeft: 'var(--spacing-10)', padding: 'var(--spacing-3)', border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`, backgroundColor: errors.title ? 'var(--color-danger-bg)' : 'var(--input-bg)', borderRadius: 'var(--radius-input)', outline: 'none', transition: 'var(--transition-colors)', }} onFocus={(e) => {
               e.target.style.borderColor = errors.title ? 'var(--color-danger)' : 'var(--input-border-focus)';
               e.target.style.boxShadow = errors.title ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
             }}
@@ -106,22 +91,7 @@ const FeedbackForm = ({ onSubmit }) => {
           <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
             <HiDocumentText size={20} />
           </div>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            rows={5}
-            style={{
-              width: '100%',
-              paddingLeft: 'var(--spacing-10)',
-              padding: 'var(--spacing-3)',
-              border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`,
-              backgroundColor: errors.description ? 'var(--color-danger-bg)' : 'var(--input-bg)',
-              borderRadius: 'var(--radius-input)',
-              outline: 'none',
-              transition: 'var(--transition-colors)',
-            }}
-            onFocus={(e) => {
+          <textarea name="description" value={formData.description} onChange={handleChange} rows={5} style={{ width: '100%', paddingLeft: 'var(--spacing-10)', padding: 'var(--spacing-3)', border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--color-border-input)'}`, backgroundColor: errors.description ? 'var(--color-danger-bg)' : 'var(--input-bg)', borderRadius: 'var(--radius-input)', outline: 'none', transition: 'var(--transition-colors)', }} onFocus={(e) => {
               e.target.style.borderColor = errors.description ? 'var(--color-danger)' : 'var(--input-border-focus)';
               e.target.style.boxShadow = errors.description ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
             }}
@@ -140,26 +110,7 @@ const FeedbackForm = ({ onSubmit }) => {
       </div>
 
       <div style={{ paddingTop: 'var(--spacing-4)' }}>
-        <button 
-          type="submit" 
-          disabled={isSubmitting} 
-          style={{
-            width: '100%',
-            padding: 'var(--button-padding-lg)',
-            backgroundColor: isSubmitting ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)',
-            color: 'var(--color-white)',
-            borderRadius: 'var(--radius-input)',
-            border: 'none',
-            transition: 'var(--transition-all)',
-            boxShadow: 'var(--shadow-button)',
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 'var(--font-weight-medium)',
-            fontSize: 'var(--font-size-base)',
-          }}
-          onMouseEnter={(e) => {
+        <button type="submit" disabled={isSubmitting} style={{ width: '100%', padding: 'var(--button-padding-lg)', backgroundColor: isSubmitting ? 'var(--color-primary-muted)' : 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-input)', border: 'none', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-button)', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => {
             if (!isSubmitting) {
               e.target.style.backgroundColor = 'var(--button-primary-hover)';
               e.target.style.boxShadow = 'var(--shadow-button-hover)';
@@ -174,15 +125,7 @@ const FeedbackForm = ({ onSubmit }) => {
         >
           {isSubmitting ? (
             <>
-              <div style={{ 
-                width: 'var(--icon-lg)', 
-                height: 'var(--icon-lg)', 
-                border: 'var(--border-2) solid var(--color-white)', 
-                borderTopColor: 'transparent', 
-                borderRadius: 'var(--radius-full)', 
-                animation: 'spin 1s linear infinite',
-                marginRight: 'var(--spacing-2)'
-              }}></div>
+              <div style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></div>
               Submitting...
             </>
           ) : (

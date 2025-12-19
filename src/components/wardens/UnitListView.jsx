@@ -10,18 +10,7 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       key: "unitNumber",
       render: (unit) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            style={{
-              flexShrink: 0,
-              height: "var(--spacing-10)",
-              width: "var(--spacing-10)",
-              backgroundColor: "var(--color-info-bg)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "var(--radius-full)",
-            }}
-          >
+          <div style={{ flexShrink: 0, height: "var(--spacing-10)", width: "var(--spacing-10)", backgroundColor: "var(--color-info-bg)", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "var(--radius-full)", }} >
             <FaBuilding style={{ color: "var(--color-primary)" }} />
           </div>
           <div style={{ marginLeft: "var(--spacing-4)" }}>
@@ -63,21 +52,8 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       key: "occupancy",
       render: (unit) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div
-            className="hidden sm:block"
-            style={{
-              width: "var(--spacing-20)",
-              backgroundColor: "var(--color-bg-muted)",
-              borderRadius: "var(--radius-full)",
-              height: "var(--spacing-2-5)",
-              marginRight: "var(--spacing-2)",
-            }}
-          >
-            <div
-              style={{
-                height: "var(--spacing-2-5)",
-                borderRadius: "var(--radius-full)",
-                backgroundColor: unit.capacity && unit.occupancy >= unit.capacity ? "var(--color-success)" : "var(--color-primary)",
+          <div className="hidden sm:block" style={{ width: "var(--spacing-20)", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-2-5)", marginRight: "var(--spacing-2)", }} >
+            <div style={{ height: "var(--spacing-2-5)", borderRadius: "var(--radius-full)", backgroundColor: unit.capacity && unit.occupancy >= unit.capacity ? "var(--color-success)" : "var(--color-primary)",
                 width: `${unit.capacity ? Math.min(100, Math.round(((unit.occupancy || 0) / unit.capacity) * 100)) : 0}%`,
               }}
             ></div>
@@ -93,8 +69,7 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       key: "actions",
       align: "right",
       render: (unit) => (
-        <button
-          onClick={(e) => {
+        <button onClick={(e) => {
             e.stopPropagation()
             onUnitClick(unit)
           }}
@@ -129,26 +104,12 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
       {viewMode === "table" ? (
         <BaseTable columns={columns} data={units} onRowClick={onUnitClick} emptyMessage="No units to display" />
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
-            gap: "var(--gap-md)",
-          }}
-          className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" >
           {units.map((unit) => (
             <UnitCard key={unit.id} unit={unit} onClick={() => onUnitClick(unit)} />
           ))}
           {units.length === 0 && (
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                textAlign: "center",
-                padding: "var(--spacing-8) 0",
-                color: "var(--color-text-muted)",
-              }}
-            >
+            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-8) 0", color: "var(--color-text-muted)", }} >
               No units to display
             </div>
           )}

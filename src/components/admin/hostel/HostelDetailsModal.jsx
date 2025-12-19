@@ -211,14 +211,12 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
         {/* View Type Selector - Hidden for now */}
         {/* <div className="flex justify-center mb-4">
           <div className="inline-flex p-1 bg-gray-100 rounded-lg">
-            <button
-              onClick={() => setDateRangeMode(false)}
+            <button onClick={() => setDateRangeMode(false)}
               className={`px-4 py-2 rounded-md ${!dateRangeMode ? 'bg-white shadow-sm text-[#1360AB]' : 'text-gray-600'}`}
             >
               <FaUserCog className="inline mr-2" /> Attendance Entries
             </button>
-            <button
-              onClick={() => setDateRangeMode(true)}
+            <button onClick={() => setDateRangeMode(true)}
               className={`px-4 py-2 rounded-md ${dateRangeMode ? 'bg-white shadow-sm text-[#1360AB]' : 'text-gray-600'}`}
             >
               <FaUserCheck className="inline mr-2" /> Staff Present
@@ -246,9 +244,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
+              <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -17,14 +17,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
         <div>
           <h4 className="font-medium" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Check-in Time</h4>
           <div className="mt-1 flex items-center">
-            <div 
-              className="rounded-full mr-2" 
-              style={{ 
-                width: 'var(--spacing-3)', 
-                height: 'var(--spacing-3)', 
-                backgroundColor: checkInTime ? 'var(--color-success)' : 'var(--color-bg-muted)' 
-              }}
-            ></div>
+            <div className="rounded-full mr-2" style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: checkInTime ? 'var(--color-success)' : 'var(--color-bg-muted)' }} ></div>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDateTime(checkInTime)}</p>
           </div>
         </div>
@@ -32,14 +25,7 @@ const SecurityCheck = ({ checkInTime, checkOutTime }) => {
         <div>
           <h4 className="font-medium" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Check-out Time</h4>
           <div className="mt-1 flex items-center">
-            <div 
-              className="rounded-full mr-2" 
-              style={{ 
-                width: 'var(--spacing-3)', 
-                height: 'var(--spacing-3)', 
-                backgroundColor: checkOutTime ? 'var(--color-success)' : 'var(--color-bg-muted)' 
-              }}
-            ></div>
+            <div className="rounded-full mr-2" style={{ width: 'var(--spacing-3)', height: 'var(--spacing-3)', backgroundColor: checkOutTime ? 'var(--color-success)' : 'var(--color-bg-muted)' }} ></div>
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{formatDateTime(checkOutTime)}</p>
           </div>
         </div>

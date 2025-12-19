@@ -93,28 +93,9 @@ const StudentProfile = ({ profile }) => {
       
       <div className="student-profile-container">
         <div className="student-profile-avatar-wrapper">
-          <div style={{ 
-            width: 'var(--avatar-2xl)', 
-            height: 'var(--avatar-2xl)', 
-            borderRadius: 'var(--radius-full)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            fontSize: 'var(--icon-2xl)', 
-            backgroundColor: 'var(--color-info-bg)', 
-            color: 'var(--color-primary)' 
-          }}>
+          <div style={{ width: 'var(--avatar-2xl)', height: 'var(--avatar-2xl)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--icon-2xl)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
             {profile.profileImage ? (
-              <img 
-                src={getMediaUrl(profile.profileImage)} 
-                alt="Profile" 
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  borderRadius: 'var(--radius-full)', 
-                  objectFit: 'cover' 
-                }} 
-              />
+              <img src={getMediaUrl(profile.profileImage)} alt="Profile" style={{ width: '100%', height: '100%', borderRadius: 'var(--radius-full)', objectFit: 'cover' }} />
             ) : (
               <FaUser />
             )}
@@ -122,11 +103,7 @@ const StudentProfile = ({ profile }) => {
         </div>
 
         <div className="student-profile-info">
-          <h2 style={{ 
-            fontSize: 'var(--font-size-2xl)', 
-            fontWeight: 'var(--font-weight-bold)', 
-            color: 'var(--color-text-secondary)' 
-          }}>{profile.name}</h2>
+          <h2 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{profile.name}</h2>
           <div className="student-profile-details">
             <span className="student-profile-detail-item">
               <FaIdCard style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.rollNumber}
@@ -138,13 +115,7 @@ const StudentProfile = ({ profile }) => {
         </div>
 
         <div className="student-profile-badge-wrapper">
-          <div style={{ 
-            padding: `var(--spacing-1) var(--spacing-3)`, 
-            borderRadius: 'var(--radius-full)', 
-            fontSize: 'var(--font-size-xs)', 
-            backgroundColor: 'var(--color-success-bg)', 
-            color: 'var(--color-success-text)' 
-          }}>{profile.hostelName}</div>
+          <div style={{ padding: `var(--spacing-1) var(--spacing-3)`, borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>{profile.hostelName}</div>
         </div>
       </div>
     </>

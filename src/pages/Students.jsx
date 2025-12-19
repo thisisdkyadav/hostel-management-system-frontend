@@ -240,9 +240,7 @@ const Students = () => {
         </div>
       )}
 
-      <StudentsHeader 
-        showFilters={showFilters}
-        onToggleFilters={() => setShowFilters(!showFilters)}
+      <StudentsHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
         onImport={() => setShowImportModal(true)}
         onBulkUpdate={() => setShowUpdateModal(true)}
         onUpdateAllocations={() => setShowAllocateModal(true)}

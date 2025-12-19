@@ -283,19 +283,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <h3 className="text-2xl font-bold text-gray-800">{studentDetails.name || "N/A"}</h3>
                     {studentDetails.status && (
                       <div className="mt-2 md:mt-0 flex justify-center md:justify-start">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm flex items-center ${
-                            studentDetails.status === "Active"
-                              ? "bg-green-100 text-green-800 border border-green-200"
-                              : studentDetails.status === "Graduated"
-                              ? "bg-blue-100 text-blue-800 border border-blue-200"
-                              : studentDetails.status === "Dropped"
-                              ? "bg-red-100 text-red-800 border border-red-200"
-                              : studentDetails.status === "Inactive"
-                              ? "bg-gray-100 text-gray-800 border border-gray-200"
-                              : "bg-purple-100 text-purple-800 border border-purple-200"
-                          }`}
-                        >
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm flex items-center ${ studentDetails.status === "Active" ? "bg-green-100 text-green-800 border border-green-200" : studentDetails.status === "Graduated" ? "bg-blue-100 text-blue-800 border border-blue-200" : studentDetails.status === "Dropped" ? "bg-red-100 text-red-800 border border-red-200" : studentDetails.status === "Inactive" ? "bg-gray-100 text-gray-800 border border-gray-200" : "bg-purple-100 text-purple-800 border border-purple-200" }`} >
                           {studentDetails.status === "Active" && <FaUserCheck className="mr-1" />}
                           {studentDetails.status === "Graduated" && <FaUserGraduate className="mr-1" />}
                           {studentDetails.status === "Dropped" && <FaUserSlash className="mr-1" />}
@@ -482,10 +470,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <tr key={record._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDateTime(record.dateAndTime)}</td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${record.status === "Checked In" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}
-                          >
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === "Checked In" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`} >
                             {record.status === "Checked In" ? "Checked In" : "Checked Out"}
                           </span>
                         </td>
@@ -532,10 +517,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           {formatDate(request.fromDate)} to {formatDate(request.toDate)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            ${request.status === "Pending" ? "bg-yellow-100 text-yellow-800" : request.status === "Approved" ? "bg-green-100 text-green-800" : request.status === "Completed" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"}`}
-                          >
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${request.status === "Pending" ? "bg-yellow-100 text-yellow-800" : request.status === "Approved" ? "bg-green-100 text-green-800" : request.status === "Completed" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"}`} >
                             {request.status}
                           </span>
                         </td>
@@ -566,10 +548,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div key={feedback._id} className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex justify-between mb-2">
                       <h4 className="font-medium text-gray-800">{feedback.title}</h4>
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${feedback.status === "Pending" ? "bg-yellow-100 text-yellow-800" : feedback.status === "Resolved" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}
-                      >
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${feedback.status === "Pending" ? "bg-yellow-100 text-yellow-800" : feedback.status === "Resolved" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`} >
                         {feedback.status}
                       </span>
                     </div>
@@ -640,8 +619,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                         {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center space-x-3">
-                              <button
-                                onClick={() => {
+                              <button onClick={() => {
                                   setSelectedInventoryItem(item)
                                   setInventoryFormData({
                                     studentProfileId: selectedStudent._id,
@@ -661,8 +639,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                 <FaEdit />
                               </button>
                               {item.status === "Issued" && (
-                                <button
-                                  onClick={() => {
+                                <button onClick={() => {
                                     setSelectedInventoryItem(item)
                                     setInventoryFormData({
                                       studentProfileId: selectedStudent._id,
@@ -933,9 +910,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       </Modal>
 
       {showEditModal && (
-        <EditStudentModal
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
+        <EditStudentModal isOpen={showEditModal} onClose={() => setShowEditModal(false)}
           studentData={studentDetails}
           onUpdate={() => {
             fetchStudentDetails()
@@ -946,11 +921,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       {/* Inventory Modal */}
       {showInventoryModal && (
-        <Modal
-          title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"}
-          onClose={closeInventoryModal}
-          footer={
-            <div className="flex justify-end gap-3">
+        <Modal title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"} onClose={closeInventoryModal} footer={ <div className="flex justify-end gap-3">
               <button type="button" onClick={closeInventoryModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
                 Cancel
               </button>
@@ -1041,14 +1012,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {/* Notes - for all modes */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-              <textarea
-                name="notes"
-                value={inventoryFormData.notes}
-                onChange={handleInventoryFormChange}
-                rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]"
-                placeholder={inventoryModalType === "assign" ? "Any additional notes..." : inventoryModalType === "edit" ? "Update notes..." : "Notes about returned item..."}
-              ></textarea>
+              <textarea name="notes" value={inventoryFormData.notes} onChange={handleInventoryFormChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" placeholder={inventoryModalType === "assign" ? "Any additional notes..." : inventoryModalType === "edit" ? "Update notes..." : "Notes about returned item..."} ></textarea>
             </div>
           </form>
         </Modal>

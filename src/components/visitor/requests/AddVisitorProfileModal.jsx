@@ -51,44 +51,16 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
     <Modal title="Add Visitor Profile" onClose={onClose} width={500}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
         {error && (
-          <div style={{ 
-            backgroundColor: 'var(--color-danger-bg-light)', 
-            padding: 'var(--spacing-4)', 
-            borderRadius: 'var(--radius-lg)', 
-            display: 'flex', 
-            alignItems: 'flex-start' 
-          }}>
-            <FaExclamationTriangle style={{ 
-              color: 'var(--color-danger)', 
-              marginTop: 'var(--spacing-1)', 
-              marginRight: 'var(--spacing-3)', 
-              flexShrink: 0 
-            }} />
+          <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
+            <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
           </div>
         )}
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
           <div>
-            <label style={{ 
-              display: 'block', 
-              color: 'var(--color-text-secondary)', 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              marginBottom: 'var(--spacing-2)' 
-            }}>Visitor Name</label>
-            <input 
-              type="text" 
-              name="name" 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--input-padding)', 
-                border: 'var(--border-1) solid var(--input-border)', 
-                borderRadius: 'var(--input-radius)', 
-                outline: 'none', 
-                transition: 'var(--transition-colors)' 
-              }} 
-              onFocus={(e) => {
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Visitor Name</label>
+            <input type="text" name="name" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
                 e.target.style.borderColor = 'var(--input-border-focus)';
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
               }}
@@ -103,25 +75,8 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label style={{ 
-              display: 'block', 
-              color: 'var(--color-text-secondary)', 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              marginBottom: 'var(--spacing-2)' 
-            }}>Phone Number</label>
-            <input 
-              type="tel" 
-              name="phone" 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--input-padding)', 
-                border: 'var(--border-1) solid var(--input-border)', 
-                borderRadius: 'var(--input-radius)', 
-                outline: 'none', 
-                transition: 'var(--transition-colors)' 
-              }} 
-              onFocus={(e) => {
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone Number</label>
+            <input type="tel" name="phone" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
                 e.target.style.borderColor = 'var(--input-border-focus)';
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
               }}
@@ -136,25 +91,8 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label style={{ 
-              display: 'block', 
-              color: 'var(--color-text-secondary)', 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              marginBottom: 'var(--spacing-2)' 
-            }}>Email Address</label>
-            <input 
-              type="email" 
-              name="email" 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--input-padding)', 
-                border: 'var(--border-1) solid var(--input-border)', 
-                borderRadius: 'var(--input-radius)', 
-                outline: 'none', 
-                transition: 'var(--transition-colors)' 
-              }} 
-              onFocus={(e) => {
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Email Address</label>
+            <input type="email" name="email" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
                 e.target.style.borderColor = 'var(--input-border-focus)';
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
               }}
@@ -169,24 +107,8 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label style={{ 
-              display: 'block', 
-              color: 'var(--color-text-secondary)', 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              marginBottom: 'var(--spacing-2)' 
-            }}>Relation with Student</label>
-            <select 
-              name="relation" 
-              style={{ 
-                width: '100%', 
-                padding: 'var(--input-padding)', 
-                border: 'var(--border-1) solid var(--input-border)', 
-                borderRadius: 'var(--input-radius)', 
-                outline: 'none', 
-                transition: 'var(--transition-colors)' 
-              }} 
-              onFocus={(e) => {
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Relation with Student</label>
+            <select name="relation" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
                 e.target.style.borderColor = 'var(--input-border-focus)';
                 e.target.style.boxShadow = 'var(--input-focus-ring)';
               }}
@@ -209,43 +131,13 @@ const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
         </div>
 
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          paddingTop: 'var(--spacing-4)', 
-          borderTop: 'var(--border-1) solid var(--color-border-light)' 
-        }}>
-          <button 
-            type="button" 
-            onClick={onClose} 
-            style={{ 
-              padding: 'var(--spacing-2) var(--spacing-4)', 
-              backgroundColor: 'var(--color-bg-muted)', 
-              color: 'var(--color-text-secondary)', 
-              borderRadius: 'var(--radius-lg)', 
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'var(--transition-colors)', 
-              marginRight: 'var(--spacing-3)' 
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)', marginRight: 'var(--spacing-3)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
           >
             Cancel
           </button>
-          <button 
-            type="submit" 
-            style={{ 
-              padding: 'var(--spacing-2) var(--spacing-4)', 
-              backgroundColor: 'var(--button-primary-bg)', 
-              color: 'var(--color-white)', 
-              borderRadius: 'var(--radius-lg)', 
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'var(--transition-colors)',
-              opacity: loading ? 'var(--opacity-disabled)' : '1'
-            }}
-            onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
+          <button type="submit" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', transition: 'var(--transition-colors)', opacity: loading ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')}
             onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}
             disabled={loading}
           >

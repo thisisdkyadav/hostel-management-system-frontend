@@ -442,8 +442,7 @@ const Dashboard = () => {
               <button onClick={onClose} className="font-semibold transition-colors" style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-white)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-white)'}>
                 Thanks!
               </button>
-              <button
-                onClick={() => {
+              <button onClick={() => {
                   onClose()
                 }}
                 className="transition-colors"
@@ -540,8 +539,7 @@ const Dashboard = () => {
       </div>
 
       {/* Only keep the mobile QR button and modal */}
-      <button
-        onClick={() => setShowQRModal(true)}
+      <button onClick={() => setShowQRModal(true)}
         className={`fixed md:hidden rounded-full transition-all ${isPwaMobile ? "bottom-20" : ""}`}
         style={{
           backgroundColor: 'var(--button-primary-bg)',

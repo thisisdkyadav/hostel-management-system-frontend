@@ -58,8 +58,7 @@ const NotificationToast = ({ message, type = "info", duration = 3000, onClose })
           <div className="flex-1">
             <p className={`text-sm font-medium ${getTextColor()}`}>{message}</p>
           </div>
-          <button
-            onClick={() => {
+          <button onClick={() => {
               setVisible(false)
               setTimeout(() => onClose && onClose(), 300)
             }}

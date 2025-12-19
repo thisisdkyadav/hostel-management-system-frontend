@@ -12,22 +12,10 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
   return (
     <div className={`relative ${className}`}>
       {/* Search Icon */}
-      <FaSearch 
-        className={`
-          absolute left-4 top-1/2 -translate-y-1/2 
-          pointer-events-none transition-colors duration-300
-          ${isFocused ? "text-[var(--color-primary)]" : "text-[var(--color-text-placeholder)]"}
-        `}
-        size={14}
-      />
+      <FaSearch className={` absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300 ${isFocused ? "text-[var(--color-primary)]" : "text-[var(--color-text-placeholder)]"} `} size={14} />
 
       {/* Search Input */}
-      <input
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onFocus={() => setIsFocused(true)}
+      <input type="text" placeholder={placeholder} value={value} onChange={onChange} onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         style={{
           boxShadow: isFocused ? 'var(--shadow-focus-primary)' : 'none',
@@ -48,16 +36,7 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
 
       {/* Clear Button */}
       {value && (
-        <button
-          onClick={handleClear}
-          className={`
-            absolute right-4 top-1/2 -translate-y-1/2
-            transition-colors duration-200
-            focus:outline-none
-            ${isFocused ? "text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]" : "text-[var(--color-text-placeholder)] hover:text-[var(--color-text-tertiary)]"}
-          `}
-          aria-label="Clear search"
-        >
+        <button onClick={handleClear} className={` absolute right-4 top-1/2 -translate-y-1/2 transition-colors duration-200 focus:outline-none ${isFocused ? "text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]" : "text-[var(--color-text-placeholder)] hover:text-[var(--color-text-tertiary)]"} `} aria-label="Clear search" >
           <FaTimes size={14} />
         </button>
       )}

@@ -111,10 +111,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
 
         <div className="mb-6">
           <div className="flex items-center">
-            <input
-              type="text"
-              value={newItem}
-              onChange={(e) => {
+            <input type="text" value={newItem} onChange={(e) => {
                 setNewItem(e.target.value)
                 setError("")
               }}
@@ -146,13 +143,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         </div>
 
         <div className="pt-4">
-          <button
-            type="submit"
-            className={`w-full flex justify-center items-center px-4 py-3 ${
-              isLoading ? "bg-gray-400 cursor-not-allowed" : hasUnsavedChanges ? "bg-[#1360AB] hover:bg-[#0d4b86]" : "bg-gray-300 text-gray-600 cursor-not-allowed"
-            } text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`}
-            disabled={isLoading || !hasUnsavedChanges}
-          >
+          <button type="submit" className={`w-full flex justify-center items-center px-4 py-3 ${ isLoading ? "bg-gray-400 cursor-not-allowed" : hasUnsavedChanges ? "bg-[#1360AB] hover:bg-[#0d4b86]" : "bg-gray-300 text-gray-600 cursor-not-allowed" } text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`} disabled={isLoading || !hasUnsavedChanges} >
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
@@ -170,9 +161,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
 
       {/* Item Management Modal */}
       {showItemModal && (
-        <Modal
-          title={`Manage ${itemLabel}`}
-          onClose={() => {
+        <Modal title={`Manage ${itemLabel}`} onClose={() => {
             setShowItemModal(false)
             setError("")
           }}
@@ -186,10 +175,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
             <div className="space-y-3">
               <label className="block text-sm font-medium text-gray-700">Rename {itemLabel}</label>
               <div className="flex items-center">
-                <input
-                  type="text"
-                  value={newItemName}
-                  onChange={(e) => {
+                <input type="text" value={newItemName} onChange={(e) => {
                     setNewItemName(e.target.value)
                     setError("")
                   }}
@@ -228,9 +214,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
       )}
 
       {/* Delete Confirmation Dialog */}
-      <ConfirmationDialog
-        isOpen={showDeleteConfirmation}
-        onClose={() => setShowDeleteConfirmation(false)}
+      <ConfirmationDialog isOpen={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}
         onConfirm={handleRemoveItem}
         title={`Delete ${itemLabel}`}
         message={`Are you sure you want to delete "${selectedItem}"? This action cannot be undone.`}

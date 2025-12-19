@@ -56,11 +56,7 @@ const NotificationProvider = ({ children }) => {
       <div className="fixed top-4 right-4 z-50 space-y-2">
         {notifications.map((notification, index) => (
           <div key={notification.id} style={{ transform: `translateY(${index * 80}px)` }} className="transition-transform duration-300">
-            <NotificationToast
-              message={notification.message}
-              type={notification.type}
-              duration={0} // Duration is handled by the provider
-              onClose={() => removeNotification(notification.id)}
+            <NotificationToast message={notification.message} type={notification.type} duration={0} // Duration is handled by the provider onClose={() => removeNotification(notification.id)}
             />
           </div>
         ))}

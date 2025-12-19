@@ -6,8 +6,7 @@ const ManageSessionsButton = ({ email }) => {
 
   return (
     <>
-      <button 
-        onClick={() => setShowModal(true)} 
+      <button onClick={() => setShowModal(true)} 
         style={{
           padding: `var(--spacing-2) var(--spacing-4)`,
           backgroundColor: 'var(--color-bg-muted)',

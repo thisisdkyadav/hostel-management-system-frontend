@@ -46,68 +46,23 @@ const ProfileHeader = ({ user, role, subtitle }) => {
       <ProfileAvatar user={user} size="large" />
       <div>
         <div className="flex flex-col sm:flex-row items-center sm:items-start">
-          <h2
-            style={{
-              fontSize: "var(--font-size-xl)",
-              fontWeight: "var(--font-weight-bold)",
-              color: "var(--color-text-secondary)",
-            }}
-          >
+          <h2 style={{ fontSize: "var(--font-size-xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", }} >
             {user.name}
           </h2>
-          <div
-            style={{
-              marginTop: "var(--spacing-1)",
-              padding: "var(--spacing-1) var(--spacing-3)",
-              borderRadius: "var(--radius-full)",
-              backgroundColor: "var(--color-primary-bg)",
-              color: "var(--color-primary)",
-              fontSize: "var(--font-size-xs)",
-              fontWeight: "var(--font-weight-medium)",
-            }}
-            className="sm:mt-0 sm:ml-4"
-          >
+          <div style={{ marginTop: "var(--spacing-1)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", }} className="sm:mt-0 sm:ml-4" >
             {role}
           </div>
         </div>
-        <p
-          style={{
-            color: "var(--color-text-muted)",
-            marginTop: "var(--spacing-1)",
-            fontSize: "var(--font-size-base)",
-          }}
-        >
+        <p style={{ color: "var(--color-text-muted)", marginTop: "var(--spacing-1)", fontSize: "var(--font-size-base)", }} >
           {subtitle}
         </p>
-        <div
-          style={{
-            marginTop: "var(--spacing-3)",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "var(--gap-sm)",
-          }}
-          className="justify-center sm:justify-start"
-        >
+        <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexWrap: "wrap", gap: "var(--gap-sm)", }} className="justify-center sm:justify-start" >
           <ChangePasswordButton email={user.email} />
           <ManageSessionsButton email={user.email} />
           {/* {role === "Student" && <RoomChangeForm student={user} />} */}
 
           {showLayoutToggle && (
-            <button
-              onClick={toggleLayout}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                padding: "var(--spacing-1-5) var(--spacing-3)",
-                borderRadius: "var(--radius-md)",
-                backgroundColor: "var(--color-primary-bg)",
-                color: "var(--color-primary)",
-                fontSize: "var(--font-size-sm)",
-                transition: "var(--transition-colors)",
-                border: "none",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)")}
+            <button onClick={toggleLayout} style={{ display: "inline-flex", alignItems: "center", padding: "var(--spacing-1-5) var(--spacing-3)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontSize: "var(--font-size-sm)", transition: "var(--transition-colors)", border: "none", cursor: "pointer", }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg)")}
             >
               {layoutPreference === "sidebar" ? (
