@@ -1,8 +1,8 @@
 import React from "react"
 
-const Card = ({ 
-  children, 
-  className = "", 
+const Card = ({
+  children,
+  className = "",
   padding = "p-5 md:p-6",
   rounded = "rounded-[var(--radius-card)]",
   border = true,
@@ -56,13 +56,13 @@ Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, sub
 }
 
 // Card Body Component
-Card.Body = ({ children, className = "" }) => {
-  return <div className={className}>{children}</div>
+Card.Body = ({ children, className = "", style }) => {
+  return <div className={className} style={style}>{children}</div>
 }
 
 // Card Footer Component
-Card.Footer = ({ children, className = "" }) => {
-  return <div className={`mt-5 ${className}`}>{children}</div>
+Card.Footer = ({ children, className = "", style }) => {
+  return <div className={`mt-5 ${className}`} style={style}>{children}</div>
 }
 
 export default Card
