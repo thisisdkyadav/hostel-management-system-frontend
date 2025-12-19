@@ -51,13 +51,13 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
       >
         {/* Header with Icon and Title */}
         <Card.Header>
-          <div className="flex items-center gap-4">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
             <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`} >
               <FaBuilding />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-[var(--color-text-secondary)]">{hostel.name}</h3>
-              <p className="text-sm text-[var(--color-text-muted)]">
+              <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{hostel.name}</h3>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
                 {hostel.gender} {hostel.type && `(${hostel.type})`}
               </p>
             </div>
@@ -65,33 +65,32 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
         </Card.Header>
 
         {/* Stats and Occupancy Ring */}
-        <Card.Body className="flex justify-between mb-5">
+        <Card.Body style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-5)' }}>
           {/* Stats List */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
-              <FaDoorClosed className="text-[#94a3b8] w-4" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+              <FaDoorClosed style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)</span>
             </div>
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
-              <FaUsers className="text-[#94a3b8] w-4" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+              <FaUsers style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.activeRoomsCapacity} Capacity</span>
             </div>
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
-              <FaDoorOpen className="text-[#94a3b8] w-4" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+              <FaDoorOpen style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.vacantRooms} Vacant Rooms</span>
             </div>
-            <div className="flex items-center gap-2 text-[0.85rem] text-[#64748b]">
-              <FaTools className="text-[#94a3b8] w-4" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+              <FaTools style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.maintenanceIssues} maintenance issue{hostel.maintenanceIssues !== 1 ? 's' : ''}</span>
             </div>
           </div>
 
           {/* Occupancy Ring */}
-          <div className="relative w-20 h-20 min-w-[80px] min-h-[80px]">
-            <svg 
-              className="w-full h-full" 
+          <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
+            <svg
+              style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}
               viewBox="0 0 36 36"
-              style={{ transform: 'rotate(-90deg)' }}
             >
               {/* Background circle */}
               <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-bg)" strokeWidth="2.5" />
@@ -99,22 +98,21 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-fill)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={strokeDasharray} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
             </svg>
             {/* Center text */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-base font-bold text-[#0a1628]">{hostel.occupancyRate}%</span>
-              <span className="text-[0.65rem] text-[#4a6085]">Occupancy</span>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{hostel.occupancyRate}%</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>Occupancy</span>
             </div>
           </div>
         </Card.Body>
 
         {/* Action Buttons */}
-        <Card.Footer className="flex flex-col gap-2 mt-0">
-          <div className="flex gap-2">
+        <Card.Footer style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 0 }}>
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
             <button onClick={() => setShowEditModal(true)}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
-              style={{ transition: 'all 0.3s ease' }}
+              style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', transition: 'var(--transition-all)', border: 'none', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'var(--gradient-primary)'
-                e.currentTarget.style.color = '#fff'
+                e.currentTarget.style.color = 'var(--color-white)'
                 e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
               }}
               onMouseLeave={(e) => {
@@ -126,11 +124,11 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <FaEdit />
               Edit Details
             </button>
-            <Link to={`/admin/hostels/${hostel.name}`} className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]" style={{ transition: 'all 0.3s ease' }} onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--gradient-primary)'
-                e.currentTarget.style.color = '#fff'
-                e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
-              }}
+            <Link to={`/admin/hostels/${hostel.name}`} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', transition: 'var(--transition-all)', border: 'none', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', textDecoration: 'none' }} onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--gradient-primary)'
+              e.currentTarget.style.color = 'var(--color-white)'
+              e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
+            }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'var(--color-primary-bg)'
                 e.currentTarget.style.color = 'var(--color-primary)'
@@ -141,12 +139,11 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               View {hostel.type === "room-only" ? "Rooms" : "Units"}
             </Link>
           </div>
-          <button onClick={() => setShowDetailsModal(true)} 
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-semibold cursor-pointer transition-all duration-300 border-none bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
-            style={{ transition: 'all 0.3s ease' }}
+          <button onClick={() => setShowDetailsModal(true)}
+            style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', transition: 'var(--transition-all)', border: 'none', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'var(--gradient-primary)'
-              e.currentTarget.style.color = '#fff'
+              e.currentTarget.style.color = 'var(--color-white)'
               e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
             }}
             onMouseLeave={(e) => {

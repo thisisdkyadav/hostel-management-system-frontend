@@ -6,23 +6,23 @@ import Button from "../../common/Button"
 const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }) => {
   return (
     <Modal onClose={onClose} title="Delete All Allocations" width={450}>
-      <div className="py-4">
-        <div className="flex justify-center mb-6">
-          <div className="p-4 bg-red-100 text-red-700 rounded-full">
+      <div style={{ padding: 'var(--spacing-4) 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-6)' }}>
+          <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
             <FiAlertTriangle size={32} />
           </div>
         </div>
 
-        <div className="text-center space-y-4 mb-6">
-          <p className="text-red-600 font-bold text-lg">CRITICAL WARNING</p>
-          <p className="text-gray-800">
-            This will remove <span className="font-bold">ALL</span> student room allocations from <span className="font-bold">{hostelName}</span>.
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
+          <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)' }}>CRITICAL WARNING</p>
+          <p style={{ color: 'var(--color-text-secondary)' }}>
+            This will remove <span style={{ fontWeight: 'var(--font-weight-bold)' }}>ALL</span> student room allocations from <span style={{ fontWeight: 'var(--font-weight-bold)' }}>{hostelName}</span>.
           </p>
-          <p className="text-gray-800">All students will be immediately removed from their rooms.</p>
-          <p className="text-red-600 font-semibold">This action CANNOT be undone.</p>
+          <p style={{ color: 'var(--color-text-secondary)' }}>All students will be immediately removed from their rooms.</p>
+          <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-semibold)' }}>This action CANNOT be undone.</p>
         </div>
 
-        <div className="flex justify-center space-x-4 pt-4">
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
           <Button onClick={onClose} variant="outline" disabled={isLoading}>
             Cancel
           </Button>
