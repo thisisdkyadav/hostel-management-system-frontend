@@ -21,21 +21,21 @@ const SecurityStats = ({ securityStaff }) => {
       title: "Total Security",
       value: totalSecurity,
       subtitle: "Security staff members",
-      icon: <FaUserShield className="text-2xl" />,
+      icon: <FaUserShield style={{ fontSize: 'var(--font-size-2xl)' }} />,
       color: "#1360AB",
     },
     {
       title: "Assigned Staff",
       value: assignedSecurity,
       subtitle: "Currently assigned",
-      icon: <MdVerified className="text-2xl" />,
+      icon: <MdVerified style={{ fontSize: 'var(--font-size-2xl)' }} />,
       color: "#22c55e", // green-500
     },
     {
       title: "Unassigned",
       value: unassignedSecurity,
       subtitle: "Available to assign",
-      icon: <FaBuilding className="text-2xl" />,
+      icon: <FaBuilding style={{ fontSize: 'var(--font-size-2xl)' }} />,
       color: "#f97316", // orange-500
     },
     // {
