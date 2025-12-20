@@ -8,7 +8,7 @@ import { HiAnnotation } from "react-icons/hi"
 
 const AdminLayout = () => {
   const navigate = useNavigate()
-  const { logout } = useAuth ? useAuth() : { logout: () => {} }
+  const { logout } = useAuth ? useAuth() : { logout: () => { } }
 
   const handleLogout = async () => {
     const confirmLogout = window.confirm("Are you sure you want to logout?")
@@ -50,10 +50,16 @@ const AdminLayout = () => {
 
   return (
     <AdminProvider>
-     
-<div className="flex flex-col md:flex-row bg-[#f0f4f9] min-h-screen">      
+
+      <div
+        className="flex flex-col md:flex-row min-h-screen"
+        style={{ backgroundColor: 'var(--color-bg-page)' }}
+      >
         <Sidebar navItems={navItems} />
-        <div className="flex-1 h-screen overflow-auto pt-16 md:pt-0">
+        <div
+          className="flex-1 overflow-auto pt-16 md:pt-0"
+          style={{ height: '100vh' }}
+        >
           <Outlet />
         </div>
       </div>
