@@ -8,76 +8,92 @@ import { adminApi } from "../../../services/adminApi"
 
 // Extracted to avoid remounting on each parent render which caused input focus loss
 const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {
+  const formStyles = {
+    container: { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' },
+    title: { fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' },
+    infoBox: { backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', display: 'flex', alignItems: 'flex-start' },
+    infoIcon: { flexShrink: 0, marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-3)', height: 'var(--icon-lg)', width: 'var(--icon-lg)' },
+    infoText: { fontSize: 'var(--font-size-sm)' },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-6)' },
+    sectionHeader: { gridColumn: 'span 2' },
+    sectionTitle: { fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)', paddingBottom: 'var(--spacing-2)' },
+    label: { display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' },
+    input: { width: '100%', borderRadius: 'var(--radius-md)', border: 'var(--border-1) solid var(--color-border-input)', padding: 'var(--spacing-2) var(--spacing-3)', fontSize: 'var(--font-size-sm)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' },
+    errorBox: { padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)', whiteSpace: 'pre-line' },
+    loadingContainer: { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' },
+    spinner: { width: 'var(--spacing-6)', height: 'var(--spacing-6)', border: 'var(--border-2) solid var(--color-bg-muted)', borderTopColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' },
+    loadingText: { marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' },
+  }
   return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-medium text-gray-800">Add Single Student</h3>
+    <div style={formStyles.container}>
+      <h3 style={formStyles.title}>Add Single Student</h3>
 
-      <div className="bg-blue-50 text-blue-700 rounded-lg p-4 mb-6 flex items-start">
-        <div className="flex-shrink-0 mt-0.5 mr-3">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div style={formStyles.infoBox}>
+        <div style={formStyles.infoIcon}>
+          <svg xmlns="http://www.w3.org/2000/svg" style={{ height: '100%', width: '100%' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <p className="text-sm">Fill in the student details below. Fields marked with * are required.</p>
+        <p style={formStyles.infoText}>Fill in the student details below. Fields marked with * are required.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div style={formStyles.grid}>
         {/* Required Fields */}
-        <div className="md:col-span-2">
-          <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Required Information</h4>
+        <div style={formStyles.sectionHeader}>
+          <h4 style={formStyles.sectionTitle}>Required Information</h4>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+          <label style={formStyles.label}>Name *</label>
           <input type="text" value={manualStudent.name} onChange={(e) => handleManualInputChange("name", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter student's full name"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+          <label style={formStyles.label}>Email *</label>
           <input type="email" value={manualStudent.email} onChange={(e) => handleManualInputChange("email", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter email address"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
+          <label style={formStyles.label}>Roll Number *</label>
           <input type="text" value={manualStudent.rollNumber} onChange={(e) => handleManualInputChange("rollNumber", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter roll number"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <label style={formStyles.label}>Phone</label>
           <input type="tel" value={manualStudent.phone} onChange={(e) => handleManualInputChange("phone", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter phone number"
           />
         </div>
 
         {/* Optional Fields */}
-        <div className="md:col-span-2 mt-6">
-          <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Optional Information</h4>
+        <div style={{ ...formStyles.sectionHeader, marginTop: 'var(--spacing-6)' }}>
+          <h4 style={formStyles.sectionTitle}>Optional Information</h4>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label style={formStyles.label}>Password</label>
           <input type="password" value={manualStudent.password} onChange={(e) => handleManualInputChange("password", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter password"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-          <select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
+          <label style={formStyles.label}>Gender</label>
+          <select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} style={formStyles.input}>
             <option value="">Select gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
@@ -85,14 +101,14 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-          <input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]" />
+          <label style={formStyles.label}>Date of Birth</label>
+          <input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} style={formStyles.input} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+          <label style={formStyles.label}>Degree</label>
           {validDegrees.length > 0 ? (
-            <select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
+            <select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} style={formStyles.input}>
               <option value="">Select degree</option>
               {validDegrees.map((degree) => (
                 <option key={degree} value={degree}>
@@ -102,16 +118,16 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
             </select>
           ) : (
             <input type="text" value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+              style={formStyles.input}
               placeholder="Enter degree"
             />
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
+          <label style={formStyles.label}>Department</label>
           {validDepartments.length > 0 ? (
-            <select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]">
+            <select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} style={formStyles.input}>
               <option value="">Select department</option>
               {validDepartments.map((department) => (
                 <option key={department} value={department}>
@@ -121,16 +137,16 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
             </select>
           ) : (
             <input type="text" value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+              style={formStyles.input}
               placeholder="Enter department"
             />
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
+          <label style={formStyles.label}>Year</label>
           <input type="number" value={manualStudent.year} onChange={(e) => handleManualInputChange("year", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter year"
             min="1"
             max="10"
@@ -138,55 +154,55 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Admission Date</label>
-          <input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]" />
+          <label style={formStyles.label}>Admission Date</label>
+          <input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} style={formStyles.input} />
         </div>
 
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+        <div style={{ gridColumn: 'span 2' }}>
+          <label style={formStyles.label}>Address</label>
           <textarea value={manualStudent.address} onChange={(e) => handleManualInputChange("address", e.target.value)}
             rows={3}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter address"
           />
         </div>
 
         {/* Guardian Information */}
-        <div className="md:col-span-2 mt-6">
-          <h4 className="text-md font-medium text-gray-700 mb-4 border-b border-gray-200 pb-2">Guardian Information</h4>
+        <div style={{ ...formStyles.sectionHeader, marginTop: 'var(--spacing-6)' }}>
+          <h4 style={formStyles.sectionTitle}>Guardian Information</h4>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Name</label>
+          <label style={formStyles.label}>Guardian Name</label>
           <input type="text" value={manualStudent.guardian} onChange={(e) => handleManualInputChange("guardian", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter guardian's name"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Phone</label>
+          <label style={formStyles.label}>Guardian Phone</label>
           <input type="tel" value={manualStudent.guardianPhone} onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter guardian's phone"
           />
         </div>
 
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Guardian Email</label>
+        <div style={{ gridColumn: 'span 2' }}>
+          <label style={formStyles.label}>Guardian Email</label>
           <input type="email" value={manualStudent.guardianEmail} onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB] focus:border-[#1360AB]"
+            style={formStyles.input}
             placeholder="Enter guardian's email"
           />
         </div>
       </div>
 
-      {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+      {error && <div style={formStyles.errorBox}>{error}</div>}
 
       {configLoading && (
-        <div className="flex items-center justify-center py-4">
-          <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <span className="ml-2 text-sm text-gray-600">Loading configuration...</span>
+        <div style={formStyles.loadingContainer}>
+          <div style={formStyles.spinner}></div>
+          <span style={formStyles.loadingText}>Loading configuration...</span>
         </div>
       )}
     </div>
@@ -539,89 +555,59 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       {activeTab === "csv" && (
         <>
           {step === 1 && (
-            <div className="space-y-5">
-              <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-                <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
-                <p className="mt-3 text-xs text-gray-500">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+              <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-8)', textAlign: 'center', cursor: 'pointer', backgroundColor: 'var(--color-bg-tertiary)', transition: 'var(--transition-all)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
+                <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-4xl)', width: 'var(--icon-4xl)', color: 'var(--color-text-disabled)' }} />
+                <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Drag and drop a CSV file here, or click to select a file</p>
+                <p style={{ marginTop: 'var(--spacing-3)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                   <strong>Required fields:</strong> {requiredFields.join(", ")}
                 </p>
-                <p className="mt-1 text-xs text-gray-500">
+                <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                   <strong>Optional fields:</strong> {availableFields.filter((field) => !requiredFields.includes(field)).join(", ")}
                 </p>
-                <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+                <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
               </div>
 
-              <div className="flex flex-col items-center">
-                <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
-                  <FaFileDownload className="mr-1" />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <button onClick={generateCsvTemplate} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-2)', background: 'none', border: 'none', cursor: 'pointer' }}>
+                  <FaFileDownload style={{ marginRight: 'var(--spacing-1)' }} />
                   Download CSV Template
                 </button>
 
-                <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
-                  <p className="font-medium mb-1">Field Input Types:</p>
-                  <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
-                    <li>
-                      <span className="font-medium">name:</span> String (Required)
-                    </li>
-                    <li>
-                      <span className="font-medium">email:</span> Email (Required)
-                    </li>
-                    <li>
-                      <span className="font-medium">rollNumber:</span> String (Required)
-                    </li>
-                    <li>
-                      <span className="font-medium">phone:</span> Number
-                    </li>
-                    <li>
-                      <span className="font-medium">password:</span> String
-                    </li>
-                    <li>
-                      <span className="font-medium">gender:</span> Male/Female
-                    </li>
-                    <li>
-                      <span className="font-medium">dateOfBirth:</span> YYYY-MM-DD
-                    </li>
-                    <li>
-                      <span className="font-medium">degree:</span> {configLoading ? "Loading..." : validDegrees.length > 0 ? "Must be one of the valid degrees" : "String"}
-                    </li>
-                    <li>
-                      <span className="font-medium">department:</span> {configLoading ? "Loading..." : validDepartments.length > 0 ? "Must be one of the valid departments" : "String"}
-                    </li>
-                    <li>
-                      <span className="font-medium">year:</span> Number
-                    </li>
-                    <li>
-                      <span className="font-medium">address:</span> String
-                    </li>
-                    <li>
-                      <span className="font-medium">admissionDate:</span> YYYY-MM-DD
-                    </li>
-                    <li>
-                      <span className="font-medium">guardian:</span> String
-                    </li>
-                    <li>
-                      <span className="font-medium">guardianPhone:</span> Number
-                    </li>
-                    <li>
-                      <span className="font-medium">guardianEmail:</span> Email
-                    </li>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
+                  <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>name:</span> String (Required)</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>email:</span> Email (Required)</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>rollNumber:</span> String (Required)</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>phone:</span> Number</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>password:</span> String</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>gender:</span> Male/Female</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>dateOfBirth:</span> YYYY-MM-DD</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>degree:</span> {configLoading ? "Loading..." : validDegrees.length > 0 ? "Must be one of the valid degrees" : "String"}</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>department:</span> {configLoading ? "Loading..." : validDepartments.length > 0 ? "Must be one of the valid departments" : "String"}</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>year:</span> Number</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>address:</span> String</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>admissionDate:</span> YYYY-MM-DD</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>guardian:</span> String</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>guardianPhone:</span> Number</li>
+                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>guardianEmail:</span> Email</li>
                   </ul>
 
                   {/* Display valid degrees and departments */}
                   {!configLoading && (
-                    <div className="mt-3 space-y-2">
+                    <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
                       {validDegrees.length > 0 && (
                         <div>
-                          <p className="font-medium text-blue-700">Valid Degrees:</p>
-                          <p className="text-gray-700 bg-blue-50 p-1 rounded">{formatArrayForDisplay(validDegrees)}</p>
+                          <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>Valid Degrees:</p>
+                          <p style={{ color: 'var(--color-text-body)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-md)' }}>{formatArrayForDisplay(validDegrees)}</p>
                         </div>
                       )}
 
                       {validDepartments.length > 0 && (
                         <div>
-                          <p className="font-medium text-blue-700">Valid Departments:</p>
-                          <p className="text-gray-700 bg-blue-50 p-1 rounded">{formatArrayForDisplay(validDepartments)}</p>
+                          <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>Valid Departments:</p>
+                          <p style={{ color: 'var(--color-text-body)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-md)' }}>{formatArrayForDisplay(validDepartments)}</p>
                         </div>
                       )}
                     </div>
@@ -630,44 +616,44 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </div>
 
               {csvFile && (
-                <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
-                  <span className="text-sm text-blue-700">
-                    Selected file: <span className="font-medium">{csvFile.name}</span>
+                <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>
+                    Selected file: <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{csvFile.name}</span>
                   </span>
                   <button onClick={(e) => {
-                      e.stopPropagation()
-                      setCsvFile(null)
-                    }}
-                    className="text-gray-500 hover:text-gray-700"
+                    e.stopPropagation()
+                    setCsvFile(null)
+                  }}
+                    style={{ color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
                   >
                     <FaTimes />
                   </button>
                 </div>
               )}
 
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+              {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)', whiteSpace: 'pre-line' }}>{error}</div>}
 
               {(isLoading || configLoading) && (
-                <div className="flex items-center justify-center py-4">
-                  <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                  <span className="ml-2 text-sm text-gray-600">{isLoading ? "Processing file..." : "Loading configuration..."}</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' }}>
+                  <div style={{ width: 'var(--spacing-6)', height: 'var(--spacing-6)', border: 'var(--border-2) solid var(--color-bg-muted)', borderTopColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+                  <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{isLoading ? "Processing file..." : "Loading configuration..."}</span>
                 </div>
               )}
             </div>
           )}
 
           {step === 2 && (
-            <div className="space-y-5">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-800">Preview Import Data</h3>
-                <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} students found in CSV</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+                <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Preview Import Data</h3>
+                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)' }}>{parsedData.length} students found in CSV</div>
               </div>
 
-              <div className="border rounded-lg overflow-hidden">
-                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
+              <div style={{ border: 'var(--border-1) solid var(--color-border-primary)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => { }} viewStudentDetails={viewStudentDetails} />
               </div>
 
-              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+              {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)', whiteSpace: 'pre-line' }}>{error}</div>}
             </div>
           )}
         </>
@@ -676,30 +662,30 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       {/* Manual Student Tab */}
       {activeTab === "manual" && <ManualStudentForm manualStudent={manualStudent} handleManualInputChange={handleManualInputChange} validDegrees={validDegrees} validDepartments={validDepartments} configLoading={configLoading} error={error} />}
 
-      <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
+      <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
         {/* CSV Tab Buttons */}
         {activeTab === "csv" && (
           <>
             {step === 1 ? (
-              <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'var(--transition-all)' }}>
                 Cancel
               </button>
             ) : (
-              <button onClick={resetForm} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <button onClick={resetForm} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'var(--transition-all)' }}>
                 Back
               </button>
             )}
 
             {step === 2 && (
-              <button onClick={handleImport} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading || isImporting}>
+              <button onClick={handleImport} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center' }} disabled={parsedData.length === 0 || isLoading || isImporting}>
                 {isImporting ? (
                   <>
-                    <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div style={{ width: 'var(--spacing-4)', height: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
                     Importing Students...
                   </>
                 ) : (
                   <>
-                    <FaCheck className="mr-2" /> Confirm Import
+                    <FaCheck style={{ marginRight: 'var(--spacing-2)' }} /> Confirm Import
                   </>
                 )}
               </button>
@@ -710,19 +696,19 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         {/* Manual Tab Buttons */}
         {activeTab === "manual" && (
           <>
-            <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'var(--transition-all)' }}>
               Cancel
             </button>
 
-            <button onClick={handleManualImport} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading} >
+            <button onClick={handleManualImport} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center' }} disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}>
               {isImporting ? (
                 <>
-                  <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div style={{ width: 'var(--spacing-4)', height: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
                   Adding Student...
                 </>
               ) : (
                 <>
-                  <FaCheck className="mr-2" /> Add Student
+                  <FaCheck style={{ marginRight: 'var(--spacing-2)' }} /> Add Student
                 </>
               )}
             </button>

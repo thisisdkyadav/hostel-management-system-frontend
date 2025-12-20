@@ -70,18 +70,164 @@ const FamilyDetails = ({ userId }) => {
     }
   }
 
+  const styles = {
+    loadingContainer: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "var(--spacing-8)",
+    },
+    spinner: {
+      width: "var(--avatar-sm)",
+      height: "var(--avatar-sm)",
+      border: "var(--border-4) solid transparent",
+      borderTopColor: "var(--color-primary)",
+      borderRadius: "var(--radius-full)",
+      animation: "spin 1s linear infinite",
+    },
+    errorContainer: {
+      padding: "var(--spacing-4)",
+      backgroundColor: "var(--color-danger-bg-light)",
+      color: "var(--color-danger)",
+      borderRadius: "var(--radius-lg)",
+      fontSize: "var(--font-size-base)",
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "var(--spacing-6)",
+    },
+    title: {
+      fontSize: "var(--font-size-lg)",
+      fontWeight: "var(--font-weight-semibold)",
+      color: "var(--color-text-body)",
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(1, 1fr)",
+      gap: "var(--spacing-4)",
+    },
+    card: {
+      backgroundColor: "var(--color-bg-primary)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      padding: "var(--spacing-4)",
+      borderRadius: "var(--radius-lg)",
+      boxShadow: "var(--shadow-sm)",
+      transition: "var(--transition-all)",
+    },
+    cardHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    cardTitleRow: {
+      display: "flex",
+      alignItems: "center",
+    },
+    cardTitle: {
+      fontSize: "var(--font-size-md)",
+      fontWeight: "var(--font-weight-semibold)",
+      color: "var(--color-text-secondary)",
+    },
+    badge: {
+      marginLeft: "var(--spacing-2)",
+      padding: "var(--spacing-0-5) var(--spacing-2)",
+      backgroundColor: "var(--color-primary-bg)",
+      color: "var(--color-primary)",
+      fontSize: "var(--font-size-xs)",
+      borderRadius: "var(--radius-full)",
+    },
+    editButton: {
+      padding: "var(--spacing-1) var(--spacing-3)",
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-primary)",
+      backgroundColor: "var(--color-primary-bg)",
+      borderRadius: "var(--radius-md)",
+      transition: "var(--transition-all)",
+      border: "none",
+      cursor: "pointer",
+    },
+    cardBody: {
+      marginTop: "var(--spacing-3)",
+      display: "grid",
+      gridTemplateColumns: "repeat(1, 1fr)",
+      gap: "var(--spacing-3)",
+    },
+    infoRow: {
+      display: "flex",
+      alignItems: "center",
+    },
+    iconWrapperBlue: {
+      width: "var(--avatar-sm)",
+      height: "var(--avatar-sm)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "var(--radius-full)",
+      backgroundColor: "var(--color-primary-bg)",
+      color: "var(--color-primary)",
+      marginRight: "var(--spacing-2)",
+    },
+    iconWrapperGreen: {
+      width: "var(--avatar-sm)",
+      height: "var(--avatar-sm)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "var(--radius-full)",
+      backgroundColor: "var(--color-success-bg-light)",
+      color: "var(--color-success)",
+      marginRight: "var(--spacing-2)",
+    },
+    iconWrapperAmber: {
+      width: "var(--avatar-sm)",
+      height: "var(--avatar-sm)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "var(--radius-full)",
+      backgroundColor: "var(--color-warning-bg-light)",
+      color: "var(--color-warning)",
+      marginRight: "var(--spacing-2)",
+    },
+    icon: {
+      height: "var(--icon-md)",
+      width: "var(--icon-md)",
+    },
+    infoText: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-body)",
+    },
+    emptyState: {
+      backgroundColor: "var(--color-bg-tertiary)",
+      padding: "var(--spacing-8)",
+      textAlign: "center",
+      borderRadius: "var(--radius-lg)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+    },
+    emptyText: {
+      color: "var(--color-text-muted)",
+      fontSize: "var(--font-size-base)",
+    },
+    emptyAddButton: {
+      marginTop: "var(--spacing-3)",
+    },
+  }
+
   if (loading)
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="w-8 h-8 border-4 border-t-[#1360AB] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
       </div>
     )
-  if (error) return <div className="p-4 bg-red-50 text-red-600 rounded-lg">Error: {error.message}</div>
+  if (error) return <div style={styles.errorContainer}>Error: {error.message}</div>
 
   return (
-    <div className="">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-700">Family Information</h3>
+    <div>
+      <div style={styles.header}>
+        <h3 style={styles.title}>Family Information</h3>
         {canAccess("students_info", "create") && (
           <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
             Add Family Member
@@ -90,59 +236,79 @@ const FamilyDetails = ({ userId }) => {
       </div>
 
       {familyDetails && familyDetails.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4">
+        <div style={styles.grid}>
           {familyDetails.map((member) => (
-            <div key={member.id} className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <h4 className="text-md font-semibold text-gray-800">{member.name}</h4>
-                  <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">{member.relationship}</span>
+            <div
+              key={member.id}
+              style={styles.card}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-md)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-sm)"
+              }}
+            >
+              <div style={styles.cardHeader}>
+                <div style={styles.cardTitleRow}>
+                  <h4 style={styles.cardTitle}>{member.name}</h4>
+                  <span style={styles.badge}>{member.relationship}</span>
                 </div>
                 {canAccess("students_info", "edit") && (
-                  <button onClick={() => handleEditClick(member)} className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors">
+                  <button
+                    onClick={() => handleEditClick(member)}
+                    style={styles.editButton}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "var(--color-primary-bg-hover)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "var(--color-primary-bg)"
+                    }}
+                  >
                     Edit
                   </button>
                 )}
               </div>
 
-              <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 mr-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <div style={{ ...styles.cardBody, gridTemplateColumns: "repeat(2, 1fr)" }}>
+                <div style={styles.infoRow}>
+                  <div style={styles.iconWrapperBlue}>
+                    <svg xmlns="http://www.w3.org/2000/svg" style={styles.icon} viewBox="0 0 20 20" fill="currentColor">
                       <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
                   </div>
-                  <span className="text-sm">{member.phone}</span>
+                  <span style={styles.infoText}>{member.phone}</span>
                 </div>
 
-                <div className="flex items-center">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-green-600 mr-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <div style={styles.infoRow}>
+                  <div style={styles.iconWrapperGreen}>
+                    <svg xmlns="http://www.w3.org/2000/svg" style={styles.icon} viewBox="0 0 20 20" fill="currentColor">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
                   </div>
-                  <span className="text-sm">{member.email || "N/A"}</span>
+                  <span style={styles.infoText}>{member.email || "N/A"}</span>
                 </div>
 
-                <div className="flex items-center md:col-span-2">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-amber-50 text-amber-600 mr-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <div style={{ ...styles.infoRow, gridColumn: "span 2" }}>
+                  <div style={styles.iconWrapperAmber}>
+                    <svg xmlns="http://www.w3.org/2000/svg" style={styles.icon} viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <span className="text-sm">{member.address}</span>
+                  <span style={styles.infoText}>{member.address}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="bg-gray-50 p-8 text-center rounded-lg border border-gray-200">
-          <p className="text-gray-600">No family members added yet.</p>
-          <Button variant="secondary" size="small" className="mt-3" onClick={handleAddClick}>
-            Add Family Member
-          </Button>
+        <div style={styles.emptyState}>
+          <p style={styles.emptyText}>No family members added yet.</p>
+          <div style={styles.emptyAddButton}>
+            <Button variant="secondary" size="small" onClick={handleAddClick}>
+              Add Family Member
+            </Button>
+          </div>
         </div>
       )}
 
