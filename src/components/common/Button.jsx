@@ -1,6 +1,5 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { colorClasses } from "../../constants/themeConfig"
 
 const Button = ({
   children,
@@ -15,9 +14,13 @@ const Button = ({
   fullWidth = false,
   animation = "none",
   gradient = false,
+  style = {},
   ...rest
 }) => {
-  const baseStyles = `
+  const [isHovered, setIsHovered] = React.useState(false)
+
+  // Base classes
+  const baseClasses = `
     rounded-[var(--radius-button)] font-medium transition-all duration-200 
     flex items-center justify-center gap-2
     disabled:cursor-not-allowed disabled:opacity-60
@@ -26,9 +29,9 @@ const Button = ({
     active:scale-[0.98]
   `
 
-  // Using CSS variables for theme colors
-  const variantStyles = {
-    primary: gradient 
+  // Variant classes using CSS variables
+  const variantClasses = {
+    primary: gradient
       ? `text-white disabled:opacity-50`
       : `bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50`,
     secondary: `
@@ -37,14 +40,14 @@ const Button = ({
       hover:bg-[var(--color-primary-bg-hover)]
     `,
     danger: `
-      ${colorClasses.danger.bg} text-white 
-      ${colorClasses.danger.bgHover}
-      disabled:bg-red-300
+      bg-[var(--color-danger)] text-white 
+      hover:bg-[var(--color-danger-hover)]
+      disabled:opacity-50
     `,
     success: `
-      ${colorClasses.success.bg} text-white 
-      ${colorClasses.success.bgHover}
-      disabled:bg-emerald-300
+      bg-[var(--color-success)] text-white 
+      hover:bg-[var(--color-success-hover)]
+      disabled:opacity-50
     `,
     outline: `
       bg-[var(--color-bg-primary)] text-[var(--color-primary)]
@@ -52,26 +55,26 @@ const Button = ({
       hover:bg-[var(--color-primary-bg)]
     `,
     white: `
-      ${colorClasses.white.bg} ${colorClasses.white.text}
-      border ${colorClasses.white.border}
-      ${colorClasses.white.bgHover} ${colorClasses.white.borderHover} ${colorClasses.white.textHover}
+      bg-[var(--color-bg-primary)] text-[var(--color-text-body)]
+      border border-[var(--color-border-primary)]
+      hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]
     `,
     ghost: `
-      ${colorClasses.ghost.bg} ${colorClasses.ghost.text}
-      ${colorClasses.ghost.bgHover} ${colorClasses.ghost.textHover}
+      bg-transparent text-[var(--color-text-muted)]
+      hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-primary)]
     `,
   }
 
-  const sizeStyles = {
+  const sizeClasses = {
     small: "py-2 px-4 text-sm",
     medium: "py-2.5 px-5 text-sm",
     large: "py-3 px-6 text-base",
   }
 
-  const widthStyles = fullWidth ? "w-full" : ""
+  const widthClasses = fullWidth ? "w-full" : ""
 
-  // Animation styles - no movement animations
-  const animationStyles = {
+  // Animation classes
+  const animationClasses = {
     none: "",
     pulse: "hover:animate-pulse",
     bounce: "",
@@ -81,21 +84,22 @@ const Button = ({
     shake: "",
   }
 
-  const buttonStyles = `
-    ${baseStyles} 
-    ${variantStyles[variant]} 
-    ${sizeStyles[size]} 
-    ${widthStyles} 
-    ${animationStyles[animation] || ""} 
+  const buttonClasses = `
+    ${baseClasses} 
+    ${variantClasses[variant]} 
+    ${sizeClasses[size]} 
+    ${widthClasses} 
+    ${animationClasses[animation] || ""} 
     ${className}
   `.replace(/\s+/g, ' ').trim()
 
   // Gradient styles for primary variant - using CSS variables
   const gradientStyle = gradient && variant === "primary" ? {
     background: 'var(--gradient-primary)',
-    boxShadow: 'var(--shadow-button-primary)',
+    boxShadow: isHovered ? 'var(--shadow-button-primary-hover)' : 'var(--shadow-button-primary)',
     transition: 'var(--transition-all)',
-  } : {}
+    ...style,
+  } : style
 
   const handleClick = (e) => {
     // Create ripple effect if animation is ripple
@@ -121,21 +125,17 @@ const Button = ({
     if (onClick) onClick(e)
   }
 
-  // Handle hover state for gradient buttons
-  const handleMouseEnter = (e) => {
-    if (gradient && variant === "primary" && !disabled && !isLoading) {
-      e.currentTarget.style.boxShadow = 'var(--shadow-button-primary-hover)'
-    }
-  }
-
-  const handleMouseLeave = (e) => {
-    if (gradient && variant === "primary" && !disabled && !isLoading) {
-      e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
-    }
-  }
-
   return (
-    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonStyles} style={gradientStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} {...rest} >
+    <button
+      type={type}
+      onClick={handleClick}
+      disabled={disabled || isLoading}
+      className={buttonClasses}
+      style={gradientStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      {...rest}
+    >
       {isLoading ? (
         <>
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
@@ -164,6 +164,7 @@ Button.propTypes = {
   fullWidth: PropTypes.bool,
   animation: PropTypes.oneOf(["none", "pulse", "bounce", "slideIn", "glow", "ripple", "shake"]),
   gradient: PropTypes.bool,
+  style: PropTypes.object,
 }
 
 export default Button

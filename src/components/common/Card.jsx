@@ -14,6 +14,7 @@ const Card = ({
   onMouseEnter,
   onMouseLeave,
   onClick,
+  style = {},
   ...props
 }) => {
   const [isHovered, setIsHovered] = React.useState(false)
@@ -28,19 +29,47 @@ const Card = ({
     if (onMouseLeave) onMouseLeave(e)
   }
 
+  // Only apply dynamic styles that need hover state
+  const dynamicStyle = {
+    boxShadow: isHovered ? hoverShadow : shadow,
+    borderColor: isHovered ? hoverBorderColor : borderColor,
+    ...style,
+  }
+
+  // Base classes using CSS variables
+  const baseClasses = `
+    bg-[var(--color-bg-primary)]
+    ${rounded}
+    ${padding}
+    ${transition ? "transition-all duration-300" : ""}
+    ${border ? "border" : ""}
+    ${onClick ? "cursor-pointer" : ""}
+    ${className}
+  `.replace(/\s+/g, ' ').trim()
+
   return (
-    <div className={` bg-[var(--color-bg-primary)] ${rounded} ${padding} ${transition ? "transition-all duration-300" : ""} ${border ? "border" : ""} ${className} `} style={{ boxShadow: isHovered ? hoverShadow : shadow, borderColor: isHovered ? hoverBorderColor : borderColor, }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick} {...props} >
+    <div
+      className={baseClasses}
+      style={dynamicStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      {...props}
+    >
       {children}
     </div>
   )
 }
 
 // Card Header Component
-Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, subtitle }) => {
+Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, subtitle, style = {} }) => {
   return (
-    <div className={`flex items-center gap-4 mb-5 ${className}`}>
+    <div className={`flex items-center gap-4 mb-5 ${className}`} style={style}>
       {icon && (
-        <div className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg} group-hover:${iconHoverBg}`}>
+        <div
+          className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg || ''} group-hover:${iconHoverBg || ''}`}
+          style={!iconBg ? { backgroundColor: 'var(--color-primary-bg)' } : {}}
+        >
           {icon}
         </div>
       )}
