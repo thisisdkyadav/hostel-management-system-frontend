@@ -10,11 +10,11 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
 
   const renderFooter = () => {
     return (
-      <div className="flex justify-end space-x-3">
-        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
+        <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
           {cancelText}
         </button>
-        <button type="button" onClick={handleConfirm} className={`px-4 py-2 ${isDestructive ? "bg-red-600 hover:bg-red-700" : "bg-[#1360AB] hover:bg-blue-700"} text-white rounded-lg text-sm font-medium transition-colors`}>
+        <button type="button" onClick={handleConfirm} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: isDestructive ? 'var(--color-danger)' : 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
           {confirmText}
         </button>
       </div>
@@ -26,15 +26,15 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
 
   return (
     <Modal title={title} onClose={onClose} footer={renderFooter()} width={400}>
-      <div className="py-4">
+      <div style={{ padding: 'var(--spacing-4) 0' }}>
         {isDestructive && (
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-red-100 text-red-600 rounded-full">
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-4)' }}>
+            <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-full)' }}>
               <FiAlertTriangle size={24} />
             </div>
           </div>
         )}
-        <p className="text-center text-gray-700">{message}</p>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-body)' }}>{message}</p>
       </div>
     </Modal>
   )
