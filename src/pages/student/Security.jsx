@@ -54,22 +54,57 @@ const Security = () => {
     fetchSecurityData()
   }, [isOnline])
 
+  const styles = {
+    container: {
+      maxWidth: "var(--container-xl)",
+      margin: "0 auto",
+      padding: "var(--spacing-6) var(--spacing-4)",
+    },
+    header: {
+      marginBottom: "var(--spacing-6)",
+    },
+    title: {
+      fontSize: "var(--font-size-3xl)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-secondary)",
+      marginBottom: "var(--spacing-2)",
+    },
+    subtitle: {
+      fontSize: "var(--font-size-base)",
+      color: "var(--color-text-muted)",
+    },
+    gridContainer: {
+      display: "grid",
+      gap: "var(--spacing-6)",
+    },
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 md:px-6 lg:px-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Campus Security Access</h1>
-        <p className="text-gray-600">Generate your QR code for security verification, and view your access history.</p>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Campus Security Access</h1>
+        <p style={styles.subtitle}>Generate your QR code for security verification, and view your access history.</p>
       </div>
 
-      {isOfflineData && <OfflineBanner message="You are offline. Viewing cached security data. Some features may be limited." className="mb-6" />}
+      {isOfflineData && <OfflineBanner message="You are offline. Viewing cached security data. Some features may be limited." style={{ marginBottom: "var(--spacing-6)" }} />}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
+      <div style={styles.gridContainer} className="security-grid">
+        <div className="qr-section">
           <QRCodeGenerator isOfflineMode={isOfflineData} />
         </div>
 
-        <AccessHistory cachedData={isOfflineData ? accessData : null} />
+        <div className="history-section">
+          <AccessHistory cachedData={isOfflineData ? accessData : null} />
+        </div>
       </div>
+      <style>{`
+        .security-grid { display: grid; grid-template-columns: 1fr; gap: var(--spacing-6); }
+        @media (min-width: 1024px) { 
+          .security-grid { grid-template-columns: repeat(3, 1fr); }
+          .qr-section { grid-column: span 1; }
+          .history-section { grid-column: span 2; }
+        }
+      `}</style>
     </div>
   )
 }

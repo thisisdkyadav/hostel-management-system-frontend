@@ -123,21 +123,21 @@ const Undertakings = () => {
         <div>
           {loading ? (
             <div className="flex justify-center items-center" style={{ height: '16rem' }}>
-              <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: '2px solid var(--color-info)', borderBottom: '2px solid var(--color-info)' }}></div>
+              <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: 'var(--border-2) solid var(--color-info)', borderBottom: 'var(--border-2) solid var(--color-info)' }}></div>
             </div>
           ) : pendingUndertakings.length === 0 ? (
-            <EmptyState icon={FaFileSignature} title="No Pending Undertakings" message="You don't have any undertakings that require your attention." iconColor="text-gray-300" />
+            <EmptyState icon={FaFileSignature} title="No Pending Undertakings" message="You don't have any undertakings that require your attention." />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {pendingUndertakings.map((undertaking) => (
-                <div key={undertaking.id} className="transition-shadow" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', borderLeft: '4px solid var(--color-info)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+                <div key={undertaking.id} className="transition-shadow" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', borderLeft: 'var(--border-4) solid var(--color-info)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: undertaking.status === "not_viewed" ? 'var(--color-info-bg)' : 'var(--color-warning-bg)', color: undertaking.status === "not_viewed" ? 'var(--color-info-text)' : 'var(--color-warning-text)' }}>{undertaking.status === "not_viewed" ? "New" : "Pending"}</span>
                   </div>
                   <p className="line-clamp-2" style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>{undertaking.description}</p>
 
-                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: '1px solid var(--color-border-light)' }}>
+                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
                       <FaClock style={{ color: 'var(--color-text-placeholder)', marginRight: 'var(--spacing-1)' }} />
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Due: {formatDate(undertaking.deadline)}</span>
@@ -171,21 +171,21 @@ const Undertakings = () => {
         <div>
           {loading ? (
             <div className="flex justify-center items-center" style={{ height: '16rem' }}>
-              <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: '2px solid var(--color-info)', borderBottom: '2px solid var(--color-info)' }}></div>
+              <div className="animate-spin rounded-full" style={{ height: 'var(--spacing-12)', width: 'var(--spacing-12)', borderTop: 'var(--border-2) solid var(--color-info)', borderBottom: 'var(--border-2) solid var(--color-info)' }}></div>
             </div>
           ) : acceptedUndertakings.length === 0 ? (
-            <EmptyState icon={FaCheck} title="No Accepted Undertakings" message="You haven't accepted any undertakings yet." iconColor="text-gray-300" />
+            <EmptyState icon={FaCheck} title="No Accepted Undertakings" message="You haven't accepted any undertakings yet." />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {acceptedUndertakings.map((undertaking) => (
-                <div key={undertaking.id} className="transition-shadow" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', borderLeft: '4px solid var(--color-success)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
+                <div key={undertaking.id} className="transition-shadow" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', borderLeft: 'var(--border-4) solid var(--color-success)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}>
                   <div className="flex justify-between items-start" style={{ marginBottom: 'var(--spacing-3)' }}>
                     <h3 className="font-semibold" style={{ fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{undertaking.title}</h3>
                     <span className="rounded-full" style={{ padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-xs)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>Accepted</span>
                   </div>
                   <p className="line-clamp-2" style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>{undertaking.description}</p>
 
-                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: '1px solid var(--color-border-light)' }}>
+                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
                     <div className="flex items-center">
                       <FaCheck style={{ color: 'var(--color-success)', marginRight: 'var(--spacing-1)' }} />
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Accepted on: {formatDate(undertaking.acceptedAt)}</span>
