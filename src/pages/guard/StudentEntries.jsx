@@ -62,17 +62,17 @@ const StudentEntries = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value)
-    setCurrentPage(1) // Reset to page 1 when search changes
+    setCurrentPage(1)
   }
 
   const handleFilterStatusChange = (status) => {
     setFilterStatus(status)
-    setCurrentPage(1) // Reset to page 1 when filter changes
+    setCurrentPage(1)
   }
 
   const handleDateFilterChange = (e) => {
     setFilterDate(e.target.value)
-    setCurrentPage(1) // Reset to page 1 when date filter changes
+    setCurrentPage(1)
   }
 
   const handleClearDateFilter = () => {
@@ -86,44 +86,176 @@ const StudentEntries = () => {
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value))
-    setCurrentPage(1) // Reset to page 1 when items per page changes
+    setCurrentPage(1)
+  }
+
+  const styles = {
+    container: {
+      padding: "var(--spacing-6) var(--spacing-10)",
+      flex: 1,
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+      padding: "var(--spacing-4) var(--spacing-3)",
+      borderRadius: "var(--radius-xl)",
+    },
+    title: {
+      fontSize: "var(--font-size-3xl)",
+      padding: "0 var(--spacing-3)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-primary)",
+    },
+    headerActions: {
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--spacing-4)",
+    },
+    filterButton: {
+      display: "flex",
+      alignItems: "center",
+      padding: "var(--spacing-2) var(--spacing-4)",
+      borderRadius: "var(--radius-xl)",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "var(--font-size-base)",
+      fontWeight: "var(--font-weight-medium)",
+      transition: "var(--transition-colors)",
+    },
+    filterButtonActive: {
+      backgroundColor: "var(--color-primary)",
+      color: "var(--color-white)",
+    },
+    filterButtonInactive: {
+      backgroundColor: "var(--color-bg-primary)",
+      color: "var(--color-text-body)",
+    },
+    filterIcon: {
+      marginRight: "var(--spacing-2)",
+    },
+    filterSection: {
+      marginTop: "var(--spacing-8)",
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-4)",
+    },
+    filterRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    filterPanel: {
+      backgroundColor: "var(--color-bg-primary)",
+      padding: "var(--spacing-4)",
+      borderRadius: "var(--radius-xl)",
+      boxShadow: "var(--shadow-md)",
+    },
+    filterGrid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(3, 1fr)",
+      gap: "var(--spacing-4)",
+    },
+    filterLabel: {
+      display: "block",
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-muted)",
+      marginBottom: "var(--spacing-1)",
+    },
+    filterInput: {
+      width: "100%",
+      padding: "var(--spacing-2)",
+      border: "var(--border-1) solid var(--color-border-input)",
+      borderRadius: "var(--radius-lg)",
+      fontSize: "var(--font-size-base)",
+      color: "var(--color-text-body)",
+      backgroundColor: "var(--color-bg-primary)",
+    },
+    filterSelect: {
+      width: "100%",
+      padding: "var(--spacing-2)",
+      border: "var(--border-1) solid var(--color-border-input)",
+      borderRadius: "var(--radius-lg)",
+      fontSize: "var(--font-size-base)",
+      color: "var(--color-text-body)",
+      backgroundColor: "var(--color-bg-primary)",
+    },
+    clearButton: {
+      backgroundColor: "var(--color-bg-muted)",
+      color: "var(--color-text-body)",
+      padding: "var(--spacing-2) var(--spacing-4)",
+      borderRadius: "var(--radius-lg)",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "var(--font-size-base)",
+      transition: "var(--transition-colors)",
+    },
+    loadingContainer: {
+      marginTop: "var(--spacing-6)",
+      display: "flex",
+      justifyContent: "center",
+    },
+    spinner: {
+      width: "var(--icon-4xl)",
+      height: "var(--icon-4xl)",
+      border: "var(--border-4) solid var(--color-primary)",
+      borderTop: "var(--border-4) solid transparent",
+      borderRadius: "var(--radius-full)",
+      animation: "spin 1s linear infinite",
+    },
+    resultsContainer: {
+      marginTop: "var(--spacing-6)",
+    },
+    noResultsIcon: {
+      margin: "0 auto",
+      color: "var(--color-text-disabled)",
+      fontSize: "var(--font-size-6xl)",
+      marginBottom: "var(--spacing-4)",
+    },
   }
 
   return (
-    <div className="px-10 py-6 flex-1">
-      <header className="flex justify-between items-center w-full px-3 py-4 rounded-[12px]">
-        <h1 className="text-2xl px-3 font-bold">Student Entry Management</h1>
-        <div className="flex items-center space-x-4">
-          <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center px-4 py-2 rounded-[12px] ${showFilters ? "bg-[#1360AB] text-white" : "bg-white text-gray-700"}`}>
-            <FaFilter className="mr-2" /> Filters
+    <div style={styles.container}>
+      <header style={styles.header}>
+        <h1 style={styles.title}>Student Entry Management</h1>
+        <div style={styles.headerActions}>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            style={{
+              ...styles.filterButton,
+              ...(showFilters ? styles.filterButtonActive : styles.filterButtonInactive),
+            }}
+          >
+            <FaFilter style={styles.filterIcon} /> Filters
           </button>
         </div>
       </header>
 
-      <div className="mt-8 flex flex-col space-y-4">
-        <div className="flex justify-between items-center">
+      <div style={styles.filterSection}>
+        <div style={styles.filterRow}>
           <FilterTabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} />
-          <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by unit, room" className="w-1/2" />
+          <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by unit, room" style={{ width: "50%" }} />
         </div>
 
         {showFilters && (
-          <div className="bg-white p-4 rounded-xl shadow-md">
-            <div className="grid grid-cols-3 gap-4">
+          <div style={styles.filterPanel}>
+            <div style={styles.filterGrid}>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">Filter by Date</label>
-                <input type="date" value={filterDate} onChange={handleDateFilterChange} className="w-full p-2 border border-gray-300 rounded-lg" />
+                <label style={styles.filterLabel}>Filter by Date</label>
+                <input type="date" value={filterDate} onChange={handleDateFilterChange} style={styles.filterInput} />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">Items Per Page</label>
-                <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="w-full p-2 border border-gray-300 rounded-lg">
+                <label style={styles.filterLabel}>Items Per Page</label>
+                <select value={itemsPerPage} onChange={handleItemsPerPageChange} style={styles.filterSelect}>
                   <option value={5}>5</option>
                   <option value={10}>10</option>
                   <option value={20}>20</option>
                   <option value={50}>50</option>
                 </select>
               </div>
-              <div className="flex items-end">
-                <button onClick={handleClearDateFilter} className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+              <div style={{ display: "flex", alignItems: "flex-end" }}>
+                <button onClick={handleClearDateFilter} style={styles.clearButton}>
                   Clear Date Filter
                 </button>
               </div>
@@ -133,19 +265,18 @@ const StudentEntries = () => {
       </div>
 
       {loading ? (
-        <div className="mt-6 flex justify-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner}></div>
         </div>
       ) : entries.length > 0 ? (
-        <div className="mt-6">
+        <div style={styles.resultsContainer}>
           <StudentEntryTable entries={entries} refresh={fetchEntries} />
           {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
         </div>
       ) : (
-        <NoResults icon={<FaUserGraduate className="mx-auto text-gray-300 text-5xl mb-4" />} message="No student entries found" suggestion="Try changing your search or filter criteria" />
+        <NoResults icon={<FaUserGraduate style={styles.noResultsIcon} />} message="No student entries found" suggestion="Try changing your search or filter criteria" />
       )}
+      <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }
