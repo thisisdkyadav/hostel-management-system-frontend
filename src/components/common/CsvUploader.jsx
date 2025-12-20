@@ -98,46 +98,51 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
 
   return (
     <div className="space-y-4">
-      <div className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-        <FaFileUpload className="mx-auto h-10 w-10 text-gray-400" />
-        <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
-        <p className="mt-2 text-xs text-gray-500">
+      <div
+        className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-muted)] transition-colors border-[var(--color-border-primary)]"
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current.click()}
+      >
+        <FaFileUpload className="mx-auto h-10 w-10 text-[var(--color-text-disabled)]" />
+        <p className="mt-2 text-sm text-[var(--color-text-muted)]">Drag and drop a CSV file here, or click to select a file</p>
+        <p className="mt-2 text-xs text-[var(--color-text-muted)]">
           <strong>Required fields:</strong> {requiredFields.join(", ")}
         </p>
         <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
       </div>
 
       <div className="flex flex-col items-center">
-        <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800">
+        <button onClick={generateCsvTemplate} className="flex items-center text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
           <FaFileDownload className="mr-1" />
           Download CSV Template
         </button>
 
-        {instructionText && <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg w-full">{instructionText}</div>}
+        {instructionText && <div className="text-xs text-[var(--color-text-muted)] mt-2 bg-[var(--color-bg-tertiary)] p-3 rounded-lg w-full">{instructionText}</div>}
       </div>
 
       {csvFile && (
-        <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
-          <span className="text-sm text-blue-700">
+        <div className="py-2 px-4 bg-[var(--color-primary-bg)] rounded-lg flex items-center justify-between">
+          <span className="text-sm text-[var(--color-primary)]">
             Selected file: <span className="font-medium">{csvFile.name}</span>
           </span>
           <button onClick={(e) => {
-              e.stopPropagation()
-              resetFile()
-            }}
-            className="text-gray-500 hover:text-gray-700"
+            e.stopPropagation()
+            resetFile()
+          }}
+            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-body)]"
           >
             <FaTimes />
           </button>
         </div>
       )}
 
-      {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+      {error && <div className="py-2 px-4 bg-[var(--color-danger-bg-light)] text-[var(--color-danger)] rounded-lg border-l-4 border-[var(--color-danger)]">{error}</div>}
 
       {isLoading && (
         <div className="flex items-center justify-center py-3">
-          <div className="w-5 h-5 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <span className="ml-2 text-sm text-gray-600">Processing file...</span>
+          <div className="w-5 h-5 border-2 border-t-2 border-[var(--color-border-primary)] border-t-[var(--color-primary)] rounded-full animate-spin"></div>
+          <span className="ml-2 text-sm text-[var(--color-text-muted)]">Processing file...</span>
         </div>
       )}
     </div>
