@@ -282,21 +282,13 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
             </div>
           </div>
           <div style={styles.headerActions}>
-            <button
-              onClick={handleDownload}
-              style={styles.downloadButton}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-success-hover)")}
+            <button onClick={handleDownload} style={styles.downloadButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-success-hover)")}
               onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-success)")}
             >
               <FaDownload style={styles.buttonIcon} />
               <span>Download</span>
             </button>
-            <a
-              href={fullUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styles.openButton}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-primary-hover)")}
+            <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.openButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-primary-hover)")}
               onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-primary)")}
             >
               <FaExternalLinkAlt style={styles.buttonIcon} />
@@ -309,11 +301,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
         <div style={styles.viewerContainer}>
           {fileType === "image" ? (
             <div style={styles.imageContainer}>
-              <img
-                src={fullUrl}
-                alt="Certificate Document"
-                style={styles.image}
-                onLoad={() => setIsLoading(false)}
+              <img src={fullUrl} alt="Certificate Document" style={styles.image} onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
                   setIsLoading(false)
@@ -332,11 +320,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
                 </div>
               )}
 
-              <object
-                data={fullUrl}
-                type="application/pdf"
-                style={styles.pdfObject}
-                onLoad={() => setIsLoading(false)}
+              <object data={fullUrl} type="application/pdf" style={styles.pdfObject} onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
                   setIsLoading(false)
@@ -348,21 +332,13 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
                   <h3 style={styles.fallbackTitle}>Cannot display PDF in browser</h3>
                   <p style={styles.fallbackText}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
                   <div style={styles.fallbackActions}>
-                    <button
-                      onClick={handleDownload}
-                      style={styles.fallbackDownloadButton}
-                      onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-success-hover)")}
+                    <button onClick={handleDownload} style={styles.fallbackDownloadButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-success-hover)")}
                       onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-success)")}
                     >
                       <FaDownload style={styles.buttonIcon} />
                       <span>Download PDF</span>
                     </button>
-                    <a
-                      href={fullUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={styles.fallbackOpenButton}
-                      onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-primary-hover)")}
+                    <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.fallbackOpenButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-primary-hover)")}
                       onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-primary)")}
                     >
                       <FaExternalLinkAlt style={styles.buttonIcon} />
@@ -381,10 +357,7 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
             <div style={styles.errorBox}>
               <p style={styles.errorTitle}>Unable to load document</p>
               <p style={styles.errorText}>There was an error loading the document. Please try downloading it instead.</p>
-              <button
-                onClick={handleDownload}
-                style={styles.errorButton}
-                onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-danger-hover)")}
+              <button onClick={handleDownload} style={styles.errorButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-danger-hover)")}
                 onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-danger)")}
               >
                 <FaDownload style={styles.buttonIcon} />

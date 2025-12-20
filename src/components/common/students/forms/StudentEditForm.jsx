@@ -114,10 +114,7 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
     <form onSubmit={handleSubmit} style={styles.form}>
       <div style={styles.tabContainer}>
         {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
+          <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
             style={{
               ...styles.tab,
               ...(activeTab === tab.id ? styles.tabActive : styles.tabInactive),
@@ -145,15 +142,7 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
       </div>
 
       <div style={styles.buttonContainer}>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={loading}
-          style={{
-            ...styles.cancelButton,
-            opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)",
-          }}
-          onMouseEnter={(e) => {
+        <button type="button" onClick={onCancel} disabled={loading} style={{ ...styles.cancelButton, opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)", }} onMouseEnter={(e) => {
             if (!loading) e.target.style.backgroundColor = "var(--color-bg-muted)"
           }}
           onMouseLeave={(e) => {
@@ -162,14 +151,7 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
         >
           Cancel
         </button>
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            ...styles.submitButton,
-            opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)",
-          }}
-          onMouseEnter={(e) => {
+        <button type="submit" disabled={loading} style={{ ...styles.submitButton, opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)", }} onMouseEnter={(e) => {
             if (!loading) e.target.style.backgroundColor = "var(--color-primary-hover)"
           }}
           onMouseLeave={(e) => {

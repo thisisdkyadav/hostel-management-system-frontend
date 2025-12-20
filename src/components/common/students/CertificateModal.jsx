@@ -268,9 +268,7 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
             <div style={styles.uploadContainer}>
               <label style={{ cursor: isUploading ? "not-allowed" : "pointer" }}>
                 <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} style={styles.hiddenInput} disabled={isUploading} />
-                <div
-                  style={styles.uploadButton}
-                  onMouseEnter={(e) => {
+                <div style={styles.uploadButton} onMouseEnter={(e) => {
                     if (!isUploading) e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)"
                   }}
                   onMouseLeave={(e) => {

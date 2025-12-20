@@ -114,10 +114,7 @@ const StudentLayout = () => {
   // If still loading, don't render anything yet to avoid flashing
   if (loading) {
     return (
-      <div
-        className="flex items-center justify-center"
-        style={{ height: '100vh', backgroundColor: 'var(--color-bg-page)', color: 'var(--color-text-primary)' }}
-      >
+      <div className="flex items-center justify-center" style={{ height: '100vh', backgroundColor: 'var(--color-bg-page)', color: 'var(--color-text-primary)' }} >
         Loading...
       </div>
     )
@@ -140,16 +137,10 @@ const StudentLayout = () => {
   const showSidebar = !showBottomBar
 
   return (
-    <div
-      className={`flex flex-col md:flex-row min-h-screen ${showBottomBar ? "pwa-container" : ""}`}
-      style={{ backgroundColor: 'var(--color-bg-page)' }}
-    >
+    <div className={`flex flex-col md:flex-row min-h-screen ${showBottomBar ? "pwa-container" : ""}`} style={{ backgroundColor: 'var(--color-bg-page)' }} >
       {showSidebar && <Sidebar navItems={sidebarNavItems} />}
 
-      <div
-        className={`flex-1 overflow-auto ${showBottomBar ? "pb-16 pwa-bottom-padding" : "pt-16 md:pt-0"}`}
-        style={{ height: '100vh' }}
-      >
+      <div className={`flex-1 overflow-auto ${showBottomBar ? "pb-16 pwa-bottom-padding" : "pt-16 md:pt-0"}`} style={{ height: '100vh' }} >
         <Outlet />
       </div>
 

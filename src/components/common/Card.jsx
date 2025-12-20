@@ -48,14 +48,7 @@ const Card = ({
   `.replace(/\s+/g, ' ').trim()
 
   return (
-    <div
-      className={baseClasses}
-      style={dynamicStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      {...props}
-    >
+    <div className={baseClasses} style={dynamicStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick} {...props} >
       {children}
     </div>
   )
@@ -66,10 +59,7 @@ Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, sub
   return (
     <div className={`flex items-center gap-4 mb-5 ${className}`} style={style}>
       {icon && (
-        <div
-          className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg || ''} group-hover:${iconHoverBg || ''}`}
-          style={!iconBg ? { backgroundColor: 'var(--color-primary-bg)' } : {}}
-        >
+        <div className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg || ''} group-hover:${iconHoverBg || ''}`} style={!iconBg ? { backgroundColor: 'var(--color-primary-bg)' } : {}} >
           {icon}
         </div>
       )}

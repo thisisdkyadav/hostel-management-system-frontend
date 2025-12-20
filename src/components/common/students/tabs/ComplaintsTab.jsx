@@ -178,8 +178,7 @@ const ComplaintsTab = ({ userId }) => {
             </thead>
             <tbody style={styles.tbody}>
               {complaints.map((complaint) => (
-                <tr
-                  onClick={() => handleComplaintClick(complaint)}
+                <tr onClick={() => handleComplaintClick(complaint)}
                   key={complaint._id}
                   style={styles.tr}
                   onMouseEnter={(e) => {

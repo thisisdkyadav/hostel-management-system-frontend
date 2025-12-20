@@ -96,9 +96,7 @@ const BaseTable = ({ columns, data, onRowClick, emptyMessage = "No data to displ
               </tr>
             ) : data.length > 0 ? (
               data.map((item, index) => (
-                <tr
-                  key={item.id || index}
-                  onClick={() => onRowClick && onRowClick(item)}
+                <tr key={item.id || index} onClick={() => onRowClick && onRowClick(item)}
                   onMouseEnter={() => setHoveredRow(index)}
                   onMouseLeave={() => setHoveredRow(null)}
                   style={getRowStyle(index)}

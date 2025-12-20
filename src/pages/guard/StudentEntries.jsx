@@ -220,8 +220,7 @@ const StudentEntries = () => {
       <header style={styles.header}>
         <h1 style={styles.title}>Student Entry Management</h1>
         <div style={styles.headerActions}>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
+          <button onClick={() => setShowFilters(!showFilters)}
             style={{
               ...styles.filterButton,
               ...(showFilters ? styles.filterButtonActive : styles.filterButtonInactive),

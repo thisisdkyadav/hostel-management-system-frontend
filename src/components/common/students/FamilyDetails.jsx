@@ -238,10 +238,7 @@ const FamilyDetails = ({ userId }) => {
       {familyDetails && familyDetails.length > 0 ? (
         <div style={styles.grid}>
           {familyDetails.map((member) => (
-            <div
-              key={member.id}
-              style={styles.card}
-              onMouseEnter={(e) => {
+            <div key={member.id} style={styles.card} onMouseEnter={(e) => {
                 e.currentTarget.style.boxShadow = "var(--shadow-md)"
               }}
               onMouseLeave={(e) => {
@@ -254,8 +251,7 @@ const FamilyDetails = ({ userId }) => {
                   <span style={styles.badge}>{member.relationship}</span>
                 </div>
                 {canAccess("students_info", "edit") && (
-                  <button
-                    onClick={() => handleEditClick(member)}
+                  <button onClick={() => handleEditClick(member)}
                     style={styles.editButton}
                     onMouseEnter={(e) => {
                       e.target.style.backgroundColor = "var(--color-primary-bg-hover)"

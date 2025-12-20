@@ -199,9 +199,7 @@ const IDCard = () => {
     const imageUrl = idCardData[side]
 
     return (
-      <div
-        style={styles.card}
-        onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-md)")}
+      <div style={styles.card} onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-md)")}
         onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-sm)")}
       >
         <h3 style={styles.cardTitle}>{title}</h3>
@@ -210,8 +208,7 @@ const IDCard = () => {
           {imageUrl ? (
             <div style={styles.imageWrapper}>
               <img src={getMediaUrl(imageUrl)} alt={`ID Card ${title}`} style={styles.image} />
-              <button
-                onClick={() => handleUploadClick(side)}
+              <button onClick={() => handleUploadClick(side)}
                 style={styles.cameraButton}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-hover)")}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-bg)")}

@@ -38,9 +38,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
       {label && <label className="block text-sm font-medium text-[var(--color-text-muted)] mb-1.5">{label}</label>}
 
       <div className="relative" ref={dropdownRef}>
-        <div
-          className={`w-full min-h-[42px] p-2.5 border border-[var(--color-border-input)] rounded-lg focus-within:ring-2 focus-within:ring-[var(--color-primary-bg)] focus-within:border-[var(--color-primary)] bg-[var(--color-bg-primary)] cursor-pointer ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : ""}`}
-          onClick={() => !disabled && setIsOpen(!isOpen)}
+        <div className={`w-full min-h-[42px] p-2.5 border border-[var(--color-border-input)] rounded-lg focus-within:ring-2 focus-within:ring-[var(--color-primary-bg)] focus-within:border-[var(--color-primary)] bg-[var(--color-bg-primary)] cursor-pointer ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : ""}`} onClick={() => !disabled && setIsOpen(!isOpen)}
         >
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-1 flex-1 min-h-[20px]">
@@ -83,16 +81,10 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
                   </button>
                 </div>
                 {options.map((option) => (
-                  <div
-                    key={option}
-                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-[var(--color-bg-tertiary)] ${selectedValues.includes(option) ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)]" : "text-[var(--color-text-body)]"}`}
-                    onClick={() => handleToggleOption(option)}
+                  <div key={option} className={`px-3 py-2 text-sm cursor-pointer hover:bg-[var(--color-bg-tertiary)] ${selectedValues.includes(option) ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)]" : "text-[var(--color-text-body)]"}`} onClick={() => handleToggleOption(option)}
                   >
                     <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedValues.includes(option)}
-                        onChange={() => { }}
+                      <input type="checkbox" checked={selectedValues.includes(option)} onChange={() => { }}
                         className="mr-2 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-[var(--color-border-input)] rounded"
                       />
                       {option}

@@ -127,13 +127,7 @@ const MaintenancePage = () => {
   return (
     <div style={styles.container}>
       <div style={styles.headerRow}>
-        <ComplaintsHeader
-          showFilters={showFilters}
-          setShowFilters={setShowFilters}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          showCraftComplaint={false}
-          setShowCraftComplaint={() => { }}
+        <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={false} setShowCraftComplaint={() => { }}
           userRole={user?.role}
           title="Maintenance Dashboard"
         />
@@ -165,17 +159,7 @@ const MaintenancePage = () => {
         </div>
       </div>
 
-      <ComplaintsContent
-        loading={loading}
-        complaints={complaints}
-        viewMode={viewMode}
-        filters={filters}
-        totalPages={totalPages}
-        COMPLAINT_FILTER_TABS={[]}
-        updateFilter={updateFilter}
-        onViewDetails={viewComplaintDetails}
-        paginate={paginate}
-      />
+      <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={[]} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
 
       {showDetailModal && selectedComplaint && (
         <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />
