@@ -27,28 +27,28 @@ const FeedbackStats = ({ feedbacks }) => {
       value: totalFeedbacks,
       subtitle: "All submitted feedbacks",
       icon: <HiAnnotation className="text-2xl" />,
-      color: "#1360AB",
+      color: "var(--color-primary)",
     },
     {
       title: "Pending",
       value: pendingFeedbacks,
       subtitle: "Require attention",
       icon: <HiClipboardList className="text-2xl" />,
-      color: "#f97316",
+      color: "var(--color-warning)",
     },
     {
       title: "Seen",
       value: seenFeedbacks,
       subtitle: "Acknowledged feedbacks",
       icon: <HiEye className="text-2xl" />,
-      color: "#22c55e",
+      color: "var(--color-success)",
     },
     {
       title: "Latest Feedback",
       value: getLatestFeedbackDate(),
       subtitle: "Most recent submission",
       icon: <HiClock className="text-2xl" />,
-      color: "#8b5cf6",
+      color: "var(--color-info)",
     },
   ]
 
