@@ -1,30 +1,84 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
-// import InventoryManagement from "../../components/wardens/inventory/InventoryManagement"
 
 const StudentInventory = () => {
   const [activeTab, setActiveTab] = useState("available")
 
+  const styles = {
+    container: {
+      maxWidth: "var(--container-xl)",
+      margin: "0 auto",
+      padding: "var(--spacing-6) var(--spacing-4)",
+    },
+    header: {
+      marginBottom: "var(--spacing-6)",
+    },
+    title: {
+      fontSize: "var(--font-size-3xl)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-secondary)",
+    },
+    subtitle: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-muted)",
+      marginTop: "var(--spacing-1)",
+    },
+    tabContainer: {
+      borderBottom: "var(--border-1) solid var(--color-border-primary)",
+      marginBottom: "var(--spacing-6)",
+    },
+    tabNav: {
+      display: "flex",
+      gap: "var(--spacing-8)",
+    },
+    tab: {
+      padding: "var(--spacing-4) var(--spacing-1)",
+      display: "flex",
+      alignItems: "center",
+      fontWeight: "var(--font-weight-medium)",
+      fontSize: "var(--font-size-sm)",
+      borderBottom: "var(--border-2) solid transparent",
+      background: "none",
+      border: "none",
+      cursor: "pointer",
+      transition: "var(--transition-colors)",
+    },
+    tabActive: {
+      borderBottom: "var(--border-2) solid var(--color-primary)",
+      color: "var(--color-primary)",
+    },
+    tabInactive: {
+      color: "var(--color-text-muted)",
+    },
+  }
+
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Student Inventory Management</h1>
-        <p className="text-sm text-gray-600 mt-1">Manage and assign inventory items to students</p>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Student Inventory Management</h1>
+        <p style={styles.subtitle}>Manage and assign inventory items to students</p>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="flex space-x-8">
-          <button onClick={() => setActiveTab("available")} className={`py-4 px-1 flex items-center font-medium text-sm border-b-2 ${activeTab === "available" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+      <div style={styles.tabContainer}>
+        <nav style={styles.tabNav}>
+          <button
+            onClick={() => setActiveTab("available")}
+            style={{ ...styles.tab, ...(activeTab === "available" ? styles.tabActive : styles.tabInactive) }}
+            onMouseEnter={(e) => { if (activeTab !== "available") e.currentTarget.style.color = "var(--color-text-body)" }}
+            onMouseLeave={(e) => { if (activeTab !== "available") e.currentTarget.style.color = "var(--color-text-muted)" }}
+          >
             Available Inventory
           </button>
-          <button onClick={() => setActiveTab("assignments")} className={`py-4 px-1 flex items-center font-medium text-sm border-b-2 ${activeTab === "assignments" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
+          <button
+            onClick={() => setActiveTab("assignments")}
+            style={{ ...styles.tab, ...(activeTab === "assignments" ? styles.tabActive : styles.tabInactive) }}
+            onMouseEnter={(e) => { if (activeTab !== "assignments") e.currentTarget.style.color = "var(--color-text-body)" }}
+            onMouseLeave={(e) => { if (activeTab !== "assignments") e.currentTarget.style.color = "var(--color-text-muted)" }}
+          >
             Student Assignments
           </button>
-          {/* <button onClick={() => setActiveTab("management")} className={`py-4 px-1 flex items-center font-medium text-sm border-b-2 ${activeTab === "management" ? "border-blue-500 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}>
-            Item Management
-          </button> */}
         </nav>
       </div>
 
@@ -32,7 +86,6 @@ const StudentInventory = () => {
       <div>
         {activeTab === "available" && <AvailableInventory />}
         {activeTab === "assignments" && <StudentAssignments />}
-        {/* {activeTab === "management" && <InventoryManagement />} */}
       </div>
     </div>
   )
