@@ -147,12 +147,12 @@ const Dashboard = () => {
     <div className="flex flex-col h-full">
       <DashboardHeader>
         {loading ? (
-          <div className="flex gap-2.5">
-            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
-            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-md" />
+          <div className="flex gap-[var(--spacing-2-5)]">
+            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-[var(--radius-md)]" />
+            <ShimmerLoader height="2.25rem" width="8.5rem" className="rounded-[var(--radius-md)]" />
           </div>
         ) : error ? (
-          <div className="text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-1.5 text-xs">Error loading data</div>
+          <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
         ) : (
           (() => {
             // Safe access to degreeWise and registered data
@@ -228,58 +228,58 @@ const Dashboard = () => {
             finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
 
             return (
-              <div className="flex items-center gap-2.5 border-l border-gray-200 pl-5">
+              <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
                 {/* Hostlers Card - Compact */}
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-1 hover:border-[#1360AB] transition-all">
-                  <div className="flex items-center gap-2">
-                    <FaUser className="text-[#1360AB] text-sm" />
-                    <div className="flex items-center gap-2">
+                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
+                  <div className="flex items-center gap-[var(--spacing-2)]">
+                    <FaUser className="text-[var(--color-primary)] text-sm" />
+                    <div className="flex items-center gap-[var(--spacing-2)]">
                       <div>
-                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Hostlers</p>
-                        <p className="text-lg font-bold text-gray-900 leading-none">{hostler.total}</p>
+                        <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Hostlers</p>
+                        <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{hostler.total}</p>
                       </div>
-                      <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
-                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {hostler.boys}</span>
-                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {hostler.girls}</span>
+                      <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">B {hostler.boys}</span>
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">G {hostler.girls}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Day Scholars Card - Compact */}
-                <div className="bg-white border border-gray-200 rounded-md px-3 py-1 hover:border-[#1360AB] transition-all">
-                  <div className="flex items-center gap-2">
-                    <FaUser className="text-[#1360AB] text-sm" />
-                    <div className="flex items-center gap-2">
+                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
+                  <div className="flex items-center gap-[var(--spacing-2)]">
+                    <FaUser className="text-[var(--color-primary)] text-sm" />
+                    <div className="flex items-center gap-[var(--spacing-2)]">
                       <div>
-                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Day Scholars</p>
-                        <p className="text-lg font-bold text-gray-900 leading-none">{finalDayScholar.total}</p>
+                        <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Day Scholars</p>
+                        <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{finalDayScholar.total}</p>
                       </div>
-                      <div className="flex gap-1 ml-1.5 border-l border-gray-200 pl-2">
-                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">B {finalDayScholar.boys}</span>
-                        <span className="px-1.5 py-0.5 bg-gray-50 text-gray-700 rounded text-xs font-medium">G {finalDayScholar.girls}</span>
+                      <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">B {finalDayScholar.boys}</span>
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">G {finalDayScholar.girls}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Online Users Card - Compact (Rightmost) */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-md px-3 py-1 hover:border-green-400 transition-all">
-                  <div className="flex items-center gap-2">
-                    <HiStatusOnline className="text-green-600 text-sm animate-pulse" />
-                    <div className="flex items-center gap-2">
+                <div className="bg-gradient-to-br from-[var(--color-success-bg-light)] to-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-success)] transition-[var(--transition-all)]">
+                  <div className="flex items-center gap-[var(--spacing-2)]">
+                    <HiStatusOnline className="text-[var(--color-success)] text-sm animate-pulse" />
+                    <div className="flex items-center gap-[var(--spacing-2)]">
                       <div>
-                        <p className="text-xs text-green-700 font-medium uppercase tracking-wide">Online Now</p>
-                        <p className="text-lg font-bold text-green-800 leading-none">{onlineStats?.totalOnline || 0}</p>
+                        <p className="text-xs text-[var(--color-success-text)] font-medium uppercase tracking-wide">Online Now</p>
+                        <p className="text-lg font-bold text-[var(--color-success-text)] leading-none">{onlineStats?.totalOnline || 0}</p>
                       </div>
-                      <div className="flex gap-1 ml-1.5 border-l border-green-300 pl-2">
-                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Students online">
+                      <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-success-light)] pl-[var(--spacing-2)]">
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium" title="Students online">
                           S: {onlineStats?.byRole?.Student || 0}
                         </span>
-                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Hostel Supervisors online">
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium" title="Hostel Supervisors online">
                           HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
                         </span>
-                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium" title="Admins online">
+                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium" title="Admins online">
                           A: {onlineStats?.byRole?.Admin || 0}
                         </span>
                       </div>
@@ -293,52 +293,52 @@ const Dashboard = () => {
       </DashboardHeader>
 
       {/* Main Content with padding */}
-      <div className="flex-1 overflow-y-auto px-6 py-6">
+      <div className="flex-1 overflow-y-auto px-[var(--spacing-6)] py-[var(--spacing-6)]">
         {/* Main dashboard grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-[var(--spacing-6)]">
           {/* Student data card */}
           <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex justify-between items-center mb-[var(--spacing-4)]">
                   <ShimmerLoader height="1.25rem" width="50%" />
-                  <ShimmerLoader height="1.75rem" width="8rem" className="rounded-full" />
+                  <ShimmerLoader height="1.75rem" width="8rem" className="rounded-[var(--radius-full)]" />
                 </div>
                 <TableShimmer rows={6} className="flex-1" />
               </div>
             ) : error ? (
-              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
             ) : (
               <div className="h-full flex flex-col overflow-auto">
                 {/* Compact Header */}
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5">
-                    <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
+                <div className="flex justify-between items-center mb-[var(--spacing-2)]">
+                  <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)]">
+                    <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
                     Student Distribution
                   </h2>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-[var(--spacing-1-5)]">
                     {/* Normal/Registered Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.7rem]" role="tablist">
-                      <button onClick={() => setStudentDataView("normal")} 
-                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[#1360AB] text-white" : "text-gray-600 hover:bg-gray-200"}`} 
+                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                      <button onClick={() => setStudentDataView("normal")}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "normal" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
                       >
                         Hostler
                       </button>
                       <button onClick={() => setStudentDataView("registered")}
-                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[#1360AB] text-white" : "text-gray-600 hover:bg-gray-200"}`}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${studentDataView === "registered" ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
                       >
                         Registered
                       </button>
                     </div>
                     {/* Absolute/Normalized Toggle */}
-                    <div className="flex items-center bg-gray-100 rounded-full p-0.5 text-[0.7rem]" role="tablist">
-                      <button onClick={() => setNormalizedView(false)} 
-                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${!normalizedView ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-200"}`} 
+                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                      <button onClick={() => setNormalizedView(false)}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
                       >
                         Abs
                       </button>
-                      <button onClick={() => setNormalizedView(true)} 
-                        className={`px-2.5 py-1 rounded-full transition-all duration-150 font-medium ${normalizedView ? "bg-emerald-600 text-white" : "text-gray-600 hover:bg-gray-200"}`} 
+                      <button onClick={() => setNormalizedView(true)}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-success)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
                       >
                         %
                       </button>
@@ -359,10 +359,10 @@ const Dashboard = () => {
           <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-                <div className="flex-1 grid grid-cols-3 gap-4">
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
+                <div className="flex-1 grid grid-cols-3 gap-[var(--spacing-4)]">
                   <div className="flex items-center justify-center">
-                    <ChartShimmer height="140px" className="rounded-full" />
+                    <ChartShimmer height="140px" className="rounded-[var(--radius-full)]" />
                   </div>
                   <div className="col-span-2">
                     <TableShimmer rows={4} className="h-[16rem]" />
@@ -370,91 +370,91 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : error ? (
-              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
-                  <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
+                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
+                  <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
                   Hostel Occupancy
                 </h2>
 
                 <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-                  <div className="rounded-[14px] border border-gray-200 flex flex-col h-full min-h-0 overflow-hidden">
+                  <div className="rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] flex flex-col h-full min-h-0 overflow-hidden">
                     {/* Fixed Header */}
-                    <div className="bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-200 flex-shrink-0">
+                    <div className="bg-gradient-to-r from-[var(--color-bg-tertiary)] to-[var(--color-bg-secondary)] border-b border-[var(--color-border-primary)] flex-shrink-0">
                       <table className="min-w-full">
                         <thead>
                           <tr>
-                            <th className="px-3 py-2 text-[0.7rem] font-bold text-gray-600 text-left uppercase tracking-wider w-[40%]">
-                              <div className="flex items-center gap-2">
+                            <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
+                              <div className="flex items-center gap-[var(--spacing-2)]">
                                 <input type="checkbox" checked={allHostelsSelected} onChange={() => {
-                                    if (allHostelsSelected) {
-                                      setSelectedHostels([])
-                                    } else {
-                                      setSelectedHostels(dashboardData.hostels.map((_, index) => index))
-                                    }
-                                  }}
-                                  className="w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB]"
+                                  if (allHostelsSelected) {
+                                    setSelectedHostels([])
+                                  } else {
+                                    setSelectedHostels(dashboardData.hostels.map((_, index) => index))
+                                  }
+                                }}
+                                  className="w-3.5 h-3.5 text-[var(--color-primary)] bg-[var(--color-bg-primary)] border-[var(--color-border-dark)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:ring-1 cursor-pointer accent-[var(--color-primary)]"
                                 />
                                 Hostel
                               </div>
                             </th>
-                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Rooms</th>
-                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Capacity</th>
-                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Occupied</th>
-                            <th className="px-2 py-2 text-[0.7rem] font-bold text-gray-600 text-center uppercase tracking-wider w-[15%]">Vacant</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Rooms</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Capacity</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Occupied</th>
+                            <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Vacant</th>
                           </tr>
                         </thead>
                       </table>
                     </div>
-                    
+
                     {/* Scrollable Body */}
-                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
                       <table className="min-w-full">
-                        <tbody className="bg-white divide-y divide-gray-50">
+                        <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
                           {dashboardData?.hostels?.map((hostel, index) => {
                             return (
-                              <tr key={index} className={`group hover:bg-blue-100 transition-all duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-100'}`}>
-                                <td className="px-3 py-1.5 w-[40%]">
-                                  <div className="flex items-center gap-2">
+                              <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                                <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
+                                  <div className="flex items-center gap-[var(--spacing-2)]">
                                     <input type="checkbox" checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)}
-                                      className={`w-3.5 h-3.5 text-[#1360AB] bg-white border-gray-300 rounded focus:ring-[#1360AB] focus:ring-1 cursor-pointer accent-[#1360AB] transition-opacity ${allHostelsSelected ? "opacity-40" : "opacity-100"}`}
+                                      className={`w-3.5 h-3.5 text-[var(--color-primary)] bg-[var(--color-bg-primary)] border-[var(--color-border-dark)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:ring-1 cursor-pointer accent-[var(--color-primary)] transition-opacity ${allHostelsSelected ? "opacity-40" : "opacity-100"}`}
                                     />
-                                    <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-gray-800 group-hover:text-[#1360AB]" : "text-gray-500"}`}>{hostel.name}</span>
+                                    <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
                                   </div>
                                 </td>
-                                <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
-                                <td className="px-2 py-1.5 text-[0.8125rem] text-gray-600 text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
-                                <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
-                                <td className="px-2 py-1.5 text-[0.8125rem] text-emerald-700 text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalRooms}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-muted)] text-center font-medium tabular-nums w-[15%]">{hostel.totalCapacity}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-bold tabular-nums w-[15%]">{hostel.currentOccupancy}</td>
+                                <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-success)] text-center font-bold tabular-nums w-[15%]">{hostel.vacantCapacity}</td>
                               </tr>
                             )
                           })}
                         </tbody>
                       </table>
                     </div>
-                    
+
                     {/* Fixed Footer */}
-                    <div className="bg-gradient-to-r from-slate-100 to-gray-100 border-t-2 border-gray-300 flex-shrink-0">
+                    <div className="bg-gradient-to-r from-[var(--color-bg-muted)] to-[var(--color-bg-tertiary)] border-t-2 border-[var(--color-border-dark)] flex-shrink-0">
                       <table className="min-w-full">
                         <tfoot>
                           <tr>
-                            <td className="px-3 py-2 text-[0.75rem] text-gray-900 w-[40%]">
-                              <div className="flex items-center gap-2">
+                            <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] text-[var(--color-text-primary)] w-[40%]">
+                              <div className="flex items-center gap-[var(--spacing-2)]">
                                 <div className="w-3.5 h-3.5"></div>
-                                <div className="flex items-center gap-1.5">
+                                <div className="flex items-center gap-[var(--spacing-1-5)]">
                                   <span className="uppercase tracking-wider font-extrabold">Total</span>
                                   {selectedHostels.length > 0 && selectedHostels.length < (dashboardData?.hostels?.length || 0) && (
-                                    <span className="px-1.5 py-0.5 bg-[#1360AB] text-white text-[0.65rem] rounded font-bold">{selectedHostels.length}</span>
+                                    <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedHostels.length}</span>
                                   )}
                                 </div>
                               </div>
                             </td>
-                            <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
-                            <td className="px-2 py-2 text-[0.8125rem] text-gray-900 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
-                            <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
-                            <td className="px-2 py-2 text-[0.8125rem] text-emerald-800 text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalRooms, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.totalCapacity, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.currentOccupancy, 0) || 0}</td>
+                            <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-success)] text-center font-extrabold tabular-nums w-[15%]">{dashboardData?.hostels?.filter((_, index) => selectedHostels.includes(index)).reduce((sum, hostel) => sum + hostel.vacantCapacity, 0) || 0}</td>
                           </tr>
                         </tfoot>
                       </table>
@@ -469,29 +469,29 @@ const Dashboard = () => {
           <Card className="xl:col-span-2 h-[24rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
                 <TableShimmer rows={4} className="flex-1" />
               </div>
             ) : error ? (
-              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
-                  <span className="w-1 h-4 bg-[#1360AB] rounded-full"></span>
+                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
+                  <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
                   Staff Upcoming Joins
                 </h2>
 
-                <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                <div className="flex-1 overflow-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
                   {!dashboardData?.leaves || !dashboardData.leaves.data || (dashboardData.leaves.data.leaves || []).length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center py-8">
-                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                        <FaCalendarAlt className="text-gray-400 text-lg" />
+                    <div className="flex flex-col items-center justify-center h-full text-center py-[var(--spacing-8)]">
+                      <div className="w-12 h-12 bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] flex items-center justify-center mb-[var(--spacing-3)]">
+                        <FaCalendarAlt className="text-[var(--color-text-light)] text-lg" />
                       </div>
-                      <p className="text-sm font-medium text-gray-500">No upcoming returns</p>
+                      <p className="text-sm font-medium text-[var(--color-text-muted)]">No upcoming returns</p>
                     </div>
                   ) : (
-                    <ul className="space-y-2">
+                    <ul className="space-y-[var(--spacing-2)]">
                       {dashboardData.leaves.data.leaves.map((lv, index) => {
                         const name = lv?.userId?.name || lv?.userId?.email || "Unknown"
                         // compute joining date = endDate + 1 day
@@ -513,32 +513,32 @@ const Dashboard = () => {
                         }
 
                         const statusColors = {
-                          'pending': 'bg-amber-50 text-amber-700 border-amber-200',
-                          'approved': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                          'rejected': 'bg-red-50 text-red-700 border-red-200',
+                          'pending': 'bg-[var(--color-warning-bg)] text-[var(--color-warning-text)] border-[var(--color-warning-light)]',
+                          'approved': 'bg-[var(--color-success-bg)] text-[var(--color-success-text)] border-[var(--color-success-light)]',
+                          'rejected': 'bg-[var(--color-danger-bg)] text-[var(--color-danger-text)] border-[var(--color-danger-light)]',
                         }
                         const status = (lv.joinStatus || lv.status || '').toLowerCase()
-                        const statusStyle = statusColors[status] || 'bg-gray-50 text-gray-700 border-gray-200'
+                        const statusStyle = statusColors[status] || 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] border-[var(--color-border-primary)]'
 
                         return (
-                          <li key={lv._id} className="group relative flex items-center justify-between bg-white rounded-[12px] p-2.5 border border-gray-100 hover:border-[#1360AB]/30 transition-all duration-150" >
+                          <li key={lv._id} className="group relative flex items-center justify-between bg-[var(--color-bg-primary)] rounded-[var(--radius-xl)] p-[var(--spacing-2-5)] border border-[var(--color-border-light)] hover:border-[var(--color-primary-muted)] transition-all duration-150" >
                             {/* Left accent bar */}
-                            <div className={`absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full ${daysRemaining !== null && daysRemaining <= 1 ? 'bg-emerald-500' : daysRemaining !== null && daysRemaining <= 3 ? 'bg-amber-500' : 'bg-blue-500'}`}></div>
-                            
-                            <div className="pl-2">
-                              <p className="text-[0.8125rem] font-semibold text-gray-900 group-hover:text-[#1360AB] transition-colors">{name}</p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[0.7rem] text-gray-500">Leave ends:</span>
-                                <span className="text-[0.7rem] font-medium text-gray-700">{lv.endDate ? new Date(lv.endDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "—"}</span>
+                            <div className={`absolute left-0 top-[var(--spacing-1-5)] bottom-[var(--spacing-1-5)] w-0.5 rounded-[var(--radius-full)] ${daysRemaining !== null && daysRemaining <= 1 ? 'bg-[var(--color-success)]' : daysRemaining !== null && daysRemaining <= 3 ? 'bg-[var(--color-warning)]' : 'bg-[var(--color-info)]'}`}></div>
+
+                            <div className="pl-[var(--spacing-2)]">
+                              <p className="text-[0.8125rem] font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">{name}</p>
+                              <div className="flex items-center gap-[var(--spacing-2)] mt-[var(--spacing-1)]">
+                                <span className="text-[0.7rem] text-[var(--color-text-muted)]">Leave ends:</span>
+                                <span className="text-[0.7rem] font-medium text-[var(--color-text-body)]">{lv.endDate ? new Date(lv.endDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "—"}</span>
                               </div>
                             </div>
 
-                            <div className="text-right flex flex-col items-end gap-1.5">
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-[0.7rem] text-gray-500">Returns:</span>
-                                <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md text-[0.75rem] font-bold border border-emerald-200">{joinDate || "—"}</span>
+                            <div className="text-right flex flex-col items-end gap-[var(--spacing-1-5)]">
+                              <div className="flex items-center gap-[var(--spacing-1-5)]">
+                                <span className="text-[0.7rem] text-[var(--color-text-muted)]">Returns:</span>
+                                <span className="px-[var(--spacing-2)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-md)] text-[0.75rem] font-bold border border-[var(--color-success-light)]">{joinDate || "—"}</span>
                               </div>
-                              <span className={`px-2 py-0.5 rounded-md text-[0.65rem] font-semibold uppercase tracking-wide border ${statusStyle}`}>
+                              <span className={`px-[var(--spacing-2)] py-[var(--spacing-0-5)] rounded-[var(--radius-md)] text-[0.65rem] font-semibold uppercase tracking-wide border ${statusStyle}`}>
                                 {lv.joinStatus || lv.status || "Pending"}
                               </span>
                             </div>
@@ -556,76 +556,76 @@ const Dashboard = () => {
           <Card className="h-[20rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
-                <div className="grid grid-cols-2 gap-3 mb-3">
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
+                <div className="grid grid-cols-2 gap-[var(--spacing-3)] mb-[var(--spacing-3)]">
                   <StatCardShimmer className="relative h-16" />
                   <StatCardShimmer className="relative h-16" />
                 </div>
-                <div className="grid grid-cols-3 gap-3 mb-3">
+                <div className="grid grid-cols-3 gap-[var(--spacing-3)] mb-[var(--spacing-3)]">
                   <StatCardShimmer className="relative h-16" />
                   <StatCardShimmer className="relative h-16" />
                   <StatCardShimmer className="relative h-16" />
                 </div>
-                <ShimmerLoader height="3rem" className="rounded-lg mt-auto" />
+                <ShimmerLoader height="3rem" className="rounded-[var(--radius-lg)] mt-auto" />
               </div>
             ) : error ? (
-              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
-                  <span className="w-1 h-4 bg-amber-500 rounded-full"></span>
+                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
+                  <span className="w-1 h-4 bg-[var(--color-warning)] rounded-[var(--radius-full)]"></span>
                   Complaints
                 </h2>
 
                 <div className="flex-1 flex flex-col justify-between">
                   {/* Primary stats - 2x2 grid */}
-                  <div className="grid grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-2 gap-[var(--spacing-1-5)]">
                     {/* Pending */}
-                    <div className="rounded-[12px] bg-amber-50 border border-amber-200/60 p-2 hover:border-amber-300 transition-all">
+                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-warning-bg)] border border-[var(--color-warning-light)] p-[var(--spacing-2)] hover:border-[var(--color-warning)] transition-all">
                       <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-amber-600 uppercase">Pending</p>
-                        <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                        <p className="text-[0.65rem] font-semibold text-[var(--color-warning-text)] uppercase">Pending</p>
+                        <div className="w-2 h-2 bg-[var(--color-warning)] rounded-[var(--radius-full)] animate-pulse"></div>
                       </div>
-                      <p className="text-xl font-black text-amber-700 tabular-nums mt-0.5">{dashboardData?.complaints?.pending || 0}</p>
+                      <p className="text-xl font-black text-[var(--color-warning-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.pending || 0}</p>
                     </div>
 
                     {/* In Progress */}
-                    <div className="rounded-[12px] bg-blue-50 border border-blue-200/60 p-2 hover:border-blue-300 transition-all">
+                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-info-bg)] border border-[var(--color-info-light)] p-[var(--spacing-2)] hover:border-[var(--color-info)] transition-all">
                       <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-blue-600 uppercase">In Progress</p>
-                        <AiOutlineLoading3Quarters className="w-3 h-3 text-blue-500 animate-spin" />
+                        <p className="text-[0.65rem] font-semibold text-[var(--color-info-text)] uppercase">In Progress</p>
+                        <AiOutlineLoading3Quarters className="w-3 h-3 text-[var(--color-info)] animate-spin" />
                       </div>
-                      <p className="text-xl font-black text-blue-700 tabular-nums mt-0.5">{dashboardData?.complaints?.inProgress || 0}</p>
+                      <p className="text-xl font-black text-[var(--color-info-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.inProgress || 0}</p>
                     </div>
 
                     {/* Forwarded to IDO */}
-                    <div className="rounded-[12px] bg-purple-50 border border-purple-200/60 p-2 hover:border-purple-300 transition-all">
+                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-purple-bg)] border border-[var(--color-purple-light-bg)] p-[var(--spacing-2)] hover:border-[var(--color-purple-text)] transition-all">
                       <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-purple-600 uppercase">To IDO</p>
-                        <span className="text-[0.5rem] font-bold text-purple-500">FWD</span>
+                        <p className="text-[0.65rem] font-semibold text-[var(--color-purple-text)] uppercase">To IDO</p>
+                        <span className="text-[0.5rem] font-bold text-[var(--color-purple-text)]">FWD</span>
                       </div>
-                      <p className="text-xl font-black text-purple-700 tabular-nums mt-0.5">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
+                      <p className="text-xl font-black text-[var(--color-purple-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
                     </div>
 
                     {/* Resolved Today */}
-                    <div className="rounded-[12px] bg-emerald-50 border border-emerald-200/60 p-2 hover:border-emerald-300 transition-all">
+                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] p-[var(--spacing-2)] hover:border-[var(--color-success)] transition-all">
                       <div className="flex items-center justify-between">
-                        <p className="text-[0.65rem] font-semibold text-emerald-600 uppercase">Today</p>
-                        <span className="text-xs text-emerald-600">✓</span>
+                        <p className="text-[0.65rem] font-semibold text-[var(--color-success-text)] uppercase">Today</p>
+                        <span className="text-xs text-[var(--color-success)]">✓</span>
                       </div>
-                      <p className="text-xl font-black text-emerald-700 tabular-nums mt-0.5">{dashboardData?.complaints?.resolvedToday || 0}</p>
+                      <p className="text-xl font-black text-[var(--color-success-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.resolvedToday || 0}</p>
                     </div>
                   </div>
 
                   {/* Overdue Summary */}
-                  <div className="mt-1.5 bg-red-50 p-2 rounded-[12px] border border-red-200/60">
+                  <div className="mt-[var(--spacing-1-5)] bg-[var(--color-danger-bg)] p-[var(--spacing-2)] rounded-[var(--radius-xl)] border border-[var(--color-danger-light)]">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-red-500 text-xs">⚠</span>
-                        <p className="text-[0.7rem] font-bold text-red-600">Overdue 20+ days</p>
+                      <div className="flex items-center gap-[var(--spacing-1-5)]">
+                        <span className="text-[var(--color-danger)] text-xs">⚠</span>
+                        <p className="text-[0.7rem] font-bold text-[var(--color-danger-text)]">Overdue 20+ days</p>
                       </div>
-                      <p className="text-xl font-black text-red-700 tabular-nums">{dashboardData?.complaints?.overdueCount || 0}</p>
+                      <p className="text-xl font-black text-[var(--color-danger-text)] tabular-nums">{dashboardData?.complaints?.overdueCount || 0}</p>
                     </div>
                   </div>
                 </div>
@@ -637,23 +637,23 @@ const Dashboard = () => {
           <Card className="h-[20rem]" padding="p-2.5">
             {loading ? (
               <div className="h-full flex flex-col">
-                <ShimmerLoader height="1.25rem" width="50%" className="mb-4" />
+                <ShimmerLoader height="1.25rem" width="50%" className="mb-[var(--spacing-4)]" />
                 <div className="flex-1 overflow-hidden">
                   <EventCardShimmer count={3} />
                 </div>
               </div>
             ) : error ? (
-              <p className="text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
             ) : (
               <div className="h-full flex flex-col">
                 {/* Compact Header */}
-                <h2 className="text-[0.8125rem] font-bold text-gray-800 flex items-center gap-1.5 mb-2">
-                  <span className="w-1 h-4 bg-purple-500 rounded-full"></span>
+                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-2)]">
+                  <span className="w-1 h-4 bg-[var(--color-purple-text)] rounded-[var(--radius-full)]"></span>
                   Upcoming Events
                 </h2>
 
                 <div className="flex-1 overflow-hidden">
-                  <div className="overflow-y-auto max-h-[16rem] pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <div className="overflow-y-auto max-h-[16rem] pr-[var(--spacing-1)] scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
                     {dashboardData?.events?.map((event, index) => {
                       // Determine event date status
                       const eventDate = new Date(event.date)
@@ -663,39 +663,39 @@ const Dashboard = () => {
                       const isToday = daysUntil === 0
                       const isTomorrow = daysUntil === 1
                       const isThisWeek = daysUntil > 1 && daysUntil <= 7
-                      
-                      const dateColors = isToday ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 
-                                        isTomorrow ? 'bg-amber-50 border-amber-200 text-amber-700' :
-                                        isThisWeek ? 'bg-blue-50 border-blue-200 text-blue-700' :
-                                        'bg-gray-50 border-gray-200 text-gray-600'
-                      
+
+                      const dateColors = isToday ? 'bg-[var(--color-success-bg)] border-[var(--color-success-light)] text-[var(--color-success-text)]' :
+                        isTomorrow ? 'bg-[var(--color-warning-bg)] border-[var(--color-warning-light)] text-[var(--color-warning-text)]' :
+                          isThisWeek ? 'bg-[var(--color-info-bg)] border-[var(--color-info-light)] text-[var(--color-info-text)]' :
+                            'bg-[var(--color-bg-tertiary)] border-[var(--color-border-primary)] text-[var(--color-text-muted)]'
+
                       return (
-                        <div key={event.id} className="group mb-1.5 bg-white p-2 rounded-[12px] border border-gray-100 hover:border-purple-300 transition-all duration-150 relative overflow-hidden" >
+                        <div key={event.id} className="group mb-[var(--spacing-1-5)] bg-[var(--color-bg-primary)] p-[var(--spacing-2)] rounded-[var(--radius-xl)] border border-[var(--color-border-light)] hover:border-[var(--color-purple-text)] transition-all duration-150 relative overflow-hidden" >
                           {/* Left accent bar */}
-                          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-purple-500 rounded-l-[12px]"></div>
-                          
-                          <div className="pl-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-bold text-[0.8125rem] text-gray-900 group-hover:text-purple-700 transition-colors leading-tight flex-1">{event.title}</h3>
-                              <span className={`px-2 py-0.5 rounded-md text-[0.6rem] font-bold uppercase tracking-wide border whitespace-nowrap ${dateColors}`}>
+                          <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[var(--color-purple-text)] rounded-l-[var(--radius-xl)]"></div>
+
+                          <div className="pl-[var(--spacing-2)]">
+                            <div className="flex items-start justify-between gap-[var(--spacing-2)]">
+                              <h3 className="font-bold text-[0.8125rem] text-[var(--color-text-primary)] group-hover:text-[var(--color-purple-text)] transition-colors leading-tight flex-1">{event.title}</h3>
+                              <span className={`px-[var(--spacing-2)] py-[var(--spacing-0-5)] rounded-[var(--radius-md)] text-[0.6rem] font-bold uppercase tracking-wide border whitespace-nowrap ${dateColors}`}>
                                 {isToday ? 'Today' : isTomorrow ? 'Tomorrow' : formatDate(event.date)}
                               </span>
                             </div>
-                            
-                            <div className="flex items-center gap-3 mt-2">
-                              <div className="flex items-center gap-1 text-[0.7rem] text-gray-500">
-                                <FaCalendarAlt className="text-[0.6rem] text-purple-400" />
+
+                            <div className="flex items-center gap-[var(--spacing-3)] mt-[var(--spacing-2)]">
+                              <div className="flex items-center gap-[var(--spacing-1)] text-[0.7rem] text-[var(--color-text-muted)]">
+                                <FaCalendarAlt className="text-[0.6rem] text-[var(--color-purple-text)]" />
                                 <span className="font-medium">{formatDate(event.date)}</span>
                               </div>
-                              <div className="flex items-center gap-1 text-[0.7rem]">
-                                <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                <span className="font-semibold text-purple-600">{event.time}</span>
+                              <div className="flex items-center gap-[var(--spacing-1)] text-[0.7rem]">
+                                <span className="w-1 h-1 bg-[var(--color-border-dark)] rounded-[var(--radius-full)]"></span>
+                                <span className="font-semibold text-[var(--color-purple-text)]">{event.time}</span>
                               </div>
                             </div>
-                            
+
                             {event.location && (
-                              <div className="flex items-center gap-1 mt-1.5 text-[0.7rem] text-gray-500">
-                                <span className="text-purple-400">📍</span>
+                              <div className="flex items-center gap-[var(--spacing-1)] mt-[var(--spacing-1-5)] text-[0.7rem] text-[var(--color-text-muted)]">
+                                <span className="text-[var(--color-purple-text)]">📍</span>
                                 <span>{event.location}</span>
                               </div>
                             )}
@@ -705,12 +705,12 @@ const Dashboard = () => {
                     })}
 
                     {dashboardData?.events?.length === 0 && (
-                      <div className="flex flex-col items-center justify-center h-full text-center py-8">
-                        <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mb-3">
-                          <MdOutlineEvent className="text-purple-400 text-xl" />
+                      <div className="flex flex-col items-center justify-center h-full text-center py-[var(--spacing-8)]">
+                        <div className="w-12 h-12 bg-[var(--color-purple-bg)] rounded-[var(--radius-full)] flex items-center justify-center mb-[var(--spacing-3)]">
+                          <MdOutlineEvent className="text-[var(--color-purple-text)] text-xl" />
                         </div>
-                        <p className="text-sm font-medium text-gray-500">No upcoming events</p>
-                        <p className="text-xs text-gray-400 mt-1">Check back later for updates</p>
+                        <p className="text-sm font-medium text-[var(--color-text-muted)]">No upcoming events</p>
+                        <p className="text-xs text-[var(--color-text-light)] mt-[var(--spacing-1)]">Check back later for updates</p>
                       </div>
                     )}
                   </div>
@@ -732,7 +732,7 @@ const formatDate = (dateString) => {
 
 // Chart components
 const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "normal" }) => {
-  if (!data?.degreeWise?.length) return <div className="h-full flex items-center justify-center text-gray-500">No student data available</div>
+  if (!data?.degreeWise?.length) return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
 
   const degreeData =
     data?.degreeWise?.map((item) => {
@@ -769,7 +769,7 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
     }) || []
 
   // Calculate totals for footer
-  const totalBoys = studentDataView === "registered" 
+  const totalBoys = studentDataView === "registered"
     ? degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
     : data?.totalBoys || 0
   const totalGirls = studentDataView === "registered"
@@ -782,45 +782,45 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
   const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
 
   return (
-    <div className="h-full flex flex-col rounded-[14px] border border-gray-200 overflow-hidden">
+    <div className="h-full flex flex-col rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)] overflow-hidden">
       {/* Fixed Header */}
-      <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200 flex-shrink-0">
+      <div className="bg-gradient-to-r from-[var(--color-bg-tertiary)] to-[var(--color-bg-muted)] border-b border-[var(--color-border-primary)] flex-shrink-0">
         <table className="min-w-full">
           <thead>
             <tr>
-              <th className="px-3 py-2 text-[0.75rem] font-bold text-gray-600 text-left uppercase tracking-wide w-[30%]">Degree</th>
-              <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[17.5%]">Boys</th>
-              <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[17.5%]">Girls</th>
-              <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[17.5%]">Total</th>
+              <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wide w-[30%]">Degree</th>
+              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Boys</th>
+              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Girls</th>
+              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Total</th>
               {normalized && (
                 <>
-                  <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[8.75%]">B%</th>
-                  <th className="px-2 py-2 text-[0.75rem] font-bold text-gray-600 text-center uppercase tracking-wide w-[8.75%]">G%</th>
+                  <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[8.75%]">B%</th>
+                  <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[8.75%]">G%</th>
                 </>
               )}
             </tr>
           </thead>
         </table>
       </div>
-      
+
       {/* Scrollable Body */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
         <table className="min-w-full">
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
             {degreeData.map((item, index) => {
               const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
               const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
               return (
-                <tr key={index} className={`hover:bg-blue-100 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-100'}`}>
-                  <td className="px-3 py-1.5 text-[0.8125rem] text-gray-800 font-medium w-[30%]">{item.degree}</td>
-                  <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium w-[17.5%]">{item.boys}</td>
-                  <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium w-[17.5%]">{item.girls}</td>
-                  <td className="px-2 py-1.5 text-[0.8125rem] text-indigo-700 text-center font-semibold w-[17.5%]">{item.total}</td>
+                <tr key={index} className={`hover:bg-[var(--color-primary-bg)] transition-colors ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                  <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-secondary)] font-medium w-[30%]">{item.degree}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium w-[17.5%]">{item.boys}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium w-[17.5%]">{item.girls}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-semibold w-[17.5%]">{item.total}</td>
                   {normalized && (
                     <>
-                      <td className="px-2 py-1.5 text-[0.8125rem] text-blue-700 text-center font-medium w-[8.75%]">{boysPercent}%</td>
-                      <td className="px-2 py-1.5 text-[0.8125rem] text-pink-700 text-center font-medium w-[8.75%]">{girlsPercent}%</td>
+                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium w-[8.75%]">{boysPercent}%</td>
+                      <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium w-[8.75%]">{girlsPercent}%</td>
                     </>
                   )}
                 </tr>
@@ -829,20 +829,20 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
           </tbody>
         </table>
       </div>
-      
+
       {/* Fixed Footer */}
-      <div className="bg-gradient-to-r from-gray-100 to-gray-50 border-t-2 border-gray-300 flex-shrink-0">
+      <div className="bg-gradient-to-r from-[var(--color-bg-muted)] to-[var(--color-bg-tertiary)] border-t-2 border-[var(--color-border-dark)] flex-shrink-0">
         <table className="min-w-full">
           <tfoot>
             <tr>
-              <td className="px-3 py-2 text-[0.8125rem] text-gray-900 font-extrabold uppercase tracking-wide w-[30%]">Total</td>
-              <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold w-[17.5%]">{totalBoys}</td>
-              <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-extrabold w-[17.5%]">{totalGirls}</td>
-              <td className="px-2 py-2 text-[0.8125rem] text-indigo-800 text-center font-extrabold w-[17.5%]">{grandTotal}</td>
+              <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] font-extrabold uppercase tracking-wide w-[30%]">Total</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold w-[17.5%]">{totalBoys}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold w-[17.5%]">{totalGirls}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-extrabold w-[17.5%]">{grandTotal}</td>
               {normalized && (
                 <>
-                  <td className="px-2 py-2 text-[0.8125rem] text-blue-800 text-center font-extrabold w-[8.75%]">{boysPercentTotal}%</td>
-                  <td className="px-2 py-2 text-[0.8125rem] text-pink-800 text-center font-extrabold w-[8.75%]">{girlsPercentTotal}%</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold w-[8.75%]">{boysPercentTotal}%</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold w-[8.75%]">{girlsPercentTotal}%</td>
                 </>
               )}
             </tr>
