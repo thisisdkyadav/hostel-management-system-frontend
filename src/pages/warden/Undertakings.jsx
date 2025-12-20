@@ -37,7 +37,6 @@ const WardenUndertakings = () => {
     try {
       setLoading(true)
       setError(null)
-      // Replace with actual API call when implemented
       const response = await adminApi.getUndertakings()
       setUndertakings(response.undertakings || [])
     } catch (error) {
@@ -52,31 +51,50 @@ const WardenUndertakings = () => {
     fetchUndertakings()
   }, [])
 
+  const styles = {
+    container: { padding: "var(--spacing-6) var(--spacing-4)", flex: 1 },
+    header: { display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", width: "100%", marginBottom: "var(--spacing-6)" },
+    title: { fontSize: "var(--font-size-3xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-4)" },
+    addButton: { backgroundColor: "var(--button-primary-bg)", color: "var(--color-white)", display: "flex", alignItems: "center", padding: "var(--spacing-2-5) var(--spacing-4)", borderRadius: "var(--radius-xl)", border: "none", cursor: "pointer", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" },
+    buttonIcon: { marginRight: "var(--spacing-2)" },
+    filterSection: { marginTop: "var(--spacing-6)", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-4)" },
+    loadingContainer: { display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" },
+    spinner: { width: "var(--icon-4xl)", height: "var(--icon-4xl)", borderRadius: "var(--radius-full)", borderTop: "var(--border-2) solid var(--color-primary)", borderBottom: "var(--border-2) solid var(--color-primary)", animation: "spin 1s linear infinite" },
+    errorContainer: { textAlign: "center", padding: "var(--spacing-8)", color: "var(--color-danger)" },
+    grid: { marginTop: "var(--spacing-6)", display: "grid", gap: "var(--spacing-6)" },
+    noResultsIcon: { color: "var(--color-text-disabled)", fontSize: "var(--font-size-4xl)" },
+  }
+
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Undertakings Management</h1>
+    <div style={styles.container}>
+      <header style={styles.header} className="header-responsive">
+        <h1 style={styles.title}>Undertakings Management</h1>
         {isAdmin && (
-          <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
-            <FaPlus className="mr-2" /> Add Undertaking
+          <button
+            onClick={() => setShowAddModal(true)}
+            style={styles.addButton}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--button-primary-hover)"; e.currentTarget.style.boxShadow = "var(--shadow-md)" }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "var(--button-primary-bg)"; e.currentTarget.style.boxShadow = "var(--shadow-sm)" }}
+          >
+            <FaPlus style={styles.buttonIcon} /> Add Undertaking
           </button>
         )}
       </header>
 
-      <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="w-full sm:w-64 md:w-72" />
+      <div style={styles.filterSection} className="filter-responsive">
+        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="search-responsive" />
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1360AB]"></div>
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner}></div>
         </div>
       ) : error ? (
-        <div className="text-center p-8 text-red-600">{error}</div>
+        <div style={styles.errorContainer}>{error}</div>
       ) : filteredUndertakings.length === 0 ? (
-        <NoResults icon={<FaFileSignature className="text-gray-300 text-3xl" />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
+        <NoResults icon={<FaFileSignature style={styles.noResultsIcon} />} message="No undertakings found" suggestion="Try changing your search criteria or create a new undertaking" />
       ) : (
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div style={styles.grid} className="undertakings-grid">
           {filteredUndertakings.map((undertaking) => (
             <UndertakingCard key={undertaking.id} undertaking={undertaking} onUpdate={fetchUndertakings} onDelete={fetchUndertakings} isReadOnly={!isAdmin} />
           ))}
@@ -84,6 +102,20 @@ const WardenUndertakings = () => {
       )}
 
       {isAdmin && <AddUndertakingModal show={showAddModal} onClose={() => setShowAddModal(false)} onSuccess={fetchUndertakings} />}
+
+      <style>{`
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .header-responsive { flex-direction: column; align-items: flex-start; }
+        @media (min-width: 640px) { .header-responsive { flex-direction: row; align-items: center; } .header-responsive h1 { margin-bottom: 0; } }
+        .filter-responsive { flex-direction: column; align-items: flex-start; }
+        @media (min-width: 640px) { .filter-responsive { flex-direction: row; align-items: center; } }
+        .search-responsive { width: 100%; }
+        @media (min-width: 640px) { .search-responsive { width: 16rem; } }
+        @media (min-width: 768px) { .search-responsive { width: 18rem; } }
+        .undertakings-grid { grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .undertakings-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .undertakings-grid { grid-template-columns: repeat(3, 1fr); } }
+      `}</style>
     </div>
   )
 }

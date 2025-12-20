@@ -11,9 +11,9 @@ import FeedbackFormModal from "../../components/student/feedback/FeedbackFormMod
 import FeedbackHeader from "../../components/headers/FeedbackHeader"
 
 const FEEDBACK_FILTER_TABS = [
-  { label: "All Feedbacks", value: "all", color: "[#1360AB]" },
-  { label: "Pending", value: "Pending", color: "[#1360AB]" },
-  { label: "Seen", value: "Seen", color: "[#1360AB]" },
+  { label: "All Feedbacks", value: "all", color: "primary" },
+  { label: "Pending", value: "Pending", color: "primary" },
+  { label: "Seen", value: "Seen", color: "primary" },
 ]
 
 const filterFeedbacks = (feedbacks, filter, searchTerm) => {
@@ -45,7 +45,6 @@ const Feedbacks = () => {
     try {
       setIsLoading(true)
       const response = await feedbackApi.getFeedbacks()
-
       setFeedbacks(response.feedbacks || [])
     } catch (error) {
       console.error("Error fetching feedbacks:", error)
@@ -77,37 +76,62 @@ const Feedbacks = () => {
     }
   }, [user])
 
+  const styles = {
+    container: { display: "flex", flexDirection: "column", height: "100%" },
+    content: { flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-4)" },
+    filterSection: { marginTop: "var(--spacing-8)", display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-4)" },
+    tabWrapper: { width: "100%", paddingBottom: "var(--spacing-2)" },
+    loadingContainer: { display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" },
+    spinner: { width: "var(--icon-4xl)", height: "var(--icon-4xl)", borderRadius: "var(--radius-full)", borderBottom: "var(--border-2) solid var(--color-primary)", animation: "spin 1s linear infinite" },
+    grid: { marginTop: "var(--spacing-6)", display: "grid", gap: "var(--spacing-6)" },
+    noResultsIcon: { color: "var(--color-text-disabled)", fontSize: "var(--font-size-4xl)" },
+  }
+
   return (
     <>
-      <div className="flex flex-col h-full">
+      <div style={styles.container}>
         <FeedbackHeader userRole={user?.role} onAddFeedback={() => setShowAddModal(true)} />
 
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div style={styles.content} className="content-responsive">
           <FeedbackStats feedbacks={feedbacks} />
 
-          <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-            <div className="w-full sm:w-auto pb-2">
+          <div style={styles.filterSection} className="filter-responsive">
+            <div style={styles.tabWrapper}>
               <FilterTabs tabs={FEEDBACK_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
-            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search feedbacks..." className="w-full sm:w-64 md:w-72" />
+            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search feedbacks..." className="search-responsive" />
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1360AB]"></div>
+            <div style={styles.loadingContainer}>
+              <div style={styles.spinner}></div>
             </div>
           ) : (
             <>
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div style={styles.grid} className="feedbacks-grid">
                 {filteredFeedbacks.map((feedback) => (["Student"].includes(user?.role) ? <FeedbackCard key={feedback._id} feedback={feedback} refresh={fetchFeedbacks} isStudentView={true} /> : <FeedbackCard key={feedback._id} feedback={feedback} refresh={fetchFeedbacks} />))}
               </div>
 
-              {filteredFeedbacks.length === 0 && <NoResults icon={<HiAnnotation className="text-gray-300 text-3xl" />} message="No feedbacks found" suggestion="Try changing your search or filter criteria" />}
+              {filteredFeedbacks.length === 0 && <NoResults icon={<HiAnnotation style={styles.noResultsIcon} />} message="No feedbacks found" suggestion="Try changing your search or filter criteria" />}
             </>
           )}
         </div>
       </div>
       <FeedbackFormModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddFeedback} isEditing={false} />
+
+      <style>{`
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .content-responsive { padding: var(--spacing-6) var(--spacing-4); }
+        @media (min-width: 640px) { .content-responsive { padding: var(--spacing-6); } }
+        @media (min-width: 1024px) { .content-responsive { padding: var(--spacing-6) var(--spacing-8); } }
+        .filter-responsive { flex-direction: column; align-items: flex-start; }
+        @media (min-width: 640px) { .filter-responsive { flex-direction: row; align-items: center; } .filter-responsive > div:first-child { width: auto; } }
+        .search-responsive { width: 100%; }
+        @media (min-width: 640px) { .search-responsive { width: 16rem; } }
+        @media (min-width: 768px) { .search-responsive { width: 18rem; } }
+        .feedbacks-grid { grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .feedbacks-grid { grid-template-columns: repeat(2, 1fr); } }
+      `}</style>
     </>
   )
 }
