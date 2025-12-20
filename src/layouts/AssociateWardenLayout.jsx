@@ -42,9 +42,15 @@ const AssociateWardenLayout = () => {
 
   return (
     <WardenProvider>
-      <div className="flex flex-col md:flex-row bg-[#f0f4f9] min-h-screen">
+      <div
+        className="flex flex-col md:flex-row min-h-screen"
+        style={{ backgroundColor: 'var(--color-bg-page)' }}
+      >
         <Sidebar navItems={navItems} />
-        <div className="flex-1 h-screen overflow-auto pt-16 md:pt-0">
+        <div
+          className="flex-1 overflow-auto pt-16 md:pt-0"
+          style={{ height: '100vh' }}
+        >
           <Outlet />
         </div>
       </div>
