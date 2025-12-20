@@ -35,7 +35,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   }
 
   const getStatusColor = (status) => {
-    return status === "Pending" ? "bg-yellow-100 text-yellow-700" : "bg-blue-100 text-blue-700"
+    return status === "Pending" ? "bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)]" : "bg-[var(--color-primary-bg)] text-[var(--color-primary)]"
   }
 
   const handleToggleSeen = async () => {
@@ -127,26 +127,26 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
       <Card.Header className="mb-0">
         <div className="flex justify-between items-start">
           <div className="flex items-center">
-            <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
+            <div className="p-2.5 mr-3 rounded-xl bg-[var(--color-primary-bg)] text-[var(--color-primary)]">
               <HiAnnotation size={20} />
             </div>
             <div>
-              <h3 className="font-bold text-gray-800 text-base md:text-lg line-clamp-1">{feedback.title}</h3>
-              <span className="text-xs text-gray-500">ID: {feedback._id.substring(0, 8)}</span>
+              <h3 className="font-bold text-[var(--color-text-secondary)] text-base md:text-lg line-clamp-1">{feedback.title}</h3>
+              <span className="text-xs text-[var(--color-text-muted)]">ID: {feedback._id.substring(0, 8)}</span>
             </div>
           </div>
           {!isStudentView && canAccess("feedback", "view") && (
             <div className="flex items-center">
               {feedback.userId.profileImage ? (
-                <img src={getMediaUrl(feedback.userId.profileImage)} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-gray-200" />
+                <img src={getMediaUrl(feedback.userId.profileImage)} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-[var(--color-border-primary)]" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                  <HiUser className="text-[#1360AB]" size={20} />
+                <div className="w-10 h-10 rounded-full bg-[var(--color-primary-bg)] flex items-center justify-center mr-2">
+                  <HiUser className="text-[var(--color-primary)]" size={20} />
                 </div>
               )}
               <div className="mr-2">
-                <p className="text-sm font-medium text-gray-800">{feedback.userId.name}</p>
-                <p className="text-xs text-gray-600 flex items-center">
+                <p className="text-sm font-medium text-[var(--color-text-secondary)]">{feedback.userId.name}</p>
+                <p className="text-xs text-[var(--color-text-muted)] flex items-center">
                   <HiMail className="mr-1" size={12} />
                   {feedback.userId.email}
                 </p>
@@ -161,38 +161,38 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
       <Card.Body className="mt-4 space-y-3">
         <div className="flex items-center flex-wrap">
           <div className="flex items-center mr-4 mb-1">
-            <HiCalendar className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-            <span className="text-sm text-gray-700">{formatDate(feedback.createdAt)}</span>
+            <HiCalendar className="text-[var(--color-primary)] text-opacity-70 mr-2 flex-shrink-0" />
+            <span className="text-sm text-[var(--color-text-body)]">{formatDate(feedback.createdAt)}</span>
           </div>
           <div className="flex items-center">
-            <HiClock className="text-[#1360AB] text-opacity-70 mr-2 flex-shrink-0" />
-            <span className="text-sm text-gray-700">{formatTime(feedback.createdAt)}</span>
+            <HiClock className="text-[var(--color-primary)] text-opacity-70 mr-2 flex-shrink-0" />
+            <span className="text-sm text-[var(--color-text-body)]">{formatTime(feedback.createdAt)}</span>
           </div>
         </div>
-        <div className="bg-gray-50 p-3 rounded-lg min-h-[80px]">
-          <p className="text-sm text-gray-700">{feedback.description}</p>
+        <div className="bg-[var(--color-bg-tertiary)] p-3 rounded-lg min-h-[80px]">
+          <p className="text-sm text-[var(--color-text-body)]">{feedback.description}</p>
         </div>
 
         {feedback.reply && (
           <div className="mt-3">
             <div className="flex items-center mb-2">
-              <HiReply className="text-[#1360AB] mr-2" />
-              <h4 className="font-medium text-[#1360AB]">Staff Reply</h4>
+              <HiReply className="text-[var(--color-primary)] mr-2" />
+              <h4 className="font-medium text-[var(--color-primary)]">Staff Reply</h4>
             </div>
-            <div className="bg-[#E4F1FF] p-3 rounded-lg border-l-4 border-[#1360AB]">
-              <p className="text-sm text-gray-700">{feedback.reply}</p>
+            <div className="bg-[var(--color-primary-bg)] p-3 rounded-lg border-l-4 border-[var(--color-primary)]">
+              <p className="text-sm text-[var(--color-text-body)]">{feedback.reply}</p>
             </div>
           </div>
         )}
       </Card.Body>
 
-      <Card.Footer className="mt-4 pt-3 border-t border-gray-100 flex justify-end space-x-3">
+      <Card.Footer className="mt-4 pt-3 border-t border-[var(--color-border-light)] flex justify-end space-x-3">
         {!isStudentView && canAccess("feedback", "react") && status === "Pending" && !feedback.reply && (
           <>
-            <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b87] transition-all duration-300">
+            <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all duration-300">
               <HiReply className="mr-2" /> Reply
             </button>
-            <button onClick={handleToggleSeen} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <button onClick={handleToggleSeen} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
               {isUpdating ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -209,10 +209,10 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
 
         {!isStudentView && canAccess("feedback", "react") && status === "Seen" && (
           <>
-            <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
               <HiReply className="mr-2" /> {feedback.reply ? "Edit Reply" : "Add Reply"}
             </button>
-            <button onClick={handleToggleSeen} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <button onClick={handleToggleSeen} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
               {isUpdating ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -229,10 +229,10 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
 
         {isStudentView && canAccess("feedback", "react") && isPending && (
           <>
-            <button onClick={() => setIsEditModalOpen(true)} className="flex items-center px-4 py-2 bg-[#E4F1FF] text-[#1360AB] rounded-lg hover:bg-[#1360AB] hover:text-white transition-all duration-300">
+            <button onClick={() => setIsEditModalOpen(true)} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
               <HiPencilAlt className="mr-2" /> Edit
             </button>
-            <button onClick={handleDelete} disabled={isUpdating} className="flex items-center px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all duration-300">
+            <button onClick={handleDelete} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[var(--color-danger-bg-light)] text-[var(--color-danger)] rounded-lg hover:bg-[var(--color-danger)] hover:text-white transition-all duration-300">
               {isUpdating ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
