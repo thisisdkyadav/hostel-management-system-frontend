@@ -269,164 +269,167 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       case "profile":
         return (
           <>
-            <div className="bg-gradient-to-r from-blue-50 to-white p-5 rounded-xl mb-6 shadow-sm">
-              <div className="flex flex-col md:flex-row items-center md:items-start">
+            <div style={{ background: 'linear-gradient(to right, var(--color-primary-bg), var(--color-bg-primary))', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--spacing-6)', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                {/* Profile Image - Left */}
                 {studentDetails.profileImage ? (
-                  <img src={getMediaUrl(studentDetails.profileImage)} alt={studentDetails.name || "Student"} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md mb-4 md:mb-0" />
+                  <img src={getMediaUrl(studentDetails.profileImage)} alt={studentDetails.name || "Student"} style={{ height: 'var(--avatar-2xl)', width: 'var(--avatar-2xl)', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)', flexShrink: 0 }} />
                 ) : (
-                  <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md mb-4 md:mb-0">
-                    <FaUserGraduate className="h-12 w-12 text-[#1360AB]" />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'var(--avatar-2xl)', width: 'var(--avatar-2xl)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary)', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)', flexShrink: 0 }}>
+                    <FaUserGraduate style={{ height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-white)' }} />
                   </div>
                 )}
-                <div className="md:ml-6 flex-1 text-center md:text-left">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <h3 className="text-2xl font-bold text-gray-800">{studentDetails.name || "N/A"}</h3>
-                    {studentDetails.status && (
-                      <div className="mt-2 md:mt-0 flex justify-center md:justify-start">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm flex items-center ${ studentDetails.status === "Active" ? "bg-green-100 text-green-800 border border-green-200" : studentDetails.status === "Graduated" ? "bg-blue-100 text-blue-800 border border-blue-200" : studentDetails.status === "Dropped" ? "bg-red-100 text-red-800 border border-red-200" : studentDetails.status === "Inactive" ? "bg-gray-100 text-gray-800 border border-gray-200" : "bg-purple-100 text-purple-800 border border-purple-200" }`} >
-                          {studentDetails.status === "Active" && <FaUserCheck className="mr-1" />}
-                          {studentDetails.status === "Graduated" && <FaUserGraduate className="mr-1" />}
-                          {studentDetails.status === "Dropped" && <FaUserSlash className="mr-1" />}
-                          {studentDetails.status === "Inactive" && <FaUserClock className="mr-1" />}
-                          {!["Active", "Graduated", "Dropped", "Inactive"].includes(studentDetails.status) && <FaUserGraduate className="mr-1" />}
-                          {studentDetails.status || "Active"}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-gray-500 mb-2 font-mono">{studentDetails.rollNumber || "N/A"}</p>
 
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
-                    <div className="flex items-center justify-center md:justify-start">
-                      <FaEnvelope className="text-[#1360AB] mr-2 flex-shrink-0" />
-                      <span className="text-gray-700 text-sm truncate">{studentDetails.email || "N/A"}</span>
+                {/* Details - Middle */}
+                <div style={{ marginLeft: 'var(--spacing-6)', flex: 1, textAlign: 'left' }}>
+                  <h3 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>{studentDetails.name || "N/A"}</h3>
+                  <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-2)', fontFamily: 'var(--font-mono)' }}>{studentDetails.rollNumber || "N/A"}</p>
+
+                  <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-4)', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <FaEnvelope style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                      <span style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)' }}>{studentDetails.email || "N/A"}</span>
                     </div>
-                    <div className="flex items-center justify-center md:justify-start">
-                      <FaPhone className="text-[#1360AB] mr-2 flex-shrink-0" />
-                      <span className="text-gray-700 text-sm">{studentDetails.phone || "N/A"}</span>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <FaPhone style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                      <span style={{ color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)' }}>{studentDetails.phone || "N/A"}</span>
                     </div>
                   </div>
                 </div>
+
+                {/* Status Badge - Far Right */}
+                {studentDetails.status && (
+                  <div style={{ flexShrink: 0 }}>
+                    <span style={{ padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', backgroundColor: studentDetails.status === 'Active' ? 'var(--color-success-bg-light)' : studentDetails.status === 'Graduated' ? 'var(--color-primary-bg)' : studentDetails.status === 'Dropped' ? 'var(--color-danger-bg-light)' : studentDetails.status === 'Inactive' ? 'var(--color-bg-muted)' : 'var(--color-info-bg)', color: studentDetails.status === 'Active' ? 'var(--color-success)' : studentDetails.status === 'Graduated' ? 'var(--color-primary)' : studentDetails.status === 'Dropped' ? 'var(--color-danger)' : studentDetails.status === 'Inactive' ? 'var(--color-text-secondary)' : 'var(--color-info)', border: `var(--border-1) solid ${studentDetails.status === 'Active' ? 'var(--color-success-light)' : studentDetails.status === 'Graduated' ? 'var(--color-primary-light)' : studentDetails.status === 'Dropped' ? 'var(--color-danger-light)' : studentDetails.status === 'Inactive' ? 'var(--color-border-primary)' : 'var(--color-info-light)'}` }}>
+                      {studentDetails.status === "Active" && <FaUserCheck style={{ marginRight: 'var(--spacing-1)' }} />}
+                      {studentDetails.status === "Graduated" && <FaUserGraduate style={{ marginRight: 'var(--spacing-1)' }} />}
+                      {studentDetails.status === "Dropped" && <FaUserSlash style={{ marginRight: 'var(--spacing-1)' }} />}
+                      {studentDetails.status === "Inactive" && <FaUserClock style={{ marginRight: 'var(--spacing-1)' }} />}
+                      {!["Active", "Graduated", "Dropped", "Inactive"].includes(studentDetails.status) && <FaUserGraduate style={{ marginRight: 'var(--spacing-1)' }} />}
+                      {studentDetails.status || "Active"}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
-                  <FaUserGraduate className="text-[#1360AB] mr-2 flex-shrink-0" />
-                  <h4 className="text-sm font-semibold text-[#1360AB]">Academic Information</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-5)' }}>
+              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', paddingBottom: 'var(--spacing-2)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <FaUserGraduate style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                  <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)' }}>Academic Information</h4>
                 </div>
-                <div className="space-y-2.5">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Department:</span>
-                    <span className="font-medium text-sm">{studentDetails.department || "N/A"}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Department:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.department || "N/A"}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Degree:</span>
-                    <span className="font-medium text-sm">{studentDetails.degree || "N/A"}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Degree:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.degree || "N/A"}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Year:</span>
-                    <span className="font-medium text-sm">{studentDetails.year || "N/A"}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Year:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.year || "N/A"}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Admission Date:</span>
-                    <span className="font-medium text-sm">{formatDate(studentDetails.admissionDate)}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Admission Date:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{formatDate(studentDetails.admissionDate)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
-                  <FaBuilding className="text-[#1360AB] mr-2 flex-shrink-0" />
-                  <h4 className="text-sm font-semibold text-[#1360AB]">Hostel Information</h4>
+              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', paddingBottom: 'var(--spacing-2)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <FaBuilding style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                  <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)' }}>Hostel Information</h4>
                 </div>
-                <div className="space-y-2.5">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Hostel:</span>
-                    <span className="font-medium text-sm">{studentDetails.hostel || "N/A"}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Hostel:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.hostel || "N/A"}</span>
                   </div>
                   {studentDetails.hostelType === "unit-based" && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 text-sm">Unit Number:</span>
-                      <span className="font-medium text-sm">{studentDetails.unit || "N/A"}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Unit Number:</span>
+                      <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.unit || "N/A"}</span>
                     </div>
                   )}
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Room Number:</span>
-                    <span className="font-medium text-sm">{studentDetails.room || "N/A"}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Room Number:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.room || "N/A"}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Bed Number:</span>
-                    <span className="font-medium text-sm">{studentDetails.bedNumber || "N/A"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
-                  <FaCalendarAlt className="text-[#1360AB] mr-2 flex-shrink-0" />
-                  <h4 className="text-sm font-semibold text-[#1360AB]">Personal Information</h4>
-                </div>
-                <div className="space-y-2.5">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Gender:</span>
-                    <span className="font-medium text-sm">{studentDetails.gender || "N/A"}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Date of Birth:</span>
-                    <span className="font-medium text-sm">{formatDate(studentDetails.dateOfBirth)}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-gray-600 text-sm mb-1">Address:</span>
-                    <span className="font-medium text-sm">{studentDetails.address || "N/A"}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Bed Number:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.bedNumber || "N/A"}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
-                  <FaMapMarkerAlt className="text-[#1360AB] mr-2 flex-shrink-0" />
-                  <h4 className="text-sm font-semibold text-[#1360AB]">Emergency Contact</h4>
+              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', paddingBottom: 'var(--spacing-2)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <FaCalendarAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                  <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)' }}>Personal Information</h4>
                 </div>
-                <div className="space-y-2.5">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Guardian Name:</span>
-                    <span className="font-medium text-sm">{studentDetails.guardian || "N/A"}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Gender:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.gender || "N/A"}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Guardian Phone:</span>
-                    <span className="font-medium text-sm">{studentDetails.guardianPhone || "N/A"}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Date of Birth:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{formatDate(studentDetails.dateOfBirth)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 text-sm">Guardian Email:</span>
-                    <span className="font-medium text-sm">{studentDetails.guardianEmail || "N/A"}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-1)' }}>Address:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.address || "N/A"}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', paddingBottom: 'var(--spacing-2)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <FaMapMarkerAlt style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                  <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)' }}>Emergency Contact</h4>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Guardian Name:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.guardian || "N/A"}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Guardian Phone:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.guardianPhone || "N/A"}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Guardian Email:</span>
+                    <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.guardianEmail || "N/A"}</span>
                   </div>
                 </div>
               </div>
 
               {/* if day scholar is true then show the day scholar details */}
               {studentDetails.isDayScholar && (
-                <div className="bg-gray-50 p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center mb-3 pb-2 border-b border-gray-200">
-                    <h4 className="text-sm font-semibold text-[#1360AB]">Day Scholar Details</h4>
+                <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)', paddingBottom: 'var(--spacing-2)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
+                    <h4 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)' }}>Day Scholar Details</h4>
                   </div>
-                  <div className="space-y-2.5">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 text-sm">Address:</span>
-                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.address || "N/A"}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2-5)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Address:</span>
+                      <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.dayScholarDetails.address || "N/A"}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 text-sm">Owner Name:</span>
-                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.ownerName || "N/A"}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Owner Name:</span>
+                      <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.dayScholarDetails.ownerName || "N/A"}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 text-sm">Owner Phone:</span>
-                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Owner Phone:</span>
+                      <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.dayScholarDetails.ownerPhone || "N/A"}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 text-sm">Owner Email:</span>
-                      <span className="font-medium text-sm">{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Owner Email:</span>
+                      <span style={{ fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>{studentDetails.dayScholarDetails.ownerEmail || "N/A"}</span>
                     </div>
                   </div>
                 </div>
@@ -443,39 +446,39 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       case "access":
         return (
-          <div className="bg-white">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Access History</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-4)' }}>Access History</h3>
             {loadingAccessRecords ? (
-              <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-10) 0' }}>
+                <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', border: 'var(--border-2) solid transparent', borderBottomColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
               </div>
             ) : accessRecords.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg">
-                <FaHistory className="mx-auto text-gray-300 mb-2 text-4xl" />
-                <p className="text-gray-500">No access records found for this student</p>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+                <FaHistory style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                <p style={{ color: 'var(--color-text-muted)' }}>No access records found for this student</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                  <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recorded By</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date & Time</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Type</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Recorded By</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Notes</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody>
                     {accessRecords.map((record) => (
-                      <tr key={record._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDateTime(record.dateAndTime)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.status === "Checked In" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`} >
+                      <tr key={record._id} style={{ borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDateTime(record.dateAndTime)}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                          <span style={{ padding: 'var(--spacing-1) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: 1.25, fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: record.status === 'Checked In' ? 'var(--color-success-bg-light)' : 'var(--color-primary-bg)', color: record.status === 'Checked In' ? 'var(--color-success)' : 'var(--color-primary)' }}>
                             {record.status === "Checked In" ? "Checked In" : "Checked Out"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{record.recordedBy || "System"}</td>
-                        <td className="px-6 py-4 text-sm text-gray-500">{record.notes || "-"}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.recordedBy || "System"}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.notes || "-"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -486,38 +489,38 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         )
       case "visitors":
         return (
-          <div className="bg-white">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Visitor Requests</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-4)' }}>Visitor Requests</h3>
             {loadingVisitorRequests ? (
-              <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-10) 0' }}>
+                <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', border: 'var(--border-2) solid transparent', borderBottomColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
               </div>
             ) : visitorRequests.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg">
-                <FaUserFriends className="mx-auto text-gray-300 mb-2 text-4xl" />
-                <p className="text-gray-500">No visitor requests found for this student</p>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+                <FaUserFriends style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                <p style={{ color: 'var(--color-text-muted)' }}>No visitor requests found for this student</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                  <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitors</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Request Date</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Visitors</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Visit Date</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody>
                     {visitorRequests.map((request) => (
-                      <tr key={request._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(request.createdAt)}</td>
-                        <td className="px-6 py-4 text-sm text-gray-900">{request.visitors && request.visitors.length > 0 ? request.visitors.map((v) => v.name).join(", ") : request.visitorNames || "-"}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <tr key={request._id} style={{ borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(request.createdAt)}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{request.visitors && request.visitors.length > 0 ? request.visitors.map((v) => v.name).join(", ") : request.visitorNames || "-"}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
                           {formatDate(request.fromDate)} to {formatDate(request.toDate)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${request.status === "Pending" ? "bg-yellow-100 text-yellow-800" : request.status === "Approved" ? "bg-green-100 text-green-800" : request.status === "Completed" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"}`} >
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                          <span style={{ padding: 'var(--spacing-1) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: 1.25, fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: request.status === 'Pending' ? 'var(--color-warning-bg-light)' : request.status === 'Approved' ? 'var(--color-success-bg-light)' : request.status === 'Completed' ? 'var(--color-primary-bg)' : 'var(--color-danger-bg-light)', color: request.status === 'Pending' ? 'var(--color-warning)' : request.status === 'Approved' ? 'var(--color-success)' : request.status === 'Completed' ? 'var(--color-primary)' : 'var(--color-danger)' }}>
                             {request.status}
                           </span>
                         </td>
@@ -531,31 +534,31 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         )
       case "feedback":
         return (
-          <div className="bg-white">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Feedback History</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-4)' }}>Feedback History</h3>
             {loadingFeedbacks ? (
-              <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-10) 0' }}>
+                <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', border: 'var(--border-2) solid transparent', borderBottomColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
               </div>
             ) : feedbacks.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg">
-                <FaComments className="mx-auto text-gray-300 mb-2 text-4xl" />
-                <p className="text-gray-500">No feedback found for this student</p>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+                <FaComments style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                <p style={{ color: 'var(--color-text-muted)' }}>No feedback found for this student</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
                 {feedbacks.map((feedback) => (
-                  <div key={feedback._id} className="bg-gray-50 p-4 rounded-lg">
-                    <div className="flex justify-between mb-2">
-                      <h4 className="font-medium text-gray-800">{feedback.title}</h4>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${feedback.status === "Pending" ? "bg-yellow-100 text-yellow-800" : feedback.status === "Resolved" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`} >
+                  <div key={feedback._id} style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-2)' }}>
+                      <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{feedback.title}</h4>
+                      <span style={{ padding: 'var(--spacing-1) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: 1.25, fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: feedback.status === 'Pending' ? 'var(--color-warning-bg-light)' : feedback.status === 'Resolved' ? 'var(--color-success-bg-light)' : 'var(--color-primary-bg)', color: feedback.status === 'Pending' ? 'var(--color-warning)' : feedback.status === 'Resolved' ? 'var(--color-success)' : 'var(--color-primary)' }}>
                         {feedback.status}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{feedback.description}</p>
-                    <div className="text-xs text-gray-500 flex justify-between">
+                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-2)' }}>{feedback.description}</p>
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', display: 'flex', justifyContent: 'space-between' }}>
                       <span>Submitted on: {formatDate(feedback.createdAt)}</span>
-                      {feedback.reply && <span className="text-green-600">Replied: Yes</span>}
+                      {feedback.reply && <span style={{ color: 'var(--color-success)' }}>Replied: Yes</span>}
                     </div>
                   </div>
                 ))}
@@ -565,61 +568,81 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         )
       case "inventory":
         return (
-          <div className="bg-white">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-700">Student Inventory</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+              <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Student Inventory</h3>
               {user && canAccess("student_inventory", "create") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                <button onClick={handleOpenAssignInventory} className="flex items-center justify-center gap-2 bg-[#1360AB] hover:bg-blue-700 text-white py-1.5 px-3 rounded-lg transition-colors text-sm">
+                <button onClick={handleOpenAssignInventory} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', fontSize: 'var(--font-size-sm)' }}>
                   <FaPlus size={14} /> Assign Item
                 </button>
               )}
             </div>
 
             {loadingInventory ? (
-              <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-10) 0' }}>
+                <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', border: 'var(--border-2) solid transparent', borderBottomColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
               </div>
             ) : studentInventory.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg">
-                <FaBoxes className="mx-auto text-gray-300 mb-2 text-4xl" />
-                <p className="text-gray-500">No inventory items assigned to this student</p>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+                <FaBoxes style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                <p style={{ color: 'var(--color-text-muted)' }}>No inventory items assigned to this student</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+                  <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Count</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
-                      {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>}
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Item</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Count</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Issue Date</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Status</th>
+                      <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Condition</th>
+                      {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Actions</th>}
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody>
                     {studentInventory.map((item) => (
-                      <tr key={item._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                              <FaBoxes className="text-[#1360AB]" />
+                      <tr key={item._id} style={{ borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                              <FaBoxes style={{ color: 'var(--color-primary)' }} />
                             </div>
-                            <span className="font-medium text-gray-800">{item.itemTypeId.name}</span>
+                            <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.itemTypeId.name}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-800">{item.count}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{formatDate(item.issueDate)}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${item.status === "Issued" ? "bg-green-100 text-green-800" : item.status === "Damaged" ? "bg-red-100 text-red-800" : item.status === "Lost" ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-800"}`}>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.count}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', color: 'var(--color-text-muted)' }}>{formatDate(item.issueDate)}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                          <span style={{ padding: 'var(--spacing-1) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: item.status === 'Issued' ? 'var(--color-success-bg-light)' : item.status === 'Damaged' ? 'var(--color-danger-bg-light)' : item.status === 'Lost' ? 'var(--color-info-bg)' : 'var(--color-bg-muted)', color: item.status === 'Issued' ? 'var(--color-success)' : item.status === 'Damaged' ? 'var(--color-danger)' : item.status === 'Lost' ? 'var(--color-info)' : 'var(--color-text-secondary)' }}>
                             {item.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{item.condition}</td>
+                        <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', color: 'var(--color-text-muted)' }}>{item.condition}</td>
                         {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center space-x-3">
+                          <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
                               <button onClick={() => {
+                                setSelectedInventoryItem(item)
+                                setInventoryFormData({
+                                  studentProfileId: selectedStudent._id,
+                                  hostelInventoryId: item.hostelInventoryId,
+                                  itemTypeId: item.itemTypeId._id,
+                                  count: item.count,
+                                  status: item.status,
+                                  condition: item.condition,
+                                  notes: item.notes || "",
+                                })
+                                setInventoryModalType("edit")
+                                setShowInventoryModal(true)
+                              }}
+                                style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}
+                                title="View/Edit Item"
+                              >
+                                <FaEdit />
+                              </button>
+                              {item.status === "Issued" && (
+                                <button onClick={() => {
                                   setSelectedInventoryItem(item)
                                   setInventoryFormData({
                                     studentProfileId: selectedStudent._id,
@@ -628,32 +651,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                     count: item.count,
                                     status: item.status,
                                     condition: item.condition,
-                                    notes: item.notes || "",
+                                    notes: "",
                                   })
-                                  setInventoryModalType("edit")
+                                  setInventoryModalType("return")
                                   setShowInventoryModal(true)
                                 }}
-                                className="w-8 h-8 rounded-full bg-[#E4F1FF] flex items-center justify-center text-[#1360AB] hover:bg-[#1360AB] hover:text-white transition-all"
-                                title="View/Edit Item"
-                              >
-                                <FaEdit />
-                              </button>
-                              {item.status === "Issued" && (
-                                <button onClick={() => {
-                                    setSelectedInventoryItem(item)
-                                    setInventoryFormData({
-                                      studentProfileId: selectedStudent._id,
-                                      hostelInventoryId: item.hostelInventoryId,
-                                      itemTypeId: item.itemTypeId._id,
-                                      count: item.count,
-                                      status: item.status,
-                                      condition: item.condition,
-                                      notes: "",
-                                    })
-                                    setInventoryModalType("return")
-                                    setShowInventoryModal(true)
-                                  }}
-                                  className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-600 hover:text-white transition-all"
+                                  style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-success)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}
                                   title="Return Item"
                                 >
                                   <FaUndo />
@@ -672,62 +675,62 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         )
       case "idcard":
         return (
-          <div className="bg-white">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Student ID Card</h3>
+          <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+            <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-4)' }}>Student ID Card</h3>
 
             {loadingIdCard ? (
-              <div className="flex justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-10) 0' }}>
+                <div style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', border: 'var(--border-2) solid transparent', borderBottomColor: 'var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
               </div>
             ) : !idCardData.front && !idCardData.back ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg">
-                <FaIdCard className="mx-auto text-gray-300 mb-2 text-4xl" />
-                <p className="text-gray-500">No ID card images found for this student</p>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+                <FaIdCard style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                <p style={{ color: 'var(--color-text-muted)' }}>No ID card images found for this student</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-6)' }}>
                 {/* Front ID Card */}
-                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-gray-200">
-                  <h4 className="text-base font-semibold text-gray-700 mb-3">ID Card Front</h4>
+                <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)', border: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <h4 style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>ID Card Front</h4>
                   {idCardData.front ? (
-                    <div className="relative w-full">
-                      <div className="overflow-hidden rounded-lg max-h-[280px] flex items-center justify-center border border-gray-200">
-                        <img src={getMediaUrl(idCardData.front)} alt="ID Card Front" className="object-contain w-full max-h-[280px]" />
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', maxHeight: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'var(--border-1) solid var(--color-border-primary)' }}>
+                        <img src={getMediaUrl(idCardData.front)} alt="ID Card Front" style={{ objectFit: 'contain', width: '100%', maxHeight: '280px' }} />
                       </div>
 
-                      <div className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-sm">
-                        <a href={idCardData.front} target="_blank" rel="noopener noreferrer" className="text-[#1360AB]">
+                      <div style={{ position: 'absolute', bottom: 'var(--spacing-2)', right: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-full)', boxShadow: 'var(--shadow-sm)' }}>
+                        <a href={idCardData.front} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>
                           <FaExpand size={14} />
                         </a>
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-48 bg-gray-100 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300">
-                      <FaIdCard className="text-gray-300 mb-2 text-4xl" />
-                      <p className="text-gray-500 text-sm">Front side not uploaded</p>
+                    <div style={{ width: '100%', height: '192px', backgroundColor: 'var(--color-bg-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) dashed var(--color-border-primary)' }}>
+                      <FaIdCard style={{ color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                      <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Front side not uploaded</p>
                     </div>
                   )}
                 </div>
 
                 {/* Back ID Card */}
-                <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-all border border-gray-200">
-                  <h4 className="text-base font-semibold text-gray-700 mb-3">ID Card Back</h4>
+                <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)', border: 'var(--border-1) solid var(--color-border-primary)' }}>
+                  <h4 style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>ID Card Back</h4>
                   {idCardData.back ? (
-                    <div className="relative w-full">
-                      <div className="overflow-hidden rounded-lg max-h-[280px] flex items-center justify-center border border-gray-200">
-                        <img src={getMediaUrl(idCardData.back)} alt="ID Card Back" className="object-contain w-full max-h-[280px]" />
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <div style={{ overflow: 'hidden', borderRadius: 'var(--radius-lg)', maxHeight: '280px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'var(--border-1) solid var(--color-border-primary)' }}>
+                        <img src={getMediaUrl(idCardData.back)} alt="ID Card Back" style={{ objectFit: 'contain', width: '100%', maxHeight: '280px' }} />
                       </div>
 
-                      <div className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-sm">
-                        <a href={idCardData.back} target="_blank" rel="noopener noreferrer" className="text-[#1360AB]">
+                      <div style={{ position: 'absolute', bottom: 'var(--spacing-2)', right: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-full)', boxShadow: 'var(--shadow-sm)' }}>
+                        <a href={idCardData.back} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>
                           <FaExpand size={14} />
                         </a>
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-48 bg-gray-100 flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300">
-                      <FaIdCard className="text-gray-300 mb-2 text-4xl" />
-                      <p className="text-gray-500 text-sm">Back side not uploaded</p>
+                    <div style={{ width: '100%', height: '192px', backgroundColor: 'var(--color-bg-muted)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) dashed var(--color-border-primary)' }}>
+                      <FaIdCard style={{ color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)' }} />
+                      <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-sm)' }}>Back side not uploaded</p>
                     </div>
                   )}
                 </div>
@@ -868,23 +871,23 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     if (loading) return null
 
     return (
-      <div className="flex justify-end space-x-4">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-4)' }}>
         {!isImport && (
           <>
-            <a href={`mailto:${studentDetails.guardianEmail}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+            <a href={`mailto:${studentDetails.guardianEmail}`} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)' }}>
               Email Guardian
             </a>
-            <a href={`mailto:${studentDetails.email}`} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+            <a href={`mailto:${studentDetails.email}`} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)' }}>
               Email Student
             </a>
             {canAccess("students_info", "edit") && (
-              <button onClick={() => setShowEditModal(true)} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+              <button onClick={() => setShowEditModal(true)} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)' }}>
                 Edit Student
               </button>
             )}
           </>
         )}
-        <button onClick={() => setShowStudentDetail(false)} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+        <button onClick={() => setShowStudentDetail(false)} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
           Close
         </button>
       </div>
@@ -895,10 +898,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     <>
       <Modal title="Student Profile" onClose={() => setShowStudentDetail(false)} width={1300} tabs={!isImport ? modalTabs : null} activeTab={activeTab} onTabChange={setActiveTab} hideTitle={!isImport} footer={renderFooter()} fullHeight={true}>
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '256px' }}>
+            <div style={{ position: 'relative', width: 'var(--spacing-16)', height: 'var(--spacing-16)' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-border-primary)', borderRadius: 'var(--radius-full)' }}></div>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
             </div>
           </div>
         ) : (
@@ -921,41 +924,41 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
       {/* Inventory Modal */}
       {showInventoryModal && (
-        <Modal title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"} onClose={closeInventoryModal} footer={ <div className="flex justify-end gap-3">
-              <button type="button" onClick={closeInventoryModal} className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                Cancel
-              </button>
+        <Modal title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"} onClose={closeInventoryModal} footer={<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
+          <button type="button" onClick={closeInventoryModal} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer' }}>
+            Cancel
+          </button>
 
-              {/* Return button - only for return mode */}
-              {inventoryModalType === "return" && (
-                <button type="button" onClick={handleReturnInventory} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Return Item"}
-                </button>
-              )}
+          {/* Return button - only for return mode */}
+          {inventoryModalType === "return" && (
+            <button type="button" onClick={handleReturnInventory} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', opacity: loading ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px' }}>
+              {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : "Return Item"}
+            </button>
+          )}
 
-              {/* Submit button - only for assign and edit modes */}
-              {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
-                <button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} className="px-4 py-2 bg-[#1360AB] text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center min-w-[100px]">
-                  {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
-                </button>
-              )}
-            </div>
-          }
+          {/* Submit button - only for assign and edit modes */}
+          {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
+            <button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', opacity: (loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)) ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px' }}>
+              {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
+            </button>
+          )}
+        </div>
+        }
         >
-          <form id="inventory-form" onSubmit={handleInventorySubmit} className="space-y-4">
+          <form id="inventory-form" onSubmit={handleInventorySubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
             {/* Item details for edit/return modals */}
             {(inventoryModalType === "edit" || inventoryModalType === "return") && selectedInventoryItem && (
-              <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 rounded-full bg-[#E4F1FF] flex items-center justify-center mr-3">
-                    <FaBoxes className="text-[#1360AB]" />
+              <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-3)' }}>
+                  <div style={{ width: 'var(--spacing-10)', height: 'var(--spacing-10)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
+                    <FaBoxes style={{ color: 'var(--color-primary)' }} />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">{selectedInventoryItem.itemTypeId.name}</h3>
-                    <div className="flex space-x-2 text-sm">
-                      <span className="text-gray-500">Qty: {selectedInventoryItem.count}</span>
-                      <span className="text-gray-500">•</span>
-                      <span className="text-gray-500">Issued: {formatDate(selectedInventoryItem.issueDate)}</span>
+                    <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{selectedInventoryItem.itemTypeId.name}</h3>
+                    <div style={{ display: 'flex', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)' }}>
+                      <span style={{ color: 'var(--color-text-muted)' }}>Qty: {selectedInventoryItem.count}</span>
+                      <span style={{ color: 'var(--color-text-muted)' }}>•</span>
+                      <span style={{ color: 'var(--color-text-muted)' }}>Issued: {formatDate(selectedInventoryItem.issueDate)}</span>
                     </div>
                   </div>
                 </div>
@@ -964,9 +967,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
             {/* Item selection - only for assign */}
             {inventoryModalType === "assign" && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Item</label>
-                <select name="hostelInventoryId" value={inventoryFormData.hostelInventoryId} onChange={handleInventoryFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+              <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item</label>
+                <select name="hostelInventoryId" value={inventoryFormData.hostelInventoryId} onChange={handleInventoryFormChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
                   <option value="">Select Item</option>
                   {availableInventory.map((item) => (
                     <option key={item._id} value={item._id}>
@@ -979,18 +982,18 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
             {/* Count - only for assign */}
             {inventoryModalType === "assign" && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Count</label>
-                <input type="number" name="count" value={inventoryFormData.count} onChange={handleInventoryFormChange} min="1" max={getMaxCount()} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required />
-                {inventoryFormData.hostelInventoryId && <p className="text-xs text-gray-500 mt-1">Maximum available: {getMaxCount()}</p>}
+              <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Count</label>
+                <input type="number" name="count" value={inventoryFormData.count} onChange={handleInventoryFormChange} min="1" max={getMaxCount()} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required />
+                {inventoryFormData.hostelInventoryId && <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum available: {getMaxCount()}</p>}
               </div>
             )}
 
             {/* Status - only for edit */}
             {inventoryModalType === "edit" && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select name="status" value={inventoryFormData.status} onChange={handleInventoryFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+              <div style={{ marginBottom: 'var(--spacing-4)' }}>
+                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
+                <select name="status" value={inventoryFormData.status} onChange={handleInventoryFormChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
                   <option value="Issued">Issued</option>
                   <option value="Damaged">Damaged</option>
                   <option value="Lost">Lost</option>
@@ -999,9 +1002,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             )}
 
             {/* Condition - for all modes */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Condition</label>
-              <select name="condition" value={inventoryFormData.condition} onChange={handleInventoryFormChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" required>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
+              <select name="condition" value={inventoryFormData.condition} onChange={handleInventoryFormChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
                 <option value="Excellent">Excellent</option>
                 <option value="Good">Good</option>
                 <option value="Fair">Fair</option>
@@ -1010,9 +1013,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             </div>
 
             {/* Notes - for all modes */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-              <textarea name="notes" value={inventoryFormData.notes} onChange={handleInventoryFormChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1360AB]" placeholder={inventoryModalType === "assign" ? "Any additional notes..." : inventoryModalType === "edit" ? "Update notes..." : "Notes about returned item..."} ></textarea>
+            <div style={{ marginBottom: 'var(--spacing-4)' }}>
+              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
+              <textarea name="notes" value={inventoryFormData.notes} onChange={handleInventoryFormChange} rows="3" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder={inventoryModalType === "assign" ? "Any additional notes..." : inventoryModalType === "edit" ? "Update notes..." : "Notes about returned item..."} ></textarea>
             </div>
           </form>
         </Modal>

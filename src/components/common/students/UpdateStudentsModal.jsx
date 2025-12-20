@@ -9,6 +9,64 @@ import { healthApi } from "../../../services/healthApi"
 import { adminApi } from "../../../services/adminApi"
 import toast from "react-hot-toast"
 
+// Reusable styles using theme CSS variables
+const styles = {
+  container: { display: "flex", flexDirection: "column", gap: "var(--spacing-5)" },
+  sectionTitle: { fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" },
+  subTitle: { fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" },
+  label: { display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" },
+  input: { width: "100%", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border-input)", padding: "var(--spacing-2) var(--spacing-3)", fontSize: "var(--font-size-sm)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", outline: "none" },
+  select: { width: "100%", padding: "var(--spacing-2-5)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", outline: "none" },
+  checkbox: { width: "var(--spacing-4)", height: "var(--spacing-4)", accentColor: "var(--color-primary)", borderRadius: "var(--radius-sm)" },
+  errorBox: { padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", borderLeft: "4px solid var(--color-danger)" },
+  successBox: { marginTop: "var(--spacing-4)", padding: "var(--spacing-4)", backgroundColor: "var(--color-success-bg)", borderRadius: "var(--radius-lg)" },
+  successText: { color: "var(--color-success-text)", fontWeight: "var(--font-weight-medium)" },
+  tableContainer: { marginTop: "var(--spacing-4)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflowX: "auto" },
+  table: { minWidth: "100%", borderCollapse: "collapse" },
+  tableHeader: { backgroundColor: "var(--color-bg-tertiary)" },
+  tableHeaderCell: { padding: "var(--spacing-3) var(--spacing-4)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" },
+  tableBody: { backgroundColor: "var(--color-bg-primary)" },
+  tableRow: { borderTop: "1px solid var(--color-border-primary)" },
+  tableRowAlt: { backgroundColor: "var(--color-bg-secondary)" },
+  tableCell: { padding: "var(--spacing-2) var(--spacing-4)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)" },
+  tablePagination: { padding: "var(--spacing-3) var(--spacing-4)", backgroundColor: "var(--color-bg-secondary)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" },
+  formCard: { padding: "var(--spacing-4)", border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)" },
+  formCardTitle: { fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)" },
+  deleteButton: { color: "var(--color-danger)", background: "none", border: "none", cursor: "pointer" },
+  primaryButton: { display: "flex", alignItems: "center", padding: "var(--spacing-2) var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-white)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-md)", border: "none", cursor: "pointer" },
+  secondaryButton: { display: "flex", alignItems: "center", padding: "var(--spacing-2) var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", backgroundColor: "transparent", border: "1px solid var(--color-primary)", borderRadius: "var(--radius-md)", cursor: "pointer" },
+  cancelButton: { padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", backgroundColor: "var(--color-bg-primary)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-lg)", cursor: "pointer" },
+  confirmButton: { padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-white)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-lg)", border: "none", cursor: "pointer", boxShadow: "var(--shadow-sm)", display: "flex", alignItems: "center" },
+  toggleButtonActive: { padding: "var(--spacing-2) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", border: "none", cursor: "pointer" },
+  toggleButtonInactive: { padding: "var(--spacing-2) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", border: "1px solid var(--color-border-input)", cursor: "pointer" },
+  dropZone: { border: "2px dashed var(--color-border-input)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-8)", textAlign: "center", cursor: "pointer", backgroundColor: "var(--color-bg-secondary)", transition: "var(--transition-colors)" },
+  dropZoneIcon: { margin: "0 auto", height: "3rem", width: "3rem", color: "var(--color-text-placeholder)" },
+  dropZoneText: { marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" },
+  dropZoneHint: { marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" },
+  fileInfoBox: { padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "center", justifyContent: "space-between" },
+  fileInfoText: { fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" },
+  instructionsBox: { fontSize: "var(--font-size-xs)", color: "var(--color-text-tertiary)", marginTop: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "28rem" },
+  instructionsList: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" },
+  boldText: { fontWeight: "var(--font-weight-medium)" },
+  validValuesBox: { marginTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" },
+  validValuesLabel: { fontWeight: "var(--font-weight-medium)", color: "var(--color-info-text)" },
+  validValuesContent: { color: "var(--color-text-body)", backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-1)", borderRadius: "var(--radius-sm)" },
+  loadingContainer: { display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" },
+  spinner: { width: "var(--spacing-6)", height: "var(--spacing-6)", border: "2px solid var(--skeleton-base)", borderTop: "2px solid var(--color-primary)", borderRadius: "var(--radius-full)" },
+  smallSpinner: { width: "var(--spacing-4)", height: "var(--spacing-4)", marginRight: "var(--spacing-2)", border: "2px solid var(--color-white)", borderTop: "2px solid transparent", borderRadius: "var(--radius-full)" },
+  loadingText: { marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" },
+  previewHeader: { display: "flex", flexDirection: "column", justifyContent: "space-between", marginBottom: "var(--spacing-4)" },
+  previewBadge: { marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" },
+  footer: { marginTop: "var(--spacing-6)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: "1px solid var(--color-border-light)" },
+  sectionDivider: { borderBottom: "1px solid var(--color-border-primary)", paddingBottom: "var(--spacing-4)" },
+  flexRow: { display: "flex", gap: "var(--spacing-4)" },
+  flexCol: { display: "flex", flexDirection: "column", gap: "var(--spacing-4)" },
+  gridCols2: { display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" },
+  colSpan2: { gridColumn: "span 2" },
+  downloadLink: { display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)", color: "var(--color-primary)", background: "none", border: "none", cursor: "pointer", marginBottom: "var(--spacing-2)" },
+}
+
+
 const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -425,54 +483,54 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     const healthInstructionsText = (
       <div>
-        <p className="font-medium mb-1">Field Input Types:</p>
-        <ul className="grid grid-cols-1 gap-y-1">
+        <p style={styles.boldText}>Field Input Types:</p>
+        <ul style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-1)" }}>
           <li>
-            <span className="font-medium">rollNumber:</span> String (Required)
+            <span style={styles.boldText}>rollNumber:</span> String (Required)
           </li>
           <li>
-            <span className="font-medium">bloodGroup:</span> String (A+, B+, AB+, O+, A-, B-, AB-, O-)
+            <span style={styles.boldText}>bloodGroup:</span> String (A+, B+, AB+, O+, A-, B-, AB-, O-)
           </li>
         </ul>
       </div>
     )
 
     return (
-      <div className="space-y-6">
-        <h3 className="text-lg font-medium text-gray-800">Update Health Information</h3>
+      <div style={styles.container}>
+        <h3 style={styles.sectionTitle}>Update Health Information</h3>
 
         <CsvUploader onDataParsed={handleHealthDataParsed} requiredFields={["rollNumber", "bloodGroup"]} templateFileName="health_update_template.csv" templateHeaders={healthTemplateHeaders} maxRecords={900} instructionText={healthInstructionsText} />
 
-        {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+        {error && <div style={styles.errorBox}>{error}</div>}
 
         {healthData.length > 0 && !error && (
-          <div className="mt-4 p-4 bg-green-50 rounded-lg">
-            <p className="text-green-700 font-medium">{uploadStatus}</p>
+          <div style={styles.successBox}>
+            <p style={styles.successText}>{uploadStatus}</p>
           </div>
         )}
 
-        <div className="mt-4 border rounded-lg overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div style={styles.tableContainer}>
+          <table style={styles.table}>
+            <thead style={styles.tableHeader}>
               <tr>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" style={styles.tableHeaderCell}>
                   Roll Number
                 </th>
-                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" style={styles.tableHeaderCell}>
                   Blood Group
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody style={styles.tableBody}>
               {healthData.slice(0, 5).map((item, index) => (
-                <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{item.rollNumber}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{item.bloodGroup}</td>
+                <tr key={index} style={index % 2 === 0 ? styles.tableRow : { ...styles.tableRow, ...styles.tableRowAlt }}>
+                  <td style={styles.tableCell}>{item.rollNumber}</td>
+                  <td style={styles.tableCell}>{item.bloodGroup}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {healthData.length > 5 && <div className="px-4 py-3 bg-gray-50 text-xs text-gray-500">Showing 5 of {healthData.length} records</div>}
+          {healthData.length > 5 && <div style={styles.tablePagination}>Showing 5 of {healthData.length} records</div>}
         </div>
       </div>
     )
@@ -561,7 +619,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           <h3 className="text-lg font-medium text-gray-800">Update Family Members</h3>
           <div className="mt-2 sm:mt-0">
             <div className="flex items-center">
-              <input type="checkbox" id="deleteExisting" checked={deleteExistingFamily} onChange={(e) => setDeleteExistingFamily(e.target.checked)} className="w-4 h-4 text-[#1360AB] rounded focus:ring-[#1360AB]" />
+              <input type="checkbox" id="deleteExisting" checked={deleteExistingFamily} onChange={(e) => setDeleteExistingFamily(e.target.checked)} style={styles.checkbox} />
               <label htmlFor="deleteExisting" className="ml-2 text-sm text-gray-700">
                 Replace existing family members
               </label>
@@ -590,7 +648,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="flex justify-between mb-3">
                     <h5 className="font-medium text-gray-700">Family Member {index + 1}</h5>
                     {familyMembers.length > 1 && (
-                      <button onClick={() => removeFamilyMember(index)} className="text-red-500 hover:text-red-700" aria-label="Remove family member">
+                      <button onClick={() => removeFamilyMember(index)} style={styles.deleteButton} aria-label="Remove family member">
                         <FaTrash />
                       </button>
                     )}
@@ -599,39 +657,39 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
-                      <input type="text" value={member.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                      <input type="text" value={member.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                      <input type="text" value={member.name} onChange={(e) => handleChange(index, "name", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                      <input type="text" value={member.name} onChange={(e) => handleChange(index, "name", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Relationship</label>
-                      <input type="text" value={member.relationship} onChange={(e) => handleChange(index, "relationship", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" />
+                      <input type="text" value={member.relationship} onChange={(e) => handleChange(index, "relationship", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                      <input type="tel" value={member.phone} onChange={(e) => handleChange(index, "phone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" />
+                      <input type="tel" value={member.phone} onChange={(e) => handleChange(index, "phone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <input type="email" value={member.email} onChange={(e) => handleChange(index, "email", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" />
+                      <input type="email" value={member.email} onChange={(e) => handleChange(index, "email", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                      <input type="text" value={member.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" />
+                      <input type="text" value={member.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
                     </div>
                   </div>
                 </div>
               ))}
 
-              <div className="flex space-x-4">
-                <button onClick={addFamilyMember} className="flex items-center px-3 py-2 text-sm font-medium text-[#1360AB] border border-[#1360AB] rounded-md hover:bg-blue-50">
-                  <FaPlus className="mr-1" /> Add Another Family Member
+              <div style={styles.flexRow}>
+                <button onClick={addFamilyMember} style={styles.secondaryButton}>
+                  <FaPlus style={{ marginRight: "var(--spacing-1)" }} /> Add Another Family Member
                 </button>
 
-                <button onClick={handleManualUpdate} className="flex items-center px-3 py-2 text-sm font-medium text-white bg-[#1360AB] rounded-md hover:bg-[#0d4a8b]">
-                  <FaCheck className="mr-1" /> Save Family Members
+                <button onClick={handleManualUpdate} style={styles.primaryButton}>
+                  <FaCheck style={{ marginRight: "var(--spacing-1)" }} /> Save Family Members
                 </button>
               </div>
 
@@ -721,7 +779,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Select Status to Apply</label>
-          <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white">
+          <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} style={styles.select}>
             {statusOptions.map((status) => (
               <option key={status} value={status}>
                 {status}
@@ -865,11 +923,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
           <h3 className="text-lg font-medium text-gray-800">Update Day Scholar Status</h3>
           <div className="mt-2 sm:mt-0">
-            <div className="inline-flex items-center rounded-md shadow-sm">
-              <button type="button" onClick={() => setDayScholarMode("add")} className={`px-4 py-2 text-sm font-medium rounded-l-md ${dayScholarMode === "add" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"}`}>
+            <div style={{ display: "inline-flex", alignItems: "center", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }}>
+              <button type="button" onClick={() => setDayScholarMode("add")} style={{ ...dayScholarMode === "add" ? styles.toggleButtonActive : styles.toggleButtonInactive, borderTopLeftRadius: "var(--radius-md)", borderBottomLeftRadius: "var(--radius-md)" }}>
                 Add/Update Day Scholar
               </button>
-              <button type="button" onClick={() => setDayScholarMode("remove")} className={`px-4 py-2 text-sm font-medium rounded-r-md ${dayScholarMode === "remove" ? "bg-[#1360AB] text-white" : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"}`}>
+              <button type="button" onClick={() => setDayScholarMode("remove")} style={{ ...dayScholarMode === "remove" ? styles.toggleButtonActive : styles.toggleButtonInactive, borderTopRightRadius: "var(--radius-md)", borderBottomRightRadius: "var(--radius-md)" }}>
                 Remove Day Scholar
               </button>
             </div>
@@ -897,7 +955,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="flex justify-between mb-3">
                     <h5 className="font-medium text-gray-700">Student {index + 1}</h5>
                     {dayScholarStudents.length > 1 && (
-                      <button onClick={() => removeDayScholarStudent(index)} className="text-red-500 hover:text-red-700" aria-label="Remove student">
+                      <button onClick={() => removeDayScholarStudent(index)} style={styles.deleteButton} aria-label="Remove student">
                         <FaTrash />
                       </button>
                     )}
@@ -906,26 +964,26 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
-                      <input type="text" value={student.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                      <input type="text" value={student.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                     </div>
 
                     {dayScholarMode === "add" && (
                       <>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Owner Name *</label>
-                          <input type="text" value={student.ownerName} onChange={(e) => handleChange(index, "ownerName", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                          <input type="text" value={student.ownerName} onChange={(e) => handleChange(index, "ownerName", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Owner Phone *</label>
-                          <input type="tel" value={student.ownerPhone} onChange={(e) => handleChange(index, "ownerPhone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                          <input type="tel" value={student.ownerPhone} onChange={(e) => handleChange(index, "ownerPhone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Owner Email *</label>
-                          <input type="email" value={student.ownerEmail} onChange={(e) => handleChange(index, "ownerEmail", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                          <input type="email" value={student.ownerEmail} onChange={(e) => handleChange(index, "ownerEmail", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                         </div>
                         <div className="sm:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
-                          <input type="text" value={student.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1360AB]" required />
+                          <input type="text" value={student.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
                         </div>
                       </>
                     )}
@@ -933,13 +991,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 </div>
               ))}
 
-              <div className="flex space-x-4">
-                <button onClick={addDayScholarStudent} className="flex items-center px-3 py-2 text-sm font-medium text-[#1360AB] border border-[#1360AB] rounded-md hover:bg-blue-50">
-                  <FaPlus className="mr-1" /> Add Another Student
+              <div style={styles.flexRow}>
+                <button onClick={addDayScholarStudent} style={styles.secondaryButton}>
+                  <FaPlus style={{ marginRight: "var(--spacing-1)" }} /> Add Another Student
                 </button>
 
-                <button onClick={handleManualUpdate} className="flex items-center px-3 py-2 text-sm font-medium text-white bg-[#1360AB] rounded-md hover:bg-[#0d4a8b]">
-                  <FaCheck className="mr-1" /> Save Students
+                <button onClick={handleManualUpdate} style={styles.primaryButton}>
+                  <FaCheck style={{ marginRight: "var(--spacing-1)" }} /> Save Students
                 </button>
               </div>
             </div>
@@ -1095,9 +1153,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     Selected file: <span className="font-medium">{csvFile.name}</span>
                   </span>
                   <button onClick={(e) => {
-                      e.stopPropagation()
-                      setCsvFile(null)
-                    }}
+                    e.stopPropagation()
+                    setCsvFile(null)
+                  }}
                     className="text-gray-500 hover:text-gray-700"
                   >
                     <FaTimes />
@@ -1122,7 +1180,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               </div>
 
               <div className="border rounded-lg overflow-hidden">
-                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
+                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => { }} viewStudentDetails={viewStudentDetails} />
               </div>
 
               {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
@@ -1143,31 +1201,31 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       {/* Day Scholar Tab */}
       {activeTab === "dayScholar" && <DayScholarTab />}
 
-      <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
+      <div style={styles.footer}>
         {activeTab === "basic" && step === 1 ? (
-          <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onClose} style={styles.cancelButton}>
             Cancel
           </button>
         ) : activeTab === "basic" ? (
-          <button onClick={resetForm} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={resetForm} style={styles.cancelButton}>
             Back
           </button>
         ) : (
-          <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onClose} style={styles.cancelButton}>
             Cancel
           </button>
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <button onClick={handleUpdate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={ (activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating } >
+          <button onClick={handleUpdate} style={styles.confirmButton} disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating} >
             {isUpdating ? (
               <>
-                <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="animate-spin" style={styles.smallSpinner}></div>
                 Updating Students...
               </>
             ) : (
               <>
-                <FaCheck className="mr-2" /> Confirm Update
+                <FaCheck style={{ marginRight: "var(--spacing-2)" }} /> Confirm Update
               </>
             )}
           </button>

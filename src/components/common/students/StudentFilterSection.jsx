@@ -57,31 +57,34 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
     fetchDegrees()
   }, [])
 
+  const inputStyle = { width: '100%', padding: 'var(--spacing-2-5)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)' }
+  const labelStyle = { display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1-5)' }
+
   return (
-    <div className="mt-6 bg-white rounded-xl shadow-sm p-4 sm:p-6 overflow-visible">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
-        <h3 className="font-bold text-gray-700 flex items-center mb-2 sm:mb-0">
-          <BsFilterRight className="mr-2 text-[#1360AB] text-lg" /> Filter Students
+    <div style={{ marginTop: 'var(--spacing-6)', backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6)', overflow: 'visible' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
+        <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
+          <BsFilterRight style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--font-size-lg)' }} /> Filter Students
         </h3>
-        <button onClick={resetFilters} className="text-sm text-gray-500 hover:text-[#1360AB] flex items-center px-2 py-1 hover:bg-gray-50 rounded-md transition-colors">
-          <MdClearAll className="mr-1" /> Reset Filters
+        <button onClick={resetFilters} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-1) var(--spacing-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+          <MdClearAll style={{ marginRight: 'var(--spacing-1)' }} /> Reset Filters
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         <div>
-          <div className="relative">
-            <input type="text" placeholder="Search by name, roll number, or email..." className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
+          <div style={{ position: 'relative' }}>
+            <input type="text" placeholder="Search by name, roll number, or email..." style={{ ...inputStyle, paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', paddingBottom: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)' }} value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
             />
-            <FaSearch className="absolute left-3 top-3.5 text-gray-400" />
+            <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-disabled)' }} />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)' }}>
           {hostels.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">Hostel</label>
-              <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
+              <label style={labelStyle}>Hostel</label>
+              <select style={inputStyle} value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
                 <option value="">All Hostels</option>
                 {hostels.map((hostel, index) => (
                   <option key={index} value={hostel._id || hostel.id}>
@@ -93,28 +96,18 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Unit</label>
-            {/* <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} disabled={!filters.hostelId}>
-              <option value="">All Units</option>
-              {units
-                .filter((unit) => !filters.hostelId || unit.hostelId === filters.hostelId)
-                .map((unit, index) => (
-                  <option key={index} value={unit.id}>
-                    {unit.name}
-                  </option>
-                ))}
-            </select> */}
-            <input type="text" placeholder="Unit number" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
+            <label style={labelStyle}>Unit</label>
+            <input type="text" placeholder="Unit number" style={inputStyle} value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Room Number</label>
-            <input type="text" placeholder="Room number" className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB]" value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
+            <label style={labelStyle}>Room Number</label>
+            <input type="text" placeholder="Room number" style={inputStyle} value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Department</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.department} onChange={(e) => updateFilter("department", e.target.value)} disabled={loading}>
+            <label style={labelStyle}>Department</label>
+            <select style={inputStyle} value={filters.department} onChange={(e) => updateFilter("department", e.target.value)} disabled={loading}>
               <option value="">All Departments</option>
               {loading ? (
                 <option value="" disabled>
@@ -133,9 +126,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
               )}
             </select>
             {error && (
-              <div className="flex items-center mt-1">
-                <p className="text-xs text-red-500 mr-2">{error}</p>
-                <button onClick={fetchDepartments} className="text-xs text-blue-600 hover:text-blue-800" disabled={loading}>
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{error}</p>
+                <button onClick={fetchDepartments} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }} disabled={loading}>
                   Retry
                 </button>
               </div>
@@ -143,8 +136,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Degree</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)} disabled={degreesLoading}>
+            <label style={labelStyle}>Degree</label>
+            <select style={inputStyle} value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)} disabled={degreesLoading}>
               <option value="">All Degrees</option>
               {degreesLoading ? (
                 <option value="" disabled>
@@ -163,9 +156,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
               )}
             </select>
             {degreesError && (
-              <div className="flex items-center mt-1">
-                <p className="text-xs text-red-500 mr-2">{degreesError}</p>
-                <button onClick={fetchDegrees} className="text-xs text-blue-600 hover:text-blue-800" disabled={degreesLoading}>
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{degreesError}</p>
+                <button onClick={fetchDegrees} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }} disabled={degreesLoading}>
                   Retry
                 </button>
               </div>
@@ -173,8 +166,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Gender</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.gender} onChange={(e) => updateFilter("gender", e.target.value)}>
+            <label style={labelStyle}>Gender</label>
+            <select style={inputStyle} value={filters.gender} onChange={(e) => updateFilter("gender", e.target.value)}>
               <option value="">All Genders</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -183,8 +176,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Status</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.status} onChange={(e) => updateFilter("status", e.target.value)}>
+            <label style={labelStyle}>Status</label>
+            <select style={inputStyle} value={filters.status} onChange={(e) => updateFilter("status", e.target.value)}>
               <option value="Active">Active</option>
               <option value="Graduated">Graduated</option>
               <option value="Dropped">Dropped</option>
@@ -194,8 +187,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Allocation Status</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.hasAllocation} onChange={(e) => updateFilter("hasAllocation", e.target.value)}>
+            <label style={labelStyle}>Allocation Status</label>
+            <select style={inputStyle} value={filters.hasAllocation} onChange={(e) => updateFilter("hasAllocation", e.target.value)}>
               <option value="">All Students</option>
               <option value="true">Allocated Room</option>
               <option value="false">No Allocation</option>
@@ -203,8 +196,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Day Scholar</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.isDayScholar} onChange={(e) => updateFilter("isDayScholar", e.target.value)}>
+            <label style={labelStyle}>Day Scholar</label>
+            <select style={inputStyle} value={filters.isDayScholar} onChange={(e) => updateFilter("isDayScholar", e.target.value)}>
               <option value="">All Students</option>
               <option value="true">Day Scholar</option>
               <option value="false">Hosteller</option>
@@ -212,8 +205,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Students per page</label>
-            <select className="w-full p-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] bg-white" value={filters.studentsPerPage} onChange={(e) => setPageSize(e.target.value)}>
+            <label style={labelStyle}>Students per page</label>
+            <select style={inputStyle} value={filters.studentsPerPage} onChange={(e) => setPageSize(e.target.value)}>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="50">50</option>
@@ -229,14 +222,14 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-2)' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Admission Date From</label>
+            <label style={labelStyle}>Admission Date From</label>
             <SimpleDatePicker selectedDate={filters.admissionDateFrom} onChange={(date) => updateFilter("admissionDateFrom", date)} placeholder="Select start date" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">Admission Date To</label>
+            <label style={labelStyle}>Admission Date To</label>
             <SimpleDatePicker selectedDate={filters.admissionDateTo} onChange={(date) => updateFilter("admissionDateTo", date)} placeholder="Select end date" minDate={filters.admissionDateFrom} />
           </div>
         </div>

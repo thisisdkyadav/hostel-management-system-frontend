@@ -7,14 +7,55 @@ import { dashboardApi } from "../../../services/dashboardApi"
 
 // Shimmer loader component for stats
 const StatCardShimmer = () => (
-  <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-gray-200 relative overflow-hidden">
-    <div className="animate-pulse flex flex-col">
-      <div className="h-5 w-24 bg-gray-200 rounded mb-2"></div>
-      <div className="h-8 w-16 bg-gray-300 rounded mb-2"></div>
-      <div className="h-4 w-32 bg-gray-200 rounded"></div>
+  <div
+    style={{
+      backgroundColor: "var(--color-bg-primary)",
+      padding: "var(--spacing-4)",
+      borderRadius: "var(--radius-lg)",
+      boxShadow: "var(--shadow-sm)",
+      borderLeft: "4px solid var(--skeleton-base)",
+      position: "relative",
+      overflow: "hidden",
+    }}
+  >
+    <div className="animate-pulse" style={{ display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          height: "var(--spacing-5)",
+          width: "6rem",
+          backgroundColor: "var(--skeleton-base)",
+          borderRadius: "var(--radius-sm)",
+          marginBottom: "var(--spacing-2)",
+        }}
+      ></div>
+      <div
+        style={{
+          height: "var(--spacing-8)",
+          width: "4rem",
+          backgroundColor: "var(--skeleton-highlight)",
+          borderRadius: "var(--radius-sm)",
+          marginBottom: "var(--spacing-2)",
+        }}
+      ></div>
+      <div
+        style={{
+          height: "var(--spacing-4)",
+          width: "8rem",
+          backgroundColor: "var(--skeleton-base)",
+          borderRadius: "var(--radius-sm)",
+        }}
+      ></div>
     </div>
-    <div className="absolute right-4 top-4">
-      <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+    <div style={{ position: "absolute", right: "var(--spacing-4)", top: "var(--spacing-4)" }}>
+      <div
+        className="animate-pulse"
+        style={{
+          height: "var(--spacing-8)",
+          width: "var(--spacing-8)",
+          backgroundColor: "var(--skeleton-base)",
+          borderRadius: "var(--radius-full)",
+        }}
+      ></div>
     </div>
   </div>
 )
@@ -48,34 +89,35 @@ const StudentStats = () => {
       title: "Total Students",
       value: studentCounts.total,
       subtitle: "Currently enrolled",
-      icon: <FaUsers className="text-2xl" />,
-      color: "#1360AB",
+      icon: <FaUsers style={{ fontSize: "var(--font-size-2xl)" }} />,
+      color: "var(--color-primary)",
     },
     {
       title: "Male Students",
       value: studentCounts.boys,
       subtitle: studentCounts.total > 0 ? `${((studentCounts.boys / studentCounts.total) * 100).toFixed(1)}% of total` : "0% of total",
-      icon: <BsGenderMale className="text-2xl" />,
-      color: "#3b82f6", // blue-600
+      icon: <BsGenderMale style={{ fontSize: "var(--font-size-2xl)" }} />,
+      color: "var(--color-info)",
     },
     {
       title: "Female Students",
       value: studentCounts.girls,
       subtitle: studentCounts.total > 0 ? `${((studentCounts.girls / studentCounts.total) * 100).toFixed(1)}% of total` : "0% of total",
-      icon: <BsGenderFemale className="text-2xl" />,
-      color: "#ec4899", // pink-500
+      icon: <BsGenderFemale style={{ fontSize: "var(--font-size-2xl)" }} />,
+      color: "var(--color-girls-text)",
     },
-    // {
-    //   title: "Active Status",
-    //   value: activeStudents,
-    //   subtitle: `${((activeStudents / totalStudents) * 100).toFixed(1)}% active students`,
-    //   icon: <IoMdSchool className="text-2xl" />,
-    //   color: "#22c55e", // green-500
-    // },
   ]
 
   return loading ? (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(1, 1fr)",
+        gap: "var(--spacing-4)",
+        marginBottom: "var(--spacing-6)",
+      }}
+      className="md:grid-cols-3"
+    >
       <StatCardShimmer />
       <StatCardShimmer />
       <StatCardShimmer />
