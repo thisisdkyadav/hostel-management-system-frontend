@@ -126,13 +126,7 @@ const Button = ({
   }
 
   return (
-    <button
-      type={type}
-      onClick={handleClick}
-      disabled={disabled || isLoading}
-      className={buttonClasses}
-      style={gradientStyle}
-      onMouseEnter={() => setIsHovered(true)}
+    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonClasses} style={gradientStyle} onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       {...rest}
     >

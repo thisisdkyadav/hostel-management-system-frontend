@@ -17,25 +17,9 @@ const FormField = ({ label, name, type = "text", value, onChange, required = fal
       </label>
 
       {type === "textarea" ? (
-        <textarea
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          rows={rows}
-          className={inputClasses}
-          placeholder={placeholder}
-          required={required}
-        />
+        <textarea id={name} name={name} value={value} onChange={onChange} rows={rows} className={inputClasses} placeholder={placeholder} required={required} />
       ) : type === "select" ? (
-        <select
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          className={inputClasses}
-          required={required}
-        >
+        <select id={name} name={name} value={value} onChange={onChange} className={inputClasses} required={required} >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -43,16 +27,7 @@ const FormField = ({ label, name, type = "text", value, onChange, required = fal
           ))}
         </select>
       ) : (
-        <input
-          type={type}
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          className={inputClasses}
-          placeholder={placeholder}
-          required={required}
-        />
+        <input type={type} id={name} name={name} value={value} onChange={onChange} className={inputClasses} placeholder={placeholder} required={required} />
       )}
 
       {error && <p className="mt-1 text-sm text-[var(--color-danger)]">{error}</p>}

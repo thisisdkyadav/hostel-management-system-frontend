@@ -412,12 +412,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
     <Modal title="Bulk Password Update" onClose={onClose} width={700}>
       {step === 1 && (
         <div style={styles.spaceY5}>
-          <div
-            style={{ ...styles.dropzone, ...(dropzoneHover ? styles.dropzoneHover : {}) }}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current.click()}
+          <div style={{ ...styles.dropzone, ...(dropzoneHover ? styles.dropzoneHover : {}) }} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}
           >
             <FaFileUpload style={styles.uploadIcon} />
             <p style={styles.dropzoneText}>Drag and drop a CSV file here, or click to select a file</p>
@@ -516,14 +511,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
         )}
 
         {step === 2 && (
-          <button
-            onClick={handleUpdate}
-            style={{
-              ...styles.confirmButton,
-              ...(parsedData.length === 0 || isLoading || isUpdating ? styles.confirmButtonDisabled : {})
-            }}
-            disabled={parsedData.length === 0 || isLoading || isUpdating}
-          >
+          <button onClick={handleUpdate} style={{ ...styles.confirmButton, ...(parsedData.length === 0 || isLoading || isUpdating ? styles.confirmButtonDisabled : {}) }} disabled={parsedData.length === 0 || isLoading || isUpdating} >
             {isUpdating ? (
               <>
                 <div style={styles.buttonSpinner}></div>

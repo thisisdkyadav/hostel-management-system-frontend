@@ -171,9 +171,7 @@ const Sidebar = ({ navItems }) => {
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
-                <div className={`
-                  min-w-5 h-5 px-1 rounded-full bg-[var(--color-danger)] text-white text-xs font-semibold flex items-center justify-center shadow-md 
-                  ${item.badge > 99 ? "min-w-6" : ""}
+                <div className={` min-w-5 h-5 px-1 rounded-full bg-[var(--color-danger)] text-white text-xs font-semibold flex items-center justify-center shadow-md ${item.badge > 99 ? "min-w-6" : ""}
                 `}>
                   {item.badge > 99 ? "99+" : item.badge}
                 </div>
@@ -210,10 +208,7 @@ const Sidebar = ({ navItems }) => {
               {user.profileImage ? (
                 <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
               ) : user.name?.charAt(0).toUpperCase() ? (
-                <div className={`
-                  w-full h-full flex items-center justify-center font-semibold 
-                  ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"}
-                `}>
+                <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               ) : (
@@ -241,10 +236,7 @@ const Sidebar = ({ navItems }) => {
                   {user.profileImage ? (
                     <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
                   ) : user.name?.charAt(0).toUpperCase() ? (
-                    <div className={`
-                      w-full h-full flex items-center justify-center font-semibold 
-                      ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"}
-                    `}>
+                    <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   ) : (

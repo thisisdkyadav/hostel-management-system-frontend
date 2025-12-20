@@ -43,15 +43,9 @@ const HostelSupervisorLayout = () => {
 
   return (
     <WardenProvider>
-      <div
-        className="flex flex-col md:flex-row min-h-screen"
-        style={{ backgroundColor: 'var(--color-bg-page)' }}
-      >
+      <div className="flex flex-col md:flex-row min-h-screen" style={{ backgroundColor: 'var(--color-bg-page)' }} >
         <Sidebar navItems={navItems} />
-        <div
-          className="flex-1 overflow-auto pt-16 md:pt-0"
-          style={{ height: '100vh' }}
-        >
+        <div className="flex-1 overflow-auto pt-16 md:pt-0" style={{ height: '100vh' }} >
           <Outlet />
         </div>
       </div>

@@ -70,8 +70,7 @@ const WardenUndertakings = () => {
       <header style={styles.header} className="header-responsive">
         <h1 style={styles.title}>Undertakings Management</h1>
         {isAdmin && (
-          <button
-            onClick={() => setShowAddModal(true)}
+          <button onClick={() => setShowAddModal(true)}
             style={styles.addButton}
             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--button-primary-hover)"; e.currentTarget.style.boxShadow = "var(--shadow-md)" }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "var(--button-primary-bg)"; e.currentTarget.style.boxShadow = "var(--shadow-sm)" }}

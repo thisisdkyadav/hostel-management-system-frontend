@@ -115,9 +115,7 @@ const AddSecurityModal = ({ show, onClose, onSuccess }) => {
           </div>
         </div>
 
-        <div style={{
-          display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)`
-        }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
           <button type="button" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onClick={onClose}>
             Cancel
           </button>

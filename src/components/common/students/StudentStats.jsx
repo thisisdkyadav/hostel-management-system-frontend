@@ -7,55 +7,14 @@ import { dashboardApi } from "../../../services/dashboardApi"
 
 // Shimmer loader component for stats
 const StatCardShimmer = () => (
-  <div
-    style={{
-      backgroundColor: "var(--color-bg-primary)",
-      padding: "var(--spacing-4)",
-      borderRadius: "var(--radius-lg)",
-      boxShadow: "var(--shadow-sm)",
-      borderLeft: "4px solid var(--skeleton-base)",
-      position: "relative",
-      overflow: "hidden",
-    }}
-  >
+  <div style={{ backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-sm)", borderLeft: "4px solid var(--skeleton-base)", position: "relative", overflow: "hidden", }} >
     <div className="animate-pulse" style={{ display: "flex", flexDirection: "column" }}>
-      <div
-        style={{
-          height: "var(--spacing-5)",
-          width: "6rem",
-          backgroundColor: "var(--skeleton-base)",
-          borderRadius: "var(--radius-sm)",
-          marginBottom: "var(--spacing-2)",
-        }}
-      ></div>
-      <div
-        style={{
-          height: "var(--spacing-8)",
-          width: "4rem",
-          backgroundColor: "var(--skeleton-highlight)",
-          borderRadius: "var(--radius-sm)",
-          marginBottom: "var(--spacing-2)",
-        }}
-      ></div>
-      <div
-        style={{
-          height: "var(--spacing-4)",
-          width: "8rem",
-          backgroundColor: "var(--skeleton-base)",
-          borderRadius: "var(--radius-sm)",
-        }}
-      ></div>
+      <div style={{ height: "var(--spacing-5)", width: "6rem", backgroundColor: "var(--skeleton-base)", borderRadius: "var(--radius-sm)", marginBottom: "var(--spacing-2)", }} ></div>
+      <div style={{ height: "var(--spacing-8)", width: "4rem", backgroundColor: "var(--skeleton-highlight)", borderRadius: "var(--radius-sm)", marginBottom: "var(--spacing-2)", }} ></div>
+      <div style={{ height: "var(--spacing-4)", width: "8rem", backgroundColor: "var(--skeleton-base)", borderRadius: "var(--radius-sm)", }} ></div>
     </div>
     <div style={{ position: "absolute", right: "var(--spacing-4)", top: "var(--spacing-4)" }}>
-      <div
-        className="animate-pulse"
-        style={{
-          height: "var(--spacing-8)",
-          width: "var(--spacing-8)",
-          backgroundColor: "var(--skeleton-base)",
-          borderRadius: "var(--radius-full)",
-        }}
-      ></div>
+      <div className="animate-pulse" style={{ height: "var(--spacing-8)", width: "var(--spacing-8)", backgroundColor: "var(--skeleton-base)", borderRadius: "var(--radius-full)", }} ></div>
     </div>
   </div>
 )
@@ -109,15 +68,7 @@ const StudentStats = () => {
   ]
 
   return loading ? (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(1, 1fr)",
-        gap: "var(--spacing-4)",
-        marginBottom: "var(--spacing-6)",
-      }}
-      className="md:grid-cols-3"
-    >
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-6)", }} className="md:grid-cols-3" >
       <StatCardShimmer />
       <StatCardShimmer />
       <StatCardShimmer />

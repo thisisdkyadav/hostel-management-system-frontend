@@ -63,16 +63,14 @@ const StudentInventory = () => {
       {/* Tabs */}
       <div style={styles.tabContainer}>
         <nav style={styles.tabNav}>
-          <button
-            onClick={() => setActiveTab("available")}
+          <button onClick={() => setActiveTab("available")}
             style={{ ...styles.tab, ...(activeTab === "available" ? styles.tabActive : styles.tabInactive) }}
             onMouseEnter={(e) => { if (activeTab !== "available") e.currentTarget.style.color = "var(--color-text-body)" }}
             onMouseLeave={(e) => { if (activeTab !== "available") e.currentTarget.style.color = "var(--color-text-muted)" }}
           >
             Available Inventory
           </button>
-          <button
-            onClick={() => setActiveTab("assignments")}
+          <button onClick={() => setActiveTab("assignments")}
             style={{ ...styles.tab, ...(activeTab === "assignments" ? styles.tabActive : styles.tabInactive) }}
             onMouseEnter={(e) => { if (activeTab !== "assignments") e.currentTarget.style.color = "var(--color-text-body)" }}
             onMouseLeave={(e) => { if (activeTab !== "assignments") e.currentTarget.style.color = "var(--color-text-muted)" }}

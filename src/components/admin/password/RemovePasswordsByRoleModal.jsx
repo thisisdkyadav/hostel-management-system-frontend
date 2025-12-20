@@ -303,14 +303,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             <button onClick={handleClose} style={styles.cancelButton}>
               Cancel
             </button>
-            <button
-              onClick={handleProceed}
-              disabled={!selectedRole}
-              style={{
-                ...styles.proceedButton,
-                ...(!selectedRole ? styles.proceedButtonDisabled : {})
-              }}
-            >
+            <button onClick={handleProceed} disabled={!selectedRole} style={{ ...styles.proceedButton, ...(!selectedRole ? styles.proceedButtonDisabled : {}) }} >
               Proceed
             </button>
           </div>
@@ -337,13 +330,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             <p style={styles.confirmText}>
               Please type <strong>{selectedRole}</strong> below to confirm:
             </p>
-            <input
-              type="text"
-              style={styles.confirmInput}
-              placeholder={`Type "${selectedRole}" to confirm`}
-              value={confirmText}
-              onChange={handleConfirmTextChange}
-            />
+            <input type="text" style={styles.confirmInput} placeholder={`Type "${selectedRole}" to confirm`} value={confirmText} onChange={handleConfirmTextChange} />
           </div>
 
           {error && (
@@ -360,24 +347,10 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           )}
 
           <div style={styles.footer}>
-            <button
-              onClick={handleBack}
-              disabled={isProcessing}
-              style={{
-                ...styles.cancelButton,
-                ...(isProcessing ? styles.cancelButtonDisabled : {})
-              }}
-            >
+            <button onClick={handleBack} disabled={isProcessing} style={{ ...styles.cancelButton, ...(isProcessing ? styles.cancelButtonDisabled : {}) }} >
               Back
             </button>
-            <button
-              onClick={handleConfirmRemove}
-              disabled={isProcessing || confirmText !== selectedRole}
-              style={{
-                ...styles.dangerButton,
-                ...(isProcessing || confirmText !== selectedRole ? styles.dangerButtonDisabled : {})
-              }}
-            >
+            <button onClick={handleConfirmRemove} disabled={isProcessing || confirmText !== selectedRole} style={{ ...styles.dangerButton, ...(isProcessing || confirmText !== selectedRole ? styles.dangerButtonDisabled : {}) }} >
               {isProcessing ? (
                 <>
                   <div style={styles.spinner}></div>

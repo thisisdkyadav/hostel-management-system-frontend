@@ -35,14 +35,7 @@ const SimpleDatePicker = ({ selectedDate, onChange, placeholder, minDate }) => {
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-text-disabled)] pointer-events-none">
         <FaCalendarAlt className="h-4 w-4" />
       </div>
-      <input
-        type="date"
-        value={formatDateForInput(selectedDate)}
-        onChange={handleChange}
-        min={getMinDate()}
-        className="w-full pl-10 pr-3 py-2.5 border border-[var(--color-border-input)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] transition-colors bg-[var(--color-bg-primary)] text-[var(--color-text-body)]"
-        placeholder={placeholder}
-      />
+      <input type="date" value={formatDateForInput(selectedDate)} onChange={handleChange} min={getMinDate()} className="w-full pl-10 pr-3 py-2.5 border border-[var(--color-border-input)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] transition-colors bg-[var(--color-bg-primary)] text-[var(--color-text-body)]" placeholder={placeholder} />
     </div>
   )
 }

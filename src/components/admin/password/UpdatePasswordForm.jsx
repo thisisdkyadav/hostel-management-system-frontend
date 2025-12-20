@@ -214,14 +214,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <div style={styles.inputIcon}>
             <HiMail size={20} />
           </div>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            style={getInputStyle(errors.email)}
-            placeholder="Enter user's email address"
-          />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} style={getInputStyle(errors.email)} placeholder="Enter user's email address" />
         </div>
         {errors.email && (
           <p style={styles.errorMessage}>
@@ -236,14 +229,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <div style={styles.inputIcon}>
             <HiLockClosed size={20} />
           </div>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleChange}
-            style={getInputStyle(errors.newPassword)}
-            placeholder="Enter new password"
-          />
+          <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} style={getInputStyle(errors.newPassword)} placeholder="Enter new password" />
         </div>
         {errors.newPassword ? (
           <p style={styles.errorMessage}>
@@ -260,14 +246,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <div style={styles.inputIcon}>
             <HiLockClosed size={20} />
           </div>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            style={getInputStyle(errors.confirmPassword)}
-            placeholder="Confirm new password"
-          />
+          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} style={getInputStyle(errors.confirmPassword)} placeholder="Confirm new password" />
         </div>
         {errors.confirmPassword && (
           <p style={styles.errorMessage}>
@@ -285,14 +264,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
             </p>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            style={{
-              ...styles.submitButton,
-              ...(isSubmitting ? styles.submitButtonDisabled : {})
-            }}
-          >
+          <button type="submit" disabled={isSubmitting} style={{ ...styles.submitButton, ...(isSubmitting ? styles.submitButtonDisabled : {}) }} >
             {isSubmitting ? (
               <>
                 <div style={styles.spinner}></div>

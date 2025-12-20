@@ -148,8 +148,7 @@ const AccessHistory = ({ cachedData }) => {
             </div>
             <h2 className="text-xl font-bold text-[var(--color-text-secondary)]">Access History</h2>
           </div>
-          <button
-            onClick={() => setShowFilters(!showFilters)}
+          <button onClick={() => setShowFilters(!showFilters)}
             className="flex items-center px-3 py-2 rounded-xl transition-colors"
             style={{
               backgroundColor: showFilters ? 'var(--color-primary)' : 'var(--color-bg-primary)',
@@ -201,8 +200,7 @@ const AccessHistory = ({ cachedData }) => {
             </div>
           </div>
         ) : entries.length === 0 ? (
-          <NoResults
-            icon={<FaHistory className="text-[var(--color-text-disabled)] text-5xl" />}
+          <NoResults icon={<FaHistory className="text-[var(--color-text-disabled)] text-5xl" />}
             message={!isOnline && !cachedData ? "No data available while offline" : "No entry records found"}
             suggestion={!isOnline && !cachedData ? "Connect to the internet to view your access history" : "Try changing your filter criteria"}
           />

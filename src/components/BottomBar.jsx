@@ -66,21 +66,12 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
               ${isActive(item) ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)]"}
             `}
           >
-            <div className={`
-              relative p-1.5 rounded-full transition-all duration-200 
-              ${isActive(item) ? "bg-[var(--color-primary-bg)]" : "hover:bg-[var(--color-bg-muted)]"}
-            `}>
+            <div className={` relative p-1.5 rounded-full transition-all duration-200 ${isActive(item) ? "bg-[var(--color-primary-bg)]" : "hover:bg-[var(--color-bg-muted)]"} `}>
               {item.icon && (
-                <item.icon className={`
-                  text-xl transition-all duration-200 
-                  ${isActive(item) ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}
-                `} />
+                <item.icon className={` text-xl transition-all duration-200 ${isActive(item) ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"} `} />
               )}
             </div>
-            <span className={`
-              text-[10px] mt-0.5 transition-all duration-200 
-              ${isActive(item) ? "font-medium" : ""}
-            `}>
+            <span className={` text-[10px] mt-0.5 transition-all duration-200 ${isActive(item) ? "font-medium" : ""} `}>
               {item.name || ""}
             </span>
             {item.badge > 0 && <div className="absolute top-0 right-1/3 min-w-4 h-4 px-1 rounded-full bg-[var(--color-danger)] text-white text-[9px] font-semibold flex items-center justify-center shadow-sm border border-white">{item.badge > 99 ? "99+" : item.badge}</div>}
@@ -95,14 +86,8 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
               ${dropdownOpen ? "text-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)]"}
             `}
           >
-            <div className={`
-              relative p-0.5 rounded-full transition-all duration-200 
-              ${dropdownOpen ? "bg-[var(--color-primary-bg)]" : "hover:bg-[var(--color-bg-muted)]"}
-            `}>
-              <div className={`
-                w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shadow-sm
-                ${dropdownOpen ? "border-2 border-[var(--color-primary)]" : "border border-[var(--color-border-primary)]"}
-              `}>
+            <div className={` relative p-0.5 rounded-full transition-all duration-200 ${dropdownOpen ? "bg-[var(--color-primary-bg)]" : "hover:bg-[var(--color-bg-muted)]"} `}>
+              <div className={` w-8 h-8 rounded-full flex items-center justify-center overflow-hidden shadow-sm ${dropdownOpen ? "border-2 border-[var(--color-primary)]" : "border border-[var(--color-border-primary)]"} `}>
                 {user?.profileImage ? (
                   <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-8 h-8 rounded-full object-cover" />
                 ) : user?.name?.charAt(0).toUpperCase() ? (
@@ -114,10 +99,7 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
                 )}
               </div>
             </div>
-            <span className={`
-              text-[10px] mt-0.5 transition-all duration-200 
-              ${dropdownOpen ? "font-medium text-[var(--color-primary)]" : ""}
-            `}>
+            <span className={` text-[10px] mt-0.5 transition-all duration-200 ${dropdownOpen ? "font-medium text-[var(--color-primary)]" : ""} `}>
               More
             </span>
           </button>
@@ -143,14 +125,8 @@ const BottomBar = ({ mainNavItems, hiddenNavItems, handleNavigation }) => {
                       `}
                     >
                       {item.icon && (
-                        <div className={`
-                          p-2.5 rounded-full mr-4 flex items-center justify-center 
-                          ${item.name === "Logout" ? "bg-[var(--color-danger-bg-light)]" : "bg-[var(--color-primary-bg)]"}
-                        `}>
-                          <item.icon className={`
-                            text-lg 
-                            ${item.name === "Logout" ? "text-[var(--color-danger)]" : "text-[var(--color-primary)]"}
-                          `} />
+                        <div className={` p-2.5 rounded-full mr-4 flex items-center justify-center ${item.name === "Logout" ? "bg-[var(--color-danger-bg-light)]" : "bg-[var(--color-primary-bg)]"} `}>
+                          <item.icon className={` text-lg ${item.name === "Logout" ? "text-[var(--color-danger)]" : "text-[var(--color-primary)]"} `} />
                         </div>
                       )}
                       <span className="font-medium">{item.name || ""}</span>

@@ -145,8 +145,7 @@ const AddStudentEntry = () => {
 
         {/* Tabs */}
         <div style={styles.tabContainer}>
-          <button
-            onClick={() => setActiveTab("qr")}
+          <button onClick={() => setActiveTab("qr")}
             style={{
               ...styles.tab,
               ...(activeTab === "qr" ? styles.tabActive : styles.tabInactive),
@@ -154,8 +153,7 @@ const AddStudentEntry = () => {
           >
             <FaQrcode style={styles.tabIcon} /> QR Scanner
           </button>
-          <button
-            onClick={() => setActiveTab("manual")}
+          <button onClick={() => setActiveTab("manual")}
             style={{
               ...styles.tab,
               ...(activeTab === "manual" ? styles.tabActive : styles.tabInactive),

@@ -98,11 +98,7 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
 
   return (
     <div className="space-y-4">
-      <div
-        className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-muted)] transition-colors border-[var(--color-border-primary)]"
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onClick={() => fileInputRef.current.click()}
+      <div className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-muted)] transition-colors border-[var(--color-border-primary)]" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}
       >
         <FaFileUpload className="mx-auto h-10 w-10 text-[var(--color-text-disabled)]" />
         <p className="mt-2 text-sm text-[var(--color-text-muted)]">Drag and drop a CSV file here, or click to select a file</p>
