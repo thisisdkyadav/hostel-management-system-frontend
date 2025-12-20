@@ -31,79 +31,234 @@ const HostelGateAttendance = () => {
     return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
+  const getRoleBadgeStyles = (role) => {
+    if (role === "Security") {
+      return {
+        backgroundColor: "var(--color-purple-light-bg)",
+        color: "var(--color-purple-text)",
+      }
+    }
+    return {
+      backgroundColor: "var(--color-info-bg)",
+      color: "var(--color-info-text)",
+    }
+  }
+
+  const getStatusBadgeStyles = (type) => {
+    if (type === "checkIn") {
+      return {
+        backgroundColor: "var(--color-success-bg)",
+        color: "var(--color-success-text)",
+      }
+    }
+    return {
+      backgroundColor: "var(--color-danger-bg)",
+      color: "var(--color-danger-text)",
+    }
+  }
+
+  const styles = {
+    container: {
+      padding: "var(--spacing-6) var(--spacing-4)",
+    },
+    containerResponsive: {
+      maxWidth: "var(--container-xl)",
+      margin: "0 auto",
+    },
+    header: {
+      marginBottom: "var(--spacing-6)",
+    },
+    title: {
+      fontSize: "var(--font-size-3xl)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-secondary)",
+      marginBottom: "var(--spacing-2)",
+    },
+    subtitle: {
+      fontSize: "var(--font-size-base)",
+      color: "var(--color-text-muted)",
+    },
+    gridContainer: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "var(--spacing-6)",
+    },
+    card: {
+      backgroundColor: "var(--color-bg-primary)",
+      borderRadius: "var(--radius-xl)",
+      padding: "var(--spacing-6)",
+      boxShadow: "var(--shadow-sm)",
+      transition: "var(--transition-all)",
+      border: "var(--border-1) solid var(--color-border-light)",
+    },
+    cardHeader: {
+      display: "flex",
+      alignItems: "center",
+      marginBottom: "var(--spacing-4)",
+    },
+    cardIconWrapper: {
+      padding: "var(--spacing-2-5)",
+      marginRight: "var(--spacing-3)",
+      borderRadius: "var(--radius-xl)",
+      backgroundColor: "var(--color-info-bg)",
+      color: "var(--color-primary)",
+    },
+    cardTitle: {
+      fontSize: "var(--font-size-2xl)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-secondary)",
+    },
+    loadingContainer: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "var(--spacing-12)",
+    },
+    spinner: {
+      width: "var(--icon-4xl)",
+      height: "var(--icon-4xl)",
+      border: "var(--border-4) solid var(--color-primary)",
+      borderTop: "var(--border-4) solid transparent",
+      borderRadius: "var(--radius-full)",
+      animation: "spin 1s linear infinite",
+    },
+    tableContainer: {
+      overflowX: "auto",
+    },
+    table: {
+      minWidth: "100%",
+      borderCollapse: "collapse",
+    },
+    thead: {
+      backgroundColor: "var(--table-header-bg)",
+    },
+    th: {
+      padding: "var(--spacing-3) var(--spacing-6)",
+      textAlign: "left",
+      fontSize: "var(--font-size-xs)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-text-muted)",
+      textTransform: "uppercase",
+      letterSpacing: "var(--letter-spacing-wider)",
+    },
+    tbody: {
+      backgroundColor: "var(--color-bg-primary)",
+    },
+    td: {
+      padding: "var(--spacing-4) var(--spacing-6)",
+      whiteSpace: "nowrap",
+      borderBottom: "var(--border-1) solid var(--color-border-primary)",
+    },
+    nameText: {
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-text-primary)",
+    },
+    emailText: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-muted)",
+    },
+    badge: {
+      padding: "var(--spacing-0-5) var(--spacing-2)",
+      display: "inline-flex",
+      fontSize: "var(--font-size-xs)",
+      lineHeight: "var(--line-height-snug)",
+      fontWeight: "var(--font-weight-semibold)",
+      borderRadius: "var(--radius-full)",
+    },
+    timeText: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-muted)",
+    },
+    emptyState: {
+      textAlign: "center",
+      padding: "var(--spacing-8)",
+    },
+    emptyText: {
+      color: "var(--color-text-muted)",
+      fontSize: "var(--font-size-base)",
+    },
+  }
+
   return (
-    <div className="px-4 py-6 md:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Staff Attendance Scanner</h1>
-          <p className="text-gray-600">Scan QR codes to record attendance for security guards and maintenance staff.</p>
+    <div style={styles.container}>
+      <div style={styles.containerResponsive}>
+        <div style={styles.header}>
+          <h1 style={styles.title}>Staff Attendance Scanner</h1>
+          <p style={styles.subtitle}>Scan QR codes to record attendance for security guards and maintenance staff.</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
+        <div style={styles.gridContainer} className="grid-cols-attendance">
+          <div>
             <AttendanceQRScanner onRefresh={fetchAttendanceRecords} />
           </div>
 
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-              <div className="flex items-center mb-4">
-                <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
-                  <FaHistory size={20} />
-                </div>
-                <h2 className="text-xl font-bold text-gray-800">Recent Staff Attendance Records</h2>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <div style={styles.cardIconWrapper}>
+                <FaHistory size={20} />
               </div>
-
-              {loading ? (
-                <div className="flex justify-center items-center py-12">
-                  <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              ) : attendanceRecords.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Name
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Role
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Time
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {attendanceRecords.map((record) => (
-                        <tr key={record._id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{record.userId.name}</div>
-                            <div className="text-sm text-gray-500">{record.userId.email}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.userId.role === "Security" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"}`}>{record.userId.role}</span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(record.createdAt)}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${record.type === "checkIn" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{record.type === "checkIn" ? "Check In" : "Check Out"}</span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No attendance records found.</p>
-                </div>
-              )}
+              <h2 style={styles.cardTitle}>Recent Staff Attendance Records</h2>
             </div>
+
+            {loading ? (
+              <div style={styles.loadingContainer}>
+                <div style={styles.spinner}></div>
+              </div>
+            ) : attendanceRecords.length > 0 ? (
+              <div style={styles.tableContainer}>
+                <table style={styles.table}>
+                  <thead style={styles.thead}>
+                    <tr>
+                      <th style={styles.th}>Name</th>
+                      <th style={styles.th}>Role</th>
+                      <th style={styles.th}>Time</th>
+                      <th style={styles.th}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody style={styles.tbody}>
+                    {attendanceRecords.map((record) => (
+                      <tr key={record._id}>
+                        <td style={styles.td}>
+                          <div style={styles.nameText}>{record.userId.name}</div>
+                          <div style={styles.emailText}>{record.userId.email}</div>
+                        </td>
+                        <td style={styles.td}>
+                          <span style={{ ...styles.badge, ...getRoleBadgeStyles(record.userId.role) }}>{record.userId.role}</span>
+                        </td>
+                        <td style={{ ...styles.td, ...styles.timeText }}>{formatDate(record.createdAt)}</td>
+                        <td style={styles.td}>
+                          <span style={{ ...styles.badge, ...getStatusBadgeStyles(record.type) }}>{record.type === "checkIn" ? "Check In" : "Check Out"}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div style={styles.emptyState}>
+                <p style={styles.emptyText}>No attendance records found.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        .grid-cols-attendance {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: var(--spacing-6);
+        }
+        @media (min-width: 1024px) {
+          .grid-cols-attendance {
+            grid-template-columns: 1fr 2fr;
+          }
+        }
+      `}</style>
     </div>
   )
 }

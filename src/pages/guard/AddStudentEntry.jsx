@@ -48,51 +48,139 @@ const AddStudentEntry = () => {
     setScannedStudent(student)
   }
 
+  const styles = {
+    container: {
+      padding: "var(--spacing-6) var(--spacing-4)",
+      backgroundColor: "var(--color-bg-page)",
+    },
+    containerResponsive: {
+      maxWidth: "var(--container-xl)",
+      margin: "0 auto",
+    },
+    header: {
+      marginBottom: "var(--spacing-6)",
+    },
+    title: {
+      fontSize: "var(--font-size-3xl)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-secondary)",
+      marginBottom: "var(--spacing-2)",
+    },
+    subtitle: {
+      fontSize: "var(--font-size-base)",
+      color: "var(--color-text-muted)",
+    },
+    tabContainer: {
+      display: "flex",
+      marginBottom: "var(--spacing-6)",
+      backgroundColor: "var(--color-bg-primary)",
+      padding: "var(--spacing-1)",
+      borderRadius: "var(--radius-lg)",
+      boxShadow: "var(--shadow-sm)",
+    },
+    tab: {
+      flex: 1,
+      padding: "var(--spacing-3) var(--spacing-4)",
+      borderRadius: "var(--radius-md)",
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      transition: "var(--transition-colors)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      border: "none",
+    },
+    tabActive: {
+      backgroundColor: "var(--color-primary-bg)",
+      color: "var(--color-primary)",
+    },
+    tabInactive: {
+      backgroundColor: "transparent",
+      color: "var(--color-text-muted)",
+    },
+    tabIcon: {
+      marginRight: "var(--spacing-2)",
+    },
+    statusIndicator: {
+      marginBottom: "var(--spacing-6)",
+    },
+    contentSection: {
+      marginBottom: "var(--spacing-8)",
+    },
+    card: {
+      backgroundColor: "var(--color-bg-primary)",
+      borderRadius: "var(--radius-xl)",
+      padding: "var(--spacing-6)",
+      boxShadow: "var(--shadow-sm)",
+      transition: "var(--transition-all)",
+      border: "var(--border-1) solid var(--color-border-light)",
+    },
+    cardHeader: {
+      display: "flex",
+      alignItems: "center",
+      marginBottom: "var(--spacing-4)",
+    },
+    cardIconWrapper: {
+      padding: "var(--spacing-2-5)",
+      marginRight: "var(--spacing-3)",
+      borderRadius: "var(--radius-xl)",
+      backgroundColor: "var(--color-info-bg)",
+      color: "var(--color-primary)",
+    },
+    cardTitle: {
+      fontSize: "var(--font-size-2xl)",
+      fontWeight: "var(--font-weight-bold)",
+      color: "var(--color-text-secondary)",
+    },
+  }
+
   return (
-    <div className="px-4 py-6 md:px-6 lg:px-8 bg-[#EFF3F4]">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Student Entry Management</h1>
-          <p className="text-gray-600">Record student check-ins and check-outs using the form or QR scanner.</p>
+    <div style={styles.container}>
+      <div style={styles.containerResponsive}>
+        <div style={styles.header}>
+          <h1 style={styles.title}>Student Entry Management</h1>
+          <p style={styles.subtitle}>Record student check-ins and check-outs using the form or QR scanner.</p>
         </div>
-        {/* 
-        <div className="mb-6 bg-blue-50 p-4 rounded-lg border-l-4 border-[#1360AB] flex items-start">
-          <FaInfoCircle className="text-[#1360AB] mt-0.5 mr-3 flex-shrink-0" />
-          <div>
-            <p className="text-sm text-gray-700 font-medium mb-1">Two ways to record student entries:</p>
-            <ul className="text-sm text-gray-600 list-disc list-inside">
-              <li>Scan student QR codes for quick verification</li>
-              <li>Manually enter student details</li>
-            </ul>
-          </div>
-        </div> */}
 
         {/* Tabs */}
-        <div className="flex mb-6 bg-white p-1 rounded-lg shadow-sm">
-          <button onClick={() => setActiveTab("qr")} className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center ${activeTab === "qr" ? "bg-[#E4F1FF] text-[#1360AB]" : "text-gray-600 hover:bg-gray-100"}`}>
-            <FaQrcode className="mr-2" /> QR Scanner
+        <div style={styles.tabContainer}>
+          <button
+            onClick={() => setActiveTab("qr")}
+            style={{
+              ...styles.tab,
+              ...(activeTab === "qr" ? styles.tabActive : styles.tabInactive),
+            }}
+          >
+            <FaQrcode style={styles.tabIcon} /> QR Scanner
           </button>
-          <button onClick={() => setActiveTab("manual")} className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center ${activeTab === "manual" ? "bg-[#E4F1FF] text-[#1360AB]" : "text-gray-600 hover:bg-gray-100"}`}>
-            <FaRegKeyboard className="mr-2" /> Manual Entry
+          <button
+            onClick={() => setActiveTab("manual")}
+            style={{
+              ...styles.tab,
+              ...(activeTab === "manual" ? styles.tabActive : styles.tabInactive),
+            }}
+          >
+            <FaRegKeyboard style={styles.tabIcon} /> Manual Entry
           </button>
         </div>
 
         {/* Scanner Status Indicator */}
-        <div className="mb-6">
+        <div style={styles.statusIndicator}>
           <ScannerStatusIndicator />
         </div>
 
         {/* Content based on active tab */}
-        <div className="mb-8">
+        <div style={styles.contentSection}>
           {activeTab === "qr" ? (
             <QRScanner onScanSuccess={handleQRScanSuccess} onRefresh={fetchRecentEntries} />
           ) : (
-            <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-              <div className="flex items-center mb-4">
-                <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
+            <div style={styles.card}>
+              <div style={styles.cardHeader}>
+                <div style={styles.cardIconWrapper}>
                   <FaRegKeyboard size={20} />
                 </div>
-                <h2 className="text-xl font-bold text-gray-800">Manual Entry Form</h2>
+                <h2 style={styles.cardTitle}>Manual Entry Form</h2>
               </div>
               <NewEntryForm onAddEntry={handleAddEntry} />
             </div>
@@ -100,12 +188,12 @@ const AddStudentEntry = () => {
         </div>
 
         {/* Recent entries section */}
-        <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-          <div className="flex items-center mb-4">
-            <div className="p-2.5 mr-3 rounded-xl bg-blue-100 text-[#1360AB]">
+        <div style={styles.card}>
+          <div style={styles.cardHeader}>
+            <div style={styles.cardIconWrapper}>
               <FaHistory size={20} />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Recent Entry Records</h2>
+            <h2 style={styles.cardTitle}>Recent Entry Records</h2>
           </div>
           <StudentEntryTable entries={entries} refresh={fetchRecentEntries} />
         </div>
