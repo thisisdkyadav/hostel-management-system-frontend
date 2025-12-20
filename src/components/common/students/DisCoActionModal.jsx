@@ -98,15 +98,54 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
     setShowDeleteConfirm(false)
   }
 
+  const styles = {
+    deleteConfirmContainer: {
+      padding: "var(--spacing-4)",
+    },
+    deleteTitle: {
+      fontSize: "var(--font-size-lg)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-danger)",
+      marginBottom: "var(--spacing-3)",
+    },
+    deleteMessage: {
+      marginBottom: "var(--spacing-4)",
+      color: "var(--color-text-body)",
+      fontSize: "var(--font-size-base)",
+    },
+    deleteButtonContainer: {
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: "var(--spacing-3)",
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-4)",
+    },
+    footerContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      paddingTop: "var(--spacing-4)",
+      marginTop: "var(--spacing-4)",
+      borderTop: "var(--border-1) solid var(--color-border-light)",
+    },
+    actionButtonsRight: {
+      display: "flex",
+      gap: "var(--spacing-3)",
+      marginLeft: "auto",
+    },
+  }
+
   if (!isOpen) return null
 
   return (
     <Modal title={isEditing ? "Edit Disciplinary Action" : "Add Disciplinary Action"} onClose={onClose} width={600}>
       {showDeleteConfirm ? (
-        <div className="p-4">
-          <h3 className="text-lg font-medium text-red-600 mb-3">Confirm Deletion</h3>
-          <p className="mb-4">Are you sure you want to delete this disciplinary action? This action cannot be undone.</p>
-          <div className="flex justify-end space-x-3">
+        <div style={styles.deleteConfirmContainer}>
+          <h3 style={styles.deleteTitle}>Confirm Deletion</h3>
+          <p style={styles.deleteMessage}>Are you sure you want to delete this disciplinary action? This action cannot be undone.</p>
+          <div style={styles.deleteButtonContainer}>
             <Button type="button" variant="outline" onClick={cancelDelete}>
               Cancel
             </Button>
@@ -116,7 +155,7 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={styles.form}>
           <FormField label="Action Taken" name="actionTaken" value={formData.actionTaken} onChange={handleChange} required error={errors.actionTaken} placeholder="Enter action taken" />
 
           <FormField label="Reason" name="reason" value={formData.reason} onChange={handleChange} required error={errors.reason} placeholder="Enter reason for the action" />
@@ -125,13 +164,13 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
 
           <FormField label="Remarks" name="remarks" type="textarea" value={formData.remarks} onChange={handleChange} error={errors.remarks} placeholder="Enter additional remarks (optional)" rows={3} />
 
-          <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
+          <div style={styles.footerContainer}>
             {isEditing && onDelete && (
               <Button type="button" variant="danger" size="small" icon={<FaTrash />} onClick={confirmDelete}>
                 Delete
               </Button>
             )}
-            <div className="flex space-x-3 ml-auto">
+            <div style={styles.actionButtonsRight}>
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
