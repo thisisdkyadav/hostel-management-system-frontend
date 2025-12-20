@@ -75,28 +75,163 @@ const Certificates = ({ userId }) => {
   }
 
   const getFileIcon = (url) => {
-    if (!url) return <FaFileAlt />
+    if (!url) return <FaFileAlt style={{ color: "var(--color-text-muted)" }} />
     const urlLower = url.toLowerCase()
     if (urlLower.endsWith(".pdf")) {
-      return <FaFilePdf className="text-red-500" />
+      return <FaFilePdf style={{ color: "var(--color-danger)" }} />
     } else if (urlLower.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
-      return <FaImage className="text-blue-500" />
+      return <FaImage style={{ color: "var(--color-primary)" }} />
     }
-    return <FaFileAlt />
+    return <FaFileAlt style={{ color: "var(--color-text-muted)" }} />
+  }
+
+  const styles = {
+    loadingContainer: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "var(--spacing-8)",
+    },
+    spinner: {
+      width: "var(--avatar-sm)",
+      height: "var(--avatar-sm)",
+      border: "var(--border-4) solid transparent",
+      borderTopColor: "var(--color-primary)",
+      borderRadius: "var(--radius-full)",
+      animation: "spin 1s linear infinite",
+    },
+    errorContainer: {
+      padding: "var(--spacing-4)",
+      backgroundColor: "var(--color-danger-bg-light)",
+      color: "var(--color-danger)",
+      borderRadius: "var(--radius-lg)",
+      fontSize: "var(--font-size-base)",
+    },
+    container: {
+      padding: "0 var(--spacing-4)",
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "var(--spacing-6)",
+    },
+    title: {
+      fontSize: "var(--font-size-lg)",
+      color: "var(--color-text-body)",
+      fontWeight: "var(--font-weight-semibold)",
+    },
+    emptyState: {
+      backgroundColor: "var(--color-bg-tertiary)",
+      padding: "var(--spacing-8)",
+      textAlign: "center",
+      borderRadius: "var(--radius-lg)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+    },
+    emptyText: {
+      color: "var(--color-text-muted)",
+      fontSize: "var(--font-size-base)",
+    },
+    emptyAddButton: {
+      marginTop: "var(--spacing-3)",
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(1, 1fr)",
+      gap: "var(--spacing-4)",
+    },
+    card: {
+      backgroundColor: "var(--color-bg-primary)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      padding: "var(--spacing-4)",
+      borderRadius: "var(--radius-lg)",
+      boxShadow: "var(--shadow-sm)",
+      transition: "var(--transition-all)",
+    },
+    cardContent: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+    },
+    cardLeft: {
+      display: "flex",
+      alignItems: "flex-start",
+      flex: 1,
+    },
+    fileIcon: {
+      fontSize: "var(--font-size-3xl)",
+      marginRight: "var(--spacing-3)",
+      marginTop: "var(--spacing-1)",
+    },
+    cardDetails: {
+      flex: 1,
+    },
+    cardTitleRow: {
+      display: "flex",
+      alignItems: "center",
+    },
+    cardTitle: {
+      fontSize: "var(--font-size-md)",
+      fontWeight: "var(--font-weight-semibold)",
+      color: "var(--color-text-secondary)",
+    },
+    dateBadge: {
+      marginLeft: "var(--spacing-2)",
+      padding: "var(--spacing-0-5) var(--spacing-2)",
+      backgroundColor: "var(--color-primary-bg)",
+      color: "var(--color-primary)",
+      fontSize: "var(--font-size-xs)",
+      borderRadius: "var(--radius-full)",
+    },
+    remarks: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-body)",
+      marginTop: "var(--spacing-2)",
+    },
+    remarksLabel: {
+      fontWeight: "var(--font-weight-semibold)",
+      color: "var(--color-text-secondary)",
+    },
+    cardActions: {
+      display: "flex",
+      gap: "var(--spacing-2)",
+    },
+    viewButton: {
+      padding: "var(--spacing-1) var(--spacing-3)",
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-success)",
+      backgroundColor: "var(--color-success-bg-light)",
+      borderRadius: "var(--radius-md)",
+      transition: "var(--transition-all)",
+      border: "none",
+      cursor: "pointer",
+    },
+    editButton: {
+      padding: "var(--spacing-1) var(--spacing-3)",
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-primary)",
+      backgroundColor: "var(--color-primary-bg)",
+      borderRadius: "var(--radius-md)",
+      transition: "var(--transition-all)",
+      border: "none",
+      cursor: "pointer",
+    },
   }
 
   if (loading)
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="w-8 h-8 border-4 border-t-[#1360AB] border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+      <div style={styles.loadingContainer}>
+        <div style={styles.spinner}></div>
       </div>
     )
-  if (error) return <div className="p-4 bg-red-50 text-red-600 rounded-lg">Error: {error.message}</div>
+  if (error) return <div style={styles.errorContainer}>Error: {error.message}</div>
 
   return (
-    <div className="px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg text-gray-700 font-semibold">Certificates Issued</h3>
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h3 style={styles.title}>Certificates Issued</h3>
         {canAccess("students_info", "create") && (
           <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
             Add Certificate
@@ -105,39 +240,68 @@ const Certificates = ({ userId }) => {
       </div>
 
       {certificates.length === 0 ? (
-        <div className="bg-gray-50 p-8 text-center rounded-lg border border-gray-200">
-          <p className="text-gray-600">No certificates found.</p>
+        <div style={styles.emptyState}>
+          <p style={styles.emptyText}>No certificates found.</p>
           {canAccess("students_info", "create") && (
-            <Button variant="secondary" size="small" className="mt-3" onClick={handleAddClick}>
-              Add Certificate
-            </Button>
+            <div style={styles.emptyAddButton}>
+              <Button variant="secondary" size="small" onClick={handleAddClick}>
+                Add Certificate
+              </Button>
+            </div>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div style={styles.grid}>
           {certificates.map((certificate) => (
-            <div key={certificate._id} className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start">
-                <div className="flex items-start flex-1">
-                  <div className="text-2xl mr-3 mt-1">{getFileIcon(certificate.certificateUrl)}</div>
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      <h4 className="text-md font-semibold text-gray-800">{certificate.certificateType}</h4>
-                      <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">{new Date(certificate.issueDate).toLocaleDateString()}</span>
+            <div
+              key={certificate._id}
+              style={styles.card}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-md)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-sm)"
+              }}
+            >
+              <div style={styles.cardContent}>
+                <div style={styles.cardLeft}>
+                  <div style={styles.fileIcon}>{getFileIcon(certificate.certificateUrl)}</div>
+                  <div style={styles.cardDetails}>
+                    <div style={styles.cardTitleRow}>
+                      <h4 style={styles.cardTitle}>{certificate.certificateType}</h4>
+                      <span style={styles.dateBadge}>{new Date(certificate.issueDate).toLocaleDateString()}</span>
                     </div>
                     {certificate.remarks && (
-                      <p className="text-sm text-gray-700 mt-2">
-                        <span className="font-semibold text-gray-800">Remarks:</span> {certificate.remarks}
+                      <p style={styles.remarks}>
+                        <span style={styles.remarksLabel}>Remarks:</span> {certificate.remarks}
                       </p>
                     )}
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <button onClick={() => handleViewClick(certificate.certificateUrl)} className="px-3 py-1 text-sm font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded-md transition-colors">
+                <div style={styles.cardActions}>
+                  <button
+                    onClick={() => handleViewClick(certificate.certificateUrl)}
+                    style={styles.viewButton}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "var(--color-success-bg)"
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "var(--color-success-bg-light)"
+                    }}
+                  >
                     View
                   </button>
                   {canAccess("students_info", "edit") && (
-                    <button onClick={() => handleEditClick(certificate)} className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors">
+                    <button
+                      onClick={() => handleEditClick(certificate)}
+                      style={styles.editButton}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "var(--color-primary-bg-hover)"
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "var(--color-primary-bg)"
+                      }}
+                    >
                       Edit
                     </button>
                   )}

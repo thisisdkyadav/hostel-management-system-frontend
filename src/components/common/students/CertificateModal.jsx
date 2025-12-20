@@ -142,15 +142,113 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
     setShowDeleteConfirm(false)
   }
 
+  const styles = {
+    deleteConfirmContainer: {
+      padding: "var(--spacing-4)",
+    },
+    deleteTitle: {
+      fontSize: "var(--font-size-lg)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-danger)",
+      marginBottom: "var(--spacing-3)",
+    },
+    deleteMessage: {
+      marginBottom: "var(--spacing-4)",
+      color: "var(--color-text-body)",
+      fontSize: "var(--font-size-base)",
+    },
+    deleteButtonContainer: {
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: "var(--spacing-3)",
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-4)",
+    },
+    uploadSection: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-2)",
+    },
+    uploadLabel: {
+      display: "block",
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      color: "var(--color-text-body)",
+    },
+    requiredMark: {
+      color: "var(--color-danger)",
+    },
+    uploadContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--spacing-3)",
+    },
+    uploadButton: {
+      padding: "var(--spacing-2) var(--spacing-4)",
+      backgroundColor: "var(--color-primary-bg)",
+      color: "var(--color-primary)",
+      borderRadius: "var(--radius-md)",
+      transition: "var(--transition-all)",
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--spacing-2)",
+      cursor: "pointer",
+      border: "none",
+      fontSize: "var(--font-size-base)",
+      fontWeight: "var(--font-weight-medium)",
+    },
+    hiddenInput: {
+      display: "none",
+    },
+    uploadedFileName: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-muted)",
+    },
+    uploadedSuccess: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-success)",
+    },
+    errorText: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-danger)",
+    },
+    hintText: {
+      fontSize: "var(--font-size-xs)",
+      color: "var(--color-text-muted)",
+    },
+    submitError: {
+      padding: "var(--spacing-3)",
+      backgroundColor: "var(--color-danger-bg-light)",
+      color: "var(--color-danger)",
+      borderRadius: "var(--radius-md)",
+      fontSize: "var(--font-size-sm)",
+    },
+    footerContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      paddingTop: "var(--spacing-4)",
+      marginTop: "var(--spacing-4)",
+      borderTop: "var(--border-1) solid var(--color-border-light)",
+    },
+    actionButtonsRight: {
+      display: "flex",
+      gap: "var(--spacing-3)",
+      marginLeft: "auto",
+    },
+  }
+
   if (!isOpen) return null
 
   return (
     <Modal title={isEditing ? "Edit Certificate" : "Add Certificate"} onClose={onClose} width={600}>
       {showDeleteConfirm ? (
-        <div className="p-4">
-          <h3 className="text-lg font-medium text-red-600 mb-3">Confirm Deletion</h3>
-          <p className="mb-4">Are you sure you want to delete this certificate? This action cannot be undone.</p>
-          <div className="flex justify-end space-x-3">
+        <div style={styles.deleteConfirmContainer}>
+          <h3 style={styles.deleteTitle}>Confirm Deletion</h3>
+          <p style={styles.deleteMessage}>Are you sure you want to delete this certificate? This action cannot be undone.</p>
+          <div style={styles.deleteButtonContainer}>
             <Button type="button" variant="outline" onClick={cancelDelete}>
               Cancel
             </Button>
@@ -160,42 +258,50 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={styles.form}>
           <FormField label="Certificate Type" name="certificateType" value={formData.certificateType} onChange={handleChange} required error={errors.certificateType} placeholder="e.g., Bonafide Certificate, No Dues Certificate" />
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Upload Certificate <span className="text-red-500">*</span>
+          <div style={styles.uploadSection}>
+            <label style={styles.uploadLabel}>
+              Upload Certificate <span style={styles.requiredMark}>*</span>
             </label>
-            <div className="flex items-center space-x-3">
-              <label className="cursor-pointer">
-                <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} className="hidden" disabled={isUploading} />
-                <div className="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors flex items-center space-x-2">
+            <div style={styles.uploadContainer}>
+              <label style={{ cursor: isUploading ? "not-allowed" : "pointer" }}>
+                <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} style={styles.hiddenInput} disabled={isUploading} />
+                <div
+                  style={styles.uploadButton}
+                  onMouseEnter={(e) => {
+                    if (!isUploading) e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)"
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "var(--color-primary-bg)"
+                  }}
+                >
                   <FaUpload />
                   <span>{isUploading ? "Uploading..." : "Choose File"}</span>
                 </div>
               </label>
-              {uploadedFile && <span className="text-sm text-gray-600">{uploadedFile}</span>}
-              {formData.certificateUrl && !uploadedFile && <span className="text-sm text-green-600">File uploaded</span>}
+              {uploadedFile && <span style={styles.uploadedFileName}>{uploadedFile}</span>}
+              {formData.certificateUrl && !uploadedFile && <span style={styles.uploadedSuccess}>File uploaded</span>}
             </div>
-            {errors.file && <p className="text-sm text-red-600">{errors.file}</p>}
-            {errors.certificateUrl && <p className="text-sm text-red-600">{errors.certificateUrl}</p>}
-            <p className="text-xs text-gray-500">Accepted formats: PDF, PNG, JPG, JPEG, WEBP, GIF</p>
+            {errors.file && <p style={styles.errorText}>{errors.file}</p>}
+            {errors.certificateUrl && <p style={styles.errorText}>{errors.certificateUrl}</p>}
+            <p style={styles.hintText}>Accepted formats: PDF, PNG, JPG, JPEG, WEBP, GIF</p>
           </div>
 
           <FormField label="Issue Date" name="issueDate" type="date" value={formData.issueDate} onChange={handleChange} required error={errors.issueDate} />
 
           <FormField label="Remarks" name="remarks" type="textarea" value={formData.remarks} onChange={handleChange} error={errors.remarks} placeholder="Enter additional remarks (optional)" rows={3} />
 
-          {errors.submit && <div className="p-3 bg-red-50 text-red-600 rounded-md text-sm">{errors.submit}</div>}
+          {errors.submit && <div style={styles.submitError}>{errors.submit}</div>}
 
-          <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
+          <div style={styles.footerContainer}>
             {isEditing && onDelete && (
               <Button type="button" variant="danger" size="small" icon={<FaTrash />} onClick={confirmDelete}>
                 Delete
               </Button>
             )}
-            <div className="flex space-x-3 ml-auto">
+            <div style={styles.actionButtonsRight}>
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
