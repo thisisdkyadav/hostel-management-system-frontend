@@ -18,33 +18,33 @@ const NotificationToast = ({ message, type = "info", duration = 3000, onClose })
   const getIcon = () => {
     switch (type) {
       case "success":
-        return <FaCheckCircle className="text-green-500" />
+        return <FaCheckCircle className="text-[var(--color-success)]" />
       case "error":
-        return <FaExclamationCircle className="text-red-500" />
+        return <FaExclamationCircle className="text-[var(--color-danger)]" />
       default:
-        return <FaCheckCircle className="text-blue-500" />
+        return <FaCheckCircle className="text-[var(--color-primary)]" />
     }
   }
 
   const getBgColor = () => {
     switch (type) {
       case "success":
-        return "bg-green-50 border-green-200"
+        return "bg-[var(--color-success-bg-light)] border-[var(--color-success-light)]"
       case "error":
-        return "bg-red-50 border-red-200"
+        return "bg-[var(--color-danger-bg-light)] border-[var(--color-danger-light)]"
       default:
-        return "bg-blue-50 border-blue-200"
+        return "bg-[var(--color-primary-bg)] border-[var(--color-primary-light)]"
     }
   }
 
   const getTextColor = () => {
     switch (type) {
       case "success":
-        return "text-green-800"
+        return "text-[var(--color-success-dark)]"
       case "error":
-        return "text-red-800"
+        return "text-[var(--color-danger-dark)]"
       default:
-        return "text-blue-800"
+        return "text-[var(--color-primary-dark)]"
     }
   }
 
@@ -59,10 +59,10 @@ const NotificationToast = ({ message, type = "info", duration = 3000, onClose })
             <p className={`text-sm font-medium ${getTextColor()}`}>{message}</p>
           </div>
           <button onClick={() => {
-              setVisible(false)
-              setTimeout(() => onClose && onClose(), 300)
-            }}
-            className="flex-shrink-0 ml-3 text-gray-400 hover:text-gray-600"
+            setVisible(false)
+            setTimeout(() => onClose && onClose(), 300)
+          }}
+            className="flex-shrink-0 ml-3 text-[var(--color-text-disabled)] hover:text-[var(--color-text-muted)]"
           >
             <FaTimes size={14} />
           </button>

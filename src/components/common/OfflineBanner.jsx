@@ -9,14 +9,14 @@ const OfflineBanner = ({ message = "You are currently offline", className = "", 
   }
 
   return (
-    <div className={`bg-amber-50 border-l-4 border-amber-500 p-3 rounded-md shadow-sm ${className}`}>
+    <div className={`bg-[var(--color-warning-bg)] border-l-4 border-[var(--color-warning)] p-3 rounded-md shadow-sm ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <IoCloudOfflineOutline className="text-amber-500 text-xl mr-2" />
-          <p className="text-amber-800 text-sm font-medium">{message}</p>
+          <IoCloudOfflineOutline className="text-[var(--color-warning)] text-xl mr-2" />
+          <p className="text-[var(--color-warning-dark)] text-sm font-medium">{message}</p>
         </div>
         {showDismiss && (
-          <button onClick={() => setDismissed(true)} className="text-amber-700 hover:text-amber-900 ml-2">
+          <button onClick={() => setDismissed(true)} className="text-[var(--color-warning-dark)] hover:text-[var(--color-text-secondary)] ml-2">
             <span className="sr-only">Dismiss</span>
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

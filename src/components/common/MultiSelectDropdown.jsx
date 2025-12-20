@@ -35,20 +35,23 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
 
   return (
     <div className={className}>
-      {label && <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>}
+      {label && <label className="block text-sm font-medium text-[var(--color-text-muted)] mb-1.5">{label}</label>}
 
       <div className="relative" ref={dropdownRef}>
-        <div className={`w-full min-h-[42px] p-2.5 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-[#1360AB] bg-white cursor-pointer ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`} onClick={() => !disabled && setIsOpen(!isOpen)}>
+        <div
+          className={`w-full min-h-[42px] p-2.5 border border-[var(--color-border-input)] rounded-lg focus-within:ring-2 focus-within:ring-[var(--color-primary-bg)] focus-within:border-[var(--color-primary)] bg-[var(--color-bg-primary)] cursor-pointer ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : ""}`}
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+        >
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-1 flex-1 min-h-[20px]">
               {selectedValues.length === 0 ? (
-                <span className="text-gray-500 text-sm">{placeholder}</span>
+                <span className="text-[var(--color-text-muted)] text-sm">{placeholder}</span>
               ) : (
                 selectedValues.map((value) => (
-                  <span key={value} className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-md">
+                  <span key={value} className="inline-flex items-center px-2 py-1 text-xs font-medium bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-md">
                     {value}
                     {!disabled && (
-                      <button type="button" className="ml-1 text-blue-600 hover:text-blue-800" onClick={(e) => handleRemoveOption(value, e)}>
+                      <button type="button" className="ml-1 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]" onClick={(e) => handleRemoveOption(value, e)}>
                         <FaTimes className="w-2 h-2" />
                       </button>
                     )}
@@ -59,31 +62,38 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
 
             <div className="flex items-center gap-2 ml-2">
               {selectedValues.length > 0 && !disabled && (
-                <button type="button" className="text-gray-400 hover:text-gray-600" onClick={handleClearAll}>
+                <button type="button" className="text-[var(--color-text-disabled)] hover:text-[var(--color-text-muted)]" onClick={handleClearAll}>
                   <FaTimes className="w-3 h-3" />
                 </button>
               )}
-              <FaChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              <FaChevronDown className={`w-4 h-4 text-[var(--color-text-disabled)] transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </div>
           </div>
         </div>
 
         {isOpen && !disabled && (
-          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          <div className="absolute z-50 w-full mt-1 bg-[var(--color-bg-primary)] border border-[var(--color-border-input)] rounded-lg shadow-lg max-h-60 overflow-y-auto">
             {options.length === 0 ? (
-              <div className="px-3 py-2 text-sm text-gray-500">No options available</div>
+              <div className="px-3 py-2 text-sm text-[var(--color-text-muted)]">No options available</div>
             ) : (
               <>
-                <div className="px-3 py-2 border-b border-gray-100">
-                  <button type="button" className="text-sm text-blue-600 hover:text-blue-800" onClick={handleClearAll}>
+                <div className="px-3 py-2 border-b border-[var(--color-border-light)]">
+                  <button type="button" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]" onClick={handleClearAll}>
                     Clear All
                   </button>
                 </div>
                 {options.map((option) => (
-                  <div key={option} className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 ${selectedValues.includes(option) ? "bg-blue-50 text-blue-700" : "text-gray-700"}`} onClick={() => handleToggleOption(option)}>
+                  <div
+                    key={option}
+                    className={`px-3 py-2 text-sm cursor-pointer hover:bg-[var(--color-bg-tertiary)] ${selectedValues.includes(option) ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)]" : "text-[var(--color-text-body)]"}`}
+                    onClick={() => handleToggleOption(option)}
+                  >
                     <div className="flex items-center">
-                      <input type="checkbox" checked={selectedValues.includes(option)} onChange={() => {}} // Handled by onClick above
-                        className="mr-2 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      <input
+                        type="checkbox"
+                        checked={selectedValues.includes(option)}
+                        onChange={() => { }}
+                        className="mr-2 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-[var(--color-border-input)] rounded"
                       />
                       {option}
                     </div>
