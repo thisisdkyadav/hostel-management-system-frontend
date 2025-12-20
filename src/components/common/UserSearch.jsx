@@ -73,26 +73,33 @@ const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder 
 
   const getRoleColor = (role) => {
     const roleColors = {
-      Admin: "bg-purple-100 text-purple-800",
-      "Super Admin": "bg-purple-100 text-purple-800",
-      Warden: "bg-blue-100 text-blue-800",
-      "Associate Warden": "bg-blue-100 text-blue-800",
-      "Hostel Supervisor": "bg-teal-100 text-teal-800",
-      Security: "bg-green-100 text-green-800",
-      "Maintenance Staff": "bg-orange-100 text-orange-800",
-      Student: "bg-indigo-100 text-indigo-800",
+      Admin: "bg-[var(--color-info-bg)] text-[var(--color-info)]",
+      "Super Admin": "bg-[var(--color-info-bg)] text-[var(--color-info)]",
+      Warden: "bg-[var(--color-primary-bg)] text-[var(--color-primary)]",
+      "Associate Warden": "bg-[var(--color-primary-bg)] text-[var(--color-primary)]",
+      "Hostel Supervisor": "bg-[var(--color-success-bg-light)] text-[var(--color-success)]",
+      Security: "bg-[var(--color-success-bg-light)] text-[var(--color-success-dark)]",
+      "Maintenance Staff": "bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)]",
+      Student: "bg-[var(--color-primary-bg)] text-[var(--color-primary-dark)]",
     }
 
-    return roleColors[role] || "bg-gray-100 text-gray-800"
+    return roleColors[role] || "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]"
   }
 
   return (
     <div className="relative" ref={searchRef}>
       <div className="flex items-center relative">
-        <input type="text" value={searchTerm} onChange={handleInputChange} placeholder={placeholder} disabled={disabled} className={`block w-full rounded-md shadow-sm text-sm ${disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white focus:ring-indigo-500 focus:border-indigo-500"} border-gray-300`} />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          className={`block w-full rounded-md shadow-sm text-sm border-[var(--color-border-input)] ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : "bg-[var(--color-bg-primary)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"}`}
+        />
         {isLoading && (
           <div className="absolute right-3">
-            <svg className="animate-spin h-4 w-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-4 w-4 text-[var(--color-primary)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
@@ -101,16 +108,16 @@ const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder 
       </div>
 
       {showResults && searchResults.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-auto">
-          <ul className="divide-y divide-gray-200">
+        <div className="absolute z-10 mt-1 w-full bg-[var(--color-bg-primary)] shadow-lg rounded-md border border-[var(--color-border-primary)] max-h-60 overflow-auto">
+          <ul className="divide-y divide-[var(--color-border-light)]">
             {searchResults.map((user) => (
-              <li key={user._id} onClick={() => handleUserSelect(user)} className="px-4 py-2 hover:bg-gray-50 cursor-pointer">
+              <li key={user._id} onClick={() => handleUserSelect(user)} className="px-4 py-2 hover:bg-[var(--color-bg-tertiary)] cursor-pointer">
                 <div className="flex items-center">
                   <div className={`h-8 w-8 rounded-full flex items-center justify-center mr-3 ${getRoleColor(user.role)}`}>{getUserInitial(user.name)}</div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                    <p className="text-sm font-medium text-[var(--color-text-primary)]">{user.name}</p>
                     <div className="flex items-center space-x-2">
-                      <p className="text-xs text-gray-500">{user.email}</p>
+                      <p className="text-xs text-[var(--color-text-muted)]">{user.email}</p>
                       <span className={`px-2 py-0.5 rounded-full text-xs ${getRoleColor(user.role)}`}>{user.role}</span>
                     </div>
                   </div>
@@ -122,8 +129,8 @@ const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder 
       )}
 
       {showResults && searchTerm.trim().length >= 2 && searchResults.length === 0 && !isLoading && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 p-4 text-center">
-          <p className="text-sm text-gray-500">No users found</p>
+        <div className="absolute z-10 mt-1 w-full bg-[var(--color-bg-primary)] shadow-lg rounded-md border border-[var(--color-border-primary)] p-4 text-center">
+          <p className="text-sm text-[var(--color-text-muted)]">No users found</p>
         </div>
       )}
     </div>
