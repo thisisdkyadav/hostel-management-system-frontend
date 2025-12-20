@@ -25,32 +25,162 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
     { id: "guardian", label: "Guardian" },
   ]
 
+  const styles = {
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-6)",
+    },
+    tabContainer: {
+      display: "flex",
+      gap: "var(--spacing-1)",
+      backgroundColor: "var(--color-bg-hover)",
+      padding: "var(--spacing-1)",
+      borderRadius: "var(--radius-lg)",
+    },
+    tab: {
+      padding: "var(--spacing-2) var(--spacing-4)",
+      fontSize: "var(--font-size-sm)",
+      fontWeight: "var(--font-weight-medium)",
+      borderRadius: "var(--radius-md)",
+      transition: "var(--transition-all)",
+      cursor: "pointer",
+      border: "none",
+      outline: "none",
+    },
+    tabActive: {
+      backgroundColor: "var(--color-bg-primary)",
+      color: "var(--color-primary)",
+      boxShadow: "var(--shadow-sm)",
+    },
+    tabInactive: {
+      backgroundColor: "transparent",
+      color: "var(--color-text-muted)",
+    },
+    contentWrapper: {
+      backgroundColor: "var(--color-bg-primary)",
+      borderRadius: "var(--radius-lg)",
+      padding: "var(--spacing-4)",
+    },
+    buttonContainer: {
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: "var(--spacing-4)",
+      paddingTop: "var(--spacing-4)",
+      borderTop: "var(--border-1) solid var(--color-border-light)",
+    },
+    cancelButton: {
+      padding: "var(--spacing-2-5) var(--spacing-4)",
+      backgroundColor: "var(--color-bg-hover)",
+      color: "var(--color-text-body)",
+      borderRadius: "var(--radius-lg)",
+      border: "none",
+      cursor: "pointer",
+      transition: "var(--transition-all)",
+      fontSize: "var(--font-size-base)",
+      fontWeight: "var(--font-weight-medium)",
+    },
+    submitButton: {
+      padding: "var(--spacing-2-5) var(--spacing-4)",
+      backgroundColor: "var(--color-primary)",
+      color: "var(--color-white)",
+      borderRadius: "var(--radius-lg)",
+      border: "none",
+      cursor: "pointer",
+      transition: "var(--transition-all)",
+      boxShadow: "var(--shadow-sm)",
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--spacing-2)",
+      fontSize: "var(--font-size-base)",
+      fontWeight: "var(--font-weight-medium)",
+    },
+    spinner: {
+      animation: "spin 1s linear infinite",
+      marginLeft: "calc(-1 * var(--spacing-1))",
+      marginRight: "var(--spacing-2)",
+      height: "var(--icon-md)",
+      width: "var(--icon-md)",
+    },
+    spinnerCircle: {
+      opacity: "var(--opacity-25)",
+    },
+    spinnerPath: {
+      opacity: "var(--opacity-75)",
+    },
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+    <form onSubmit={handleSubmit} style={styles.form}>
+      <div style={styles.tabContainer}>
         {tabs.map((tab) => (
-          <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)} className={`py-2 px-4 text-sm font-medium rounded-md transition-colors ${activeTab === tab.id ? "bg-white text-[#1360AB] shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              ...styles.tab,
+              ...(activeTab === tab.id ? styles.tabActive : styles.tabInactive),
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== tab.id) {
+                e.target.style.backgroundColor = "var(--color-bg-muted)"
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab.id) {
+                e.target.style.backgroundColor = "transparent"
+              }
+            }}
+          >
             {tab.label}
           </button>
         ))}
       </div>
 
-      <div className="bg-white rounded-lg p-4">
+      <div style={styles.contentWrapper}>
         {activeTab === "personal" && <PersonalInfoSection data={formData} onChange={(data) => handleChange("personal", data)} />}
         {activeTab === "academic" && <AcademicInfoSection data={formData} onChange={(data) => handleChange("academic", data)} />}
         {activeTab === "guardian" && <GuardianInfoSection data={formData} onChange={(data) => handleChange("guardian", data)} />}
       </div>
 
-      <div className="flex justify-end space-x-4 pt-4 border-t border-gray-100">
-        <button type="button" onClick={onCancel} disabled={loading} className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+      <div style={styles.buttonContainer}>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={loading}
+          style={{
+            ...styles.cancelButton,
+            opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) e.target.style.backgroundColor = "var(--color-bg-muted)"
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = "var(--color-bg-hover)"
+          }}
+        >
           Cancel
         </button>
-        <button type="submit" disabled={loading} className="px-4 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm flex items-center">
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            ...styles.submitButton,
+            opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) e.target.style.backgroundColor = "var(--color-primary-hover)"
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = "var(--color-primary)"
+          }}
+        >
           {loading ? (
             <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg style={styles.spinner} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle style={styles.spinnerCircle} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path style={styles.spinnerPath} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               Saving...
             </>
