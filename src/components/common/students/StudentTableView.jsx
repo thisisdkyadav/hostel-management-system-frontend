@@ -9,19 +9,66 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
       header: "Student",
       key: "name",
       customHeaderRender: () => (
-        <div className="flex items-center cursor-pointer" onClick={() => handleSort("name")}>
+        <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleSort("name")}>
           <span>Student</span>
-          {sortField === "name" && <span className="ml-2 text-[#1360AB]">{sortDirection === "asc" ? <FaSortAmountUp className="inline" /> : <FaSortAmountDown className="inline" />}</span>}
+          {sortField === "name" && (
+            <span style={{ marginLeft: "var(--spacing-2)", color: "var(--color-primary)" }}>
+              {sortDirection === "asc" ? <FaSortAmountUp style={{ display: "inline" }} /> : <FaSortAmountDown style={{ display: "inline" }} />}
+            </span>
+          )}
         </div>
       ),
       render: (student) => (
-        <div className="flex items-center">
-          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center">
-            {student.profileImage ? <img src={getMediaUrl(student.profileImage)} alt={student.name} className="h-8 w-8 rounded-full object-cover" /> : <FaUserGraduate className="h-4 w-4 text-[#1360AB]" />}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              flexShrink: 0,
+              height: "var(--avatar-sm)",
+              width: "var(--avatar-sm)",
+              borderRadius: "var(--radius-full)",
+              backgroundColor: "var(--color-primary-bg)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {student.profileImage ? (
+              <img
+                src={getMediaUrl(student.profileImage)}
+                alt={student.name}
+                style={{
+                  height: "var(--avatar-sm)",
+                  width: "var(--avatar-sm)",
+                  borderRadius: "var(--radius-full)",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <FaUserGraduate style={{ height: "var(--icon-md)", width: "var(--icon-md)", color: "var(--color-primary)" }} />
+            )}
           </div>
-          <div className="ml-3">
-            <div className="font-medium text-gray-900 text-sm">{student.name}</div>
-            <div className="text-xs text-gray-500 truncate max-w-[150px]">{student.email}</div>
+          <div style={{ marginLeft: "var(--spacing-3)" }}>
+            <div
+              style={{
+                fontWeight: "var(--font-weight-medium)",
+                color: "var(--color-text-primary)",
+                fontSize: "var(--font-size-sm)",
+              }}
+            >
+              {student.name}
+            </div>
+            <div
+              style={{
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-muted)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                maxWidth: "150px",
+              }}
+            >
+              {student.email}
+            </div>
           </div>
         </div>
       ),
@@ -29,25 +76,64 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
     {
       header: "Roll Number",
       key: "rollNumber",
-      render: (student) => <span className="text-sm text-gray-700 font-medium">{student.rollNumber}</span>,
+      render: (student) => (
+        <span
+          style={{
+            fontSize: "var(--font-size-sm)",
+            color: "var(--color-text-body)",
+            fontWeight: "var(--font-weight-medium)",
+          }}
+        >
+          {student.rollNumber}
+        </span>
+      ),
     },
     {
       header: "Hostel",
       key: "hostel",
       className: "hidden md:table-cell",
       customHeaderRender: () => (
-        <div className="flex items-center cursor-pointer" onClick={() => handleSort("hostel")}>
+        <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }} onClick={() => handleSort("hostel")}>
           <span>Hostel</span>
-          {sortField === "hostel" && <span className="ml-2 text-[#1360AB]">{sortDirection === "asc" ? <FaSortAmountUp className="inline" /> : <FaSortAmountDown className="inline" />}</span>}
+          {sortField === "hostel" && (
+            <span style={{ marginLeft: "var(--spacing-2)", color: "var(--color-primary)" }}>
+              {sortDirection === "asc" ? <FaSortAmountUp style={{ display: "inline" }} /> : <FaSortAmountDown style={{ display: "inline" }} />}
+            </span>
+          )}
         </div>
       ),
-      render: (student) => <span className="px-2 py-1 inline-flex text-xs leading-5 font-medium rounded-full bg-blue-50 text-[#1360AB]">{student.hostel}</span>,
+      render: (student) => (
+        <span
+          style={{
+            padding: "var(--spacing-1) var(--spacing-2)",
+            display: "inline-flex",
+            fontSize: "var(--font-size-xs)",
+            lineHeight: "1.25",
+            fontWeight: "var(--font-weight-medium)",
+            borderRadius: "var(--radius-full)",
+            backgroundColor: "var(--color-primary-bg)",
+            color: "var(--color-primary)",
+          }}
+        >
+          {student.hostel}
+        </span>
+      ),
     },
     {
       header: "Room",
       key: "room",
       className: "hidden sm:table-cell",
-      render: (student) => <span className="text-sm text-gray-600 font-medium">{student.displayRoom}</span>,
+      render: (student) => (
+        <span
+          style={{
+            fontSize: "var(--font-size-sm)",
+            color: "var(--color-text-tertiary)",
+            fontWeight: "var(--font-weight-medium)",
+          }}
+        >
+          {student.displayRoom}
+        </span>
+      ),
     },
   ]
 

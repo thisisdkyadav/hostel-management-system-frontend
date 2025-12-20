@@ -86,92 +86,92 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
   const renderViewMode = () => (
     <>
-      <div className="bg-blue-50 p-5 rounded-xl mb-6 border border-blue-100">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-            <FaMedkit className="text-[#1360AB] mr-2" />
+      <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--spacing-6)', border: 'var(--border-1) solid var(--color-primary-light)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-4)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center' }}>
+            <FaMedkit style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Claim Information
           </h3>
-          <div className="text-sm text-gray-500">
-            <span className="font-medium">Submitted:</span> {formatDate(claim.createdAt)}
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+            <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Submitted:</span> {formatDate(claim.createdAt)}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start">
-            <FaHospital className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaHospital style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p className="text-sm text-gray-500">Hospital</p>
-              <p className="font-medium">{claim.hospitalName}</p>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Hospital</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{claim.hospitalName}</p>
             </div>
           </div>
 
-          <div className="flex items-start">
-            <FaDollarSign className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaDollarSign style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p className="text-sm text-gray-500">Claim Amount</p>
-              <p className="font-medium">{formatCurrency(claim.amount)}</p>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Claim Amount</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatCurrency(claim.amount)}</p>
             </div>
           </div>
 
-          <div className="flex items-start">
-            <FaMedkit className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaMedkit style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p className="text-sm text-gray-500">Insurance Provider</p>
-              <p className="font-medium">{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</p>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Insurance Provider</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</p>
             </div>
           </div>
 
-          <div className="flex items-start">
-            <FaCalendarAlt className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FaCalendarAlt style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <div>
-              <p className="text-sm text-gray-500">Last Updated</p>
-              <p className="font-medium">{formatDate(claim.updatedAt)}</p>
+              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Last Updated</p>
+              <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(claim.updatedAt)}</p>
             </div>
           </div>
 
           {selectedProvider && (
             <>
-              <div className="flex items-start">
-                <FaCalendarCheck className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <FaCalendarCheck style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
                 <div>
-                  <p className="text-sm text-gray-500">Policy Start Date</p>
-                  <p className="font-medium">{formatDate(selectedProvider.startDate)}</p>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy Start Date</p>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.startDate)}</p>
                 </div>
               </div>
 
-              <div className="flex items-start">
-                <FaCalendarCheck className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <FaCalendarCheck style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
                 <div>
-                  <p className="text-sm text-gray-500">Policy End Date</p>
-                  <p className="font-medium">{formatDate(selectedProvider.endDate)}</p>
+                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy End Date</p>
+                  <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.endDate)}</p>
                 </div>
               </div>
             </>
           )}
         </div>
 
-        <div className="mt-4 flex items-start">
-          <FaFileAlt className="text-[#1360AB] mt-1 mr-3 flex-shrink-0" />
-          <div className="flex-1">
-            <p className="text-sm text-gray-500">Description</p>
-            <p className="mt-1 text-gray-700 bg-white p-3 rounded-md border border-gray-200 min-h-[80px]">{claim.description || "No description provided."}</p>
+        <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', alignItems: 'flex-start' }}>
+          <FaFileAlt style={{ color: 'var(--color-primary)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Description</p>
+            <p style={{ marginTop: 'var(--spacing-1)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-md)', border: 'var(--border-1) solid var(--color-border-primary)', minHeight: '80px' }}>{claim.description || "No description provided."}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end space-x-3 mt-6">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-6)' }}>
         {canAccess("students_info", "edit") && (
-          <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-            <FaEdit className="mr-2" /> Edit Claim
+          <button onClick={() => setIsEditing(true)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
+            <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit Claim
           </button>
         )}
         {canAccess("students_info", "edit") && (
-          <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center">
-            <FaTrash className="mr-2" /> Delete Claim
+          <button onClick={handleDelete} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
+            <FaTrash style={{ marginRight: 'var(--spacing-2)' }} /> Delete Claim
           </button>
         )}
-        <button onClick={onClose} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+        <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
           Close
         </button>
       </div>
@@ -180,11 +180,11 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
   const renderEditMode = () => (
     <form onSubmit={handleSubmit}>
-      <div className="bg-gray-50 p-4 rounded-lg mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Provider</label>
-            <select name="insuranceProvider" value={formData.insuranceProvider} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" required>
+      <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-6)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Provider</label>
+            <select name="insuranceProvider" value={formData.insuranceProvider} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
               <option value="">Select Insurance Provider</option>
               {insuranceProviders.map((provider) => (
                 <option key={provider._id} value={provider._id}>
@@ -194,41 +194,41 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
             </select>
 
             {selectedProvider && (
-              <div className="mt-2 text-xs text-gray-500">
+              <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                 Policy period: {formatDate(selectedProvider.startDate)} - {formatDate(selectedProvider.endDate)}
               </div>
             )}
           </div>
 
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-            <input type="number" name="amount" value={formData.amount} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Enter claim amount" required />
+          <div>
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Amount</label>
+            <input type="number" name="amount" value={formData.amount} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter claim amount" required />
           </div>
 
-          <div className="form-group">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Hospital Name</label>
-            <input type="text" name="hospitalName" value={formData.hospitalName} onChange={handleInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Enter hospital name" required />
+          <div>
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hospital Name</label>
+            <input type="text" name="hospitalName" value={formData.hospitalName} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter hospital name" required />
           </div>
 
-          <div className="form-group md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Enter claim description" required></textarea>
+          <div style={{ gridColumn: 'span 2' }}>
+            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Description</label>
+            <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter claim description" required></textarea>
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end space-x-3">
-        <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-          <FaSave className="mr-2" /> {isNew ? "Add Claim" : "Save Changes"}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
+        <button type="submit" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
+          <FaSave style={{ marginRight: 'var(--spacing-2)' }} /> {isNew ? "Add Claim" : "Save Changes"}
         </button>
         <button type="button" onClick={() => {
-            if (isNew) {
-              onClose()
-            } else {
-              setIsEditing(false)
-            }
-          }}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+          if (isNew) {
+            onClose()
+          } else {
+            setIsEditing(false)
+          }
+        }}
+          style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}
         >
           Cancel
         </button>
@@ -238,7 +238,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
   return (
     <Modal title={isNew ? "Add Insurance Claim" : isEditing ? "Edit Insurance Claim" : "Insurance Claim Details"} onClose={onClose} width={600}>
-      <div className="bg-white p-4">{isNew || isEditing ? renderEditMode() : renderViewMode()}</div>
+      <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)' }}>{isNew || isEditing ? renderEditMode() : renderViewMode()}</div>
     </Modal>
   )
 }

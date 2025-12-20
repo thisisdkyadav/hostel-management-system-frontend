@@ -208,13 +208,13 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
   return (
     <Modal title="Update Room Allocations" onClose={onClose} width={900}>
       {step === 1 && (
-        <div className="space-y-5">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
           {/* Add hostel selection dropdown */}
-          <div className="mb-4">
-            <label htmlFor="hostel-select" className="block text-sm font-medium text-gray-700 mb-1">
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <label htmlFor="hostel-select" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Select Hostel
             </label>
-            <select id="hostel-select" className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" value={selectedHostel?._id || ""} onChange={handleHostelChange}>
+            <select id="hostel-select" style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", outline: "none" }} value={selectedHostel?._id || ""} onChange={handleHostelChange}>
               <option value="">-- Select a hostel --</option>
               {hostelList.map((hostel) => (
                 <option key={hostel._id} value={hostel._id}>
@@ -226,36 +226,36 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
           {selectedHostel ? (
             <>
-              <div className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors" onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-                <FaFileUpload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-600">Drag and drop a CSV file here, or click to select a file</p>
-                <p className="mt-3 text-xs text-gray-500">
+              <div style={{ border: "2px dashed var(--color-border-input)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-8)", textAlign: "center", cursor: "pointer", backgroundColor: "var(--color-bg-secondary)", transition: "var(--transition-colors)" }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
+                <FaFileUpload style={{ margin: "0 auto", height: "3rem", width: "3rem", color: "var(--color-text-placeholder)" }} />
+                <p style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>Drag and drop a CSV file here, or click to select a file</p>
+                <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                   <strong>Required fields:</strong> {requiredFields.join(", ")}
                 </p>
-                <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+                <input type="file" ref={fileInputRef} style={{ display: "none" }} accept=".csv" onChange={handleFileUpload} />
               </div>
 
-              <div className="flex flex-col items-center">
-                <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
-                  <FaFileDownload className="mr-1" />
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <button onClick={generateCsvTemplate} style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)", color: "var(--color-primary)", background: "none", border: "none", cursor: "pointer", marginBottom: "var(--spacing-2)" }}>
+                  <FaFileDownload style={{ marginRight: "var(--spacing-1)" }} />
                   Download CSV Template
                 </button>
 
-                <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
-                  <p className="font-medium mb-1">Field Input Types:</p>
-                  <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-tertiary)", marginTop: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "28rem" }}>
+                  <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+                  <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
                     <li>
-                      <span className="font-medium">rollNumber:</span> String (Required)
+                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>rollNumber:</span> String (Required)
                     </li>
                     <li>
-                      <span className="font-medium">room:</span> String/Number (Required)
+                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>room:</span> String/Number (Required)
                     </li>
                     <li>
-                      <span className="font-medium">bedNumber:</span> Number (Required)
+                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>bedNumber:</span> Number (Required)
                     </li>
                     {hostelType === "unit-based" && (
                       <li>
-                        <span className="font-medium">unit:</span> String (Required)
+                        <span style={{ fontWeight: "var(--font-weight-medium)" }}>unit:</span> String (Required)
                       </li>
                     )}
                   </ul>
@@ -263,72 +263,72 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               </div>
             </>
           ) : (
-            <div className="py-8 text-center text-gray-500">Please select a hostel to continue with room allocation</div>
+            <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>Please select a hostel to continue with room allocation</div>
           )}
 
           {csvFile && (
-            <div className="py-2 px-4 bg-blue-50 rounded-lg flex items-center justify-between">
-              <span className="text-sm text-blue-700">
-                Selected file: <span className="font-medium">{csvFile.name}</span>
+            <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
+                Selected file: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{csvFile.name}</span>
               </span>
               <button onClick={(e) => {
-                  e.stopPropagation()
-                  setCsvFile(null)
-                }}
-                className="text-gray-500 hover:text-gray-700"
+                e.stopPropagation()
+                setCsvFile(null)
+              }}
+                style={{ color: "var(--color-text-muted)", background: "none", border: "none", cursor: "pointer" }}
               >
                 <FaTimes />
               </button>
             </div>
           )}
 
-          {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+          {error && <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", borderLeft: "4px solid var(--color-danger)" }}>{error}</div>}
 
           {isLoading && (
-            <div className="flex items-center justify-center py-4">
-              <div className="w-6 h-6 border-2 border-t-2 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-              <span className="ml-2 text-sm text-gray-600">Processing file...</span>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" }}>
+              <div className="animate-spin" style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", border: "2px solid var(--skeleton-base)", borderTop: "2px solid var(--color-primary)", borderRadius: "var(--radius-full)" }}></div>
+              <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>Processing file...</span>
             </div>
           )}
         </div>
       )}
 
       {step === 2 && (
-        <div className="space-y-5">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h3 className="text-lg font-medium text-gray-800">Preview Room Allocations - {selectedHostel?.name}</h3>
-            <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} room allocations found in CSV</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", marginBottom: "var(--spacing-4)" }} className="sm:flex-row sm:items-center">
+            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Preview Room Allocations - {selectedHostel?.name}</h3>
+            <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", backgroundColor: "var(--color-info-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }} className="sm:mt-0">{parsedData.length} room allocations found in CSV</div>
           </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => {}} viewStudentDetails={viewStudentDetails} />
+          <div style={{ border: "1px solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", overflow: "hidden" }}>
+            <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => { }} viewStudentDetails={viewStudentDetails} />
           </div>
 
-          {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+          {error && <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", borderLeft: "4px solid var(--color-danger)" }}>{error}</div>}
         </div>
       )}
 
-      <div className="mt-6 flex justify-end space-x-3 pt-4 border-t border-gray-100">
+      <div style={{ marginTop: "var(--spacing-6)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: "1px solid var(--color-border-light)" }}>
         {step === 1 ? (
-          <button onClick={onClose} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onClose} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", backgroundColor: "var(--color-bg-primary)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-lg)", cursor: "pointer", transition: "var(--transition-colors)" }}>
             Cancel
           </button>
         ) : (
-          <button onClick={resetForm} className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={resetForm} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", backgroundColor: "var(--color-bg-primary)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-lg)", cursor: "pointer", transition: "var(--transition-colors)" }}>
             Back
           </button>
         )}
 
         {step === 2 && (
-          <button onClick={handleAllocate} className="px-4 py-2.5 text-sm font-medium text-white bg-[#1360AB] rounded-lg hover:bg-[#0d4a8b] transition-colors shadow-sm flex items-center" disabled={parsedData.length === 0 || isLoading || isAllocating}>
+          <button onClick={handleAllocate} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-white)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-lg)", cursor: "pointer", transition: "var(--transition-colors)", boxShadow: "var(--shadow-sm)", display: "flex", alignItems: "center", border: "none" }} disabled={parsedData.length === 0 || isLoading || isAllocating}>
             {isAllocating ? (
               <>
-                <div className="w-4 h-4 mr-2 border-2 border-t-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="animate-spin" style={{ width: "var(--spacing-4)", height: "var(--spacing-4)", marginRight: "var(--spacing-2)", border: "2px solid var(--color-white)", borderTop: "2px solid transparent", borderRadius: "var(--radius-full)" }}></div>
                 Updating Allocations...
               </>
             ) : (
               <>
-                <FaCheck className="mr-2" /> Confirm Allocations
+                <FaCheck style={{ marginRight: "var(--spacing-2)" }} /> Confirm Allocations
               </>
             )}
           </button>
