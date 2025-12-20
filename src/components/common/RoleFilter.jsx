@@ -9,10 +9,16 @@ const RoleFilter = ({ selectedRole = "all", onChange, roles = ["All Roles", "Adm
 
   return (
     <div>
-      <label htmlFor="role-filter" className="block text-sm font-medium text-gray-700 mb-1">
+      <label htmlFor="role-filter" className="block text-sm font-medium text-[var(--color-text-body)] mb-1">
         {label}
       </label>
-      <select id="role-filter" value={selectedRole} onChange={(e) => onChange(e.target.value)} disabled={disabled} className={`block w-full rounded-md shadow-sm text-sm ${disabled ? "bg-gray-100 cursor-not-allowed" : "bg-white focus:ring-indigo-500 focus:border-indigo-500"} border-gray-300`}>
+      <select
+        id="role-filter"
+        value={selectedRole}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className={`block w-full rounded-md shadow-sm text-sm border-[var(--color-border-input)] ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : "bg-[var(--color-bg-primary)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"}`}
+      >
         {roleOptions.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

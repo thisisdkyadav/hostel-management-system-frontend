@@ -26,8 +26,8 @@ const UserSelector = ({
   return (
     <div>
       <div className="mb-2">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {title} {required && <span className="text-red-600">*</span>}
+        <label className="block text-sm font-medium text-[var(--color-text-body)] mb-1">
+          {title} {required && <span className="text-[var(--color-danger)]">*</span>}
         </label>
 
         <div className="space-y-3">
@@ -36,7 +36,7 @@ const UserSelector = ({
           <UserSearch onSelectUser={onAddUser} selectedUsers={selectedUsers} roleFilter={selectedRole} placeholder={searchPlaceholder} maxResults={maxResults} disabled={disabled} />
         </div>
 
-        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-1 text-sm text-[var(--color-danger)]">{error}</p>}
       </div>
 
       <SelectedUsersList users={selectedUsers} onRemove={onRemoveUser} title={selectedUsersTitle} disabled={disabled} />

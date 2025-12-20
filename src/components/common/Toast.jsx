@@ -14,24 +14,24 @@ const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
   }, [duration, onClose])
 
   return visible ? (
-    <div className="fixed bottom-4 right-4 z-50 flex items-center bg-white border border-gray-200 px-4 py-3 rounded-lg shadow-lg max-w-sm animate-fade-in">
-      <div className="mr-3 flex-grow">{message}</div>
+    <div className="fixed bottom-4 right-4 z-50 flex items-center bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] px-4 py-3 rounded-lg shadow-lg max-w-sm animate-fade-in">
+      <div className="mr-3 flex-grow text-[var(--color-text-body)]">{message}</div>
       {action && (
         <button onClick={() => {
-            if (onAction) onAction()
-            setVisible(false)
-          }}
-          className="bg-[#1360AB] text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+          if (onAction) onAction()
+          setVisible(false)
+        }}
+          className="bg-[var(--color-primary)] text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors"
         >
           {action}
         </button>
       )}
       {onClose && (
         <button onClick={() => {
-            setVisible(false)
-            onClose()
-          }}
-          className="ml-2 text-gray-400 hover:text-gray-600"
+          setVisible(false)
+          onClose()
+        }}
+          className="ml-2 text-[var(--color-text-disabled)] hover:text-[var(--color-text-muted)]"
           aria-label="Close"
         >
           ×
