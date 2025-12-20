@@ -20,15 +20,15 @@ const Others = () => {
     <div className="flex flex-col h-full">
       <OthersHeader />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
 
-      <div className="mt-4 mb-6">
-        <FilterTabs tabs={OTHERS_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
-      </div>
+        <div className="mt-[var(--spacing-4)] mb-[var(--spacing-6)]">
+          <FilterTabs tabs={OTHERS_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
 
-      {activeTab === "insurance" && <InsuranceProviders />}
-      {activeTab === "logins" && <HostelLogins />}
-      {activeTab === "undertakings" && <Undertakings />}
+        {activeTab === "insurance" && <InsuranceProviders />}
+        {activeTab === "logins" && <HostelLogins />}
+        {activeTab === "undertakings" && <Undertakings />}
       </div>
     </div>
   )

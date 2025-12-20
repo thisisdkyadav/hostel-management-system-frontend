@@ -134,12 +134,12 @@ const TaskManagement = () => {
   }
 
   const getTaskStatusBadge = (status) => {
-    const colorClass = TASK_STATUS_COLORS[status] || "bg-gray-100 text-gray-800"
+    const colorClass = TASK_STATUS_COLORS[status] || "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]"
     return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{status}</span>
   }
 
   const getTaskPriorityBadge = (priority) => {
-    const colorClass = TASK_PRIORITY_COLORS[priority] || "bg-gray-100 text-gray-800"
+    const colorClass = TASK_PRIORITY_COLORS[priority] || "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]"
     return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{priority}</span>
   }
 
@@ -156,138 +156,138 @@ const TaskManagement = () => {
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
-      {/* Task Statistics */}
-      {stats && <TaskStats stats={stats} />}
+        {/* Task Statistics */}
+        {stats && <TaskStats stats={stats} />}
 
-      {/* Filter Tabs */}
-      <div className="mt-4 mb-4">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
-            {TASK_FILTER_TABS.map((tab) => (
-              <button key={tab.key} onClick={() => handleTabChange(tab.key)}
-                className={`
+        {/* Filter Tabs */}
+        <div className="mt-4 mb-4">
+          <div className="border-b border-[var(--color-border-primary)]">
+            <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+              {TASK_FILTER_TABS.map((tab) => (
+                <button key={tab.key} onClick={() => handleTabChange(tab.key)}
+                  className={`
                   whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
-                  ${activeTab === tab.key ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
+                  ${activeTab === tab.key ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}
                 `}
-              >
-                {tab.label}
-                {stats?.statusCounts && tab.key !== "all" && <span className={`ml-2 py-0.5 px-2 rounded-full text-xs ${activeTab === tab.key ? "bg-blue-100 text-[#1360AB]" : "bg-gray-100 text-gray-600"}`}>{stats.statusCounts[tab.key] || 0}</span>}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label htmlFor="priorityFilter" className="block text-sm font-medium text-gray-700 mb-2">
-              Priority
-            </label>
-            <select id="priorityFilter" value={filters.priority} onChange={(e) => updateFilter("priority", e.target.value)} className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all">
-              <option value="all">All Priorities</option>
-              {TASK_PRIORITIES.map((priority) => (
-                <option key={priority} value={priority}>
-                  {priority}
-                </option>
+                >
+                  {tab.label}
+                  {stats?.statusCounts && tab.key !== "all" && <span className={`ml-2 py-0.5 px-2 rounded-full text-xs ${activeTab === tab.key ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)]" : "bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]"}`}>{stats.statusCounts[tab.key] || 0}</span>}
+                </button>
               ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="categoryFilter" className="block text-sm font-medium text-gray-700 mb-2">
-              Category
-            </label>
-            <select id="categoryFilter" value={filters.category} onChange={(e) => updateFilter("category", e.target.value)} className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all">
-              <option value="all">All Categories</option>
-              {TASK_CATEGORIES.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="searchFilter" className="block text-sm font-medium text-gray-700 mb-2">
-              Search
-            </label>
-            <input type="text" id="searchFilter" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
-              placeholder="Search tasks..."
-              className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all"
-            />
+            </nav>
           </div>
         </div>
-      </div>
 
-      {/* Task Cards */}
-      {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+        {/* Filters */}
+        <div className="bg-[var(--color-bg-primary)] p-4 rounded-lg shadow-sm mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="priorityFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
+                Priority
+              </label>
+              <select id="priorityFilter" value={filters.priority} onChange={(e) => updateFilter("priority", e.target.value)} className="block w-full rounded-lg border-[var(--color-border-input)] shadow-sm focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)] text-[var(--color-text-body)]">
+                <option value="all">All Priorities</option>
+                {TASK_PRIORITIES.map((priority) => (
+                  <option key={priority} value={priority}>
+                    {priority}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="categoryFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
+                Category
+              </label>
+              <select id="categoryFilter" value={filters.category} onChange={(e) => updateFilter("category", e.target.value)} className="block w-full rounded-lg border-[var(--color-border-input)] shadow-sm focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)] text-[var(--color-text-body)]">
+                <option value="all">All Categories</option>
+                {TASK_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="searchFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
+                Search
+              </label>
+              <input type="text" id="searchFilter" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
+                placeholder="Search tasks..."
+                className="block w-full rounded-lg border-[var(--color-border-input)] shadow-sm focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)] text-[var(--color-text-body)]"
+              />
+            </div>
           </div>
         </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTasks.length > 0 ? (
-              filteredTasks.map((task) => (
-                <div key={task._id} className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden`} onClick={() => viewTaskDetails(task)}>
-                  <div className="p-5">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="text-lg font-medium text-gray-800 truncate w-3/4">{task.title}</h3>
-                      <div className="flex flex-col items-end space-y-2">
-                        {getTaskPriorityBadge(task.priority)}
-                        {getTaskStatusBadge(task.status)}
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-sm line-clamp-2 mb-3">{task.description}</p>
 
-                    <div className="border-t border-gray-100 pt-3 mt-3">
-                      <div className="flex justify-between text-xs text-gray-500">
-                        <span>Category: {task.category}</span>
-                        <span className={isPastDue(task.dueDate) && task.status !== "Completed" ? "text-red-600 font-medium" : ""}>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex items-center">
-                      {task.assignedUsers && task.assignedUsers.length > 0 && (
-                        <div className="flex -space-x-2 overflow-hidden">
-                          {task.assignedUsers.slice(0, 3).map((user, idx) => (
-                            <div key={user._id || idx} className="inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-blue-50 text-[#1360AB] items-center justify-center text-xs font-medium" title={user.name || `User ${idx + 1}`}>
-                              {user.name ? user.name.charAt(0) : `U${idx + 1}`}
-                            </div>
-                          ))}
-                          {task.assignedUsers.length > 3 && (
-                            <div className="inline-flex items-center justify-center h-8 w-8 rounded-full ring-2 ring-white bg-blue-50">
-                              <span className="text-xs font-medium text-[#1360AB]">+{task.assignedUsers.length - 3}</span>
-                            </div>
-                          )}
+        {/* Task Cards */}
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="relative w-16 h-16">
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-[var(--color-border-primary)] rounded-full"></div>
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-[var(--color-primary)] rounded-full animate-spin border-t-transparent"></div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTasks.length > 0 ? (
+                filteredTasks.map((task) => (
+                  <div key={task._id} className={`bg-[var(--color-bg-primary)] rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden`} onClick={() => viewTaskDetails(task)}>
+                    <div className="p-5">
+                      <div className="flex justify-between items-start mb-3">
+                        <h3 className="text-lg font-medium text-[var(--color-text-secondary)] truncate w-3/4">{task.title}</h3>
+                        <div className="flex flex-col items-end space-y-2">
+                          {getTaskPriorityBadge(task.priority)}
+                          {getTaskStatusBadge(task.status)}
                         </div>
-                      )}
+                      </div>
+                      <p className="text-[var(--color-text-muted)] text-sm line-clamp-2 mb-3">{task.description}</p>
 
-                      <div className="ml-auto">
-                        <div className={`w-2 h-2 rounded-full ${isPastDue(task.dueDate) && task.status !== "Completed" ? "bg-red-500" : task.status === "Completed" ? "bg-green-500" : "bg-[#1360AB]"}`}></div>
+                      <div className="border-t border-[var(--color-border-light)] pt-3 mt-3">
+                        <div className="flex justify-between text-xs text-[var(--color-text-muted)]">
+                          <span>Category: {task.category}</span>
+                          <span className={isPastDue(task.dueDate) && task.status !== "Completed" ? "text-[var(--color-danger)] font-medium" : ""}>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex items-center">
+                        {task.assignedUsers && task.assignedUsers.length > 0 && (
+                          <div className="flex -space-x-2 overflow-hidden">
+                            {task.assignedUsers.slice(0, 3).map((user, idx) => (
+                              <div key={user._id || idx} className="inline-flex h-8 w-8 rounded-full ring-2 ring-white bg-[var(--color-primary-bg)] text-[var(--color-primary)] items-center justify-center text-xs font-medium" title={user.name || `User ${idx + 1}`}>
+                                {user.name ? user.name.charAt(0) : `U${idx + 1}`}
+                              </div>
+                            ))}
+                            {task.assignedUsers.length > 3 && (
+                              <div className="inline-flex items-center justify-center h-8 w-8 rounded-full ring-2 ring-white bg-[var(--color-primary-bg)]">
+                                <span className="text-xs font-medium text-[var(--color-primary)]">+{task.assignedUsers.length - 3}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="ml-auto">
+                          <div className={`w-2 h-2 rounded-full ${isPastDue(task.dueDate) && task.status !== "Completed" ? "bg-[var(--color-danger)]" : task.status === "Completed" ? "bg-[var(--color-success)]" : "bg-[var(--color-primary)]"}`}></div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-3 flex justify-center items-center py-12 text-gray-500">No tasks found matching the current filters.</div>
-            )}
-          </div>
+                ))
+              ) : (
+                <div className="col-span-3 flex justify-center items-center py-12 text-[var(--color-text-muted)]">No tasks found matching the current filters.</div>
+              )}
+            </div>
 
-          {/* Pagination */}
-          {pagination.totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} paginate={handlePageChange} />}
-        </>
-      )}
+            {/* Pagination */}
+            {pagination.totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} paginate={handlePageChange} />}
+          </>
+        )}
 
-      {/* Create Task Modal */}
-      {showCreateTask && <TaskForm isOpen={showCreateTask} setIsOpen={setShowCreateTask} onSuccess={handleTaskCreated} />}
+        {/* Create Task Modal */}
+        {showCreateTask && <TaskForm isOpen={showCreateTask} setIsOpen={setShowCreateTask} onSuccess={handleTaskCreated} />}
 
-      {/* Task Detail Modal */}
-      {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} />}
+        {/* Task Detail Modal */}
+        {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} />}
       </div>
     </div>
   )

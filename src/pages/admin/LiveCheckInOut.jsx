@@ -36,31 +36,654 @@ const getTimeAgo = (value) => {
   return days + "d"
 }
 
-const getStatusTone = (status) => {
-  if (status === "Checked In") return "border-emerald-200 bg-emerald-50 text-emerald-700"
-  if (status === "Checked Out") return "border-rose-200 bg-rose-50 text-rose-700"
-  return "border-gray-200 bg-gray-50 text-gray-600"
+const DEFAULT_TODAY_STATS = { checkedIn: 0, checkedOut: 0, sameHostel: 0, crossHostel: 0, total: 0 }
+const DEFAULT_TOTAL_STATS = { checkedIn: 0, checkedOut: 0 }
+
+// Styles object using CSS variables from theme.css
+const styles = {
+  // Main container
+  pageContainer: {
+    minHeight: "100vh",
+    backgroundColor: "var(--color-bg-page)",
+    padding: "var(--spacing-4)",
+  },
+  maxWidthContainer: {
+    maxWidth: "1600px",
+    margin: "0 auto",
+  },
+
+  // Header
+  header: {
+    backgroundColor: "var(--color-bg-primary)",
+    boxShadow: "var(--shadow-sm)",
+    borderBottom: "var(--border-1) solid var(--color-border-light)",
+    margin: "calc(-1 * var(--spacing-4))",
+    marginBottom: "var(--spacing-3)",
+    padding: "var(--spacing-2-5) var(--spacing-4)",
+  },
+  headerContent: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-3)",
+  },
+  pageTitle: {
+    fontSize: "var(--font-size-2xl)",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-primary)",
+    letterSpacing: "var(--letter-spacing-tight)",
+  },
+  dateSubtitle: {
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-muted)",
+    marginTop: "var(--spacing-0-5)",
+  },
+  headerRight: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-2)",
+  },
+
+  // Status badge
+  statusBadge: (isConnected) => ({
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-1-5)",
+    borderRadius: "var(--radius-md)",
+    padding: "var(--spacing-0-5) var(--spacing-2)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    backgroundColor: isConnected ? "var(--color-success-bg)" : "var(--color-danger-bg)",
+    color: isConnected ? "var(--color-success-text)" : "var(--color-danger-text)",
+  }),
+  statusDot: (isConnected) => ({
+    height: "var(--spacing-1-5)",
+    width: "var(--spacing-1-5)",
+    borderRadius: "var(--radius-full)",
+    backgroundColor: isConnected ? "var(--color-success)" : "var(--color-danger)",
+  }),
+  lastUpdateText: {
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-light)",
+  },
+
+  // Buttons
+  primaryButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-1-5)",
+    borderRadius: "var(--radius-full)",
+    backgroundColor: "var(--color-primary)",
+    padding: "var(--spacing-1-5) var(--spacing-3)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-white)",
+    transition: "var(--transition-colors)",
+    border: "none",
+    cursor: "pointer",
+  },
+  primaryButtonHover: {
+    backgroundColor: "var(--color-primary-hover)",
+  },
+  secondaryButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-1-5)",
+    borderRadius: "var(--radius-full)",
+    border: "var(--border-1) solid var(--color-border-dark)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1-5) var(--spacing-3)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-body)",
+    transition: "var(--transition-colors)",
+    cursor: "pointer",
+  },
+
+  // Stats grid
+  statsGrid: {
+    marginBottom: "var(--spacing-3)",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "var(--spacing-2)",
+  },
+  statCard: {
+    borderRadius: "var(--radius-md)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-2-5) var(--spacing-1-5)",
+  },
+  statHeader: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-1-5)",
+  },
+  statDot: (color) => ({
+    height: "var(--spacing-1-5)",
+    width: "var(--spacing-1-5)",
+    borderRadius: "var(--radius-full)",
+    backgroundColor: color,
+  }),
+  statLabel: {
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-medium)",
+    textTransform: "uppercase",
+    letterSpacing: "var(--letter-spacing-wide)",
+    color: "var(--color-text-muted)",
+  },
+  statValue: {
+    marginTop: "var(--spacing-0-5)",
+    fontSize: "var(--font-size-xl)",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-text-primary)",
+  },
+  statIcon: {
+    height: "var(--icon-xs)",
+    width: "var(--icon-xs)",
+    color: "var(--color-text-light)",
+  },
+
+  // Error banner
+  errorBanner: {
+    marginBottom: "var(--spacing-3)",
+    borderRadius: "var(--radius-md)",
+    border: "var(--border-1) solid var(--color-danger-border)",
+    backgroundColor: "var(--color-danger-bg)",
+    padding: "var(--spacing-3) var(--spacing-2)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-danger-text)",
+  },
+
+  // Filters
+  filtersContainer: {
+    marginBottom: "var(--spacing-3)",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "var(--spacing-2)",
+    borderRadius: "var(--radius-md)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-2) var(--spacing-3)",
+  },
+  searchContainer: {
+    position: "relative",
+    minWidth: "200px",
+    flex: "1",
+  },
+  searchIcon: {
+    pointerEvents: "none",
+    position: "absolute",
+    left: "var(--spacing-2)",
+    top: "50%",
+    transform: "translateY(-50%)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-light)",
+  },
+  searchInput: {
+    width: "100%",
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1) var(--spacing-2) var(--spacing-1) var(--spacing-7)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-primary)",
+    outline: "none",
+  },
+  selectInput: {
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1) var(--spacing-2)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-primary)",
+    outline: "none",
+  },
+  dateInput: {
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1) var(--spacing-2)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-primary)",
+    outline: "none",
+  },
+  clearButton: {
+    borderRadius: "var(--radius-sm)",
+    backgroundColor: "var(--color-danger-bg)",
+    padding: "var(--spacing-1) var(--spacing-2)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-danger-text)",
+    border: "none",
+    cursor: "pointer",
+  },
+
+  // Table container
+  tableContainer: {
+    borderRadius: "var(--radius-md)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    boxShadow: "var(--shadow-sm)",
+  },
+  loadingContainer: {
+    display: "flex",
+    height: "256px",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  spinner: {
+    height: "var(--icon-2xl)",
+    width: "var(--icon-2xl)",
+    borderRadius: "var(--radius-full)",
+    border: "var(--border-2) solid var(--color-border-primary)",
+    borderTopColor: "var(--color-primary)",
+    animation: "spin 1s linear infinite",
+  },
+  emptyContainer: {
+    display: "flex",
+    height: "256px",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "var(--spacing-2)",
+    color: "var(--color-text-light)",
+  },
+  emptyIcon: {
+    fontSize: "var(--font-size-3xl)",
+  },
+  emptyText: {
+    fontSize: "var(--font-size-xs)",
+  },
+
+  // Table
+  tableWrapper: {
+    overflowX: "auto",
+  },
+  table: {
+    minWidth: "100%",
+    fontSize: "var(--font-size-xs)",
+  },
+  tableHeader: {
+    borderBottom: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-tertiary)",
+  },
+  tableHeaderCell: {
+    padding: "var(--spacing-2)",
+    textAlign: "left",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-text-muted)",
+  },
+  tableBody: {
+    // Divider handled via border
+  },
+  tableRow: (isFresh) => ({
+    fontSize: "var(--font-size-xs)",
+    backgroundColor: isFresh ? "var(--color-info-bg-light)" : "transparent",
+    transition: "var(--transition-colors)",
+  }),
+  tableCell: {
+    padding: "var(--spacing-1-5) var(--spacing-2)",
+  },
+  tableCellMuted: {
+    padding: "var(--spacing-1-5) var(--spacing-2)",
+    color: "var(--color-text-muted)",
+  },
+  nameText: {
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-primary)",
+  },
+  emailText: {
+    fontSize: "var(--font-size-2xs)",
+    color: "var(--color-text-muted)",
+  },
+  timeAgoText: {
+    fontSize: "var(--font-size-2xs)",
+    color: "var(--color-text-light)",
+  },
+  hostelTypeText: {
+    fontSize: "var(--font-size-2xs)",
+    color: "var(--color-text-muted)",
+  },
+  roomText: {
+    color: "var(--color-text-body)",
+  },
+  reasonText: {
+    maxWidth: "200px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    color: "var(--color-text-muted)",
+  },
+
+  // Status badges in table
+  statusBadgeCheckedIn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-1)",
+    borderRadius: "var(--radius-sm)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-semibold)",
+    border: "var(--border-1) solid var(--color-success-bg)",
+    backgroundColor: "var(--color-success-bg-light)",
+    color: "var(--color-success-text)",
+  },
+  statusBadgeCheckedOut: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-1)",
+    borderRadius: "var(--radius-sm)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-semibold)",
+    border: "var(--border-1) solid var(--color-danger-bg)",
+    backgroundColor: "var(--color-danger-bg-light)",
+    color: "var(--color-danger-text)",
+  },
+  statusBadgeDefault: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-1)",
+    borderRadius: "var(--radius-sm)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-semibold)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-tertiary)",
+    color: "var(--color-text-muted)",
+  },
+
+  // Trajectory badges
+  trajectoryBadgeSame: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-0-5)",
+    borderRadius: "var(--radius-sm)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "var(--border-1) solid var(--color-info-bg)",
+    backgroundColor: "var(--color-info-bg-light)",
+    color: "var(--color-info-text)",
+  },
+  trajectoryBadgeCross: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-0-5)",
+    borderRadius: "var(--radius-sm)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "var(--border-1) solid var(--color-purple-light-bg)",
+    backgroundColor: "var(--color-purple-bg)",
+    color: "var(--color-purple-text)",
+  },
+  trajectoryBadgeDefault: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "var(--spacing-0-5)",
+    borderRadius: "var(--radius-sm)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-medium)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-tertiary)",
+    color: "var(--color-text-muted)",
+  },
+
+  // Pagination
+  paginationContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderTop: "var(--border-1) solid var(--color-border-primary)",
+    padding: "var(--spacing-2) var(--spacing-3)",
+    fontSize: "var(--font-size-xs)",
+  },
+  paginationText: {
+    color: "var(--color-text-muted)",
+  },
+  paginationButtons: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-1)",
+  },
+  paginationButton: {
+    display: "flex",
+    height: "var(--spacing-6)",
+    width: "var(--spacing-6)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-dark)",
+    backgroundColor: "var(--color-bg-primary)",
+    color: "var(--color-text-muted)",
+    cursor: "pointer",
+  },
+  paginationButtonActive: {
+    display: "flex",
+    height: "var(--spacing-6)",
+    width: "var(--spacing-6)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-primary)",
+    backgroundColor: "var(--color-primary)",
+    color: "var(--color-white)",
+    cursor: "pointer",
+  },
+
+  // Hostel-wise summary
+  hostelSummaryGrid: {
+    marginTop: "var(--spacing-3)",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "var(--spacing-2)",
+  },
+  hostelCard: {
+    borderRadius: "var(--radius-md)",
+    border: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-2-5) var(--spacing-1-5)",
+  },
+  hostelCardHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  hostelCardInfo: {
+    minWidth: "0",
+    flex: "1",
+  },
+  hostelName: {
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-text-primary)",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  hostelType: {
+    fontSize: "var(--font-size-2xs)",
+    color: "var(--color-text-muted)",
+  },
+  hostelTotalBadge: {
+    marginLeft: "var(--spacing-2)",
+    borderRadius: "var(--radius-sm)",
+    backgroundColor: "var(--color-info-bg)",
+    padding: "var(--spacing-0-5) var(--spacing-1-5)",
+    fontSize: "var(--font-size-2xs)",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-primary)",
+  },
+  hostelStats: {
+    marginTop: "var(--spacing-1-5)",
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-2)",
+    fontSize: "var(--font-size-2xs)",
+    color: "var(--color-text-muted)",
+  },
+  hostelStatItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-0-5)",
+  },
+  hostelStatDot: (color) => ({
+    height: "var(--spacing-1)",
+    width: "var(--spacing-1)",
+    borderRadius: "var(--radius-full)",
+    backgroundColor: color,
+  }),
+
+  // Filter Sidebar
+  sidebarOverlay: {
+    position: "fixed",
+    inset: "0",
+    zIndex: "var(--z-modal)",
+    display: "flex",
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+  },
+  sidebar: {
+    height: "100%",
+    width: "100%",
+    maxWidth: "var(--modal-width-sm)",
+    borderLeft: "var(--border-1) solid var(--color-border-primary)",
+    backgroundColor: "var(--color-bg-primary)",
+    boxShadow: "var(--shadow-xl)",
+  },
+  sidebarHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottom: "var(--border-1) solid var(--color-border-primary)",
+    padding: "var(--spacing-3) var(--spacing-4)",
+  },
+  sidebarTitle: {
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-semibold)",
+    color: "var(--color-text-primary)",
+  },
+  sidebarCloseButton: {
+    display: "flex",
+    height: "var(--spacing-7)",
+    width: "var(--spacing-7)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "var(--radius-sm)",
+    border: "none",
+    backgroundColor: "transparent",
+    cursor: "pointer",
+  },
+  sidebarCloseIcon: {
+    fontSize: "var(--font-size-lg)",
+    color: "var(--color-text-muted)",
+  },
+  sidebarContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "var(--spacing-4)",
+    padding: "var(--spacing-4)",
+    fontSize: "var(--font-size-xs)",
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  formLabel: {
+    marginBottom: "var(--spacing-1)",
+    display: "block",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-body)",
+  },
+  formInputFull: {
+    width: "100%",
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-dark)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1-5) var(--spacing-2)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-primary)",
+    outline: "none",
+  },
+  formInputWithIcon: {
+    width: "100%",
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-dark)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1-5) var(--spacing-2) var(--spacing-1-5) var(--spacing-7)",
+    fontSize: "var(--font-size-xs)",
+    color: "var(--color-text-primary)",
+    outline: "none",
+  },
+  formGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "var(--spacing-3)",
+  },
+  sidebarActions: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--spacing-2)",
+    paddingTop: "var(--spacing-2)",
+  },
+  resetButton: {
+    flex: "1",
+    borderRadius: "var(--radius-sm)",
+    border: "var(--border-1) solid var(--color-border-dark)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "var(--spacing-1-5) var(--spacing-3)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-body)",
+    cursor: "pointer",
+  },
+  applyButton: {
+    flex: "1",
+    borderRadius: "var(--radius-sm)",
+    backgroundColor: "var(--color-primary)",
+    padding: "var(--spacing-1-5) var(--spacing-3)",
+    fontSize: "var(--font-size-xs)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-white)",
+    border: "none",
+    cursor: "pointer",
+  },
+  iconXs: {
+    height: "var(--icon-xs)",
+    width: "var(--icon-xs)",
+  },
 }
 
-const getTrajectoryTone = (isSameHostel) => {
-  if (isSameHostel === true) return "border-cyan-200 bg-cyan-50 text-cyan-700"
-  if (isSameHostel === false) return "border-purple-200 bg-purple-50 text-purple-700"
-  return "border-gray-200 bg-gray-50 text-gray-600"
+// Helper functions for status/trajectory badge styles
+const getStatusBadgeStyle = (status) => {
+  if (status === "Checked In") return styles.statusBadgeCheckedIn
+  if (status === "Checked Out") return styles.statusBadgeCheckedOut
+  return styles.statusBadgeDefault
+}
+
+const getTrajectoryBadgeStyle = (isSameHostel) => {
+  if (isSameHostel === true) return styles.trajectoryBadgeSame
+  if (isSameHostel === false) return styles.trajectoryBadgeCross
+  return styles.trajectoryBadgeDefault
 }
 
 const getStatusIcon = (status) => {
-  if (status === "Checked In") return <MdLogin className="h-3 w-3" />
-  if (status === "Checked Out") return <MdLogout className="h-3 w-3" />
-  return <MdSwapHoriz className="h-3 w-3" />
+  if (status === "Checked In") return <MdLogin style={styles.iconXs} />
+  if (status === "Checked Out") return <MdLogout style={styles.iconXs} />
+  return <MdSwapHoriz style={styles.iconXs} />
 }
 
 const getTrajectoryIcon = (isSameHostel) => {
-  if (isSameHostel === true) return <MdHome className="h-3 w-3" />
-  return <MdSwapHoriz className="h-3 w-3" />
+  if (isSameHostel === true) return <MdHome style={styles.iconXs} />
+  return <MdSwapHoriz style={styles.iconXs} />
 }
-
-const DEFAULT_TODAY_STATS = { checkedIn: 0, checkedOut: 0, sameHostel: 0, crossHostel: 0, total: 0 }
-const DEFAULT_TOTAL_STATS = { checkedIn: 0, checkedOut: 0 }
 
 const LiveCheckInOut = () => {
   const { hostelList } = useGlobal()
@@ -115,34 +738,34 @@ const LiveCheckInOut = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="mx-auto max-w-[1600px]">
+    <div style={styles.pageContainer}>
+      <div style={styles.maxWidthContainer}>
         {/* Compact Header */}
-        <header className="bg-white shadow-sm border-b border-gray-100 -mx-4 -mt-4 mb-3 px-4 py-2.5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <header style={styles.header}>
+          <div style={styles.headerContent}>
+            <div style={styles.headerLeft}>
               <div>
-                <h1 className="text-xl font-semibold text-[#1360aa] tracking-tight">Live Check-In/Out Monitor</h1>
-                <p className="text-xs text-gray-500 mt-0.5">{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
+                <h1 style={styles.pageTitle}>Live Check-In/Out Monitor</h1>
+                <p style={styles.dateSubtitle}>{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
               </div>
-              <span className={["inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium", socketStatus === "connected" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"].join(" ")}>
-                <span className={["h-1.5 w-1.5 rounded-full", socketStatus === "connected" ? "bg-emerald-500" : "bg-rose-500"].join(" ")} />
+              <span style={styles.statusBadge(socketStatus === "connected")}>
+                <span style={styles.statusDot(socketStatus === "connected")} />
                 {socketStatus === "connected" ? "Live" : "Offline"}
               </span>
-              {highlightEntry && <span className="text-xs text-gray-400">Last: {getTimeAgo(highlightEntry.dateAndTime)}</span>}
+              {highlightEntry && <span style={styles.lastUpdateText}>Last: {getTimeAgo(highlightEntry.dateAndTime)}</span>}
             </div>
 
-            <div className="flex items-center gap-2">
-              <button onClick={() => refresh()} disabled={loading} className="inline-flex items-center gap-1.5 rounded-full bg-[#1360aa] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-[#0e4eb5] disabled:opacity-60">
-                <FiRefreshCw className={["text-xs", loading ? "animate-spin" : ""].filter(Boolean).join(" ")} />
+            <div style={styles.headerRight}>
+              <button onClick={() => refresh()} disabled={loading} style={{ ...styles.primaryButton, opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
+                <FiRefreshCw style={{ fontSize: "var(--font-size-xs)", animation: loading ? "spin 1s linear infinite" : "none" }} />
                 Refresh
               </button>
-              <button onClick={exportToCSV} className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50">
-                <FiDownload className="text-xs" />
+              <button onClick={exportToCSV} style={styles.secondaryButton}>
+                <FiDownload style={{ fontSize: "var(--font-size-xs)" }} />
                 Export
               </button>
-              <button onClick={() => setShowFilters(true)} className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50">
-                <FiFilter className="text-xs" />
+              <button onClick={() => setShowFilters(true)} style={styles.secondaryButton}>
+                <FiFilter style={{ fontSize: "var(--font-size-xs)" }} />
                 Filters
               </button>
             </div>
@@ -150,101 +773,101 @@ const LiveCheckInOut = () => {
         </header>
 
         {/* Compact Stats Row */}
-        <div className="mb-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">In Today</span>
+        <div style={styles.statsGrid}>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <span style={styles.statDot("var(--color-success)")} />
+              <span style={styles.statLabel}>In Today</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{todayStats.checkedIn}</p>
+            <p style={styles.statValue}>{todayStats.checkedIn}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Out Today</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <span style={styles.statDot("var(--color-danger)")} />
+              <span style={styles.statLabel}>Out Today</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{todayStats.checkedOut}</p>
+            <p style={styles.statValue}>{todayStats.checkedOut}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Cross Hostel</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <span style={styles.statDot("var(--color-purple-text)")} />
+              <span style={styles.statLabel}>Cross Hostel</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{todayStats.crossHostel}</p>
+            <p style={styles.statValue}>{todayStats.crossHostel}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Same Hostel</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <span style={styles.statDot("var(--color-info)")} />
+              <span style={styles.statLabel}>Same Hostel</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{todayStats.sameHostel}</p>
+            <p style={styles.statValue}>{todayStats.sameHostel}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <MdLogin className="h-3 w-3 text-gray-400" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Total In</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <MdLogin style={styles.statIcon} />
+              <span style={styles.statLabel}>Total In</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{totalStats.checkedIn}</p>
+            <p style={styles.statValue}>{totalStats.checkedIn}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <MdLogout className="h-3 w-3 text-gray-400" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Total Out</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <MdLogout style={styles.statIcon} />
+              <span style={styles.statLabel}>Total Out</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{totalStats.checkedOut}</p>
+            <p style={styles.statValue}>{totalStats.checkedOut}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <RiRadarLine className="h-3 w-3 text-gray-400" />
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Loaded</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <RiRadarLine style={styles.statIcon} />
+              <span style={styles.statLabel}>Loaded</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{loading ? "..." : entries.length}</p>
+            <p style={styles.statValue}>{loading ? "..." : entries.length}</p>
           </div>
 
-          <div className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-            <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 text-[10px] font-bold text-gray-400">#</span>
-              <span className="text-[10px] font-medium uppercase tracking-wide text-gray-500">Total</span>
+          <div style={styles.statCard}>
+            <div style={styles.statHeader}>
+              <span style={{ ...styles.statIcon, fontSize: "var(--font-size-2xs)", fontWeight: "var(--font-weight-bold)" }}>#</span>
+              <span style={styles.statLabel}>Total</span>
             </div>
-            <p className="mt-0.5 text-lg font-semibold text-gray-900">{totalRecords}</p>
+            <p style={styles.statValue}>{totalRecords}</p>
           </div>
         </div>
 
         {error && (
-          <div className="mb-3 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
-            <span className="font-semibold">Error:</span> {error}
+          <div style={styles.errorBanner}>
+            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>Error:</span> {error}
           </div>
         )}
 
         {/* Compact Inline Filters */}
-        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2">
-          <div className="relative min-w-[200px] flex-1">
-            <FiSearch className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400" />
+        <div style={styles.filtersContainer}>
+          <div style={styles.searchContainer}>
+            <FiSearch style={styles.searchIcon} />
             <input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
               placeholder="Search student, room, reason..."
-              className="w-full rounded border border-gray-200 bg-white py-1 pl-7 pr-2 text-xs text-gray-900 placeholder:text-gray-400 focus:border-[#1360AB] focus:outline-none focus:ring-1 focus:ring-[#1360AB]"
+              style={styles.searchInput}
             />
           </div>
 
-          <select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs text-gray-900 focus:border-[#1360AB] focus:outline-none">
+          <select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} style={styles.selectInput}>
             <option value="">All Status</option>
             <option value="Checked In">Checked In</option>
             <option value="Checked Out">Checked Out</option>
           </select>
 
-          <select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs text-gray-900 focus:border-[#1360AB] focus:outline-none">
+          <select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} style={styles.selectInput}>
             <option value="">All Types</option>
             <option value="true">Same Hostel</option>
             <option value="false">Cross-Hostel</option>
           </select>
 
-          <select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs text-gray-900 focus:border-[#1360AB] focus:outline-none">
+          <select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} style={styles.selectInput}>
             <option value="">All Hostels</option>
             {hostelList?.map((hostel) => (
               <option key={hostel._id} value={hostel._id}>
@@ -253,89 +876,88 @@ const LiveCheckInOut = () => {
             ))}
           </select>
 
-          <input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs text-gray-900 focus:border-[#1360AB] focus:outline-none" />
+          <input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} style={styles.dateInput} />
 
-          <input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs text-gray-900 focus:border-[#1360AB] focus:outline-none" />
+          <input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} style={styles.dateInput} />
 
-          <select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} className="rounded border border-gray-200 bg-white px-2 py-1 text-xs text-gray-900 focus:border-[#1360AB] focus:outline-none">
+          <select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} style={styles.selectInput}>
             <option value="20">20/page</option>
             <option value="50">50/page</option>
             <option value="100">100/page</option>
           </select>
 
           {(filters.search || filters.status || filters.hostelId || filters.isSameHostel || filters.startDate || filters.endDate) && (
-            <button onClick={resetFilters} className="rounded bg-rose-50 px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-100">
+            <button onClick={resetFilters} style={styles.clearButton}>
               Clear
             </button>
           )}
         </div>
 
         {/* Compact Main Table */}
-        <div className="rounded-md border border-gray-200 bg-white shadow-sm">
+        <div style={styles.tableContainer}>
           {loading && entries.length === 0 ? (
-            <div className="flex h-64 items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-[#1360AB]" />
+            <div style={styles.loadingContainer}>
+              <div style={styles.spinner} />
             </div>
           ) : entries.length === 0 ? (
-            <div className="flex h-64 flex-col items-center justify-center gap-2 text-gray-400">
-              <RiRadarLine className="text-2xl" />
-              <p className="text-xs">No entries match filters</p>
+            <div style={styles.emptyContainer}>
+              <RiRadarLine style={styles.emptyIcon} />
+              <p style={styles.emptyText}>No entries match filters</p>
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-xs">
-                  <thead className="border-b border-gray-200 bg-gray-50">
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead style={styles.tableHeader}>
                     <tr>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">#</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Time</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Student</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Status</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Hostel</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Room</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Type</th>
-                      <th className="px-2 py-2 text-left font-semibold text-gray-600">Reason</th>
+                      <th style={styles.tableHeaderCell}>#</th>
+                      <th style={styles.tableHeaderCell}>Time</th>
+                      <th style={styles.tableHeaderCell}>Student</th>
+                      <th style={styles.tableHeaderCell}>Status</th>
+                      <th style={styles.tableHeaderCell}>Hostel</th>
+                      <th style={styles.tableHeaderCell}>Room</th>
+                      <th style={styles.tableHeaderCell}>Type</th>
+                      <th style={styles.tableHeaderCell}>Reason</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody style={{ borderTop: "var(--border-1) solid var(--color-border-light)" }}>
                     {entries.map((entry, index) => {
                       const isFresh = entry._id === lastRealtimeEntryId
-                      const rowClass = ["text-xs hover:bg-blue-50/50 transition-colors", isFresh ? "bg-blue-50" : ""].filter(Boolean).join(" ")
 
                       return (
-                        <tr key={entry._id} className={rowClass}>
-                          <td className="px-2 py-1.5 text-gray-500">{index + 1 + (currentPage - 1) * pageSize}</td>
-                          <td className="px-2 py-1.5">
-                            <div className="font-medium text-gray-900">{formatDateTime(entry.dateAndTime)}</div>
-                            <div className="text-[10px] text-gray-400">{getTimeAgo(entry.dateAndTime)}</div>
+                        <tr key={entry._id} style={styles.tableRow(isFresh)}>
+                          <td style={styles.tableCellMuted}>{index + 1 + (currentPage - 1) * pageSize}</td>
+                          <td style={styles.tableCell}>
+                            <div style={styles.nameText}>{formatDateTime(entry.dateAndTime)}</div>
+                            <div style={styles.timeAgoText}>{getTimeAgo(entry.dateAndTime)}</div>
                           </td>
-                          <td className="px-2 py-1.5">
-                            <div className="font-medium text-gray-900">{entry.userId?.name || "Unknown"}</div>
-                            <div className="text-[10px] text-gray-500">{entry.userId?.email || "-"}</div>
+                          <td style={styles.tableCell}>
+                            <div style={styles.nameText}>{entry.userId?.name || "Unknown"}</div>
+                            <div style={styles.emailText}>{entry.userId?.email || "-"}</div>
                           </td>
-                          <td className="px-2 py-1.5">
-                            <span className={["inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-semibold", getStatusTone(entry.status)].join(" ")}>
+                          <td style={styles.tableCell}>
+                            <span style={getStatusBadgeStyle(entry.status)}>
                               {getStatusIcon(entry.status)}
                               {entry.status}
                             </span>
                           </td>
-                          <td className="px-2 py-1.5">
-                            <div className="text-gray-900">{entry.hostelName || "-"}</div>
-                            <div className="text-[10px] text-gray-500">{entry.hostelId?.type || "-"}</div>
+                          <td style={styles.tableCell}>
+                            <div style={styles.nameText}>{entry.hostelName || "-"}</div>
+                            <div style={styles.hostelTypeText}>{entry.hostelId?.type || "-"}</div>
                           </td>
-                          <td className="px-2 py-1.5 text-gray-700">
+                          <td style={{ ...styles.tableCell, ...styles.roomText }}>
                             R{entry.room || "?"}
                             {entry.unit ? " U" + entry.unit : ""}
                             {entry.bed ? " B" + entry.bed : ""}
                           </td>
-                          <td className="px-2 py-1.5">
-                            <span className={["inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-medium", getTrajectoryTone(entry.isSameHostel)].join(" ")}>
+                          <td style={styles.tableCell}>
+                            <span style={getTrajectoryBadgeStyle(entry.isSameHostel)}>
                               {getTrajectoryIcon(entry.isSameHostel)}
                               {entry.isSameHostel ? "Same" : "Cross"}
                             </span>
                           </td>
-                          <td className="px-2 py-1.5">
-                            <p className="max-w-xs truncate text-gray-600" title={entry.reason || "No reason"}>
+                          <td style={styles.tableCell}>
+                            <p style={styles.reasonText} title={entry.reason || "No reason"}>
                               {entry.reason || "-"}
                             </p>
                           </td>
@@ -348,13 +970,13 @@ const LiveCheckInOut = () => {
 
               {/* Compact Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-gray-200 px-3 py-2 text-xs">
-                  <p className="text-gray-600">
+                <div style={styles.paginationContainer}>
+                  <p style={styles.paginationText}>
                     {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalRecords)} of {totalRecords}
                   </p>
-                  <div className="flex items-center gap-1">
-                    <button onClick={prevPage} disabled={currentPage === 1} className="flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40">
-                      <FiChevronLeft className="text-xs" />
+                  <div style={styles.paginationButtons}>
+                    <button onClick={prevPage} disabled={currentPage === 1} style={{ ...styles.paginationButton, opacity: currentPage === 1 ? "var(--opacity-40)" : "var(--opacity-100)" }}>
+                      <FiChevronLeft style={{ fontSize: "var(--font-size-xs)" }} />
                     </button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNum
@@ -364,13 +986,13 @@ const LiveCheckInOut = () => {
                       else pageNum = currentPage - 2 + i
 
                       return (
-                        <button key={pageNum} onClick={() => goToPage(pageNum)} className={["flex h-6 w-6 items-center justify-center rounded border text-xs", currentPage === pageNum ? "border-[#1360AB] bg-[#1360AB] text-white" : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"].join(" ")}>
+                        <button key={pageNum} onClick={() => goToPage(pageNum)} style={currentPage === pageNum ? styles.paginationButtonActive : styles.paginationButton}>
                           {pageNum}
                         </button>
                       )
                     })}
-                    <button onClick={nextPage} disabled={currentPage === totalPages} className="flex h-6 w-6 items-center justify-center rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-40">
-                      <FiChevronRight className="text-xs" />
+                    <button onClick={nextPage} disabled={currentPage === totalPages} style={{ ...styles.paginationButton, opacity: currentPage === totalPages ? "var(--opacity-40)" : "var(--opacity-100)" }}>
+                      <FiChevronRight style={{ fontSize: "var(--font-size-xs)" }} />
                     </button>
                   </div>
                 </div>
@@ -381,29 +1003,29 @@ const LiveCheckInOut = () => {
 
         {/* Hostel-wise summary - Compact */}
         {hostelWiseStats.length > 0 && (
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          <div style={styles.hostelSummaryGrid}>
             {hostelWiseStats.map((hostel) => (
-              <div key={hostel.hostelId || hostel.hostelName} className="rounded-md border border-gray-200 bg-white px-2.5 py-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-semibold text-gray-900" title={hostel.hostelName}>
+              <div key={hostel.hostelId || hostel.hostelName} style={styles.hostelCard}>
+                <div style={styles.hostelCardHeader}>
+                  <div style={styles.hostelCardInfo}>
+                    <p style={styles.hostelName} title={hostel.hostelName}>
                       {hostel.hostelName}
                     </p>
-                    <p className="text-[10px] text-gray-500">{hostel.hostelType}</p>
+                    <p style={styles.hostelType}>{hostel.hostelType}</p>
                   </div>
-                  <span className="ml-2 rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-[#1360AB]">{hostel.total}</span>
+                  <span style={styles.hostelTotalBadge}>{hostel.total}</span>
                 </div>
-                <div className="mt-1.5 flex items-center gap-2 text-[10px] text-gray-600">
-                  <span className="flex items-center gap-0.5">
-                    <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                <div style={styles.hostelStats}>
+                  <span style={styles.hostelStatItem}>
+                    <span style={styles.hostelStatDot("var(--color-success)")} />
                     {hostel.checkedIn}
                   </span>
-                  <span className="flex items-center gap-0.5">
-                    <span className="h-1 w-1 rounded-full bg-rose-500" />
+                  <span style={styles.hostelStatItem}>
+                    <span style={styles.hostelStatDot("var(--color-danger)")} />
                     {hostel.checkedOut}
                   </span>
-                  <span className="flex items-center gap-0.5">
-                    <span className="h-1 w-1 rounded-full bg-purple-500" />
+                  <span style={styles.hostelStatItem}>
+                    <span style={styles.hostelStatDot("var(--color-purple-text)")} />
                     {hostel.crossHostel}
                   </span>
                 </div>
@@ -415,40 +1037,40 @@ const LiveCheckInOut = () => {
 
       {/* Compact Filter Sidebar */}
       {showFilters && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/20">
-          <div className="h-full w-full max-w-sm border-l border-gray-200 bg-white shadow-xl">
-            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-              <h3 className="text-sm font-semibold text-gray-900">Advanced Filters</h3>
-              <button onClick={() => setShowFilters(false)} className="flex h-7 w-7 items-center justify-center rounded hover:bg-gray-100">
-                <FiX className="text-base text-gray-500" />
+        <div style={styles.sidebarOverlay}>
+          <div style={styles.sidebar}>
+            <div style={styles.sidebarHeader}>
+              <h3 style={styles.sidebarTitle}>Advanced Filters</h3>
+              <button onClick={() => setShowFilters(false)} style={styles.sidebarCloseButton}>
+                <FiX style={styles.sidebarCloseIcon} />
               </button>
             </div>
 
-            <div className="space-y-4 p-4 text-xs">
-              <div>
-                <label className="mb-1 block font-medium text-gray-700">Search</label>
-                <div className="relative">
-                  <FiSearch className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400" />
+            <div style={styles.sidebarContent}>
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Search</label>
+                <div style={{ position: "relative" }}>
+                  <FiSearch style={styles.searchIcon} />
                   <input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
-                    className="w-full rounded border border-gray-300 bg-white py-1.5 pl-7 pr-2 text-xs focus:border-[#1360AB] focus:outline-none focus:ring-1 focus:ring-[#1360AB]"
+                    style={styles.formInputWithIcon}
                     placeholder="Student, room, reason..."
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="mb-1 block font-medium text-gray-700">Status</label>
-                  <select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-[#1360AB] focus:outline-none">
+              <div style={styles.formGrid}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Status</label>
+                  <select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} style={styles.formInputFull}>
                     <option value="">All</option>
                     <option value="Checked In">Checked In</option>
                     <option value="Checked Out">Checked Out</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="mb-1 block font-medium text-gray-700">Type</label>
-                  <select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-[#1360AB] focus:outline-none">
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Type</label>
+                  <select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} style={styles.formInputFull}>
                     <option value="">All</option>
                     <option value="true">Same Hostel</option>
                     <option value="false">Cross-Hostel</option>
@@ -456,9 +1078,9 @@ const LiveCheckInOut = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="mb-1 block font-medium text-gray-700">Hostel</label>
-                <select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-[#1360AB] focus:outline-none">
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Hostel</label>
+                <select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} style={styles.formInputFull}>
                   <option value="">All Hostels</option>
                   {hostelList?.map((hostel) => (
                     <option key={hostel._id} value={hostel._id}>
@@ -468,36 +1090,36 @@ const LiveCheckInOut = () => {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="mb-1 block font-medium text-gray-700">Start Date</label>
-                  <input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-[#1360AB] focus:outline-none" />
+              <div style={styles.formGrid}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Start Date</label>
+                  <input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} style={styles.formInputFull} />
                 </div>
 
-                <div>
-                  <label className="mb-1 block font-medium text-gray-700">End Date</label>
-                  <input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-[#1360AB] focus:outline-none" />
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>End Date</label>
+                  <input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} style={styles.formInputFull} />
                 </div>
               </div>
 
-              <div>
-                <label className="mb-1 block font-medium text-gray-700">Page Size</label>
-                <select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} className="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-xs focus:border-[#1360AB] focus:outline-none">
+              <div style={styles.formGroup}>
+                <label style={styles.formLabel}>Page Size</label>
+                <select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} style={styles.formInputFull}>
                   <option value="20">20 per page</option>
                   <option value="50">50 per page</option>
                   <option value="100">100 per page</option>
                 </select>
               </div>
 
-              <div className="flex items-center gap-2 pt-2">
-                <button onClick={resetFilters} className="flex-1 rounded border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50">
+              <div style={styles.sidebarActions}>
+                <button onClick={resetFilters} style={styles.resetButton}>
                   Reset All
                 </button>
                 <button onClick={() => {
-                    refresh()
-                    setShowFilters(false)
-                  }}
-                  className="flex-1 rounded bg-[#1360AB] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#0f4e8a]"
+                  refresh()
+                  setShowFilters(false)
+                }}
+                  style={styles.applyButton}
                 >
                   Apply
                 </button>
