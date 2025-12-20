@@ -9,25 +9,25 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
 
   return (
     <Modal title={title} onClose={onClose} width={width}>
-      <div className="text-center py-4">
-        <div className="mx-auto bg-green-100 text-green-600 w-16 h-16 flex items-center justify-center rounded-full mb-6">
+      <div style={{ textAlign: 'center', padding: 'var(--spacing-4) 0' }}>
+        <div style={{ margin: '0 auto', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success)', width: 'var(--spacing-16)', height: 'var(--spacing-16)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-6)' }}>
           <HiCheckCircle size={40} />
         </div>
 
-        <h3 className="text-xl font-bold text-gray-800 mb-3">{title}</h3>
+        <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>{title}</h3>
 
         {infoText && (
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 flex items-center justify-center mx-auto max-w-md">
-            {InfoIcon && <InfoIcon className="text-gray-400 mr-2 flex-shrink-0" size={20} />}
-            <span className="text-gray-800 font-medium break-all">{infoText}</span>
+          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto var(--spacing-6)', maxWidth: '28rem' }}>
+            {InfoIcon && <InfoIcon style={{ color: 'var(--color-text-disabled)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} size={20} />}
+            <span style={{ color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', wordBreak: 'break-all' }}>{infoText}</span>
           </div>
         )}
 
-        <p className="text-gray-600 mb-8 max-w-md mx-auto">{message}</p>
+        <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-8)', maxWidth: '28rem', margin: '0 auto var(--spacing-8)' }}>{message}</p>
 
-        <div className="flex justify-center">
-          <button onClick={onClose} className="px-6 py-3 bg-[#1360AB] text-white rounded-lg hover:bg-[#0d4b86] transition-colors shadow-sm hover:shadow flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <button onClick={onClose} style={{ padding: 'var(--spacing-3) var(--spacing-6)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', marginRight: 'var(--spacing-2)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
             {buttonText}
