@@ -190,37 +190,37 @@ const HealthTab = ({ userId }) => {
   }
 
   return (
-    <div className="bg-white">
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-700 flex items-center">
-            <FaHeartbeat className="text-[#1360AB] mr-2" />
+    <div style={{ backgroundColor: 'var(--color-bg-primary)' }}>
+      <div style={{ marginBottom: 'var(--spacing-6)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
+            <FaHeartbeat style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Health Information
           </h3>
-          <div className="flex space-x-2">
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
             {user.role === "Admin" && (
-              <Link to="/admin/others" className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors flex items-center">
-                <FaCog className="mr-1" /> Manage Providers
+              <Link to="/admin/others" style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-body)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+                <FaCog style={{ marginRight: 'var(--spacing-1)' }} /> Manage Providers
               </Link>
             )}
             {canAccess("students_info", "edit") && !editHealthData && (
-              <button onClick={() => setEditHealthData(true)} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
-                <FaEdit className="mr-1" /> Edit
+              <button onClick={() => setEditHealthData(true)} style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
+                <FaEdit style={{ marginRight: 'var(--spacing-1)' }} /> Edit
               </button>
             )}
           </div>
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-6">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) 0' }}>
+            <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', borderBottom: 'var(--border-2) solid var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
           </div>
         ) : editHealthData ? (
-          <form onSubmit={handleUpdateHealth} className="bg-gray-50 p-4 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
-                <select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+          <form onSubmit={handleUpdateHealth} style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Blood Group</label>
+                <select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }}>
                   <option value="">Select Blood Group</option>
                   <option value="A+">A+</option>
                   <option value="A-">A-</option>
@@ -233,9 +233,9 @@ const HealthTab = ({ userId }) => {
                 </select>
               </div>
 
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Provider</label>
-                <select name="insuranceProvider" value={healthFormData.insuranceProvider} onChange={handleHealthInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <div>
+                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Provider</label>
+                <select name="insuranceProvider" value={healthFormData.insuranceProvider} onChange={handleHealthInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }}>
                   <option value="">Select Insurance Provider</option>
                   {insuranceProviders.map((provider) => (
                     <option key={provider._id} value={provider._id}>
@@ -245,57 +245,57 @@ const HealthTab = ({ userId }) => {
                 </select>
 
                 {selectedProvider && (
-                  <div className="mt-2 text-xs text-gray-500">
+                  <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                     Policy period: {formatDate(selectedProvider.startDate)} - {formatDate(selectedProvider.endDate)}
                   </div>
                 )}
               </div>
 
-              <div className="form-group">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Number</label>
-                <input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Enter insurance number" />
+              <div>
+                <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Number</label>
+                <input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter insurance number" />
               </div>
             </div>
 
-            <div className="mt-4 flex justify-end space-x-2">
-              <button type="button" onClick={() => setEditHealthData(false)} className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">
+            <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
+              <button type="button" onClick={() => setEditHealthData(false)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
                 Cancel
               </button>
-              <button type="submit" className="px-4 py-2 bg-[#1360AB] text-white rounded hover:bg-blue-700 transition-colors">
+              <button type="submit" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
                 Save Changes
               </button>
             </div>
           </form>
         ) : (
-          <div className="bg-gray-50 p-5 rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4">
+          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 'var(--spacing-4)' }}>
               <div>
-                <p className="text-sm text-gray-500">Blood Group</p>
-                <p className="font-medium">{healthData?.bloodGroup || "Not specified"}</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Blood Group</p>
+                <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{healthData?.bloodGroup || "Not specified"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Insurance Provider</p>
-                <p className="font-medium">{healthData?.insurance?.insuranceProvider?.name || "Not specified"}</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Insurance Provider</p>
+                <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{healthData?.insurance?.insuranceProvider?.name || "Not specified"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Insurance Number</p>
-                <p className="font-medium">{healthData?.insurance?.insuranceNumber || "Not specified"}</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Insurance Number</p>
+                <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{healthData?.insurance?.insuranceNumber || "Not specified"}</p>
               </div>
 
               {selectedProvider && (
                 <>
-                  <div className="flex items-center">
-                    <FaCalendarCheck className="text-[#1360AB] mr-2 flex-shrink-0" />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FaCalendarCheck style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
-                      <p className="text-sm text-gray-500">Policy Start Date</p>
-                      <p className="font-medium">{formatDate(selectedProvider.startDate)}</p>
+                      <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy Start Date</p>
+                      <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.startDate)}</p>
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <FaCalendarCheck className="text-[#1360AB] mr-2 flex-shrink-0" />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <FaCalendarCheck style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
-                      <p className="text-sm text-gray-500">Policy End Date</p>
-                      <p className="font-medium">{formatDate(selectedProvider.endDate)}</p>
+                      <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy End Date</p>
+                      <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.endDate)}</p>
                     </div>
                   </div>
                 </>
@@ -305,50 +305,50 @@ const HealthTab = ({ userId }) => {
         )}
       </div>
 
-      <div className="mt-8">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-gray-700 flex items-center">
-            <FaMedkit className="text-[#1360AB] mr-2" />
+      <div style={{ marginTop: 'var(--spacing-8)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+          <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
+            <FaMedkit style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Insurance Claims
           </h3>
           {canAccess("students_info", "edit") && (
-            <button onClick={handleAddClaim} className="px-3 py-1.5 bg-[#1360AB] text-white text-xs rounded hover:bg-blue-700 transition-colors flex items-center">
-              <FaPlus className="mr-1" /> Add Claim
+            <button onClick={handleAddClaim} style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
+              <FaPlus style={{ marginRight: 'var(--spacing-1)' }} /> Add Claim
             </button>
           )}
         </div>
 
         {loadingClaims ? (
-          <div className="flex justify-center py-6">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1360AB]"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) 0' }}>
+            <div style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', borderBottom: 'var(--border-2) solid var(--color-primary)', animation: 'spin 1s linear infinite' }}></div>
           </div>
         ) : insuranceClaims.length === 0 ? (
-          <div className="text-center py-10 bg-gray-50 rounded-lg">
-            <FaHospital className="mx-auto text-gray-300 mb-2 text-4xl" />
-            <p className="text-gray-500">No insurance claims found</p>
+          <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
+            <FaHospital style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)', display: 'block' }} />
+            <p style={{ color: 'var(--color-text-muted)' }}>No insurance claims found</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ backgroundColor: 'var(--color-bg-tertiary)' }}>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hospital</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Date</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Provider</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Hospital</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Amount</th>
+                  <th style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                 {insuranceClaims.map((claim) => (
-                  <tr key={claim._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(claim.createdAt)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{claim.hospitalName}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <button onClick={() => handleViewClaim(claim)} className="text-[#1360AB] hover:text-blue-800 flex items-center">
-                        <FaEye className="mr-1" /> View
+                  <tr key={claim._id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(claim.createdAt)}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{claim.insuranceProvider.name || getProviderName(claim.insuranceProvider)}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{claim.hospitalName}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</td>
+                    <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+                      <button onClick={() => handleViewClaim(claim)} style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-sm)' }}>
+                        <FaEye style={{ marginRight: 'var(--spacing-1)' }} /> View
                       </button>
                     </td>
                   </tr>

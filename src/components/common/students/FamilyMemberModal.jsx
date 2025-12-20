@@ -109,11 +109,31 @@ const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
     { value: "Other", label: "Other" },
   ]
 
+  const styles = {
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-4)",
+    },
+    footerContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      paddingTop: "var(--spacing-4)",
+      marginTop: "var(--spacing-4)",
+      borderTop: "var(--border-1) solid var(--color-border-light)",
+    },
+    actionButtonsRight: {
+      display: "flex",
+      gap: "var(--spacing-3)",
+      marginLeft: "auto",
+    },
+  }
+
   if (!isOpen) return null
 
   return (
     <Modal title={isEditing ? "Edit Family Member" : "Add Family Member"} onClose={onClose} width={600}>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} style={styles.form}>
         <FormField label="Name" name="name" value={formData.name} onChange={handleChange} required error={errors.name} placeholder="Enter full name" />
 
         <FormField label="Phone Number" name="phone" value={formData.phone} onChange={handleChange} required error={errors.phone} placeholder="Enter 10-digit phone number" />
@@ -124,13 +144,13 @@ const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
 
         <FormField label="Address" name="address" type="textarea" value={formData.address} onChange={handleChange} required error={errors.address} placeholder="Enter complete address" rows={3} />
 
-        <div className="flex justify-between pt-4 mt-4 border-t border-gray-100">
+        <div style={styles.footerContainer}>
           {isEditing && onDelete && (
             <Button type="button" variant="danger" size="small" icon={<FaTrash />} onClick={handleDelete}>
               Delete
             </Button>
           )}
-          <div className="flex space-x-3 ml-auto">
+          <div style={styles.actionButtonsRight}>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
