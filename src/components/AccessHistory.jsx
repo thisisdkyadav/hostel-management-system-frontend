@@ -140,15 +140,24 @@ const AccessHistory = ({ cachedData }) => {
 
   return (
     <div className="lg:col-span-2">
-      <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 h-full">
+      <div className="bg-[var(--color-bg-primary)] rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-[var(--color-border-light)] h-full">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
-            <div className="p-2.5 mr-3 rounded-xl" style={{ backgroundColor: 'var(--color-info-bg)', color: 'var(--color-primary)' }}>
+            <div className="p-2.5 mr-3 rounded-xl bg-[var(--color-info-bg)] text-[var(--color-primary)]">
               <FaHistory size={20} />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Access History</h2>
+            <h2 className="text-xl font-bold text-[var(--color-text-secondary)]">Access History</h2>
           </div>
-          <button onClick={() => setShowFilters(!showFilters)} className="flex items-center px-3 py-2 rounded-xl" style={{ backgroundColor: showFilters ? 'var(--color-primary)' : 'var(--color-white)', color: showFilters ? 'var(--color-white)' : 'var(--color-text-body)', border: showFilters ? 'none' : '1px solid var(--color-border-primary)' }} disabled={!isOnline && !cachedData}>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center px-3 py-2 rounded-xl transition-colors"
+            style={{
+              backgroundColor: showFilters ? 'var(--color-primary)' : 'var(--color-bg-primary)',
+              color: showFilters ? 'var(--color-white)' : 'var(--color-text-body)',
+              border: showFilters ? 'none' : '1px solid var(--color-border-primary)'
+            }}
+            disabled={!isOnline && !cachedData}
+          >
             <FaFilter className="mr-2" /> Filters
           </button>
         </div>
@@ -160,15 +169,15 @@ const AccessHistory = ({ cachedData }) => {
 
         {/* Additional Filters */}
         {showFilters && (
-          <div className="bg-gray-50 p-4 rounded-xl mb-5">
+          <div className="bg-[var(--color-bg-tertiary)] p-4 rounded-xl mb-5">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm text-gray-600 mb-1">Filter by Date</label>
-                <input type="date" value={filterDate} onChange={handleDateFilterChange} className="w-full p-2 border border-gray-300 rounded-lg" />
+                <label className="block text-sm text-[var(--color-text-muted)] mb-1">Filter by Date</label>
+                <input type="date" value={filterDate} onChange={handleDateFilterChange} className="w-full p-2 border border-[var(--color-border-input)] rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-body)]" />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">Items Per Page</label>
-                <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="w-full p-2 border border-gray-300 rounded-lg">
+                <label className="block text-sm text-[var(--color-text-muted)] mb-1">Items Per Page</label>
+                <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="w-full p-2 border border-[var(--color-border-input)] rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-body)]">
                   <option value={5}>5</option>
                   <option value={10}>10</option>
                   <option value={20}>20</option>
@@ -176,7 +185,7 @@ const AccessHistory = ({ cachedData }) => {
                 </select>
               </div>
               <div className="flex items-end">
-                <button onClick={handleClearDateFilter} className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+                <button onClick={handleClearDateFilter} className="bg-[var(--color-bg-muted)] text-[var(--color-text-body)] px-4 py-2 rounded-lg hover:bg-[var(--color-bg-tertiary)]">
                   Clear Date Filter
                 </button>
               </div>
@@ -187,12 +196,13 @@ const AccessHistory = ({ cachedData }) => {
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 rounded-full animate-spin border-t-transparent" style={{ borderColor: 'var(--color-primary)' }}></div>
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-[var(--color-border-primary)] rounded-full"></div>
+              <div className="absolute top-0 left-0 w-full h-full border-4 border-[var(--color-primary)] rounded-full animate-spin border-t-transparent"></div>
             </div>
           </div>
         ) : entries.length === 0 ? (
-          <NoResults icon={<FaHistory className="text-gray-300 text-5xl" />}
+          <NoResults
+            icon={<FaHistory className="text-[var(--color-text-disabled)] text-5xl" />}
             message={!isOnline && !cachedData ? "No data available while offline" : "No entry records found"}
             suggestion={!isOnline && !cachedData ? "Connect to the internet to view your access history" : "Try changing your filter criteria"}
           />
@@ -201,38 +211,40 @@ const AccessHistory = ({ cachedData }) => {
             {/* Table View for Larger Screens */}
             <div className="hidden lg:block overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-[var(--color-border-light)]">
+                  <thead className="bg-[var(--color-bg-tertiary)]">
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
                         Type
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
                         Date
                       </th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">
                         Time
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
                     {entries.map((entry) => (
-                      <tr key={entry._id} className="hover:bg-gray-50">
+                      <tr key={entry._id} className="hover:bg-[var(--color-bg-tertiary)]">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-info-bg)' }}>{entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}</div>
-                            <span className="text-sm font-medium text-gray-700">{entry.status}</span>
+                            <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)' }}>
+                              {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
+                            </div>
+                            <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center text-sm text-gray-700">
-                            <FaCalendarAlt className="text-gray-400 mr-2 text-xs" />
+                          <div className="flex items-center text-sm text-[var(--color-text-body)]">
+                            <FaCalendarAlt className="text-[var(--color-text-disabled)] mr-2 text-xs" />
                             {formatDate(entry.dateAndTime)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center text-sm text-gray-700">
-                            <FaClock className="text-gray-400 mr-2 text-xs" />
+                          <div className="flex items-center text-sm text-[var(--color-text-body)]">
+                            <FaClock className="text-[var(--color-text-disabled)] mr-2 text-xs" />
                             {formatTime(entry.dateAndTime)}
                           </div>
                         </td>
@@ -246,14 +258,16 @@ const AccessHistory = ({ cachedData }) => {
             {/* Mobile View for Entries */}
             <div className="lg:hidden space-y-3">
               {entries.map((entry) => (
-                <div key={entry._id} className="bg-gray-50 rounded-lg p-4">
+                <div key={entry._id} className="bg-[var(--color-bg-tertiary)] rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
-                      <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg)' : 'var(--color-info-bg)' }}>{entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}</div>
-                      <span className="text-sm font-medium text-gray-700">{entry.status}</span>
+                      <div className="p-1.5 rounded-md mr-2" style={{ backgroundColor: entry.status === "Checked In" ? 'var(--color-success-bg-light)' : 'var(--color-info-bg)' }}>
+                        {entry.status === "Checked In" ? <FaSignInAlt className="text-sm" style={{ color: 'var(--color-success)' }} /> : <FaSignOutAlt className="text-sm" style={{ color: 'var(--color-info)' }} />}
+                      </div>
+                      <span className="text-sm font-medium text-[var(--color-text-body)]">{entry.status}</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-gray-500">
+                  <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)]">
                     <div className="flex items-center">
                       <FaCalendarAlt className="mr-1" />
                       {formatDate(entry.dateAndTime)}

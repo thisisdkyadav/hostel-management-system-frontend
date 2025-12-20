@@ -31,38 +31,44 @@ const FeedbackReplyModal = ({ isOpen, onClose, feedback, onReply }) => {
   return (
     <Modal title="Reply to Feedback" onClose={onClose} width={600}>
       <div className="space-y-5">
-        <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-          <div className="flex items-center text-blue-800 mb-2">
+        <div className="p-4 bg-[var(--color-primary-bg)] rounded-lg border border-[var(--color-primary-light)]">
+          <div className="flex items-center text-[var(--color-primary-dark)] mb-2">
             <FaComment className="mr-2" />
             <h4 className="font-medium">{feedback?.title}</h4>
           </div>
-          <p className="text-sm text-gray-600">{feedback?.description}</p>
+          <p className="text-sm text-[var(--color-text-muted)]">{feedback?.description}</p>
         </div>
 
-        <div className="px-3 py-2 inline-block bg-yellow-100 text-yellow-700 rounded-full text-xs">
+        <div className="px-3 py-2 inline-block bg-[var(--color-warning-bg)] text-[var(--color-warning-dark)] rounded-full text-xs">
           <span>Note: This feedback will be marked as seen after reply</span>
         </div>
 
         <div className="space-y-4">
           <div>
-            <label htmlFor="reply" className="block text-gray-700 text-sm font-medium mb-2">
+            <label htmlFor="reply" className="block text-[var(--color-text-body)] text-sm font-medium mb-2">
               Your Reply (Optional)
             </label>
             <div className="relative">
-              <div className="absolute left-3 top-3 text-gray-400">
+              <div className="absolute left-3 top-3 text-[var(--color-text-disabled)]">
                 <FaReply />
               </div>
-              <textarea id="reply" rows={4} className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all resize-none" placeholder="Type your response here..." value={replyText} onChange={(e) => setReplyText(e.target.value)}
+              <textarea
+                id="reply"
+                rows={4}
+                className="w-full p-3 pl-10 border border-[var(--color-border-input)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all resize-none bg-[var(--color-bg-primary)] text-[var(--color-text-body)]"
+                placeholder="Type your response here..."
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
               ></textarea>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-gray-100 space-y-3 sm:space-y-0 sm:space-x-3">
-          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium" onClick={onClose}>
+        <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-[var(--color-border-light)] space-y-3 sm:space-y-0 sm:space-x-3">
+          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-tertiary)] rounded-lg transition-all font-medium text-[var(--color-text-body)]" onClick={onClose}>
             Cancel
           </button>
-          <button onClick={handleSubmit} disabled={isSubmitting} className="flex items-center justify-center px-5 py-2.5 bg-[#1360AB] text-white rounded-lg hover:bg-[#0F4C81] transition-all shadow-sm hover:shadow font-medium">
+          <button onClick={handleSubmit} disabled={isSubmitting} className="flex items-center justify-center px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all shadow-sm hover:shadow font-medium">
             {isSubmitting ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
