@@ -11,12 +11,11 @@ import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import PrintComplaints from "../../components/maintenance/PrintComplaints"
 import FilterTabs from "../../components/common/FilterTabs"
 
-// Define maintenance status filter tabs
 const MAINTENANCE_STATUS_TABS = [
-  { label: "All", value: "all", color: "[#1360AB]" },
-  { label: "Pending", value: "Pending", color: "amber-500" },
-  { label: "In Progress", value: "In Progress", color: "blue-500" },
-  { label: "Resolved", value: "Resolved", color: "green-500" },
+  { label: "All", value: "all", color: "primary" },
+  { label: "Pending", value: "Pending", color: "warning" },
+  { label: "In Progress", value: "In Progress", color: "info" },
+  { label: "Resolved", value: "Resolved", color: "success" },
 ]
 
 const MaintenancePage = () => {
@@ -48,23 +47,11 @@ const MaintenancePage = () => {
   const [statsLoading, setStatsLoading] = useState(false)
 
   const updateFilter = (key, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-      page: key !== "page" ? 1 : prev.page,
-    }))
+    setFilters((prev) => ({ ...prev, [key]: value, page: key !== "page" ? 1 : prev.page }))
   }
 
   const resetFilters = () => {
-    setFilters({
-      status: "all",
-      priority: "all",
-      category: "all",
-      hostelId: "all",
-      searchTerm: "",
-      page: 1,
-      limit: filters.limit,
-    })
+    setFilters({ status: "all", priority: "all", category: "all", hostelId: "all", searchTerm: "", page: 1, limit: filters.limit })
   }
 
   const viewComplaintDetails = (complaint) => {
@@ -104,17 +91,8 @@ const MaintenancePage = () => {
     try {
       setStatsLoading(true)
       const queryParams = {}
-
-      // Add category filter if selected
-      if (filters.category !== "all") {
-        queryParams.category = filters.category
-      }
-
-      // Add hostelId filter if selected
-      if (filters.hostelId !== "all") {
-        queryParams.hostelId = filters.hostelId
-      }
-
+      if (filters.category !== "all") queryParams.category = filters.category
+      if (filters.hostelId !== "all") queryParams.hostelId = filters.hostelId
       const queryString = new URLSearchParams(queryParams).toString()
       const response = await maintenanceApi.getStats(queryString)
       setStatsData(response || null)
@@ -127,9 +105,7 @@ const MaintenancePage = () => {
   }
 
   useEffect(() => {
-    const delay = setTimeout(() => {
-      fetchComplaints()
-    }, 500)
+    const delay = setTimeout(() => fetchComplaints(), 500)
     return () => clearTimeout(delay)
   }, [filters])
 
@@ -137,14 +113,31 @@ const MaintenancePage = () => {
     fetchComplaintStats()
   }, [filters.category, filters.hostelId])
 
+  const styles = {
+    container: { padding: "var(--spacing-6) var(--spacing-4)", flex: 1 },
+    headerRow: { display: "flex", justifyContent: "space-between", alignItems: "center" },
+    printButtonWrapper: { marginLeft: "var(--spacing-2)" },
+    filterPanel: { marginTop: "var(--spacing-6)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-sm)" },
+    filterContainer: { display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-4)" },
+    filterGroup: { width: "100%" },
+    filterLabel: { fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" },
+    tabScrollContainer: { overflowX: "auto", paddingBottom: "var(--spacing-2)" },
+  }
+
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
-      <div className="flex justify-between items-center">
-        <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={false} setShowCraftComplaint={() => {}}
+    <div style={styles.container}>
+      <div style={styles.headerRow}>
+        <ComplaintsHeader
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          showCraftComplaint={false}
+          setShowCraftComplaint={() => { }}
           userRole={user?.role}
           title="Maintenance Dashboard"
         />
-        <div className="ml-2">
+        <div style={styles.printButtonWrapper}>
           <PrintComplaints complaints={complaints} />
         </div>
       </div>
@@ -155,30 +148,45 @@ const MaintenancePage = () => {
         <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} priorities={priorities} />
       )}
 
-      <div className="mt-6 bg-white p-4 rounded-lg shadow-sm">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="w-full sm:w-auto">
-            <p className="text-sm text-gray-500 mb-2">Filter by Status:</p>
-            <div className="overflow-x-auto pb-2">
+      <div style={styles.filterPanel}>
+        <div style={styles.filterContainer} className="filter-responsive">
+          <div style={styles.filterGroup}>
+            <p style={styles.filterLabel}>Filter by Status:</p>
+            <div style={styles.tabScrollContainer}>
               <FilterTabs tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
             </div>
           </div>
-          <div className="w-full sm:w-auto">
-            <p className="text-sm text-gray-500 mb-2">Filter by Category:</p>
-            <div className="overflow-x-auto pb-2">
+          <div style={styles.filterGroup}>
+            <p style={styles.filterLabel}>Filter by Category:</p>
+            <div style={styles.tabScrollContainer}>
               <FilterTabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
             </div>
           </div>
         </div>
       </div>
 
-      <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={[]} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
+      <ComplaintsContent
+        loading={loading}
+        complaints={complaints}
+        viewMode={viewMode}
+        filters={filters}
+        totalPages={totalPages}
+        COMPLAINT_FILTER_TABS={[]}
+        updateFilter={updateFilter}
+        onViewDetails={viewComplaintDetails}
+        paginate={paginate}
+      />
 
       {showDetailModal && selectedComplaint && (
         <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />
       )}
+
+      <style>{`
+        .filter-responsive { flex-direction: column; }
+        @media (min-width: 640px) { .filter-responsive { flex-direction: row; align-items: center; } .filter-responsive > div { width: auto; } }
+      `}</style>
     </div>
   )
 }
 
-export default MaintenancePage 
+export default MaintenancePage
