@@ -94,26 +94,26 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
     <Modal title={`Upload ID Card - ${sideTitle}`} onClose={onClose} width={600}>
       <div className="space-y-5">
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start">
+          <div className="bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-light)] text-[var(--color-danger)] px-4 py-3 rounded-lg flex items-start">
             <HiExclamation className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {!image ? (
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <div className="border-2 border-dashed border-[var(--color-border-primary)] rounded-lg p-8 text-center">
             <div className="space-y-4">
-              <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary-bg-light)' }}>
-                <HiUpload className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+              <div className="mx-auto w-16 h-16 bg-[var(--color-primary-bg)] rounded-full flex items-center justify-center">
+                <HiUpload className="w-8 h-8 text-[var(--color-primary)]" />
               </div>
               <div>
-                <p className="text-gray-700 mb-2">Drag and drop an image or click to browse</p>
-                <p className="text-gray-500 text-sm">For best results, use a clear, well-lit image of your ID card</p>
-                <p className="text-gray-500 text-sm font-medium">Maximum file size: 1MB</p>
+                <p className="text-[var(--color-text-body)] mb-2">Drag and drop an image or click to browse</p>
+                <p className="text-[var(--color-text-muted)] text-sm">For best results, use a clear, well-lit image of your ID card</p>
+                <p className="text-[var(--color-text-muted)] text-sm font-medium">Maximum file size: 1MB</p>
               </div>
               <label className="inline-block">
                 <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
-                <span className="px-4 py-2 text-white rounded-lg cursor-pointer inline-block transition-colors" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>Select Image</span>
+                <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] cursor-pointer inline-block transition-colors">Select Image</span>
               </label>
             </div>
           </div>
@@ -121,23 +121,23 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
           <>
             {uploaded ? (
               <div className="text-center py-8">
-                <div className="mx-auto w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
-                  <HiCheckCircle className="w-10 h-10 text-green-500" />
+                <div className="mx-auto w-16 h-16 bg-[var(--color-success-bg-light)] rounded-full flex items-center justify-center mb-4">
+                  <HiCheckCircle className="w-10 h-10 text-[var(--color-success)]" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-800 mb-2">Image Uploaded Successfully!</h3>
-                <p className="text-gray-600">Your ID card image has been updated.</p>
+                <h3 className="text-lg font-medium text-[var(--color-text-secondary)] mb-2">Image Uploaded Successfully!</h3>
+                <p className="text-[var(--color-text-muted)]">Your ID card image has been updated.</p>
               </div>
             ) : (
               <>
-                <div className="relative h-80 w-full bg-gray-100 rounded-lg overflow-hidden">
+                <div className="relative h-80 w-full bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
                   <Cropper ref={cropperRef} src={image} style={{ height: 320, width: "100%" }} guides={true} viewMode={1} minCropBoxHeight={10} minCropBoxWidth={10} background={false} responsive={true} autoCropArea={1} checkOrientation={false} />
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-end pt-4 space-y-3 sm:space-y-0 sm:space-x-3">
-                  <button type="button" onClick={handleReset} className="order-last sm:order-first flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all font-medium">
+                  <button type="button" onClick={handleReset} className="order-last sm:order-first flex items-center justify-center px-4 py-2 bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-tertiary)] rounded-lg transition-all font-medium text-[var(--color-text-body)]">
                     <HiX className="mr-1.5" /> Reset
                   </button>
-                  <button type="button" onClick={uploadImage} disabled={uploading} className="flex items-center justify-center px-5 py-2.5 text-white rounded-lg transition-all shadow-sm hover:shadow font-medium disabled:cursor-not-allowed" style={{ backgroundColor: uploading ? 'var(--color-info-light)' : 'var(--button-primary-bg)' }} onMouseEnter={(e) => { if (!uploading) e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)' }} onMouseLeave={(e) => { if (!uploading) e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)' }}>
+                  <button type="button" onClick={uploadImage} disabled={uploading} className="flex items-center justify-center px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all shadow-sm hover:shadow font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                     {uploading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
