@@ -354,7 +354,7 @@ const UnitsAndRooms = () => {
   }, [currentHostel, fetchHostelList])
 
   if (!currentHostel) {
-    return <div className="flex justify-center items-center h-screen">Hostel not found</div>
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Hostel not found</div>
   }
 
   if (wardenProfile?.hostelIds > 0 && !wardenProfile.hostelIds.includes(currentHostel._id)) {
@@ -366,7 +366,7 @@ const UnitsAndRooms = () => {
   const dynamicTitle = `${currentHostel.name}: ${hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || unitNumber || "Selected Unit"}`) : "Room Management"}`
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <UnitsAndRoomsHeader title={dynamicTitle} showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
         onBackToUnits={goBackToUnits}
         onUpdateAllocations={() => setShowUploadModal(true)}
@@ -376,91 +376,91 @@ const UnitsAndRooms = () => {
         userRole={user.role}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
 
-      {hostelType === "unit-based" ? <UnitStats units={units} rooms={rooms} currentView={currentView} totalCount={totalItems} /> : <RoomStats rooms={rooms} totalCount={totalItems} />}
+        {hostelType === "unit-based" ? <UnitStats units={units} rooms={rooms} currentView={currentView} totalCount={totalItems} /> : <RoomStats rooms={rooms} totalCount={totalItems} />}
 
-      {showFilters && (
-        <div className="mt-6">
-          <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 pb-3 border-b border-gray-100">
-              <h3 className="font-bold text-gray-700 flex items-center mb-2 sm:mb-0">
-                <MdFilterAlt className="mr-2 text-[#1360AB]" /> Advanced Filters
-              </h3>
-              <button onClick={resetFilters} className="text-sm text-gray-500 hover:text-[#1360AB] flex items-center px-2 py-1 hover:bg-gray-50 rounded-md transition-colors">
-                <MdClearAll className="mr-1" /> Reset Filters
-              </button>
-            </div>
+        {showFilters && (
+          <div style={{ marginTop: 'var(--spacing-6)' }}>
+            <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', border: 'var(--border-1) solid var(--color-border-light)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }} className="sm:flex-row sm:items-center">
+                <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-2)' }} className="sm:mb-0">
+                  <MdFilterAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
+                </h3>
+                <button onClick={resetFilters} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-1) var(--spacing-2)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-colors)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}>
+                  <MdClearAll style={{ marginRight: 'var(--spacing-1)' }} /> Reset Filters
+                </button>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-4">
+                <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
 
-              {/* Only show all filters for units view */}
-              {hostelType === "unit-based" && currentView === "units" && (
-                <>
-                  <div className="flex flex-col">
-                    <label htmlFor="minCapacity" className="text-xs font-medium text-gray-500 mb-1">
-                      Min Capacity
-                    </label>
-                    <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="maxCapacity" className="text-xs font-medium text-gray-500 mb-1">
-                      Max Capacity
-                    </label>
-                    <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
-                  </div>
+                {/* Only show all filters for units view */}
+                {hostelType === "unit-based" && currentView === "units" && (
+                  <>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <label htmlFor="minCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
+                        Min Capacity
+                      </label>
+                      <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <label htmlFor="maxCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
+                        Max Capacity
+                      </label>
+                      <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                    </div>
 
-                  <div className="flex flex-col">
-                    <label htmlFor="minOccupancy" className="text-xs font-medium text-gray-500 mb-1">
-                      Min Occupancy
-                    </label>
-                    <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
-                  </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="maxOccupancy" className="text-xs font-medium text-gray-500 mb-1">
-                      Max Occupancy
-                    </label>
-                    <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
-                  </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <label htmlFor="minOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
+                        Min Occupancy
+                      </label>
+                      <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <label htmlFor="maxOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
+                        Max Occupancy
+                      </label>
+                      <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                    </div>
 
-                  <div className="flex items-center pt-4 sm:pt-0 sm:items-end sm:pb-1">
-                    <input type="checkbox" id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} className="h-4 w-4 text-[#1360AB] focus:ring-[#1360AB] border-gray-300 rounded mr-2" />
-                    <label htmlFor="showEmptyOnly" className="text-sm font-medium text-gray-700">
-                      Show Empty Units Only
-                    </label>
-                  </div>
-                </>
-              )}
+                    <div style={{ display: 'flex', alignItems: 'center', paddingTop: 'var(--spacing-4)' }} className="sm:pt-0 sm:items-end sm:pb-1">
+                      <input type="checkbox" id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
+                      <label htmlFor="showEmptyOnly" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>
+                        Show Empty Units Only
+                      </label>
+                    </div>
+                  </>
+                )}
 
-              {/* Comment out room filters except search term */}
-              {/* 
+                {/* Comment out room filters except search term */}
+                {/* 
               {(hostelType === "room-only" || (hostelType === "unit-based" && currentView === "rooms")) && (
                 <>
-                  <div className="flex flex-col">
-                    <label htmlFor="minCapacity" className="text-xs font-medium text-gray-500 mb-1">
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label htmlFor="minCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                       Min Capacity
                     </label>
-                    <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                    <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
                   </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="maxCapacity" className="text-xs font-medium text-gray-500 mb-1">
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label htmlFor="maxCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                       Max Capacity
                     </label>
-                    <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                    <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
                   </div>
 
-                  <div className="flex flex-col">
-                    <label htmlFor="minOccupancy" className="text-xs font-medium text-gray-500 mb-1">
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label htmlFor="minOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                       Min Occupancy
                     </label>
-                    <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                    <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
                   </div>
-                  <div className="flex flex-col">
-                    <label htmlFor="maxOccupancy" className="text-xs font-medium text-gray-500 mb-1">
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <label htmlFor="maxOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                       Max Occupancy
                     </label>
-                    <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#1360AB] focus:border-[#1360AB] text-sm" />
+                    <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
                   </div>
 
                   <div className="flex items-center pt-4 sm:pt-0 sm:items-end sm:pb-1">
@@ -472,67 +472,67 @@ const UnitsAndRooms = () => {
                 </>
               )}
               */}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="mt-6 flex justify-between items-center">
-        <div className="text-sm text-gray-600">
-          Showing <span className="font-semibold">{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</span> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
-          {totalItems > 0 && ` of ${totalItems} total`}
-        </div>
-        <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
-          <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg transition-all ${viewMode === "table" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Table view">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          </button>
+        <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+            Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</span> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
+            {totalItems > 0 && ` of ${totalItems} total`}
+          </div>
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
+            <button onClick={() => setViewMode("table")} style={{ padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', backgroundColor: viewMode === "table" ? 'var(--color-primary)' : 'transparent', color: viewMode === "table" ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: viewMode === "table" ? 'var(--shadow-sm)' : 'none', border: 'none', cursor: 'pointer' }} aria-label="Table view">
+              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </button>
 
-          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg transition-all ${viewMode === "card" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Card view">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+            <button onClick={() => setViewMode("card")} style={{ padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', backgroundColor: viewMode === "card" ? 'var(--color-primary)' : 'transparent', color: viewMode === "card" ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: viewMode === "card" ? 'var(--shadow-sm)' : 'none', border: 'none', cursor: 'pointer' }} aria-label="Card view">
+              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                />
+              </svg>
+            </button>
           </div>
         </div>
-      ) : (
-        <>
-          <div className="mt-4">{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} viewMode={viewMode} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} viewMode={viewMode} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
 
-          {((hostelType === "unit-based" && currentView === "units" && units.length === 0) || (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length === 0)) && !loading && (
-            <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding className="text-gray-300 text-4xl" /> : <MdMeetingRoom className="text-gray-300 text-4xl" />}
-              message={`No ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"} found`}
-              suggestion="Try changing your search or filter criteria"
-            />
-          )}
-        </>
-      )}
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
+            <div style={{ position: 'relative', width: '4rem', height: '4rem' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-border-primary)', borderRadius: 'var(--radius-full)' }}></div>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div style={{ marginTop: 'var(--spacing-4)' }}>{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} viewMode={viewMode} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} viewMode={viewMode} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
 
-      {totalPages > 1 && (
-        <div className="mt-6">
-          <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-        </div>
-      )}
+            {((hostelType === "unit-based" && currentView === "units" && units.length === 0) || (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length === 0)) && !loading && (
+              <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} /> : <MdMeetingRoom style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />}
+                message={`No ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"} found`}
+                suggestion="Try changing your search or filter criteria"
+              />
+            )}
+          </>
+        )}
 
-      {showRoomDetail && selectedRoom && <RoomDetailModal room={selectedRoom} onClose={() => setShowRoomDetail(false)} onUpdate={handleUpdateSuccess} onAllocate={() => setShowAllocateModal(true)} />}
+        {totalPages > 1 && (
+          <div style={{ marginTop: 'var(--spacing-6)' }}>
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+          </div>
+        )}
 
-      {showAllocateModal && selectedRoom && <AllocateStudentModal room={selectedRoom} isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onSuccess={handleAllocationSuccess} />}
+        {showRoomDetail && selectedRoom && <RoomDetailModal room={selectedRoom} onClose={() => setShowRoomDetail(false)} onUpdate={handleUpdateSuccess} onAllocate={() => setShowAllocateModal(true)} />}
 
-      {showUploadModal && <UpdateAllocationModal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)} onAllocate={handleUpdateAllocations} />}
+        {showAllocateModal && selectedRoom && <AllocateStudentModal room={selectedRoom} isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onSuccess={handleAllocationSuccess} />}
+
+        {showUploadModal && <UpdateAllocationModal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)} onAllocate={handleUpdateAllocations} />}
       </div>
     </div>
   )

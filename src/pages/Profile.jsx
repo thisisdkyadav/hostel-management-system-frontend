@@ -30,15 +30,15 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">My Profile</h1>
-          <p className="text-gray-500">View and manage your profile information</p>
+    <div style={{ flex: 1, padding: 'var(--spacing-6) var(--spacing-8)' }}>
+      <div style={{ maxWidth: 'var(--container-xl)', margin: '0 auto' }}>
+        <div style={{ marginBottom: 'var(--spacing-6)' }}>
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>My Profile</h1>
+          <p style={{ color: 'var(--color-text-muted)' }}>View and manage your profile information</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="p-4 md:p-6">{renderProfile()}</div>
+        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
+          <div style={{ padding: 'var(--spacing-6)' }}>{renderProfile()}</div>
         </div>
       </div>
     </div>

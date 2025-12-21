@@ -18,12 +18,24 @@ import { hostelApi } from "../services/hostelApi"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
 
 // Shimmer loader components
-const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg ${className}`} style={{ height, width }}></div>
+const ShimmerLoader = ({ height, width = "100%", className = "" }) => (
+  <div
+    className={className}
+    style={{
+      height,
+      width,
+      background: `linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-highlight) 50%, var(--skeleton-base) 75%)`,
+      backgroundSize: '200% 100%',
+      animation: 'shimmer var(--skeleton-animation-duration) infinite',
+      borderRadius: 'var(--radius-lg)'
+    }}
+  ></div>
+)
 
 const TableRowShimmer = () => (
-  <div className="flex py-3 px-4 border-b border-gray-100">
+  <div style={{ display: 'flex', padding: 'var(--spacing-3) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
     {[...Array(5)].map((_, i) => (
-      <div key={i} className="flex-1 px-2">
+      <div key={i} style={{ flex: 1, padding: '0 var(--spacing-2)' }}>
         <ShimmerLoader height="1rem" width={i === 0 ? "80%" : "60%"} />
       </div>
     ))}
@@ -31,11 +43,11 @@ const TableRowShimmer = () => (
 )
 
 const TableShimmer = ({ rows = 10 }) => (
-  <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-    <div className="bg-gray-50 py-3 px-4 flex border-b border-gray-200">
+  <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
+    <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3) var(--spacing-4)', display: 'flex', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
       {[...Array(5)].map((_, i) => (
-        <div key={i} className="flex-1 px-2">
-          <ShimmerLoader height="1rem" className="w-full max-w-[100px]" />
+        <div key={i} style={{ flex: 1, padding: '0 var(--spacing-2)' }}>
+          <ShimmerLoader height="1rem" width="100px" />
         </div>
       ))}
     </div>
@@ -46,30 +58,30 @@ const TableShimmer = ({ rows = 10 }) => (
 )
 
 const CardShimmer = () => (
-  <div className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
-    <div className="flex items-center mb-4">
-      <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 animate-pulse mr-3"></div>
-      <div className="flex-1">
+  <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)' }}>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+      <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--skeleton-base)', marginRight: 'var(--spacing-3)' }}></div>
+      <div style={{ flex: 1 }}>
         <ShimmerLoader height="1.2rem" width="70%" className="mb-2" />
         <ShimmerLoader height="0.9rem" width="50%" />
       </div>
     </div>
-    <div className="space-y-2">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
       {[...Array(4)].map((_, i) => (
-        <div key={i} className="flex justify-between">
+        <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <ShimmerLoader height="0.8rem" width="40%" />
           <ShimmerLoader height="0.8rem" width="30%" />
         </div>
       ))}
     </div>
-    <div className="mt-4 pt-3 border-t border-gray-100 flex justify-end">
-      <ShimmerLoader height="2rem" width="30%" className="rounded-md" />
+    <div style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', justifyContent: 'flex-end' }}>
+      <ShimmerLoader height="2rem" width="30%" />
     </div>
   </div>
 )
 
 const CardsGridShimmer = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-3">
     {[...Array(6)].map((_, i) => (
       <CardShimmer key={i} />
     ))}
@@ -232,10 +244,10 @@ const Students = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {error && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
-          <p className="font-medium">Error:</p>
+        <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)' }}>
+          <p style={{ fontWeight: 'var(--font-weight-medium)' }}>Error:</p>
           <p>{error}</p>
         </div>
       )}
@@ -248,70 +260,96 @@ const Students = () => {
         userRole={user?.role}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
 
-      <StudentStats />
+        <StudentStats />
 
-      {showFilters && (
-        <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} dayScholarOptions={dayScholarOptions} missingOptions={missingOptions} />
-      )}
+        {showFilters && (
+          <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} dayScholarOptions={dayScholarOptions} missingOptions={missingOptions} />
+        )}
 
-      <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
-        <div className="text-sm text-gray-600">
-          Showing <span className="font-semibold">{students.length}</span> out of <span className="font-semibold">{totalCount}</span> students
-        </div>
-
-        <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg">
-          <button onClick={() => setViewMode("table")} className={`p-2 rounded-lg transition-all ${viewMode === "table" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Table view">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          </button>
-
-          <button onClick={() => setViewMode("card")} className={`p-2 rounded-lg transition-all ${viewMode === "card" ? "bg-[#1360AB] text-white shadow-sm" : "bg-transparent text-gray-600 hover:bg-gray-200"}`} aria-label="Card view">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {loading ? (
-        viewMode === "table" ? (
-          <TableShimmer rows={pagination.pageSize || 10} />
-        ) : (
-          <CardsGridShimmer />
-        )
-      ) : (
-        <>
-          <div className="mt-4">
-            {viewMode === "table" && <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />}
-
-            {viewMode === "card" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {students.map((student) => (
-                  <StudentCard key={student.id} student={student} onClick={() => viewStudentDetails(student)} />
-                ))}
-              </div>
-            )}
+        <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-3)' }} className="sm:flex-row sm:items-center sm:gap-0">
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+            Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{students.length}</span> out of <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{totalCount}</span> students
           </div>
 
-          <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />
+          <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
+            <button
+              onClick={() => setViewMode("table")}
+              style={{
+                padding: 'var(--spacing-2)',
+                borderRadius: 'var(--radius-lg)',
+                transition: 'var(--transition-all)',
+                backgroundColor: viewMode === "table" ? 'var(--color-primary)' : 'transparent',
+                color: viewMode === "table" ? 'var(--color-white)' : 'var(--color-text-muted)',
+                boxShadow: viewMode === "table" ? 'var(--shadow-sm)' : 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              aria-label="Table view"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </button>
 
-          {students.length === 0 && !loading && <NoResults icon={<FaUserGraduate className="text-gray-300 text-4xl" />} message="No students found" suggestion="Try changing your search or filter criteria" />}
-        </>
-      )}
+            <button
+              onClick={() => setViewMode("card")}
+              style={{
+                padding: 'var(--spacing-2)',
+                borderRadius: 'var(--radius-lg)',
+                transition: 'var(--transition-all)',
+                backgroundColor: viewMode === "card" ? 'var(--color-primary)' : 'transparent',
+                color: viewMode === "card" ? 'var(--color-white)' : 'var(--color-text-muted)',
+                boxShadow: viewMode === "card" ? 'var(--shadow-sm)' : 'none',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              aria-label="Card view"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
 
-      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
+        {loading ? (
+          viewMode === "table" ? (
+            <TableShimmer rows={pagination.pageSize || 10} />
+          ) : (
+            <CardsGridShimmer />
+          )
+        ) : (
+          <>
+            <div style={{ marginTop: 'var(--spacing-4)' }}>
+              {viewMode === "table" && <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />}
 
-      {["Admin"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
-      {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
-      {["Admin"].includes(user?.role) && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
+              {viewMode === "card" && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-3">
+                  {students.map((student) => (
+                    <StudentCard key={student.id} student={student} onClick={() => viewStudentDetails(student)} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />
+
+            {students.length === 0 && !loading && <NoResults icon={<FaUserGraduate style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />} message="No students found" suggestion="Try changing your search or filter criteria" />}
+          </>
+        )}
+
+        {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
+
+        {["Admin"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
+        {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
+        {["Admin"].includes(user?.role) && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
       </div>
     </div>
   )
