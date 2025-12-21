@@ -135,13 +135,13 @@ const MyTasks = () => {
   }
 
   const getTaskStatusBadge = (status) => {
-    const colorClass = TASK_STATUS_COLORS[status] || "bg-gray-100 text-gray-800"
-    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{status}</span>
+    const colorClass = TASK_STATUS_COLORS[status] || "bg-[var(--color-bg-muted)] text-[var(--color-text-primary)]"
+    return <span className={`px-[var(--spacing-2)] py-[var(--spacing-1)] rounded-[var(--radius-full)] text-[length:var(--font-size-xs)] font-[var(--font-weight-medium)] ${colorClass}`}>{status}</span>
   }
 
   const getTaskPriorityBadge = (priority) => {
-    const colorClass = TASK_PRIORITY_COLORS[priority] || "bg-gray-100 text-gray-800"
-    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{priority}</span>
+    const colorClass = TASK_PRIORITY_COLORS[priority] || "bg-[var(--color-bg-muted)] text-[var(--color-text-primary)]"
+    return <span className={`px-[var(--spacing-2)] py-[var(--spacing-1)] rounded-[var(--radius-full)] text-[length:var(--font-size-xs)] font-[var(--font-weight-medium)] ${colorClass}`}>{priority}</span>
   }
 
   const isPastDue = (dueDate) => {
@@ -167,15 +167,17 @@ const MyTasks = () => {
       {/* Header with Title and Statistics */}
       <MyTasksHeader totalTasks={pagination.total} overdueTasks={stats.overdueTasks} />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--spacing-6) var(--spacing-4)', paddingLeft: 'var(--spacing-4)', paddingRight: 'var(--spacing-4)' }}>
 
         {/* Filter Tabs */}
-        <div className="mt-6 mb-4">
+        <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)' }}>
           <div style={{ borderBottom: '1px solid var(--color-border-primary)' }}>
-            <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+            <nav className="-mb-px flex overflow-x-auto" style={{ gap: 'var(--spacing-6)' }} aria-label="Tabs">
               {TASK_FILTER_TABS.map((tab) => (
                 <button key={tab.key} onClick={() => handleTabChange(tab.key)}
+                  className="whitespace-nowrap hover:opacity-80"
                   style={{
+                    padding: 'var(--spacing-4) var(--spacing-1)',
                     borderBottomWidth: '2px',
                     borderBottomStyle: 'solid',
                     borderBottomColor: activeTab === tab.key ? 'var(--color-primary)' : 'transparent',
@@ -184,7 +186,6 @@ const MyTasks = () => {
                     fontSize: 'var(--font-size-base)',
                     transition: 'var(--transition-colors)'
                   }}
-                  className="whitespace-nowrap py-4 px-1 hover:opacity-80"
                 >
                   {tab.label}
                   {stats.statusCounts && tab.key !== "all" && (
@@ -208,7 +209,7 @@ const MyTasks = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-6">
+        <div style={{ marginBottom: 'var(--spacing-6)' }}>
           <input
             type="text"
             value={filters.searchTerm}
@@ -239,7 +240,7 @@ const MyTasks = () => {
 
         {/* Task Cards with Quick Actions */}
         {loading ? (
-          <div className="flex justify-center items-center py-12">
+          <div className="flex justify-center items-center" style={{ padding: 'var(--spacing-12) 0' }}>
             <div className="relative w-16 h-16">
               <div
                 className="absolute top-0 left-0 w-full h-full rounded-full"
@@ -256,7 +257,7 @@ const MyTasks = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-6)' }}>
               {filteredTasks.length > 0 ? (
                 filteredTasks.map((task) => (
                   <div

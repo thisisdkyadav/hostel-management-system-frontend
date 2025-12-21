@@ -13,17 +13,17 @@ export const TASK_FILTER_TABS = [
 ]
 
 export const TASK_STATUS_COLORS = {
-  Created: "bg-gray-100 text-gray-800",
-  Assigned: "bg-blue-100 text-blue-800",
-  "In Progress": "bg-yellow-100 text-yellow-800",
-  Completed: "bg-green-100 text-green-800",
+  Created: "bg-[var(--color-bg-muted)] text-[var(--color-text-primary)]",
+  Assigned: "bg-[var(--color-primary-bg)] text-[var(--color-primary)]",
+  "In Progress": "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]",
+  Completed: "bg-[var(--color-success-bg)] text-[var(--color-success-text)]",
 }
 
 export const TASK_PRIORITY_COLORS = {
-  Low: "bg-gray-100 text-gray-800",
-  Medium: "bg-blue-100 text-blue-800",
-  High: "bg-orange-100 text-orange-800",
-  Urgent: "bg-red-100 text-red-800",
+  Low: "bg-[var(--color-bg-muted)] text-[var(--color-text-primary)]",
+  Medium: "bg-[var(--color-primary-bg)] text-[var(--color-primary)]",
+  High: "bg-[var(--color-warning-bg)] text-[var(--color-warning-text)]",
+  Urgent: "bg-[var(--color-danger-bg)] text-[var(--color-danger-text)]",
 }
 
 export const ALLOWED_STATUS_UPDATES = {
