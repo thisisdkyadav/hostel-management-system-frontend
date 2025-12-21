@@ -40,9 +40,9 @@ const NotificationCenter = () => {
 
   // Status filter tabs configuration
   const statusTabs = [
-    { label: `All (${stats.total})`, value: "all", color: "blue-500" },
-    { label: `Active (${stats.active})`, value: "active", color: "green-500" },
-    { label: `Expired (${stats.expired})`, value: "expired" },
+    { label: `All (${stats.total})`, value: "all", color: "primary" },
+    { label: `Active (${stats.active})`, value: "active", color: "success" },
+    { label: `Expired (${stats.expired})`, value: "expired", color: "muted" },
   ]
 
   const fetchNotifications = async () => {
@@ -132,8 +132,17 @@ const NotificationCenter = () => {
   return (
     <div className="flex flex-col h-full">
       {error && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg">
-          <p className="font-medium">Error:</p>
+        <div
+          style={{
+            backgroundColor: 'var(--color-danger-bg)',
+            borderLeft: '4px solid var(--color-danger)',
+            color: 'var(--color-danger-text)',
+            padding: 'var(--spacing-4)',
+            marginBottom: 'var(--spacing-6)',
+            borderRadius: 'var(--radius-lg)'
+          }}
+        >
+          <p style={{ fontWeight: 500 }}>Error:</p>
           <p>{error}</p>
         </div>
       )}
@@ -145,34 +154,49 @@ const NotificationCenter = () => {
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
-      {stats && <NotificationStats stats={stats} />}
+        {stats && <NotificationStats stats={stats} />}
 
-      <div className="mt-6 mb-4">
-        <FilterTabs tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
-      </div>
+        <div className="mt-6 mb-4">
+          <FilterTabs tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
+        </div>
 
-      {showFilters && <NotificationFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} />}
+        {showFilters && <NotificationFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} />}
 
-      <div className="mt-6">
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="relative w-16 h-16">
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+        <div className="mt-6">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="relative w-16 h-16">
+                <div
+                  className="absolute top-0 left-0 w-full h-full rounded-full"
+                  style={{ border: '4px solid var(--color-border-primary)' }}
+                ></div>
+                <div
+                  className="absolute top-0 left-0 w-full h-full rounded-full animate-spin"
+                  style={{
+                    border: '4px solid var(--color-primary)',
+                    borderTopColor: 'transparent'
+                  }}
+                ></div>
+              </div>
             </div>
-          </div>
-        ) : (
-          <>
-            <NotificationTable notifications={notifications} onRefresh={fetchNotifications} />
+          ) : (
+            <>
+              <NotificationTable notifications={notifications} onRefresh={fetchNotifications} />
 
-            {notifications.length === 0 && <NoResults icon={<FaBell className="text-gray-300 text-4xl" />} message="No notifications found" suggestion="Try changing your search or filter criteria" />}
+              {notifications.length === 0 && (
+                <NoResults
+                  icon={<FaBell style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-5xl)' }} />}
+                  message="No notifications found"
+                  suggestion="Try changing your search or filter criteria"
+                />
+              )}
 
-            {totalPages > 1 && <Pagination currentPage={filters.page} totalPages={totalPages} paginate={paginate} />}
-          </>
-        )}
-      </div>
+              {totalPages > 1 && <Pagination currentPage={filters.page} totalPages={totalPages} paginate={paginate} />}
+            </>
+          )}
+        </div>
 
-      <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
+        <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
       </div>
     </div>
   )

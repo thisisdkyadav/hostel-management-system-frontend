@@ -12,9 +12,9 @@ import { eventsApi } from "../services/apiService"
 import { isUpcoming } from "../utils/dateUtils"
 
 const EVENT_FILTER_TABS = [
-  { label: "All Events", value: "all", color: "[#1360AB]" },
-  { label: "Upcoming", value: "upcoming", color: "[#1360AB]" },
-  { label: "Past", value: "past", color: "[#1360AB]" },
+  { label: "All Events", value: "all", color: "primary" },
+  { label: "Upcoming", value: "upcoming", color: "primary" },
+  { label: "Past", value: "past", color: "primary" },
 ]
 
 const filterEvents = (events, filter, searchTerm) => {
@@ -83,22 +83,22 @@ const Events = () => {
 
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
-        <EventStats events={events} />
+          <EventStats events={events} />
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div className="w-full sm:w-auto pb-2">
-            <FilterTabs tabs={EVENT_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div className="w-full sm:w-auto pb-2">
+              <FilterTabs tabs={EVENT_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search events..." className="w-full sm:w-64 md:w-72" />
           </div>
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search events..." className="w-full sm:w-64 md:w-72" />
-        </div>
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {filteredEvents.map((event) => (
-            <EventCard key={event._id} event={event} refresh={fetchEvents} />
-          ))}
-        </div>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            {filteredEvents.map((event) => (
+              <EventCard key={event._id} event={event} refresh={fetchEvents} />
+            ))}
+          </div>
 
-        {filteredEvents.length === 0 && <NoResults icon={<FaCalendarAlt className="text-gray-300 text-3xl" />} message="No events found" suggestion="Try changing your search or filter criteria" />}
+          {filteredEvents.length === 0 && <NoResults icon={<FaCalendarAlt style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />} message="No events found" suggestion="Try changing your search or filter criteria" />}
         </div>
       </div>
 

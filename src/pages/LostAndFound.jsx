@@ -50,22 +50,22 @@ const LostAndFound = () => {
 
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
-        <LostAndFoundStats items={lostItems} />
+          <LostAndFoundStats items={lostItems} />
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-          <div className="w-full sm:w-auto pb-2">
-            <FilterTabs tabs={LOST_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+            <div className="w-full sm:w-auto pb-2">
+              <FilterTabs tabs={LOST_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." className="w-full sm:w-64 md:w-72" />
           </div>
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." className="w-full sm:w-64 md:w-72" />
-        </div>
 
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {filteredItems.map((item) => (
-            <LostAndFoundCard key={item._id} item={item} refresh={fetchLostItems} />
-          ))}
-        </div>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {filteredItems.map((item) => (
+              <LostAndFoundCard key={item._id} item={item} refresh={fetchLostItems} />
+            ))}
+          </div>
 
-        {filteredItems.length === 0 && <NoResults icon={<MdInventory className="text-gray-300 text-3xl" />} message="No items found" suggestion="Try changing your search or filter criteria" />}
+          {filteredItems.length === 0 && <NoResults icon={<MdInventory style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />} message="No items found" suggestion="Try changing your search or filter criteria" />}
         </div>
       </div>
 
