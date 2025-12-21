@@ -169,98 +169,263 @@ const MyTasks = () => {
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
-      {/* Filter Tabs */}
-      <div className="mt-6 mb-4">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
-            {TASK_FILTER_TABS.map((tab) => (
-              <button key={tab.key} onClick={() => handleTabChange(tab.key)}
-                className={`
-                  whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
-                  ${activeTab === tab.key ? "border-[#1360AB] text-[#1360AB]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}
-                `}
-              >
-                {tab.label}
-                {stats.statusCounts && tab.key !== "all" && <span className={`ml-2 py-0.5 px-2 rounded-full text-xs ${activeTab === tab.key ? "bg-blue-100 text-[#1360AB]" : "bg-gray-100 text-gray-600"}`}>{stats.statusCounts[tab.key] || 0}</span>}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      <div className="mb-6">
-        <input type="text" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)} placeholder="Search tasks..." className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-100 focus:border-[#1360AB] outline-none transition-all" />
-      </div>
-
-      {/* Task Cards with Quick Actions */}
-      {loading ? (
-        <div className="flex justify-center items-center py-12">
-          <div className="relative w-16 h-16">
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-gray-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-full h-full border-4 border-[#1360AB] rounded-full animate-spin border-t-transparent"></div>
+        {/* Filter Tabs */}
+        <div className="mt-6 mb-4">
+          <div style={{ borderBottom: '1px solid var(--color-border-primary)' }}>
+            <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+              {TASK_FILTER_TABS.map((tab) => (
+                <button key={tab.key} onClick={() => handleTabChange(tab.key)}
+                  style={{
+                    borderBottomWidth: '2px',
+                    borderBottomStyle: 'solid',
+                    borderBottomColor: activeTab === tab.key ? 'var(--color-primary)' : 'transparent',
+                    color: activeTab === tab.key ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                    fontWeight: 500,
+                    fontSize: 'var(--font-size-base)',
+                    transition: 'var(--transition-colors)'
+                  }}
+                  className="whitespace-nowrap py-4 px-1 hover:opacity-80"
+                >
+                  {tab.label}
+                  {stats.statusCounts && tab.key !== "all" && (
+                    <span
+                      style={{
+                        backgroundColor: activeTab === tab.key ? 'var(--color-primary-bg)' : 'var(--color-bg-muted)',
+                        color: activeTab === tab.key ? 'var(--color-primary)' : 'var(--color-text-muted)',
+                        fontSize: 'var(--font-size-xs)',
+                        padding: 'var(--spacing-0-5) var(--spacing-2)',
+                        borderRadius: 'var(--radius-full)',
+                        marginLeft: 'var(--spacing-2)'
+                      }}
+                    >
+                      {stats.statusCounts[tab.key] || 0}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
           </div>
         </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTasks.length > 0 ? (
-              filteredTasks.map((task) => (
-                <div key={task._id} onClick={() => viewTaskDetails(task)} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden cursor-pointer">
-                  <div className="p-5">
-                    <div className="flex justify-between items-start mb-3" onClick={() => viewTaskDetails(task)}>
-                      <h3 className="text-lg font-medium text-gray-800 truncate w-3/4">{task.title}</h3>
-                      <div className="flex flex-col items-end space-y-2">
-                        {getTaskPriorityBadge(task.priority)}
-                        {getTaskStatusBadge(task.status)}
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-sm line-clamp-2 mb-3">{task.description}</p>
 
-                    <div className="border-t border-gray-100 pt-3 mt-3">
-                      <div className="flex justify-between text-xs text-gray-500">
-                        <span>Category: {task.category}</span>
-                        <span className={isPastDue(task.dueDate) && task.status !== "Completed" ? "text-red-600 font-medium" : ""}>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
-                      </div>
-                    </div>
+        {/* Search Bar */}
+        <div className="mb-6">
+          <input
+            type="text"
+            value={filters.searchTerm}
+            onChange={(e) => updateFilter("searchTerm", e.target.value)}
+            placeholder="Search tasks..."
+            style={{
+              display: 'block',
+              width: '100%',
+              borderRadius: 'var(--radius-lg)',
+              border: '1px solid var(--color-border-input)',
+              boxShadow: 'var(--shadow-sm)',
+              outline: 'none',
+              padding: 'var(--spacing-3) var(--spacing-4)',
+              backgroundColor: 'var(--color-bg-primary)',
+              color: 'var(--color-text-body)',
+              transition: 'var(--transition-all)'
+            }}
+            onFocus={(e) => {
+              e.target.style.boxShadow = 'var(--shadow-focus-primary)';
+              e.target.style.borderColor = 'var(--color-primary)';
+            }}
+            onBlur={(e) => {
+              e.target.style.boxShadow = 'var(--shadow-sm)';
+              e.target.style.borderColor = 'var(--color-border-input)';
+            }}
+          />
+        </div>
 
-                    {/* Quick Action Buttons */}
-                    {task.status !== "Completed" && (
-                      <div className="mt-4 flex justify-end space-x-2 border-t border-gray-100 pt-3">
-                        {task.status !== "In Progress" && (
-                          <button onClick={(e) => handleQuickUpdateStatus(e, task._id, "In Progress")} className="px-3 py-1 bg-blue-50 text-[#1360AB] text-xs font-medium rounded-md hover:bg-blue-100 focus:outline-none transition-all">
-                            Start
+        {/* Task Cards with Quick Actions */}
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="relative w-16 h-16">
+              <div
+                className="absolute top-0 left-0 w-full h-full rounded-full"
+                style={{ border: '4px solid var(--color-border-primary)' }}
+              ></div>
+              <div
+                className="absolute top-0 left-0 w-full h-full rounded-full animate-spin"
+                style={{
+                  border: '4px solid var(--color-primary)',
+                  borderTopColor: 'transparent'
+                }}
+              ></div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTasks.length > 0 ? (
+                filteredTasks.map((task) => (
+                  <div
+                    key={task._id}
+                    onClick={() => viewTaskDetails(task)}
+                    style={{
+                      backgroundColor: 'var(--color-bg-primary)',
+                      borderRadius: 'var(--radius-lg)',
+                      boxShadow: 'var(--shadow-card)',
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                      transition: 'var(--transition-all)'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)'}
+                    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-card)'}
+                  >
+                    <div style={{ padding: 'var(--spacing-5)' }}>
+                      <div className="flex justify-between items-start mb-3" onClick={() => viewTaskDetails(task)}>
+                        <h3
+                          className="truncate w-3/4"
+                          style={{
+                            fontSize: 'var(--font-size-lg)',
+                            fontWeight: 500,
+                            color: 'var(--color-text-secondary)'
+                          }}
+                        >
+                          {task.title}
+                        </h3>
+                        <div className="flex flex-col items-end space-y-2">
+                          {getTaskPriorityBadge(task.priority)}
+                          {getTaskStatusBadge(task.status)}
+                        </div>
+                      </div>
+                      <p
+                        className="line-clamp-2 mb-3"
+                        style={{
+                          color: 'var(--color-text-muted)',
+                          fontSize: 'var(--font-size-base)'
+                        }}
+                      >
+                        {task.description}
+                      </p>
+
+                      <div
+                        style={{
+                          borderTop: '1px solid var(--color-border-light)',
+                          paddingTop: 'var(--spacing-3)',
+                          marginTop: 'var(--spacing-3)'
+                        }}
+                      >
+                        <div
+                          className="flex justify-between"
+                          style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}
+                        >
+                          <span>Category: {task.category}</span>
+                          <span
+                            style={{
+                              color: isPastDue(task.dueDate) && task.status !== "Completed"
+                                ? 'var(--color-danger)'
+                                : 'var(--color-text-muted)',
+                              fontWeight: isPastDue(task.dueDate) && task.status !== "Completed" ? 500 : 400
+                            }}
+                          >
+                            Due: {new Date(task.dueDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Quick Action Buttons */}
+                      {task.status !== "Completed" && (
+                        <div
+                          className="mt-4 flex justify-end space-x-2"
+                          style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: 'var(--spacing-3)' }}
+                        >
+                          {task.status !== "In Progress" && (
+                            <button
+                              onClick={(e) => handleQuickUpdateStatus(e, task._id, "In Progress")}
+                              style={{
+                                padding: 'var(--spacing-1) var(--spacing-3)',
+                                backgroundColor: 'var(--color-primary-bg)',
+                                color: 'var(--color-primary)',
+                                fontSize: 'var(--font-size-xs)',
+                                fontWeight: 500,
+                                borderRadius: 'var(--radius-md)',
+                                border: 'none',
+                                cursor: 'pointer',
+                                transition: 'var(--transition-colors)'
+                              }}
+                              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}
+                            >
+                              Start
+                            </button>
+                          )}
+                          {task.status !== "Completed" && (
+                            <button
+                              onClick={(e) => handleQuickUpdateStatus(e, task._id, "Completed")}
+                              style={{
+                                padding: 'var(--spacing-1) var(--spacing-3)',
+                                backgroundColor: 'var(--color-success-bg)',
+                                color: 'var(--color-success-text)',
+                                fontSize: 'var(--font-size-xs)',
+                                fontWeight: 500,
+                                borderRadius: 'var(--radius-md)',
+                                border: 'none',
+                                cursor: 'pointer',
+                                transition: 'var(--transition-colors)'
+                              }}
+                              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-success-bg-light)'}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success-bg)'}
+                            >
+                              Complete
+                            </button>
+                          )}
+                          <button
+                            onClick={() => viewTaskDetails(task)}
+                            style={{
+                              padding: 'var(--spacing-1) var(--spacing-3)',
+                              backgroundColor: 'var(--color-bg-hover)',
+                              color: 'var(--color-text-secondary)',
+                              fontSize: 'var(--font-size-xs)',
+                              fontWeight: 500,
+                              borderRadius: 'var(--radius-md)',
+                              border: 'none',
+                              cursor: 'pointer',
+                              transition: 'var(--transition-colors)'
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+                          >
+                            Details
                           </button>
-                        )}
-                        {task.status !== "Completed" && (
-                          <button onClick={(e) => handleQuickUpdateStatus(e, task._id, "Completed")} className="px-3 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-md hover:bg-green-100 focus:outline-none transition-all">
-                            Complete
-                          </button>
-                        )}
-                        <button onClick={() => viewTaskDetails(task)} className="px-3 py-1 bg-gray-50 text-gray-700 text-xs font-medium rounded-md hover:bg-gray-100 focus:outline-none transition-all">
-                          Details
-                        </button>
-                      </div>
-                    )}
+                        </div>
+                      )}
 
-                    <div className="mt-3 flex justify-end">
-                      <div className={`w-2 h-2 rounded-full ${isPastDue(task.dueDate) && task.status !== "Completed" ? "bg-red-500" : task.status === "Completed" ? "bg-green-500" : "bg-[#1360AB]"}`}></div>
+                      <div className="mt-3 flex justify-end">
+                        <div
+                          style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: 'var(--radius-full)',
+                            backgroundColor: isPastDue(task.dueDate) && task.status !== "Completed"
+                              ? 'var(--color-danger)'
+                              : task.status === "Completed"
+                                ? 'var(--color-success)'
+                                : 'var(--color-primary)'
+                          }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div
+                  className="col-span-3 flex justify-center items-center py-12"
+                  style={{ color: 'var(--color-text-muted)' }}
+                >
+                  No tasks found matching the current filters.
                 </div>
-              ))
-            ) : (
-              <div className="col-span-3 flex justify-center items-center py-12 text-gray-500">No tasks found matching the current filters.</div>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Pagination */}
-          {pagination.totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} paginate={handlePageChange} />}
-        </>
-      )}
+            {/* Pagination */}
+            {pagination.totalPages > 1 && <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} paginate={handlePageChange} />}
+          </>
+        )}
 
-      {/* Task Detail Modal */}
-      {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} allowedStatusUpdates={getStatusUpdateOptions()} isUserView={true} />}
+        {/* Task Detail Modal */}
+        {showDetailModal && selectedTask && <TaskDetailModal selectedTask={selectedTask} setShowDetailModal={setShowDetailModal} onUpdate={handleTaskUpdate} allowedStatusUpdates={getStatusUpdateOptions()} isUserView={true} />}
       </div>
     </div>
   )
