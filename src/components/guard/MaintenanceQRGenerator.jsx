@@ -103,12 +103,13 @@ const MaintenanceQRGenerator = () => {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ backgroundColor: 'var(--color-white)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: `var(--border-1) solid var(--color-border-primary)`, display: 'inline-block' }}>
-            <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={"#1360AB"} level={"H"} includeMargin={true} />
+            <QRCodeSVG id="qr-code-canvas" value={qrData} size={240} bgColor={"#ffffff"} fgColor={getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || "#1360AB"} level={"H"} includeMargin={true} />
           </div>
 
           {countdown !== null && (
             <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-              <div style={{ display: 'inline-block', width: 'var(--spacing-3)', height: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-2)', backgroundColor: countdown > 60 ? 'var(--color-success)' : 'var(--color-danger)',
+              <div style={{
+                display: 'inline-block', width: 'var(--spacing-3)', height: 'var(--spacing-3)', borderRadius: 'var(--radius-full)', marginRight: 'var(--spacing-2)', backgroundColor: countdown > 60 ? 'var(--color-success)' : 'var(--color-danger)',
                 animation: countdown > 60 ? 'none' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
               }}></div>
               <span>Expires in {formatCountdown(countdown)} minutes</span>

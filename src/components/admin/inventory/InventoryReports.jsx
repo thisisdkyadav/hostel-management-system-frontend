@@ -126,7 +126,7 @@ const InventoryReports = () => {
       {/* Loading Indicator */}
       {loading && (
         <div className="flex justify-center py-8">
-          <div className="w-12 h-12 border-4 border-[#1360AB] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}></div>
         </div>
       )}
 

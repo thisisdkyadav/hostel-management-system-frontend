@@ -854,12 +854,16 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
 }
 
 const HostelOccupancyChart = ({ data }) => {
+  // Get CSS variable values for chart colors
+  const infoColor = getComputedStyle(document.documentElement).getPropertyValue('--color-info').trim() || '#3B82F6'
+  const successColor = getComputedStyle(document.documentElement).getPropertyValue('--color-success').trim() || '#22C55E'
+
   const chartData = {
     labels: ["Occupied", "Vacant"],
     datasets: [
       {
         data: [data?.reduce((sum, hostel) => sum + hostel.currentOccupancy, 0), data?.reduce((sum, hostel) => sum + hostel.vacantCapacity, 0)],
-        backgroundColor: ["#3B82F6", "#22C55E"],
+        backgroundColor: [infoColor, successColor],
         borderColor: ["#ffffff", "#ffffff"],
         borderWidth: 2,
       },
@@ -906,19 +910,23 @@ const HostlerDayScholarChart = ({ data }) => {
   // Generate a unique ID for the chart to avoid canvas reuse issues
   const chartId = `hostler-chart-${Math.random().toString(36).substr(2, 9)}`
 
+  // Get CSS variable values for chart colors
+  const infoColor = getComputedStyle(document.documentElement).getPropertyValue('--color-info').trim() || '#3B82F6'
+  const girlsColor = getComputedStyle(document.documentElement).getPropertyValue('--color-girls-text').trim() || '#EC4899'
+
   const chartData = {
     labels: ["Hostlers", "Day Scholars"],
     datasets: [
       {
         label: "Boys",
         data: [data.hostler.boys, data.dayScholar.boys],
-        backgroundColor: "#3B82F6",
+        backgroundColor: infoColor,
         barThickness: 25,
       },
       {
         label: "Girls",
         data: [data.hostler.girls, data.dayScholar.girls],
-        backgroundColor: "#EC4899",
+        backgroundColor: girlsColor,
         barThickness: 25,
       },
     ],

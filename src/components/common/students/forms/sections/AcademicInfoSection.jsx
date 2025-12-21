@@ -34,14 +34,14 @@ const AcademicInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaUserGraduate className="text-[#1360AB] mr-2" />
+        <FaUserGraduate style={{ color: 'var(--color-primary)' }} className="mr-2" />
         <h3 className="font-semibold text-gray-800">Academic Information</h3>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-          <select name="department" value={data.department || ""} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#1360AB] focus:border-[#1360AB]" disabled={isLoading}>
+          <select name="department" value={data.department || ""} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none" style={{ '--tw-ring-color': 'var(--color-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} disabled={isLoading}>
             <option value="">Select Department</option>
             {isLoading ? (
               <option value="" disabled>
@@ -61,7 +61,7 @@ const AcademicInfoSection = ({ data, onChange }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
-          <select name="degree" value={data.degree || ""} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#1360AB] focus:border-[#1360AB]" disabled={isLoading}>
+          <select name="degree" value={data.degree || ""} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none" style={{ '--tw-ring-color': 'var(--color-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} disabled={isLoading}>
             <option value="">Select Degree</option>
             {isLoading ? (
               <option value="" disabled>

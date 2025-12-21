@@ -6,9 +6,9 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
     if (cssVar.startsWith('var(')) return null
     return cssVar
   }
-  
-  const colorValue = getColorValue(color) || '#1360AB'
-  
+
+  const colorValue = getColorValue(color) || getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1360AB'
+
   return (
     <div className="bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group" style={{ boxShadow: 'var(--shadow-xs)', }} >
       <div className="flex justify-between items-start mb-1.5">

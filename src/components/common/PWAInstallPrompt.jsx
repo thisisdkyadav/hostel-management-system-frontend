@@ -144,7 +144,7 @@ const PWAInstallPrompt = () => {
                 </span>
               </div>
             ) : (
-              <button onClick={handleInstallClick} className="bg-[#1360AB] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2">
+              <button onClick={handleInstallClick} className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
                 <IoLogoAndroid size={18} />
                 <span>Install App</span>
               </button>

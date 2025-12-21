@@ -11,7 +11,7 @@ const GuardianInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaMapMarkerAlt className="text-[#1360AB] mr-2" />
+        <FaMapMarkerAlt style={{ color: 'var(--color-primary)' }} className="mr-2" />
         <h3 className="font-semibold text-gray-800">Guardian Information</h3>
       </div>
 

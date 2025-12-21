@@ -432,46 +432,6 @@ const UnitsAndRooms = () => {
                     </div>
                   </>
                 )}
-
-                {/* Comment out room filters except search term */}
-                {/* 
-              {(hostelType === "room-only" || (hostelType === "unit-based" && currentView === "rooms")) && (
-                <>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label htmlFor="minCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                      Min Capacity
-                    </label>
-                    <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label htmlFor="maxCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                      Max Capacity
-                    </label>
-                    <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label htmlFor="minOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                      Min Occupancy
-                    </label>
-                    <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <label htmlFor="maxOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                      Max Occupancy
-                    </label>
-                    <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
-                  </div>
-
-                  <div className="flex items-center pt-4 sm:pt-0 sm:items-end sm:pb-1">
-                    <input type="checkbox" id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} className="h-4 w-4 text-[#1360AB] focus:ring-[#1360AB] border-gray-300 rounded mr-2" />
-                    <label htmlFor="showEmptyOnly" className="text-sm font-medium text-gray-700">
-                      Show Empty Rooms Only
-                    </label>
-                  </div>
-                </>
-              )}
-              */}
               </div>
             </div>
           </div>

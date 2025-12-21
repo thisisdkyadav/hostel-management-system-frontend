@@ -62,8 +62,8 @@ const DashboardWarden = () => {
     return (
       <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin mb-3" />
-          <div className="text-xl text-gray-600">Loading profile...</div>
+          <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} />
+          <div style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-muted)' }}>Loading profile...</div>
         </div>
       </div>
     )
@@ -73,8 +73,8 @@ const DashboardWarden = () => {
     return (
       <div className="px-10 py-6 flex-1 h-full flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin mb-3" />
-          <div className="text-xl text-gray-600">Loading dashboard data...</div>
+          <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite', marginBottom: 'var(--spacing-3)' }} />
+          <div style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-muted)' }}>Loading dashboard data...</div>
         </div>
       </div>
     )
@@ -82,8 +82,8 @@ const DashboardWarden = () => {
 
   if (error) {
     return (
-      <div className="px-10 py-6 flex-1 text-red-500 flex items-center justify-center">
-        <BiError className="mr-2 text-2xl" /> {error}
+      <div className="px-10 py-6 flex-1 flex items-center justify-center" style={{ color: 'var(--color-danger)' }}>
+        <BiError style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--font-size-2xl)' }} /> {error}
       </div>
     )
   }
@@ -95,34 +95,34 @@ const DashboardWarden = () => {
       value: studentStats?.students?.grandTotal || 0,
       subtitle: `${studentStats?.students?.totalBoys || 0} Boys, ${studentStats?.students?.totalGirls || 0} Girls`,
       icon: <FaUsers />,
-      color: "#6366F1",
+      color: "var(--color-purple-text)",
     },
     {
       title: "Total Visitors",
       value: visitorStats?.total || 0,
       subtitle: `${visitorStats?.today || 0} Today`,
       icon: <FaUsers />,
-      color: "#3B82F6",
+      color: "var(--color-info)",
     },
     {
       title: "Events",
       value: eventStats?.total || 0,
       subtitle: `${eventStats?.upcoming || 0} Upcoming`,
       icon: <BiCalendarEvent />,
-      color: "#F59E0B",
+      color: "var(--color-warning)",
     },
   ]
 
   return (
-    <div className="px-10 py-6 flex-1 bg-gray-50">
-      <header className="flex justify-between items-center bg-white rounded-xl shadow-sm px-6 py-4 mb-6">
+    <div className="px-10 py-6 flex-1" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+      <header className="flex justify-between items-center rounded-xl shadow-sm px-6 py-4 mb-6" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
         <div className="flex items-center">
-          <MdDashboard className="text-blue-600 text-2xl mr-3" />
-          <h1 className="text-2xl font-bold text-gray-800">{authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : isAssociateWardenOrSupervisor ? "Associate Warden" : "Warden"} Dashboard</h1>
+          <MdDashboard style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} />
+          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : isAssociateWardenOrSupervisor ? "Associate Warden" : "Warden"} Dashboard</h1>
         </div>
-        <div className="flex items-center space-x-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg">
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--color-boys-light-bg)', color: 'var(--color-boys-text)' }}>
           <FaUser className="w-4 h-4" />
-          <span className="font-medium">{profile.name}</span>
+          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{profile.name}</span>
         </div>
       </header>
 
@@ -132,18 +132,18 @@ const DashboardWarden = () => {
       </div>
 
       {/* Student distribution section */}
-      <div className="mb-6 bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+      <div className="mb-6 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-700 flex items-center">
-            <FaUsers className="mr-2 text-indigo-500" /> Student Distribution
+          <h2 className="flex items-center" style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)' }}>
+            <FaUsers style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-coed-text)' }} /> Student Distribution
           </h2>
 
           <div className="flex items-center">
-            <div className="flex items-center bg-gray-100 rounded-full p-1 text-xs">
-              <button onClick={() => setNormalizedView(false)} className={`px-2 py-1 rounded-full transition-all duration-200 ${!normalizedView ? "bg-green-500 text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+            <div className="flex items-center rounded-full p-1 text-xs" style={{ backgroundColor: 'var(--color-bg-muted)' }}>
+              <button onClick={() => setNormalizedView(false)} className="px-2 py-1 rounded-full transition-all duration-200" style={{ backgroundColor: !normalizedView ? 'var(--color-success)' : 'transparent', color: !normalizedView ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: !normalizedView ? 'var(--shadow-sm)' : 'none' }}>
                 Absolute
               </button>
-              <button onClick={() => setNormalizedView(true)} className={`px-2 py-1 rounded-full transition-all duration-200 ${normalizedView ? "bg-green-500 text-white shadow-sm" : "text-gray-600 hover:bg-gray-200"}`}>
+              <button onClick={() => setNormalizedView(true)} className="px-2 py-1 rounded-full transition-all duration-200" style={{ backgroundColor: normalizedView ? 'var(--color-success)' : 'transparent', color: normalizedView ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: normalizedView ? 'var(--shadow-sm)' : 'none' }}>
                 Normalized
               </button>
             </div>
@@ -155,17 +155,17 @@ const DashboardWarden = () => {
             <DegreeWiseStudentsTable data={studentStats?.students} normalized={normalizedView} />
           ) : (
             <div className="h-full flex items-center justify-center">
-              <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin" />
+              <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
             </div>
           )}
         </div>
       </div>
 
       {/* Hostel Statistics section */}
-      <div className="mb-6 bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+      <div className="mb-6 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-700 flex items-center">
-            <BiBuildings className="mr-2 text-blue-500" /> Hostel Overview
+          <h2 className="flex items-center" style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)' }}>
+            <BiBuildings style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Hostel Overview
           </h2>
         </div>
 
@@ -174,7 +174,7 @@ const DashboardWarden = () => {
             <HostelStatisticsTable data={hostelStats} />
           ) : (
             <div className="h-full flex items-center justify-center">
-              <AiOutlineLoading3Quarters className="text-4xl text-blue-600 animate-spin" />
+              <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
             </div>
           )}
         </div>
@@ -186,8 +186,8 @@ const DashboardWarden = () => {
 // Helper component
 const StatInfo = ({ label, value, color, isBold = false }) => (
   <div className="flex flex-col items-center">
-    <p className="text-gray-500 text-xs">{label}</p>
-    <p className={`text-lg ${isBold ? "font-bold" : "font-medium"}`} style={{ color }}>
+    <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</p>
+    <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: isBold ? 'var(--font-weight-bold)' : 'var(--font-weight-medium)', color }}>
       {value}
     </p>
   </div>
@@ -196,7 +196,7 @@ const StatInfo = ({ label, value, color, isBold = false }) => (
 // Table component for degree-wise student distribution
 const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
   if (!data?.degreeWise?.length) {
-    return <div className="h-full flex items-center justify-center text-gray-500">No student data available</div>
+    return <div className="h-full flex items-center justify-center" style={{ color: 'var(--color-text-muted)' }}>No student data available</div>
   }
 
   const degreeData =
@@ -209,36 +209,36 @@ const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
 
   return (
     <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 sticky top-0 z-10">
+      <table className="min-w-full" style={{ borderCollapse: 'separate' }}>
+        <thead style={{ backgroundColor: 'var(--color-bg-secondary)', position: 'sticky', top: 0, zIndex: 10 }}>
           <tr>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-left">Degree</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls</th>
-            <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Total</th>
+            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'left' }}>Degree</th>
+            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Boys</th>
+            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Girls</th>
+            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Total</th>
             {normalized && (
               <>
-                <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Boys %</th>
-                <th className="px-4 py-2 text-xs font-medium text-gray-600 text-center">Girls %</th>
+                <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Boys %</th>
+                <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Girls %</th>
               </>
             )}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-100">
+        <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
           {degreeData.map((item, index) => {
             const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
             const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
             return (
-              <tr key={index} className="hover:bg-gray-50/70 transition">
-                <td className="px-4 py-2 text-sm text-gray-800">{item.degree}</td>
-                <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{item.boys}</td>
-                <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{item.girls}</td>
-                <td className="px-4 py-2 text-sm text-indigo-700 text-center font-semibold">{item.total}</td>
+              <tr key={index} style={{ borderTop: '1px solid var(--color-border-light)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{item.degree}</td>
+                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{item.boys}</td>
+                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{item.girls}</td>
+                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-coed-text)', textAlign: 'center', fontWeight: 'var(--font-weight-semibold)' }}>{item.total}</td>
                 {normalized && (
                   <>
-                    <td className="px-4 py-2 text-sm text-blue-700 text-center font-medium">{boysPercent}%</td>
-                    <td className="px-4 py-2 text-sm text-pink-700 text-center font-medium">{girlsPercent}%</td>
+                    <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{boysPercent}%</td>
+                    <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{girlsPercent}%</td>
                   </>
                 )}
               </tr>
@@ -246,15 +246,15 @@ const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
           })}
 
           {/* Totals row */}
-          <tr className="bg-gray-50 font-medium">
-            <td className="px-4 py-2 text-sm text-gray-900">Total</td>
-            <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.totalBoys || 0}</td>
-            <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.totalGirls || 0}</td>
-            <td className="px-4 py-2 text-sm text-indigo-800 text-center">{data?.grandTotal || 0}</td>
+          <tr style={{ backgroundColor: 'var(--color-bg-secondary)', fontWeight: 'var(--font-weight-medium)' }}>
+            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>Total</td>
+            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center' }}>{data?.totalBoys || 0}</td>
+            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center' }}>{data?.totalGirls || 0}</td>
+            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-coed-text)', textAlign: 'center' }}>{data?.grandTotal || 0}</td>
             {normalized && (
               <>
-                <td className="px-4 py-2 text-sm text-blue-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
-                <td className="px-4 py-2 text-sm text-pink-800 text-center">{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
+                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center' }}>{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
+                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center' }}>{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
               </>
             )}
           </tr>
@@ -267,7 +267,7 @@ const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
 // Hostel Statistics Table component
 const HostelStatisticsTable = ({ data }) => {
   if (!data) {
-    return <div className="h-full flex items-center justify-center text-gray-500">No hostel data available</div>
+    return <div className="h-full flex items-center justify-center" style={{ color: 'var(--color-text-muted)' }}>No hostel data available</div>
   }
 
   return (
@@ -275,46 +275,46 @@ const HostelStatisticsTable = ({ data }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Basic Information */}
         <div className="space-y-4">
-          <h3 className="text-md font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
+          <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', borderBottom: '1px solid var(--color-border-light)', paddingBottom: 'var(--spacing-2)' }}>Basic Information</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Name:</span>
-              <span className="text-sm font-medium text-gray-800">{data.name}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Name:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.name}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Type:</span>
-              <span className="text-sm font-medium text-gray-800">{data.type}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Type:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.type}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Gender:</span>
-              <span className="text-sm font-medium text-gray-800">{data.gender}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Gender:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.gender}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Maintenance Issues:</span>
-              <span className={`text-sm font-medium ${data.maintenanceIssues > 0 ? "text-red-600" : "text-green-600"}`}>{data.maintenanceIssues}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Maintenance Issues:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>{data.maintenanceIssues}</span>
             </div>
           </div>
         </div>
 
         {/* Room Statistics */}
         <div className="space-y-4">
-          <h3 className="text-md font-semibold text-gray-800 border-b pb-2">Room Statistics</h3>
+          <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', borderBottom: '1px solid var(--color-border-light)', paddingBottom: 'var(--spacing-2)' }}>Room Statistics</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Total Rooms:</span>
-              <span className="text-sm font-medium text-gray-800">{data.totalRooms}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Total Rooms:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.totalRooms}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Active Rooms:</span>
-              <span className="text-sm font-medium text-blue-600">{data.totalActiveRooms}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Active Rooms:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>{data.totalActiveRooms}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Occupied Rooms:</span>
-              <span className="text-sm font-medium text-green-600">{data.occupiedRooms}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Occupied Rooms:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-success)' }}>{data.occupiedRooms}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-sm text-gray-600">Vacant Rooms:</span>
-              <span className="text-sm font-medium text-orange-600">{data.vacantRooms}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Vacant Rooms:</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning)' }}>{data.vacantRooms}</span>
             </div>
           </div>
         </div>
@@ -322,25 +322,25 @@ const HostelStatisticsTable = ({ data }) => {
 
       {/* Capacity and Occupancy Statistics */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <div style={{ backgroundColor: 'var(--color-boys-light-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-boys-border)' }}>
           <div className="text-center">
-            <p className="text-xs text-blue-600 mb-1">Total Capacity</p>
-            <p className="text-2xl font-bold text-blue-700">{data.capacity}</p>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-boys-text)', marginBottom: 'var(--spacing-1)' }}>Total Capacity</p>
+            <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-boys-text)' }}>{data.capacity}</p>
           </div>
         </div>
 
-        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+        <div style={{ backgroundColor: 'var(--color-success-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-success-border)' }}>
           <div className="text-center">
-            <p className="text-xs text-green-600 mb-1">Occupancy Rate</p>
-            <p className="text-2xl font-bold text-green-700">{data.occupancyRate?.toFixed(1)}%</p>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-success)', marginBottom: 'var(--spacing-1)' }}>Occupancy Rate</p>
+            <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-success)' }}>{data.occupancyRate?.toFixed(1)}%</p>
           </div>
         </div>
 
-        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+        <div style={{ backgroundColor: 'var(--color-coed-light-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-coed-border)' }}>
           <div className="text-center">
-            <p className="text-xs text-purple-600 mb-1">Active Rooms Occupancy</p>
-            <p className="text-2xl font-bold text-purple-700">{data.activeRoomsOccupancy}</p>
-            <p className="text-xs text-gray-500 mt-1">of {data.activeRoomsCapacity}</p>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-coed-text)', marginBottom: 'var(--spacing-1)' }}>Active Rooms Occupancy</p>
+            <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-coed-text)' }}>{data.activeRoomsOccupancy}</p>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>of {data.activeRoomsCapacity}</p>
           </div>
         </div>
       </div>
