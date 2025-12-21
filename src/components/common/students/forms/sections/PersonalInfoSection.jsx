@@ -19,20 +19,20 @@ const PersonalInfoSection = ({ data, onChange }) => {
   return (
     <div className="space-y-5">
       <div className="flex items-center mb-4">
-        <FaUserGraduate className="text-[#1360AB] mr-2" />
+        <FaUserGraduate style={{ color: 'var(--color-primary)' }} className="mr-2" />
         <h3 className="font-semibold text-gray-800">Personal Information</h3>
       </div>
 
       <div className="flex flex-col items-center mb-6">
         <div className="relative h-24 w-24 rounded-full mb-2">
           {data.profileImage ? (
-            <img src={getMediaUrl(data.profileImage)} alt={data.name} className="h-24 w-24 rounded-full object-cover border-4 border-[#1360AB] shadow-md" />
+            <img src={getMediaUrl(data.profileImage)} alt={data.name} className="h-24 w-24 rounded-full object-cover border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }} />
           ) : (
-            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 border-[#1360AB] shadow-md">
-              <FaUserGraduate className="h-12 w-12 text-[#1360AB]" />
+            <div className="flex items-center justify-center h-24 w-24 rounded-full bg-blue-100 border-4 shadow-md" style={{ borderColor: 'var(--color-primary)' }}>
+              <FaUserGraduate className="h-12 w-12" style={{ color: 'var(--color-primary)' }} />
             </div>
           )}
-          <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 bg-[#1360AB] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#0F4C81] transition-colors">
+          <div onClick={() => setIsImageModalOpen(true)} className="absolute bottom-0 right-0 text-white p-1.5 rounded-full cursor-pointer transition-colors" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
             <HiCamera className="w-4 h-4" />
           </div>
         </div>
@@ -50,7 +50,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
 
         <FormField label="Phone Number" name="phone" type="tel" value={data.phone || ""} onChange={handleChange} />
 
-        <FormField label="Gender" name="gender" type="select" value={data.gender || ""} onChange={handleChange} options={[ { value: "", label: "Select Gender" }, { value: "Male", label: "Male" }, { value: "Female", label: "Female" }, { value: "Other", label: "Other" }, ]} required />
+        <FormField label="Gender" name="gender" type="select" value={data.gender || ""} onChange={handleChange} options={[{ value: "", label: "Select Gender" }, { value: "Male", label: "Male" }, { value: "Female", label: "Female" }, { value: "Other", label: "Other" },]} required />
 
         <FormField label="Date of Birth" name="dateOfBirth" type="date" value={data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split("T")[0] : ""} onChange={handleChange} />
       </div>

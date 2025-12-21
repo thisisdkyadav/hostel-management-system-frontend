@@ -161,7 +161,7 @@ const ApiKeyManagement = () => {
           <div className="text-sm text-gray-500 font-mono">
             {apiKey.apiKey
               ? // For existing keys, we'll likely only have a masked version from the backend
-                `${apiKey.apiKey.substring(0, 8)}...${apiKey.apiKey.substring(apiKey.apiKey.length - 8)}`
+              `${apiKey.apiKey.substring(0, 8)}...${apiKey.apiKey.substring(apiKey.apiKey.length - 8)}`
               : "************"}
           </div>
           {apiKey.apiKey && (
@@ -205,7 +205,7 @@ const ApiKeyManagement = () => {
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">API Key Management</h1>
-        <button onClick={() => setShowAddModal(true)} className="bg-[#1360AB] text-white flex items-center px-4 py-2.5 rounded-xl hover:bg-[#0F4C81] transition-all duration-300 shadow-sm hover:shadow-md">
+        <button onClick={() => setShowAddModal(true)} className="text-white flex items-center px-4 py-2.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
           <FaPlus className="mr-2" /> Generate API Key
         </button>
       </header>
@@ -314,7 +314,7 @@ const ApiKeyModal = ({ onClose, onSubmit }) => {
           <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Cancel
           </button>
-          <button type="submit" disabled={isSubmitting} className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#1360AB] hover:bg-[#0F4C81] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`} >
+          <button type="submit" disabled={isSubmitting} className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`} style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
             {isSubmitting ? "Processing..." : "Generate"}
           </button>
         </div>

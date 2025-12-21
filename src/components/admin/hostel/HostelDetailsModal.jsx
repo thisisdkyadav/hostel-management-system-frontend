@@ -208,21 +208,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
   return (
     <Modal title={`${hostel.name} - Staff Attendance`} onClose={onClose} width={900}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-        {/* View Type Selector - Hidden for now */}
-        {/* <div className="flex justify-center mb-4">
-          <div className="inline-flex p-1 bg-gray-100 rounded-lg">
-            <button onClick={() => setDateRangeMode(false)}
-              className={`px-4 py-2 rounded-md ${!dateRangeMode ? 'bg-white shadow-sm text-[#1360AB]' : 'text-gray-600'}`}
-            >
-              <FaUserCog className="inline mr-2" /> Attendance Entries
-            </button>
-            <button onClick={() => setDateRangeMode(true)}
-              className={`px-4 py-2 rounded-md ${dateRangeMode ? 'bg-white shadow-sm text-[#1360AB]' : 'text-gray-600'}`}
-            >
-              <FaUserCheck className="inline mr-2" /> Staff Present
-            </button>
-          </div>
-        </div> */}
+       
 
         {/* Filters */}
         <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>

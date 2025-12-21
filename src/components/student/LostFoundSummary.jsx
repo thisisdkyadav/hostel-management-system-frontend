@@ -17,7 +17,7 @@ const LostFoundSummary = ({ lostAndFoundStats }) => {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--gap-sm)' }}>
         <div style={{ backgroundColor: 'var(--color-orange-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-2-5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-          <div style={{ backgroundColor: '#FED7AA', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-1)' }}>
+          <div style={{ backgroundColor: 'var(--color-warning-bg)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-1)' }}>
             <CgSearchFound style={{ color: 'var(--color-orange-text)', fontSize: 'var(--icon-lg)' }} />
           </div>
           <span style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-orange-text)' }}>{lostAndFoundStats?.active || 0}</span>

@@ -22,21 +22,21 @@ const SecurityStats = ({ securityStaff }) => {
       value: totalSecurity,
       subtitle: "Security staff members",
       icon: <FaUserShield style={{ fontSize: 'var(--font-size-2xl)' }} />,
-      color: "#1360AB",
+      color: "var(--color-primary)",
     },
     {
       title: "Assigned Staff",
       value: assignedSecurity,
       subtitle: "Currently assigned",
       icon: <MdVerified style={{ fontSize: 'var(--font-size-2xl)' }} />,
-      color: "#22c55e", // green-500
+      color: "var(--color-success)",
     },
     {
       title: "Unassigned",
       value: unassignedSecurity,
       subtitle: "Available to assign",
       icon: <FaBuilding style={{ fontSize: 'var(--font-size-2xl)' }} />,
-      color: "#f97316", // orange-500
+      color: "var(--color-warning)",
     },
     // {
     //   title: "Primary Shift",
