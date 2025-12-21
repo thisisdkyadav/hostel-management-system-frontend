@@ -152,17 +152,17 @@ const NotificationCenter = () => {
         userRole={user.role}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--spacing-6) var(--spacing-8)' }}>
 
         {stats && <NotificationStats stats={stats} />}
 
-        <div className="mt-6 mb-4">
+        <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)' }}>
           <FilterTabs tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
         </div>
 
         {showFilters && <NotificationFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} />}
 
-        <div className="mt-6">
+        <div style={{ marginTop: 'var(--spacing-6)' }}>
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="relative w-16 h-16">
