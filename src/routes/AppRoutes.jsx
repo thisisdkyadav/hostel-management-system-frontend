@@ -75,6 +75,7 @@ import StudentInventory from "../pages/warden/StudentInventory.jsx"
 import TaskManagement from "../pages/admin/TaskManagement.jsx"
 import MyTasks from "../pages/MyTasks.jsx"
 import WardenUndertakings from "../pages/warden/Undertakings.jsx"
+import Sheet from "../pages/admin/Sheet.jsx"
 
 const AppRoutes = () => {
   const { user } = useAuth()
@@ -87,10 +88,10 @@ const AppRoutes = () => {
       <Route path="/contact" element={<ContactPage />} />
 
       {/* Routes for Super Admin related pages */}
-      <Route path="/super-admin" element={ <ProtectedRoute allowedRoles={["Super Admin"]}>
-            <SuperAdminLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/super-admin" element={<ProtectedRoute allowedRoles={["Super Admin"]}>
+        <SuperAdminLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<SuperAdminDashboard />} />
         <Route path="admins" element={<SuperAdminAdminManagement />} />
@@ -98,10 +99,10 @@ const AppRoutes = () => {
         <Route path="profile" element={<Profile />} />
       </Route>
 
-      <Route path="/student" element={ <ProtectedRoute allowedRoles={["Student"]}>
-            <StudentLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/student" element={<ProtectedRoute allowedRoles={["Student"]}>
+        <StudentLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<StudentDashboard />} />
         <Route path="complaints" element={<Complaint />} />
@@ -117,10 +118,10 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for Maintenance related pages*/}
-      <Route path="/maintenance" element={ <ProtectedRoute allowedRoles={["Maintenance Staff"]}>
-            <MaintenanceLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/maintenance" element={<ProtectedRoute allowedRoles={["Maintenance Staff"]}>
+        <MaintenanceLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<MaintenancePage />} />
         <Route path="attendance" element={<MaintenanceAttendance />} />
@@ -128,10 +129,10 @@ const AppRoutes = () => {
         <Route path="leaves" element={<Leaves />} />
       </Route>
 
-      <Route path="/warden" element={ <ProtectedRoute allowedRoles={["Warden"]}>
-            <WardenLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/warden" element={<ProtectedRoute allowedRoles={["Warden"]}>
+        <WardenLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<WardenDashboard />} />
         <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
@@ -149,10 +150,10 @@ const AppRoutes = () => {
         <Route path="my-tasks" element={<MyTasks />} />
       </Route>
 
-      <Route path="/associate-warden" element={ <ProtectedRoute allowedRoles={["Associate Warden"]}>
-            <AssociateWardenLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/associate-warden" element={<ProtectedRoute allowedRoles={["Associate Warden"]}>
+        <AssociateWardenLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<WardenDashboard />} />
         <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
@@ -171,10 +172,10 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for Hostel Supervisor related pages */}
-      <Route path="/hostel-supervisor" element={ <ProtectedRoute allowedRoles={["Hostel Supervisor"]}>
-            <HostelSupervisorLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/hostel-supervisor" element={<ProtectedRoute allowedRoles={["Hostel Supervisor"]}>
+        <HostelSupervisorLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<WardenDashboard />} />
         <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
@@ -194,10 +195,10 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for security related pages */}
-      <Route path="/guard" element={ <ProtectedRoute allowedRoles={["Security"]}>
-            <SecurityLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/guard" element={<ProtectedRoute allowedRoles={["Security"]}>
+        <SecurityLayout />
+      </ProtectedRoute>
+      }
       >
         {/* <Route index element={<AddStudentEntry />} /> */}
         {/* <Route path="visitors" element={<VisitorRequests />} /> */}
@@ -208,10 +209,10 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for hostel gate related pages */}
-      <Route path="/hostel-gate" element={ <ProtectedRoute allowedRoles={["Hostel Gate"]}>
-            <HostelGateLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/hostel-gate" element={<ProtectedRoute allowedRoles={["Hostel Gate"]}>
+        <HostelGateLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<AddStudentEntry />} />
         <Route path="visitors" element={<VisitorRequests />} />
@@ -223,10 +224,10 @@ const AppRoutes = () => {
       </Route>
 
       {/* Routes for admin related pages */}
-      <Route path="/admin" element={ <ProtectedRoute allowedRoles={["Admin"]}>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
+      <Route path="/admin" element={<ProtectedRoute allowedRoles={["Admin"]}>
+        <AdminLayout />
+      </ProtectedRoute>
+      }
       >
         <Route index element={<AdminDashboard />} />
         <Route path="live-checkinout" element={<LiveCheckInOut />} />
@@ -253,6 +254,7 @@ const AppRoutes = () => {
         <Route path="feedbacks" element={<Feedbacks />} />
         <Route path="others" element={<Others />} />
         <Route path="task-management" element={<TaskManagement />} />
+        <Route path="sheet" element={<Sheet />} />
       </Route>
 
       <Route path="/sso" element={<SSOLogin />} />
