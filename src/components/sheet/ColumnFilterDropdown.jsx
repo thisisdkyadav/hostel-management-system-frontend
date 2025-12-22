@@ -1,27 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react"
-import { FaFilter, FaCheck, FaSearch, FaTimes, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa"
+import { FaCheck, FaSearch, FaTimes } from "react-icons/fa"
 
 const styles = {
-    // Filter button in header
-    filterButton: {
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "16px",
-        height: "16px",
-        padding: "0",
-        border: "none",
-        backgroundColor: "transparent",
-        cursor: "pointer",
-        color: "var(--color-text-light)",
-        borderRadius: "var(--radius-xs)",
-        transition: "var(--transition-colors)",
-    },
-    filterButtonActive: {
-        color: "var(--color-primary)",
-        backgroundColor: "var(--color-primary-bg)",
-    },
-
     // Dropdown container
     dropdown: {
         position: "absolute",
@@ -63,30 +43,6 @@ const styles = {
         cursor: "pointer",
         color: "var(--color-text-muted)",
         borderRadius: "var(--radius-xs)",
-    },
-
-    // Sort section
-    sortSection: {
-        padding: "var(--spacing-2) var(--spacing-3)",
-        borderBottom: "var(--border-1) solid var(--color-border-light)",
-    },
-    sortButton: {
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-2)",
-        width: "100%",
-        padding: "var(--spacing-1-5) var(--spacing-2)",
-        border: "none",
-        backgroundColor: "transparent",
-        cursor: "pointer",
-        fontSize: "var(--font-size-xs)",
-        color: "var(--color-text-body)",
-        borderRadius: "var(--radius-sm)",
-        transition: "var(--transition-colors)",
-    },
-    sortButtonActive: {
-        backgroundColor: "var(--color-primary-bg)",
-        color: "var(--color-primary)",
     },
 
     // Search
@@ -225,8 +181,6 @@ const ColumnFilterDropdown = ({
     onClose,
     onApplyFilter,
     currentFilter,
-    onSort,
-    sortDirection,
 }) => {
     const dropdownRef = useRef(null)
     const [searchTerm, setSearchTerm] = useState("")
@@ -238,7 +192,6 @@ const ColumnFilterDropdown = ({
         const valueCounts = {}
         data.forEach((row) => {
             let value = row[columnId]
-            // Normalize value for display
             if (value === null || value === undefined || value === "") {
                 value = "(Blank)"
             } else if (typeof value === "boolean") {
@@ -266,7 +219,6 @@ const ColumnFilterDropdown = ({
         if (currentFilter?.selectedValues) {
             setSelectedValues(new Set(currentFilter.selectedValues))
         } else {
-            // Select all by default
             setSelectedValues(new Set(uniqueValues.map((v) => v.value)))
         }
     }, [currentFilter, uniqueValues])
@@ -330,40 +282,6 @@ const ColumnFilterDropdown = ({
                 <span style={styles.dropdownTitle}>{column}</span>
                 <button style={styles.closeButton} onClick={onClose}>
                     <FaTimes />
-                </button>
-            </div>
-
-            {/* Sort options */}
-            <div style={styles.sortSection}>
-                <button
-                    style={{
-                        ...styles.sortButton,
-                        ...(sortDirection === "asc" ? styles.sortButtonActive : {}),
-                    }}
-                    onClick={() => onSort(columnId, "asc")}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-hover)")}
-                    onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                        sortDirection === "asc" ? "var(--color-primary-bg)" : "transparent")
-                    }
-                >
-                    <FaSortAmountUp style={{ fontSize: "10px" }} />
-                    Sort A → Z
-                </button>
-                <button
-                    style={{
-                        ...styles.sortButton,
-                        ...(sortDirection === "desc" ? styles.sortButtonActive : {}),
-                    }}
-                    onClick={() => onSort(columnId, "desc")}
-                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-hover)")}
-                    onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                        sortDirection === "desc" ? "var(--color-primary-bg)" : "transparent")
-                    }
-                >
-                    <FaSortAmountDown style={{ fontSize: "10px" }} />
-                    Sort Z → A
                 </button>
             </div>
 
