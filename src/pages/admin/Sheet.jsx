@@ -134,7 +134,7 @@ const styles = {
         textOverflow: "ellipsis",
     },
     filterIcon: {
-        fontSize: "8px",
+        fontSize: "12px",
         color: "var(--color-text-light)",
         cursor: "pointer",
         padding: "2px",
