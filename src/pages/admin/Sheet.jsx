@@ -2,10 +2,9 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import {
     useReactTable,
     getCoreRowModel,
-    getSortedRowModel,
     flexRender,
 } from "@tanstack/react-table"
-import { FaSearch, FaChevronDown, FaChevronUp, FaUser, FaFilter, FaColumns, FaTimes } from "react-icons/fa"
+import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes } from "react-icons/fa"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { sheetApi } from "../../services/sheetApi"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
@@ -117,7 +116,6 @@ const styles = {
         borderRight: "var(--border-1) solid var(--color-border-primary)",
         borderBottom: "var(--border-1) solid var(--color-border-primary)",
         whiteSpace: "nowrap",
-        cursor: "pointer",
         userSelect: "none",
         minWidth: "80px",
         maxWidth: "200px",
@@ -134,18 +132,6 @@ const styles = {
         flex: 1,
         overflow: "hidden",
         textOverflow: "ellipsis",
-    },
-    headerIcons: {
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--spacing-1)",
-    },
-    sortIcon: {
-        fontSize: "8px",
-        color: "var(--color-text-light)",
-    },
-    sortIconActive: {
-        color: "var(--color-primary)",
     },
     filterIcon: {
         fontSize: "8px",
@@ -178,9 +164,6 @@ const styles = {
     },
     rowHover: {
         backgroundColor: "var(--color-bg-hover)",
-    },
-    rowFiltered: {
-        display: "none",
     },
     cell: {
         padding: "var(--spacing-1) var(--spacing-2)",
@@ -329,7 +312,6 @@ const Sheet = () => {
     const [error, setError] = useState(null)
     const [sheetData, setSheetData] = useState(null)
     const [globalFilter, setGlobalFilter] = useState("")
-    const [sorting, setSorting] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
     const [columnFilters, setColumnFilters] = useState({})
     const [openFilterColumn, setOpenFilterColumn] = useState(null)
@@ -372,36 +354,10 @@ const Sheet = () => {
         }
     }, [hostelList, selectedHostelId])
 
-    // Default sort: unit, room, bed ascending
+    // Data is already sorted by API: unit, room, bed ascending
+    // No additional sorting needed - use API order directly
     const sortedData = useMemo(() => {
-        if (!sheetData?.data) return []
-
-        let data = [...sheetData.data]
-
-        // Default sort by unit, room, bed
-        data.sort((a, b) => {
-            // Unit number
-            const unitA = a.unitNumber || ""
-            const unitB = b.unitNumber || ""
-            if (unitA !== unitB) return unitA.localeCompare(unitB)
-
-            // Floor
-            const floorA = a.unitFloor ?? 0
-            const floorB = b.unitFloor ?? 0
-            if (floorA !== floorB) return floorA - floorB
-
-            // Room number
-            const roomA = a.roomNumber || ""
-            const roomB = b.roomNumber || ""
-            if (roomA !== roomB) return roomA.localeCompare(roomB, undefined, { numeric: true })
-
-            // Bed number
-            const bedA = a.bedNumber ?? 0
-            const bedB = b.bedNumber ?? 0
-            return bedA - bedB
-        })
-
-        return data
+        return sheetData?.data || []
     }, [sheetData?.data])
 
     // Apply column filters
@@ -466,15 +422,11 @@ const Sheet = () => {
             }))
     }, [sheetData?.columns, columnVisibility])
 
-    // Table instance
+    // Table instance - no sorting
     const table = useReactTable({
         data: filteredData,
         columns,
-        state: { sorting },
-        onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        manualFiltering: true,
     })
 
     // Filter handlers
@@ -499,16 +451,6 @@ const Sheet = () => {
         setColumnFilters({})
         setGlobalFilter("")
     }, [])
-
-    const handleSort = useCallback((columnId, direction) => {
-        setSorting([{ id: columnId, desc: direction === "desc" }])
-        setOpenFilterColumn(null)
-    }, [])
-
-    const getSortDirection = (columnId) => {
-        const sort = sorting.find((s) => s.id === columnId)
-        return sort ? (sort.desc ? "desc" : "asc") : null
-    }
 
     const hasActiveFilters = Object.keys(columnFilters).length > 0 || globalFilter
 
@@ -590,36 +532,23 @@ const Sheet = () => {
                                     {headerGroup.headers.map((header) => {
                                         const colId = header.column.id
                                         const hasFilter = columnFilters[colId]?.selectedValues?.length > 0
-                                        const sortDir = getSortDirection(colId)
 
                                         return (
                                             <th key={header.id} style={styles.headerCell}>
                                                 <div style={styles.headerCellContent}>
-                                                    <span
-                                                        style={styles.headerText}
-                                                        onClick={header.column.getToggleSortingHandler()}
-                                                    >
+                                                    <span style={styles.headerText}>
                                                         {flexRender(header.column.columnDef.header, header.getContext())}
                                                     </span>
-                                                    <div style={styles.headerIcons}>
-                                                        {sortDir && (
-                                                            sortDir === "asc" ? (
-                                                                <FaChevronUp style={{ ...styles.sortIcon, ...styles.sortIconActive }} />
-                                                            ) : (
-                                                                <FaChevronDown style={{ ...styles.sortIcon, ...styles.sortIconActive }} />
-                                                            )
-                                                        )}
-                                                        <FaFilter
-                                                            style={{
-                                                                ...styles.filterIcon,
-                                                                ...(hasFilter || openFilterColumn === colId ? styles.filterIconActive : {}),
-                                                            }}
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                setOpenFilterColumn(openFilterColumn === colId ? null : colId)
-                                                            }}
-                                                        />
-                                                    </div>
+                                                    <FaFilter
+                                                        style={{
+                                                            ...styles.filterIcon,
+                                                            ...(hasFilter || openFilterColumn === colId ? styles.filterIconActive : {}),
+                                                        }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            setOpenFilterColumn(openFilterColumn === colId ? null : colId)
+                                                        }}
+                                                    />
                                                 </div>
 
                                                 {/* Filter dropdown */}
@@ -632,8 +561,6 @@ const Sheet = () => {
                                                         onClose={() => setOpenFilterColumn(null)}
                                                         onApplyFilter={handleApplyFilter}
                                                         currentFilter={columnFilters[colId]}
-                                                        onSort={handleSort}
-                                                        sortDirection={sortDir}
                                                     />
                                                 )}
                                             </th>
