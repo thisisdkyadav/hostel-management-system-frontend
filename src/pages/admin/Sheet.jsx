@@ -1,18 +1,19 @@
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useMemo, useRef, useCallback } from "react"
 import {
     useReactTable,
     getCoreRowModel,
-    getFilteredRowModel,
     getSortedRowModel,
     flexRender,
 } from "@tanstack/react-table"
-import { FaSearch, FaChevronDown, FaChevronUp, FaUser } from "react-icons/fa"
+import { FaSearch, FaChevronDown, FaChevronUp, FaUser, FaFilter, FaColumns, FaTimes } from "react-icons/fa"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { sheetApi } from "../../services/sheetApi"
+import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
+import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
+import FilterChips from "../../components/sheet/FilterChips"
 
-// Styles using CSS variables from theme.css - Google Sheets inspired
+// Styles
 const styles = {
-    // Main container - full height like sheets
     container: {
         display: "flex",
         flexDirection: "column",
@@ -21,7 +22,7 @@ const styles = {
         overflow: "hidden",
     },
 
-    // Minimal toolbar
+    // Toolbar
     toolbar: {
         display: "flex",
         alignItems: "center",
@@ -33,7 +34,7 @@ const styles = {
     },
     searchContainer: {
         position: "relative",
-        width: "280px",
+        width: "220px",
     },
     searchIcon: {
         position: "absolute",
@@ -54,25 +55,45 @@ const styles = {
         color: "var(--color-text-primary)",
         outline: "none",
     },
-    formulaBar: {
-        flex: 1,
+    toolbarButton: {
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--spacing-1)",
         padding: "var(--spacing-1-5) var(--spacing-2)",
         border: "var(--border-1) solid var(--color-border-input)",
         borderRadius: "var(--radius-sm)",
         backgroundColor: "var(--color-bg-primary)",
         fontSize: "var(--font-size-xs)",
+        color: "var(--color-text-body)",
+        cursor: "pointer",
+        transition: "var(--transition-colors)",
+    },
+    toolbarButtonActive: {
+        backgroundColor: "var(--color-primary-bg)",
+        borderColor: "var(--color-primary)",
+        color: "var(--color-primary)",
+    },
+    infoText: {
+        flex: 1,
+        fontSize: "var(--font-size-xs)",
         color: "var(--color-text-muted)",
-        marginLeft: "var(--spacing-2)",
+        textAlign: "right",
+        paddingRight: "var(--spacing-2)",
     },
 
-    // Spreadsheet container
+    // Filter bar
+    filterBar: {
+        backgroundColor: "var(--color-bg-secondary)",
+        borderBottom: "var(--border-1) solid var(--color-border-light)",
+        flexShrink: 0,
+    },
+
+    // Spreadsheet
     spreadsheetContainer: {
         flex: 1,
         overflow: "auto",
         backgroundColor: "var(--color-bg-primary)",
     },
-
-    // Table - spreadsheet style
     table: {
         width: "max-content",
         minWidth: "100%",
@@ -109,9 +130,33 @@ const styles = {
         justifyContent: "space-between",
         gap: "var(--spacing-1)",
     },
+    headerText: {
+        flex: 1,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+    },
+    headerIcons: {
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--spacing-1)",
+    },
     sortIcon: {
         fontSize: "8px",
         color: "var(--color-text-light)",
+    },
+    sortIconActive: {
+        color: "var(--color-primary)",
+    },
+    filterIcon: {
+        fontSize: "8px",
+        color: "var(--color-text-light)",
+        cursor: "pointer",
+        padding: "2px",
+        borderRadius: "var(--radius-xs)",
+    },
+    filterIconActive: {
+        color: "var(--color-primary)",
+        backgroundColor: "var(--color-primary-bg)",
     },
     rowNumberHeader: {
         width: "40px",
@@ -125,7 +170,6 @@ const styles = {
         zIndex: 11,
     },
 
-    // Body
     tbody: {
         backgroundColor: "var(--color-bg-primary)",
     },
@@ -135,8 +179,8 @@ const styles = {
     rowHover: {
         backgroundColor: "var(--color-bg-hover)",
     },
-    rowSelected: {
-        backgroundColor: "var(--color-primary-bg)",
+    rowFiltered: {
+        display: "none",
     },
     cell: {
         padding: "var(--spacing-1) var(--spacing-2)",
@@ -165,23 +209,12 @@ const styles = {
         borderRight: "var(--border-1) solid var(--color-border-primary)",
     },
 
-    // Status badges inline
-    statusActive: {
-        color: "var(--color-success-text)",
-        fontWeight: "var(--font-weight-medium)",
-    },
-    statusInactive: {
-        color: "var(--color-danger-text)",
-        fontWeight: "var(--font-weight-medium)",
-    },
-    allocated: {
-        color: "var(--color-success)",
-    },
-    vacant: {
-        color: "var(--color-warning)",
-    },
+    // Status styles
+    statusActive: { color: "var(--color-success-text)", fontWeight: "var(--font-weight-medium)" },
+    statusInactive: { color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)" },
+    allocated: { color: "var(--color-success)" },
+    vacant: { color: "var(--color-warning)" },
 
-    // Avatar small
     avatar: {
         width: "18px",
         height: "18px",
@@ -200,7 +233,7 @@ const styles = {
         fontSize: "8px",
     },
 
-    // Bottom tabs bar - like Google Sheets
+    // Tabs bar
     tabsBar: {
         display: "flex",
         alignItems: "center",
@@ -241,11 +274,8 @@ const styles = {
         borderBottom: "var(--border-2) solid var(--color-primary)",
         fontWeight: "var(--font-weight-semibold)",
     },
-    tabHover: {
-        backgroundColor: "var(--color-bg-hover)",
-    },
 
-    // Loading and empty states
+    // States
     loadingContainer: {
         flex: 1,
         display: "flex",
@@ -270,55 +300,26 @@ const styles = {
         fontSize: "var(--font-size-sm)",
         backgroundColor: "var(--color-bg-primary)",
     },
-
-    // Info bar
-    infoBar: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "var(--spacing-1) var(--spacing-3)",
-        backgroundColor: "var(--color-bg-secondary)",
-        borderTop: "var(--border-1) solid var(--color-border-light)",
-        fontSize: "var(--font-size-2xs)",
-        color: "var(--color-text-muted)",
-        flexShrink: 0,
-    },
 }
 
 // Cell renderers
 const renderProfileImage = (value) => {
-    if (value) {
-        return <img src={value} alt="" style={styles.avatar} />
-    }
-    return (
-        <span style={styles.avatarPlaceholder}>
-            <FaUser />
-        </span>
-    )
+    if (value) return <img src={value} alt="" style={styles.avatar} />
+    return <span style={styles.avatarPlaceholder}><FaUser /></span>
 }
 
 const renderStatus = (value) => {
     if (!value) return "—"
-    const isActive = value === "Active"
-    return <span style={isActive ? styles.statusActive : styles.statusInactive}>{value}</span>
+    return <span style={value === "Active" ? styles.statusActive : styles.statusInactive}>{value}</span>
 }
 
-const renderAllocation = (value) => {
-    return <span style={value ? styles.allocated : styles.vacant}>{value ? "Yes" : "No"}</span>
-}
+const renderAllocation = (value) => <span style={value ? styles.allocated : styles.vacant}>{value ? "Yes" : "No"}</span>
 
-const renderBoolean = (value) => {
-    if (value === null || value === undefined) return "—"
-    return value ? "Yes" : "No"
-}
+const renderBoolean = (value) => (value === null || value === undefined ? "—" : value ? "Yes" : "No")
 
 const renderDate = (value) => {
     if (!value) return "—"
-    return new Date(value).toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    })
+    return new Date(value).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })
 }
 
 const Sheet = () => {
@@ -330,10 +331,13 @@ const Sheet = () => {
     const [globalFilter, setGlobalFilter] = useState("")
     const [sorting, setSorting] = useState([])
     const [columnVisibility, setColumnVisibility] = useState({})
+    const [columnFilters, setColumnFilters] = useState({})
+    const [openFilterColumn, setOpenFilterColumn] = useState(null)
+    const [showColumnsPanel, setShowColumnsPanel] = useState(false)
     const [hoveredRow, setHoveredRow] = useState(null)
     const tableRef = useRef(null)
 
-    // Fetch data when hostel changes
+    // Fetch data
     const fetchSheetData = async (hostelId) => {
         if (!hostelId) return
         try {
@@ -345,11 +349,11 @@ const Sheet = () => {
             // Hide ID columns by default
             const initialVisibility = {}
             data.columns?.forEach((col) => {
-                if (col.hidden) {
-                    initialVisibility[col.accessorKey] = false
-                }
+                if (col.hidden) initialVisibility[col.accessorKey] = false
             })
             setColumnVisibility(initialVisibility)
+            setColumnFilters({})
+            setOpenFilterColumn(null)
         } catch (err) {
             setError(err.message || "Failed to fetch data")
             setSheetData(null)
@@ -359,42 +363,99 @@ const Sheet = () => {
     }
 
     useEffect(() => {
-        if (selectedHostelId) {
-            fetchSheetData(selectedHostelId)
-        }
+        if (selectedHostelId) fetchSheetData(selectedHostelId)
     }, [selectedHostelId])
 
-    // Auto-select first hostel
     useEffect(() => {
         if (hostelList?.length > 0 && !selectedHostelId) {
             setSelectedHostelId(hostelList[0]._id)
         }
     }, [hostelList, selectedHostelId])
 
+    // Default sort: unit, room, bed ascending
+    const sortedData = useMemo(() => {
+        if (!sheetData?.data) return []
+
+        let data = [...sheetData.data]
+
+        // Default sort by unit, room, bed
+        data.sort((a, b) => {
+            // Unit number
+            const unitA = a.unitNumber || ""
+            const unitB = b.unitNumber || ""
+            if (unitA !== unitB) return unitA.localeCompare(unitB)
+
+            // Floor
+            const floorA = a.unitFloor ?? 0
+            const floorB = b.unitFloor ?? 0
+            if (floorA !== floorB) return floorA - floorB
+
+            // Room number
+            const roomA = a.roomNumber || ""
+            const roomB = b.roomNumber || ""
+            if (roomA !== roomB) return roomA.localeCompare(roomB, undefined, { numeric: true })
+
+            // Bed number
+            const bedA = a.bedNumber ?? 0
+            const bedB = b.bedNumber ?? 0
+            return bedA - bedB
+        })
+
+        return data
+    }, [sheetData?.data])
+
+    // Apply column filters
+    const filteredData = useMemo(() => {
+        let data = sortedData
+
+        // Global filter
+        if (globalFilter) {
+            const lower = globalFilter.toLowerCase()
+            data = data.filter((row) =>
+                Object.values(row).some((val) =>
+                    val !== null && val !== undefined && String(val).toLowerCase().includes(lower)
+                )
+            )
+        }
+
+        // Column filters
+        Object.entries(columnFilters).forEach(([colId, filter]) => {
+            if (filter?.selectedValues && filter.selectedValues.length > 0) {
+                data = data.filter((row) => {
+                    let value = row[colId]
+                    if (value === null || value === undefined || value === "") {
+                        value = "(Blank)"
+                    } else if (typeof value === "boolean") {
+                        value = value ? "Yes" : "No"
+                    } else {
+                        value = String(value)
+                    }
+                    return filter.selectedValues.includes(value)
+                })
+            }
+        })
+
+        return data
+    }, [sortedData, globalFilter, columnFilters])
+
     // Build columns
     const columns = useMemo(() => {
         if (!sheetData?.columns) return []
 
         return sheetData.columns
-            .filter((col) => !col.hidden)
+            .filter((col) => columnVisibility[col.accessorKey] !== false)
             .map((col) => ({
                 accessorKey: col.accessorKey,
                 header: col.header,
                 cell: ({ getValue }) => {
                     const value = getValue()
-
                     switch (col.accessorKey) {
-                        case "studentProfileImage":
-                            return renderProfileImage(value)
+                        case "studentProfileImage": return renderProfileImage(value)
                         case "roomStatus":
-                        case "studentStatus":
-                            return renderStatus(value)
-                        case "isAllocated":
-                            return renderAllocation(value)
-                        case "isDayScholar":
-                            return renderBoolean(value)
-                        case "admissionDate":
-                            return renderDate(value)
+                        case "studentStatus": return renderStatus(value)
+                        case "isAllocated": return renderAllocation(value)
+                        case "isDayScholar": return renderBoolean(value)
+                        case "admissionDate": return renderDate(value)
                         default:
                             if (value === null || value === undefined || value === "") {
                                 return <span style={styles.cellEmpty}>—</span>
@@ -403,64 +464,121 @@ const Sheet = () => {
                     }
                 },
             }))
-    }, [sheetData?.columns])
+    }, [sheetData?.columns, columnVisibility])
 
-    // Table instance - no pagination
+    // Table instance
     const table = useReactTable({
-        data: sheetData?.data || [],
+        data: filteredData,
         columns,
-        state: {
-            globalFilter,
-            sorting,
-            columnVisibility,
-        },
-        onGlobalFilterChange: setGlobalFilter,
+        state: { sorting },
         onSortingChange: setSorting,
-        onColumnVisibilityChange: setColumnVisibility,
         getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        manualFiltering: true,
     })
+
+    // Filter handlers
+    const handleApplyFilter = useCallback((columnId, filter) => {
+        setColumnFilters((prev) => {
+            if (!filter || !filter.selectedValues) {
+                const { [columnId]: _, ...rest } = prev
+                return rest
+            }
+            return { ...prev, [columnId]: filter }
+        })
+    }, [])
+
+    const handleClearFilter = useCallback((columnId) => {
+        setColumnFilters((prev) => {
+            const { [columnId]: _, ...rest } = prev
+            return rest
+        })
+    }, [])
+
+    const handleClearAllFilters = useCallback(() => {
+        setColumnFilters({})
+        setGlobalFilter("")
+    }, [])
+
+    const handleSort = useCallback((columnId, direction) => {
+        setSorting([{ id: columnId, desc: direction === "desc" }])
+        setOpenFilterColumn(null)
+    }, [])
+
+    const getSortDirection = (columnId) => {
+        const sort = sorting.find((s) => s.id === columnId)
+        return sort ? (sort.desc ? "desc" : "asc") : null
+    }
+
+    const hasActiveFilters = Object.keys(columnFilters).length > 0 || globalFilter
 
     const selectedHostel = hostelList?.find((h) => h._id === selectedHostelId)
 
     return (
         <div style={styles.container}>
-            {/* Minimal Toolbar */}
+            {/* Toolbar */}
             <div style={styles.toolbar}>
                 <div style={styles.searchContainer}>
                     <FaSearch style={styles.searchIcon} />
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Search all..."
                         value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                         style={styles.searchInput}
-                        onFocus={(e) => {
-                            e.target.style.borderColor = "var(--color-primary)"
-                            e.target.style.backgroundColor = "var(--color-bg-primary)"
-                        }}
-                        onBlur={(e) => {
-                            e.target.style.borderColor = "var(--color-border-input)"
-                            e.target.style.backgroundColor = "var(--color-bg-secondary)"
-                        }}
                     />
                 </div>
-                <div style={styles.formulaBar}>
-                    {selectedHostel ? `${selectedHostel.name} — ${sheetData?.data?.length || 0} rows` : "Select a hostel"}
-                </div>
+
+                <button
+                    style={{
+                        ...styles.toolbarButton,
+                        ...(showColumnsPanel ? styles.toolbarButtonActive : {}),
+                    }}
+                    onClick={() => setShowColumnsPanel(!showColumnsPanel)}
+                >
+                    <FaColumns /> Columns
+                </button>
+
+                {hasActiveFilters && (
+                    <button
+                        style={{ ...styles.toolbarButton, color: "var(--color-danger)" }}
+                        onClick={handleClearAllFilters}
+                    >
+                        <FaTimes /> Clear Filters
+                    </button>
+                )}
+
+                <span style={styles.infoText}>
+                    {selectedHostel?.name} — {filteredData.length} of {sortedData.length} rows
+                </span>
             </div>
 
-            {/* Spreadsheet Area */}
+            {/* Filter chips */}
+            {Object.keys(columnFilters).length > 0 && (
+                <div style={styles.filterBar}>
+                    <FilterChips
+                        filters={columnFilters}
+                        columns={sheetData?.columns || []}
+                        onClearFilter={handleClearFilter}
+                        onClearAll={handleClearAllFilters}
+                    />
+                </div>
+            )}
+
+            {/* Spreadsheet */}
             {loading ? (
                 <div style={styles.loadingContainer}>
                     <div style={styles.spinner} />
                 </div>
             ) : error ? (
                 <div style={styles.emptyMessage}>{error}</div>
-            ) : !sheetData?.data?.length ? (
+            ) : !filteredData.length ? (
                 <div style={styles.emptyMessage}>
-                    {selectedHostelId ? "No data available for this hostel" : "Select a hostel from below"}
+                    {selectedHostelId
+                        ? hasActiveFilters
+                            ? "No rows match the current filters"
+                            : "No data available"
+                        : "Select a hostel from below"}
                 </div>
             ) : (
                 <div style={styles.spreadsheetContainer} ref={tableRef}>
@@ -469,21 +587,58 @@ const Sheet = () => {
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id} style={styles.headerRow}>
                                     <th style={{ ...styles.headerCell, ...styles.rowNumberHeader }}>#</th>
-                                    {headerGroup.headers.map((header) => (
-                                        <th
-                                            key={header.id}
-                                            style={styles.headerCell}
-                                            onClick={header.column.getToggleSortingHandler()}
-                                        >
-                                            <div style={styles.headerCellContent}>
-                                                <span>{flexRender(header.column.columnDef.header, header.getContext())}</span>
-                                                {{
-                                                    asc: <FaChevronUp style={styles.sortIcon} />,
-                                                    desc: <FaChevronDown style={styles.sortIcon} />,
-                                                }[header.column.getIsSorted()] ?? null}
-                                            </div>
-                                        </th>
-                                    ))}
+                                    {headerGroup.headers.map((header) => {
+                                        const colId = header.column.id
+                                        const hasFilter = columnFilters[colId]?.selectedValues?.length > 0
+                                        const sortDir = getSortDirection(colId)
+
+                                        return (
+                                            <th key={header.id} style={styles.headerCell}>
+                                                <div style={styles.headerCellContent}>
+                                                    <span
+                                                        style={styles.headerText}
+                                                        onClick={header.column.getToggleSortingHandler()}
+                                                    >
+                                                        {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    </span>
+                                                    <div style={styles.headerIcons}>
+                                                        {sortDir && (
+                                                            sortDir === "asc" ? (
+                                                                <FaChevronUp style={{ ...styles.sortIcon, ...styles.sortIconActive }} />
+                                                            ) : (
+                                                                <FaChevronDown style={{ ...styles.sortIcon, ...styles.sortIconActive }} />
+                                                            )
+                                                        )}
+                                                        <FaFilter
+                                                            style={{
+                                                                ...styles.filterIcon,
+                                                                ...(hasFilter || openFilterColumn === colId ? styles.filterIconActive : {}),
+                                                            }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation()
+                                                                setOpenFilterColumn(openFilterColumn === colId ? null : colId)
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                {/* Filter dropdown */}
+                                                {openFilterColumn === colId && (
+                                                    <ColumnFilterDropdown
+                                                        column={header.column.columnDef.header}
+                                                        columnId={colId}
+                                                        data={sortedData}
+                                                        isOpen={true}
+                                                        onClose={() => setOpenFilterColumn(null)}
+                                                        onApplyFilter={handleApplyFilter}
+                                                        currentFilter={columnFilters[colId]}
+                                                        onSort={handleSort}
+                                                        sortDirection={sortDir}
+                                                    />
+                                                )}
+                                            </th>
+                                        )
+                                    })}
                                 </tr>
                             ))}
                         </thead>
@@ -511,18 +666,7 @@ const Sheet = () => {
                 </div>
             )}
 
-            {/* Info Bar */}
-            {sheetData?.data && (
-                <div style={styles.infoBar}>
-                    <span>
-                        {table.getFilteredRowModel().rows.length} of {sheetData.data.length} rows
-                        {globalFilter && " (filtered)"}
-                    </span>
-                    <span>{sheetData.hostel?.type || ""}</span>
-                </div>
-            )}
-
-            {/* Bottom Tabs - Like Google Sheets */}
+            {/* Tabs bar */}
             <div style={styles.tabsBar}>
                 <div style={styles.tabsList}>
                     {hostelList?.map((hostel) => (
@@ -550,12 +694,16 @@ const Sheet = () => {
                 </div>
             </div>
 
-            {/* Keyframes */}
-            <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+            {/* Column visibility panel */}
+            <ColumnVisibilityPanel
+                isOpen={showColumnsPanel}
+                onClose={() => setShowColumnsPanel(false)}
+                columns={sheetData?.columns || []}
+                visibility={columnVisibility}
+                onVisibilityChange={setColumnVisibility}
+            />
+
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     )
 }
