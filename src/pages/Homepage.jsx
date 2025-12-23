@@ -98,7 +98,7 @@ const HomePage = () => {
 
           {/* Enhanced Statistics Graphic wrapper with better animations */}
           <div className="lg:w-1/2 mt-16 lg:mt-0 flex justify-center lg:justify-end animate-fadeIn">
-            <div className="relative w-full max-w-md">
+            <div className="relative w-full" style={{ maxWidth: '448px' }}>
               {/* Enhanced decorative elements */}
               <div className="absolute -top-8 -left-8 w-36 h-36 bg-blue-200/60 rounded-full z-0 animate-[pulse_4s_ease-in-out_infinite] blur-lg"></div>
               <div className="absolute -bottom-8 -right-8 w-44 h-44 bg-blue-200/55 rounded-full z-0 animate-[pulse_5s_ease-in-out_infinite_1s] blur-lg"></div>
