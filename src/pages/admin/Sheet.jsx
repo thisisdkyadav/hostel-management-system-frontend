@@ -326,24 +326,24 @@ const styles = {
     summaryTable: {
         width: "100%",
         borderCollapse: "collapse",
-        fontSize: "var(--font-size-sm)",
+        fontSize: "var(--font-size-xs)",
     },
     summaryHeaderRow: {
         backgroundColor: "var(--color-bg-tertiary)",
     },
     summaryHeaderCell: {
-        padding: "var(--spacing-3) var(--spacing-4)",
+        padding: "var(--spacing-1-5) var(--spacing-2)",
         textAlign: "center",
         fontWeight: "var(--font-weight-semibold)",
         color: "var(--color-text-primary)",
-        fontSize: "var(--font-size-sm)",
+        fontSize: "var(--font-size-xs)",
         borderRight: "var(--border-1) solid var(--color-border-primary)",
         borderBottom: "var(--border-2) solid var(--color-border-primary)",
         whiteSpace: "nowrap",
     },
     summaryLabelHeader: {
         textAlign: "left",
-        minWidth: "150px",
+        minWidth: "100px",
     },
     summaryTotalHeader: {
         backgroundColor: "var(--color-primary-bg)",
@@ -357,10 +357,10 @@ const styles = {
         fontWeight: "var(--font-weight-semibold)",
     },
     summaryCell: {
-        padding: "var(--spacing-2) var(--spacing-4)",
+        padding: "var(--spacing-1) var(--spacing-2)",
         textAlign: "center",
         color: "var(--color-text-body)",
-        fontSize: "var(--font-size-sm)",
+        fontSize: "var(--font-size-xs)",
         borderRight: "var(--border-1) solid var(--color-border-light)",
     },
     summaryLabelCell: {
@@ -409,7 +409,7 @@ const SummaryTable = ({ data, onHostelClick }) => {
     const { columns, data: rows } = data
 
     return (
-        <div style={{ ...styles.spreadsheetContainer, overflow: "auto", padding: "var(--spacing-4)" }}>
+        <div style={{ ...styles.spreadsheetContainer, overflow: "auto" }}>
             <table style={styles.summaryTable}>
                 <thead>
                     <tr style={styles.summaryHeaderRow}>
