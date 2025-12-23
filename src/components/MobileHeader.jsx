@@ -51,7 +51,7 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 h-16 z-40 flex items-center justify-between px-4 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)]" style={{ boxShadow: 'var(--shadow-sm)', }} >
       {/* Menu Toggle Button */}
-      <button onClick={() => setIsOpen(!isOpen)} 
+      <button onClick={() => setIsOpen(!isOpen)}
         className="w-10 h-10 bg-[var(--color-primary)] rounded-lg flex items-center justify-center text-white transition-all duration-200 hover:bg-[var(--color-primary-hover)]"
       >
         {isOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
@@ -88,19 +88,26 @@ const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) =
           <div className="absolute right-0 mt-2 w-48 bg-[var(--color-bg-primary)] rounded-xl z-50 py-2 border border-[var(--color-border-primary)] animate-fadeIn" style={{ boxShadow: 'var(--shadow-dropdown)', }} >
             {safeBottomNavItems.map((item) => (
               <div key={item.name} onClick={() => {
-                  if (handleNavigation) handleNavigation(item)
-                  setDropdownOpen(false)
-                }}
+                if (handleNavigation) handleNavigation(item)
+                setDropdownOpen(false)
+              }}
                 className={`
                   flex items-center px-4 py-2.5 text-sm font-medium cursor-pointer transition-all duration-200 mx-2 rounded-lg
-                  ${item.name === "Logout" 
-                    ? "text-[var(--color-danger)] hover:bg-[var(--color-danger-bg-light)]" 
+                  ${item.name === "Logout"
+                    ? "text-[var(--color-danger)] hover:bg-[var(--color-danger-bg-light)]"
                     : "text-[var(--color-text-tertiary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)]"
                   }
                 `}
               >
-                <item.icon className={` text-base mr-3 ${item.name === "Logout" ? "text-[var(--color-danger)]" : "text-[var(--color-text-placeholder)]"} `} />
-                <span>{item.name}</span>
+                <item.icon size={16} strokeWidth={2} className={`mr-3 ${item.name === "Logout" ? "text-[var(--color-danger)]" : "text-[var(--color-text-placeholder)]"}`} />
+                <span className="flex-1">{item.name}</span>
+                {item.isNew && (
+                  <span
+                    className="px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wider rounded-full bg-[var(--color-success)] text-white animate-pulse"
+                  >
+                    New
+                  </span>
+                )}
               </div>
             ))}
           </div>
