@@ -314,7 +314,7 @@ const Sidebar = ({ navItems }) => {
       <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`} style={{ boxShadow: 'var(--shadow-sm)', }} >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
-          <div className={`border-b border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] ${isMobile ? "hidden" : ""} h-16`}>
+          <div className={`border-b border-[var(--color-border-primary)] ${isMobile ? "hidden" : ""} h-16`}>
             <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
               {/* HMS Text Logo - only show when expanded */}
               {isOpen && (
@@ -386,7 +386,7 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>
+          <div className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>
             {renderProfileSection()}
           </div>
         </div>
