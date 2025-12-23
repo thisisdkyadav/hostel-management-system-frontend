@@ -14,4 +14,18 @@ export const sheetApi = {
 
         return response.json()
     },
+
+    getHostelSheetSummary: async () => {
+        const response = await fetch(`${baseUrl}/sheet/summary`, {
+            method: "GET",
+            credentials: "include",
+        })
+
+        if (!response.ok) {
+            const errorData = await response.json()
+            throw new Error(errorData.message || "Failed to get hostel sheet summary")
+        }
+
+        return response.json()
+    },
 }

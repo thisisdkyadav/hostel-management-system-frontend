@@ -5,7 +5,7 @@ import {
     flexRender,
 } from "@tanstack/react-table"
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes } from "react-icons/fa"
+import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes, FaChartBar } from "react-icons/fa"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { sheetApi } from "../../services/sheetApi"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
@@ -14,6 +14,7 @@ import FilterChips from "../../components/sheet/FilterChips"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
+const SUMMARY_TAB_ID = "__summary__"
 
 // Styles
 const styles = {
@@ -283,12 +284,16 @@ const styles = {
         transition: "var(--transition-colors)",
         minWidth: "100px",
         justifyContent: "center",
+        gap: "var(--spacing-1)",
     },
     tabActive: {
         backgroundColor: "var(--color-bg-primary)",
         color: "var(--color-primary)",
         borderBottom: "var(--border-2) solid var(--color-primary)",
         fontWeight: "var(--font-weight-semibold)",
+    },
+    tabSummary: {
+        backgroundColor: "var(--color-primary-bg)",
     },
 
     // States
@@ -316,6 +321,63 @@ const styles = {
         fontSize: "var(--font-size-sm)",
         backgroundColor: "var(--color-bg-primary)",
     },
+
+    // Summary table styles
+    summaryTable: {
+        width: "100%",
+        borderCollapse: "collapse",
+        fontSize: "var(--font-size-sm)",
+    },
+    summaryHeaderRow: {
+        backgroundColor: "var(--color-bg-tertiary)",
+    },
+    summaryHeaderCell: {
+        padding: "var(--spacing-3) var(--spacing-4)",
+        textAlign: "center",
+        fontWeight: "var(--font-weight-semibold)",
+        color: "var(--color-text-primary)",
+        fontSize: "var(--font-size-sm)",
+        borderRight: "var(--border-1) solid var(--color-border-primary)",
+        borderBottom: "var(--border-2) solid var(--color-border-primary)",
+        whiteSpace: "nowrap",
+    },
+    summaryLabelHeader: {
+        textAlign: "left",
+        minWidth: "150px",
+    },
+    summaryTotalHeader: {
+        backgroundColor: "var(--color-primary-bg)",
+        color: "var(--color-primary)",
+    },
+    summaryRow: {
+        borderBottom: "var(--border-1) solid var(--color-border-light)",
+    },
+    summaryTotalRow: {
+        backgroundColor: "var(--color-bg-tertiary)",
+        fontWeight: "var(--font-weight-semibold)",
+    },
+    summaryCell: {
+        padding: "var(--spacing-2) var(--spacing-4)",
+        textAlign: "center",
+        color: "var(--color-text-body)",
+        fontSize: "var(--font-size-sm)",
+        borderRight: "var(--border-1) solid var(--color-border-light)",
+    },
+    summaryLabelCell: {
+        textAlign: "left",
+        fontWeight: "var(--font-weight-medium)",
+        color: "var(--color-text-primary)",
+        backgroundColor: "var(--color-bg-secondary)",
+    },
+    summaryTotalCell: {
+        fontWeight: "var(--font-weight-semibold)",
+        color: "var(--color-primary)",
+        backgroundColor: "var(--color-primary-bg)",
+    },
+    summaryNumberCell: {
+        fontFamily: "var(--font-family-mono, monospace)",
+        fontWeight: "var(--font-weight-medium)",
+    },
 }
 
 // Cell renderers
@@ -338,12 +400,91 @@ const renderDate = (value) => {
     return new Date(value).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })
 }
 
+// Summary Table Component
+const SummaryTable = ({ data, onHostelClick }) => {
+    if (!data || !data.columns || !data.data) {
+        return <div style={styles.emptyMessage}>No summary data available</div>
+    }
+
+    const { columns, data: rows } = data
+
+    return (
+        <div style={{ ...styles.spreadsheetContainer, overflow: "auto", padding: "var(--spacing-4)" }}>
+            <table style={styles.summaryTable}>
+                <thead>
+                    <tr style={styles.summaryHeaderRow}>
+                        {columns.map((col) => {
+                            const isLabel = col.category === "label"
+                            const isTotal = col.category === "total"
+                            return (
+                                <th
+                                    key={col.accessorKey}
+                                    style={{
+                                        ...styles.summaryHeaderCell,
+                                        ...(isLabel ? styles.summaryLabelHeader : {}),
+                                        ...(isTotal ? styles.summaryTotalHeader : {}),
+                                    }}
+                                >
+                                    {col.header}
+                                </th>
+                            )
+                        })}
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows.map((row, rowIdx) => {
+                        const isLastRow = row.degree === "Total"
+                        return (
+                            <tr
+                                key={rowIdx}
+                                className="summary-row"
+                                style={{
+                                    ...styles.summaryRow,
+                                    ...(isLastRow ? styles.summaryTotalRow : {}),
+                                }}
+                            >
+                                {columns.map((col) => {
+                                    const value = row[col.accessorKey]
+                                    const isLabel = col.category === "label"
+                                    const isTotal = col.category === "total"
+                                    const isHostel = col.category === "hostel"
+
+                                    return (
+                                        <td
+                                            key={col.accessorKey}
+                                            style={{
+                                                ...styles.summaryCell,
+                                                ...(isLabel ? styles.summaryLabelCell : {}),
+                                                ...(isTotal ? styles.summaryTotalCell : {}),
+                                                ...(!isLabel ? styles.summaryNumberCell : {}),
+                                                ...(isHostel && col.hostelId ? { cursor: "pointer" } : {}),
+                                            }}
+                                            onClick={() => {
+                                                if (isHostel && col.hostelId) {
+                                                    onHostelClick(col.hostelId)
+                                                }
+                                            }}
+                                        >
+                                            {value}
+                                        </td>
+                                    )
+                                })}
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+        </div>
+    )
+}
+
 const Sheet = () => {
     const { hostelList } = useGlobal()
-    const [selectedHostelId, setSelectedHostelId] = useState("")
+    const [selectedTab, setSelectedTab] = useState(SUMMARY_TAB_ID)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [sheetData, setSheetData] = useState(null)
+    const [summaryData, setSummaryData] = useState(null)
     const [globalFilter, setGlobalFilter] = useState("")
     const [columnVisibility, setColumnVisibility] = useState({})
     const [columnFilters, setColumnFilters] = useState({})
@@ -351,7 +492,9 @@ const Sheet = () => {
     const [showColumnsPanel, setShowColumnsPanel] = useState(false)
     const tableContainerRef = useRef(null)
 
-    // Fetch data
+    const isSummaryTab = selectedTab === SUMMARY_TAB_ID
+
+    // Fetch hostel sheet data
     const fetchSheetData = async (hostelId) => {
         if (!hostelId) return
         try {
@@ -376,17 +519,31 @@ const Sheet = () => {
         }
     }
 
-    useEffect(() => {
-        if (selectedHostelId) fetchSheetData(selectedHostelId)
-    }, [selectedHostelId])
-
-    useEffect(() => {
-        if (hostelList?.length > 0 && !selectedHostelId) {
-            setSelectedHostelId(hostelList[0]._id)
+    // Fetch summary data
+    const fetchSummaryData = async () => {
+        try {
+            setLoading(true)
+            setError(null)
+            const data = await sheetApi.getHostelSheetSummary()
+            setSummaryData(data)
+        } catch (err) {
+            setError(err.message || "Failed to fetch summary")
+            setSummaryData(null)
+        } finally {
+            setLoading(false)
         }
-    }, [hostelList, selectedHostelId])
+    }
 
-    // Data is already sorted by API: unit, room, bed ascending
+    // Handle tab change
+    useEffect(() => {
+        if (selectedTab === SUMMARY_TAB_ID) {
+            fetchSummaryData()
+        } else {
+            fetchSheetData(selectedTab)
+        }
+    }, [selectedTab])
+
+    // Data for hostel view
     const sortedData = useMemo(() => {
         return sheetData?.data || []
     }, [sheetData?.data])
@@ -395,7 +552,6 @@ const Sheet = () => {
     const filteredData = useMemo(() => {
         let data = sortedData
 
-        // Global filter
         if (globalFilter) {
             const lower = globalFilter.toLowerCase()
             data = data.filter((row) =>
@@ -405,7 +561,6 @@ const Sheet = () => {
             )
         }
 
-        // Column filters
         Object.entries(columnFilters).forEach(([colId, filter]) => {
             if (filter?.selectedValues && filter.selectedValues.length > 0) {
                 data = data.filter((row) => {
@@ -493,51 +648,61 @@ const Sheet = () => {
         setGlobalFilter("")
     }, [])
 
+    const handleHostelClick = (hostelId) => {
+        setSelectedTab(hostelId)
+    }
+
     const hasActiveFilters = Object.keys(columnFilters).length > 0 || globalFilter
 
-    const selectedHostel = hostelList?.find((h) => h._id === selectedHostelId)
+    const selectedHostel = hostelList?.find((h) => h._id === selectedTab)
 
     return (
         <div style={styles.container}>
             {/* Toolbar */}
             <div style={styles.toolbar}>
-                <div style={styles.searchContainer}>
-                    <FaSearch style={styles.searchIcon} />
-                    <input
-                        type="text"
-                        placeholder="Search all..."
-                        value={globalFilter}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
-                        style={styles.searchInput}
-                    />
-                </div>
+                {!isSummaryTab && (
+                    <>
+                        <div style={styles.searchContainer}>
+                            <FaSearch style={styles.searchIcon} />
+                            <input
+                                type="text"
+                                placeholder="Search all..."
+                                value={globalFilter}
+                                onChange={(e) => setGlobalFilter(e.target.value)}
+                                style={styles.searchInput}
+                            />
+                        </div>
 
-                <button
-                    style={{
-                        ...styles.toolbarButton,
-                        ...(showColumnsPanel ? styles.toolbarButtonActive : {}),
-                    }}
-                    onClick={() => setShowColumnsPanel(!showColumnsPanel)}
-                >
-                    <FaColumns /> Columns
-                </button>
+                        <button
+                            style={{
+                                ...styles.toolbarButton,
+                                ...(showColumnsPanel ? styles.toolbarButtonActive : {}),
+                            }}
+                            onClick={() => setShowColumnsPanel(!showColumnsPanel)}
+                        >
+                            <FaColumns /> Columns
+                        </button>
 
-                {hasActiveFilters && (
-                    <button
-                        style={{ ...styles.toolbarButton, color: "var(--color-danger)" }}
-                        onClick={handleClearAllFilters}
-                    >
-                        <FaTimes /> Clear Filters
-                    </button>
+                        {hasActiveFilters && (
+                            <button
+                                style={{ ...styles.toolbarButton, color: "var(--color-danger)" }}
+                                onClick={handleClearAllFilters}
+                            >
+                                <FaTimes /> Clear Filters
+                            </button>
+                        )}
+                    </>
                 )}
 
                 <span style={styles.infoText}>
-                    {selectedHostel?.name} — {filteredData.length} of {sortedData.length} rows
+                    {isSummaryTab
+                        ? `Summary — ${summaryData?.grandTotal || 0} total students across ${summaryData?.hostelCount || 0} hostels`
+                        : `${selectedHostel?.name} — ${filteredData.length} of ${sortedData.length} rows`}
                 </span>
             </div>
 
-            {/* Filter chips */}
-            {Object.keys(columnFilters).length > 0 && (
+            {/* Filter chips - only for hostel view */}
+            {!isSummaryTab && Object.keys(columnFilters).length > 0 && (
                 <div style={styles.filterBar}>
                     <FilterChips
                         filters={columnFilters}
@@ -548,20 +713,18 @@ const Sheet = () => {
                 </div>
             )}
 
-            {/* Spreadsheet */}
+            {/* Content */}
             {loading ? (
                 <div style={styles.loadingContainer}>
                     <div style={styles.spinner} />
                 </div>
             ) : error ? (
                 <div style={styles.emptyMessage}>{error}</div>
+            ) : isSummaryTab ? (
+                <SummaryTable data={summaryData} onHostelClick={handleHostelClick} />
             ) : !filteredData.length ? (
                 <div style={styles.emptyMessage}>
-                    {selectedHostelId
-                        ? hasActiveFilters
-                            ? "No rows match the current filters"
-                            : "No data available"
-                        : "Select a hostel from below"}
+                    {hasActiveFilters ? "No rows match the current filters" : "No data available"}
                 </div>
             ) : (
                 <div style={styles.spreadsheetContainer}>
@@ -645,21 +808,43 @@ const Sheet = () => {
             {/* Tabs bar */}
             <div style={styles.tabsBar}>
                 <div style={styles.tabsList}>
+                    {/* Summary Tab */}
+                    <button
+                        onClick={() => setSelectedTab(SUMMARY_TAB_ID)}
+                        style={{
+                            ...styles.tab,
+                            ...(isSummaryTab ? styles.tabActive : styles.tabSummary),
+                        }}
+                        onMouseEnter={(e) => {
+                            if (!isSummaryTab) {
+                                e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
+                            }
+                        }}
+                        onMouseLeave={(e) => {
+                            if (!isSummaryTab) {
+                                e.currentTarget.style.backgroundColor = "var(--color-primary-bg)"
+                            }
+                        }}
+                    >
+                        <FaChartBar /> Summary
+                    </button>
+
+                    {/* Hostel Tabs */}
                     {hostelList?.map((hostel) => (
                         <button
                             key={hostel._id}
-                            onClick={() => setSelectedHostelId(hostel._id)}
+                            onClick={() => setSelectedTab(hostel._id)}
                             style={{
                                 ...styles.tab,
-                                ...(selectedHostelId === hostel._id ? styles.tabActive : {}),
+                                ...(selectedTab === hostel._id ? styles.tabActive : {}),
                             }}
                             onMouseEnter={(e) => {
-                                if (selectedHostelId !== hostel._id) {
+                                if (selectedTab !== hostel._id) {
                                     e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
                                 }
                             }}
                             onMouseLeave={(e) => {
-                                if (selectedHostelId !== hostel._id) {
+                                if (selectedTab !== hostel._id) {
                                     e.currentTarget.style.backgroundColor = "transparent"
                                 }
                             }}
@@ -671,18 +856,21 @@ const Sheet = () => {
             </div>
 
             {/* Column visibility panel */}
-            <ColumnVisibilityPanel
-                isOpen={showColumnsPanel}
-                onClose={() => setShowColumnsPanel(false)}
-                columns={sheetData?.columns || []}
-                visibility={columnVisibility}
-                onVisibilityChange={setColumnVisibility}
-            />
+            {!isSummaryTab && (
+                <ColumnVisibilityPanel
+                    isOpen={showColumnsPanel}
+                    onClose={() => setShowColumnsPanel(false)}
+                    columns={sheetData?.columns || []}
+                    visibility={columnVisibility}
+                    onVisibilityChange={setColumnVisibility}
+                />
+            )}
 
             <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .sheet-row:hover { background-color: var(--color-bg-hover); }
-            `}</style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .sheet-row:hover { background-color: var(--color-bg-hover); }
+        .summary-row:hover { background-color: var(--color-bg-hover); }
+      `}</style>
         </div>
     )
 }
