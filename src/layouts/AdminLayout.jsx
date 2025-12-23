@@ -1,10 +1,33 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaTools, FaUser, FaCog, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaShieldAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBell, FaBoxes, FaTasks, FaUserShield } from "react-icons/fa"
-import { MdSpaceDashboard } from "react-icons/md"
+import {
+  LayoutDashboard,
+  Building2,
+  Users,
+  Table2,
+  Package,
+  Bell,
+  ListTodo,
+  BedDouble,
+  CalendarDays,
+  MessageSquareWarning,
+  CalendarOff,
+  Search,
+  MessageCircle,
+  ShieldCheck,
+  UserCog,
+  UserCheck,
+  ClipboardCheck,
+  Shield,
+  Wrench,
+  UserPlus,
+  KeyRound,
+  Settings,
+  User,
+  LogOut
+} from "lucide-react"
 import AdminProvider from "../contexts/AdminProvider"
 import { useAuth } from "../contexts/AuthProvider"
-import { HiAnnotation } from "react-icons/hi"
 
 const AdminLayout = () => {
   const navigate = useNavigate()
@@ -23,29 +46,30 @@ const AdminLayout = () => {
   }
 
   const navItems = [
-    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/admin" },
-    { name: "Hostels", icon: FaBuilding, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$" },
-    { name: "Students", icon: FaUsers, section: "main", path: "/admin/students" },
-    { name: "Inventory", icon: FaBoxes, section: "main", path: "/admin/inventory" },
-    { name: "Notifications", icon: FaBell, section: "main", path: "/admin/notifications" },
-    { name: "Task Management", icon: FaTasks, section: "main", path: "/admin/task-management" },
-    { name: "Visitor Accomodation", icon: FaExchangeAlt, section: "main", path: "/admin/visitors" },
-    { name: "Events", icon: FaCalendarAlt, section: "main", path: "/admin/events" },
-    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/admin/complaints" },
-    { name: "Leaves", icon: FaCalendarAlt, section: "main", path: "/admin/leaves" },
-    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/admin/lost-and-found" },
-    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/admin/feedbacks" },
-    { name: "HCU Staff", icon: FaUserShield, section: "main", path: "/admin/administrators" },
-    { name: "Wardens", icon: FaUserTie, section: "main", path: "/admin/wardens" },
-    { name: "Associate Wardens", icon: FaUserTie, section: "main", path: "/admin/associate-wardens" },
-    { name: "Hostel Supervisors", icon: FaUserTie, section: "main", path: "/admin/hostel-supervisors" },
-    { name: "Security", icon: FaShieldAlt, section: "main", path: "/admin/security" },
-    { name: "Maintenance Staff", icon: FaTools, section: "main", path: "/admin/maintenance" },
-    { name: "Others", icon: FaUserTie, section: "main", path: "/admin/others" },
-    { name: "Update Password", icon: FaCog, section: "main", path: "/admin/update-password" },
-    { name: "Settings", icon: FaCog, section: "main", path: "/admin/settings" },
-    { name: "Profile", icon: FaUser, section: "bottom", path: "/admin/profile" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin" },
+    { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$" },
+    { name: "Students", icon: Users, section: "main", path: "/admin/students" },
+    { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", isNew: true },
+    { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory" },
+    { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications" },
+    { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
+    { name: "Visitor Accomodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
+    { name: "Complaints", icon: MessageSquareWarning, section: "main", path: "/admin/complaints" },
+    { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found" },
+    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/admin/feedbacks" },
+    { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators" },
+    { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens" },
+    { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens" },
+    { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors" },
+    { name: "Security", icon: Shield, section: "main", path: "/admin/security" },
+    { name: "Maintenance Staff", icon: Wrench, section: "main", path: "/admin/maintenance" },
+    { name: "Others", icon: UserPlus, section: "main", path: "/admin/others" },
+    { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password" },
+    { name: "Settings", icon: Settings, section: "main", path: "/admin/settings" },
+    { name: "Profile", icon: User, section: "bottom", path: "/admin/profile" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   return (

@@ -167,7 +167,7 @@ const Sidebar = ({ navItems }) => {
       >
         <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
           <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
-            <item.icon className={`text-base transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[var(--color-text-light)] group-hover:text-[var(--color-primary)]"}`} style={{ width: '20px' }} />
+            <item.icon size={18} strokeWidth={2} className={`transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[var(--color-text-light)] group-hover:text-[var(--color-primary)]"}`} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
@@ -179,7 +179,32 @@ const Sidebar = ({ navItems }) => {
             )}
           </div>
 
-          {isOpen && <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white font-semibold" : ""}`}>{item.name}</span>}
+          {isOpen && (
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white font-semibold" : ""}`}>{item.name}</span>
+              {item.isNew && (
+                <span
+                  className={`
+                    px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-full
+                    ${isActiveItem
+                      ? "bg-white/20 text-white"
+                      : "bg-[var(--color-success)] text-white"
+                    }
+                    animate-pulse
+                  `}
+                >
+                  New
+                </span>
+              )}
+            </div>
+          )}
+          {/* NEW indicator dot when sidebar is collapsed */}
+          {!isOpen && item.isNew && (
+            <span
+              className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse"
+              style={{ boxShadow: 'var(--shadow-glow-success)' }}
+            />
+          )}
         </div>
 
         {isActiveItem && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/80"></div>}
@@ -268,7 +293,7 @@ const Sidebar = ({ navItems }) => {
                   `}
                   aria-label="Logout"
                 >
-                  <logoutItem.icon className="text-lg" />
+                  <logoutItem.icon size={18} strokeWidth={2} />
                 </button>
               </div>
             )}
