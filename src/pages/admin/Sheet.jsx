@@ -190,9 +190,6 @@ const styles = {
         width: "100%",
         height: `${ROW_HEIGHT}px`,
     },
-    rowHover: {
-        backgroundColor: "var(--color-bg-hover)",
-    },
     cell: {
         padding: "var(--spacing-1) var(--spacing-2)",
         borderRight: "var(--border-1) solid var(--color-border-light)",
@@ -352,7 +349,6 @@ const Sheet = () => {
     const [columnFilters, setColumnFilters] = useState({})
     const [openFilterColumn, setOpenFilterColumn] = useState(null)
     const [showColumnsPanel, setShowColumnsPanel] = useState(false)
-    const [hoveredRow, setHoveredRow] = useState(null)
     const tableContainerRef = useRef(null)
 
     // Fetch data
@@ -624,13 +620,11 @@ const Sheet = () => {
                                 return (
                                     <div
                                         key={row.id}
+                                        className="sheet-row"
                                         style={{
                                             ...styles.row,
                                             transform: `translateY(${virtualRow.start}px)`,
-                                            ...(hoveredRow === row.id ? styles.rowHover : {}),
                                         }}
-                                        onMouseEnter={() => setHoveredRow(row.id)}
-                                        onMouseLeave={() => setHoveredRow(null)}
                                     >
                                         <div style={{ ...styles.cell, ...styles.rowNumberCell }}>
                                             {virtualRow.index + 1}
@@ -685,7 +679,10 @@ const Sheet = () => {
                 onVisibilityChange={setColumnVisibility}
             />
 
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                .sheet-row:hover { background-color: var(--color-bg-hover); }
+            `}</style>
         </div>
     )
 }
