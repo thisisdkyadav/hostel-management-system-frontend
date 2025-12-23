@@ -4,12 +4,16 @@ import {
     getCoreRowModel,
     flexRender,
 } from "@tanstack/react-table"
+import { useVirtualizer } from "@tanstack/react-virtual"
 import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes } from "react-icons/fa"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { sheetApi } from "../../services/sheetApi"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
+
+// Row height for virtualization
+const ROW_HEIGHT = 28
 
 // Styles
 const styles = {
@@ -90,8 +94,15 @@ const styles = {
     // Spreadsheet
     spreadsheetContainer: {
         flex: 1,
-        overflow: "auto",
+        overflow: "hidden",
         backgroundColor: "var(--color-bg-primary)",
+        display: "flex",
+        flexDirection: "column",
+    },
+    tableWrapper: {
+        flex: 1,
+        overflow: "auto",
+        position: "relative",
     },
     table: {
         width: "max-content",
@@ -106,6 +117,7 @@ const styles = {
     },
     headerRow: {
         backgroundColor: "var(--color-bg-tertiary)",
+        display: "flex",
     },
     headerCell: {
         padding: "var(--spacing-1) var(--spacing-2)",
@@ -121,12 +133,18 @@ const styles = {
         maxWidth: "200px",
         backgroundColor: "var(--color-bg-tertiary)",
         position: "relative",
+        display: "flex",
+        alignItems: "center",
+        height: `${ROW_HEIGHT}px`,
+        boxSizing: "border-box",
+        flex: "1 0 120px",
     },
     headerCellContent: {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         gap: "var(--spacing-1)",
+        width: "100%",
     },
     headerText: {
         flex: 1,
@@ -145,10 +163,12 @@ const styles = {
         backgroundColor: "var(--color-primary-bg)",
     },
     rowNumberHeader: {
-        width: "40px",
-        minWidth: "40px",
-        maxWidth: "40px",
+        width: "50px",
+        minWidth: "50px",
+        maxWidth: "50px",
+        flex: "0 0 50px",
         textAlign: "center",
+        justifyContent: "center",
         backgroundColor: "var(--color-bg-tertiary)",
         color: "var(--color-text-muted)",
         position: "sticky",
@@ -156,11 +176,19 @@ const styles = {
         zIndex: 11,
     },
 
-    tbody: {
-        backgroundColor: "var(--color-bg-primary)",
+    // Virtual body container
+    virtualBody: {
+        position: "relative",
+        width: "100%",
     },
     row: {
+        display: "flex",
         borderBottom: "var(--border-1) solid var(--color-border-light)",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: `${ROW_HEIGHT}px`,
     },
     rowHover: {
         backgroundColor: "var(--color-bg-hover)",
@@ -171,18 +199,26 @@ const styles = {
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
-        maxWidth: "200px",
         color: "var(--color-text-body)",
         fontSize: "var(--font-size-xs)",
+        display: "flex",
+        alignItems: "center",
+        height: `${ROW_HEIGHT}px`,
+        boxSizing: "border-box",
+        flex: "1 0 120px",
+        minWidth: "80px",
+        maxWidth: "200px",
     },
     cellEmpty: {
         color: "var(--color-text-placeholder)",
     },
     rowNumberCell: {
-        width: "40px",
-        minWidth: "40px",
-        maxWidth: "40px",
+        width: "50px",
+        minWidth: "50px",
+        maxWidth: "50px",
+        flex: "0 0 50px",
         textAlign: "center",
+        justifyContent: "center",
         backgroundColor: "var(--color-bg-tertiary)",
         color: "var(--color-text-muted)",
         fontSize: "var(--font-size-2xs)",
@@ -317,7 +353,7 @@ const Sheet = () => {
     const [openFilterColumn, setOpenFilterColumn] = useState(null)
     const [showColumnsPanel, setShowColumnsPanel] = useState(false)
     const [hoveredRow, setHoveredRow] = useState(null)
-    const tableRef = useRef(null)
+    const tableContainerRef = useRef(null)
 
     // Fetch data
     const fetchSheetData = async (hostelId) => {
@@ -355,7 +391,6 @@ const Sheet = () => {
     }, [hostelList, selectedHostelId])
 
     // Data is already sorted by API: unit, room, bed ascending
-    // No additional sorting needed - use API order directly
     const sortedData = useMemo(() => {
         return sheetData?.data || []
     }, [sheetData?.data])
@@ -422,11 +457,21 @@ const Sheet = () => {
             }))
     }, [sheetData?.columns, columnVisibility])
 
-    // Table instance - no sorting
+    // Table instance
     const table = useReactTable({
         data: filteredData,
         columns,
         getCoreRowModel: getCoreRowModel(),
+    })
+
+    const { rows } = table.getRowModel()
+
+    // Virtualizer for rows
+    const rowVirtualizer = useVirtualizer({
+        count: rows.length,
+        getScrollElement: () => tableContainerRef.current,
+        estimateSize: () => ROW_HEIGHT,
+        overscan: 20,
     })
 
     // Filter handlers
@@ -523,73 +568,83 @@ const Sheet = () => {
                         : "Select a hostel from below"}
                 </div>
             ) : (
-                <div style={styles.spreadsheetContainer} ref={tableRef}>
-                    <table style={styles.table}>
-                        <thead style={styles.thead}>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <tr key={headerGroup.id} style={styles.headerRow}>
-                                    <th style={{ ...styles.headerCell, ...styles.rowNumberHeader }}>#</th>
-                                    {headerGroup.headers.map((header) => {
-                                        const colId = header.column.id
-                                        const hasFilter = columnFilters[colId]?.selectedValues?.length > 0
+                <div style={styles.spreadsheetContainer}>
+                    <div ref={tableContainerRef} style={styles.tableWrapper}>
+                        {/* Header */}
+                        <div style={{ ...styles.headerRow, position: "sticky", top: 0, zIndex: 10 }}>
+                            <div style={{ ...styles.headerCell, ...styles.rowNumberHeader }}>#</div>
+                            {table.getHeaderGroups()[0]?.headers.map((header) => {
+                                const colId = header.column.id
+                                const hasFilter = columnFilters[colId]?.selectedValues?.length > 0
 
-                                        return (
-                                            <th key={header.id} style={styles.headerCell}>
-                                                <div style={styles.headerCellContent}>
-                                                    <span style={styles.headerText}>
-                                                        {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    </span>
-                                                    <FaFilter
-                                                        style={{
-                                                            ...styles.filterIcon,
-                                                            ...(hasFilter || openFilterColumn === colId ? styles.filterIconActive : {}),
-                                                        }}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation()
-                                                            setOpenFilterColumn(openFilterColumn === colId ? null : colId)
-                                                        }}
-                                                    />
-                                                </div>
+                                return (
+                                    <div key={header.id} style={styles.headerCell}>
+                                        <div style={styles.headerCellContent}>
+                                            <span style={styles.headerText}>
+                                                {flexRender(header.column.columnDef.header, header.getContext())}
+                                            </span>
+                                            <FaFilter
+                                                style={{
+                                                    ...styles.filterIcon,
+                                                    ...(hasFilter || openFilterColumn === colId ? styles.filterIconActive : {}),
+                                                }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    setOpenFilterColumn(openFilterColumn === colId ? null : colId)
+                                                }}
+                                            />
+                                        </div>
 
-                                                {/* Filter dropdown */}
-                                                {openFilterColumn === colId && (
-                                                    <ColumnFilterDropdown
-                                                        column={header.column.columnDef.header}
-                                                        columnId={colId}
-                                                        data={sortedData}
-                                                        isOpen={true}
-                                                        onClose={() => setOpenFilterColumn(null)}
-                                                        onApplyFilter={handleApplyFilter}
-                                                        currentFilter={columnFilters[colId]}
-                                                    />
-                                                )}
-                                            </th>
-                                        )
-                                    })}
-                                </tr>
-                            ))}
-                        </thead>
-                        <tbody style={styles.tbody}>
-                            {table.getRowModel().rows.map((row, idx) => (
-                                <tr
-                                    key={row.id}
-                                    style={{
-                                        ...styles.row,
-                                        ...(hoveredRow === row.id ? styles.rowHover : {}),
-                                    }}
-                                    onMouseEnter={() => setHoveredRow(row.id)}
-                                    onMouseLeave={() => setHoveredRow(null)}
-                                >
-                                    <td style={styles.rowNumberCell}>{idx + 1}</td>
-                                    {row.getVisibleCells().map((cell) => (
-                                        <td key={cell.id} style={styles.cell}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                        {/* Filter dropdown */}
+                                        {openFilterColumn === colId && (
+                                            <ColumnFilterDropdown
+                                                column={header.column.columnDef.header}
+                                                columnId={colId}
+                                                data={sortedData}
+                                                isOpen={true}
+                                                onClose={() => setOpenFilterColumn(null)}
+                                                onApplyFilter={handleApplyFilter}
+                                                currentFilter={columnFilters[colId]}
+                                            />
+                                        )}
+                                    </div>
+                                )
+                            })}
+                        </div>
+
+                        {/* Virtualized Body */}
+                        <div
+                            style={{
+                                ...styles.virtualBody,
+                                height: `${rowVirtualizer.getTotalSize()}px`,
+                            }}
+                        >
+                            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                                const row = rows[virtualRow.index]
+                                return (
+                                    <div
+                                        key={row.id}
+                                        style={{
+                                            ...styles.row,
+                                            transform: `translateY(${virtualRow.start}px)`,
+                                            ...(hoveredRow === row.id ? styles.rowHover : {}),
+                                        }}
+                                        onMouseEnter={() => setHoveredRow(row.id)}
+                                        onMouseLeave={() => setHoveredRow(null)}
+                                    >
+                                        <div style={{ ...styles.cell, ...styles.rowNumberCell }}>
+                                            {virtualRow.index + 1}
+                                        </div>
+                                        {row.getVisibleCells().map((cell) => (
+                                            <div key={cell.id} style={styles.cell}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
                 </div>
             )}
 
