@@ -16,9 +16,9 @@ const PageHeader = ({ title, children, className = "" }) => {
   }
 
   return (
-    <header className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`} style={{ boxShadow: 'var(--shadow-sm)', }} >
-      <div className="px-4 md:px-6 lg:px-8 py-2">
-        <div className="flex items-center justify-between gap-4">
+    <header className={`sticky top-0 z-10 h-16 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`} style={{ boxShadow: 'var(--shadow-sm)', }} >
+      <div className="h-full px-4 md:px-6 lg:px-8 flex items-center">
+        <div className="flex items-center justify-between gap-4 w-full">
           {/* Left Section - Title & Date */}
           <div>
             <h1 className="text-xl font-bold text-[var(--color-primary)] tracking-tight">{title}</h1>
