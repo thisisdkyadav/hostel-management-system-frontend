@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../services/inventoryApi"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import Pagination from "../../common/Pagination"
 
 const ItemTypes = () => {
@@ -151,13 +152,13 @@ const ItemTypes = () => {
         <div className="relative">
           <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'; }} onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-input)'; e.currentTarget.style.boxShadow = 'none'; }} />
           <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-placeholder)' }} />
-          <button onClick={handleSearch} style={{ position: 'absolute', right: 'var(--spacing-2)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-primary)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-primary)')}>
+          <Button onClick={handleSearch} variant="ghost" size="small" style={{ position: 'absolute', right: 'var(--spacing-2)', top: '50%', transform: 'translateY(-50%)' }}>
             Search
-          </button>
+          </Button>
         </div>
-        <button onClick={openNewItemModal} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
-          <FaPlus /> Add New Item
-        </button>
+        <Button onClick={openNewItemModal} variant="primary" size="medium" icon={<FaPlus />}>
+          Add New Item
+        </Button>
       </div>
 
       {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
@@ -172,9 +173,9 @@ const ItemTypes = () => {
           <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
             <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
             <p style={{ color: 'var(--color-text-muted)' }}>No inventory item types found</p>
-            <button onClick={openNewItemModal} style={{ marginTop: 'var(--spacing-4)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
-              <FaPlus /> Add your first item
-            </button>
+            <Button onClick={openNewItemModal} variant="primary" size="small" icon={<FaPlus />} style={{ marginTop: 'var(--spacing-4)' }}>
+              Add your first item
+            </Button>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -193,18 +194,14 @@ const ItemTypes = () => {
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.name}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', color: 'var(--color-text-tertiary)' }}>{item.description}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                      <button onClick={() => handleUpdateCount(item._id, item.totalCount)} style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')} onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}>
+                      <Button onClick={() => handleUpdateCount(item._id, item.totalCount)} variant="ghost" size="small">
                         {item.totalCount}
-                      </button>
+                      </Button>
                     </td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                        <button onClick={() => handleEdit(item)} style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary)'; e.currentTarget.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary-bg)'; e.currentTarget.style.color = 'var(--color-primary)'; }}>
-                          <FaEdit />
-                        </button>
-                        <button onClick={() => handleDelete(item._id)} style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-danger-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-danger)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-danger)'; e.currentTarget.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-danger-bg)'; e.currentTarget.style.color = 'var(--color-danger)'; }}>
-                          <FaTrash />
-                        </button>
+                        <Button onClick={() => handleEdit(item)} variant="secondary" size="small" icon={<FaEdit />} />
+                        <Button onClick={() => handleDelete(item._id)} variant="danger" size="small" icon={<FaTrash />} />
                       </div>
                     </td>
                   </tr>
@@ -235,12 +232,12 @@ const ItemTypes = () => {
               <input type="number" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
-              <button type="button" onClick={closeModal} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-border-dark)')} onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)')}>
+              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
                 Cancel
-              </button>
-              <button type="submit" disabled={loading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)')} onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'var(--color-primary)')}>
-                {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: '2px solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : isEditMode ? "Update" : "Create"}
-              </button>
+              </Button>
+              <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+                {isEditMode ? "Update" : "Create"}
+              </Button>
             </div>
           </form>
         </Modal>

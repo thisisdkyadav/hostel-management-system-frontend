@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes, FaChartBar, FaTasks } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { securityApi } from "../../../services/apiService"
 import { adminApi } from "../../../services/adminApi"
 import Pagination from "../../common/Pagination"
@@ -122,14 +123,12 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
         {/* Tab Navigation */}
         <div style={{ borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
           <nav style={{ marginBottom: "-1px", display: "flex", gap: "var(--spacing-8)" }}>
-            <button onClick={() => setActiveTab("attendance")} style={activeTab === "attendance" ? tabActiveStyle : tabInactiveStyle}>
-              <FaHistory style={{ marginRight: "var(--spacing-2)", display: "inline" }} />
+            <Button onClick={() => setActiveTab("attendance")} variant={activeTab === "attendance" ? "primary" : "ghost"} size="medium" icon={<FaHistory />}>
               Attendance History
-            </button>
-            <button onClick={() => setActiveTab("workStats")} style={activeTab === "workStats" ? tabActiveStyle : tabInactiveStyle}>
-              <FaChartBar style={{ marginRight: "var(--spacing-2)", display: "inline" }} />
+            </Button>
+            <Button onClick={() => setActiveTab("workStats")} variant={activeTab === "workStats" ? "primary" : "ghost"} size="medium" icon={<FaChartBar />}>
               Work Statistics
-            </button>
+            </Button>
           </nav>
         </div>
 
@@ -156,9 +155,9 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                   />
                 </div>
                 <div>
-                  <button onClick={clearFilters} className="p-2 bg-[var(--color-bg-muted)] hover:bg-[var(--color-border-dark)] text-[var(--color-text-body)] rounded-md border-0 cursor-pointer transition-colors">
-                    <FaTimes className="mr-1 inline" /> Clear
-                  </button>
+                  <Button onClick={clearFilters} variant="secondary" size="small" icon={<FaTimes />}>
+                    Clear
+                  </Button>
                 </div>
               </div>
             </div>

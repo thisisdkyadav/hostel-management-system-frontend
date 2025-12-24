@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../services/inventoryApi"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
+import Button from "../../common/Button"
 
 const InventoryReports = () => {
   const { hostelList } = useGlobal()
@@ -109,15 +110,30 @@ const InventoryReports = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="flex space-x-8">
-          <button onClick={() => setActiveTab("hostel")} style={{ padding: 'var(--spacing-4) var(--spacing-1)', display: 'flex', alignItems: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "hostel" ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === "hostel" ? 'var(--color-primary)' : 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => activeTab !== "hostel" && (e.currentTarget.style.color = 'var(--color-text-body)')} onMouseLeave={(e) => activeTab !== "hostel" && (e.currentTarget.style.color = 'var(--color-text-muted)')}>
-            <FaBuilding style={{ marginRight: 'var(--spacing-2)' }} /> By Hostel
-          </button>
-          <button onClick={() => setActiveTab("student")} style={{ padding: 'var(--spacing-4) var(--spacing-1)', display: 'flex', alignItems: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "student" ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === "student" ? 'var(--color-primary)' : 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => activeTab !== "student" && (e.currentTarget.style.color = 'var(--color-text-body)')} onMouseLeave={(e) => activeTab !== "student" && (e.currentTarget.style.color = 'var(--color-text-muted)')}>
-            <FaUserGraduate style={{ marginRight: 'var(--spacing-2)' }} /> By Student
-          </button>
-          <button onClick={() => setActiveTab("itemType")} style={{ padding: 'var(--spacing-4) var(--spacing-1)', display: 'flex', alignItems: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "itemType" ? '2px solid var(--color-primary)' : '2px solid transparent', color: activeTab === "itemType" ? 'var(--color-primary)' : 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => activeTab !== "itemType" && (e.currentTarget.style.color = 'var(--color-text-body)')} onMouseLeave={(e) => activeTab !== "itemType" && (e.currentTarget.style.color = 'var(--color-text-muted)')}>
-            <FaListAlt style={{ marginRight: 'var(--spacing-2)' }} /> By Item Type
-          </button>
+          <Button
+            onClick={() => setActiveTab("hostel")}
+            variant={activeTab === "hostel" ? "primary" : "ghost"}
+            size="medium"
+            icon={<FaBuilding />}
+          >
+            By Hostel
+          </Button>
+          <Button
+            onClick={() => setActiveTab("student")}
+            variant={activeTab === "student" ? "primary" : "ghost"}
+            size="medium"
+            icon={<FaUserGraduate />}
+          >
+            By Student
+          </Button>
+          <Button
+            onClick={() => setActiveTab("itemType")}
+            variant={activeTab === "itemType" ? "primary" : "ghost"}
+            size="medium"
+            icon={<FaListAlt />}
+          >
+            By Item Type
+          </Button>
         </nav>
       </div>
 

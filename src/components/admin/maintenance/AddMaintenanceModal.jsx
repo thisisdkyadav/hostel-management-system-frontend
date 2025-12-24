@@ -3,6 +3,7 @@ import { FiUser, FiMail, FiLock, FiTool, FiPhone } from "react-icons/fi"
 import { FaExclamationTriangle } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
 
@@ -142,20 +143,13 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
 
 
         <div className="flex flex-row justify-end gap-3 pt-4 mt-5 border-t" style={{ borderColor: "var(--color-border-light)" }}>
-          <button type="button" className="px-5 py-2.5 bg-[var(--color-bg-hover)] hover:bg-[var(--color-bg-muted)] text-[var(--color-text-body)] rounded-lg font-medium transition-colors border-0 cursor-pointer" onClick={onClose}>
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
 
-          <button type="submit" disabled={loading} className="px-5 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-lg font-medium transition-colors flex items-center justify-center border-0 disabled:cursor-not-allowed disabled:opacity-50">
-            {loading ? (
-              <>
-                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
-                Adding...
-              </>
-            ) : (
-              "Add Staff"
-            )}
-          </button>
+          <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+            {loading ? "Adding..." : "Add Staff"}
+          </Button>
         </div>
       </form>
     </Modal>

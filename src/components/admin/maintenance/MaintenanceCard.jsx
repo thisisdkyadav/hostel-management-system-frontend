@@ -4,6 +4,7 @@ import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const CATEGORY_DISPLAY_LABELS = {
   Plumbing: "Plumber",
@@ -107,12 +108,12 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
 
 
         <Card.Footer className="pt-4 border-t flex gap-2" style={{ borderColor: "var(--color-border-light)" }}>
-          <button onClick={() => setShowDetailsModal(true)} className="flex-1 p-2.5 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 flex items-center justify-center font-medium">
-            <FaEye className="mr-1" /> <span className="text-sm">View Details</span>
-          </button>
-          <button onClick={() => setShowEditForm(true)} className="flex-1 p-2.5 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 flex items-center justify-center font-medium">
-            <FaEdit className="mr-1" /> <span className="text-sm">Edit</span>
-          </button>
+          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="medium" icon={<FaEye />} fullWidth>
+            View Details
+          </Button>
+          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="medium" icon={<FaEdit />} fullWidth>
+            Edit
+          </Button>
         </Card.Footer>
       </Card>
 
