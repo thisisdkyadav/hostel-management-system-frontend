@@ -3,6 +3,7 @@ import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock 
 import FilterTabs from "./common/FilterTabs"
 import NoResults from "./common/NoResults"
 import Pagination from "./common/Pagination"
+import Button from "./common/Button"
 import { securityApi } from "../services/apiService"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -148,17 +149,15 @@ const AccessHistory = ({ cachedData }) => {
             </div>
             <h2 className="text-xl font-bold text-[var(--color-text-secondary)]">Access History</h2>
           </div>
-          <button onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center px-3 py-2 rounded-xl transition-colors"
-            style={{
-              backgroundColor: showFilters ? 'var(--color-primary)' : 'var(--color-bg-primary)',
-              color: showFilters ? 'var(--color-white)' : 'var(--color-text-body)',
-              border: showFilters ? 'none' : '1px solid var(--color-border-primary)'
-            }}
+          <Button
+            onClick={() => setShowFilters(!showFilters)}
+            variant={showFilters ? "primary" : "white"}
+            size="medium"
+            icon={<FaFilter />}
             disabled={!isOnline && !cachedData}
           >
-            <FaFilter className="mr-2" /> Filters
-          </button>
+            Filters
+          </Button>
         </div>
 
         {/* Filter Tabs */}
@@ -184,9 +183,13 @@ const AccessHistory = ({ cachedData }) => {
                 </select>
               </div>
               <div className="flex items-end">
-                <button onClick={handleClearDateFilter} className="bg-[var(--color-bg-muted)] text-[var(--color-text-body)] px-4 py-2 rounded-lg hover:bg-[var(--color-bg-tertiary)]">
+                <Button
+                  onClick={handleClearDateFilter}
+                  variant="secondary"
+                  size="medium"
+                >
                   Clear Date Filter
-                </button>
+                </Button>
               </div>
             </div>
           </div>

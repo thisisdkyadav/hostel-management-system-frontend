@@ -149,20 +149,24 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
           </div>
 
           <div style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-            <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}>
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="secondary"
+              size="medium"
+            >
               Cancel
-            </button>
+            </Button>
 
-            <button type="submit" disabled={isSubmitting} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', opacity: isSubmitting ? 'var(--opacity-disabled)' : 'var(--opacity-100)', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onMouseEnter={(e) => { if (!isSubmitting) e.target.style.backgroundColor = 'var(--color-primary-hover)'; }} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
-              {isSubmitting ? (
-                <>
-                  <span style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span>
-                  Saving Changes...
-                </>
-              ) : (
-                "Save Changes"
-              )}
-            </button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="medium"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving Changes..." : "Save Changes"}
+            </Button>
           </div>
         </form>
       </Modal>

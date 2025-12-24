@@ -4,6 +4,7 @@ import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -107,54 +108,36 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
 
         {/* Action Buttons */}
         <Card.Footer style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 0 }}>
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-            <button onClick={() => setShowEditModal(true)}
-              style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', transition: 'var(--transition-all)', border: 'none', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--gradient-primary)'
-                e.currentTarget.style.color = 'var(--color-white)'
-                e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-primary-bg)'
-                e.currentTarget.style.color = 'var(--color-primary)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-2)' }}>
+            <Button
+              onClick={() => setShowEditModal(true)}
+              variant="secondary"
+              size="medium"
+              icon={<FaEdit />}
+              fullWidth
             >
-              <FaEdit />
               Edit Details
-            </button>
-            <Link to={`/admin/hostels/${hostel.name}`} style={{ flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', transition: 'var(--transition-all)', border: 'none', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', textDecoration: 'none' }} onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--gradient-primary)'
-              e.currentTarget.style.color = 'var(--color-white)'
-              e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
-            }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'var(--color-primary-bg)'
-                e.currentTarget.style.color = 'var(--color-primary)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
-            >
-              <FaDoorOpen />
-              View {hostel.type === "room-only" ? "Rooms" : "Units"}
+            </Button>
+            <Link to={`/admin/hostels/${hostel.name}`} style={{ flex: 1, textDecoration: 'none' }}>
+              <Button
+                variant="secondary"
+                size="medium"
+                icon={<FaDoorOpen />}
+                fullWidth
+              >
+                View {hostel.type === "room-only" ? "Rooms" : "Units"}
+              </Button>
             </Link>
           </div>
-          <button onClick={() => setShowDetailsModal(true)}
-            style={{ width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-semibold)', cursor: 'pointer', transition: 'var(--transition-all)', border: 'none', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--gradient-primary)'
-              e.currentTarget.style.color = 'var(--color-white)'
-              e.currentTarget.style.boxShadow = 'var(--shadow-button-primary)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'var(--color-primary-bg)'
-              e.currentTarget.style.color = 'var(--color-primary)'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
+          <Button
+            onClick={() => setShowDetailsModal(true)}
+            variant="secondary"
+            size="medium"
+            icon={<FaClipboardList />}
+            fullWidth
           >
-            <FaClipboardList />
             View Details
-          </button>
+          </Button>
         </Card.Footer>
       </Card>
 
