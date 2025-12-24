@@ -197,6 +197,9 @@
 
   /* Specific Component Radii */
   --radius-button: 9999px;
+  --radius-button-sm: 8px;          /* Rounded corners for small buttons */
+  --radius-button-md: 12px;         /* Rounded corners for medium buttons */
+  --radius-button-lg: 16px;         /* Rounded corners for large buttons */
   --radius-button-rect: 10px;
   --radius-card: 20px;
   --radius-modal: 16px;
