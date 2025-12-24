@@ -93,7 +93,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
 
   return (
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-shadow)', border: `var(--border-1) solid var(--color-border-light)` }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
-    onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
+      onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
     >
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
@@ -101,9 +101,9 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
             <MdInventory size={20} />
           </div>
           <div style={{ width: '100%' }}>
-            <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-xl)', width: '100%', borderBottom: `var(--border-1) solid var(--color-border-input)`, outline: 'none', paddingBottom: 'var(--spacing-1)', border: 'none', borderBottom: `var(--border-1) solid var(--color-border-input)` }} onFocus={(e) => e.target.style.borderBottomColor = 'var(--color-primary)'}
+            <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-xl)', width: '100%', borderBottom: `var(--border-1) solid var(--color-border-input)`, outline: 'none', paddingBottom: 'var(--spacing-1)', border: 'none' }} onFocus={(e) => e.target.style.borderBottomColor = 'var(--color-primary)'}
               onBlur={(e) => e.target.style.borderBottomColor = 'var(--color-border-input)'}
-              required 
+              required
             />
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {item._id.substring(0, 8)}</span>
           </div>
@@ -113,9 +113,9 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <BsCalendarDate style={{ color: 'var(--color-primary)', opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
             <input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} style={{ fontSize: 'var(--font-size-sm)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3) var(--spacing-3)', outline: 'none', width: '100%' }} onFocus={(e) => {
-                e.target.style.borderColor = 'var(--color-primary)';
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-              }}
+              e.target.style.borderColor = 'var(--color-primary)';
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+            }}
               onBlur={(e) => {
                 e.target.style.borderColor = 'var(--color-border-input)';
                 e.target.style.boxShadow = 'none';
@@ -126,9 +126,9 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Description</label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="3" style={{ width: '100%', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', outline: 'none', resize: 'none' }} onFocus={(e) => {
-                e.target.style.borderColor = 'var(--color-primary)';
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-              }}
+              e.target.style.borderColor = 'var(--color-primary)';
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+            }}
               onBlur={(e) => {
                 e.target.style.borderColor = 'var(--color-border-input)';
                 e.target.style.boxShadow = 'none';
@@ -140,9 +140,9 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Status</label>
             <select name="status" value={formData.status} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-                e.target.style.borderColor = 'var(--color-primary)';
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-              }}
+              e.target.style.borderColor = 'var(--color-primary)';
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+            }}
               onBlur={(e) => {
                 e.target.style.borderColor = 'var(--color-border-input)';
                 e.target.style.boxShadow = 'none';
@@ -171,7 +171,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
                 {formData.images.map((imageUrl, index) => (
                   <div key={index} style={{ position: 'relative' }} className="group">
                     <img src={getMediaUrl(imageUrl)} alt={`Item ${index + 1}`} style={{ width: '100%', height: '5rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
-                    <button type="button" onClick={() => removeImage(index)} 
+                    <button type="button" onClick={() => removeImage(index)}
                       style={{
                         position: 'absolute',
                         top: 'var(--spacing-1)',
