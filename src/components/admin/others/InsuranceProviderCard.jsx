@@ -4,6 +4,7 @@ import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -57,12 +58,8 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{provider.name}</h3>
             </div>
             <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-              <button onClick={() => setShowEditModal(true)} style={{ padding: 'var(--spacing-2)', color: 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', background: 'none' }} onMouseEnter={(e) => { e.target.style.color = 'var(--color-primary)'; e.target.style.backgroundColor = 'var(--color-primary-bg)'; }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Edit provider">
-                <FaEdit />
-              </button>
-              <button onClick={handleDelete} disabled={isDeleting} style={{ padding: 'var(--spacing-2)', color: isDeleting ? 'var(--color-text-muted)' : 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: isDeleting ? 'not-allowed' : 'pointer', background: 'none' }} onMouseEnter={(e) => { if (!isDeleting) { e.target.style.color = 'var(--color-danger)'; e.target.style.backgroundColor = 'var(--color-danger-bg)'; } }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Delete provider">
-                {isDeleting ? <span style={{ display: 'inline-block', width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-border-input)', borderTopColor: 'var(--color-text-muted)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></span> : <FaTrash />}
-              </button>
+              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="small" icon={<FaEdit />} title="Edit provider" />
+              <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete provider" />
             </div>
           </div>
         </Card.Header>
@@ -91,9 +88,9 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
         </Card.Body>
 
         <Card.Footer style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <button onClick={() => setShowBulkUpdateModal(true)} style={{ width: '100%', padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}>
-            <FaUsers style={{ marginRight: 'var(--spacing-2)' }} /> Update Student Insurance Details
-          </button>
+          <Button onClick={() => setShowBulkUpdateModal(true)} variant="secondary" size="medium" icon={<FaUsers />} fullWidth>
+            Update Student Insurance Details
+          </Button>
         </Card.Footer>
       </Card>
 

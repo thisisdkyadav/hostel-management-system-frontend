@@ -5,6 +5,7 @@ import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../services/adminApi"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -51,12 +52,8 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
             </div>
             {!isReadOnly && (
               <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-                <button onClick={() => setShowEditModal(true)} style={{ padding: 'var(--spacing-2)', color: 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', background: 'none' }} onMouseEnter={(e) => { e.target.style.color = 'var(--color-primary)'; e.target.style.backgroundColor = 'var(--color-primary-bg)'; }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Edit undertaking">
-                  <FaEdit />
-                </button>
-                <button onClick={handleDelete} disabled={isDeleting} style={{ padding: 'var(--spacing-2)', color: isDeleting ? 'var(--color-text-muted)' : 'var(--color-text-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: isDeleting ? 'not-allowed' : 'pointer', background: 'none' }} onMouseEnter={(e) => { if (!isDeleting) { e.target.style.color = 'var(--color-danger)'; e.target.style.backgroundColor = 'var(--color-danger-bg)'; } }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'transparent'; }} title="Delete undertaking">
-                  {isDeleting ? <span style={{ display: 'inline-block', width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-border-input)', borderTopColor: 'var(--color-text-muted)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></span> : <FaTrash />}
-                </button>
+                <Button onClick={() => setShowEditModal(true)} variant="ghost" size="small" icon={<FaEdit />} title="Edit undertaking" />
+                <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete undertaking" />
               </div>
             )}
           </div>
@@ -93,13 +90,13 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
 
         <Card.Footer style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'grid', gridTemplateColumns: isReadOnly ? '1fr' : 'repeat(2, 1fr)', gap: 'var(--spacing-3)' }}>
           {!isReadOnly && (
-            <button onClick={() => setShowManageStudentsModal(true)} style={{ padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}>
-              <FaUsers style={{ marginRight: 'var(--spacing-1)' }} /> Manage Students
-            </button>
+            <Button onClick={() => setShowManageStudentsModal(true)} variant="secondary" size="small" icon={<FaUsers />}>
+              Manage Students
+            </Button>
           )}
-          <button onClick={() => setShowStatusModal(true)} style={{ padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-dark)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', gridColumn: isReadOnly ? 'span 1' : 'auto' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-success-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success-bg)'}>
-            <FaClipboardCheck style={{ marginRight: 'var(--spacing-1)' }} /> View Status
-          </button>
+          <Button onClick={() => setShowStatusModal(true)} variant="success" size="small" icon={<FaClipboardCheck />}>
+            View Status
+          </Button>
         </Card.Footer>
       </Card>
 

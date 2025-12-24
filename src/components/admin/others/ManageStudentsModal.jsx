@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { adminApi } from "../../../services/adminApi"
 import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
@@ -72,9 +73,9 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
               <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." style={{ width: '100%', paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
             </div>
-            <button onClick={() => setShowBulkUpload(true)} style={{ backgroundColor: 'var(--color-success)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-success-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success)'}>
-              <FaFileCsv style={{ marginRight: 'var(--spacing-2)' }} /> Add Students (CSV)
-            </button>
+            <Button onClick={() => setShowBulkUpload(true)} variant="success" size="medium" icon={<FaFileCsv />}>
+              Add Students (CSV)
+            </Button>
           </div>
 
           {loading ? (
@@ -121,9 +122,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                         </span>
                       </td>
                       <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                        <button onClick={() => handleRemoveStudent(student.id)} style={{ color: 'var(--color-danger)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-full)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', background: 'none' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-danger-bg)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'transparent'; }} title="Remove student">
-                          <FaUserMinus />
-                        </button>
+                        <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="small" icon={<FaUserMinus />} title="Remove student" />
                       </td>
                     </tr>
                   ))}
@@ -133,9 +132,9 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
           )}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-            <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}>
+            <Button type="button" onClick={onClose} variant="secondary" size="medium">
               Close
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>
