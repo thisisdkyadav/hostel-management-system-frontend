@@ -4,6 +4,7 @@ import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
@@ -65,12 +66,12 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
         </Card.Body>
 
         <Card.Footer style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', gap: 'var(--spacing-2)' }}>
-          <button onClick={() => setShowDetailsModal(true)} style={{ flex: 1, padding: 'var(--spacing-2-5)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'all var(--transition-slow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)' }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)' }}>
-            <FaEye style={{ marginRight: 'var(--spacing-1)' }} /> <span style={{ fontSize: 'var(--font-size-sm)' }}>View Details</span>
-          </button>
-          <button onClick={() => setShowEditForm(true)} style={{ flex: 1, padding: 'var(--spacing-2-5)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'all var(--transition-slow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)' }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)' }}>
-            <FaEdit style={{ marginRight: 'var(--spacing-1)' }} /> <span style={{ fontSize: 'var(--font-size-sm)' }}>Edit</span>
-          </button>
+          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="small" icon={<FaEye />} style={{ flex: 1 }}>
+            View Details
+          </Button>
+          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="small" icon={<FaEdit />} style={{ flex: 1 }}>
+            Edit
+          </Button>
         </Card.Footer>
       </Card>
 

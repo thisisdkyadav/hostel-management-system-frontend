@@ -6,6 +6,7 @@ import { adminApi } from "../../../services/apiService"
 import { accessControlApi } from "../../../services/accessControlApi"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
@@ -209,12 +210,12 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     <Modal title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={activeTab === "permissions" ? 800 : 500}>
       <div style={{ marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
         <div style={{ display: 'flex' }}>
-          <button style={{ padding: 'var(--spacing-4)', fontWeight: 'var(--font-weight-medium)', color: activeTab === "basic" ? 'var(--color-primary)' : 'var(--color-text-muted)', borderBottom: activeTab === "basic" ? 'var(--border-2) solid var(--color-primary)' : 'none' }} onClick={() => setActiveTab("basic")}>
+          <Button variant={activeTab === "basic" ? "primary" : "ghost"} size="medium" onClick={() => setActiveTab("basic")}>
             Basic Information
-          </button>
-          <button style={{ padding: 'var(--spacing-4)', fontWeight: 'var(--font-weight-medium)', color: activeTab === "permissions" ? 'var(--color-primary)' : 'var(--color-text-muted)', borderBottom: activeTab === "permissions" ? 'var(--border-2) solid var(--color-primary)' : 'none' }} onClick={() => setActiveTab("permissions")}>
+          </Button>
+          <Button variant={activeTab === "permissions" ? "primary" : "ghost"} size="medium" onClick={() => setActiveTab("permissions")}>
             Permissions
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -306,9 +307,9 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   <FaShieldAlt style={{ marginRight: 'var(--spacing-2)' }} />
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Manage Permissions</h4>
                 </div>
-                <button type="button" onClick={handleResetPermissions} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-text-secondary)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-text-tertiary)'}>
-                  <FaRedo style={{ marginRight: 'var(--spacing-1)' }} /> Reset to Default
-                </button>
+                <Button type="button" onClick={handleResetPermissions} variant="ghost" size="small" icon={<FaRedo />}>
+                  Reset to Default
+                </Button>
               </div>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>Configure what {warden.name} can access and modify in the system.</p>
               <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
@@ -362,13 +363,13 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         )}
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <button type="button" onClick={handleDelete} disabled={isLoading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isLoading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => { if (!isLoading) e.target.style.backgroundColor = 'var(--color-danger-bg-light)'; }} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'}>
-            <FaTrash style={{ marginRight: 'var(--spacing-2)' }} /> Delete {staffTitle}
-          </button>
+          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={isLoading} disabled={isLoading}>
+            Delete {staffTitle}
+          </Button>
 
-          <button type="submit" disabled={isLoading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isLoading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => { if (!isLoading) { e.target.style.backgroundColor = 'var(--color-primary-hover)'; e.target.style.boxShadow = 'var(--shadow-md)'; } }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.boxShadow = 'var(--shadow-sm)'; }}>
-            <FaSave style={{ marginRight: 'var(--spacing-2)' }} /> {isLoading ? "Saving..." : "Save Changes"}
-          </button>
+          <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={isLoading} disabled={isLoading}>
+            {isLoading ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </form>
     </Modal>

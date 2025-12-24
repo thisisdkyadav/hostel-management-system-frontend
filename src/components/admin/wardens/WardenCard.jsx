@@ -5,6 +5,7 @@ import EditWardenForm from "./EditWardenForm"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
@@ -120,9 +121,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               : "N/A"}
           </div>
 
-          <button onClick={() => setShowEditForm(true)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2-5)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'} aria-label={`Edit ${staffTitle.toLowerCase()}`}>
-            <FaEdit style={{ fontSize: 'var(--font-size-sm)' }} />
-          </button>
+          <Button onClick={() => setShowEditForm(true)} variant="ghost" size="small" icon={<FaEdit />} aria-label={`Edit ${staffTitle.toLowerCase()}`} />
         </Card.Footer>
       </Card>
 

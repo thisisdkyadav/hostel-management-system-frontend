@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { securityApi } from "../../../services/apiService"
 import Pagination from "../../common/Pagination"
 import DatePicker from "react-datepicker"
@@ -92,9 +93,9 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
               />
             </div>
             <div>
-              <button onClick={clearFilters} style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
-                <FaTimes style={{ marginRight: 'var(--spacing-1)', display: 'inline' }} /> Clear
-              </button>
+              <Button onClick={clearFilters} variant="secondary" size="small" icon={<FaTimes />}>
+                Clear
+              </Button>
             </div>
           </div>
         </div>

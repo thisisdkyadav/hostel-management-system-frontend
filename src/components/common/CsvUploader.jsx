@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react"
 import { FaFileUpload, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
+import Button from "./Button"
 
 const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateHeaders, maxRecords = 500, instructionText }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -109,10 +110,9 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
       </div>
 
       <div className="flex flex-col items-center">
-        <button onClick={generateCsvTemplate} className="flex items-center text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
-          <FaFileDownload className="mr-1" />
+        <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
           Download CSV Template
-        </button>
+        </Button>
 
         {instructionText && <div className="text-xs text-[var(--color-text-muted)] mt-2 bg-[var(--color-bg-tertiary)] p-3 rounded-lg w-full">{instructionText}</div>}
       </div>
@@ -122,14 +122,10 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
           <span className="text-sm text-[var(--color-primary)]">
             Selected file: <span className="font-medium">{csvFile.name}</span>
           </span>
-          <button onClick={(e) => {
+          <Button onClick={(e) => {
             e.stopPropagation()
             resetFile()
-          }}
-            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-body)]"
-          >
-            <FaTimes />
-          </button>
+          }} variant="ghost" size="small" icon={<FaTimes />} title="Remove file" />
         </div>
       )}
 

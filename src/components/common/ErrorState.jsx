@@ -1,5 +1,6 @@
 import React from "react"
 import { FiAlertCircle } from "react-icons/fi"
+import Button from "./Button"
 
 const ErrorState = ({ message, onRetry, title = "Something went wrong", buttonText = "Try Again" }) => {
   return (
@@ -10,9 +11,9 @@ const ErrorState = ({ message, onRetry, title = "Something went wrong", buttonTe
       <h3 className="text-lg font-medium text-[var(--color-text-body)]">{title}</h3>
       <p className="text-[var(--color-text-muted)] mt-1 max-w-md mx-auto">{message}</p>
       {onRetry && (
-        <button onClick={onRetry} className="mt-4 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-medium hover:bg-[var(--color-primary-hover)] transition-colors">
+        <Button onClick={onRetry} variant="primary" size="medium" className="mt-4">
           {buttonText}
-        </button>
+        </Button>
       )}
     </div>
   )

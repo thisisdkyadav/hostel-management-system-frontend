@@ -1,6 +1,7 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {
   if (!show) return null
@@ -26,12 +27,9 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-8)', maxWidth: '28rem', margin: '0 auto var(--spacing-8)' }}>{message}</p>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <button onClick={onClose} style={{ padding: 'var(--spacing-3) var(--spacing-6)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', marginRight: 'var(--spacing-2)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+          <Button onClick={onClose} variant="primary" size="medium">
             {buttonText}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

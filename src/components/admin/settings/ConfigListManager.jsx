@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import ConfirmationDialog from "../../common/ConfirmationDialog"
 
 const styles = {
@@ -302,9 +303,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               style={styles.input}
               disabled={isLoading}
             />
-            <button type="button" onClick={handleAddItem} disabled={isLoading} style={{ ...styles.addButton, backgroundColor: isLoading ? "var(--color-text-disabled)" : "var(--color-primary)" }}>
-              <HiPlus />
-            </button>
+            <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="medium" icon={<HiPlus />} style={{ borderRadius: '0 var(--radius-lg) var(--radius-lg) 0' }} />
           </div>
           {error && <p style={styles.errorText}>{error}</p>}
         </div>
@@ -325,19 +324,9 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         </div>
 
         <div style={styles.submitContainer}>
-          <button type="submit" style={getSubmitButtonStyle()} disabled={isLoading || !hasUnsavedChanges}>
-            {isLoading ? (
-              <>
-                <div style={styles.spinner}></div>
-                Updating...
-              </>
-            ) : (
-              <>
-                <HiSave style={styles.saveIcon} size={20} />
-                {hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
-              </>
-            )}
-          </button>
+          <Button type="submit" variant="primary" size="large" fullWidth isLoading={isLoading} disabled={isLoading || !hasUnsavedChanges} icon={!isLoading ? <HiSave size={20} /> : null}>
+            {isLoading ? "Updating..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
+          </Button>
         </div>
       </form>
 
@@ -359,13 +348,15 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               {error && <p style={styles.errorText}>{error}</p>}
             </div>
             <div style={styles.modalActions}>
-              <button type="button" onClick={() => setShowItemModal(false)} style={styles.cancelButton} disabled={renameLoading}>Cancel</button>
-              <button type="button" onClick={handleDeleteRequest} style={styles.deleteButton} disabled={renameLoading}>
-                <HiTrash style={styles.iconSm} />Delete
-              </button>
-              <button type="button" onClick={handleRename} style={styles.renameButton} disabled={renameLoading}>
-                {renameLoading ? (<><div style={styles.spinnerSm}></div>Renaming...</>) : (<><HiPencil style={styles.iconSm} />Rename</>)}
-              </button>
+              <Button type="button" onClick={() => setShowItemModal(false)} variant="secondary" size="medium" disabled={renameLoading}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={handleDeleteRequest} variant="danger" size="medium" icon={<HiTrash />} disabled={renameLoading}>
+                Delete
+              </Button>
+              <Button type="button" onClick={handleRename} variant="primary" size="medium" icon={<HiPencil />} isLoading={renameLoading} disabled={renameLoading}>
+                {renameLoading ? "Renaming..." : "Rename"}
+              </Button>
             </div>
           </div>
         </Modal>
