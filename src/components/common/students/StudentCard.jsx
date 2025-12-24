@@ -3,6 +3,7 @@ import { IoMdSchool } from "react-icons/io"
 import { FaBuilding, FaEnvelope, FaIdCard, FaEye } from "react-icons/fa"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import Card from "../Card"
+import Button from "../Button"
 
 const StudentCard = ({ student, onClick }) => {
   return (
@@ -57,14 +58,10 @@ const StudentCard = ({ student, onClick }) => {
       </Card.Body>
 
       <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-        <button style={{ color: 'var(--color-primary)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-full)', transition: 'var(--transition-all)', background: 'none', border: 'none', cursor: 'pointer' }} onClick={(e) => {
+        <Button onClick={(e) => {
           e.stopPropagation()
           onClick()
-        }}
-          aria-label="View student details"
-        >
-          <FaEye style={{ height: 'var(--icon-md)', width: 'var(--icon-md)' }} />
-        </button>
+        }} variant="ghost" size="small" icon={<FaEye />} aria-label="View student details" />
       </Card.Footer>
     </Card>
   )

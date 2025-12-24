@@ -3,6 +3,7 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, Fa
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import StudentDetailModal from "./StudentDetailModal"
 import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../services/healthApi"
@@ -1203,32 +1204,23 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
       <div style={styles.footer}>
         {activeTab === "basic" && step === 1 ? (
-          <button onClick={onClose} style={styles.cancelButton}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
         ) : activeTab === "basic" ? (
-          <button onClick={resetForm} style={styles.cancelButton}>
+          <Button onClick={resetForm} variant="secondary" size="medium">
             Back
-          </button>
+          </Button>
         ) : (
-          <button onClick={onClose} style={styles.cancelButton}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <button onClick={handleUpdate} style={styles.confirmButton} disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating} >
-            {isUpdating ? (
-              <>
-                <div className="animate-spin" style={styles.smallSpinner}></div>
-                Updating Students...
-              </>
-            ) : (
-              <>
-                <FaCheck style={{ marginRight: "var(--spacing-2)" }} /> Confirm Update
-              </>
-            )}
-          </button>
+          <Button onClick={handleUpdate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isUpdating} disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
+            {isUpdating ? "Updating Students..." : "Confirm Update"}
+          </Button>
         )}
       </div>
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={null} isImport={true} />}

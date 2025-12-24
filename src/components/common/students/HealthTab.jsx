@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaPlus, FaHeartbeat, FaHospital, FaMedkit, FaEye, FaEdit, FaCalendarCheck, FaCog } from "react-icons/fa"
 import { healthApi } from "../../../services/healthApi"
 import { Link } from "react-router-dom"
+import Button from "../Button"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -204,9 +205,9 @@ const HealthTab = ({ userId }) => {
               </Link>
             )}
             {canAccess("students_info", "edit") && !editHealthData && (
-              <button onClick={() => setEditHealthData(true)} style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
-                <FaEdit style={{ marginRight: 'var(--spacing-1)' }} /> Edit
-              </button>
+              <Button onClick={() => setEditHealthData(true)} variant="primary" size="small" icon={<FaEdit />}>
+                Edit
+              </Button>
             )}
           </div>
         </div>
@@ -258,12 +259,12 @@ const HealthTab = ({ userId }) => {
             </div>
 
             <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-              <button type="button" onClick={() => setEditHealthData(false)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+              <Button type="button" onClick={() => setEditHealthData(false)} variant="secondary" size="small">
                 Cancel
-              </button>
-              <button type="submit" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+              </Button>
+              <Button type="submit" variant="primary" size="small">
                 Save Changes
-              </button>
+              </Button>
             </div>
           </form>
         ) : (
@@ -312,9 +313,9 @@ const HealthTab = ({ userId }) => {
             Insurance Claims
           </h3>
           {canAccess("students_info", "edit") && (
-            <button onClick={handleAddClaim} style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
-              <FaPlus style={{ marginRight: 'var(--spacing-1)' }} /> Add Claim
-            </button>
+            <Button onClick={handleAddClaim} variant="primary" size="small" icon={<FaPlus />}>
+              Add Claim
+            </Button>
           )}
         </div>
 
@@ -347,9 +348,9 @@ const HealthTab = ({ userId }) => {
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{claim.hospitalName}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-                      <button onClick={() => handleViewClaim(claim)} style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-sm)' }}>
-                        <FaEye style={{ marginRight: 'var(--spacing-1)' }} /> View
-                      </button>
+                      <Button onClick={() => handleViewClaim(claim)} variant="ghost" size="small" icon={<FaEye />}>
+                        View
+                      </Button>
                     </td>
                   </tr>
                 ))}

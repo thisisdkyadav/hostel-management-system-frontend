@@ -1,4 +1,5 @@
 import React from "react"
+import Button from "./Button"
 
 const Pagination = ({ currentPage, totalPages, paginate }) => {
   return (
@@ -8,12 +9,9 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
       </div>
 
       <nav className="flex flex-wrap justify-center gap-2">
-        <button onClick={() => paginate(Math.max(1, currentPage - 1))}
-          disabled={currentPage === 1}
-          className={`px-3 py-1.5 rounded-md transition-colors text-sm ${currentPage === 1 ? "bg-[var(--color-bg-muted)] text-[var(--color-text-disabled)] cursor-not-allowed" : "bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border-primary)]"}`}
-        >
+        <Button onClick={() => paginate(Math.max(1, currentPage - 1))} disabled={currentPage === 1} variant="secondary" size="small">
           Previous
-        </button>
+        </Button>
 
         {Array.from({ length: Math.min(5, totalPages) }).map((_, index) => {
           // Logic to show pages around current page
@@ -37,12 +35,9 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
           )
         })}
 
-        <button onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
-          className={`px-3 py-1.5 rounded-md transition-colors text-sm ${currentPage === totalPages ? "bg-[var(--color-bg-muted)] text-[var(--color-text-disabled)] cursor-not-allowed" : "bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] hover:bg-[var(--color-primary)] hover:text-white border border-[var(--color-border-primary)]"}`}
-        >
+        <Button onClick={() => paginate(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} variant="secondary" size="small">
           Next
-        </button>
+        </Button>
       </nav>
     </div>
   )

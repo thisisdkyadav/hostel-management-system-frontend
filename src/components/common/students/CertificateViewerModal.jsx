@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 
@@ -282,15 +283,10 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
             </div>
           </div>
           <div style={styles.headerActions}>
-            <button onClick={handleDownload} style={styles.downloadButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-success-hover)")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-success)")}
-            >
-              <FaDownload style={styles.buttonIcon} />
-              <span>Download</span>
-            </button>
-            <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.openButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-primary-hover)")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-primary)")}
-            >
+            <Button onClick={handleDownload} variant="success" size="small" icon={<FaDownload />}>
+              Download
+            </Button>
+            <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.openButton}>
               <FaExternalLinkAlt style={styles.buttonIcon} />
               <span>Open in New Tab</span>
             </a>
@@ -332,15 +328,10 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
                   <h3 style={styles.fallbackTitle}>Cannot display PDF in browser</h3>
                   <p style={styles.fallbackText}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
                   <div style={styles.fallbackActions}>
-                    <button onClick={handleDownload} style={styles.fallbackDownloadButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-success-hover)")}
-                      onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-success)")}
-                    >
-                      <FaDownload style={styles.buttonIcon} />
-                      <span>Download PDF</span>
-                    </button>
-                    <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.fallbackOpenButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-primary-hover)")}
-                      onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-primary)")}
-                    >
+                    <Button onClick={handleDownload} variant="success" size="medium" icon={<FaDownload />}>
+                      Download PDF
+                    </Button>
+                    <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.fallbackOpenButton}>
                       <FaExternalLinkAlt style={styles.buttonIcon} />
                       <span>Open in New Tab</span>
                     </a>
@@ -357,12 +348,9 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
             <div style={styles.errorBox}>
               <p style={styles.errorTitle}>Unable to load document</p>
               <p style={styles.errorText}>There was an error loading the document. Please try downloading it instead.</p>
-              <button onClick={handleDownload} style={styles.errorButton} onMouseEnter={(e) => (e.target.style.backgroundColor = "var(--color-danger-hover)")}
-                onMouseLeave={(e) => (e.target.style.backgroundColor = "var(--color-danger)")}
-              >
-                <FaDownload style={styles.buttonIcon} />
-                <span>Download Document</span>
-              </button>
+              <Button onClick={handleDownload} variant="danger" size="medium" icon={<FaDownload />}>
+                Download Document
+              </Button>
             </div>
           </div>
         )}
