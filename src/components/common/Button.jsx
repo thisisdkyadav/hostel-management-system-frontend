@@ -14,14 +14,22 @@ const Button = ({
   fullWidth = false,
   animation = "none",
   gradient = false,
+  rounded = false,
   style = {},
   ...rest
 }) => {
   const [isHovered, setIsHovered] = React.useState(false)
 
+  // Border radius based on size and rounded prop
+  const radiusClasses = {
+    small: rounded ? "rounded-[var(--radius-button)]" : "rounded-[var(--radius-button-sm)]",
+    medium: rounded ? "rounded-[var(--radius-button)]" : "rounded-[var(--radius-button-md)]",
+    large: rounded ? "rounded-[var(--radius-button)]" : "rounded-[var(--radius-button-lg)]",
+  }
+
   // Base classes
   const baseClasses = `
-    rounded-[var(--radius-button)] font-medium transition-all duration-200 
+    ${radiusClasses[size]} font-medium transition-all duration-200 
     flex items-center justify-center gap-2
     disabled:cursor-not-allowed disabled:opacity-60
     relative overflow-hidden
@@ -158,6 +166,7 @@ Button.propTypes = {
   fullWidth: PropTypes.bool,
   animation: PropTypes.oneOf(["none", "pulse", "bounce", "slideIn", "glow", "ripple", "shake"]),
   gradient: PropTypes.bool,
+  rounded: PropTypes.bool,
   style: PropTypes.object,
 }
 
