@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { adminApi } from "../../../services/adminApi"
 import NoResults from "../../common/NoResults"
 
@@ -133,9 +134,9 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
               <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
               <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." style={{ width: '100%', paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
             </div>
-            <button onClick={exportToCSV} style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'} title="Export to CSV">
-              <FaFileDownload style={{ marginRight: 'var(--spacing-2)' }} /> Export
-            </button>
+            <Button onClick={exportToCSV} variant="primary" size="medium" icon={<FaFileDownload />} title="Export to CSV">
+              Export
+            </Button>
           </div>
         </div>
 
@@ -192,9 +193,9 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         )}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}>
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

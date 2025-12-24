@@ -11,7 +11,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
     <PageHeader title={title}>
       {/* View Toggle */}
       <div className="flex rounded-[var(--radius-full)]" style={{ backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)' }} >
-        <button onClick={() => setViewMode("list")} 
+        <button onClick={() => setViewMode("list")}
           className="flex items-center rounded-[var(--radius-full)] font-medium"
           style={{
             gap: 'var(--spacing-2)',
@@ -36,7 +36,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
           <FaList style={{ fontSize: 'var(--font-size-xs)' }} />
           <span className="hidden sm:inline">List</span>
         </button>
-        <button onClick={() => setViewMode("cards")} 
+        <button onClick={() => setViewMode("cards")}
           className="flex items-center rounded-[var(--radius-full)] font-medium"
           style={{
             gap: 'var(--spacing-2)',
@@ -64,9 +64,9 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
       </div>
 
       {/* Filter Button */}
-      <Button onClick={() => setShowFilters(!showFilters)} 
-        variant={showFilters ? "primary" : "white"} 
-        size="small" 
+      <Button onClick={() => setShowFilters(!showFilters)}
+        variant={showFilters ? "primary" : "white"}
+        size="medium"
         icon={<FaFilter style={{ fontSize: 'var(--font-size-xs)' }} />}
         className={showFilters ? "" : ""}
         style={showFilters ? { boxShadow: 'var(--ring-primary)' } : {}}
@@ -76,9 +76,9 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
 
       {/* Create Button */}
       {canAccess("complaints", "create") && WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
-        <Button onClick={() => setShowCraftComplaint(true)} 
-          variant="primary" 
-          size="small" 
+        <Button onClick={() => setShowCraftComplaint(true)}
+          variant="primary"
+          size="medium"
           icon={<FaPlus style={{ fontSize: 'var(--font-size-xs)' }} />}
           animation="slideIn"
         >

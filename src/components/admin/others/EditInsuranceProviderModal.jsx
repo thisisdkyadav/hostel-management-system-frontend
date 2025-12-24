@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTrash, FaSave, FaCalendarAlt } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
 
 const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
@@ -127,19 +128,17 @@ const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <button type="button" onClick={handleDelete} disabled={loading} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'}>
-            {loading ? <span style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: 'var(--border-2) solid var(--color-danger)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : <FaTrash style={{ marginRight: 'var(--spacing-2)' }} />}
+          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
             Delete Provider
-          </button>
+          </Button>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-            <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}>
+            <Button type="button" onClick={onClose} variant="secondary" size="medium">
               Cancel
-            </button>
-            <button type="submit" disabled={loading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
-              {loading ? <span style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : <FaSave style={{ marginRight: 'var(--spacing-2)' }} />}
+            </Button>
+            <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
               Save Changes
-            </button>
+            </Button>
           </div>
         </div>
       </form>

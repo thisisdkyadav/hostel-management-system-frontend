@@ -2,6 +2,7 @@ import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, providerName }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -147,10 +148,9 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
             <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <button onClick={generateCsvTemplate} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-2)', background: 'none', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}>
-              <FaFileDownload style={{ marginRight: 'var(--spacing-1)' }} />
+            <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
               Download CSV Template
-            </button>
+            </Button>
 
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
               <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
@@ -227,28 +227,19 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
 
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
         {step === 1 ? (
-          <button onClick={onClose} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
         ) : (
-          <button onClick={resetForm} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
+          <Button onClick={resetForm} variant="secondary" size="medium">
             Back
-          </button>
+          </Button>
         )}
 
         {step === 2 && (
-          <button onClick={handleUpdate} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', opacity: (parsedData.length === 0 || isLoading || isUpdating) ? 'var(--opacity-disabled)' : 'var(--opacity-100)', cursor: (parsedData.length === 0 || isLoading || isUpdating) ? 'not-allowed' : 'pointer' }} disabled={parsedData.length === 0 || isLoading || isUpdating} onMouseEnter={(e) => { if (parsedData.length > 0 && !isLoading && !isUpdating) e.target.style.backgroundColor = 'var(--color-primary-hover)'; }} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
-            {isUpdating ? (
-              <>
-                <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', marginRight: 'var(--spacing-2)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
-                Updating Insurance...
-              </>
-            ) : (
-              <>
-                <FaCheck style={{ marginRight: 'var(--spacing-2)' }} /> Confirm Update
-              </>
-            )}
-          </button>
+          <Button onClick={handleUpdate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
+            {isUpdating ? "Updating Insurance..." : "Confirm Update"}
+          </Button>
         )}
       </div>
     </Modal>

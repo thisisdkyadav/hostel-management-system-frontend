@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import SearchBar from "../../common/SearchBar"
 import NoResults from "../../common/NoResults"
+import Button from "../../common/Button"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"
 import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
@@ -58,9 +59,9 @@ const InsuranceProviders = () => {
     <div>
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Insurance Providers</h2>
-        <button onClick={() => setShowAddModal(true)} style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-xl)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary-hover)'; e.target.style.boxShadow = 'var(--shadow-md)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.boxShadow = 'var(--shadow-sm)'; }}>
-          <FaPlus style={{ marginRight: 'var(--spacing-2)' }} /> Add Provider
-        </button>
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
+          Add Provider
+        </Button>
       </header>
 
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center sm:space-y-0">

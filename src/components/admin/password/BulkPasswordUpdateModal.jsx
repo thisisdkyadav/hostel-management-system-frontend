@@ -2,6 +2,7 @@ import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const styles = {
   spaceY5: {
@@ -422,10 +423,9 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
             <input type="file" ref={fileInputRef} style={styles.hiddenInput} accept=".csv" onChange={handleFileUpload} />
           </div>
           <div style={styles.centerColumn}>
-            <button onClick={generateCsvTemplate} style={styles.downloadButton}>
-              <FaFileDownload style={styles.downloadIcon} />
+            <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
               Download CSV Template
-            </button>
+            </Button>
 
             <div style={styles.infoBox}>
               <p style={styles.infoTitle}>Field Input Types:</p>
@@ -501,28 +501,19 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
 
       <div style={styles.footer}>
         {step === 1 ? (
-          <button onClick={onClose} style={styles.cancelButton}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
         ) : (
-          <button onClick={resetForm} style={styles.cancelButton}>
+          <Button onClick={resetForm} variant="secondary" size="medium">
             Back
-          </button>
+          </Button>
         )}
 
         {step === 2 && (
-          <button onClick={handleUpdate} style={{ ...styles.confirmButton, ...(parsedData.length === 0 || isLoading || isUpdating ? styles.confirmButtonDisabled : {}) }} disabled={parsedData.length === 0 || isLoading || isUpdating} >
-            {isUpdating ? (
-              <>
-                <div style={styles.buttonSpinner}></div>
-                Updating Passwords...
-              </>
-            ) : (
-              <>
-                <FaCheck /> Confirm Update
-              </>
-            )}
-          </button>
+          <Button onClick={handleUpdate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
+            {isUpdating ? "Updating Passwords..." : "Confirm Update"}
+          </Button>
         )}
       </div>
     </Modal>
