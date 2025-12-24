@@ -3,6 +3,7 @@ import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
 import superAdminService from "../../../services/superAdminService"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const AddAdminModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -146,12 +147,25 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-end pt-[var(--spacing-5)] mt-[var(--spacing-6)] border-t border-[var(--color-border-light)] space-y-[var(--spacing-3)] sm:space-y-0 sm:space-x-[var(--spacing-3)]">
-          <button type="button" className="order-last sm:order-first px-[var(--spacing-5)] py-[var(--spacing-2-5)] bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-lg)] transition-[var(--transition-all)]" onClick={onClose} disabled={isSubmitting}>
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="secondary"
+            size="medium"
+            disabled={isSubmitting}
+            className="order-last sm:order-first"
+          >
             Cancel
-          </button>
-          <button type="submit" className={`px-[var(--spacing-5)] py-[var(--spacing-2-5)] bg-[var(--color-primary)] text-[var(--color-white)] rounded-[var(--radius-lg)] hover:bg-[var(--color-primary-hover)] transition-[var(--transition-all)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] ${isSubmitting ? "opacity-[var(--opacity-disabled)] cursor-not-allowed" : ""}`} disabled={isSubmitting}>
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="medium"
+            isLoading={isSubmitting}
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Adding..." : "Add Administrator"}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

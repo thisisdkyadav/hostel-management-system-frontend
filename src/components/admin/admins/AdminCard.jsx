@@ -4,6 +4,7 @@ import { BsCalendarCheck } from "react-icons/bs"
 import EditAdminForm from "./EditAdminForm"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import Card from "../../common/Card"
+import Button from "../../common/Button"
 
 const AdminCard = ({ admin, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
@@ -50,19 +51,19 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
 
         <Card.Header className="mb-0">
           <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex-shrink-0 mb-[var(--spacing-3)] md:mb-0 md:mr-[var(--spacing-4)]">
-            {admin.profileImage ? (
-              <img src={getMediaUrl(admin.profileImage)} alt={admin.name} className="w-[var(--avatar-xl)] h-[var(--avatar-xl)] rounded-[var(--radius-full)] object-cover border-[var(--border-2)] border-[var(--color-primary)] shadow-[var(--shadow-sm)]" />
-            ) : (
-              <div className="w-[var(--avatar-xl)] h-[var(--avatar-xl)] rounded-[var(--radius-full)] bg-[var(--color-primary-bg)] flex items-center justify-center border-[var(--border-2)] border-[var(--color-primary)]">
-                <FaUserShield className="text-[var(--color-primary)] text-[var(--font-size-2xl)]" />
-              </div>
-            )}
-          </div>
-          <div>
-            <h3 className="font-[var(--font-weight-bold)] text-[var(--font-size-lg)] text-[var(--color-text-secondary)] truncate">{admin.name}</h3>
-            <div className="text-[var(--font-size-sm)] text-[var(--color-text-muted)] mt-[var(--spacing-0-5)] truncate">{admin.category || "Admin"}</div>
-          </div>
+            <div className="flex-shrink-0 mb-[var(--spacing-3)] md:mb-0 md:mr-[var(--spacing-4)]">
+              {admin.profileImage ? (
+                <img src={getMediaUrl(admin.profileImage)} alt={admin.name} className="w-[var(--avatar-xl)] h-[var(--avatar-xl)] rounded-[var(--radius-full)] object-cover border-[var(--border-2)] border-[var(--color-primary)] shadow-[var(--shadow-sm)]" />
+              ) : (
+                <div className="w-[var(--avatar-xl)] h-[var(--avatar-xl)] rounded-[var(--radius-full)] bg-[var(--color-primary-bg)] flex items-center justify-center border-[var(--border-2)] border-[var(--color-primary)]">
+                  <FaUserShield className="text-[var(--color-primary)] text-[var(--font-size-2xl)]" />
+                </div>
+              )}
+            </div>
+            <div>
+              <h3 className="font-[var(--font-weight-bold)] text-[var(--font-size-lg)] text-[var(--color-text-secondary)] truncate">{admin.name}</h3>
+              <div className="text-[var(--font-size-sm)] text-[var(--color-text-muted)] mt-[var(--spacing-0-5)] truncate">{admin.category || "Admin"}</div>
+            </div>
           </div>
         </Card.Header>
 
@@ -94,17 +95,21 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
             Added on{" "}
             {admin.createdAt
               ? new Date(admin.createdAt).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
               : "N/A"}
           </div>
 
           <div className="flex space-x-[var(--spacing-2)]">
-            <button onClick={() => setShowEditForm(true)} className="flex items-center justify-center p-[var(--spacing-2-5)] bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-[var(--radius-lg)] hover:bg-[var(--color-primary-bg-hover)] transition-[var(--transition-all)] duration-[var(--duration-normal)]" aria-label="Edit administrator">
-              <FaEdit className="text-[var(--font-size-sm)]" />
-            </button>
+            <Button
+              onClick={() => setShowEditForm(true)}
+              variant="secondary"
+              size="small"
+              icon={<FaEdit />}
+              aria-label="Edit administrator"
+            />
           </div>
         </Card.Footer>
       </Card>

@@ -5,6 +5,7 @@ import superAdminService from "../../../services/superAdminService"
 import Modal from "../../common/Modal"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import Button from "../../common/Button"
 
 const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
@@ -163,13 +164,28 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row justify-between pt-[var(--spacing-5)] mt-[var(--spacing-6)] border-t border-[var(--color-border-light)]">
-          <button type="button" onClick={handleDelete} disabled={isLoading} className="mt-[var(--spacing-3)] sm:mt-0 px-[var(--spacing-4)] py-[var(--spacing-2-5)] bg-[var(--color-danger-bg-light)] text-[var(--color-danger)] rounded-[var(--radius-lg)] hover:bg-[var(--color-danger-bg)] transition-[var(--transition-all)] flex items-center justify-center disabled:opacity-[var(--opacity-disabled)]">
-            <FaTrash className="mr-[var(--spacing-2)]" /> Delete Administrator
-          </button>
+          <Button
+            type="button"
+            onClick={handleDelete}
+            variant="danger"
+            size="medium"
+            icon={<FaTrash />}
+            disabled={isLoading}
+            className="mt-[var(--spacing-3)] sm:mt-0"
+          >
+            Delete Administrator
+          </Button>
 
-          <button type="submit" disabled={isLoading} className={`px-[var(--spacing-4)] py-[var(--spacing-2-5)] bg-[var(--color-primary)] text-[var(--color-white)] rounded-[var(--radius-lg)] hover:bg-[var(--color-primary-hover)] transition-[var(--transition-all)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] flex items-center justify-center ${isLoading ? "opacity-[var(--opacity-disabled)] cursor-not-allowed" : ""}`}>
-            <FaSave className="mr-[var(--spacing-2)]" /> {isLoading ? "Saving..." : "Save Changes"}
-          </button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="medium"
+            icon={<FaSave />}
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            {isLoading ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </form>
     </Modal>

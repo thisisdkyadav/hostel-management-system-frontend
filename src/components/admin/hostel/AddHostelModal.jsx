@@ -3,6 +3,7 @@ import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const AddHostelModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -83,12 +84,21 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)', gap: 'var(--spacing-3)' }}>
-          <button type="button" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-bg-hover)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onClick={onClose}>
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="secondary"
+            size="medium"
+          >
             Cancel
-          </button>
-          <button type="submit" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary-hover)'; e.target.style.boxShadow = 'var(--shadow-md)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.boxShadow = 'var(--shadow-sm)'; }}>
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="medium"
+          >
             Add Hostel
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

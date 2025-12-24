@@ -44,7 +44,6 @@ const Button = ({
       : `bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50`,
     secondary: `
       bg-[var(--color-primary-bg)] text-[var(--color-primary)]
-      border border-[var(--color-primary-bg-hover)]
       hover:bg-[var(--color-primary-bg-hover)]
     `,
     danger: `
