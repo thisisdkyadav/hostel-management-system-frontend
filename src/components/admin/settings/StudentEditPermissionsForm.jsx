@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
+import Button from "../../common/Button"
 
 const getFieldDescription = (field) => {
   const descriptions = {
@@ -252,19 +253,9 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
       </div>
 
       <div style={styles.submitContainer}>
-        <button type="submit" style={getSubmitButtonStyle()} disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <div style={styles.spinner}></div>
-              Updating...
-            </>
-          ) : (
-            <>
-              <HiSave style={styles.saveIcon} size={20} />
-              Update Permissions
-            </>
-          )}
-        </button>
+        <Button type="submit" variant="primary" size="large" fullWidth isLoading={isLoading} disabled={isLoading} icon={!isLoading ? <HiSave size={20} /> : null}>
+          {isLoading ? "Updating..." : "Update Permissions"}
+        </Button>
       </div>
     </form>
   )

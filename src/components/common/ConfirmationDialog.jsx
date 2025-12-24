@@ -1,6 +1,7 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
 import Modal from "./Modal"
+import Button from "./Button"
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Action", message = "Are you sure you want to proceed?", confirmText = "Confirm", cancelText = "Cancel", isDestructive = false }) => {
   const handleConfirm = () => {
@@ -11,12 +12,12 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
   const renderFooter = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-        <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+        <Button type="button" onClick={onClose} variant="secondary" size="medium">
           {cancelText}
-        </button>
-        <button type="button" onClick={handleConfirm} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: isDestructive ? 'var(--color-danger)' : 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+        </Button>
+        <Button type="button" onClick={handleConfirm} variant={isDestructive ? "danger" : "primary"} size="medium">
           {confirmText}
-        </button>
+        </Button>
       </div>
     )
   }

@@ -3,6 +3,7 @@ import { FaTrash, FaSave, FaBuilding, FaUser, FaExclamationTriangle } from "reac
 import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
@@ -108,15 +109,13 @@ const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <button type="button" onClick={handleDelete} disabled={loading} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: loading ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-danger-bg-light)')} onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-danger-bg)')}>
-            {loading ? <span style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: `var(--border-2) solid var(--color-danger-text)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : <FaTrash style={{ marginRight: 'var(--spacing-2)' }} />}
+          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
             Delete Account
-          </button>
+          </Button>
 
-          <button type="submit" disabled={loading} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: loading ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}>
-            {loading ? <span style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : <FaSave style={{ marginRight: 'var(--spacing-2)' }} />}
+          <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
             Save Changes
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

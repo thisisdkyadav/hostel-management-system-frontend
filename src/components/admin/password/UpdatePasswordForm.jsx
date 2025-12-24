@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
+import Button from "../../common/Button"
 
 const styles = {
   form: {
@@ -264,16 +265,9 @@ const UpdatePasswordForm = ({ onSubmit }) => {
             </p>
           </div>
 
-          <button type="submit" disabled={isSubmitting} style={{ ...styles.submitButton, ...(isSubmitting ? styles.submitButtonDisabled : {}) }} >
-            {isSubmitting ? (
-              <>
-                <div style={styles.spinner}></div>
-                Processing...
-              </>
-            ) : (
-              "Update Password"
-            )}
-          </button>
+          <Button type="submit" variant="primary" size="large" fullWidth isLoading={isSubmitting} disabled={isSubmitting}>
+            {isSubmitting ? "Processing..." : "Update Password"}
+          </Button>
         </div>
       </div>
     </form>

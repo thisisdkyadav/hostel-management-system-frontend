@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
 
@@ -300,12 +301,12 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           )}
 
           <div style={styles.footer}>
-            <button onClick={handleClose} style={styles.cancelButton}>
+            <Button onClick={handleClose} variant="secondary" size="medium">
               Cancel
-            </button>
-            <button onClick={handleProceed} disabled={!selectedRole} style={{ ...styles.proceedButton, ...(!selectedRole ? styles.proceedButtonDisabled : {}) }} >
+            </Button>
+            <Button onClick={handleProceed} variant="primary" size="medium" disabled={!selectedRole}>
               Proceed
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
@@ -347,19 +348,12 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           )}
 
           <div style={styles.footer}>
-            <button onClick={handleBack} disabled={isProcessing} style={{ ...styles.cancelButton, ...(isProcessing ? styles.cancelButtonDisabled : {}) }} >
+            <Button onClick={handleBack} variant="secondary" size="medium" disabled={isProcessing}>
               Back
-            </button>
-            <button onClick={handleConfirmRemove} disabled={isProcessing || confirmText !== selectedRole} style={{ ...styles.dangerButton, ...(isProcessing || confirmText !== selectedRole ? styles.dangerButtonDisabled : {}) }} >
-              {isProcessing ? (
-                <>
-                  <div style={styles.spinner}></div>
-                  Processing...
-                </>
-              ) : (
-                "Remove Passwords"
-              )}
-            </button>
+            </Button>
+            <Button onClick={handleConfirmRemove} variant="danger" size="medium" isLoading={isProcessing} disabled={isProcessing || confirmText !== selectedRole}>
+              {isProcessing ? "Processing..." : "Remove Passwords"}
+            </Button>
           </div>
         </div>
       )}

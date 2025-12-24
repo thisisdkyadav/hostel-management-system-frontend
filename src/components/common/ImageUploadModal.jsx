@@ -1,6 +1,7 @@
 import React, { useState, useCallback, use } from "react"
 import Cropper from "react-easy-crop"
 import Modal from "./Modal"
+import Button from "./Button"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi } from "../../services/apiService"
 
@@ -156,21 +157,12 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-end pt-4 space-y-3 sm:space-y-0 sm:space-x-3">
-                    <button type="button" onClick={handleReset} className="order-last sm:order-first flex items-center justify-center px-4 py-2 bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-tertiary)] rounded-lg transition-all font-medium text-[var(--color-text-body)]">
-                      <HiX className="mr-1.5" /> Reset
-                    </button>
-                    <button type="button" onClick={uploadImage} disabled={uploading} className="flex items-center justify-center px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all shadow-sm hover:shadow font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-                      {uploading ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <HiUpload className="mr-1.5" /> Upload Image
-                        </>
-                      )}
-                    </button>
+                    <Button type="button" onClick={handleReset} variant="secondary" size="medium" icon={<HiX />} className="order-last sm:order-first">
+                      Reset
+                    </Button>
+                    <Button type="button" onClick={uploadImage} variant="primary" size="medium" icon={<HiUpload />} isLoading={uploading} disabled={uploading}>
+                      {uploading ? "Uploading..." : "Upload Image"}
+                    </Button>
                   </div>
                 </div>
               </>

@@ -4,6 +4,7 @@ import { FaExclamationTriangle } from "react-icons/fa"
 import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const AddSecurityModal = ({ show, onClose, onSuccess }) => {
   const { hostelList } = useAdmin()
@@ -116,22 +117,13 @@ const AddSecurityModal = ({ show, onClose, onSuccess }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <button type="button" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onClick={onClose}>
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
-
-          <button type="submit" disabled={loading} style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: loading ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}>
-            {loading ? (
-              <>
-                <span style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span>
-                Adding...
-              </>
-            ) : (
-              "Add Security"
-            )
-            }
-          </button >
-        </div >
+          </Button>
+          <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+            {loading ? "Adding..." : "Add Security"}
+          </Button>
+        </div>
       </form >
     </Modal >
   )
