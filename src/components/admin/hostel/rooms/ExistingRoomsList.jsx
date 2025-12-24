@@ -164,9 +164,12 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
                     <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: room.status === "Active" ? 'var(--color-success-bg)' : room.status === "Inactive" ? 'var(--color-bg-hover)' : 'var(--color-warning-bg)', color: room.status === "Active" ? 'var(--color-success-text)' : room.status === "Inactive" ? 'var(--color-text-secondary)' : 'var(--color-warning-text)' }}>{room.status}</span>
                   </td>
                   <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-                    <button onClick={() => handleEditRoom(room)} style={{ color: 'var(--color-primary)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}>
-                      <FaEdit />
-                    </button>
+                    <Button
+                      onClick={() => handleEditRoom(room)}
+                      variant="ghost"
+                      size="small"
+                      icon={<FaEdit />}
+                    />
                   </td>
                 </tr>
               ))}

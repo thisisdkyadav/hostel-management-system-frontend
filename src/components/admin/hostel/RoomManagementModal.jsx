@@ -48,9 +48,12 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
           <div style={{ padding: 'var(--spacing-4) var(--spacing-6)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-primary)' }}>Delete All Allocations</h3>
-              <button onClick={() => setShowDeleteConfirmation(false)} style={{ color: 'var(--color-text-light)', borderRadius: 'var(--radius-full)', padding: 'var(--spacing-2)', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.target.style.color = 'var(--color-text-muted)'; e.target.style.backgroundColor = 'var(--color-bg-hover)'; }} onMouseLeave={(e) => { e.target.style.color = 'var(--color-text-light)'; e.target.style.backgroundColor = 'transparent'; }}>
-                <FaTimes style={{ fontSize: 'var(--font-size-lg)' }} />
-              </button>
+              <Button
+                onClick={() => setShowDeleteConfirmation(false)}
+                variant="ghost"
+                size="small"
+                icon={<FaTimes />}
+              />
             </div>
           </div>
 
@@ -108,14 +111,26 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-6)' }}>
                 <div style={{ display: 'inline-flex', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }} role="group">
-                  <button type="button" style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', borderTopLeftRadius: 'var(--radius-lg)', borderBottomLeftRadius: 'var(--radius-lg)', backgroundColor: inputMethod === "form" ? 'var(--color-primary)' : 'var(--color-bg-primary)', color: inputMethod === "form" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', transition: 'var(--transition-colors)' }} onClick={() => setInputMethod("form")} onMouseEnter={(e) => { if (inputMethod !== "form") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }} onMouseLeave={(e) => { if (inputMethod !== "form") e.target.style.backgroundColor = 'var(--color-bg-primary)'; }}>
-                    <FaEdit style={{ display: 'inline', marginRight: 'var(--spacing-2)' }} />
+                  <Button
+                    type="button"
+                    variant={inputMethod === "form" ? "primary" : "white"}
+                    size="medium"
+                    icon={<FaEdit />}
+                    onClick={() => setInputMethod("form")}
+                    style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+                  >
                     Form Input
-                  </button>
-                  <button type="button" style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', borderTopRightRadius: 'var(--radius-lg)', borderBottomRightRadius: 'var(--radius-lg)', backgroundColor: inputMethod === "csv" ? 'var(--color-primary)' : 'var(--color-bg-primary)', color: inputMethod === "csv" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'var(--border-1) solid var(--color-border-input)', transition: 'var(--transition-colors)' }} onClick={() => setInputMethod("csv")} onMouseEnter={(e) => { if (inputMethod !== "csv") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }} onMouseLeave={(e) => { if (inputMethod !== "csv") e.target.style.backgroundColor = 'var(--color-bg-primary)'; }}>
-                    <FaTable style={{ display: 'inline', marginRight: 'var(--spacing-2)' }} />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={inputMethod === "csv" ? "primary" : "white"}
+                    size="medium"
+                    icon={<FaTable />}
+                    onClick={() => setInputMethod("csv")}
+                    style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                  >
                     CSV Import
-                  </button>
+                  </Button>
                 </div>
               </div>
 

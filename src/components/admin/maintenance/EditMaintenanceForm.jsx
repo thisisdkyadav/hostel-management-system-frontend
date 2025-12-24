@@ -3,6 +3,7 @@ import { FaTrash, FaSave, FaTools, FaExclamationTriangle, FaPhone } from "react-
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
@@ -155,15 +156,13 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
 
 
         <div className="flex flex-row justify-between pt-4 mt-5 border-t gap-3" style={{ borderColor: "var(--color-border-light)" }}>
-          <button type="button" onClick={handleDelete} disabled={loading} className="px-4 py-2.5 bg-[var(--color-danger-bg)] hover:bg-[var(--color-danger-bg-light)] text-[var(--color-danger-text)] rounded-lg transition-colors flex items-center justify-center border-0 disabled:cursor-not-allowed disabled:opacity-50">
-            {loading ? <span className="w-5 h-5 border-2 border-[var(--color-danger)] border-t-transparent rounded-full animate-spin mr-2"></span> : <FaTrash className="mr-2" />}
+          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
             Delete Account
-          </button>
+          </Button>
 
-          <button type="submit" disabled={loading} className="px-4 py-2.5 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-lg transition-colors flex items-center justify-center border-0 disabled:cursor-not-allowed disabled:opacity-50">
-            {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span> : <FaSave className="mr-2" />}
+          <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
             Save Changes
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaFilter, FaCalendarAlt, FaUserCog, FaUsers, FaSearch, FaUserCheck, FaCheck, FaTimes } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import { securityApi } from "../../../services/apiService"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -208,7 +209,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
   return (
     <Modal title={`${hostel.name} - Staff Attendance`} onClose={onClose} width={900}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-       
+
 
         {/* Filters */}
         <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
@@ -239,9 +240,14 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
               />
             </div>
             <div>
-              <button onClick={clearFilters} style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
-                <FaTimes style={{ marginRight: 'var(--spacing-1)', display: 'inline' }} /> Clear
-              </button>
+              <Button
+                onClick={clearFilters}
+                variant="secondary"
+                size="small"
+                icon={<FaTimes />}
+              >
+                Clear
+              </Button>
             </div>
           </div>
         </div>
