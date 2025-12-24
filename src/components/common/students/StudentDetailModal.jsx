@@ -41,6 +41,7 @@ import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import Button from "../../common/Button"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()
@@ -572,9 +573,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
               <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Student Inventory</h3>
               {user && canAccess("student_inventory", "create") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                <button onClick={handleOpenAssignInventory} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', fontSize: 'var(--font-size-sm)' }}>
-                  <FaPlus size={14} /> Assign Item
-                </button>
+                <Button onClick={handleOpenAssignInventory} variant="primary" size="small" icon={<FaPlus size={14} />}>
+                  Assign Item
+                </Button>
               )}
             </div>
 
@@ -622,7 +623,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                         {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                           <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                              <button onClick={() => {
+                              <Button onClick={() => {
                                 setSelectedInventoryItem(item)
                                 setInventoryFormData({
                                   studentProfileId: selectedStudent._id,
@@ -635,14 +636,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                 })
                                 setInventoryModalType("edit")
                                 setShowInventoryModal(true)
-                              }}
-                                style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}
-                                title="View/Edit Item"
-                              >
-                                <FaEdit />
-                              </button>
+                              }} variant="ghost" size="small" icon={<FaEdit />} title="View/Edit Item" />
                               {item.status === "Issued" && (
-                                <button onClick={() => {
+                                <Button onClick={() => {
                                   setSelectedInventoryItem(item)
                                   setInventoryFormData({
                                     studentProfileId: selectedStudent._id,
@@ -655,12 +651,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                   })
                                   setInventoryModalType("return")
                                   setShowInventoryModal(true)
-                                }}
-                                  style={{ width: 'var(--spacing-8)', height: 'var(--spacing-8)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-success)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}
-                                  title="Return Item"
-                                >
-                                  <FaUndo />
-                                </button>
+                                }} variant="success" size="small" icon={<FaUndo />} title="Return Item" />
                               )}
                             </div>
                           </td>
@@ -881,15 +872,15 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               Email Student
             </a>
             {canAccess("students_info", "edit") && (
-              <button onClick={() => setShowEditModal(true)} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)' }}>
+              <Button onClick={() => setShowEditModal(true)} variant="primary" size="medium">
                 Edit Student
-              </button>
+              </Button>
             )}
           </>
         )}
-        <button onClick={() => setShowStudentDetail(false)} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+        <Button onClick={() => setShowStudentDetail(false)} variant="secondary" size="medium">
           Close
-        </button>
+        </Button>
       </div>
     )
   }
@@ -925,22 +916,22 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
       {/* Inventory Modal */}
       {showInventoryModal && (
         <Modal title={inventoryModalType === "assign" ? "Assign Inventory Item" : inventoryModalType === "edit" ? "View/Edit Inventory Item" : "Return Inventory Item"} onClose={closeInventoryModal} footer={<div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-          <button type="button" onClick={closeInventoryModal} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer' }}>
+          <Button type="button" onClick={closeInventoryModal} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
 
           {/* Return button - only for return mode */}
           {inventoryModalType === "return" && (
-            <button type="button" onClick={handleReturnInventory} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', opacity: loading ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px' }}>
-              {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : "Return Item"}
-            </button>
+            <Button type="button" onClick={handleReturnInventory} variant="success" size="medium" isLoading={loading}>
+              Return Item
+            </Button>
           )}
 
           {/* Submit button - only for assign and edit modes */}
           {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
-            <button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', opacity: (loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)) ? 0.5 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '100px' }}>
-              {loading ? <div style={{ width: 'var(--spacing-5)', height: 'var(--spacing-5)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div> : inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
-            </button>
+            <Button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} variant="primary" size="medium" isLoading={loading}>
+              {inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
+            </Button>
           )}
         </div>
         }

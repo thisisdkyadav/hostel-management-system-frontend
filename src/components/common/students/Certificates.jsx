@@ -254,8 +254,8 @@ const Certificates = ({ userId }) => {
         <div style={styles.grid}>
           {certificates.map((certificate) => (
             <div key={certificate._id} style={styles.card} onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-md)"
-              }}
+              e.currentTarget.style.boxShadow = "var(--shadow-md)"
+            }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.boxShadow = "var(--shadow-sm)"
               }}
@@ -276,29 +276,13 @@ const Certificates = ({ userId }) => {
                   </div>
                 </div>
                 <div style={styles.cardActions}>
-                  <button onClick={() => handleViewClick(certificate.certificateUrl)}
-                    style={styles.viewButton}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "var(--color-success-bg)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "var(--color-success-bg-light)"
-                    }}
-                  >
+                  <Button onClick={() => handleViewClick(certificate.certificateUrl)} variant="success" size="small">
                     View
-                  </button>
+                  </Button>
                   {canAccess("students_info", "edit") && (
-                    <button onClick={() => handleEditClick(certificate)}
-                      style={styles.editButton}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = "var(--color-primary-bg-hover)"
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = "var(--color-primary-bg)"
-                      }}
-                    >
+                    <Button onClick={() => handleEditClick(certificate)} variant="secondary" size="small">
                       Edit
-                    </button>
+                    </Button>
                   )}
                 </div>
               </div>

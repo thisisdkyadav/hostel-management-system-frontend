@@ -3,6 +3,7 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaUpload } from
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../services/adminApi"
 
@@ -569,10 +570,9 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <button onClick={generateCsvTemplate} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)', marginBottom: 'var(--spacing-2)', background: 'none', border: 'none', cursor: 'pointer' }}>
-                  <FaFileDownload style={{ marginRight: 'var(--spacing-1)' }} />
+                <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
                   Download CSV Template
-                </button>
+                </Button>
 
                 <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
                   <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
@@ -620,14 +620,10 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>
                     Selected file: <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{csvFile.name}</span>
                   </span>
-                  <button onClick={(e) => {
+                  <Button onClick={(e) => {
                     e.stopPropagation()
                     setCsvFile(null)
-                  }}
-                    style={{ color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
-                  >
-                    <FaTimes />
-                  </button>
+                  }} variant="ghost" size="small" icon={<FaTimes />} title="Remove file" />
                 </div>
               )}
 
@@ -667,28 +663,19 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         {activeTab === "csv" && (
           <>
             {step === 1 ? (
-              <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+              <Button onClick={onClose} variant="secondary" size="medium">
                 Cancel
-              </button>
+              </Button>
             ) : (
-              <button onClick={resetForm} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+              <Button onClick={resetForm} variant="secondary" size="medium">
                 Back
-              </button>
+              </Button>
             )}
 
             {step === 2 && (
-              <button onClick={handleImport} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center' }} disabled={parsedData.length === 0 || isLoading || isImporting}>
-                {isImporting ? (
-                  <>
-                    <div style={{ width: 'var(--spacing-4)', height: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
-                    Importing Students...
-                  </>
-                ) : (
-                  <>
-                    <FaCheck style={{ marginRight: 'var(--spacing-2)' }} /> Confirm Import
-                  </>
-                )}
-              </button>
+              <Button onClick={handleImport} variant="primary" size="medium" icon={!isImporting ? <FaCheck /> : null} isLoading={isImporting} disabled={parsedData.length === 0 || isLoading || isImporting}>
+                {isImporting ? "Importing Students..." : "Confirm Import"}
+              </Button>
             )}
           </>
         )}
@@ -696,22 +683,13 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         {/* Manual Tab Buttons */}
         {activeTab === "manual" && (
           <>
-            <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+            <Button onClick={onClose} variant="secondary" size="medium">
               Cancel
-            </button>
+            </Button>
 
-            <button onClick={handleManualImport} style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center' }} disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}>
-              {isImporting ? (
-                <>
-                  <div style={{ width: 'var(--spacing-4)', height: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
-                  Adding Student...
-                </>
-              ) : (
-                <>
-                  <FaCheck style={{ marginRight: 'var(--spacing-2)' }} /> Add Student
-                </>
-              )}
-            </button>
+            <Button onClick={handleManualImport} variant="primary" size="medium" icon={!isImporting ? <FaCheck /> : null} isLoading={isImporting} disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}>
+              {isImporting ? "Adding Student..." : "Add Student"}
+            </Button>
           </>
         )}
       </div>

@@ -5,6 +5,7 @@ import Papa from "papaparse"
 
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import Modal from "../Modal"
+import Button from "../Button"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
@@ -236,10 +237,9 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <button onClick={generateCsvTemplate} style={{ display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)", color: "var(--color-primary)", background: "none", border: "none", cursor: "pointer", marginBottom: "var(--spacing-2)" }}>
-                  <FaFileDownload style={{ marginRight: "var(--spacing-1)" }} />
+                <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
                   Download CSV Template
-                </button>
+                </Button>
 
                 <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-tertiary)", marginTop: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "28rem" }}>
                   <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
@@ -271,14 +271,10 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
                 Selected file: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{csvFile.name}</span>
               </span>
-              <button onClick={(e) => {
+              <Button onClick={(e) => {
                 e.stopPropagation()
                 setCsvFile(null)
-              }}
-                style={{ color: "var(--color-text-muted)", background: "none", border: "none", cursor: "pointer" }}
-              >
-                <FaTimes />
-              </button>
+              }} variant="ghost" size="small" icon={<FaTimes />} aria-label="Remove file" />
             </div>
           )}
 
@@ -310,28 +306,19 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
       <div style={{ marginTop: "var(--spacing-6)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: "1px solid var(--color-border-light)" }}>
         {step === 1 ? (
-          <button onClick={onClose} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", backgroundColor: "var(--color-bg-primary)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-lg)", cursor: "pointer", transition: "var(--transition-colors)" }}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
+          </Button>
         ) : (
-          <button onClick={resetForm} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", backgroundColor: "var(--color-bg-primary)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-lg)", cursor: "pointer", transition: "var(--transition-colors)" }}>
+          <Button onClick={resetForm} variant="secondary" size="medium">
             Back
-          </button>
+          </Button>
         )}
 
         {step === 2 && (
-          <button onClick={handleAllocate} style={{ padding: "var(--spacing-2-5) var(--spacing-4)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-white)", backgroundColor: "var(--color-primary)", borderRadius: "var(--radius-lg)", cursor: "pointer", transition: "var(--transition-colors)", boxShadow: "var(--shadow-sm)", display: "flex", alignItems: "center", border: "none" }} disabled={parsedData.length === 0 || isLoading || isAllocating}>
-            {isAllocating ? (
-              <>
-                <div className="animate-spin" style={{ width: "var(--spacing-4)", height: "var(--spacing-4)", marginRight: "var(--spacing-2)", border: "2px solid var(--color-white)", borderTop: "2px solid transparent", borderRadius: "var(--radius-full)" }}></div>
-                Updating Allocations...
-              </>
-            ) : (
-              <>
-                <FaCheck style={{ marginRight: "var(--spacing-2)" }} /> Confirm Allocations
-              </>
-            )}
-          </button>
+          <Button onClick={handleAllocate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isAllocating} disabled={parsedData.length === 0 || isLoading || isAllocating}>
+            {isAllocating ? "Updating Allocations..." : "Confirm Allocations"}
+          </Button>
         )}
       </div>
       {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={null} isImport={true} />}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
 import Modal from "../Modal"
+import Button from "../Button"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
@@ -162,18 +163,18 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-6)' }}>
         {canAccess("students_info", "edit") && (
-          <button onClick={() => setIsEditing(true)} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
-            <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit Claim
-          </button>
+          <Button onClick={() => setIsEditing(true)} variant="primary" size="medium" icon={<FaEdit />}>
+            Edit Claim
+          </Button>
         )}
         {canAccess("students_info", "edit") && (
-          <button onClick={handleDelete} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
-            <FaTrash style={{ marginRight: 'var(--spacing-2)' }} /> Delete Claim
-          </button>
+          <Button onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />}>
+            Delete Claim
+          </Button>
         )}
-        <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
+        <Button onClick={onClose} variant="secondary" size="medium">
           Close
-        </button>
+        </Button>
       </div>
     </>
   )
@@ -218,20 +219,18 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-        <button type="submit" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center' }}>
-          <FaSave style={{ marginRight: 'var(--spacing-2)' }} /> {isNew ? "Add Claim" : "Save Changes"}
-        </button>
-        <button type="button" onClick={() => {
+        <Button type="submit" variant="primary" size="medium" icon={<FaSave />}>
+          {isNew ? "Add Claim" : "Save Changes"}
+        </Button>
+        <Button type="button" onClick={() => {
           if (isNew) {
             onClose()
           } else {
             setIsEditing(false)
           }
-        }}
-          style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}
-        >
+        }} variant="secondary" size="medium">
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   )

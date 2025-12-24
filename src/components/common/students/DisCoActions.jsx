@@ -216,8 +216,8 @@ const DisCoActions = ({ userId }) => {
         <div style={styles.grid}>
           {actions.map((action) => (
             <div key={action._id} style={styles.card} onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-md)"
-              }}
+              e.currentTarget.style.boxShadow = "var(--shadow-md)"
+            }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.boxShadow = "var(--shadow-sm)"
               }}
@@ -228,17 +228,9 @@ const DisCoActions = ({ userId }) => {
                   <span style={styles.dateBadge}>{new Date(action.date).toLocaleDateString()}</span>
                 </div>
                 {canAccess("students_info", "edit") && (
-                  <button onClick={() => handleEditClick(action)}
-                    style={styles.editButton}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = "var(--color-primary-bg-hover)"
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "var(--color-primary-bg)"
-                    }}
-                  >
+                  <Button onClick={() => handleEditClick(action)} variant="secondary" size="small">
                     Edit
-                  </button>
+                  </Button>
                 )}
               </div>
 

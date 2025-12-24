@@ -4,6 +4,7 @@ import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
 import MultiSelectDropdown from "../MultiSelectDropdown"
+import Button from "../Button"
 import { getDepartmentList, getDegreesList } from "../../../services/studentService"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
@@ -66,9 +67,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
         <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
           <BsFilterRight style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--font-size-lg)' }} /> Filter Students
         </h3>
-        <button onClick={resetFilters} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-1) var(--spacing-2)', borderRadius: 'var(--radius-md)', background: 'none', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }}>
-          <MdClearAll style={{ marginRight: 'var(--spacing-1)' }} /> Reset Filters
-        </button>
+        <Button onClick={resetFilters} variant="ghost" size="small" icon={<MdClearAll />}>
+          Reset Filters
+        </Button>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
@@ -128,9 +129,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
             {error && (
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{error}</p>
-                <button onClick={fetchDepartments} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }} disabled={loading}>
+                <Button onClick={fetchDepartments} variant="ghost" size="small" disabled={loading}>
                   Retry
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -158,9 +159,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
             {degreesError && (
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{degreesError}</p>
-                <button onClick={fetchDegrees} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', background: 'none', border: 'none', cursor: 'pointer' }} disabled={degreesLoading}>
+                <Button onClick={fetchDegrees} variant="ghost" size="small" disabled={degreesLoading}>
                   Retry
-                </button>
+                </Button>
               </div>
             )}
           </div>
