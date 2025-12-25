@@ -3,6 +3,8 @@ import Modal from "../../common/Modal"
 import { visitorApi } from "../../../services/visitorApi"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
+import Button from "../../common/Button"
+import { FaEye, FaMoneyBillWave } from "react-icons/fa"
 
 // Import smaller components
 import StatusBadge from "./details/StatusBadge"
@@ -344,29 +346,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Guest Room Booking Form</p>
                 </div>
               </div>
-              <button onClick={() => setShowH2FormModal(true)} 
-                style={{ 
-                  padding: 'var(--spacing-2) var(--spacing-4)', 
-                  backgroundColor: 'var(--color-primary)', 
-                  color: 'var(--color-white)', 
-                  fontSize: 'var(--font-size-sm)', 
-                  borderRadius: 'var(--radius-lg)', 
-                  transition: 'var(--transition-colors)', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 'var(--spacing-2)',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
-              >
-                <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                </svg>
-                <span>View H2 Form</span>
-              </button>
+              <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="small" icon={<FaEye />}>
+                View H2 Form
+              </Button>
             </div>
           </div>
         )}
@@ -409,22 +391,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>Submit your payment details for verification</p>
                 </div>
               </div>
-              <button onClick={() => setShowPaymentForm(true)} 
-                style={{ 
-                  padding: 'var(--spacing-2) var(--spacing-4)', 
-                  backgroundColor: 'var(--color-primary)', 
-                  color: 'var(--color-white)', 
-                  fontSize: 'var(--font-size-sm)', 
-                  borderRadius: 'var(--radius-lg)', 
-                  transition: 'var(--transition-colors)',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
-              >
+              <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="small" icon={<FaMoneyBillWave />}>
                 Submit Payment Info
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -475,8 +444,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       </div>
 
       <EditVisitorRequestModal isOpen={showEditModal} onClose={() => {
-          setShowEditModal(false)
-        }}
+        setShowEditModal(false)
+      }}
         request={request}
         onRefresh={onRefresh}
       />

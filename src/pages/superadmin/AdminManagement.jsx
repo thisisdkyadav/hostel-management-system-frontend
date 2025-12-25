@@ -5,6 +5,7 @@ import BaseTable from "../../components/common/table/BaseTable"
 import NoResults from "../../components/common/NoResults"
 import Modal from "../../components/common/Modal"
 import superAdminService from "../../services/superAdminService"
+import Button from "../../components/common/Button"
 
 const AdminManagement = () => {
   const [admins, setAdmins] = useState([])
@@ -131,12 +132,8 @@ const AdminManagement = () => {
       align: "right",
       render: (admin) => (
         <div className="flex justify-end space-x-2">
-          <button onClick={() => setEditAdmin(admin)} className="text-indigo-600 hover:text-indigo-900 p-2 hover:bg-indigo-50 rounded-full transition-colors" aria-label="Edit admin">
-            <FaEdit />
-          </button>
-          <button onClick={() => handleDeleteAdmin(admin.id)} className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors" aria-label="Delete admin">
-            <FaTrash />
-          </button>
+          <Button onClick={() => setEditAdmin(admin)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit admin" />
+          <Button onClick={() => handleDeleteAdmin(admin.id)} variant="danger" size="small" icon={<FaTrash />} aria-label="Delete admin" />
         </div>
       ),
     },
@@ -146,9 +143,9 @@ const AdminManagement = () => {
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Admin Management</h1>
-        <button onClick={() => setShowAddModal(true)} className="text-white flex items-center px-4 py-2.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
-          <FaPlus className="mr-2" /> Add Admin
-        </button>
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
+          Add Admin
+        </Button>
       </header>
 
       <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -297,12 +294,12 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
-          <button type="submit" disabled={isSubmitting} className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`} style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
+          </Button>
+          <Button type="submit" disabled={isSubmitting} variant="primary" size="medium" isLoading={isSubmitting}>
             {isSubmitting ? "Processing..." : admin ? "Update" : "Add"}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

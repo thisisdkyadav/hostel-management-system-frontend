@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
+import Button from "../../common/Button"
 
 const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -51,12 +52,9 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-            <button onClick={handleDownload} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-success-hover)'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-success)'}
-            >
-              <FaDownload style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
-              <span>Download</span>
-            </button>
+            <Button onClick={handleDownload} variant="success" size="small" icon={<FaDownload />}>
+              Download
+            </Button>
             <a href={h2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
             >
@@ -101,12 +99,9 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                   <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Cannot display PDF in browser</h3>
                   <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
                   <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
-                    <button onClick={handleDownload} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-success-hover)'}
-                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-success)'}
-                    >
-                      <FaDownload style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
-                      <span>Download PDF</span>
-                    </button>
+                    <Button onClick={handleDownload} variant="success" size="medium" icon={<FaDownload />}>
+                      Download PDF
+                    </Button>
                     <a href={h2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
                     >
@@ -126,12 +121,9 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
               <p style={{ color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Unable to load document</p>
               <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>There was an error loading the document. Please try downloading it instead.</p>
-              <button onClick={handleDownload} style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}
-              >
-                <FaDownload style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
-                <span>Download Document</span>
-              </button>
+              <Button onClick={handleDownload} variant="danger" size="medium" icon={<FaDownload />}>
+                Download Document
+              </Button>
             </div>
           </div>
         )}

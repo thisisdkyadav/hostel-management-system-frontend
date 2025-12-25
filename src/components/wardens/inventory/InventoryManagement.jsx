@@ -3,6 +3,7 @@ import { inventoryApi } from "../../../services/inventoryApi"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"
+import Button from "../../common/Button"
 
 const InventoryManagement = () => {
   const { user } = useAuth()
@@ -162,9 +163,7 @@ const InventoryManagement = () => {
                 <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</p>
               </div>
               <div className="ml-auto">
-                <button className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', border: 'none', cursor: 'pointer' }}>
-                  <FaPlus />
-                </button>
+                <Button onClick={() => handleSelectStudent(student)} variant="ghost" size="small" icon={<FaPlus />} aria-label="Assign inventory" />
               </div>
             </div>
           ))}
@@ -208,12 +207,12 @@ const InventoryManagement = () => {
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-2)' }}>
-              <button type="button" onClick={closeModal} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
                 Cancel
-              </button>
-              <button type="submit" disabled={loading || !assignFormData.hostelInventoryId} className="flex items-center justify-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: loading || !assignFormData.hostelInventoryId ? 'not-allowed' : 'pointer', opacity: loading || !assignFormData.hostelInventoryId ? 'var(--opacity-disabled)' : '1', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && assignFormData.hostelInventoryId && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
-                {loading ? <div className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div> : "Assign Item"}
-              </button>
+              </Button>
+              <Button type="submit" disabled={loading || !assignFormData.hostelInventoryId} variant="primary" size="medium" isLoading={loading}>
+                {loading ? "Assigning..." : "Assign Item"}
+              </Button>
             </div>
           </form>
         </Modal>

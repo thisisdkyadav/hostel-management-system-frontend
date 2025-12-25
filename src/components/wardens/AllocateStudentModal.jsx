@@ -3,6 +3,7 @@ import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGradu
 import { hostelApi } from "../../services/hostelApi"
 import { useStudents } from "../../hooks/useStudents"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -131,9 +132,9 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         <div>
           <div style={{ position: 'relative' }}>
             <input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', fontSize: 'var(--font-size-base)' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--input-border-focus)';
-              }}
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--input-border-focus)';
+            }}
               onBlur={(e) => {
                 e.target.style.boxShadow = 'none';
                 e.target.style.borderColor = 'var(--color-border-input)';
@@ -159,14 +160,14 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-2)' }}>
               {availableBeds.map((bedNumber) => (
                 <button key={bedNumber} onClick={() => handleBedSelect(bedNumber)}
-                  style={{ 
-                    padding: `var(--spacing-2) var(--spacing-4)`, 
-                    borderRadius: 'var(--radius-lg)', 
-                    border: `var(--border-1) solid ${selectedBed === bedNumber ? 'var(--color-primary)' : 'var(--color-border-input)'}`, 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    width: 'var(--spacing-14)', 
+                  style={{
+                    padding: `var(--spacing-2) var(--spacing-4)`,
+                    borderRadius: 'var(--radius-lg)',
+                    border: `var(--border-1) solid ${selectedBed === bedNumber ? 'var(--color-primary)' : 'var(--color-border-input)'}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 'var(--spacing-14)',
                     transition: 'var(--transition-colors)',
                     backgroundColor: selectedBed === bedNumber ? 'var(--color-primary)' : 'var(--color-bg-primary)',
                     color: selectedBed === bedNumber ? 'var(--color-white)' : 'var(--color-text-secondary)',
@@ -228,10 +229,10 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                     <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                       {unallocatedStudents.map((student) => (
                         <tr key={student.id} style={{ transition: 'var(--transition-colors)', backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary-bg)' : 'var(--color-bg-primary)', borderTop: `var(--border-1) solid var(--color-border-primary)` }} onMouseEnter={(e) => {
-                            if (selectedStudent?.id !== student.id) {
-                              e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
-                            }
-                          }}
+                          if (selectedStudent?.id !== student.id) {
+                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
+                          }
+                        }}
                           onMouseLeave={(e) => {
                             if (selectedStudent?.id !== student.id) {
                               e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
@@ -249,10 +250,10 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
                           </td>
                           <td className="hidden sm:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{student.studentId || student.rollNumber}</td>
                           <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                            <button onClick={() => handleStudentSelect(student)} 
-                              style={{ 
-                                padding: 'var(--spacing-1) var(--spacing-3)', 
-                                borderRadius: 'var(--radius-md)', 
+                            <button onClick={() => handleStudentSelect(student)}
+                              style={{
+                                padding: 'var(--spacing-1) var(--spacing-3)',
+                                borderRadius: 'var(--radius-md)',
                                 backgroundColor: selectedStudent?.id === student.id ? 'var(--color-primary)' : 'var(--color-primary-bg)',
                                 color: selectedStudent?.id === student.id ? 'var(--color-white)' : 'var(--color-primary)',
                                 border: 'none',
@@ -286,53 +287,12 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row" style={{ justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <button onClick={onClose} style={{ padding: 'var(--spacing-2-5) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)' }} onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--color-bg-disabled)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--color-bg-muted)';
-            }}
-          >
+          <Button onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
-          <button onClick={handleAllocateStudent} disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              padding: 'var(--spacing-2-5) var(--spacing-4)', 
-              borderRadius: 'var(--radius-lg)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              transition: 'var(--transition-colors)',
-              backgroundColor: (!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity) ? 'var(--color-bg-muted)' : 'var(--color-primary)',
-              color: (!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity) ? 'var(--color-text-disabled)' : 'var(--color-white)',
-              cursor: (!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity) ? 'not-allowed' : 'pointer',
-              border: 'none',
-              fontSize: 'var(--font-size-base)'
-            }}
-            onMouseEnter={(e) => {
-              if (!(!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity)) {
-                e.target.style.backgroundColor = 'var(--color-primary-hover)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!(!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity)) {
-                e.target.style.backgroundColor = 'var(--color-primary)';
-              }
-            }}
-          >
-            {allocating ? (
-              <>
-                <div style={{ animation: 'spin 1s linear infinite', height: 'var(--spacing-4)', width: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div>
-                Allocating...
-              </>
-            ) : (
-              <>
-                <FaUserPlus style={{ marginRight: 'var(--spacing-2)' }} />
-                Allocate Student
-              </>
-            )}
-          </button>
+          </Button>
+          <Button onClick={handleAllocateStudent} disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity} variant="primary" size="medium" isLoading={allocating} icon={allocating ? null : <FaUserPlus />}>
+            {allocating ? "Allocating..." : "Allocate Student"}
+          </Button>
         </div>
       </div>
     </Modal>

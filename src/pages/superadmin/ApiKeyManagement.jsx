@@ -6,6 +6,7 @@ import NoResults from "../../components/common/NoResults"
 import BaseTable from "../../components/common/table/BaseTable"
 import Modal from "../../components/common/Modal"
 import superAdminService from "../../services/superAdminService"
+import Button from "../../components/common/Button"
 
 const API_KEY_FILTER_TABS = [
   { value: "all", label: "All", count: 0 },
@@ -165,9 +166,7 @@ const ApiKeyManagement = () => {
               : "************"}
           </div>
           {apiKey.apiKey && (
-            <button onClick={() => copyToClipboard(apiKey.apiKey, apiKey._id)} className="ml-2 text-gray-400 hover:text-gray-600">
-              {copiedId === apiKey._id ? <FaCheckCircle className="text-green-500" /> : <FaCopy />}
-            </button>
+            <Button onClick={() => copyToClipboard(apiKey.apiKey, apiKey._id)} variant="ghost" size="small" icon={copiedId === apiKey._id ? <FaCheckCircle className="text-green-500" /> : <FaCopy />} aria-label="Copy API key" />
           )}
         </div>
       ),
@@ -188,14 +187,13 @@ const ApiKeyManagement = () => {
       align: "right",
       render: (apiKey) => (
         <div className="flex justify-end space-x-2">
-          <button onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
-            className={`inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded ${apiKey.isActive ? "text-red-700 bg-red-100 hover:bg-red-200" : "text-green-700 bg-green-100 hover:bg-green-200"}`}
+          <Button onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
+            variant={apiKey.isActive ? "danger" : "success"}
+            size="small"
           >
             {apiKey.isActive ? "Deactivate" : "Activate"}
-          </button>
-          <button onClick={() => handleDeleteApiKey(apiKey._id)} className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors">
-            <FaTrash />
-          </button>
+          </Button>
+          <Button onClick={() => handleDeleteApiKey(apiKey._id)} variant="danger" size="small" icon={<FaTrash />} aria-label="Delete API key" />
         </div>
       ),
     },
@@ -205,9 +203,9 @@ const ApiKeyManagement = () => {
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">API Key Management</h1>
-        <button onClick={() => setShowAddModal(true)} className="text-white flex items-center px-4 py-2.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
-          <FaPlus className="mr-2" /> Generate API Key
-        </button>
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
+          Generate API Key
+        </Button>
       </header>
 
       <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -311,12 +309,12 @@ const ApiKeyModal = ({ onClose, onSubmit }) => {
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
-          <button type="submit" disabled={isSubmitting} className={`px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`} style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
+          </Button>
+          <Button type="submit" disabled={isSubmitting} variant="primary" size="medium" isLoading={isSubmitting}>
             {isSubmitting ? "Processing..." : "Generate"}
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

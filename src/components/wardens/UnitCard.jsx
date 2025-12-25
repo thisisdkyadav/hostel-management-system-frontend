@@ -1,5 +1,6 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaUserGraduate } from "react-icons/fa"
+import Button from "../common/Button"
 
 const UnitCard = ({ unit, onClick }) => {
   const occupancyPercentage = unit.roomCount ? Math.round(((unit.occupiedRoomCount || 0) / unit.roomCount) * 100) : 0
@@ -52,25 +53,18 @@ const UnitCard = ({ unit, onClick }) => {
             </span>
           </div>
           <div style={{ width: "100%", backgroundColor: "var(--color-bg-muted)", borderRadius: "var(--radius-full)", height: "var(--spacing-1-5)" }}>
-            <div style={{ height: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", backgroundColor: unit.capacity && unit.occupancy >= unit.capacity ? "var(--color-success)" : "var(--color-primary)",
-                width: `${unit.capacity ? Math.min(100, Math.round(((unit.occupancy || 0) / unit.capacity) * 100)) : 0}%`,
-              }}
+            <div style={{
+              height: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", backgroundColor: unit.capacity && unit.occupancy >= unit.capacity ? "var(--color-success)" : "var(--color-primary)",
+              width: `${unit.capacity ? Math.min(100, Math.round(((unit.occupancy || 0) / unit.capacity) * 100)) : 0}%`,
+            }}
             ></div>
           </div>
         </div>
       </div>
 
-      <button style={{ marginTop: "var(--spacing-5)", width: "100%", padding: "var(--spacing-2-5) 0", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", borderRadius: "var(--radius-lg)", transition: "var(--transition-all)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", border: "none", cursor: "pointer", }} onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "var(--color-primary)"
-          e.currentTarget.style.color = "var(--color-white)"
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "var(--color-primary-bg)"
-          e.currentTarget.style.color = "var(--color-primary)"
-        }}
-      >
+      <Button onClick={onClick} variant="outline" size="medium" style={{ marginTop: 'var(--spacing-5)', width: '100%' }}>
         View Rooms
-      </button>
+      </Button>
     </div>
   )
 }

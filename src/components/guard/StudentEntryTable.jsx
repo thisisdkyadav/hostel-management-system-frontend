@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import StatusBadge from "../common/StatusBadge"
+import Button from "../common/Button"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../services/apiService"
 
@@ -109,21 +110,7 @@ const StudentEntryTable = ({ entries, refresh }) => {
                       <StatusBadge status={entry.status} />
                     </td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                      <button onClick={() => handleEditClick(entry)}
-                        style={{
-                          color: 'var(--color-primary)',
-                          backgroundColor: 'var(--color-primary-bg)',
-                          padding: 'var(--spacing-2)',
-                          borderRadius: 'var(--radius-lg)',
-                          border: 'none',
-                          cursor: 'pointer',
-                          transition: 'var(--transition-colors)'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary-hover)'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
-                      >
-                        <FaEdit />
-                      </button>
+                      <Button onClick={() => handleEditClick(entry)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit entry" />
                     </td>
                   </tr>
                 )

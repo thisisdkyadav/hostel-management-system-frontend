@@ -6,6 +6,7 @@ import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
 import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"
 import { useAuth } from "../../contexts/AuthProvider"
+import Button from "../../components/common/Button"
 
 const AddStudentEntry = () => {
   const { user } = useAuth()
@@ -145,22 +146,12 @@ const AddStudentEntry = () => {
 
         {/* Tabs */}
         <div style={styles.tabContainer}>
-          <button onClick={() => setActiveTab("qr")}
-            style={{
-              ...styles.tab,
-              ...(activeTab === "qr" ? styles.tabActive : styles.tabInactive),
-            }}
-          >
-            <FaQrcode style={styles.tabIcon} /> QR Scanner
-          </button>
-          <button onClick={() => setActiveTab("manual")}
-            style={{
-              ...styles.tab,
-              ...(activeTab === "manual" ? styles.tabActive : styles.tabInactive),
-            }}
-          >
-            <FaRegKeyboard style={styles.tabIcon} /> Manual Entry
-          </button>
+          <Button onClick={() => setActiveTab("qr")} variant={activeTab === "qr" ? "primary" : "ghost"} size="medium" icon={<FaQrcode />} style={{ flex: 1 }}>
+            QR Scanner
+          </Button>
+          <Button onClick={() => setActiveTab("manual")} variant={activeTab === "manual" ? "primary" : "ghost"} size="medium" icon={<FaRegKeyboard />} style={{ flex: 1 }}>
+            Manual Entry
+          </Button>
         </div>
 
         {/* Scanner Status Indicator */}

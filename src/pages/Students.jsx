@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaUserGraduate } from "react-icons/fa"
+import { FaUserGraduate, FaTable, FaThLarge } from "react-icons/fa"
 import NoResults from "../components/common/NoResults"
 import StudentStats from "../components/common/students/StudentStats"
 import StudentFilterSection from "../components/common/students/StudentFilterSection"
@@ -16,6 +16,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import { studentApi } from "../services/apiService"
 import { hostelApi } from "../services/hostelApi"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
+import Button from "../components/common/Button"
 
 // Shimmer loader components
 const ShimmerLoader = ({ height, width = "100%", className = "" }) => (
@@ -274,48 +275,20 @@ const Students = () => {
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
-            <button
+            <Button
               onClick={() => setViewMode("table")}
-              style={{
-                padding: 'var(--spacing-2)',
-                borderRadius: 'var(--radius-lg)',
-                transition: 'var(--transition-all)',
-                backgroundColor: viewMode === "table" ? 'var(--color-primary)' : 'transparent',
-                color: viewMode === "table" ? 'var(--color-white)' : 'var(--color-text-muted)',
-                boxShadow: viewMode === "table" ? 'var(--shadow-sm)' : 'none',
-                border: 'none',
-                cursor: 'pointer'
-              }}
+              variant={viewMode === "table" ? "primary" : "ghost"}
+              size="small"
+              icon={<FaTable />}
               aria-label="Table view"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-              </svg>
-            </button>
-
-            <button
+            />
+            <Button
               onClick={() => setViewMode("card")}
-              style={{
-                padding: 'var(--spacing-2)',
-                borderRadius: 'var(--radius-lg)',
-                transition: 'var(--transition-all)',
-                backgroundColor: viewMode === "card" ? 'var(--color-primary)' : 'transparent',
-                color: viewMode === "card" ? 'var(--color-white)' : 'var(--color-text-muted)',
-                boxShadow: viewMode === "card" ? 'var(--shadow-sm)' : 'none',
-                border: 'none',
-                cursor: 'pointer'
-              }}
+              variant={viewMode === "card" ? "primary" : "ghost"}
+              size="small"
+              icon={<FaThLarge />}
               aria-label="Card view"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                />
-              </svg>
-            </button>
+            />
           </div>
         </div>
 

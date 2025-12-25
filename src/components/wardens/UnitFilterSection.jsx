@@ -1,4 +1,5 @@
 import React from "react"
+import Button from "../common/Button"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
   // Floor numbers for dropdown
@@ -42,11 +43,9 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
         <h2 style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xl)" }}>
           Filter {currentView === "units" ? "Units" : "Rooms"}
         </h2>
-        <button onClick={resetFilters} style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)", backgroundColor: "transparent", border: "none", cursor: "pointer", transition: "var(--transition-colors)", }} onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary-hover)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-        >
+        <Button onClick={resetFilters} variant="ghost" size="small">
           Reset Filters
-        </button>
+        </Button>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="md:grid-cols-3 lg:grid-cols-4" >

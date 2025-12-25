@@ -5,6 +5,7 @@ import { visitorApi } from "../../../services/visitorApi"
 import { useAuth } from "../../../contexts/AuthProvider"
 import BaseTable from "../../common/table/BaseTable"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import Button from "../../common/Button"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: 'var(--color-warning-bg)', textColor: 'var(--color-warning-text)', label: "Pending" },
@@ -118,97 +119,22 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       align: "right",
       render: (request) => (
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-          <button onClick={() => handleViewDetails(request)} 
-            style={{ 
-              color: 'var(--color-primary)', 
-              padding: 'var(--spacing-1)', 
-              borderRadius: 'var(--radius-full)', 
-              transition: 'var(--transition-colors)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer'
-            }} 
-            title="View details"
-            onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary-hover)'}
-            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
-          >
-            <FaEye style={{ height: 'var(--icon-md)', width: 'var(--icon-md)' }} />
-          </button>
+          <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaEye />} aria-label="View details" />
 
           {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
-            <button onClick={() => handleViewDetails(request)} 
-              style={{ 
-                color: 'var(--color-success)', 
-                padding: 'var(--spacing-1)', 
-                borderRadius: 'var(--radius-full)', 
-                transition: 'var(--transition-colors)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer'
-              }} 
-              title="Allocate rooms"
-              onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-success-hover)'}
-              onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-success)'}
-            >
-              <FaHome style={{ height: 'var(--icon-md)', width: 'var(--icon-md)' }} />
-            </button>
+            <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaHome />} aria-label="Allocate rooms" />
           )}
 
           {["Security", "Hostel Gate"].includes(user.role) && request.status === "Approved" && request.isAllocated && (
             <>
               {!request.checkInTime && (
-                <button onClick={() => handleViewDetails(request)} 
-                  style={{ 
-                    color: 'var(--color-info)', 
-                    padding: 'var(--spacing-1)', 
-                    borderRadius: 'var(--radius-full)', 
-                    transition: 'var(--transition-colors)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer'
-                  }} 
-                  title="Check in visitor"
-                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-info-hover)'}
-                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-info)'}
-                >
-                  <FaSignInAlt style={{ height: 'var(--icon-md)', width: 'var(--icon-md)' }} />
-                </button>
+                <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaSignInAlt />} aria-label="Check in visitor" />
               )}
               {request.checkInTime && !request.checkOutTime && (
-                <button onClick={() => handleViewDetails(request)} 
-                  style={{ 
-                    color: 'var(--color-success)', 
-                    padding: 'var(--spacing-1)', 
-                    borderRadius: 'var(--radius-full)', 
-                    transition: 'var(--transition-colors)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer'
-                  }} 
-                  title="Check out visitor"
-                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-success-hover)'}
-                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-success)'}
-                >
-                  <FaSignOutAlt style={{ height: 'var(--icon-md)', width: 'var(--icon-md)' }} />
-                </button>
+                <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaSignOutAlt />} aria-label="Check out visitor" />
               )}
               {request.checkInTime && (
-                <button onClick={() => handleViewDetails(request)} 
-                  style={{ 
-                    color: 'var(--color-warning)', 
-                    padding: 'var(--spacing-1)', 
-                    borderRadius: 'var(--radius-full)', 
-                    transition: 'var(--transition-colors)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer'
-                  }} 
-                  title="Edit check times"
-                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-warning-hover)'}
-                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-warning)'}
-                >
-                  <FaClock style={{ height: 'var(--icon-md)', width: 'var(--icon-md)' }} />
-                </button>
+                <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaClock />} aria-label="Edit check times" />
               )}
             </>
           )}
@@ -231,9 +157,9 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
 
       {selectedRequestId && (
         <VisitorRequestDetailsModal isOpen={showDetails} onClose={() => {
-            setShowDetails(false)
-            setSelectedRequestId(null)
-          }}
+          setShowDetails(false)
+          setSelectedRequestId(null)
+        }}
           requestId={selectedRequestId}
           onRefresh={onRefresh}
         />

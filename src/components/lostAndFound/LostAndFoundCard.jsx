@@ -9,6 +9,7 @@ import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../services/apiService"
 import { useAuth } from "../../contexts/AuthProvider"
 import Card from "../common/Card"
+import Button from "../common/Button"
 
 const LostAndFoundCard = ({ item, refresh }) => {
   const { user, canAccess } = useAuth()
@@ -127,17 +128,9 @@ const LostAndFoundCard = ({ item, refresh }) => {
 
         <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', justifyContent: 'flex-end' }}>
           {user && canAccess("lost_and_found", "edit") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
-            <button onClick={handleEditClick} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'var(--color-primary)';
-                e.target.style.color = 'var(--color-white)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'var(--color-primary-bg)';
-                e.target.style.color = 'var(--color-primary)';
-              }}
-            >
-              <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit
-            </button>
+            <Button onClick={handleEditClick} variant="outline" size="small" icon={<FaEdit />}>
+              Edit
+            </Button>
           )}
         </Card.Footer>
       </Card>

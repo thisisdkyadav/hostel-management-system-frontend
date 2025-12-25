@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
+import Button from "../../components/common/Button"
 
 const StudentInventory = () => {
   const [activeTab, setActiveTab] = useState("available")
@@ -63,20 +64,20 @@ const StudentInventory = () => {
       {/* Tabs */}
       <div style={styles.tabContainer}>
         <nav style={styles.tabNav}>
-          <button onClick={() => setActiveTab("available")}
-            style={{ ...styles.tab, ...(activeTab === "available" ? styles.tabActive : styles.tabInactive) }}
-            onMouseEnter={(e) => { if (activeTab !== "available") e.currentTarget.style.color = "var(--color-text-body)" }}
-            onMouseLeave={(e) => { if (activeTab !== "available") e.currentTarget.style.color = "var(--color-text-muted)" }}
+          <Button onClick={() => setActiveTab("available")}
+            variant={activeTab === "available" ? "primary" : "ghost"}
+            size="medium"
+            style={{ borderBottom: activeTab === "available" ? 'var(--border-2) solid var(--color-primary)' : 'var(--border-2) solid transparent' }}
           >
             Available Inventory
-          </button>
-          <button onClick={() => setActiveTab("assignments")}
-            style={{ ...styles.tab, ...(activeTab === "assignments" ? styles.tabActive : styles.tabInactive) }}
-            onMouseEnter={(e) => { if (activeTab !== "assignments") e.currentTarget.style.color = "var(--color-text-body)" }}
-            onMouseLeave={(e) => { if (activeTab !== "assignments") e.currentTarget.style.color = "var(--color-text-muted)" }}
+          </Button>
+          <Button onClick={() => setActiveTab("assignments")}
+            variant={activeTab === "assignments" ? "primary" : "ghost"}
+            size="medium"
+            style={{ borderBottom: activeTab === "assignments" ? 'var(--border-2) solid var(--color-primary)' : 'var(--border-2) solid transparent' }}
           >
             Student Assignments
-          </button>
+          </Button>
         </nav>
       </div>
 

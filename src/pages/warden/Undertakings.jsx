@@ -6,6 +6,7 @@ import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
 import { adminApi } from "../../services/adminApi"
 import { useAuth } from "../../contexts/AuthProvider"
+import Button from "../../components/common/Button"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
   return undertakings
@@ -70,13 +71,9 @@ const WardenUndertakings = () => {
       <header style={styles.header} className="header-responsive">
         <h1 style={styles.title}>Undertakings Management</h1>
         {isAdmin && (
-          <button onClick={() => setShowAddModal(true)}
-            style={styles.addButton}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "var(--button-primary-hover)"; e.currentTarget.style.boxShadow = "var(--shadow-md)" }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "var(--button-primary-bg)"; e.currentTarget.style.boxShadow = "var(--shadow-sm)" }}
-          >
-            <FaPlus style={styles.buttonIcon} /> Add Undertaking
-          </button>
+          <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
+            Add Undertaking
+          </Button>
         )}
       </header>
 

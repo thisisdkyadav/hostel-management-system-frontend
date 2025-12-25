@@ -6,6 +6,7 @@ import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import Pagination from "../../components/common/Pagination"
 import { securityApi } from "../../services/apiService"
+import Button from "../../components/common/Button"
 
 const ENTRY_FILTER_TABS = [
   { label: "All", value: "all" },
@@ -220,14 +221,9 @@ const StudentEntries = () => {
       <header style={styles.header}>
         <h1 style={styles.title}>Student Entry Management</h1>
         <div style={styles.headerActions}>
-          <button onClick={() => setShowFilters(!showFilters)}
-            style={{
-              ...styles.filterButton,
-              ...(showFilters ? styles.filterButtonActive : styles.filterButtonInactive),
-            }}
-          >
-            <FaFilter style={styles.filterIcon} /> Filters
-          </button>
+          <Button onClick={() => setShowFilters(!showFilters)} variant={showFilters ? "primary" : "secondary"} size="medium" icon={<FaFilter />}>
+            Filters
+          </Button>
         </div>
       </header>
 
@@ -254,9 +250,9 @@ const StudentEntries = () => {
                 </select>
               </div>
               <div style={{ display: "flex", alignItems: "flex-end" }}>
-                <button onClick={handleClearDateFilter} style={styles.clearButton}>
+                <Button onClick={handleClearDateFilter} variant="secondary" size="medium">
                   Clear Date Filter
-                </button>
+                </Button>
               </div>
             </div>
           </div>

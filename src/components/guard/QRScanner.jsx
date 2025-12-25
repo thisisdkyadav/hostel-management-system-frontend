@@ -4,6 +4,7 @@ import { FaQrcode, FaTimes } from "react-icons/fa"
 import { securityApi } from "../../services/securityApi"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
+import Button from "../common/Button"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()
@@ -104,7 +105,7 @@ const QRScanner = ({ onRefresh }) => {
     }
   }
 
-  const handleScanError = (err) => {}
+  const handleScanError = (err) => { }
 
   const handleReset = () => {
     setScannedStudent(null)
@@ -185,17 +186,17 @@ const QRScanner = ({ onRefresh }) => {
       )}
 
       {!scanning && !scannedStudent && !loading && (
-        <button onClick={startScanner} style={{ width: '100%', padding: 'var(--spacing-3) 0', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}>
-          <FaQrcode style={{ marginRight: 'var(--spacing-2)' }} /> Start QR Scanner
-        </button>
+        <Button onClick={startScanner} variant="primary" size="medium" icon={<FaQrcode />} fullWidth>
+          Start QR Scanner
+        </Button>
       )}
 
       <div style={{ marginBottom: 'var(--spacing-4)' }}>
         <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <button onClick={stopScanner} style={{ width: '100%', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-2) 0', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}>
-            <FaTimes style={{ marginRight: 'var(--spacing-2)', display: 'inline' }} /> Stop Scanner
-          </button>
+          <Button onClick={stopScanner} variant="danger" size="medium" icon={<FaTimes />} fullWidth style={{ marginTop: 'var(--spacing-4)' }}>
+            Stop Scanner
+          </Button>
         )}
       </div>
 

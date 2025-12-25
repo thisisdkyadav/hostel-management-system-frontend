@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
 import Modal from "../../common/Modal"
+import Button from "../../common/Button"
 
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
   const [isAccepting, setIsAccepting] = useState(false)
@@ -82,16 +83,16 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
 
         {/* Confirmation checkbox */}
         <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <input type="checkbox" id="confirm-read" checked={hasConfirmed} onChange={() => setHasConfirmed(!hasConfirmed)} 
-            style={{ 
-              marginTop: 'var(--spacing-1)', 
-              height: 'var(--icon-md)', 
-              width: 'var(--icon-md)', 
-              borderRadius: 'var(--radius-sm)', 
+          <input type="checkbox" id="confirm-read" checked={hasConfirmed} onChange={() => setHasConfirmed(!hasConfirmed)}
+            style={{
+              marginTop: 'var(--spacing-1)',
+              height: 'var(--icon-md)',
+              width: 'var(--icon-md)',
+              borderRadius: 'var(--radius-sm)',
               border: `var(--border-1) solid var(--color-border-input)`,
               accentColor: 'var(--color-info)',
               cursor: 'pointer'
-            }} 
+            }}
           />
           <label htmlFor="confirm-read" style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', cursor: 'pointer' }} >
             I confirm that I have read and understood the above undertaking and agree to abide by it.
@@ -100,33 +101,12 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
 
         {/* Action buttons */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <button type="button" onClick={handleClose} style={{ padding: 'var(--button-padding-md)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-input)', border: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--color-bg-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--color-bg-muted)';
-            }}
-          >
-            <FaTimes style={{ marginRight: 'var(--spacing-2)' }} /> Close
-          </button>
-          <button type="button" onClick={handleAccept} disabled={isAccepting || !hasConfirmed} style={{ padding: 'var(--button-padding-md)', borderRadius: 'var(--radius-input)', border: 'none', display: 'flex', alignItems: 'center', backgroundColor: hasConfirmed ? 'var(--color-success)' : 'var(--color-bg-muted)', color: hasConfirmed ? 'var(--color-white)' : 'var(--color-text-muted)', cursor: hasConfirmed ? 'pointer' : 'not-allowed', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-base)', }} onMouseEnter={(e) => { 
-              if (hasConfirmed) {
-                e.target.style.backgroundColor = 'var(--color-success-hover)';
-              }
-            }} 
-            onMouseLeave={(e) => { 
-              if (hasConfirmed) {
-                e.target.style.backgroundColor = 'var(--color-success)';
-              }
-            }}
-          >
-            {isAccepting ? (
-              <span style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: 'var(--border-2) solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)', display: 'inline-block' }}></span>
-            ) : (
-              <FaCheck style={{ marginRight: 'var(--spacing-2)' }} />
-            )}
+          <Button type="button" onClick={handleClose} variant="secondary" size="medium" icon={<FaTimes />}>
+            Close
+          </Button>
+          <Button type="button" onClick={handleAccept} disabled={isAccepting || !hasConfirmed} variant="success" size="medium" icon={isAccepting ? null : <FaCheck />} isLoading={isAccepting}>
             I Accept
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

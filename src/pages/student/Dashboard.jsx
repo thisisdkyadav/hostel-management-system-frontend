@@ -15,6 +15,7 @@ import Modal from "../../components/common/Modal"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
 import ComplaintFeedbackPopup from "../../components/student/ComplaintFeedbackPopup"
+import Button from "../../components/common/Button"
 
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
 const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
@@ -415,7 +416,7 @@ const Dashboard = () => {
         if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current)
         try {
           ctx.clearRect(0, 0, width, height)
-        } catch (e) {}
+        } catch (e) { }
       }
     }, [])
 
@@ -443,8 +444,8 @@ const Dashboard = () => {
                 Thanks!
               </button>
               <button onClick={() => {
-                  onClose()
-                }}
+                onClose()
+              }}
                 className="transition-colors"
                 style={{ padding: 'var(--spacing-2)', backgroundColor: 'rgba(255, 255, 255, 0.2)', border: '1px solid rgba(255, 255, 255, 0.3)', borderRadius: 'var(--radius-lg)' }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
@@ -495,9 +496,9 @@ const Dashboard = () => {
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Unable to Load Dashboard</h2>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>{error}</p>
-          <button onClick={fetchDashboardData} className="font-medium transition-colors" style={{ backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
+          <Button onClick={fetchDashboardData} variant="primary" size="medium">
             Try Again
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -539,31 +540,28 @@ const Dashboard = () => {
       </div>
 
       {/* Only keep the mobile QR button and modal */}
-      <button onClick={() => setShowQRModal(true)}
-        className={`fixed md:hidden rounded-full transition-all ${isPwaMobile ? "bottom-20" : ""}`}
+      <Button onClick={() => setShowQRModal(true)}
+        className={`fixed md:hidden rounded-full ${isPwaMobile ? "bottom-20" : ""}`}
+        variant="primary"
+        icon={<FaQrcode style={{ fontSize: 'var(--font-size-2xl)' }} />}
         style={{
-          backgroundColor: 'var(--button-primary-bg)',
           padding: 'var(--spacing-4)',
           boxShadow: 'var(--shadow-lg)',
           zIndex: 'var(--z-dropdown)',
           bottom: isPwaMobile ? '5rem' : 'var(--spacing-6)',
           right: 'var(--spacing-6)',
-          transitionDuration: 'var(--transition-slow)'
         }}
-        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'}
-        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}
-      >
-        <FaQrcode style={{ color: 'var(--color-white)', fontSize: 'var(--font-size-2xl)' }} />
-      </button>
+        aria-label="Show QR Code"
+      />
 
       {/* QR Code Modal */}
       {showQRModal && (
         <Modal title="Campus Access QR" onClose={() => setShowQRModal(false)} width={480}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
             <QRCodeGenerator />
-            <button onClick={() => setShowQRModal(false)} className="w-full font-medium transition-colors" style={{ padding: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-secondary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
+            <Button onClick={() => setShowQRModal(false)} fullWidth variant="secondary" size="medium">
               Close
-            </button>
+            </Button>
           </div>
         </Modal>
       )}

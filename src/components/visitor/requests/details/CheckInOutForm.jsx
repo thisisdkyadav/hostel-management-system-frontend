@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
+import Button from "../../../common/Button"
 
 const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onCheckIn, onCheckOut, onUpdateTimes, onCancel }) => {
   const today = new Date()
@@ -227,30 +228,30 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-2)", }} >
-        <button type="button" onClick={onCancel} style={cancelButtonStyle}>
+        <Button type="button" onClick={onCancel} variant="secondary" size="medium">
           Cancel
-        </button>
+        </Button>
 
         {/* Show appropriate action button based on the current state */}
         {!isCheckedIn ? (
           // Case 1: Initial check-in (not checked in yet)
-          <button type="button" onClick={handleCheckIn} style={primaryButtonStyle}>
+          <Button type="button" onClick={handleCheckIn} variant="primary" size="medium">
             Check-in Visitor
-          </button>
+          </Button>
         ) : isCheckedOut ? (
           // Case 2: Already checked out, only edit allowed
-          <button type="button" onClick={handleUpdateTimes} style={primaryButtonStyle}>
+          <Button type="button" onClick={handleUpdateTimes} variant="primary" size="medium">
             Update Times
-          </button>
+          </Button>
         ) : (
           // Case 3: Checked in but not checked out, show both options
           <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
-            <button type="button" onClick={handleUpdateTimes} style={primaryButtonStyle}>
+            <Button type="button" onClick={handleUpdateTimes} variant="primary" size="medium">
               Update Check-in
-            </button>
-            <button type="button" onClick={handleCheckOut} style={successButtonStyle}>
+            </Button>
+            <Button type="button" onClick={handleCheckOut} variant="success" size="medium">
               Check-out Visitor
-            </button>
+            </Button>
           </div>
         )}
       </div>

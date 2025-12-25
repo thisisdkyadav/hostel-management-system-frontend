@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaTasks, FaCheckCircle, FaHourglass, FaExclamationTriangle, FaChartBar } from "react-icons/fa"
 import { StatCard } from "../common/StatCards"
+import Button from "../common/Button"
 import DetailedTaskStats from "./DetailedTaskStats"
 
 const TaskStats = ({ stats }) => {
@@ -51,26 +52,9 @@ const TaskStats = ({ stats }) => {
     <div style={{ marginBottom: 'var(--spacing-6)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
         <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Task Overview</h2>
-        <button onClick={() => setShowDetailed(!showDetailed)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: 'var(--spacing-1-5) var(--spacing-3)',
-            backgroundColor: 'var(--color-primary-bg)',
-            color: 'var(--color-primary)',
-            borderRadius: 'var(--radius-md)',
-            transition: 'var(--transition-all)',
-            fontSize: 'var(--font-size-sm)',
-            fontWeight: 'var(--font-weight-medium)',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}
-        >
-          <FaChartBar style={{ marginRight: 'var(--spacing-2)' }} />
+        <Button onClick={() => setShowDetailed(!showDetailed)} variant="outline" size="small" icon={<FaChartBar />}>
           {showDetailed ? "Simple View" : "Detailed View"}
-        </button>
+        </Button>
       </div>
 
       {showDetailed ? (

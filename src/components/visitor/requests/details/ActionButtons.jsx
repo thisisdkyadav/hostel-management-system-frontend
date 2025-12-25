@@ -1,5 +1,6 @@
 import React from "react"
 import { useAuth } from "../../../../contexts/AuthProvider"
+import Button from "../../../common/Button"
 
 const ActionButtons = ({
   userRole,
@@ -96,40 +97,40 @@ const ActionButtons = ({
       {/* Student actions */}
       {userRole === "Student" && isPending && (
         <>
-          <button onClick={onCancelRequest} style={cancelButtonStyle}>
+          <Button onClick={onCancelRequest} variant="danger" size="medium">
             Cancel Request
-          </button>
-          <button onClick={onEditRequest} style={editButtonStyle}>
+          </Button>
+          <Button onClick={onEditRequest} variant="secondary" size="medium">
             Edit Request
-          </button>
+          </Button>
         </>
       )}
 
       {/* Admin actions for pending requests */}
       {userRole === "Admin" && isPending && (
         <>
-          <button onClick={onClose} style={closeButtonStyle}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
-          <button onClick={onShowRejectForm} style={rejectButtonStyle}>
+          </Button>
+          <Button onClick={onShowRejectForm} variant="danger" size="medium">
             {showRejectForm ? "Cancel" : "Reject"}
-          </button>
-          <button onClick={onShowApproveForm} style={approveButtonStyle}>
+          </Button>
+          <Button onClick={onShowApproveForm} variant="primary" size="medium">
             {showApproveForm ? "Cancel" : "Approve"}
-          </button>
+          </Button>
         </>
       )}
 
       {/* Warden actions for approved requests */}
       {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && isApproved && (
         <>
-          <button onClick={onClose} style={closeButtonStyle}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
           {!hasAllocatedRooms && (
-            <button onClick={onShowAllocationForm} style={allocateButtonStyle}>
+            <Button onClick={onShowAllocationForm} variant="primary" size="medium">
               Allocate Rooms
-            </button>
+            </Button>
           )}
         </>
       )}
@@ -137,28 +138,28 @@ const ActionButtons = ({
       {/* Security/Guard actions for approved requests */}
       {["Security", "Hostel Gate"].includes(userRole) && isApproved && (
         <>
-          <button onClick={onClose} style={closeButtonStyle}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
 
           {hasAllocatedRooms && (
             <>
               {isCheckTimes && (
-                <button onClick={onShowCheckInForm} style={editCheckTimesButtonStyle}>
+                <Button onClick={onShowCheckInForm} variant="warning" size="medium">
                   Edit Check Times
-                </button>
+                </Button>
               )}
 
               {isCheckInForm && (
-                <button onClick={onShowCheckInForm} style={checkInButtonStyle}>
+                <Button onClick={onShowCheckInForm} variant="primary" size="medium">
                   {showCheckInForm ? "Cancel" : "Check In"}
-                </button>
+                </Button>
               )}
 
               {isCheckOutForm && (
-                <button onClick={onShowCheckInForm} style={checkOutButtonStyle}>
+                <Button onClick={onShowCheckInForm} variant="success" size="medium">
                   {showCheckInForm ? "Cancel" : "Check Out"}
-                </button>
+                </Button>
               )}
             </>
           )}
@@ -170,10 +171,10 @@ const ActionButtons = ({
         (userRole === "Admin" && !isPending) ||
         (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
         (["Security", "Hostel Gate"].includes(userRole) && !isApproved)) && (
-        <button onClick={onClose} style={closeButtonStyle}>
-          Close
-        </button>
-      )}
+          <Button onClick={onClose} variant="secondary" size="medium">
+            Close
+          </Button>
+        )}
     </div>
   )
 }

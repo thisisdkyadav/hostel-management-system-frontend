@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../services/apiService"
+import Button from "../common/Button"
 import ConfirmationDialog from "../common/ConfirmationDialog"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
@@ -136,9 +137,9 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
       return (
         <div key={member.id} style={{ backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)', boxShadow: 'var(--shadow-sm)' }}>
           <form onSubmit={(e) => {
-              e.preventDefault()
-              handleUpdate(member.id)
-            }}
+            e.preventDefault()
+            handleUpdate(member.id)
+          }}
           >
             <div style={{ marginBottom: 'var(--spacing-3)' }}>
               <label style={{ display: 'block', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }}>Name</label>
@@ -175,12 +176,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-              <button type="button" onClick={cancelEdit} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}>
-                <FiX style={{ marginRight: 'var(--spacing-1)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-sm'))} /> Cancel
-              </button>
-              <button type="submit" style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}>
-                <FiSave style={{ marginRight: 'var(--spacing-1)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-sm'))} /> Save
-              </button>
+              <Button type="button" onClick={cancelEdit} variant="secondary" size="small" icon={<FiX />}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" size="small" icon={<FiSave />}>
+                Save
+              </Button>
             </div>
           </form>
         </div>
@@ -193,12 +194,8 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{member.name}</h3>
           {editable && (
             <div style={{ display: 'flex', gap: 'var(--spacing-1)' }}>
-              <button onClick={() => startEdit(member)} style={{ padding: 'var(--spacing-1)', color: 'var(--color-primary)', backgroundColor: 'transparent', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }} title="Edit" onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
-                <FiEdit size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-md'))} />
-              </button>
-              <button onClick={() => confirmDelete(member)} style={{ padding: 'var(--spacing-1)', color: 'var(--color-danger)', backgroundColor: 'transparent', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer' }} title="Delete" onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
-                <FiTrash2 size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-md'))} />
-              </button>
+              <Button onClick={() => startEdit(member)} variant="ghost" size="small" icon={<FiEdit />} aria-label="Edit" />
+              <Button onClick={() => confirmDelete(member)} variant="danger" size="small" icon={<FiTrash2 />} aria-label="Delete" />
             </div>
           )}
         </div>
@@ -269,17 +266,15 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-            <button type="button" onClick={() => {
-                setShowAddForm(false)
-                resetForm()
-              }}
-              style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}
-            >
-              <FiX style={{ marginRight: 'var(--spacing-1)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-sm'))} /> Cancel
-            </button>
-            <button type="submit" style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}>
-              <FiSave style={{ marginRight: 'var(--spacing-1)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-sm'))} /> Add Member
-            </button>
+            <Button type="button" onClick={() => {
+              setShowAddForm(false)
+              resetForm()
+            }} variant="secondary" size="small" icon={<FiX />}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" size="small" icon={<FiSave />}>
+              Add Member
+            </Button>
           </div>
         </form>
       </div>
@@ -303,9 +298,9 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
       <div style={{ marginBottom: 'var(--spacing-4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Family Members</h2>
         {editable && !showAddForm && (
-          <button onClick={() => setShowAddForm(true)} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}>
-            <FiPlus style={{ marginRight: 'var(--spacing-1)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-md'))} /> Add Family Member
-          </button>
+          <Button onClick={() => setShowAddForm(true)} variant="primary" size="small" icon={<FiPlus />}>
+            Add Family Member
+          </Button>
         )}
       </div>
 
@@ -321,9 +316,9 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             <div style={{ textAlign: 'center', padding: 'var(--spacing-6) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
               <p style={{ color: 'var(--color-text-muted)' }}>No family members added yet.</p>
               {editable && (
-                <button onClick={() => setShowAddForm(true)} style={{ marginTop: 'var(--spacing-2)', padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', display: 'inline-flex', alignItems: 'center', border: 'none', cursor: 'pointer' }}>
-                  <FiPlus style={{ marginRight: 'var(--spacing-1)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-md'))} /> Add Family Member
-                </button>
+                <Button onClick={() => setShowAddForm(true)} variant="outline" size="small" icon={<FiPlus />} style={{ marginTop: 'var(--spacing-2)' }}>
+                  Add Family Member
+                </Button>
               )}
             </div>
           ) : (

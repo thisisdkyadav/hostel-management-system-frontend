@@ -1,5 +1,6 @@
 import React from "react"
 import { FaTimes, FaUserCircle, FaDoorOpen, FaClock, FaCalendarAlt } from "react-icons/fa"
+import Button from "../common/Button"
 
 const EntryDetails = ({ entry, onClose }) => {
   if (!entry) return null
@@ -9,9 +10,7 @@ const EntryDetails = ({ entry, onClose }) => {
       <div style={{ backgroundColor: 'var(--modal-bg)', borderRadius: 'var(--modal-radius)', boxShadow: 'var(--modal-shadow)', width: '100%', maxWidth: 'var(--container-md)', margin: '0 var(--spacing-4)', padding: 'var(--spacing-6)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
           <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--modal-title-color)' }}>Entry Details</h2>
-          <button onClick={onClose} style={{ color: 'var(--color-text-muted)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', padding: 'var(--spacing-2)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-text-body)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}>
-            <FaTimes size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-lg'))} />
-          </button>
+          <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes />} aria-label="Close" />
         </div>
 
         <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
@@ -58,9 +57,9 @@ const EntryDetails = ({ entry, onClose }) => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button onClick={onClose} style={{ backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </div>

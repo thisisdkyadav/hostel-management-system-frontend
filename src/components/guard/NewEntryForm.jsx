@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
+import Button from "../common/Button"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -142,11 +143,9 @@ const NewEntryForm = ({ onAddEntry }) => {
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>&nbsp;</label>
-          <button type="submit" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--spacing-1)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', padding: 'var(--spacing-1) var(--spacing-2)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', marginTop: 'var(--spacing-1)', border: 'none', cursor: 'pointer', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}
-          >
-            <FaPlus size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-xs'))} /> Add
-          </button>
+          <Button type="submit" variant="primary" size="small" icon={<FaPlus />} fullWidth style={{ marginTop: 'var(--spacing-1)' }}>
+            Add
+          </Button>
         </div>
       </form>
     </div>

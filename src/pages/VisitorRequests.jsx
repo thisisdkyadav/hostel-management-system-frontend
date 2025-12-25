@@ -10,6 +10,7 @@ import LoadingState from "../components/common/LoadingState"
 import ErrorState from "../components/common/ErrorState"
 import EmptyState from "../components/common/EmptyState"
 import VisitorRequestsHeader from "../components/headers/VisitorRequestsHeader"
+import Button from "../components/common/Button"
 
 const VisitorRequests = () => {
   const { user, canAccess } = useAuth()
@@ -115,131 +116,71 @@ const VisitorRequests = () => {
 
       <div style={{ flex: '1', overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
 
-      {showFilters && (
-        <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-            <div>
-              <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Status:</h3>
-              <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
-                {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
-                  ? ["all", "approved"].map((status) => (
-                      <button key={status} onClick={() => setStatusFilter(status)} 
-                        style={{ 
-                          padding: 'var(--spacing-3) var(--spacing-1-5)', 
-                          borderRadius: 'var(--radius-lg)', 
-                          fontSize: 'var(--font-size-sm)', 
-                          fontWeight: 'var(--font-weight-medium)', 
-                          transition: 'var(--transition-colors)',
-                          backgroundColor: statusFilter === status ? 'var(--color-primary)' : 'transparent',
-                          color: statusFilter === status ? 'var(--color-white)' : 'var(--color-text-muted)',
-                          boxShadow: statusFilter === status ? 'var(--shadow-sm)' : 'none',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                        onMouseOver={(e) => {
-                          if (statusFilter !== status) {
-                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          if (statusFilter !== status) {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                          }
-                        }}
-                      >
-                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
-                      </button>
-                    ))
-                  : ["all", "pending", "approved", "rejected"].map((status) => (
-                      <button key={status} onClick={() => setStatusFilter(status)} 
-                        style={{ 
-                          padding: 'var(--spacing-3) var(--spacing-1-5)', 
-                          borderRadius: 'var(--radius-lg)', 
-                          fontSize: 'var(--font-size-sm)', 
-                          fontWeight: 'var(--font-weight-medium)', 
-                          transition: 'var(--transition-colors)',
-                          backgroundColor: statusFilter === status ? 'var(--color-primary)' : 'transparent',
-                          color: statusFilter === status ? 'var(--color-white)' : 'var(--color-text-muted)',
-                          boxShadow: statusFilter === status ? 'var(--shadow-sm)' : 'none',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                        onMouseOver={(e) => {
-                          if (statusFilter !== status) {
-                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          if (statusFilter !== status) {
-                            e.currentTarget.style.backgroundColor = 'transparent'
-                          }
-                        }}
-                      >
-                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
-                      </button>
-                    ))}
-              </div>
-            </div>
-
-            {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+        {showFilters && (
+          <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               <div>
-                <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Allocation:</h3>
+                <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Status:</h3>
                 <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
-                  {["all", "allocated", "unallocated"].map((status) => (
-                    <button key={status} onClick={() => setAllocationFilter(status)} 
-                      style={{ 
-                        padding: 'var(--spacing-3) var(--spacing-1-5)', 
-                        borderRadius: 'var(--radius-lg)', 
-                        fontSize: 'var(--font-size-sm)', 
-                        fontWeight: 'var(--font-weight-medium)', 
-                        transition: 'var(--transition-colors)',
-                        backgroundColor: allocationFilter === status ? 'var(--color-primary)' : 'transparent',
-                        color: allocationFilter === status ? 'var(--color-white)' : 'var(--color-text-muted)',
-                        boxShadow: allocationFilter === status ? 'var(--shadow-sm)' : 'none',
-                        border: 'none',
-                        cursor: 'pointer'
-                      }}
-                      onMouseOver={(e) => {
-                        if (allocationFilter !== status) {
-                          e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        if (allocationFilter !== status) {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                        }
-                      }}
-                    >
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </button>
-                  ))}
+                  {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
+                    ? ["all", "approved"].map((status) => (
+                      <Button key={status} onClick={() => setStatusFilter(status)}
+                        variant={statusFilter === status ? "primary" : "ghost"}
+                        size="small"
+                      >
+                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+                      </Button>
+                    ))
+                    : ["all", "pending", "approved", "rejected"].map((status) => (
+                      <Button key={status} onClick={() => setStatusFilter(status)}
+                        variant={statusFilter === status ? "primary" : "ghost"}
+                        size="small"
+                      >
+                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+                      </Button>
+                    ))}
                 </div>
               </div>
-            )}
+
+              {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+                <div>
+                  <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Allocation:</h3>
+                  <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
+                    {["all", "allocated", "unallocated"].map((status) => (
+                      <Button key={status} onClick={() => setAllocationFilter(status)}
+                        variant={allocationFilter === status ? "primary" : "ghost"}
+                        size="small"
+                      >
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {visitorRequests.length === 0 ? (
-        <EmptyState icon={() => <FaUserFriends style={{ color: 'var(--color-text-placeholder)' }} size={48} />}
-          title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
-          message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
-          buttonText={user.role === "Student" ? "Create Request" : null}
-          buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
-        />
-      ) : filteredRequests.length === 0 ? (
-        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No requests found matching your filters.</p>
-        </div>
-      ) : (
-        <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />
-      )}
+        {visitorRequests.length === 0 ? (
+          <EmptyState icon={() => <FaUserFriends style={{ color: 'var(--color-text-placeholder)' }} size={48} />}
+            title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
+            message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
+            buttonText={user.role === "Student" ? "Create Request" : null}
+            buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
+          />
+        ) : filteredRequests.length === 0 ? (
+          <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No requests found matching your filters.</p>
+          </div>
+        ) : (
+          <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />
+        )}
 
-      {showAddProfileModal && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
+        {showAddProfileModal && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
 
-      {showAddRequestModal && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
+        {showAddRequestModal && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
 
-      {showManageProfilesModal && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
+        {showManageProfilesModal && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
       </div>
     </div>
   )

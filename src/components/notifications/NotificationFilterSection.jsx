@@ -1,5 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
+import Button from "../common/Button"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
   const handleChange = (e) => {
@@ -11,9 +12,9 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
     <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)', border: `var(--border-1) solid var(--color-border-light)` }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Filter Notifications</h3>
-        <button onClick={resetFilters} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-info)', display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-info-hover)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-info)'}>
-          <FaTimes style={{ marginRight: 'var(--spacing-1)' }} /> Reset Filters
-        </button>
+        <Button onClick={resetFilters} variant="ghost" size="small" icon={<FaTimes />}>
+          Reset Filters
+        </Button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>

@@ -3,6 +3,7 @@ import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboar
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import StatusBadge from "../../components/common/StatusBadge"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import Button from "../../components/common/Button"
 
 const ScannerEntries = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()
@@ -47,9 +48,9 @@ const ScannerEntries = () => {
               <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <span style={{ color: "var(--color-danger)" }}>*</span></label>
               <textarea id={`reason-${entry._id}`} value={currentReason} onChange={(e) => handleReasonChange(entry._id, e.target.value)} placeholder="Enter reason..." style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }} rows="3" disabled={isUpdating} data-no-scanner="true" />
             </div>
-            <button onClick={() => handleUpdateReason(entry)} disabled={!currentReason.trim() || isUpdating} style={{ display: "flex", alignItems: "center", padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: !currentReason.trim() || isUpdating ? "var(--color-warning-light)" : "var(--color-warning)", color: "var(--color-white)", borderRadius: "var(--radius-md)", border: "none", fontSize: "var(--font-size-sm)", cursor: !currentReason.trim() || isUpdating ? "not-allowed" : "pointer" }}>
-              {isUpdating ? <><div style={{ width: "var(--icon-md)", height: "var(--icon-md)", border: "var(--border-2) solid var(--color-white)", borderTop: "var(--border-2) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></div>Updating...</> : <><FaCheck style={{ marginRight: "var(--spacing-2)" }} />Add Check-In Reason</>}
-            </button>
+            <Button onClick={() => handleUpdateReason(entry)} disabled={!currentReason.trim() || isUpdating} variant="warning" size="small" isLoading={isUpdating} icon={isUpdating ? null : <FaCheck />}>
+              {isUpdating ? "Updating..." : "Add Check-In Reason"}
+            </Button>
           </div>
         </div>
       </div>
@@ -88,9 +89,9 @@ const ScannerEntries = () => {
               <div style={{ padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-info-bg)", color: "var(--color-primary)" }}><FaHistory size={20} /></div>
               <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>Recent Scanner Entries</h2>
             </div>
-            <button onClick={fetchScannerEntries} disabled={loading} style={{ display: "flex", alignItems: "center", padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: loading ? "var(--color-primary-muted)" : "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", border: "none", cursor: loading ? "not-allowed" : "pointer", fontSize: "var(--font-size-sm)" }}>
-              {loading ? <><div style={{ width: "var(--icon-md)", height: "var(--icon-md)", border: "var(--border-2) solid var(--color-white)", borderTop: "var(--border-2) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", marginRight: "var(--spacing-2)" }}></div>Loading...</> : <><FaHistory style={{ marginRight: "var(--spacing-2)" }} />Refresh</>}
-            </button>
+            <Button onClick={fetchScannerEntries} disabled={loading} variant="primary" size="small" isLoading={loading} icon={loading ? null : <FaHistory />}>
+              {loading ? "Loading..." : "Refresh"}
+            </Button>
           </div>
           {loading && scannerEntries.length === 0 ? (
             <div style={{ textAlign: "center", padding: "var(--spacing-8)" }}><div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTop: "var(--border-4) solid transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", margin: "0 auto var(--spacing-4)" }}></div><p style={{ color: "var(--color-text-muted)" }}>Loading scanner entries...</p></div>

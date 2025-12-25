@@ -4,6 +4,7 @@ import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } fr
 import Pagination from "../../common/Pagination"
 import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"
+import Button from "../../common/Button"
 
 const StudentAssignments = () => {
   const { user, canAccess } = useAuth()
@@ -186,12 +187,12 @@ const StudentAssignments = () => {
             <input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} />
           </div>
           <div className="flex self-end" style={{ gap: 'var(--gap-sm)' }}>
-            <button onClick={resetFilters} style={{ padding: 'var(--button-padding-md)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-button-rect)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
+            <Button onClick={resetFilters} variant="secondary" size="medium">
               Reset
-            </button>
-            <button onClick={() => fetchStudentInventory(1)} className="flex items-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', gap: 'var(--gap-sm)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
-              <FaFilter /> Filter
-            </button>
+            </Button>
+            <Button onClick={() => fetchStudentInventory(1)} variant="primary" size="medium" icon={<FaFilter />}>
+              Filter
+            </Button>
           </div>
         </div>
       </div>
@@ -254,13 +255,9 @@ const StudentAssignments = () => {
                     <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
                       {canAccess("student_inventory", "edit") && (
                         <div className="flex items-center" style={{ gap: 'var(--gap-sm)' }}>
-                          <button onClick={() => handleViewEditItem(item)} className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-primary)'; e.target.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-primary-bg)'; e.target.style.color = 'var(--color-primary)'; }} title="View/Edit Details">
-                            <FaEdit />
-                          </button>
+                          <Button onClick={() => handleViewEditItem(item)} variant="ghost" size="small" icon={<FaEdit />} aria-label="View/Edit Details" />
                           {item.status === "Issued" && (
-                            <button onClick={() => handleReturnItem(item)} className="flex items-center justify-center" style={{ width: 'var(--avatar-sm)', height: 'var(--avatar-sm)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-success)'; e.target.style.color = 'var(--color-white)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--color-success-bg-light)'; e.target.style.color = 'var(--color-success)'; }} title="Return Item">
-                              <FaUndo />
-                            </button>
+                            <Button onClick={() => handleReturnItem(item)} variant="ghost" size="small" icon={<FaUndo />} aria-label="Return Item" />
                           )}
                         </div>
                       )}
@@ -348,12 +345,12 @@ const StudentAssignments = () => {
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
-              <button type="button" onClick={closeModal} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
                 Cancel
-              </button>
-              <button type="submit" disabled={loading} className="flex items-center justify-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
-                {loading ? <div className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div> : "Update Item"}
-              </button>
+              </Button>
+              <Button type="submit" disabled={loading} variant="primary" size="medium" isLoading={loading}>
+                {loading ? "Updating..." : "Update Item"}
+              </Button>
             </div>
           </form>
         </Modal>
@@ -395,12 +392,12 @@ const StudentAssignments = () => {
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
-              <button type="button" onClick={closeModal} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
                 Cancel
-              </button>
-              <button type="submit" disabled={loading} className="flex items-center justify-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : '1', minWidth: '100px', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-success-hover)')} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success)'}>
-                {loading ? <div className="animate-spin" style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)' }}></div> : "Return Item"}
-              </button>
+              </Button>
+              <Button type="submit" disabled={loading} variant="success" size="medium" isLoading={loading}>
+                {loading ? "Returning..." : "Return Item"}
+              </Button>
             </div>
           </form>
         </Modal>

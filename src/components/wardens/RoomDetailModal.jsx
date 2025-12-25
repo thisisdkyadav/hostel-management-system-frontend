@@ -5,6 +5,7 @@ import Modal from "../common/Modal"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import StudentDetailModal from "../common/students/StudentDetailModal"
+import Button from "../common/Button"
 const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
@@ -107,9 +108,10 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>Status:</span>
-                  <span style={{ fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', backgroundColor: room.status === "Inactive" ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
-                      color: room.status === "Inactive" ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
-                    }}
+                  <span style={{
+                    fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-sm)', backgroundColor: room.status === "Inactive" ? 'var(--color-danger-bg)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-bg)' : room.currentOccupancy > 0 ? 'var(--color-info-bg)' : 'var(--color-bg-muted)',
+                    color: room.status === "Inactive" ? 'var(--color-danger-text)' : room.currentOccupancy >= room.capacity ? 'var(--color-success-text)' : room.currentOccupancy > 0 ? 'var(--color-info-text)' : 'var(--color-text-secondary)'
+                  }}
                   >
                     {room.status === "Inactive" ? "Inactive" : room.currentOccupancy >= room.capacity ? "Full" : room.currentOccupancy > 0 ? "Partially Occupied" : "Empty"}
                   </span>
@@ -120,27 +122,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
 
           {["Admin"].includes(user.role) && (
             <div style={{ marginTop: 'var(--spacing-4)' }}>
-              <button onClick={handleToggleStatus} disabled={loading} style={{ display: 'flex', alignItems: 'center', padding: 'var(--spacing-2-5) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', backgroundColor: room.status === "Inactive" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)', color: room.status === "Inactive" ? 'var(--color-success)' : 'var(--color-danger)', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)', opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => {
-                  if (!loading) {
-                    e.target.style.backgroundColor = room.status === "Inactive" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!loading) {
-                    e.target.style.backgroundColor = room.status === "Inactive" ? 'var(--color-success-bg-light)' : 'var(--color-danger-bg-light)';
-                  }
-                }}
-              >
-                {room.status === "Inactive" ? (
-                  <>
-                    <FaToggleOff style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} /> Activate Room
-                  </>
-                ) : (
-                  <>
-                    <FaToggleOn style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-md)' }} /> Mark as Inactive
-                  </>
-                )}
-              </button>
+              <Button onClick={handleToggleStatus} disabled={loading} variant={room.status === "Inactive" ? "success" : "danger"} size="medium" icon={room.status === "Inactive" ? <FaToggleOff /> : <FaToggleOn />}>
+                {room.status === "Inactive" ? "Activate Room" : "Mark as Inactive"}
+              </Button>
             </div>
           )}
 
@@ -150,15 +134,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaUserAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Allocated Students
               </h3>
               {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-                <button onClick={onAllocate} style={{ display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-sm)', backgroundColor: 'var(--color-success-bg-light)', color: 'var(--color-success)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = 'var(--color-success-bg)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = 'var(--color-success-bg-light)';
-                  }}
-                >
-                  <FaUserPlus style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} /> Allocate Student
-                </button>
+                <Button onClick={onAllocate} variant="success" size="small" icon={<FaUserPlus />}>
+                  Allocate Student
+                </Button>
               )}
             </div>
 
@@ -183,8 +161,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                     <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
                       {room.students.map((student, index) => (
                         <tr key={student.id || index} style={{ borderTop: `var(--border-1) solid var(--color-border-primary)`, transition: 'var(--transition-colors)' }} onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
-                          }}
+                          e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
+                        }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)';
                           }}
@@ -211,33 +189,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                           <td className="hidden md:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{student.department}</td>
                           <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', textAlign: 'right' }}>
                             {["Admin"].includes(user.role) && (
-                              <button onClick={() => handleRemoveStudent(student.allocationId)} 
-                                disabled={loading} 
-                                style={{ 
-                                  color: 'var(--color-danger)', 
-                                  padding: 'var(--spacing-2)', 
-                                  borderRadius: 'var(--radius-full)', 
-                                  transition: 'var(--transition-colors)',
-                                  border: 'none',
-                                  backgroundColor: 'transparent',
-                                  cursor: loading ? 'not-allowed' : 'pointer',
-                                  opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
-                                  fontSize: 'var(--icon-md)'
-                                }} 
-                                title="Remove from Room"
-                                onMouseEnter={(e) => {
-                                  if (!loading) {
-                                    e.target.style.backgroundColor = 'var(--color-danger-bg-light)';
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (!loading) {
-                                    e.target.style.backgroundColor = 'transparent';
-                                  }
-                                }}
-                              >
-                                <FaTrash />
-                              </button>
+                              <Button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} variant="ghost" size="small" icon={<FaTrash />} aria-label="Remove from Room" />
                             )}
                           </td>
                         </tr>
@@ -251,15 +203,9 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaUserAlt style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
                 <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No students allocated to this room</p>
                 {room.capacity > 0 && (
-                  <button onClick={onAllocate} style={{ marginTop: 'var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', padding: 'var(--spacing-2) var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'inline-flex', alignItems: 'center', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = 'var(--color-primary-bg-hover)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'var(--color-primary-bg)';
-                    }}
-                  >
-                    <FaUserPlus style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} /> Allocate Student
-                  </button>
+                  <Button onClick={onAllocate} variant="primary" size="medium" icon={<FaUserPlus />} style={{ marginTop: 'var(--spacing-4)' }}>
+                    Allocate Student
+                  </Button>
                 )}
               </div>
             )}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers } from "react-icons/fi"
+import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "react-icons/fi"
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { studentProfileApi } from "../../services/apiService"
 import ImageUploadModal from "../common/ImageUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -156,23 +157,9 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
               <img src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} alt="Profile" style={{ height: 'var(--avatar-2xl)', width: 'var(--avatar-2xl)', objectFit: 'cover' }} />
             </div>
             <div>
-              <button type="button" onClick={() => setIsImageModalOpen(true)} 
-                style={{ 
-                  padding: 'var(--spacing-2) var(--spacing-3)', 
-                  backgroundColor: 'var(--color-primary-bg)', 
-                  color: 'var(--color-primary)', 
-                  borderRadius: 'var(--radius-md)', 
-                  fontSize: 'var(--font-size-sm)', 
-                  fontWeight: 'var(--font-weight-medium)', 
-                  transition: 'var(--transition-colors)',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}
-              >
+              <Button type="button" onClick={() => setIsImageModalOpen(true)} variant="outline" size="small" icon={<FiCamera />}>
                 Change Photo
-              </button>
+              </Button>
               <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum file size: 500KB</p>
             </div>
           </div>
@@ -187,12 +174,12 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
-            style={{ 
-              width: '100%', 
-              padding: 'var(--input-padding)', 
-              border: `var(--border-1) solid var(--input-border)`, 
-              borderRadius: 'var(--input-radius)', 
+          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)}
+            style={{
+              width: '100%',
+              padding: 'var(--input-padding)',
+              border: `var(--border-1) solid var(--input-border)`,
+              borderRadius: 'var(--input-radius)',
               fontSize: 'var(--font-size-sm)',
               backgroundColor: 'var(--input-bg)',
               color: 'var(--color-text-body)'
@@ -222,12 +209,12 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
-            style={{ 
-              width: '100%', 
-              padding: 'var(--input-padding)', 
-              border: `var(--border-1) solid var(--input-border)`, 
-              borderRadius: 'var(--input-radius)', 
+          <select value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)}
+            style={{
+              width: '100%',
+              padding: 'var(--input-padding)',
+              border: `var(--border-1) solid var(--input-border)`,
+              borderRadius: 'var(--input-radius)',
               fontSize: 'var(--font-size-sm)',
               backgroundColor: 'var(--input-bg)',
               color: 'var(--color-text-body)'
@@ -262,12 +249,12 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <input type="date" value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} onChange={(e) => handleChange(field, e.target.value)} 
-            style={{ 
-              width: '100%', 
-              padding: 'var(--input-padding)', 
-              border: `var(--border-1) solid var(--input-border)`, 
-              borderRadius: 'var(--input-radius)', 
+          <input type="date" value={editableData[field] ? new Date(editableData[field]).toISOString().split("T")[0] : ""} onChange={(e) => handleChange(field, e.target.value)}
+            style={{
+              width: '100%',
+              padding: 'var(--input-padding)',
+              border: `var(--border-1) solid var(--input-border)`,
+              borderRadius: 'var(--input-radius)',
               fontSize: 'var(--font-size-sm)',
               backgroundColor: 'var(--input-bg)',
               color: 'var(--color-text-body)'
@@ -292,13 +279,13 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
             {config.icon}
             <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
           </label>
-          <textarea value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
-            rows={3} 
-            style={{ 
-              width: '100%', 
-              padding: 'var(--input-padding)', 
-              border: `var(--border-1) solid var(--input-border)`, 
-              borderRadius: 'var(--input-radius)', 
+          <textarea value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)}
+            rows={3}
+            style={{
+              width: '100%',
+              padding: 'var(--input-padding)',
+              border: `var(--border-1) solid var(--input-border)`,
+              borderRadius: 'var(--input-radius)',
               fontSize: 'var(--font-size-sm)',
               backgroundColor: 'var(--input-bg)',
               color: 'var(--color-text-body)'
@@ -322,12 +309,12 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
           {config.icon}
           <span style={{ marginLeft: 'var(--spacing-2)' }}>{config.label}</span>
         </label>
-        <input type={type} value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)} 
-          style={{ 
-            width: '100%', 
-            padding: 'var(--input-padding)', 
-            border: `var(--border-1) solid var(--input-border)`, 
-            borderRadius: 'var(--input-radius)', 
+        <input type={type} value={editableData[field] || ""} onChange={(e) => handleChange(field, e.target.value)}
+          style={{
+            width: '100%',
+            padding: 'var(--input-padding)',
+            border: `var(--border-1) solid var(--input-border)`,
+            borderRadius: 'var(--input-radius)',
             fontSize: 'var(--font-size-sm)',
             backgroundColor: 'var(--input-bg)',
             color: 'var(--color-text-body)'
@@ -348,29 +335,13 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   const renderFooter = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-        <button type="button" onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
-          disabled={saving}
-        >
+        <Button type="button" onClick={onClose} variant="secondary" size="medium" disabled={saving}>
           Cancel
-        </button>
+        </Button>
         {activeTab === "profile" && (
-          <button type="submit" form="edit-profile-form" style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}
-            disabled={saving}
-          >
-            {saving ? (
-              <>
-                <div style={{ animation: 'spin 1s linear infinite', borderRadius: 'var(--radius-full)', height: 'var(--spacing-4)', width: 'var(--spacing-4)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', marginRight: 'var(--spacing-2)' }}></div>
-                Saving...
-              </>
-            ) : (
-              <>
-                <FiSave style={{ marginRight: 'var(--spacing-2)' }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-md'))} />
-                Save Changes
-              </>
-            )}
-          </button>
+          <Button type="submit" form="edit-profile-form" variant="primary" size="medium" icon={<FiSave />} isLoading={saving} disabled={saving}>
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
         )}
       </div>
     )

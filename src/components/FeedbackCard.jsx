@@ -6,6 +6,7 @@ import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import Card from "./common/Card"
+import Button from "./common/Button"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   const { canAccess } = useAuth()
@@ -189,61 +190,34 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
       <Card.Footer className="mt-4 pt-3 border-t border-[var(--color-border-light)] flex justify-end space-x-3">
         {!isStudentView && canAccess("feedback", "react") && status === "Pending" && !feedback.reply && (
           <>
-            <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all duration-300">
-              <HiReply className="mr-2" /> Reply
-            </button>
-            <button onClick={handleToggleSeen} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
-              {isUpdating ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <HiEye className="mr-2" /> Mark as Seen
-                </>
-              )}
-            </button>
+            <Button onClick={() => setIsReplyModalOpen(true)} variant="primary" size="small" icon={<HiReply />}>
+              Reply
+            </Button>
+            <Button onClick={handleToggleSeen} disabled={isUpdating} variant="outline" size="small" icon={<HiEye />} isLoading={isUpdating}>
+              {isUpdating ? "Updating..." : "Mark as Seen"}
+            </Button>
           </>
         )}
 
         {!isStudentView && canAccess("feedback", "react") && status === "Seen" && (
           <>
-            <button onClick={() => setIsReplyModalOpen(true)} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
-              <HiReply className="mr-2" /> {feedback.reply ? "Edit Reply" : "Add Reply"}
-            </button>
-            <button onClick={handleToggleSeen} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
-              {isUpdating ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <HiEye className="mr-2" /> Mark as Pending
-                </>
-              )}
-            </button>
+            <Button onClick={() => setIsReplyModalOpen(true)} variant="outline" size="small" icon={<HiReply />}>
+              {feedback.reply ? "Edit Reply" : "Add Reply"}
+            </Button>
+            <Button onClick={handleToggleSeen} disabled={isUpdating} variant="outline" size="small" icon={<HiEye />} isLoading={isUpdating}>
+              {isUpdating ? "Updating..." : "Mark as Pending"}
+            </Button>
           </>
         )}
 
         {isStudentView && canAccess("feedback", "react") && isPending && (
           <>
-            <button onClick={() => setIsEditModalOpen(true)} className="flex items-center px-4 py-2 bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300">
-              <HiPencilAlt className="mr-2" /> Edit
-            </button>
-            <button onClick={handleDelete} disabled={isUpdating} className="flex items-center px-4 py-2 bg-[var(--color-danger-bg-light)] text-[var(--color-danger)] rounded-lg hover:bg-[var(--color-danger)] hover:text-white transition-all duration-300">
-              {isUpdating ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <HiTrash className="mr-2" /> Delete
-                </>
-              )}
-            </button>
+            <Button onClick={() => setIsEditModalOpen(true)} variant="outline" size="small" icon={<HiPencilAlt />}>
+              Edit
+            </Button>
+            <Button onClick={handleDelete} disabled={isUpdating} variant="danger" size="small" icon={<HiTrash />} isLoading={isUpdating}>
+              {isUpdating ? "Deleting..." : "Delete"}
+            </Button>
           </>
         )}
       </Card.Footer>

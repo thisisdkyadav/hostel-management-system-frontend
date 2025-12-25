@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { lostAndFoundApi } from "../../services/apiService"
 import { uploadApi } from "../../services/uploadApi"
 import Modal from "../common/Modal"
-import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes } from "react-icons/fa"
+import Button from "../common/Button"
+import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
 
 const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
   const [formData, setFormData] = useState({
@@ -98,15 +99,15 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                 <FaClipboardList />
               </div>
               <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => {
-                  e.target.style.boxShadow = 'var(--input-focus-ring)';
-                  e.target.style.borderColor = 'var(--input-border-focus)';
-                }}
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
                 onBlur={(e) => {
                   e.target.style.boxShadow = 'none';
                   e.target.style.borderColor = 'var(--color-border-input)';
                 }}
-                placeholder="Enter item name" 
-                required 
+                placeholder="Enter item name"
+                required
               />
             </div>
           </div>
@@ -114,9 +115,9 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Description</label>
             <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--input-border-focus)';
-              }}
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--input-border-focus)';
+            }}
               onBlur={(e) => {
                 e.target.style.boxShadow = 'none';
                 e.target.style.borderColor = 'var(--color-border-input)';
@@ -147,7 +148,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                 {previewImages.map((preview, index) => (
                   <div key={index} style={{ position: 'relative' }} className="group">
                     <img src={preview} alt={`Preview ${index + 1}`} style={{ width: '100%', height: '6rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
-                    <button type="button" onClick={() => removeImage(index)} 
+                    <button type="button" onClick={() => removeImage(index)}
                       style={{
                         position: 'absolute',
                         top: 'var(--spacing-1)',
@@ -179,14 +180,14 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                   <FaCalendarAlt />
                 </div>
                 <input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => {
-                    e.target.style.boxShadow = 'var(--input-focus-ring)';
-                    e.target.style.borderColor = 'var(--input-border-focus)';
-                  }}
+                  e.target.style.boxShadow = 'var(--input-focus-ring)';
+                  e.target.style.borderColor = 'var(--input-border-focus)';
+                }}
                   onBlur={(e) => {
                     e.target.style.boxShadow = 'none';
                     e.target.style.borderColor = 'var(--color-border-input)';
                   }}
-                  required 
+                  required
                 />
               </div>
             </div>
@@ -194,9 +195,9 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
             <div>
               <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Status</label>
               <select name="status" value={formData.status} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-                  e.target.style.boxShadow = 'var(--input-focus-ring)';
-                  e.target.style.borderColor = 'var(--input-border-focus)';
-                }}
+                e.target.style.boxShadow = 'var(--input-focus-ring)';
+                e.target.style.borderColor = 'var(--input-border-focus)';
+              }}
                 onBlur={(e) => {
                   e.target.style.boxShadow = 'none';
                   e.target.style.borderColor = 'var(--color-border-input)';
@@ -211,23 +212,12 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-sm)' }}>
-          <button type="button" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-gray)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
-            onClick={onClose}
-          >
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
-          <button type="submit" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--color-primary-hover)';
-              e.target.style.boxShadow = 'var(--shadow-md)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--color-primary)';
-              e.target.style.boxShadow = 'var(--shadow-sm)';
-            }}
-          >
+          </Button>
+          <Button type="submit" variant="primary" size="medium" icon={<FaPlus />}>
             Add Item
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>

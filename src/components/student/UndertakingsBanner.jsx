@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { FaExclamationTriangle, FaFileSignature, FaTimes } from "react-icons/fa"
 import { studentUndertakingApi } from "../../services/studentUndertakingApi"
+import Button from "../common/Button"
 
 const UndertakingsBanner = () => {
   const [pendingCount, setPendingCount] = useState(0)
@@ -51,22 +52,7 @@ const UndertakingsBanner = () => {
             <FaFileSignature style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} />
             View Undertakings
           </Link>
-          <button onClick={() => setDismissed(true)} 
-            style={{ 
-              color: 'var(--color-warning-text)', 
-              padding: 'var(--spacing-1)', 
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'var(--transition-colors)',
-              fontSize: 'var(--icon-md)'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-warning)'}
-            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-warning-text)'}
-            aria-label="Dismiss"
-          >
-            <FaTimes />
-          </button>
+          <Button onClick={() => setDismissed(true)} variant="ghost" size="small" icon={<FaTimes />} aria-label="Dismiss" />
         </div>
       </div>
     </div>

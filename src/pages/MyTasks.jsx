@@ -5,6 +5,7 @@ import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STA
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
 import Pagination from "../components/common/Pagination"
 import MyTasksHeader from "../components/headers/MyTasksHeader"
+import Button from "../components/common/Button"
 
 const MyTasks = () => {
   const { user } = useAuth()
@@ -333,63 +334,30 @@ const MyTasks = () => {
                           style={{ borderTop: '1px solid var(--color-border-light)', paddingTop: 'var(--spacing-3)' }}
                         >
                           {task.status !== "In Progress" && (
-                            <button
+                            <Button
                               onClick={(e) => handleQuickUpdateStatus(e, task._id, "In Progress")}
-                              style={{
-                                padding: 'var(--spacing-1) var(--spacing-3)',
-                                backgroundColor: 'var(--color-primary-bg)',
-                                color: 'var(--color-primary)',
-                                fontSize: 'var(--font-size-xs)',
-                                fontWeight: 500,
-                                borderRadius: 'var(--radius-md)',
-                                border: 'none',
-                                cursor: 'pointer',
-                                transition: 'var(--transition-colors)'
-                              }}
-                              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg-hover)'}
-                              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary-bg)'}
+                              variant="ghost"
+                              size="small"
                             >
                               Start
-                            </button>
+                            </Button>
                           )}
                           {task.status !== "Completed" && (
-                            <button
+                            <Button
                               onClick={(e) => handleQuickUpdateStatus(e, task._id, "Completed")}
-                              style={{
-                                padding: 'var(--spacing-1) var(--spacing-3)',
-                                backgroundColor: 'var(--color-success-bg)',
-                                color: 'var(--color-success-text)',
-                                fontSize: 'var(--font-size-xs)',
-                                fontWeight: 500,
-                                borderRadius: 'var(--radius-md)',
-                                border: 'none',
-                                cursor: 'pointer',
-                                transition: 'var(--transition-colors)'
-                              }}
-                              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-success-bg-light)'}
-                              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success-bg)'}
+                              variant="success"
+                              size="small"
                             >
                               Complete
-                            </button>
+                            </Button>
                           )}
-                          <button
+                          <Button
                             onClick={() => viewTaskDetails(task)}
-                            style={{
-                              padding: 'var(--spacing-1) var(--spacing-3)',
-                              backgroundColor: 'var(--color-bg-hover)',
-                              color: 'var(--color-text-secondary)',
-                              fontSize: 'var(--font-size-xs)',
-                              fontWeight: 500,
-                              borderRadius: 'var(--radius-md)',
-                              border: 'none',
-                              cursor: 'pointer',
-                              transition: 'var(--transition-colors)'
-                            }}
-                            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
-                            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
+                            variant="secondary"
+                            size="small"
                           >
                             Details
-                          </button>
+                          </Button>
                         </div>
                       )}
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi } from "../../../../services/uploadApi"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
+import Button from "../../../common/Button"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   const [formData, setFormData] = useState({
@@ -194,7 +195,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
 
           {!formData.screenshot ? (
             <div style={{ marginTop: 'var(--spacing-1)', display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-6)', border: `var(--border-2) dashed var(--color-border-input)`, borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-dark)'}
-            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border-input)'}>
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border-input)'}>
               <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-1)' }}>
                 <svg style={{ margin: '0 auto', height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-text-placeholder)' }} stroke="currentColor" fill="none" viewBox="0 0 48 48">
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -223,10 +224,9 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-light)' }}>Click to view or change</p>
                   </div>
                 </div>
-                <button type="button" onClick={removeScreenshot} style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', background: 'none', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-danger-hover)'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--color-danger)'}>
+                <Button type="button" onClick={removeScreenshot} variant="ghost" size="small">
                   Remove
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -253,21 +253,12 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
-          <button type="button" onClick={onCancel} style={{ padding: 'var(--spacing-2) var(--spacing-4)', color: 'var(--color-text-muted)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)', cursor: 'pointer', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
+          <Button type="button" onClick={onCancel} variant="secondary" size="medium">
             Cancel
-          </button>
-          <button type="submit" disabled={uploading} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: uploading ? 'var(--color-bg-disabled)' : 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: uploading ? 'not-allowed' : 'pointer', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)', opacity: uploading ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => !uploading && (e.target.style.backgroundColor = 'var(--color-primary-hover)')}
-          onMouseLeave={(e) => !uploading && (e.target.style.backgroundColor = 'var(--color-primary)')}>
-            {uploading ? (
-              <>
-                <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
-                <span>Processing...</span>
-              </>
-            ) : (
-              <span>Submit Payment Info</span>
-            )}
-          </button>
+          </Button>
+          <Button type="submit" disabled={uploading} variant="primary" size="medium" isLoading={uploading}>
+            {uploading ? "Processing..." : "Submit Payment Info"}
+          </Button>
         </div>
       </form>
     </div>
