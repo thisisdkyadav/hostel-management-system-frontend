@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../services/complaintApi"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
   const [feedback, setFeedback] = useState("")
@@ -41,24 +42,12 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
   const footerContent = (
     <div className="flex justify-end" style={{ gap: 'var(--spacing-3)' }}>
-      <button type="button" onClick={onClose} disabled={isSubmitting} className="font-medium transition-colors disabled:cursor-not-allowed" style={{ padding: 'var(--spacing-2-5) var(--spacing-6)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', opacity: isSubmitting ? 'var(--opacity-disabled)' : '1' }} onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)' }} onMouseLeave={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)' }}>
+      <Button type="button" onClick={onClose} disabled={isSubmitting} variant="secondary" size="medium">
         Skip for Now
-      </button>
-      <button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} className="font-medium transition-all disabled:cursor-not-allowed flex items-center" style={{ padding: 'var(--spacing-2-5) var(--spacing-6)', gap: 'var(--gap-sm)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--button-primary-bg)', opacity: (isSubmitting || feedbackRating === 0) ? 'var(--opacity-disabled)' : '1', border: 'none' }} onMouseEnter={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)' }} onMouseLeave={(e) => { if (!isSubmitting && feedbackRating !== 0) e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)' }}>
-        {isSubmitting ? (
-          <>
-            <svg className="animate-spin" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-white)' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle style={{ opacity: 'var(--opacity-25)' }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path style={{ opacity: 'var(--opacity-75)' }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Submitting...
-          </>
-        ) : (
-          <>
-            <FaStar /> Submit Feedback
-          </>
-        )}
-      </button>
+      </Button>
+      <Button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} variant="primary" size="medium" icon={<FaStar />} isLoading={isSubmitting}>
+        {isSubmitting ? "Submitting..." : "Submit Feedback"}
+      </Button>
     </div>
   )
 

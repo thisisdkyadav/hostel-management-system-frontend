@@ -1,5 +1,6 @@
 import React from "react"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"
 
@@ -103,9 +104,9 @@ const ViewNotificationModal = ({ isOpen, onClose, notification }) => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <button onClick={onClose} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', cursor: 'pointer', border: 'none' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+          <Button onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

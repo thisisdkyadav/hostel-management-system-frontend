@@ -3,6 +3,7 @@ import { taskApi } from "../../services/taskApi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
+import Button from "../common/Button"
 import Modal from "../common/Modal"
 
 const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
@@ -126,41 +127,12 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
 
   const renderFooter = () => (
     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-      <button type="button" onClick={() => setIsOpen(false)}
-        style={{
-          padding: 'var(--button-padding-md)',
-          backgroundColor: 'var(--color-bg-muted)',
-          borderRadius: 'var(--radius-lg)',
-          transition: 'var(--transition-all)',
-          border: 'none',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
-      >
+      <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="medium">
         Cancel
-      </button>
-      <button type="submit" form="task-form" disabled={loading} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-70)' : 'var(--opacity-100)' }} onMouseEnter={(e) => {
-          if (!loading) {
-            e.target.style.backgroundColor = 'var(--button-primary-hover)';
-            e.target.style.boxShadow = 'var(--shadow-md)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!loading) {
-            e.target.style.backgroundColor = 'var(--button-primary-bg)';
-            e.target.style.boxShadow = 'var(--shadow-sm)';
-          }
-        }}
-      >
-        {loading && (
-          <svg style={{ animation: 'spin 1s linear infinite', marginLeft: '-0.25rem', marginRight: 'var(--spacing-2)', height: 'var(--icon-md)', width: 'var(--icon-md)', color: 'var(--color-white)' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle style={{ opacity: 'var(--opacity-25)' }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path style={{ opacity: 'var(--opacity-75)' }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-        )}
+      </Button>
+      <Button type="submit" form="task-form" disabled={loading} variant="primary" size="medium" isLoading={loading}>
         {initialTask ? "Update Task" : "Create Task"}
-      </button>
+      </Button>
     </div>
   )
 
@@ -173,9 +145,9 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             Title <span style={{ color: 'var(--color-danger-text)' }}>*</span>
           </label>
           <input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--input-border)'}`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-              e.target.style.boxShadow = errors.title ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
-              e.target.style.borderColor = errors.title ? 'var(--color-danger)' : 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = errors.title ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
+            e.target.style.borderColor = errors.title ? 'var(--color-danger)' : 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'var(--shadow-sm)';
               e.target.style.borderColor = errors.title ? 'var(--color-danger-border)' : 'var(--input-border)';
@@ -190,9 +162,9 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             Description <span style={{ color: 'var(--color-danger-text)' }}>*</span>
           </label>
           <textarea id="description" name="description" rows="3" value={taskData.description} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--input-border)'}`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-              e.target.style.boxShadow = errors.description ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
-              e.target.style.borderColor = errors.description ? 'var(--color-danger)' : 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = errors.description ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
+            e.target.style.borderColor = errors.description ? 'var(--color-danger)' : 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'var(--shadow-sm)';
               e.target.style.borderColor = errors.description ? 'var(--color-danger-border)' : 'var(--input-border)';
@@ -208,9 +180,9 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
               Priority
             </label>
             <select id="priority" name="priority" value={taskData.priority} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid var(--input-border)`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--input-border-focus)';
-              }}
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--input-border-focus)';
+            }}
               onBlur={(e) => {
                 e.target.style.boxShadow = 'var(--shadow-sm)';
                 e.target.style.borderColor = 'var(--input-border)';
@@ -229,9 +201,9 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
               Category
             </label>
             <select id="category" name="category" value={taskData.category} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid var(--input-border)`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--input-border-focus)';
-              }}
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--input-border-focus)';
+            }}
               onBlur={(e) => {
                 e.target.style.boxShadow = 'var(--shadow-sm)';
                 e.target.style.borderColor = 'var(--input-border)';
@@ -252,9 +224,9 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
             Due Date <span style={{ color: 'var(--color-danger-text)' }}>*</span>
           </label>
           <input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid ${errors.dueDate ? 'var(--color-danger-border)' : 'var(--input-border)'}`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-              e.target.style.boxShadow = errors.dueDate ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
-              e.target.style.borderColor = errors.dueDate ? 'var(--color-danger)' : 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = errors.dueDate ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
+            e.target.style.borderColor = errors.dueDate ? 'var(--color-danger)' : 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'var(--shadow-sm)';
               e.target.style.borderColor = errors.dueDate ? 'var(--color-danger-border)' : 'var(--input-border)';

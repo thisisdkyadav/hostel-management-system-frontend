@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { authApi } from "../../services/apiService"
 import CommonSuccessModal from "../common/CommonSuccessModal"
 import { HiDesktopComputer, HiDeviceMobile, HiGlobeAlt, HiOutlineLogout } from "react-icons/hi"
@@ -79,9 +80,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
   if (showSuccess) {
     return (
       <CommonSuccessModal show={showSuccess} onClose={() => {
-          setShowSuccess(false)
-          onClose()
-        }}
+        setShowSuccess(false)
+        onClose()
+      }}
         title="Session Ended"
         message={`You have successfully logged out from ${loggedOutDevice || "the device"}.`}
         buttonText="Done"
@@ -148,32 +149,12 @@ const ManageSessionsModal = ({ onClose, email }) => {
                 </div>
                 <div>
                   {!device.isCurrent && (
-                    <button onClick={() => handleLogout(device.sessionId, device.deviceName)} 
-                      disabled={loggingOut === device.sessionId} 
-                      style={{
-                        padding: 'var(--spacing-2)',
-                        color: 'var(--color-danger)',
-                        backgroundColor: 'transparent',
-                        borderRadius: 'var(--radius-lg)',
-                        transition: 'var(--transition-colors)',
-                        opacity: loggingOut === device.sessionId ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
-                        cursor: loggingOut === device.sessionId ? 'not-allowed' : 'pointer',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (loggingOut !== device.sessionId) {
-                          e.currentTarget.style.backgroundColor = 'var(--color-danger-bg)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}
-                    >
-                      {loggingOut === device.sessionId ? (
-                        <div style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', border: `var(--border-2) solid var(--color-danger)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', }} ></div>
-                      ) : (
-                        <HiOutlineLogout style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
-                      )}
-                    </button>
+                    <Button onClick={() => handleLogout(device.sessionId, device.deviceName)}
+                      disabled={loggingOut === device.sessionId}
+                      variant="danger" size="small" icon={<HiOutlineLogout />}
+                      isLoading={loggingOut === device.sessionId}
+                      aria-label="Logout from this device"
+                    />
                   )}
                 </div>
               </div>
@@ -182,15 +163,9 @@ const ManageSessionsModal = ({ onClose, email }) => {
         )}
 
         <div style={{ paddingTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', }} >
-          <button onClick={onClose} style={{ padding: `var(--spacing-2-5) var(--spacing-4)`, backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', transition: 'var(--transition-colors)', }} onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)';
-            }}
-          >
+          <Button onClick={onClose} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

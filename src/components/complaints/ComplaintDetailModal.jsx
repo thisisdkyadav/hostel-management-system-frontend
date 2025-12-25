@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaEdit, FaStar } from "react-icons/fa"
 import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import UpdateComplaintModal from "./UpdateComplaintModal"
@@ -93,63 +94,15 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               </span>
 
               {canUpdateComplaint && (
-                <button onClick={() => setShowUpdateModal(true)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-primary)",
-                    transition: "var(--transition-colors)",
-                    paddingTop: "var(--spacing-1)",
-                    paddingBottom: "var(--spacing-1)",
-                    paddingLeft: "var(--spacing-3)",
-                    paddingRight: "var(--spacing-3)",
-                    border: `var(--border-1) solid var(--color-primary-pale)`,
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "transparent",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = "var(--color-primary-hover)"
-                    e.target.style.backgroundColor = "var(--color-primary-bg)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = "var(--color-primary)"
-                    e.target.style.backgroundColor = "transparent"
-                  }}
-                >
-                  <FaEdit style={{ marginRight: "var(--spacing-1)" }} /> Update Status & Notes
-                </button>
+                <Button onClick={() => setShowUpdateModal(true)} variant="outline" size="small" icon={<FaEdit />}>
+                  Update Status & Notes
+                </Button>
               )}
 
               {user && user._id === complaintData.reportedBy.id && (
-                <button onClick={() => setShowFeedbackModal(true)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    fontSize: "var(--font-size-sm)",
-                    color: "var(--color-success)",
-                    transition: "var(--transition-colors)",
-                    paddingTop: "var(--spacing-1)",
-                    paddingBottom: "var(--spacing-1)",
-                    paddingLeft: "var(--spacing-3)",
-                    paddingRight: "var(--spacing-3)",
-                    border: `var(--border-1) solid var(--color-success-light)`,
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "transparent",
-                    cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = "var(--color-success-hover)"
-                    e.target.style.backgroundColor = "var(--color-success-bg)"
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = "var(--color-success)"
-                    e.target.style.backgroundColor = "transparent"
-                  }}
-                >
-                  <FaStar style={{ marginRight: "var(--spacing-1)" }} /> Give Feedback
-                </button>
+                <Button onClick={() => setShowFeedbackModal(true)} variant="success" size="small" icon={<FaStar />}>
+                  Give Feedback
+                </Button>
               )}
             </div>
           </div>

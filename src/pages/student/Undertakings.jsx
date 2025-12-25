@@ -5,6 +5,7 @@ import UndertakingDetailModal from "../../components/student/undertakings/Undert
 import LoadingState from "../../components/common/LoadingState"
 import ErrorState from "../../components/common/ErrorState"
 import EmptyState from "../../components/common/EmptyState"
+import Button from "../../components/common/Button"
 
 const Undertakings = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -155,9 +156,9 @@ const Undertakings = () => {
                       )}
                     </div>
 
-                    <button onClick={() => handleViewUndertaking(undertaking.id)} className="transition-colors" style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg-light)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-info-bg)'}>
+                    <Button onClick={() => handleViewUndertaking(undertaking.id)} variant="ghost" size="small">
                       View Details
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}

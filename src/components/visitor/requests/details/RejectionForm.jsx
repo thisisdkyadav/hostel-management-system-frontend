@@ -1,4 +1,5 @@
 import React from "react"
+import Button from "../../../common/Button"
 
 const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) => {
   return (
@@ -32,14 +33,12 @@ const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) 
         ></textarea>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-        <button onClick={onCancel} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}>
+        <Button onClick={onCancel} variant="secondary" size="medium">
           Cancel
-        </button>
-        <button onClick={onSubmit} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-hover)'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger)'}>
+        </Button>
+        <Button onClick={onSubmit} variant="danger" size="medium">
           Confirm Rejection
-        </button>
+        </Button>
       </div>
     </div>
   )

@@ -3,6 +3,7 @@ import { taskApi } from "../../services/taskApi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
+import Button from "../common/Button"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import Modal from "../common/Modal"
 
@@ -151,43 +152,18 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
         <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
           {canEditTask && !isUserView && (
             <>
-              <button onClick={handleEditTask} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--button-primary-hover)';
-                  e.target.style.boxShadow = 'var(--shadow-md)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'var(--button-primary-bg)';
-                  e.target.style.boxShadow = 'var(--shadow-sm)';
-                }}
-              >
-                <FaEdit style={{ marginRight: 'var(--spacing-2)' }} /> Edit Task
-              </button>
-              <button onClick={handleDeleteTask} disabled={loading} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 'var(--opacity-disabled)' : 'var(--opacity-100)' }} onMouseEnter={(e) => {
-                  if (!loading) e.target.style.backgroundColor = 'var(--color-danger-bg-light)';
-                }}
-                onMouseLeave={(e) => {
-                  if (!loading) e.target.style.backgroundColor = 'var(--color-danger-bg)';
-                }}
-              >
-                <FaTrash style={{ marginRight: 'var(--spacing-2)' }} /> Delete
-              </button>
+              <Button onClick={handleEditTask} variant="primary" size="medium" icon={<FaEdit />}>
+                Edit Task
+              </Button>
+              <Button onClick={handleDeleteTask} disabled={loading} variant="danger" size="medium" icon={<FaTrash />}>
+                Delete
+              </Button>
             </>
           )}
 
-          <button onClick={() => setShowDetailModal(false)}
-            style={{
-              padding: 'var(--button-padding-md)',
-              backgroundColor: 'var(--color-bg-muted)',
-              borderRadius: 'var(--radius-lg)',
-              transition: 'var(--transition-all)',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
-          >
+          <Button onClick={() => setShowDetailModal(false)} variant="secondary" size="medium">
             Close
-          </button>
+          </Button>
         </div>
       </div>
     );

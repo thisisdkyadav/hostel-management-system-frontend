@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../services/inventoryApi"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
 import Pagination from "../../common/Pagination"
+import Button from "../../common/Button"
 
 const AvailableInventory = () => {
   const [hostelInventory, setHostelInventory] = useState([])
@@ -86,12 +87,12 @@ const AvailableInventory = () => {
             <FaSearch className="absolute" style={{ left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-placeholder)' }} />
           </div>
           <div className="flex" style={{ gap: 'var(--gap-sm)' }}>
-            <button onClick={resetFilters} style={{ padding: 'var(--button-padding-md)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-button-rect)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
+            <Button onClick={resetFilters} variant="secondary" size="medium">
               Reset
-            </button>
-            <button onClick={() => fetchHostelInventory(1)} className="flex items-center" style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-button-rect)', border: 'none', cursor: 'pointer', gap: 'var(--gap-sm)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
-              <FaFilter /> Filter
-            </button>
+            </Button>
+            <Button onClick={() => fetchHostelInventory(1)} variant="primary" size="medium" icon={<FaFilter />}>
+              Filter
+            </Button>
           </div>
         </div>
       </div>

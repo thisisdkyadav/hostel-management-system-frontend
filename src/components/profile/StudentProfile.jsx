@@ -6,6 +6,7 @@ import ProfileInfo from "./ProfileInfo"
 import ErrorState from "../common/ErrorState"
 import LoadingState from "../common/LoadingState"
 import EmptyState from "../common/EmptyState"
+import Button from "../common/Button"
 import { studentApi, studentProfileApi } from "../../services/apiService"
 import StudentEditProfileModal from "./StudentEditProfileModal"
 import StudentFamilyDetails from "./StudentFamilyDetails"
@@ -73,22 +74,9 @@ const StudentProfile = ({ user }) => {
       <div className="flex justify-between items-start">
         <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree}`} />
 
-        <button onClick={() => setIsEditModalOpen(true)}
-          className="flex items-center text-white transition-colors"
-          style={{
-            padding: "var(--spacing-2) var(--spacing-4)",
-            backgroundColor: "var(--button-primary-bg)",
-            borderRadius: "var(--radius-lg)",
-            fontSize: "var(--font-size-sm)",
-            fontWeight: "var(--font-weight-medium)",
-            transition: "var(--transition-colors)",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-hover)")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-bg)")}
-        >
-          <FiEdit2 style={{ marginRight: "var(--spacing-2)", width: "var(--icon-md)", height: "var(--icon-md)" }} />
+        <Button onClick={() => setIsEditModalOpen(true)} variant="primary" size="medium" icon={<FiEdit2 />}>
           Edit Profile
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: "var(--gap-lg)", marginTop: "var(--spacing-8)" }}>

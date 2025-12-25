@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { FaExclamationTriangle, FaBell } from "react-icons/fa"
+import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { notificationApi } from "../../services/notificationApi"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { getDepartmentList, getDegreesList } from "../../services/studentService"
@@ -174,9 +175,9 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
   return (
     <Modal title={step === 1 ? "Create New Notification" : "Review & Send Notification"} onClose={() => {
-        onClose()
-        handleReset()
-      }}
+      onClose()
+      handleReset()
+    }}
       width={700}
     >
       {step === 1 ? (
@@ -284,19 +285,15 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div style={{ paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-4)' }}>
-              <button type="button" onClick={() => {
-                  onClose()
-                  handleReset()
-                }}
-                style={{ padding: 'var(--button-padding-md)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', cursor: 'pointer' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}
-              >
+              <Button type="button" onClick={() => {
+                onClose()
+                handleReset()
+              }} variant="secondary" size="medium" icon={<FaTimes />}>
                 Cancel
-              </button>
-              <button type="button" onClick={moveToStep2} style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', boxShadow: 'var(--shadow-sm)', cursor: 'pointer', border: 'none' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--button-primary-bg)'}>
+              </Button>
+              <Button type="button" onClick={moveToStep2} variant="primary" size="medium" icon={<FaArrowRight />}>
                 Continue
-              </button>
+              </Button>
             </div>
           </div>
         </form>
@@ -370,21 +367,12 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div style={{ paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-4)' }}>
-              <button type="button" onClick={() => setStep(1)} style={{ padding: 'var(--button-padding-md)', color: 'var(--color-text-body)', backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}>
+              <Button type="button" onClick={() => setStep(1)} variant="secondary" size="medium" icon={<FaArrowLeft />}>
                 Back
-              </button>
-              <button type="button" onClick={handleSubmit} style={{ padding: 'var(--button-padding-md)', backgroundColor: loading ? 'var(--color-bg-disabled)' : 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', cursor: loading ? 'not-allowed' : 'pointer', border: 'none', opacity: loading ? 'var(--opacity-disabled)' : 1 }} disabled={loading} onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-hover)')} onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--button-primary-bg)')}>
-                {loading ? (
-                  <>
-                    <div style={{ width: 'var(--spacing-4)', height: 'var(--spacing-4)', marginRight: 'var(--spacing-2)', border: 'var(--border-2) solid var(--color-white)', borderTop: 'var(--border-2) solid transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <FaBell style={{ marginRight: 'var(--spacing-2)' }} /> Send Notification
-                  </>
-                )}
-              </button>
+              </Button>
+              <Button type="button" onClick={handleSubmit} variant="primary" size="medium" icon={<FaBell />} isLoading={loading} disabled={loading}>
+                {loading ? "Sending..." : "Send Notification"}
+              </Button>
             </div>
           </div>
         </div>

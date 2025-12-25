@@ -1,5 +1,7 @@
 import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
+import Button from "../../../common/Button"
+import { FaEye } from "react-icons/fa"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
   if (!paymentInfo) {
@@ -99,14 +101,9 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               </svg>
               <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Payment Screenshot</span>
             </div>
-            <button onClick={onViewScreenshot} style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-md)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-1)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
-              <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-              </svg>
-              <span>View Screenshot</span>
-            </button>
+            <Button onClick={onViewScreenshot} variant="primary" size="small" icon={<FaEye />}>
+              View Screenshot
+            </Button>
           </div>
           <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-3)', textAlign: 'center' }}>
             <div style={{ width: 'var(--icon-3xl)', height: 'var(--icon-3xl)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', margin: '0 auto var(--spacing-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

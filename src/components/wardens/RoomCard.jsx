@@ -1,6 +1,7 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaUserGraduate } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
+import Button from "../common/Button"
 
 const RoomCard = ({ room, onClick, onAllocate }) => {
   const { user } = useAuth()
@@ -22,9 +23,9 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
     <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)', border: `var(--border-1) solid var(--color-border-light)`, cursor: 'pointer' }} onClick={onClick} onMouseEnter={(e) => {
       e.currentTarget.style.boxShadow = 'var(--shadow-md)';
     }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
-    }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+      }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-4)' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -80,10 +81,11 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{room.capacity ? Math.round(((room.currentOccupancy || 0) / room.capacity) * 100) : 0}%</span>
               </div>
               <div style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-full)', height: 'var(--spacing-1-5)' }}>
-                <div style={{ height: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', backgroundColor: room.currentOccupancy >= room.capacity ? 'var(--color-success)' : room.currentOccupancy > 0 ? 'var(--color-primary)' : 'var(--color-text-disabled)',
-                    width: `${room.capacity ? Math.min(100, Math.round(((room.currentOccupancy || 0) / room.capacity) * 100)) : 0}%`,
-                    transition: 'var(--transition-all)'
-                  }}
+                <div style={{
+                  height: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', backgroundColor: room.currentOccupancy >= room.capacity ? 'var(--color-success)' : room.currentOccupancy > 0 ? 'var(--color-primary)' : 'var(--color-text-disabled)',
+                  width: `${room.capacity ? Math.min(100, Math.round(((room.currentOccupancy || 0) / room.capacity) * 100)) : 0}%`,
+                  transition: 'var(--transition-all)'
+                }}
                 ></div>
               </div>
             </div>
@@ -92,62 +94,14 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
       </div>
 
       <div style={{ marginTop: 'var(--spacing-5)', display: 'flex', gap: 'var(--spacing-2)' }}>
-        <button onClick={() => onClick()} 
-          style={{ 
-            flex: 1, 
-            padding: 'var(--spacing-2-5) 0', 
-            backgroundColor: 'var(--color-primary-bg)', 
-            color: 'var(--color-primary)', 
-            borderRadius: 'var(--radius-lg)', 
-            transition: 'var(--transition-all)', 
-            fontSize: 'var(--font-size-sm)', 
-            fontWeight: 'var(--font-weight-medium)',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = 'var(--color-primary)';
-            e.target.style.color = 'var(--color-white)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = 'var(--color-primary-bg)';
-            e.target.style.color = 'var(--color-primary)';
-          }}
-        >
+        <Button onClick={() => onClick()} variant="outline" size="medium" style={{ flex: 1 }}>
           View Details
-        </button>
+        </Button>
 
         {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-          <button onClick={(e) => {
-              e.stopPropagation()
-              onAllocate()
-            }}
-            style={{ 
-              flex: 1, 
-              padding: 'var(--spacing-2-5) 0', 
-              backgroundColor: 'var(--color-success-bg-light)', 
-              color: 'var(--color-success)', 
-              borderRadius: 'var(--radius-lg)', 
-              transition: 'var(--transition-all)', 
-              fontSize: 'var(--font-size-sm)', 
-              fontWeight: 'var(--font-weight-medium)', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'var(--color-success-hover)';
-              e.target.style.color = 'var(--color-white)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'var(--color-success-bg-light)';
-              e.target.style.color = 'var(--color-success)';
-            }}
-          >
-            <FaUserPlus style={{ marginRight: 'var(--spacing-1-5)', fontSize: 'var(--icon-sm)' }} /> Allocate
-          </button>
+          <Button onClick={(e) => { e.stopPropagation(); onAllocate(); }} variant="success" size="medium" icon={<FaUserPlus />} style={{ flex: 1 }}>
+            Allocate
+          </Button>
         )}
       </div>
     </div>

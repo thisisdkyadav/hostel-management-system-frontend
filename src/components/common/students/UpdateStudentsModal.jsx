@@ -649,9 +649,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="flex justify-between mb-3">
                     <h5 className="font-medium text-gray-700">Family Member {index + 1}</h5>
                     {familyMembers.length > 1 && (
-                      <button onClick={() => removeFamilyMember(index)} style={styles.deleteButton} aria-label="Remove family member">
-                        <FaTrash />
-                      </button>
+                      <Button onClick={() => removeFamilyMember(index)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Remove family member" />
                     )}
                   </div>
 
@@ -685,13 +683,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               ))}
 
               <div style={styles.flexRow}>
-                <button onClick={addFamilyMember} style={styles.secondaryButton}>
-                  <FaPlus style={{ marginRight: "var(--spacing-1)" }} /> Add Another Family Member
-                </button>
+                <Button onClick={addFamilyMember} variant="outline" size="medium" icon={<FaPlus />}>
+                  Add Another Family Member
+                </Button>
 
-                <button onClick={handleManualUpdate} style={styles.primaryButton}>
-                  <FaCheck style={{ marginRight: "var(--spacing-1)" }} /> Save Family Members
-                </button>
+                <Button onClick={handleManualUpdate} variant="primary" size="medium" icon={<FaCheck />}>
+                  Save Family Members
+                </Button>
               </div>
 
               {familyData.length > 0 && familyMembers.some((m) => m.rollNumber && m.name) && (
@@ -956,9 +954,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="flex justify-between mb-3">
                     <h5 className="font-medium text-gray-700">Student {index + 1}</h5>
                     {dayScholarStudents.length > 1 && (
-                      <button onClick={() => removeDayScholarStudent(index)} style={styles.deleteButton} aria-label="Remove student">
-                        <FaTrash />
-                      </button>
+                      <Button onClick={() => removeDayScholarStudent(index)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Remove student" />
                     )}
                   </div>
 
@@ -993,13 +989,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               ))}
 
               <div style={styles.flexRow}>
-                <button onClick={addDayScholarStudent} style={styles.secondaryButton}>
-                  <FaPlus style={{ marginRight: "var(--spacing-1)" }} /> Add Another Student
-                </button>
+                <Button onClick={addDayScholarStudent} variant="outline" size="medium" icon={<FaPlus />}>
+                  Add Another Student
+                </Button>
 
-                <button onClick={handleManualUpdate} style={styles.primaryButton}>
-                  <FaCheck style={{ marginRight: "var(--spacing-1)" }} /> Save Students
-                </button>
+                <Button onClick={handleManualUpdate} variant="primary" size="medium" icon={<FaCheck />}>
+                  Save Students
+                </Button>
               </div>
             </div>
           </div>
@@ -1153,14 +1149,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <span className="text-sm text-blue-700">
                     Selected file: <span className="font-medium">{csvFile.name}</span>
                   </span>
-                  <button onClick={(e) => {
+                  <Button onClick={(e) => {
                     e.stopPropagation()
                     setCsvFile(null)
-                  }}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <FaTimes />
-                  </button>
+                  }} variant="ghost" size="small" icon={<FaTimes />} aria-label="Remove file" />
                 </div>
               )}
               {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}

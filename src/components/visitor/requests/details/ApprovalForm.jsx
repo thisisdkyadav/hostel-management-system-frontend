@@ -1,4 +1,5 @@
 import React from "react"
+import Button from "../../../common/Button"
 
 const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
   const containerStyle = {
@@ -121,12 +122,12 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
 
       {/* Action Buttons */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-        <button onClick={onCancel} style={cancelButtonStyle}>
+        <Button onClick={onCancel} variant="secondary" size="medium">
           Cancel
-        </button>
-        <button onClick={onSubmit} style={submitButtonStyle}>
+        </Button>
+        <Button onClick={onSubmit} variant="success" size="medium">
           Confirm Approval
-        </button>
+        </Button>
       </div>
     </div>
   )

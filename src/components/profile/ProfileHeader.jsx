@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
 import ManageSessionsButton from "../sessions/ManageSessionsButton"
+import Button from "../common/Button"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
 
@@ -62,21 +63,9 @@ const ProfileHeader = ({ user, role, subtitle }) => {
           {/* {role === "Student" && <RoomChangeForm student={user} />} */}
 
           {showLayoutToggle && (
-            <button onClick={toggleLayout} style={{ display: "inline-flex", alignItems: "center", padding: "var(--spacing-1-5) var(--spacing-3)", borderRadius: "var(--radius-md)", backgroundColor: "var(--color-primary-bg)", color: "var(--color-primary)", fontSize: "var(--font-size-sm)", transition: "var(--transition-colors)", border: "none", cursor: "pointer", }} onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-bg)")}
-            >
-              {layoutPreference === "sidebar" ? (
-                <>
-                  <MdOutlineMenu style={{ marginRight: "var(--spacing-1-5)" }} />
-                  <span>Switch to Bottom Bar</span>
-                </>
-              ) : (
-                <>
-                  <MdOutlineViewSidebar style={{ marginRight: "var(--spacing-1-5)" }} />
-                  <span>Switch to Sidebar</span>
-                </>
-              )}
-            </button>
+            <Button onClick={toggleLayout} variant="outline" size="small" icon={layoutPreference === "sidebar" ? <MdOutlineMenu /> : <MdOutlineViewSidebar />}>
+              {layoutPreference === "sidebar" ? "Switch to Bottom Bar" : "Switch to Sidebar"}
+            </Button>
           )}
         </div>
       </div>

@@ -208,13 +208,13 @@ const IDCard = () => {
           {imageUrl ? (
             <div style={styles.imageWrapper}>
               <img src={getMediaUrl(imageUrl)} alt={`ID Card ${title}`} style={styles.image} />
-              <button onClick={() => handleUploadClick(side)}
+              <Button onClick={() => handleUploadClick(side)}
+                variant="primary"
+                size="small"
+                icon={<HiCamera style={styles.cameraIcon} />}
                 style={styles.cameraButton}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-hover)")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--button-primary-bg)")}
-              >
-                <HiCamera style={styles.cameraIcon} />
-              </button>
+                aria-label="Change image"
+              />
             </div>
           ) : (
             <div style={styles.placeholder}>

@@ -3,6 +3,7 @@ import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons
 import Modal from "../../common/Modal"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../services/visitorApi"
+import Button from "../../common/Button"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState("")
@@ -52,12 +53,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
               }}
             />
             {searchQuery && (
-              <button style={{ position: 'absolute', top: '0', bottom: '0', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => setSearchQuery("")}
-              >
-                <FaTimesCircle style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
-                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-placeholder)'}
-                />
-              </button>
+              <Button onClick={() => setSearchQuery("")} variant="ghost" size="small" icon={<FaTimesCircle />} style={{ position: 'absolute', top: '0', bottom: '0', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }} />
             )}
           </div>
 
@@ -112,39 +108,8 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                         <div style={{ padding: 'var(--spacing-4) var(--spacing-6)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Can't edit a used Visitor.</div>
                       ) : (
                         <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                          <button onClick={() => handleEditProfile(profile)} 
-                            style={{ 
-                              color: 'var(--color-warning)', 
-                              padding: 'var(--spacing-1)', 
-                              borderRadius: 'var(--radius-full)', 
-                              transition: 'var(--transition-colors)',
-                              background: 'none',
-                              border: 'none',
-                              cursor: 'pointer'
-                            }} 
-                            title="Edit profile"
-                            onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-warning-hover)'}
-                            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-warning)'}
-                          >
-                            <FaEdit style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
-                          </button>
-                          <button onClick={() => handleDeleteProfile(profile._id)} 
-                            style={{ 
-                              color: 'var(--color-danger)', 
-                              padding: 'var(--spacing-1)', 
-                              borderRadius: 'var(--radius-full)', 
-                              transition: 'var(--transition-colors)',
-                              marginLeft: 'var(--spacing-2)',
-                              background: 'none',
-                              border: 'none',
-                              cursor: 'pointer'
-                            }} 
-                            title="Delete profile"
-                            onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-danger-hover)'}
-                            onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-danger)'}
-                          >
-                            <FaTrash style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
-                          </button>
+                          <Button onClick={() => handleEditProfile(profile)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit profile" />
+                          <Button onClick={() => handleDeleteProfile(profile._id)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Delete profile" style={{ marginLeft: 'var(--spacing-2)' }} />
                         </td>
                       )}
                     </tr>
@@ -155,11 +120,9 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
           )}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <button onClick={onClose} style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}
-            >
+            <Button onClick={onClose} variant="secondary" size="medium">
               Close
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

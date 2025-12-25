@@ -4,6 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi } from "../../services/uploadApi"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import Button from "../common/Button"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   const [formData, setFormData] = useState({
@@ -197,23 +198,17 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
         </div>
 
         <div style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--gap-sm)', flexWrap: 'wrap' }}>
-          <button type="button" onClick={handleDelete} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg-light)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger-bg)'}
-          >
-            <MdDelete style={{ marginRight: 'var(--spacing-2)' }} /> Delete
-          </button>
+          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<MdDelete />}>
+            Delete
+          </Button>
 
           <div style={{ display: 'flex', gap: 'var(--gap-sm)' }}>
-            <button type="button" onClick={onCancel} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-border-gray)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'}
-            >
-              <MdCancel style={{ marginRight: 'var(--spacing-2)' }} /> Cancel
-            </button>
-            <button type="submit" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
-            >
-              <MdSave style={{ marginRight: 'var(--spacing-2)' }} /> Save
-            </button>
+            <Button type="button" onClick={onCancel} variant="secondary" size="medium" icon={<MdCancel />}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" size="medium" icon={<MdSave />}>
+              Save
+            </Button>
           </div>
         </div>
       </form>

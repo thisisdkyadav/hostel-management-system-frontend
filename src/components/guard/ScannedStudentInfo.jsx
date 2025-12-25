@@ -1,10 +1,11 @@
 import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
+import Button from "../common/Button"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
-  
+
   const formatDate = (dateString) => {
     if (!dateString) return "N/A"
     const date = new Date(dateString)
@@ -166,51 +167,18 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
 
             {/* Action Buttons */}
             <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', gap: 'var(--spacing-4)' }}>
-              <button onClick={onReset} style={{ flex: 1, padding: 'var(--spacing-2-5) 0', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-body)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}
-              >
-                <FaTimes style={{ marginRight: 'var(--spacing-2)' }} /> Reset
-              </button>
+              <Button onClick={onReset} variant="secondary" size="medium" icon={<FaTimes />} style={{ flex: 1 }}>
+                Reset
+              </Button>
 
-              <button onClick={() => onRecordEntry(student.isSameHostel === false ? crossHostelReason.trim() : null)}
+              <Button onClick={() => onRecordEntry(student.isSameHostel === false ? crossHostelReason.trim() : null)}
                 disabled={recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())}
-                style={{
-                  flex: 1,
-                  padding: 'var(--spacing-2-5) 0',
-                  backgroundColor: 'var(--button-primary-bg)',
-                  color: 'var(--color-white)',
-                  borderRadius: 'var(--radius-lg)',
-                  transition: 'var(--transition-colors)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: 'none',
-                  cursor: (recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())) ? 'not-allowed' : 'pointer',
-                  opacity: (recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())) ? 'var(--opacity-disabled)' : 'var(--opacity-100)',
-                  fontSize: 'var(--font-size-base)',
-                  fontWeight: 'var(--font-weight-medium)'
-                }}
-                onMouseEnter={(e) => {
-                  if (!recordingEntry && !(student.isSameHostel === false && !crossHostelReason.trim())) {
-                    e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!recordingEntry && !(student.isSameHostel === false && !crossHostelReason.trim())) {
-                    e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'
-                  }
-                }}
+                variant="primary" size="medium"
+                icon={getNextStatus() === "Checked In" ? <FaSignInAlt /> : <FaSignOutAlt />}
+                style={{ flex: 1 }}
               >
-                {getNextStatus() === "Checked In" ? (
-                  <>
-                    <FaSignInAlt style={{ marginRight: 'var(--spacing-2)' }} /> Check In
-                  </>
-                ) : (
-                  <>
-                    <FaSignOutAlt style={{ marginRight: 'var(--spacing-2)' }} /> Check Out
-                  </>
-                )}
-              </button>
+                {getNextStatus() === "Checked In" ? "Check In" : "Check Out"}
+              </Button>
             </div>
           </div>
         </div>

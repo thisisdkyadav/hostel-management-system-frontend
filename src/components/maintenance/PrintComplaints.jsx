@@ -101,20 +101,9 @@ const PrintComplaints = ({ complaints }) => {
   return (
     <>
       {/* Print Button */}
-      <Button variant="primary" size="small" onClick={handlePrint} icon={<FaPrint />}
-        style={{ display: 'none' }}
-        className="no-print"
-      >
+      <Button variant="primary" size="small" onClick={handlePrint} icon={<FaPrint />} className="no-print">
         <span style={{ display: 'none' }}>Print</span>
       </Button>
-      <button style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'center', gap: 'var(--gap-xs)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
-        onClick={handlePrint}
-        className="no-print"
-      >
-        <FaPrint style={{ fontSize: 'var(--font-size-sm)' }} />
-        <span style={{ display: 'none' }}>Print</span>
-      </button>
 
       {/* Print Modal */}
       {showPrintModal && (
@@ -133,20 +122,14 @@ const PrintComplaints = ({ complaints }) => {
                 </label>
               ))}
             </div>
-            
+
             <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', gap: 'var(--gap-sm)', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-              <button style={{ padding: 'var(--button-padding-md)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', cursor: 'pointer', transition: 'var(--transition-all)', minWidth: '100px' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}
-                onClick={() => setShowPrintModal(false)}
-              >
+              <Button variant="secondary" size="medium" onClick={() => setShowPrintModal(false)}>
                 Cancel
-              </button>
-              <button style={{ padding: 'var(--button-padding-md)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer', transition: 'var(--transition-all)', minWidth: '100px' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
-                onClick={confirmPrint}
-              >
+              </Button>
+              <Button variant="primary" size="medium" icon={<FaPrint />} onClick={confirmPrint}>
                 Print
-              </button>
+              </Button>
             </div>
           </div>
         </Modal>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Modal from "./common/Modal"
+import Button from "./common/Button"
 import { HiPaperAirplane } from "react-icons/hi"
 import { FaComment, FaReply } from "react-icons/fa"
 
@@ -59,22 +60,12 @@ const FeedbackReplyModal = ({ isOpen, onClose, feedback, onReply }) => {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-[var(--color-border-light)] space-y-3 sm:space-y-0 sm:space-x-3">
-          <button type="button" className="order-last sm:order-first px-5 py-2.5 bg-[var(--color-bg-muted)] hover:bg-[var(--color-bg-tertiary)] rounded-lg transition-all font-medium text-[var(--color-text-body)]" onClick={onClose}>
+          <Button type="button" onClick={onClose} variant="secondary" size="medium" className="order-last sm:order-first">
             Cancel
-          </button>
-          <button onClick={handleSubmit} disabled={isSubmitting} className="flex items-center justify-center px-5 py-2.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] transition-all shadow-sm hover:shadow font-medium">
-            {isSubmitting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                Submitting...
-              </>
-            ) : (
-              <>
-                <HiPaperAirplane className="mr-2 transform rotate-90" />
-                Submit Reply
-              </>
-            )}
-          </button>
+          </Button>
+          <Button onClick={handleSubmit} disabled={isSubmitting} variant="primary" size="medium" icon={<HiPaperAirplane className="transform rotate-90" />} isLoading={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit Reply"}
+          </Button>
         </div>
       </div>
     </Modal>

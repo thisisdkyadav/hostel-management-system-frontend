@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
-import { FaBuilding, FaDoorOpen, FaFileImport } from "react-icons/fa"
+import { FaBuilding, FaDoorOpen, FaFileImport, FaTable, FaThLarge } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../services/hostelApi"
 import Pagination from "../components/common/Pagination"
@@ -18,6 +18,7 @@ import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
 import { useWarden } from "../contexts/WardenProvider"
+import Button from "../components/common/Button"
 
 const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()
@@ -387,9 +388,9 @@ const UnitsAndRooms = () => {
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-2)' }} className="sm:mb-0">
                   <MdFilterAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
                 </h3>
-                <button onClick={resetFilters} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', display: 'flex', alignItems: 'center', padding: 'var(--spacing-1) var(--spacing-2)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-colors)', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}>
-                  <MdClearAll style={{ marginRight: 'var(--spacing-1)' }} /> Reset Filters
-                </button>
+                <Button onClick={resetFilters} variant="ghost" size="small" icon={<MdClearAll />}>
+                  Reset Filters
+                </Button>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-4">
@@ -443,22 +444,8 @@ const UnitsAndRooms = () => {
             {totalItems > 0 && ` of ${totalItems} total`}
           </div>
           <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
-            <button onClick={() => setViewMode("table")} style={{ padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', backgroundColor: viewMode === "table" ? 'var(--color-primary)' : 'transparent', color: viewMode === "table" ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: viewMode === "table" ? 'var(--shadow-sm)' : 'none', border: 'none', cursor: 'pointer' }} aria-label="Table view">
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-              </svg>
-            </button>
-
-            <button onClick={() => setViewMode("card")} style={{ padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', backgroundColor: viewMode === "card" ? 'var(--color-primary)' : 'transparent', color: viewMode === "card" ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: viewMode === "card" ? 'var(--shadow-sm)' : 'none', border: 'none', cursor: 'pointer' }} aria-label="Card view">
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                />
-              </svg>
-            </button>
+            <Button onClick={() => setViewMode("table")} variant={viewMode === "table" ? "primary" : "ghost"} size="small" icon={<FaTable />} aria-label="Table view" />
+            <Button onClick={() => setViewMode("card")} variant={viewMode === "card" ? "primary" : "ghost"} size="small" icon={<FaThLarge />} aria-label="Card view" />
           </div>
         </div>
 

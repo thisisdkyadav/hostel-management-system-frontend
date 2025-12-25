@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../services/apiService"
+import Button from "../common/Button"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -172,17 +173,17 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       )}
 
       {!scanning && !scannedPerson && !loading && (
-        <button onClick={startScanner} style={{ width: '100%', padding: 'var(--spacing-3) 0', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}>
-          <FaQrcode style={{ marginRight: 'var(--spacing-2)' }} /> Start QR Scanner
-        </button>
+        <Button onClick={startScanner} variant="primary" size="medium" icon={<FaQrcode />} fullWidth>
+          Start QR Scanner
+        </Button>
       )}
 
       <div style={{ marginBottom: 'var(--spacing-4)' }}>
         <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <button onClick={stopScanner} style={{ width: '100%', marginTop: 'var(--spacing-4)', padding: 'var(--spacing-2) 0', backgroundColor: 'var(--color-danger)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-danger)'}>
-            <FaTimes style={{ marginRight: 'var(--spacing-2)', display: 'inline' }} /> Stop Scanner
-          </button>
+          <Button onClick={stopScanner} variant="danger" size="medium" icon={<FaTimes />} fullWidth style={{ marginTop: 'var(--spacing-4)' }}>
+            Stop Scanner
+          </Button>
         )}
       </div>
 
@@ -202,13 +203,12 @@ const AttendanceQRScanner = ({ onRefresh }) => {
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
-            <button onClick={recordAttendance} disabled={recordingAttendance} style={{ flex: 1, padding: 'var(--spacing-2) 0', backgroundColor: 'var(--color-success)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: recordingAttendance ? 'not-allowed' : 'pointer', opacity: recordingAttendance ? 'var(--opacity-disabled)' : 'var(--opacity-100)', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success-hover)')} onMouseLeave={(e) => !recordingAttendance && (e.currentTarget.style.backgroundColor = 'var(--color-success)')}>
-              {recordingAttendance ? <span style={{ display: 'inline-block', width: 'var(--spacing-4)', height: 'var(--spacing-4)', border: `var(--border-2) solid var(--color-white)`, borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></span> : <FaUser style={{ marginRight: 'var(--spacing-2)' }} />}
+            <Button onClick={recordAttendance} disabled={recordingAttendance} variant="success" size="medium" icon={<FaUser />} isLoading={recordingAttendance} style={{ flex: 1 }}>
               Record Attendance
-            </button>
-            <button onClick={handleReset} style={{ padding: '0 var(--spacing-4)', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-border-dark)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-muted)'}>
+            </Button>
+            <Button onClick={handleReset} variant="secondary" size="medium">
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

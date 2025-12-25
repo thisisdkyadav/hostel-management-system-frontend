@@ -11,6 +11,7 @@ import { useWarden } from "../../contexts/WardenProvider"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, LogarithmicScale } from "chart.js"
 import { Bar } from "react-chartjs-2"
+import Button from "../../components/common/Button"
 
 ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend)
 
@@ -140,12 +141,12 @@ const DashboardWarden = () => {
 
           <div className="flex items-center">
             <div className="flex items-center rounded-full p-1 text-xs" style={{ backgroundColor: 'var(--color-bg-muted)' }}>
-              <button onClick={() => setNormalizedView(false)} className="px-2 py-1 rounded-full transition-all duration-200" style={{ backgroundColor: !normalizedView ? 'var(--color-success)' : 'transparent', color: !normalizedView ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: !normalizedView ? 'var(--shadow-sm)' : 'none' }}>
+              <Button onClick={() => setNormalizedView(false)} variant={!normalizedView ? "success" : "ghost"} size="small">
                 Absolute
-              </button>
-              <button onClick={() => setNormalizedView(true)} className="px-2 py-1 rounded-full transition-all duration-200" style={{ backgroundColor: normalizedView ? 'var(--color-success)' : 'transparent', color: normalizedView ? 'var(--color-white)' : 'var(--color-text-muted)', boxShadow: normalizedView ? 'var(--shadow-sm)' : 'none' }}>
+              </Button>
+              <Button onClick={() => setNormalizedView(true)} variant={normalizedView ? "success" : "ghost"} size="small">
                 Normalized
-              </button>
+              </Button>
             </div>
           </div>
         </div>

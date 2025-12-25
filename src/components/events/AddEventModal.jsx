@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../services/apiService"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
@@ -123,12 +124,12 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>
-          <button type="button" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--color-bg-muted)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-muted)'} onClick={onClose}>
+          <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
-          </button>
-          <button type="submit" style={{ padding: 'var(--spacing-2-5) var(--spacing-5)', backgroundColor: 'var(--button-primary-bg)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', transition: 'var(--transition-all)', boxShadow: 'var(--shadow-sm)', fontWeight: 'var(--font-weight-medium)', border: 'none', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--button-primary-hover)'; e.target.style.boxShadow = 'var(--shadow-md)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'var(--button-primary-bg)'; e.target.style.boxShadow = 'var(--shadow-sm)'; }}>
+          </Button>
+          <Button type="submit" variant="primary" size="medium">
             Add Event
-          </button>
+          </Button>
         </div>
       </form>
     </Modal>
