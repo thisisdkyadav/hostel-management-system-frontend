@@ -445,14 +445,15 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
               <span style={styles.fileSelectedText}>
                 Selected file: <span style={styles.fileName}>{csvFile.name}</span>
               </span>
-              <button onClick={(e) => {
+              <Button onClick={(e) => {
                 e.stopPropagation()
                 setCsvFile(null)
               }}
-                style={styles.removeFileButton}
-              >
-                <FaTimes />
-              </button>
+                variant="ghost"
+                size="small"
+                icon={<FaTimes />}
+                aria-label="Remove file"
+              />
             </div>
           )}
           {error && <div style={styles.errorBox}>{error}</div>}

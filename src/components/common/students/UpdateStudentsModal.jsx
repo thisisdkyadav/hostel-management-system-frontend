@@ -923,12 +923,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           <h3 className="text-lg font-medium text-gray-800">Update Day Scholar Status</h3>
           <div className="mt-2 sm:mt-0">
             <div style={{ display: "inline-flex", alignItems: "center", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }}>
-              <button type="button" onClick={() => setDayScholarMode("add")} style={{ ...dayScholarMode === "add" ? styles.toggleButtonActive : styles.toggleButtonInactive, borderTopLeftRadius: "var(--radius-md)", borderBottomLeftRadius: "var(--radius-md)" }}>
+              <Button type="button" onClick={() => setDayScholarMode("add")} variant={dayScholarMode === "add" ? "primary" : "ghost"} size="small" style={{ borderTopLeftRadius: "var(--radius-md)", borderBottomLeftRadius: "var(--radius-md)", borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
                 Add/Update Day Scholar
-              </button>
-              <button type="button" onClick={() => setDayScholarMode("remove")} style={{ ...dayScholarMode === "remove" ? styles.toggleButtonActive : styles.toggleButtonInactive, borderTopRightRadius: "var(--radius-md)", borderBottomRightRadius: "var(--radius-md)" }}>
+              </Button>
+              <Button type="button" onClick={() => setDayScholarMode("remove")} variant={dayScholarMode === "remove" ? "primary" : "ghost"} size="small" style={{ borderTopRightRadius: "var(--radius-md)", borderBottomRightRadius: "var(--radius-md)", borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
                 Remove Day Scholar
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -1069,10 +1069,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
               </div>
               <div className="flex flex-col items-center">
-                <button onClick={generateCsvTemplate} className="flex items-center text-sm text-blue-600 hover:text-blue-800 mb-2">
-                  <FaFileDownload className="mr-1" />
+                <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
                   Download CSV Template
-                </button>
+                </Button>
 
                 <div className="text-xs text-gray-600 mt-2 bg-gray-50 p-3 rounded-lg max-w-md">
                   <p className="font-medium mb-1">Field Input Types:</p>

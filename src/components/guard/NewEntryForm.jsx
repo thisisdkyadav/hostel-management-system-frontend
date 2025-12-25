@@ -65,18 +65,22 @@ const NewEntryForm = ({ onAddEntry }) => {
         <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>New Check In/Out Entry</h2>
 
         <div style={{ display: 'flex', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-          <button type="button" style={{ padding: 'var(--spacing-1) var(--spacing-3)', fontSize: 'var(--font-size-xs)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-1)', backgroundColor: formData.status === "Checked In" ? 'var(--button-primary-bg)' : 'var(--color-bg-tertiary)', color: formData.status === "Checked In" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onClick={() => handleStatusChange("Checked In")}
-            onMouseEnter={(e) => formData.status !== "Checked In" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')}
-            onMouseLeave={(e) => formData.status !== "Checked In" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)')}
+          <Button type="button" onClick={() => handleStatusChange("Checked In")}
+            variant={formData.status === "Checked In" ? "primary" : "ghost"}
+            size="small"
+            icon={<FaSignInAlt />}
+            style={{ borderRadius: 0 }}
           >
-            <FaSignInAlt size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-xs'))} /> In
-          </button>
-          <button type="button" style={{ padding: 'var(--spacing-1) var(--spacing-3)', fontSize: 'var(--font-size-xs)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-1)', backgroundColor: formData.status === "Checked Out" ? 'var(--button-primary-bg)' : 'var(--color-bg-tertiary)', color: formData.status === "Checked Out" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onClick={() => handleStatusChange("Checked Out")}
-            onMouseEnter={(e) => formData.status !== "Checked Out" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)')}
-            onMouseLeave={(e) => formData.status !== "Checked Out" && (e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)')}
+            In
+          </Button>
+          <Button type="button" onClick={() => handleStatusChange("Checked Out")}
+            variant={formData.status === "Checked Out" ? "primary" : "ghost"}
+            size="small"
+            icon={<FaSignOutAlt />}
+            style={{ borderRadius: 0 }}
           >
-            <FaSignOutAlt size={parseInt(getComputedStyle(document.documentElement).getPropertyValue('--icon-xs'))} /> Out
-          </button>
+            Out
+          </Button>
         </div>
       </div>
 

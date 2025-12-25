@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
+import Button from "./Button"
 
 const SearchBar = ({ value, onChange, placeholder = "Search...", className }) => {
   const [isFocused, setIsFocused] = useState(false)
@@ -27,8 +28,8 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
           text-sm text-[var(--color-text-primary)] font-normal
           placeholder:text-[var(--color-text-placeholder)]
           focus:outline-none
-          ${isFocused 
-            ? "border-[var(--color-primary)]" 
+          ${isFocused
+            ? "border-[var(--color-primary)]"
             : "border-[var(--color-border-secondary)]"
           }
         `}
@@ -36,9 +37,13 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
 
       {/* Clear Button */}
       {value && (
-        <button onClick={handleClear} className={` absolute right-4 top-1/2 -translate-y-1/2 transition-colors duration-200 focus:outline-none ${isFocused ? "text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]" : "text-[var(--color-text-placeholder)] hover:text-[var(--color-text-tertiary)]"} `} aria-label="Clear search" >
-          <FaTimes size={14} />
-        </button>
+        <Button onClick={handleClear}
+          variant="ghost"
+          size="small"
+          icon={<FaTimes size={14} />}
+          aria-label="Clear search"
+          style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)' }}
+        />
       )}
     </div>
   )

@@ -115,24 +115,12 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
     <form onSubmit={handleSubmit} style={styles.form}>
       <div style={styles.tabContainer}>
         {tabs.map((tab) => (
-          <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
-            style={{
-              ...styles.tab,
-              ...(activeTab === tab.id ? styles.tabActive : styles.tabInactive),
-            }}
-            onMouseEnter={(e) => {
-              if (activeTab !== tab.id) {
-                e.target.style.backgroundColor = "var(--color-bg-muted)"
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeTab !== tab.id) {
-                e.target.style.backgroundColor = "transparent"
-              }
-            }}
+          <Button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
+            variant={activeTab === tab.id ? "primary" : "ghost"}
+            size="small"
           >
             {tab.label}
-          </button>
+          </Button>
         ))}
       </div>
 

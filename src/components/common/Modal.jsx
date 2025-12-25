@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
+import Button from "./Button"
 
 const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, tabs = null, activeTab = null, onTabChange = null, hideTitle = false, fullHeight = false }) => {
   const modalRef = useRef(null)
@@ -54,9 +55,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
               {!hideTitle && title && (
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-                  <button onClick={onClose} className="text-[var(--color-text-light)] hover:text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] rounded-full p-2 transition-all duration-200" aria-label="Close modal">
-                    <FaTimes className="text-lg" />
-                  </button>
+                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" style={{ borderRadius: 'var(--radius-full)' }} />
                 </div>
               )}
               <div className="flex justify-between items-center">
@@ -78,30 +77,25 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
                     }
                   `}</style>
                   {tabs.map((tab) => (
-                    <button key={tab.id} onClick={() => onTabChange && onTabChange(tab.id)}
-                      className={`
-                        py-3 px-1 border-b-2 font-medium text-sm flex items-center whitespace-nowrap
-                        ${activeTab === tab.id ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-tertiary)] hover:border-[var(--color-border-dark)]"}
-                      `}
+                    <Button key={tab.id} onClick={() => onTabChange && onTabChange(tab.id)}
+                      variant={activeTab === tab.id ? "primary" : "ghost"}
+                      size="small"
+                      icon={tab.icon}
+                      style={{ borderBottom: activeTab === tab.id ? '2px solid var(--color-primary)' : '2px solid transparent' }}
                     >
-                      {tab.icon && <span className="mr-2">{tab.icon}</span>}
                       {tab.name}
-                    </button>
+                    </Button>
                   ))}
                 </nav>
                 {hideTitle && (
-                  <button onClick={onClose} className="text-[var(--color-text-light)] hover:text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] rounded-full p-2 transition-all duration-200" aria-label="Close modal">
-                    <FaTimes className="text-lg" />
-                  </button>
+                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" style={{ borderRadius: 'var(--radius-full)' }} />
                 )}
               </div>
             </div>
           ) : (
             <div className="flex justify-between items-center">
               <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-              <button onClick={onClose} className="text-[var(--color-text-light)] hover:text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] rounded-full p-2 transition-all duration-200" aria-label="Close modal">
-                <FaTimes className="text-lg" />
-              </button>
+              <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" style={{ borderRadius: 'var(--radius-full)' }} />
             </div>
           )}
         </div>

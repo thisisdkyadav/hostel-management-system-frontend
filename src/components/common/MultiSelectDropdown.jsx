@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { FaChevronDown, FaTimes } from "react-icons/fa"
+import Button from "./Button"
 
 const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, placeholder = "Select options...", label, disabled = false, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -49,9 +50,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
                   <span key={value} className="inline-flex items-center px-2 py-1 text-xs font-medium bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-md">
                     {value}
                     {!disabled && (
-                      <button type="button" className="ml-1 text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]" onClick={(e) => handleRemoveOption(value, e)}>
-                        <FaTimes className="w-2 h-2" />
-                      </button>
+                      <Button type="button" onClick={(e) => handleRemoveOption(value, e)} variant="ghost" size="small" icon={<FaTimes className="w-2 h-2" />} aria-label="Remove option" style={{ marginLeft: '0.25rem', padding: '0.125rem' }} />
                     )}
                   </span>
                 ))
@@ -60,9 +59,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
 
             <div className="flex items-center gap-2 ml-2">
               {selectedValues.length > 0 && !disabled && (
-                <button type="button" className="text-[var(--color-text-disabled)] hover:text-[var(--color-text-muted)]" onClick={handleClearAll}>
-                  <FaTimes className="w-3 h-3" />
-                </button>
+                <Button type="button" onClick={handleClearAll} variant="ghost" size="small" icon={<FaTimes className="w-3 h-3" />} aria-label="Clear all" style={{ padding: '0.125rem' }} />
               )}
               <FaChevronDown className={`w-4 h-4 text-[var(--color-text-disabled)] transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </div>
@@ -76,9 +73,9 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
             ) : (
               <>
                 <div className="px-3 py-2 border-b border-[var(--color-border-light)]">
-                  <button type="button" className="text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]" onClick={handleClearAll}>
+                  <Button type="button" onClick={handleClearAll} variant="ghost" size="small">
                     Clear All
-                  </button>
+                  </Button>
                 </div>
                 {options.map((option) => (
                   <div key={option} className={`px-3 py-2 text-sm cursor-pointer hover:bg-[var(--color-bg-tertiary)] ${selectedValues.includes(option) ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)]" : "text-[var(--color-text-body)]"}`} onClick={() => handleToggleOption(option)}

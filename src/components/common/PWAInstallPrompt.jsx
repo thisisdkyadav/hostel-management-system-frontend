@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { IoCloseOutline } from "react-icons/io5"
 import { IoLogoApple, IoLogoAndroid } from "react-icons/io"
+import Button from "./Button"
 
 const PWAInstallPrompt = () => {
   // Temporarily disabled due to issues
@@ -144,15 +145,12 @@ const PWAInstallPrompt = () => {
                 </span>
               </div>
             ) : (
-              <button onClick={handleInstallClick} className="text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2" style={{ backgroundColor: 'var(--button-primary-bg)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)'}>
-                <IoLogoAndroid size={18} />
-                <span>Install App</span>
-              </button>
+              <Button onClick={handleInstallClick} variant="primary" size="medium" icon={<IoLogoAndroid size={18} />}>
+                Install App
+              </Button>
             )}
           </div>
-          <button onClick={dismissPrompt} className="p-1 text-gray-500 hover:text-gray-700">
-            <IoCloseOutline size={24} />
-          </button>
+          <Button onClick={dismissPrompt} variant="ghost" size="small" icon={<IoCloseOutline size={24} />} aria-label="Dismiss" />
         </div>
       </div>
     )

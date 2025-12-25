@@ -172,24 +172,20 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
                 {formData.images.map((imageUrl, index) => (
                   <div key={index} style={{ position: 'relative' }} className="group">
                     <img src={getMediaUrl(imageUrl)} alt={`Item ${index + 1}`} style={{ width: '100%', height: '5rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
-                    <button type="button" onClick={() => removeImage(index)}
+                    <Button type="button" onClick={() => removeImage(index)}
+                      variant="danger"
+                      size="small"
+                      icon={<FaTimes size={10} />}
+                      aria-label="Remove image"
+                      className="group-hover:opacity-100"
                       style={{
                         position: 'absolute',
                         top: 'var(--spacing-1)',
                         right: 'var(--spacing-1)',
-                        backgroundColor: 'var(--color-danger)',
-                        color: 'var(--color-white)',
-                        borderRadius: 'var(--radius-full)',
-                        padding: 'var(--spacing-1)',
                         opacity: 0,
-                        transition: 'var(--transition-opacity)',
-                        border: 'none',
-                        cursor: 'pointer'
+                        padding: 'var(--spacing-1)'
                       }}
-                      className="group-hover:opacity-100"
-                    >
-                      <FaTimes size={10} />
-                    </button>
+                    />
                   </div>
                 ))}
               </div>

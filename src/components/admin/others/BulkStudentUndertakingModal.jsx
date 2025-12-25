@@ -188,16 +188,15 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary-dark)' }}>
                 Selected file: <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{csvFile.name}</span>
               </span>
-              <button onClick={(e) => {
+              <Button onClick={(e) => {
                 e.stopPropagation()
                 setCsvFile(null)
               }}
-                style={{ color: 'var(--color-text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
-                onMouseEnter={(e) => e.target.style.color = 'var(--color-text-body)'}
-                onMouseLeave={(e) => e.target.style.color = 'var(--color-text-muted)'}
-              >
-                <FaTimes />
-              </button>
+                variant="ghost"
+                size="small"
+                icon={<FaTimes />}
+                aria-label="Remove file"
+              />
             </div>
           )}
           {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}

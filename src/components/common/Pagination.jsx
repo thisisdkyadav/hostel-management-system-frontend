@@ -27,11 +27,13 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
           }
 
           return (
-            <button key={pageNum} onClick={() => paginate(pageNum)}
-              className={`w-9 h-9 flex items-center justify-center rounded-md transition-colors text-sm ${currentPage === pageNum ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border-primary)]"}`}
+            <Button key={pageNum} onClick={() => paginate(pageNum)}
+              variant={currentPage === pageNum ? "primary" : "secondary"}
+              size="small"
+              style={{ width: '2.25rem', height: '2.25rem', padding: 0 }}
             >
               {pageNum}
-            </button>
+            </Button>
           )
         })}
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaCheckCircle, FaExclamationCircle, FaTimes } from "react-icons/fa"
+import Button from "./Button"
 
 const NotificationToast = ({ message, type = "info", duration = 3000, onClose }) => {
   const [visible, setVisible] = useState(true)
@@ -58,14 +59,16 @@ const NotificationToast = ({ message, type = "info", duration = 3000, onClose })
           <div className="flex-1">
             <p className={`text-sm font-medium ${getTextColor()}`}>{message}</p>
           </div>
-          <button onClick={() => {
+          <Button onClick={() => {
             setVisible(false)
             setTimeout(() => onClose && onClose(), 300)
           }}
-            className="flex-shrink-0 ml-3 text-[var(--color-text-disabled)] hover:text-[var(--color-text-muted)]"
-          >
-            <FaTimes size={14} />
-          </button>
+            variant="ghost"
+            size="small"
+            icon={<FaTimes size={14} />}
+            aria-label="Close notification"
+            style={{ flexShrink: 0, marginLeft: '0.75rem' }}
+          />
         </div>
       </div>
     </div>
