@@ -115,18 +115,18 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         {/* Filters and search */}
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
           <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-            <button onClick={() => setStatusFilter("all")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "all" ? 'var(--color-text-secondary)' : 'var(--color-bg-hover)', color: statusFilter === "all" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "all") e.target.style.backgroundColor = 'var(--color-bg-muted)'; }} onMouseLeave={(e) => { if (statusFilter !== "all") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }}>
+            <Button onClick={() => setStatusFilter("all")} variant={statusFilter === "all" ? "primary" : "ghost"} size="small">
               All
-            </button>
-            <button onClick={() => setStatusFilter("accepted")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "accepted" ? 'var(--color-success)' : 'var(--color-success-bg)', color: statusFilter === "accepted" ? 'var(--color-white)' : 'var(--color-success-dark)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "accepted") e.target.style.backgroundColor = 'var(--color-success-bg-hover)'; }} onMouseLeave={(e) => { if (statusFilter !== "accepted") e.target.style.backgroundColor = 'var(--color-success-bg)'; }}>
+            </Button>
+            <Button onClick={() => setStatusFilter("accepted")} variant={statusFilter === "accepted" ? "success" : "ghost"} size="small">
               Accepted
-            </button>
-            <button onClick={() => setStatusFilter("pending")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "pending" ? 'var(--color-warning)' : 'var(--color-warning-bg)', color: statusFilter === "pending" ? 'var(--color-white)' : 'var(--color-warning-dark)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "pending") e.target.style.backgroundColor = 'var(--color-warning-bg-hover)'; }} onMouseLeave={(e) => { if (statusFilter !== "pending") e.target.style.backgroundColor = 'var(--color-warning-bg)'; }}>
+            </Button>
+            <Button onClick={() => setStatusFilter("pending")} variant={statusFilter === "pending" ? "warning" : "ghost"} size="small">
               Pending
-            </button>
-            <button onClick={() => setStatusFilter("not_viewed")} style={{ padding: 'var(--spacing-1-5) var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', backgroundColor: statusFilter === "not_viewed" ? 'var(--color-text-muted)' : 'var(--color-bg-hover)', color: statusFilter === "not_viewed" ? 'var(--color-white)' : 'var(--color-text-body)', border: 'none', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => { if (statusFilter !== "not_viewed") e.target.style.backgroundColor = 'var(--color-bg-muted)'; }} onMouseLeave={(e) => { if (statusFilter !== "not_viewed") e.target.style.backgroundColor = 'var(--color-bg-hover)'; }}>
+            </Button>
+            <Button onClick={() => setStatusFilter("not_viewed")} variant={statusFilter === "not_viewed" ? "secondary" : "ghost"} size="small">
               Not Viewed
-            </button>
+            </Button>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>

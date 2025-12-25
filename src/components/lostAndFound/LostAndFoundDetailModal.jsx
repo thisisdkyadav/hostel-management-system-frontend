@@ -1,6 +1,7 @@
 import React, { useState } from "react"
-import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes } from "react-icons/fa"
+import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -73,7 +74,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
                 {selectedItem.images.map((imageUrl, index) => (
-                  <img key={index} src={getMediaUrl(imageUrl)} alt={`${selectedItem.itemName} ${index + 1}`} onClick={() => openImageViewer(index)} 
+                  <img key={index} src={getMediaUrl(imageUrl)} alt={`${selectedItem.itemName} ${index + 1}`} onClick={() => openImageViewer(index)}
                     style={{
                       width: '100%',
                       height: '8rem',
@@ -105,31 +106,25 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
       {/* Image Viewer Modal */}
       {selectedImageIndex !== null && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.9)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={closeImageViewer} >
-          <button onClick={closeImageViewer} style={{ position: 'absolute', top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', background: 'none', border: 'none', cursor: 'pointer', zIndex: 10 }} onMouseEnter={(e) => e.target.style.color = 'var(--color-border-gray)'}
-            onMouseLeave={(e) => e.target.style.color = 'var(--color-white)'}
-          >
-            <FaTimes size={30} />
-          </button>
+          <Button onClick={closeImageViewer}
+            variant="ghost"
+            size="small"
+            icon={<FaTimes size={30} />}
+            aria-label="Close image viewer"
+            style={{ position: 'absolute', top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', zIndex: 10 }}
+          />
 
-          <button onClick={(e) => {
-              e.stopPropagation()
-              prevImage()
-            }}
-            style={{
-              position: 'absolute',
-              left: 'var(--spacing-4)',
-              color: 'var(--color-white)',
-              fontSize: 'var(--font-size-6xl)',
-              fontWeight: 'var(--font-weight-bold)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => e.target.style.color = 'var(--color-border-gray)'}
-            onMouseLeave={(e) => e.target.style.color = 'var(--color-white)'}
+          <Button onClick={(e) => {
+            e.stopPropagation()
+            prevImage()
+          }}
+            variant="ghost"
+            size="large"
+            aria-label="Previous image"
+            style={{ position: 'absolute', left: 'var(--spacing-4)', color: 'var(--color-white)', fontSize: 'var(--font-size-6xl)' }}
           >
             ‹
-          </button>
+          </Button>
 
           <div style={{ maxWidth: '64rem', maxHeight: '100vh', padding: 'var(--spacing-4)' }} onClick={(e) => e.stopPropagation()}>
             <img src={getMediaUrl(selectedItem.images[selectedImageIndex])} alt={`${selectedItem.itemName} ${selectedImageIndex + 1}`} style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: 'var(--radius-lg)' }} />
@@ -138,25 +133,17 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
             </p>
           </div>
 
-          <button onClick={(e) => {
-              e.stopPropagation()
-              nextImage()
-            }}
-            style={{
-              position: 'absolute',
-              right: 'var(--spacing-4)',
-              color: 'var(--color-white)',
-              fontSize: 'var(--font-size-6xl)',
-              fontWeight: 'var(--font-weight-bold)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => e.target.style.color = 'var(--color-border-gray)'}
-            onMouseLeave={(e) => e.target.style.color = 'var(--color-white)'}
+          <Button onClick={(e) => {
+            e.stopPropagation()
+            nextImage()
+          }}
+            variant="ghost"
+            size="large"
+            aria-label="Next image"
+            style={{ position: 'absolute', right: 'var(--spacing-4)', color: 'var(--color-white)', fontSize: 'var(--font-size-6xl)' }}
           >
             ›
-          </button>
+          </Button>
         </div>
       )}
     </>

@@ -103,9 +103,12 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
           </label>
           <div className="flex items-center" style={{ gap: 'var(--spacing-1-5)' }}>
             {[1, 2, 3, 4, 5].map((rating) => (
-              <button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)} className="focus:outline-none" style={{ transition: 'var(--transition-transform)' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
-                <FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} />
-              </button>
+              <Button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)}
+                variant="ghost"
+                size="small"
+                icon={<FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} />}
+                style={{ padding: 0 }}
+              />
             ))}
             {feedbackRating > 0 && (
               <span style={{ marginLeft: 'var(--spacing-2)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>
@@ -125,27 +128,24 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             Satisfaction status <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
           <div className="grid grid-cols-3" style={{ gap: 'var(--spacing-2)' }}>
-            <button type="button" onClick={() => setSatisfactionStatus("Satisfied")}
-              style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "Satisfied" ? 'var(--border-2) solid var(--color-success)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "Satisfied" ? 'var(--color-success-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "Satisfied" ? 'var(--color-success-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
-              onMouseEnter={(e) => { if (satisfactionStatus !== "Satisfied") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
-              onMouseLeave={(e) => { if (satisfactionStatus !== "Satisfied") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
+            <Button type="button" onClick={() => setSatisfactionStatus("Satisfied")}
+              variant={satisfactionStatus === "Satisfied" ? "success" : "secondary"}
+              size="small"
             >
               Satisfied
-            </button>
-            <button type="button" onClick={() => setSatisfactionStatus("Unsatisfied")}
-              style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "Unsatisfied" ? 'var(--border-2) solid var(--color-danger)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "Unsatisfied" ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "Unsatisfied" ? 'var(--color-danger-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
-              onMouseEnter={(e) => { if (satisfactionStatus !== "Unsatisfied") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
-              onMouseLeave={(e) => { if (satisfactionStatus !== "Unsatisfied") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
+            </Button>
+            <Button type="button" onClick={() => setSatisfactionStatus("Unsatisfied")}
+              variant={satisfactionStatus === "Unsatisfied" ? "danger" : "secondary"}
+              size="small"
             >
               Unsatisfied
-            </button>
-            <button type="button" onClick={() => setSatisfactionStatus("False Resolution")}
-              style={{ padding: 'var(--spacing-2) var(--spacing-3)', borderRadius: 'var(--radius-lg)', border: satisfactionStatus === "False Resolution" ? 'var(--border-2) solid var(--color-warning)' : 'var(--border-2) solid var(--color-border-primary)', backgroundColor: satisfactionStatus === "False Resolution" ? 'var(--color-warning-bg)' : 'var(--color-bg-primary)', color: satisfactionStatus === "False Resolution" ? 'var(--color-warning-text)' : 'var(--color-text-body)', transition: 'var(--transition-all)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}
-              onMouseEnter={(e) => { if (satisfactionStatus !== "False Resolution") e.currentTarget.style.borderColor = 'var(--color-border-hover)' }}
-              onMouseLeave={(e) => { if (satisfactionStatus !== "False Resolution") e.currentTarget.style.borderColor = 'var(--color-border-primary)' }}
+            </Button>
+            <Button type="button" onClick={() => setSatisfactionStatus("False Resolution")}
+              variant={satisfactionStatus === "False Resolution" ? "warning" : "secondary"}
+              size="small"
             >
               False Fix
-            </button>
+            </Button>
           </div>
         </div>
 

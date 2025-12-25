@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Modal from "../common/Modal"
+import Button from "../common/Button"
 import { leaveApi } from "../../services/leaveApi"
 
 const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {
@@ -221,97 +222,24 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
           {/* Action Buttons */}
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
-            <button onClick={onClose} style={{ padding: 'var(--button-padding-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}
-              onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus)'}
-              onBlur={(e) => e.target.style.boxShadow = 'none'}
-            >
+            <Button onClick={onClose} variant="secondary" size="medium">
               Close
-            </button>
+            </Button>
 
             {canJoinLeave && (
-              <button onClick={() => setShowJoinModal(true)}
-                style={{
-                  padding: 'var(--button-padding-md)',
-                  fontSize: 'var(--font-size-sm)',
-                  fontWeight: 'var(--font-weight-medium)',
-                  color: 'var(--color-white)',
-                  backgroundColor: 'var(--color-info)',
-                  border: 'none',
-                  borderRadius: 'var(--radius-lg)',
-                  outline: 'none',
-                  boxShadow: 'var(--shadow-sm)',
-                  transition: 'var(--transition-all)',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  opacity: loading ? 0.6 : 1
-                }}
-                onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-info-hover)')}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-info)'}
-                onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus-primary)'}
-                onBlur={(e) => e.target.style.boxShadow = 'var(--shadow-sm)'}
-                disabled={loading}
-              >
-                <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', display: 'inline' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                </svg>
+              <Button onClick={() => setShowJoinModal(true)} variant="info" size="medium" disabled={loading}>
                 Join Leave
-              </button>
+              </Button>
             )}
 
             {canModifyStatus && (
               <>
-                <button onClick={() => openDecisionModal("reject")}
-                  style={{
-                    padding: 'var(--button-padding-md)',
-                    fontSize: 'var(--font-size-sm)',
-                    fontWeight: 'var(--font-weight-medium)',
-                    color: 'var(--color-white)',
-                    backgroundColor: 'var(--color-danger)',
-                    border: 'none',
-                    borderRadius: 'var(--radius-lg)',
-                    outline: 'none',
-                    boxShadow: 'var(--shadow-sm)',
-                    transition: 'var(--transition-all)',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.6 : 1
-                  }}
-                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-danger-hover)')}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-danger)'}
-                  onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus-danger)'}
-                  onBlur={(e) => e.target.style.boxShadow = 'var(--shadow-sm)'}
-                  disabled={loading}
-                >
-                  <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', display: 'inline' }} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
+                <Button onClick={() => openDecisionModal("reject")} variant="danger" size="medium" disabled={loading}>
                   Reject
-                </button>
-                <button onClick={() => openDecisionModal("approve")}
-                  style={{
-                    padding: 'var(--button-padding-md)',
-                    fontSize: 'var(--font-size-sm)',
-                    fontWeight: 'var(--font-weight-medium)',
-                    color: 'var(--color-white)',
-                    backgroundColor: 'var(--color-success)',
-                    border: 'none',
-                    borderRadius: 'var(--radius-lg)',
-                    outline: 'none',
-                    boxShadow: 'var(--shadow-sm)',
-                    transition: 'var(--transition-all)',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.6 : 1
-                  }}
-                  onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-success-hover)')}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-success)'}
-                  onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus-success)'}
-                  onBlur={(e) => e.target.style.boxShadow = 'var(--shadow-sm)'}
-                  disabled={loading}
-                >
-                  <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)', display: 'inline' }} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                </Button>
+                <Button onClick={() => openDecisionModal("approve")} variant="success" size="medium" disabled={loading}>
                   Approve
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -320,24 +248,24 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
       {/* Decision Modal (Approve/Reject) */}
       {showDecisionModal && (
-        <Modal title={ <div style={{ display: 'flex', alignItems: 'center' }}>
-              {decisionType === "approve" ? (
-                <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-success-text)' }}>
-                  <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  Approve Leave Request
-                </div>
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-danger-text)' }}>
-                  <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                  Reject Leave Request
-                </div>
-              )}
+        <Modal title={<div style={{ display: 'flex', alignItems: 'center' }}>
+          {decisionType === "approve" ? (
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-success-text)' }}>
+              <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Approve Leave Request
             </div>
-          }
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-danger-text)' }}>
+              <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+              Reject Leave Request
+            </div>
+          )}
+        </div>
+        }
           onClose={() => setShowDecisionModal(false)}
           width={650}
         >
@@ -392,41 +320,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
-              <button type="button" style={{ padding: 'var(--button-padding-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}
-                onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus)'}
-                onBlur={(e) => e.target.style.boxShadow = 'none'}
-                onClick={() => setShowDecisionModal(false)}
-              >
+              <Button type="button" onClick={() => setShowDecisionModal(false)} variant="secondary" size="medium">
                 Cancel
-              </button>
-              <button type="button" style={{ padding: 'var(--button-padding-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: decisionType === "approve" ? 'var(--color-success)' : 'var(--color-danger)', borderRadius: 'var(--radius-lg)', outline: 'none', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: decisionLoading ? 'not-allowed' : 'pointer', opacity: decisionLoading ? 0.6 : 1 }} onMouseEnter={(e) => !decisionLoading && (e.target.style.backgroundColor = decisionType === "approve" ? 'var(--color-success-hover)' : 'var(--color-danger-hover)')}
-                onMouseLeave={(e) => e.target.style.backgroundColor = decisionType === "approve" ? 'var(--color-success)' : 'var(--color-danger)'}
-                onFocus={(e) => e.target.style.boxShadow = decisionType === "approve" ? 'var(--shadow-focus-success)' : 'var(--shadow-focus-danger)'}
-                onBlur={(e) => e.target.style.boxShadow = 'var(--shadow-sm)'}
-                onClick={submitDecision}
-                disabled={decisionLoading}
-              >
-                {decisionLoading ? (
-                  <>
-                    <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: '2px solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    {decisionType === "approve" ? (
-                      <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    {decisionType === "approve" ? "Confirm Approval" : "Confirm Rejection"}
-                  </>
-                )}
-              </button>
+              </Button>
+              <Button type="button" onClick={submitDecision} variant={decisionType === "approve" ? "success" : "danger"} size="medium" disabled={decisionLoading} loading={decisionLoading}>
+                {decisionType === "approve" ? "Confirm Approval" : "Confirm Rejection"}
+              </Button>
             </div>
           </div>
         </Modal>
@@ -434,13 +333,13 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
       {/* Join Modal */}
       {showJoinModal && (
-        <Modal title={ <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-info-text)' }}>
-              <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              Join Leave Request
-            </div>
-          }
+        <Modal title={<div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-info-text)' }}>
+          <svg style={{ ...iconSizeLg, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+          Join Leave Request
+        </div>
+        }
           onClose={() => setShowJoinModal(false)}
           width={600}
         >
@@ -495,35 +394,12 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
-              <button type="button" style={{ padding: 'var(--button-padding-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', backgroundColor: 'var(--color-bg-primary)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', cursor: 'pointer' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-bg-hover)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-bg-primary)'}
-                onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus)'}
-                onBlur={(e) => e.target.style.boxShadow = 'none'}
-                onClick={() => setShowJoinModal(false)}
-              >
+              <Button type="button" onClick={() => setShowJoinModal(false)} variant="secondary" size="medium">
                 Cancel
-              </button>
-              <button type="button" style={{ padding: 'var(--button-padding-md)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-white)', backgroundColor: 'var(--color-info)', borderRadius: 'var(--radius-lg)', outline: 'none', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: joinLoading ? 'not-allowed' : 'pointer', opacity: joinLoading ? 0.6 : 1 }} onMouseEnter={(e) => !joinLoading && (e.target.style.backgroundColor = 'var(--color-info-hover)')}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-info)'}
-                onFocus={(e) => e.target.style.boxShadow = 'var(--shadow-focus-primary)'}
-                onBlur={(e) => e.target.style.boxShadow = 'var(--shadow-sm)'}
-                onClick={submitJoinLeave}
-                disabled={joinLoading}
-              >
-                {joinLoading ? (
-                  <>
-                    <div style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', border: '2px solid var(--color-white)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', marginRight: 'var(--spacing-2)' }}></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <svg style={{ ...iconSize, marginRight: 'var(--spacing-2)' }} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                    </svg>
-                    Confirm Join
-                  </>
-                )}
-              </button>
+              </Button>
+              <Button type="button" onClick={submitJoinLeave} variant="info" size="medium" disabled={joinLoading} loading={joinLoading}>
+                Confirm Join
+              </Button>
             </div>
           </div>
         </Modal>

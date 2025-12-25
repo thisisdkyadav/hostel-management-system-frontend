@@ -148,24 +148,20 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                 {previewImages.map((preview, index) => (
                   <div key={index} style={{ position: 'relative' }} className="group">
                     <img src={preview} alt={`Preview ${index + 1}`} style={{ width: '100%', height: '6rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
-                    <button type="button" onClick={() => removeImage(index)}
+                    <Button type="button" onClick={() => removeImage(index)}
+                      variant="danger"
+                      size="small"
+                      icon={<FaTimes size={12} />}
+                      aria-label="Remove image"
+                      className="group-hover:opacity-100"
                       style={{
                         position: 'absolute',
                         top: 'var(--spacing-1)',
                         right: 'var(--spacing-1)',
-                        backgroundColor: 'var(--color-danger)',
-                        color: 'var(--color-white)',
-                        borderRadius: 'var(--radius-full)',
-                        padding: 'var(--spacing-1)',
                         opacity: 0,
-                        transition: 'var(--transition-opacity)',
-                        border: 'none',
-                        cursor: 'pointer'
+                        padding: 'var(--spacing-1)'
                       }}
-                      className="group-hover:opacity-100"
-                    >
-                      <FaTimes size={12} />
-                    </button>
+                    />
                   </div>
                 ))}
               </div>
