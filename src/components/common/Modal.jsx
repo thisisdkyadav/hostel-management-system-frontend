@@ -55,7 +55,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
               {!hideTitle && title && (
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" style={{ borderRadius: 'var(--radius-full)' }} />
+                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" rounded />
                 </div>
               )}
               <div className="flex justify-between items-center">
@@ -88,14 +88,14 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
                   ))}
                 </nav>
                 {hideTitle && (
-                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" style={{ borderRadius: 'var(--radius-full)' }} />
+                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" rounded />
                 )}
               </div>
             </div>
           ) : (
             <div className="flex justify-between items-center">
               <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-              <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" style={{ borderRadius: 'var(--radius-full)' }} />
+              <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" rounded />
             </div>
           )}
         </div>

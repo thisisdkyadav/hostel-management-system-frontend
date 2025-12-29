@@ -4,6 +4,7 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import ToggleButtonGroup from "../../common/ToggleButtonGroup"
 import StudentDetailModal from "./StudentDetailModal"
 import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../services/healthApi"
@@ -922,14 +923,18 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
           <h3 className="text-lg font-medium text-gray-800">Update Day Scholar Status</h3>
           <div className="mt-2 sm:mt-0">
-            <div style={{ display: "inline-flex", alignItems: "center", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)" }}>
-              <Button type="button" onClick={() => setDayScholarMode("add")} variant={dayScholarMode === "add" ? "primary" : "ghost"} size="small" style={{ borderTopLeftRadius: "var(--radius-md)", borderBottomLeftRadius: "var(--radius-md)", borderTopRightRadius: 0, borderBottomRightRadius: 0 }}>
-                Add/Update Day Scholar
-              </Button>
-              <Button type="button" onClick={() => setDayScholarMode("remove")} variant={dayScholarMode === "remove" ? "primary" : "ghost"} size="small" style={{ borderTopRightRadius: "var(--radius-md)", borderBottomRightRadius: "var(--radius-md)", borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
-                Remove Day Scholar
-              </Button>
-            </div>
+            <ToggleButtonGroup
+              options={[
+                { value: "add", label: "Add/Update Day Scholar" },
+                { value: "remove", label: "Remove Day Scholar" },
+              ]}
+              value={dayScholarMode}
+              onChange={setDayScholarMode}
+              shape="rounded"
+              size="small"
+              variant="muted"
+              hideLabelsOnMobile={false}
+            />
           </div>
         </div>
 

@@ -301,10 +301,9 @@ const UnitBasedForm = ({ formData, setFormData }) => {
                 <Button
                   type="button"
                   onClick={() => removeException(index)}
-                  variant="ghost"
+                  variant="danger"
                   size="small"
                   className="col-span-2"
-                  style={{ color: "var(--color-danger)" }}
                 >
                   Remove Exception
                 </Button>
@@ -315,7 +314,6 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               onClick={addException}
               variant="success"
               size="small"
-              style={{ marginTop: "var(--spacing-2)" }}
             >
               Add Exception
             </Button>

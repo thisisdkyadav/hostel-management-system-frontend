@@ -290,18 +290,8 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
       </div>
 
       <div style={styles.buttonContainer}>
-        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges() || hasValidationErrors()} style={{ ...styles.button, opacity: isLoading || !hasChanges() || hasValidationErrors() ? "var(--opacity-disabled)" : 1, cursor: isLoading || !hasChanges() || hasValidationErrors() ? "not-allowed" : "pointer" }}>
-          {isLoading ? (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div style={styles.spinner}></div>
-              Saving...
-            </div>
-          ) : (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <HiSave style={styles.buttonIcon} />
-              Save Changes
-            </div>
-          )}
+        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges() || hasValidationErrors()} variant="primary" size="medium" icon={<HiSave />} isLoading={isLoading}>
+          Save Changes
         </Button>
       </div>
 

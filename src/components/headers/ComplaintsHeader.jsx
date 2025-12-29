@@ -29,9 +29,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
       <Button onClick={() => setShowFilters(!showFilters)}
         variant={showFilters ? "primary" : "white"}
         size="medium"
-        icon={<FaFilter style={{ fontSize: 'var(--font-size-xs)' }} />}
-        className={showFilters ? "" : ""}
-        style={showFilters ? { boxShadow: 'var(--ring-primary)' } : {}}
+        icon={<FaFilter />}
       >
         <span className="hidden sm:inline">Filters</span>
       </Button>

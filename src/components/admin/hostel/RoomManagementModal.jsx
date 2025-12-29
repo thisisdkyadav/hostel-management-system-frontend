@@ -98,8 +98,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
             <FilterTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {activeTab === "view" && (
-              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} style={{ display: 'flex', alignItems: 'center' }} animation="pulse" size="small">
-                <FaTrash style={{ marginRight: 'var(--spacing-2)' }} />
+              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} animation="pulse" size="small" icon={<FaTrash />}>
                 Delete All Allocations
               </Button>
             )}

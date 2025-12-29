@@ -24,7 +24,6 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
         variant={showFilters ? "primary" : "white"}
         size="medium"
         icon={<FaFilter />}
-        style={{ transition: 'var(--transition-all)' }}
       >
         Filters
       </Button>
@@ -51,9 +50,7 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
       />
 
       {canCreate && (
-        <Button onClick={onCreate} variant="primary" size="medium" icon={<FaPlus />}
-          style={{ transition: 'var(--transition-all)' }}
-        >
+        <Button onClick={onCreate} variant="primary" size="medium" icon={<FaPlus />}>
           Create Leave
         </Button>
       )}

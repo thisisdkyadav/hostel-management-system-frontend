@@ -303,7 +303,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               style={styles.input}
               disabled={isLoading}
             />
-            <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="medium" icon={<HiPlus />} style={{ borderRadius: '0 var(--radius-lg) var(--radius-lg) 0' }} />
+            <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="medium" icon={<HiPlus />} />
           </div>
           {error && <p style={styles.errorText}>{error}</p>}
         </div>

@@ -94,12 +94,12 @@ const RoomCard = ({ room, onClick, onAllocate }) => {
       </div>
 
       <div style={{ marginTop: 'var(--spacing-5)', display: 'flex', gap: 'var(--spacing-2)' }}>
-        <Button onClick={() => onClick()} variant="outline" size="medium" style={{ flex: 1 }}>
+        <Button onClick={() => onClick()} variant="outline" size="medium" fullWidth>
           View Details
         </Button>
 
         {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-          <Button onClick={(e) => { e.stopPropagation(); onAllocate(); }} variant="success" size="medium" icon={<FaUserPlus />} style={{ flex: 1 }}>
+          <Button onClick={(e) => { e.stopPropagation(); onAllocate(); }} variant="success" size="medium" icon={<FaUserPlus />} fullWidth>
             Allocate
           </Button>
         )}

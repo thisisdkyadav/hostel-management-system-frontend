@@ -66,10 +66,10 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
         </Card.Body>
 
         <Card.Footer style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', gap: 'var(--spacing-2)' }}>
-          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="small" icon={<FaEye />} style={{ flex: 1 }}>
+          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="small" icon={<FaEye />} fullWidth>
             View Details
           </Button>
-          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="small" icon={<FaEdit />} style={{ flex: 1 }}>
+          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="small" icon={<FaEdit />} fullWidth>
             Edit
           </Button>
         </Card.Footer>

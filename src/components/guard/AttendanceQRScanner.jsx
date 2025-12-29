@@ -181,7 +181,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       <div style={{ marginBottom: 'var(--spacing-4)' }}>
         <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <Button onClick={stopScanner} variant="danger" size="medium" icon={<FaTimes />} fullWidth style={{ marginTop: 'var(--spacing-4)' }}>
+          <Button onClick={stopScanner} variant="danger" size="medium" icon={<FaTimes />} fullWidth>
             Stop Scanner
           </Button>
         )}
@@ -203,7 +203,7 @@ const AttendanceQRScanner = ({ onRefresh }) => {
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
-            <Button onClick={recordAttendance} disabled={recordingAttendance} variant="success" size="medium" icon={<FaUser />} isLoading={recordingAttendance} style={{ flex: 1 }}>
+            <Button onClick={recordAttendance} disabled={recordingAttendance} variant="success" size="medium" icon={<FaUser />} isLoading={recordingAttendance} fullWidth>
               Record Attendance
             </Button>
             <Button onClick={handleReset} variant="secondary" size="medium">
