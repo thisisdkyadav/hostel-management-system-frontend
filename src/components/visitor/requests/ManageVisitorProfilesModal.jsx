@@ -4,6 +4,7 @@ import Modal from "../../common/Modal"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../services/visitorApi"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState("")
@@ -39,19 +40,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
           {/* Search Bar */}
           <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', top: '0', bottom: '0', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
-              <FaSearch style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', color: 'var(--color-text-placeholder)' }} />
-            </div>
-            <input type="text" style={{ display: 'block', width: '100%', paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-10)', paddingTop: 'var(--spacing-3)', paddingBottom: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-colors)', fontSize: 'var(--font-size-base)' }} placeholder="Search profiles by name, relation, email, or phone" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={(e) => {
-                e.target.style.borderColor = 'var(--color-primary)'
-                e.target.style.boxShadow = 'var(--input-focus-ring)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--color-border-input)'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
+            <Input type="text" placeholder="Search profiles by name, relation, email, or phone" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} icon={<FaSearch />} />
             {searchQuery && (
               <Button onClick={() => setSearchQuery("")} variant="ghost" size="small" icon={<FaTimesCircle />} style={{ position: 'absolute', top: '0', bottom: '0', right: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }} />
             )}

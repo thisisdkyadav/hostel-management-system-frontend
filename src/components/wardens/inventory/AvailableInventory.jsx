@@ -3,6 +3,7 @@ import { inventoryApi } from "../../../services/inventoryApi"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
 import Pagination from "../../common/Pagination"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const AvailableInventory = () => {
   const [hostelInventory, setHostelInventory] = useState([])
@@ -82,9 +83,8 @@ const AvailableInventory = () => {
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Inventory
         </h3>
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
-          <div className="relative flex-1">
-            <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by item name..." style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', width: '100%', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} />
-            <FaSearch className="absolute" style={{ left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-placeholder)' }} />
+          <div className="flex-1">
+            <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by item name..." icon={<FaSearch />} />
           </div>
           <div className="flex" style={{ gap: 'var(--gap-sm)' }}>
             <Button onClick={resetFilters} variant="secondary" size="medium">

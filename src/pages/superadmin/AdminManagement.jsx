@@ -6,6 +6,7 @@ import NoResults from "../../components/common/NoResults"
 import Modal from "../../components/common/Modal"
 import superAdminService from "../../services/superAdminService"
 import Button from "../../components/common/Button"
+import Input from "../../components/common/ui/Input"
 
 const AdminManagement = () => {
   const [admins, setAdmins] = useState([])
@@ -262,7 +263,7 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
             <label htmlFor="name" className="block text-gray-700 text-sm font-medium mb-2">
               Name *
             </label>
-            <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.name ? "border-red-300" : "border-gray-300"}`} />
+            <Input type="text" id="name" name="name" value={formData.name} onChange={handleChange} error={errors.name} />
             {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
           </div>
 
@@ -270,7 +271,7 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
             <label htmlFor="email" className="block text-gray-700 text-sm font-medium mb-2">
               Email *
             </label>
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.email ? "border-red-300" : "border-gray-300"}`} />
+            <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} error={errors.email} />
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
           </div>
 
@@ -279,7 +280,7 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
               <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">
                 Password *
               </label>
-              <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.password ? "border-red-300" : "border-gray-300"}`} />
+              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} />
               {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
             </div>
           )}
@@ -288,7 +289,7 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
             <label htmlFor="phone" className="block text-gray-700 text-sm font-medium mb-2">
               Phone (Optional)
             </label>
-            <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${errors.phone ? "border-red-300" : "border-gray-300"}`} />
+            <Input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} error={errors.phone} />
             {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
           </div>
         </div>

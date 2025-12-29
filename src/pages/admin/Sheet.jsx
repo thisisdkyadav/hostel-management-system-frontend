@@ -11,6 +11,7 @@ import { sheetApi } from "../../services/sheetApi"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
+import Input from "../../components/common/ui/Input"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
@@ -663,13 +664,12 @@ const Sheet = () => {
                 {!isSummaryTab && (
                     <>
                         <div style={styles.searchContainer}>
-                            <FaSearch style={styles.searchIcon} />
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Search all..."
                                 value={globalFilter}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
-                                style={styles.searchInput}
+                                icon={<FaSearch />}
                             />
                         </div>
 

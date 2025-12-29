@@ -4,6 +4,7 @@ import { FaUserShield } from "react-icons/fa"
 import superAdminService from "../../../services/superAdminService"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const AddAdminModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -95,54 +96,75 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
         <div className="space-y-4">
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Name *</label>
-            <div className="relative">
-              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
-                <FiUser />
-              </div>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.name ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Enter full name" required />
-              {errors.name && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.name}</p>}
-            </div>
+            <Input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              icon={<FiUser />}
+              placeholder="Enter full name"
+              required
+              error={errors.name}
+            />
+            {errors.name && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.name}</p>}
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Email *</label>
-            <div className="relative">
-              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
-                <FiMail />
-              </div>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.email ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="admin@example.com" required />
-              {errors.email && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.email}</p>}
-            </div>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              icon={<FiMail />}
+              placeholder="admin@example.com"
+              required
+              error={errors.email}
+            />
+            {errors.email && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.email}</p>}
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Password *</label>
-            <div className="relative">
-              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
-                <FiLock />
-              </div>
-              <input type="password" name="password" value={formData.password} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.password ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Enter password" required />
-              {errors.password && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.password}</p>}
-            </div>
+            <Input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              icon={<FiLock />}
+              placeholder="Enter password"
+              required
+              error={errors.password}
+            />
+            {errors.password && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.password}</p>}
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category *</label>
-            <div className="relative">
-              <input type="text" name="category" value={formData.category} onChange={handleChange} className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Admin" required />
-              {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
-            </div>
+            <Input
+              type="text"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="Admin"
+              required
+              error={errors.category}
+            />
+            {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Phone (Optional)</label>
-            <div className="relative">
-              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
-                <FiPhone />
-              </div>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="+91 9876543210" />
-              {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
-            </div>
+            <Input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              icon={<FiPhone />}
+              placeholder="+91 9876543210"
+              error={errors.phone}
+            />
+            {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
           </div>
         </div>
 

@@ -4,6 +4,8 @@ import FilterTabs from "./common/FilterTabs"
 import NoResults from "./common/NoResults"
 import Pagination from "./common/Pagination"
 import Button from "./common/Button"
+import Input from "./common/ui/Input"
+import Select from "./common/ui/Select"
 import { securityApi } from "../services/apiService"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -171,16 +173,20 @@ const AccessHistory = ({ cachedData }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm text-[var(--color-text-muted)] mb-1">Filter by Date</label>
-                <input type="date" value={filterDate} onChange={handleDateFilterChange} className="w-full p-2 border border-[var(--color-border-input)] rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-body)]" />
+                <Input type="date" value={filterDate} onChange={handleDateFilterChange} />
               </div>
               <div>
                 <label className="block text-sm text-[var(--color-text-muted)] mb-1">Items Per Page</label>
-                <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="w-full p-2 border border-[var(--color-border-input)] rounded-lg bg-[var(--color-bg-primary)] text-[var(--color-text-body)]">
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
+                <Select
+                  value={itemsPerPage}
+                  onChange={handleItemsPerPageChange}
+                  options={[
+                    { value: 5, label: "5" },
+                    { value: 10, label: "10" },
+                    { value: 20, label: "20" },
+                    { value: 50, label: "50" },
+                  ]}
+                />
               </div>
               <div className="flex items-end">
                 <Button

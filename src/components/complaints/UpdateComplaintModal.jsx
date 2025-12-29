@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import Select from "../common/ui/Select"
 import { complaintApi } from "../../services/complaintApi"
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
@@ -59,33 +60,7 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
           <label htmlFor="status" className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-1)' }} >
             Status
           </label>
-          <select id="status" value={status} onChange={(e) => setStatus(e.target.value)} 
-            className="w-full focus:outline-none" 
-            style={{ 
-              paddingLeft: 'var(--spacing-4)', 
-              paddingRight: 'var(--spacing-4)', 
-              paddingTop: 'var(--spacing-2)', 
-              paddingBottom: 'var(--spacing-2)', 
-              border: `var(--border-1) solid var(--color-border-input)`, 
-              borderRadius: 'var(--radius-lg)', 
-              backgroundColor: 'var(--color-bg-primary)' 
-            }}
-            onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--color-primary)';
-            }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'none';
-              e.target.style.borderColor = 'var(--color-border-input)';
-            }}
-            required
-          >
-            {statusOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          <Select id="status" value={status} onChange={(e) => setStatus(e.target.value)} options={statusOptions.map((option) => ({ value: option, label: option }))} required />
         </div>
 
         <div>

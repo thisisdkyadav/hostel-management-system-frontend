@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react"
 import { FaFileUpload, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import Button from "./Button"
+import FileInput from "./ui/FileInput"
 
 const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateHeaders, maxRecords = 500, instructionText }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -106,7 +107,7 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
         <p className="mt-2 text-xs text-[var(--color-text-muted)]">
           <strong>Required fields:</strong> {requiredFields.join(", ")}
         </p>
-        <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+        <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
       </div>
 
       <div className="flex flex-col items-center">

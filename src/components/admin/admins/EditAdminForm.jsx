@@ -6,6 +6,7 @@ import Modal from "../../common/Modal"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
@@ -135,30 +136,40 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
         <div className="space-y-4">
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Name</label>
-            <input type="text" value={admin.name} className="w-full p-[var(--spacing-3)] border border-[var(--color-border-input)] rounded-[var(--radius-lg)] bg-[var(--color-bg-disabled)] text-[var(--color-text-disabled)] cursor-not-allowed" disabled />
+            <Input type="text" value={admin.name} disabled />
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Name cannot be changed</p>
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Email</label>
-            <input type="email" value={admin.email} className="w-full p-[var(--spacing-3)] border border-[var(--color-border-input)] rounded-[var(--radius-lg)] bg-[var(--color-bg-disabled)] text-[var(--color-text-disabled)] cursor-not-allowed" disabled />
+            <Input type="email" value={admin.email} disabled />
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Email cannot be changed</p>
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Phone Number</label>
-            <div className="relative">
-              <div className="absolute left-[var(--spacing-3)] top-[var(--spacing-3)] text-[var(--color-text-placeholder)]">
-                <FaPhone />
-              </div>
-              <input type="text" name="phone" value={formData.phone} onChange={handleChange} className={`w-full p-[var(--spacing-3)] pl-[var(--spacing-10)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.phone ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Enter phone number" />
-              {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
-            </div>
+            <Input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              icon={<FaPhone />}
+              placeholder="Enter phone number"
+              error={errors.phone}
+            />
+            {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
           </div>
 
           <div>
             <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category</label>
-            <input type="text" name="category" value={formData.category} onChange={handleChange} className={`w-full p-[var(--spacing-3)] border rounded-[var(--radius-lg)] focus:ring-2 focus:ring-[var(--color-primary-bg-hover)] focus:border-[var(--color-primary)] outline-none transition-[var(--transition-all)] ${errors.category ? "border-[var(--color-danger-border)]" : "border-[var(--color-border-input)]"}`} placeholder="Admin" />
+            <Input
+              type="text"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="Admin"
+              error={errors.category}
+            />
             {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
           </div>
         </div>

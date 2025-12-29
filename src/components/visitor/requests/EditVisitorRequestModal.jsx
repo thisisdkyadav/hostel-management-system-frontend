@@ -3,6 +3,7 @@ import { FaExclamationTriangle } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import { visitorApi } from "../../../services/visitorApi"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
   const [formData, setFormData] = useState({
@@ -115,37 +116,13 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
-            <input type="date" name="fromDate" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.fromDate}
-              onChange={handleChange}
-              min={minDateString}
-              required
-            />
+            <Input type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Must be at least 2 days from today</p>
           </div>
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
-            <input type="date" name="toDate" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.toDate}
-              onChange={handleChange}
-              min={formData.fromDate || minDateString}
-              required
-            />
+            <Input type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
           </div>
         </div>
 

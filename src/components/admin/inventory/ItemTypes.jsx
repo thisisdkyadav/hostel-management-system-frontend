@@ -4,6 +4,7 @@ import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Pagination from "../../common/Pagination"
+import Input from "../../common/ui/Input" // Added Input component
 
 const ItemTypes = () => {
   const [itemTypes, setItemTypes] = useState([])
@@ -149,9 +150,8 @@ const ItemTypes = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="relative">
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'; }} onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-input)'; e.currentTarget.style.boxShadow = 'none'; }} />
-          <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-placeholder)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)', flex: 1, maxWidth: '500px' }}>
+          <Input type="text" placeholder="Search item types..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} icon={<FaSearch />} />
           <Button onClick={handleSearch} variant="ghost" size="small">
             Search
           </Button>
@@ -221,7 +221,7 @@ const ItemTypes = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Name</label>
-              <input type="text" name="name" value={currentItemType.name} onChange={handleInputChange} required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
+              <Input type="text" name="name" value={currentItemType.name} onChange={handleInputChange} required />
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Description</label>
@@ -229,7 +229,7 @@ const ItemTypes = () => {
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Total Count</label>
-              <input type="number" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
+              <Input type="number" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required />
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
               <Button type="button" onClick={closeModal} variant="secondary" size="medium">

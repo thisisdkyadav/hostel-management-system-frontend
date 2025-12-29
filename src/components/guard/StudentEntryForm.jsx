@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Button from "../common/Button"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
+import Input from "../common/ui/Input"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 
@@ -92,44 +93,44 @@ const StudentEntryForm = ({ onAddEntry }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-6)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student ID</label>
-            <input type="text" name="studentId" value={entryData.studentId} onChange={handleChange} style={inputStyle} required />
+            <Input type="text" name="studentId" value={entryData.studentId} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Name</label>
-            <input type="text" name="studentName" value={entryData.studentName} onChange={handleChange} style={inputStyle} required />
+            <Input type="text" name="studentName" value={entryData.studentName} onChange={handleChange} required />
           </div>
 
           {hostelType === "unit-based" && (
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Unit</label>
-              <input type="text" name="unit" value={entryData.unit} onChange={handleChange} style={inputStyle} required />
+              <Input type="text" name="unit" value={entryData.unit} onChange={handleChange} required />
             </div>
           )}
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Room</label>
-            <input type="text" name="room" value={entryData.room} onChange={handleChange} style={inputStyle} required />
+            <Input type="text" name="room" value={entryData.room} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Bed</label>
-            <input type="text" name="bed" value={entryData.bed} onChange={handleChange} style={inputStyle} required />
+            <Input type="text" name="bed" value={entryData.bed} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Date</label>
-            <input type="date" name="date" value={entryData.date} onChange={handleChange} style={inputStyle} required />
+            <Input type="date" name="date" value={entryData.date} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Time</label>
-            <input type="time" name="time" value={entryData.time} onChange={handleChange} style={inputStyle} required />
+            <Input type="time" name="time" value={entryData.time} onChange={handleChange} required />
           </div>
 
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes (Optional)</label>
-            <textarea name="notes" value={entryData.notes} onChange={handleChange} style={{ ...inputStyle, resize: 'vertical', minHeight: '80px' }} rows="2" />
+            <textarea name="notes" value={entryData.notes} onChange={handleChange} style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: 'var(--border-1) solid var(--color-border-input)', fontSize: 'var(--font-size-base)', fontFamily: 'var(--font-family-primary)', resize: 'vertical', minHeight: '80px', outline: 'none', transition: 'var(--transition-all)' }} rows="2" />
           </div>
         </div>
 

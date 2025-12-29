@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import Button from "../../../common/Button"
+import Input from "../../../common/ui/Input"
+import Select from "../../../common/ui/Select"
 import { FaDoorOpen, FaUsers, FaPlusCircle } from "react-icons/fa"
 import { hostelApi } from "../../../../services/hostelApi"
 
@@ -191,12 +193,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         {isUnitBased && (
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Unit Number</label>
-            <div style={{ position: 'relative' }}>
-              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-                <FaDoorOpen style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
-              </div>
-              <input type="text" name="unitNumber" value={formData.unitNumber} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid ${errors.unitNumber ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.unitNumber ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { if (!errors.unitNumber) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.unitNumber) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }} placeholder="e.g., 101" />
-            </div>
+            <Input type="text" name="unitNumber" value={formData.unitNumber} onChange={handleChange} icon={<FaDoorOpen />} placeholder="e.g., 101" error={errors.unitNumber} />
             {errors.unitNumber && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.unitNumber}</p>}
           </div>
         )}
@@ -210,12 +207,7 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Room {isUnitBased ? "Letter(s)" : "Number(s)"}</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-              <FaDoorOpen style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
-            </div>
-            <input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid ${errors.roomNumbers ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.roomNumbers ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { if (!errors.roomNumbers) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.roomNumbers) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} />
-          </div>
+          <Input type="text" name="roomNumbers" value={formData.roomNumbers} onChange={handleChange} icon={<FaDoorOpen />} placeholder={isUnitBased ? "e.g., A, B, C or A-E" : "e.g., 101, 102 or 201-205"} error={errors.roomNumbers} />
           <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>You can use commas for lists and hyphens for ranges (e.g., A-D, F, H or 101-105, 201)</p>
           {errors.roomNumbers && <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.roomNumbers}</p>}
         </div>
@@ -223,29 +215,13 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Capacity</label>
-            <div style={{ position: 'relative' }}>
-              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-                <FaUsers style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)' }} />
-              </div>
-              <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid ${errors.capacity ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.capacity ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { if (!errors.capacity) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.capacity) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }} placeholder="Room capacity" />
-            </div>
+            <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<FaUsers />} placeholder="Room capacity" error={errors.capacity} />
             {errors.capacity && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.capacity}</p>}
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Status</label>
-            <div style={{ position: 'relative' }}>
-              <select name="status" value={formData.status} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid ${errors.status ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', backgroundColor: errors.status ? 'var(--color-danger-bg)' : 'var(--color-bg-primary)', outline: 'none', transition: 'var(--transition-all)', appearance: 'none' }} onFocus={(e) => { if (!errors.status) { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; } }} onBlur={(e) => { if (!errors.status) { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; } }}>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Maintenance">Maintenance</option>
-              </select>
-              <div style={{ position: 'absolute', top: 0, bottom: 0, right: 0, display: 'flex', alignItems: 'center', padding: '0 var(--spacing-2)', pointerEvents: 'none' }}>
-                <svg style={{ width: 'var(--icon-lg)', height: 'var(--icon-lg)', color: 'var(--color-text-muted)' }} fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
+            <Select name="status" value={formData.status} onChange={handleChange} options={[{ value: "Active", label: "Active" }, { value: "Inactive", label: "Inactive" }, { value: "Maintenance", label: "Maintenance" }]} error={errors.status} />
             {errors.status && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.status}</p>}
           </div>
         </div>

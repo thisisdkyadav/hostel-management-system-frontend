@@ -1,4 +1,5 @@
 import React from "react"
+import Select from "./ui/Select"
 
 const RoleFilter = ({ selectedRole = "all", onChange, roles = ["All Roles", "Admin", "Super Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Maintenance Staff", "Student"], label = "Filter by Role", disabled = false }) => {
   // Map display names to values for the select options
@@ -12,16 +13,10 @@ const RoleFilter = ({ selectedRole = "all", onChange, roles = ["All Roles", "Adm
       <label htmlFor="role-filter" className="block text-sm font-medium text-[var(--color-text-body)] mb-1">
         {label}
       </label>
-      <select id="role-filter" value={selectedRole} onChange={(e) => onChange(e.target.value)}
+      <Select id="role-filter" value={selectedRole} onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className={`block w-full rounded-md shadow-sm text-sm border-[var(--color-border-input)] ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : "bg-[var(--color-bg-primary)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"}`}
-      >
-        {roleOptions.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        options={roleOptions}
+      />
     </div>
   )
 }

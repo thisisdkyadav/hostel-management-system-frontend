@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaSearch, FaFilter, FaFileUpload } from "react-icons/fa"
 import Button from "../../../common/Button"
+import Input from "../../../common/ui/Input"
+import Select from "../../../common/ui/Select"
 import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
 import { adminApi } from "../../../../services/apiService"
@@ -107,29 +109,12 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
       <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)', flex: 1 }}>
-          <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
-            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
-              <FaSearch style={{ color: 'var(--color-text-muted)' }} />
-            </div>
-            <input type="text" placeholder={`Search ${isUnitBased ? "units/rooms" : "rooms"}...`} style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-3)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', width: '100%', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <Input type="text" placeholder={`Search ${isUnitBased ? "units/rooms" : "rooms"}...`} icon={<FaSearch />} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
 
-          <div style={{ position: 'relative', minWidth: '150px' }}>
-            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'var(--spacing-3)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
-              <FaFilter style={{ color: 'var(--color-text-muted)' }} />
-            </div>
-            <select style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-8)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', width: '100%', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', appearance: 'none', backgroundColor: 'var(--color-bg-primary)', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="all">All Status</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="Maintenance">Maintenance</option>
-            </select>
-            <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: 'var(--spacing-2)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
-              <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-text-muted)' }} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </div>
+          <div style={{ minWidth: '150px' }}>
+            <Select icon={<FaFilter />} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} options={[{ value: "all", label: "All Status" }, { value: "Active", label: "Active" }, { value: "Inactive", label: "Inactive" }, { value: "Maintenance", label: "Maintenance" }]} />
           </div>
         </div>
 

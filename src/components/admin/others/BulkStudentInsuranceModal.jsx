@@ -3,6 +3,7 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import FileInput from "../../common/ui/FileInput"
 
 const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, providerName }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -145,7 +146,7 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
             <p style={{ marginTop: 'var(--spacing-3)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
               <strong>Required fields:</strong> rollNumber, insuranceNumber
             </p>
-            <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
+            <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>

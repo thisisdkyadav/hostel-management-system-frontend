@@ -1,5 +1,7 @@
 import React from "react"
 import Button from "../common/Button"
+import Input from "../common/ui/Input"
+import Select from "../common/ui/Select"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
   // Floor numbers for dropdown
@@ -54,19 +56,10 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)", }} >
             Hostel
           </label>
-          <select name="hostelId" value={filters.hostelId} onChange={handleFilterChange} style={selectStyle} onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "var(--input-border)"
-              e.currentTarget.style.boxShadow = "none"
-            }}
-          >
-            <option value="">All Hostels</option>
-            {hostels.map((hostel) => (
-              <option key={hostel.id} value={hostel.id}>
-                {hostel.name}
-              </option>
-            ))}
-          </select>
+          <Select name="hostelId" value={filters.hostelId} onChange={handleFilterChange} options={[
+            { value: "", label: "All Hostels" },
+            ...hostels.map((hostel) => ({ value: hostel.id, label: hostel.name }))
+          ]} />
         </div>
 
         {/* Floor Filter */}
@@ -74,19 +67,10 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)", }} >
             Floor
           </label>
-          <select name="floorNumber" value={filters.floorNumber} onChange={handleFilterChange} style={selectStyle} onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "var(--input-border)"
-              e.currentTarget.style.boxShadow = "none"
-            }}
-          >
-            <option value="">All Floors</option>
-            {floorNumbers.map((floor) => (
-              <option key={floor} value={floor}>
-                Floor {floor}
-              </option>
-            ))}
-          </select>
+          <Select name="floorNumber" value={filters.floorNumber} onChange={handleFilterChange} options={[
+            { value: "", label: "All Floors" },
+            ...floorNumbers.map((floor) => ({ value: floor, label: `Floor ${floor}` }))
+          ]} />
         </div>
 
         {/* Only show these filters if in rooms view */}
@@ -97,19 +81,10 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
               <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)", }} >
                 Room Type
               </label>
-              <select name="roomType" value={filters.roomType} onChange={handleFilterChange} style={selectStyle} onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--input-border)"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              >
-                <option value="">All Types</option>
-                {roomTypes.map((type) => (
-                  <option key={type} value={type.toLowerCase()}>
-                    {type}
-                  </option>
-                ))}
-              </select>
+              <Select name="roomType" value={filters.roomType} onChange={handleFilterChange} options={[
+                { value: "", label: "All Types" },
+                ...roomTypes.map((type) => ({ value: type.toLowerCase(), label: type }))
+              ]} />
             </div>
 
             {/* Occupancy Status Filter */}
@@ -117,19 +92,10 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
               <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)", }} >
                 Occupancy Status
               </label>
-              <select name="occupancyStatus" value={filters.occupancyStatus} onChange={handleFilterChange} style={selectStyle} onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--input-border)"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              >
-                <option value="">All Statuses</option>
-                {occupancyStatuses.map((status) => (
-                  <option key={status.value} value={status.value}>
-                    {status.label}
-                  </option>
-                ))}
-              </select>
+              <Select name="occupancyStatus" value={filters.occupancyStatus} onChange={handleFilterChange} options={[
+                { value: "", label: "All Statuses" },
+                ...occupancyStatuses.map((status) => ({ value: status.value, label: status.label }))
+              ]} />
             </div>
           </>
         )}
@@ -139,12 +105,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)", }} >
             Search
           </label>
-          <input type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} style={{ ...selectStyle, color: filters.searchTerm ? "var(--color-text-body)" : "var(--color-text-placeholder)", }} onFocus={(e) => Object.assign(e.currentTarget.style, selectFocusStyle)}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "var(--input-border)"
-              e.currentTarget.style.boxShadow = "none"
-            }}
-          />
+          <Input type="text" name="searchTerm" value={filters.searchTerm} onChange={handleFilterChange} placeholder={`Search ${currentView === "units" ? "units" : "rooms"}...`} />
         </div>
       </div>
     </div>

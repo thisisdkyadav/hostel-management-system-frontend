@@ -18,6 +18,8 @@ import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
 import { useWarden } from "../contexts/WardenProvider"
+import Input from "../components/common/ui/Input"
+import Checkbox from "../components/common/ui/Checkbox"
 import Button from "../components/common/Button"
 import ToggleButtonGroup from "../components/common/ToggleButtonGroup"
 
@@ -404,33 +406,30 @@ const UnitsAndRooms = () => {
                       <label htmlFor="minCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                         Min Capacity
                       </label>
-                      <input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                      <Input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <label htmlFor="maxCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                         Max Capacity
                       </label>
-                      <input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                      <Input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <label htmlFor="minOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                         Min Occupancy
                       </label>
-                      <input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                      <Input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" />
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <label htmlFor="maxOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
                         Max Occupancy
                       </label>
-                      <input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)' }} />
+                      <Input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" />
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', paddingTop: 'var(--spacing-4)' }} className="sm:pt-0 sm:items-end sm:pb-1">
-                      <input type="checkbox" id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
-                      <label htmlFor="showEmptyOnly" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>
-                        Show Empty Units Only
-                      </label>
+                      <Checkbox id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} label="Show Empty Units Only" />
                     </div>
                   </>
                 )}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaFilter, FaCalendarAlt, FaUserCog, FaUsers, FaSearch, FaUserCheck, FaCheck, FaTimes } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Select from "../../common/ui/Select"
 import { securityApi } from "../../../services/apiService"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -219,11 +220,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
           <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-4)', alignItems: 'flex-end', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: '150px' }}>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Staff Type</label>
-              <select value={staffType} onChange={(e) => setStaffType(e.target.value)} style={{ width: '100%', padding: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }}>
-                <option value="all">All Staff</option>
-                <option value="security">Security Guards</option>
-                <option value="maintenance">Maintenance Staff</option>
-              </select>
+              <Select value={staffType} onChange={(e) => setStaffType(e.target.value)} options={[{ value: "all", label: "All Staff" }, { value: "security", label: "Security Guards" }, { value: "maintenance", label: "Maintenance Staff" }]} />
             </div>
             <div style={{ flex: 1, minWidth: '150px' }}>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Start Date</label>

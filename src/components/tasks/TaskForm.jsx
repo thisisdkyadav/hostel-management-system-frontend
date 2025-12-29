@@ -5,6 +5,9 @@ import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants
 import UserSelector from "../common/UserSelector"
 import Button from "../common/Button"
 import Modal from "../common/Modal"
+import Input from "../common/ui/Input"
+import Select from "../common/ui/Select"
+import Textarea from "../common/ui/Textarea"
 
 const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
   const { user } = useAuth()
@@ -126,7 +129,7 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
   if (!isOpen) return null
 
   const renderFooter = () => (
-    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
+    <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
       <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="medium">
         Cancel
       </Button>
@@ -138,110 +141,58 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
 
   return (
     <Modal title={initialTask ? "Edit Task" : "Create New Task"} onClose={() => setIsOpen(false)} width={600} footer={renderFooter()}>
-      <form id="task-form" onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-5)' }}>
+      <form id="task-form" onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-5)" }}>
         {/* Title Field */}
         <div>
-          <label htmlFor="title" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>
-            Title <span style={{ color: 'var(--color-danger-text)' }}>*</span>
+          <label htmlFor="title" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+            Title <span style={{ color: "var(--color-danger-text)" }}>*</span>
           </label>
-          <input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid ${errors.title ? 'var(--color-danger-border)' : 'var(--input-border)'}`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-            e.target.style.boxShadow = errors.title ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
-            e.target.style.borderColor = errors.title ? 'var(--color-danger)' : 'var(--input-border-focus)';
-          }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'var(--shadow-sm)';
-              e.target.style.borderColor = errors.title ? 'var(--color-danger-border)' : 'var(--input-border)';
-            }}
-          />
-          {errors.title && <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)' }}>{errors.title}</p>}
+          <Input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} error={errors.title} />
+          {errors.title && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.title}</p>}
         </div>
 
         {/* Description Field */}
         <div>
-          <label htmlFor="description" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>
-            Description <span style={{ color: 'var(--color-danger-text)' }}>*</span>
+          <label htmlFor="description" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+            Description <span style={{ color: "var(--color-danger-text)" }}>*</span>
           </label>
-          <textarea id="description" name="description" rows="3" value={taskData.description} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid ${errors.description ? 'var(--color-danger-border)' : 'var(--input-border)'}`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-            e.target.style.boxShadow = errors.description ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
-            e.target.style.borderColor = errors.description ? 'var(--color-danger)' : 'var(--input-border-focus)';
-          }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'var(--shadow-sm)';
-              e.target.style.borderColor = errors.description ? 'var(--color-danger-border)' : 'var(--input-border)';
-            }}
-          ></textarea>
-          {errors.description && <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)' }}>{errors.description}</p>}
+          <Textarea id="description" name="description" rows={3} value={taskData.description} onChange={handleChange} error={errors.description} />
+          {errors.description && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.description}</p>}
         </div>
 
         {/* Priority and Category */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-4)' }} className="md:grid-cols-2">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
           <div>
-            <label htmlFor="priority" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>
+            <label htmlFor="priority" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
               Priority
             </label>
-            <select id="priority" name="priority" value={taskData.priority} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid var(--input-border)`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
-              onBlur={(e) => {
-                e.target.style.boxShadow = 'var(--shadow-sm)';
-                e.target.style.borderColor = 'var(--input-border)';
-              }}
-            >
-              {TASK_PRIORITIES.map((priority) => (
-                <option key={priority} value={priority}>
-                  {priority}
-                </option>
-              ))}
-            </select>
+            <Select id="priority" name="priority" value={taskData.priority} onChange={handleChange} options={TASK_PRIORITIES.map((priority) => ({ value: priority, label: priority }))} />
           </div>
 
           <div>
-            <label htmlFor="category" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>
+            <label htmlFor="category" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
               Category
             </label>
-            <select id="category" name="category" value={taskData.category} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid var(--input-border)`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
-              onBlur={(e) => {
-                e.target.style.boxShadow = 'var(--shadow-sm)';
-                e.target.style.borderColor = 'var(--input-border)';
-              }}
-            >
-              {TASK_CATEGORIES.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
+            <Select id="category" name="category" value={taskData.category} onChange={handleChange} options={TASK_CATEGORIES.map((category) => ({ value: category, label: category }))} />
           </div>
         </div>
 
         {/* Due Date Field */}
         <div>
-          <label htmlFor="dueDate" style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>
-            Due Date <span style={{ color: 'var(--color-danger-text)' }}>*</span>
+          <label htmlFor="dueDate" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>
+            Due Date <span style={{ color: "var(--color-danger-text)" }}>*</span>
           </label>
-          <input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleChange} style={{ display: 'block', width: '100%', padding: 'var(--input-padding)', borderRadius: 'var(--input-radius)', border: `var(--border-1) solid ${errors.dueDate ? 'var(--color-danger-border)' : 'var(--input-border)'}`, boxShadow: 'var(--shadow-sm)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => {
-            e.target.style.boxShadow = errors.dueDate ? 'var(--shadow-focus-danger)' : 'var(--input-focus-ring)';
-            e.target.style.borderColor = errors.dueDate ? 'var(--color-danger)' : 'var(--input-border-focus)';
-          }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'var(--shadow-sm)';
-              e.target.style.borderColor = errors.dueDate ? 'var(--color-danger-border)' : 'var(--input-border)';
-            }}
-          />
-          {errors.dueDate && <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)' }}>{errors.dueDate}</p>}
+          <Input type="date" id="dueDate" name="dueDate" value={taskData.dueDate} onChange={handleChange} error={errors.dueDate} />
+          {errors.dueDate && <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.dueDate}</p>}
         </div>
 
         {/* User Selector */}
-        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+        <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
           <UserSelector selectedUsers={selectedUsers} onAddUser={handleAddUser} onRemoveUser={handleRemoveUser} title="Assign Users" selectedUsersTitle="Assigned Users" searchPlaceholder="Search users by name or email..." required={true} error={errors.assignedUsers} disabled={loading} />
         </div>
 
         {/* Form Error */}
-        {errors.submit && <div style={{ padding: 'var(--spacing-3)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', fontSize: 'var(--font-size-sm)', borderRadius: 'var(--radius-lg)' }}>{errors.submit}</div>}
+        {errors.submit && <div style={{ padding: "var(--spacing-3)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", borderRadius: "var(--radius-lg)" }}>{errors.submit}</div>}
       </form>
     </Modal>
   )

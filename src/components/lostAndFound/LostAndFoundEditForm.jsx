@@ -5,6 +5,10 @@ import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi } from "../../services/uploadApi"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import Button from "../common/Button"
+import Input from "../common/ui/Input"
+import Select from "../common/ui/Select"
+import FileInput from "../common/ui/FileInput"
+import Textarea from "../common/ui/Textarea"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   const [formData, setFormData] = useState({
@@ -20,18 +24,18 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
     switch (status) {
       case "Active":
         return {
-          backgroundColor: 'var(--color-success-bg)',
-          color: 'var(--color-success-text)'
+          backgroundColor: "var(--color-success-bg)",
+          color: "var(--color-success-text)",
         }
       case "Claimed":
         return {
-          backgroundColor: 'var(--color-info-bg)',
-          color: 'var(--color-info-text)'
+          backgroundColor: "var(--color-info-bg)",
+          color: "var(--color-info-text)",
         }
       default:
         return {
-          backgroundColor: 'var(--color-bg-muted)',
-          color: 'var(--color-text-tertiary)'
+          backgroundColor: "var(--color-bg-muted)",
+          color: "var(--color-text-tertiary)",
         }
     }
   }
@@ -93,97 +97,76 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-5)', boxShadow: 'var(--shadow-sm)', transition: 'var(--transition-shadow)', border: `var(--border-1) solid var(--color-border-light)` }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
-      onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
+    <div
+      style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", padding: "var(--spacing-5)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-shadow)", border: `var(--border-1) solid var(--color-border-light)` }}
+      onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-md)")}
+      onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "var(--shadow-sm)")}
     >
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-          <div style={{ ...getStatusStyle(formData.status), padding: 'var(--spacing-2-5)', marginRight: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
+          <div style={{ ...getStatusStyle(formData.status), padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-lg)" }}>
             <MdInventory size={20} />
           </div>
-          <div style={{ width: '100%' }}>
-            <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-xl)', width: '100%', borderBottom: `var(--border-1) solid var(--color-border-input)`, outline: 'none', paddingBottom: 'var(--spacing-1)', border: 'none' }} onFocus={(e) => e.target.style.borderBottomColor = 'var(--color-primary)'}
-              onBlur={(e) => e.target.style.borderBottomColor = 'var(--color-border-input)'}
-              required
-            />
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>ID: {item._id.substring(0, 8)}</span>
+          <div style={{ width: "100%" }}>
+            <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} required style={{ fontWeight: "var(--font-weight-bold)", fontSize: "var(--font-size-xl)" }} />
+            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>ID: {item._id.substring(0, 8)}</span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <BsCalendarDate style={{ color: 'var(--color-primary)', opacity: 0.7, marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-            <input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} style={{ fontSize: 'var(--font-size-sm)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3) var(--spacing-3)', outline: 'none', width: '100%' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--color-primary)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--color-border-input)';
-                e.target.style.boxShadow = 'none';
-              }}
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-md)" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <BsCalendarDate style={{ color: "var(--color-primary)", opacity: 0.7, marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+            <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} />
+          </div>
+
+          <div>
+            <label style={{ display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", marginBottom: "var(--spacing-1-5)" }}>Description</label>
+            <Textarea name="description" value={formData.description} onChange={handleChange} rows={3} placeholder="Item description" resize="none" />
+          </div>
+
+          <div>
+            <label style={{ display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", marginBottom: "var(--spacing-1-5)" }}>Status</label>
+            <Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Claimed", label: "Claimed" },
+                { value: "Archived", label: "Archived" },
+              ]}
             />
           </div>
 
           <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} rows="3" style={{ width: '100%', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', outline: 'none', resize: 'none' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--color-primary)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--color-border-input)';
-                e.target.style.boxShadow = 'none';
-              }}
-              placeholder="Item description"
-            ></textarea>
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Status</label>
-            <select name="status" value={formData.status} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--color-primary)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--color-border-input)';
-                e.target.style.boxShadow = 'none';
-              }}
-            >
-              <option value="Active">Active</option>
-              <option value="Claimed">Claimed</option>
-              <option value="Archived">Archived</option>
-            </select>
-          </div>
-
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <FaImage style={{ marginRight: 'var(--spacing-2)' }} />
+            <label style={{ display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)", marginBottom: "var(--spacing-1-5)" }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <FaImage style={{ marginRight: "var(--spacing-2)" }} />
                 Item Images
               </div>
             </label>
-            <input type="file" accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} style={{ width: '100%', padding: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none' }} onFocus={(e) => e.target.style.outline = 'none'}
-              onBlur={(e) => e.target.style.outline = 'none'}
-            />
-            {uploading && <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-info-text)', marginTop: 'var(--spacing-1)' }}>Uploading...</p>}
+            <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
+            {uploading && <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info-text)", marginTop: "var(--spacing-1)" }}>Uploading...</p>}
 
             {formData.images && formData.images.length > 0 && (
-              <div style={{ marginTop: 'var(--spacing-2)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--gap-sm)' }}>
+              <div style={{ marginTop: "var(--spacing-2)", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--gap-sm)" }}>
                 {formData.images.map((imageUrl, index) => (
-                  <div key={index} style={{ position: 'relative' }} className="group">
-                    <img src={getMediaUrl(imageUrl)} alt={`Item ${index + 1}`} style={{ width: '100%', height: '5rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
-                    <Button type="button" onClick={() => removeImage(index)}
+                  <div key={index} style={{ position: "relative" }} className="group">
+                    <img src={getMediaUrl(imageUrl)} alt={`Item ${index + 1}`} style={{ width: "100%", height: "5rem", objectFit: "cover", borderRadius: "var(--radius-lg)", border: `var(--border-1) solid var(--color-border-gray)` }} />
+                    <Button
+                      type="button"
+                      onClick={() => removeImage(index)}
                       variant="danger"
                       size="small"
                       icon={<FaTimes size={10} />}
                       aria-label="Remove image"
                       className="group-hover:opacity-100"
                       style={{
-                        position: 'absolute',
-                        top: 'var(--spacing-1)',
-                        right: 'var(--spacing-1)',
+                        position: "absolute",
+                        top: "var(--spacing-1)",
+                        right: "var(--spacing-1)",
                         opacity: 0,
-                        padding: 'var(--spacing-1)'
+                        padding: "var(--spacing-1)",
                       }}
                     />
                   </div>
@@ -193,12 +176,12 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
           </div>
         </div>
 
-        <div style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--gap-sm)', flexWrap: 'wrap' }}>
+        <div style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-3)", borderTop: `var(--border-1) solid var(--color-border-light)`, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "var(--gap-sm)", flexWrap: "wrap" }}>
           <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<MdDelete />}>
             Delete
           </Button>
 
-          <div style={{ display: 'flex', gap: 'var(--gap-sm)' }}>
+          <div style={{ display: "flex", gap: "var(--gap-sm)" }}>
             <Button type="button" onClick={onCancel} variant="secondary" size="medium" icon={<MdCancel />}>
               Cancel
             </Button>

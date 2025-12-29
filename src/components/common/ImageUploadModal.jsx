@@ -2,6 +2,7 @@ import React, { useState, useCallback, use } from "react"
 import Cropper from "react-easy-crop"
 import Modal from "./Modal"
 import Button from "./Button"
+import FileInput from "./ui/FileInput"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi } from "../../services/apiService"
 
@@ -129,7 +130,7 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
                 <p className="text-[var(--color-text-muted)] text-sm font-medium">Maximum file size: 500KB</p>
               </div>
               <label className="inline-block">
-                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                <FileInput accept="image/*" onChange={handleFileChange} hidden />
                 <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] cursor-pointer inline-block transition-colors">Select Image</span>
               </label>
             </div>

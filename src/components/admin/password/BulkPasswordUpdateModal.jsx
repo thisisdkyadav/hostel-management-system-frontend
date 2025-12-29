@@ -3,6 +3,7 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import FileInput from "../../common/ui/FileInput"
 
 const styles = {
   spaceY5: {
@@ -420,7 +421,7 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
             <p style={styles.dropzoneHint}>
               <strong>Required fields:</strong> email, password
             </p>
-            <input type="file" ref={fileInputRef} style={styles.hiddenInput} accept=".csv" onChange={handleFileUpload} />
+            <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </div>
           <div style={styles.centerColumn}>
             <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>

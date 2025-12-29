@@ -6,6 +6,8 @@ import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
 const CATEGORY_DISPLAY_LABELS = {
   Plumbing: "Plumber",
@@ -123,34 +125,28 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Staff Name</label>
-          <input type="text" name="name" value={formData.name} onChange={handleChange} style={{ width: "100%", padding: "var(--spacing-3)", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", outline: "none", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }} placeholder="Enter staff name" required />
+          <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter staff name" required />
         </div>
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Phone Number</label>
-          <div style={{ position: "relative" }}>
-            <div style={{ position: "absolute", left: "var(--spacing-3)", top: "var(--spacing-3)", color: "var(--color-text-placeholder)" }}>
-              <FaPhone />
-            </div>
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} style={{ width: "100%", padding: "var(--spacing-3)", paddingLeft: "var(--spacing-10)", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", outline: "none", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }} placeholder="+91 9876543210" />
-          </div>
+          <Input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="+91 9876543210" icon={<FaPhone />} />
         </div>
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Specialty Category</label>
-          <div style={{ position: "relative" }}>
-            <div style={{ position: "absolute", left: "var(--spacing-3)", top: "var(--spacing-3)", color: "var(--color-text-placeholder)" }}>
-              <FaTools />
-            </div>
-            <select name="category" value={formData.category} onChange={handleChange} style={{ width: "100%", padding: "var(--spacing-3)", paddingLeft: "var(--spacing-10)", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", outline: "none", appearance: "none", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", fontSize: "var(--font-size-base)" }} required>
-              <option value="">Select a category</option>
-              {MAINTENANCE_CATEGORIES.map((category) => (
-                <option key={category} value={category}>
-                  {getCategoryDisplayLabel(category)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            placeholder="Select a category"
+            icon={<FaTools />}
+            options={MAINTENANCE_CATEGORIES.map((category) => ({
+              value: category,
+              label: getCategoryDisplayLabel(category),
+            }))}
+            required
+          />
         </div>
 
 

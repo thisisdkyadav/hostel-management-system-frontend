@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { userApi } from "../../services/userApi"
+import Input from "./ui/Input"
 
 const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder = "Search users...", maxResults = 5, disabled = false }) => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -89,7 +90,7 @@ const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder 
   return (
     <div className="relative" ref={searchRef}>
       <div className="flex items-center relative">
-        <input type="text" value={searchTerm} onChange={handleInputChange} placeholder={placeholder} disabled={disabled} className={`block w-full rounded-md shadow-sm text-sm border-[var(--color-border-input)] ${disabled ? "bg-[var(--color-bg-muted)] cursor-not-allowed" : "bg-[var(--color-bg-primary)] focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"}`} />
+        <Input type="text" value={searchTerm} onChange={handleInputChange} placeholder={placeholder} disabled={disabled} />
         {isLoading && (
           <div className="absolute right-3">
             <svg className="animate-spin h-4 w-4 text-[var(--color-primary)]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

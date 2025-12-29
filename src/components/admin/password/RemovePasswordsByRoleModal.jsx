@@ -2,6 +2,8 @@ import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Select from "../../common/ui/Select"
+import Input from "../../common/ui/Input"
 
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
 
@@ -277,14 +279,13 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             <label htmlFor="role" style={styles.label}>
               Select Role
             </label>
-            <select id="role" name="role" value={selectedRole} onChange={handleRoleChange} style={styles.select}>
-              <option value="">Select a role</option>
-              {ROLES.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
+            <Select
+              id="role"
+              name="role"
+              value={selectedRole}
+              onChange={handleRoleChange}
+              options={[{ value: "", label: "Select a role" }, ...ROLES.map((role) => ({ value: role, label: role }))]}
+            />
           </div>
 
           {error && (
@@ -331,7 +332,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             <p style={styles.confirmText}>
               Please type <strong>{selectedRole}</strong> below to confirm:
             </p>
-            <input type="text" style={styles.confirmInput} placeholder={`Type "${selectedRole}" to confirm`} value={confirmText} onChange={handleConfirmTextChange} />
+            <Input type="text" placeholder={`Type "${selectedRole}" to confirm`} value={confirmText} onChange={handleConfirmTextChange} />
           </div>
 
           {error && (

@@ -1,6 +1,7 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
 import Button from "../common/Button"
+import Select from "../common/ui/Select"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories, priorities }) => {
   return (
@@ -21,24 +22,10 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
             <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
               Hostel
             </label>
-            <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--color-primary)';
-            }}
-              onBlur={(e) => {
-                e.target.style.boxShadow = 'none';
-                e.target.style.borderColor = 'var(--color-border-input)';
-              }}
-              value={filters.hostelId}
-              onChange={(e) => updateFilter("hostelId", e.target.value)}
-            >
-              <option value="all">All Hostels</option>
-              {hostels.map((hostel, index) => (
-                <option key={index} value={hostel._id}>
-                  {hostel.name}
-                </option>
-              ))}
-            </select>
+            <Select value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)} options={[
+              { value: "all", label: "All Hostels" },
+              ...hostels.map((hostel) => ({ value: hostel._id, label: hostel.name }))
+            ]} />
           </div>
         )}
 
@@ -46,70 +33,32 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
           <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
             Category
           </label>
-          <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-            e.target.style.boxShadow = 'var(--input-focus-ring)';
-            e.target.style.borderColor = 'var(--color-primary)';
-          }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'none';
-              e.target.style.borderColor = 'var(--color-border-input)';
-            }}
-            value={filters.category}
-            onChange={(e) => updateFilter("category", e.target.value)}
-          >
-            <option value="all">All Categories</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+          <Select value={filters.category} onChange={(e) => updateFilter("category", e.target.value)} options={[
+            { value: "all", label: "All Categories" },
+            ...categories.map((category) => ({ value: category, label: category }))
+          ]} />
         </div>
 
         <div>
           <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
             Priority
           </label>
-          <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-            e.target.style.boxShadow = 'var(--input-focus-ring)';
-            e.target.style.borderColor = 'var(--color-primary)';
-          }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'none';
-              e.target.style.borderColor = 'var(--color-border-input)';
-            }}
-            value={filters.priority}
-            onChange={(e) => updateFilter("priority", e.target.value)}
-          >
-            <option value="all">All Priorities</option>
-            {priorities.map((priority, index) => (
-              <option key={index} value={priority}>
-                {priority}
-              </option>
-            ))}
-          </select>
+          <Select value={filters.priority} onChange={(e) => updateFilter("priority", e.target.value)} options={[
+            { value: "all", label: "All Priorities" },
+            ...priorities.map((priority) => ({ value: priority, label: priority }))
+          ]} />
         </div>
 
         <div>
           <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
             Items Per Page
           </label>
-          <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-            e.target.style.boxShadow = 'var(--input-focus-ring)';
-            e.target.style.borderColor = 'var(--color-primary)';
-          }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'none';
-              e.target.style.borderColor = 'var(--color-border-input)';
-            }}
-            value={filters.limit}
-            onChange={(e) => updateFilter("limit", Number(e.target.value))}
-          >
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={50}>50</option>
-          </select>
+          <Select value={filters.limit} onChange={(e) => updateFilter("limit", Number(e.target.value))} options={[
+            { value: 5, label: "5" },
+            { value: 10, label: "10" },
+            { value: 20, label: "20" },
+            { value: 50, label: "50" }
+          ]} />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 import { adminApi } from "../../../services/adminApi"
 
 const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
@@ -61,12 +62,7 @@ const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Title</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-              <FaFileSignature />
-            </div>
-            <input type="text" name="title" value={formData.title} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="Undertaking Title" required />
-          </div>
+          <Input type="text" name="title" value={formData.title} onChange={handleChange} icon={<FaFileSignature />} placeholder="Undertaking Title" required />
         </div>
 
         <div>
@@ -81,12 +77,7 @@ const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Deadline</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-              <FaCalendarAlt />
-            </div>
-            <input type="date" name="deadline" value={formData.deadline} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} required />
-          </div>
+          <Input type="date" name="deadline" value={formData.deadline} onChange={handleChange} icon={<FaCalendarAlt />} required />
         </div>
 
         <div>

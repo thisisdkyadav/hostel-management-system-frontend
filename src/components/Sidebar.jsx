@@ -9,6 +9,7 @@ import { HiMenuAlt2, HiMenuAlt3 } from "react-icons/hi"
 import { useWarden } from "../contexts/WardenProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
+import Select from "./common/ui/Select"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 
@@ -154,15 +155,14 @@ const Sidebar = ({ navItems }) => {
     }
 
     return (
-      <li key={item.name} onClick={() => handleNavigation(item)}
+      <li
+        key={item.name}
+        onClick={() => handleNavigation(item)}
         title={!isOpen ? item.name : ""}
         className={`
           group relative rounded-[10px] transition-all duration-200 cursor-pointer
           ${isOpen ? "my-[0.35rem]" : "my-1"}
-          ${isActiveItem
-            ? "bg-[var(--color-primary)] text-white shadow-[var(--shadow-button-active)]"
-            : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-primary)] hover:shadow-sm"
-          }
+          ${isActiveItem ? "bg-[var(--color-primary)] text-white shadow-[var(--shadow-button-active)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-primary)] hover:shadow-sm"}
         `}
       >
         <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
@@ -171,8 +171,10 @@ const Sidebar = ({ navItems }) => {
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
-                <div className={` min-w-5 h-5 px-1 rounded-full bg-[var(--color-danger)] text-white text-xs font-semibold flex items-center justify-center shadow-md ${item.badge > 99 ? "min-w-6" : ""}
-                `}>
+                <div
+                  className={` min-w-5 h-5 px-1 rounded-full bg-[var(--color-danger)] text-white text-xs font-semibold flex items-center justify-center shadow-md ${item.badge > 99 ? "min-w-6" : ""}
+                `}
+                >
                   {item.badge > 99 ? "99+" : item.badge}
                 </div>
               </div>
@@ -186,10 +188,7 @@ const Sidebar = ({ navItems }) => {
                 <span
                   className={`
                     px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-full
-                    ${isActiveItem
-                      ? "bg-white/20 text-white"
-                      : "bg-[var(--color-success)] text-white"
-                    }
+                    ${isActiveItem ? "bg-white/20 text-white" : "bg-[var(--color-success)] text-white"}
                     animate-pulse
                   `}
                 >
@@ -199,12 +198,7 @@ const Sidebar = ({ navItems }) => {
             </div>
           )}
           {/* NEW indicator dot when sidebar is collapsed */}
-          {!isOpen && item.isNew && (
-            <span
-              className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse"
-              style={{ boxShadow: 'var(--shadow-glow-success)' }}
-            />
-          )}
+          {!isOpen && item.isNew && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" style={{ boxShadow: "var(--shadow-glow-success)" }} />}
         </div>
 
         {isActiveItem && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/80"></div>}
@@ -223,7 +217,8 @@ const Sidebar = ({ navItems }) => {
       // Minimized view - show just profile icon
       return (
         <div className="relative group" title={user.name || "Profile"}>
-          <div onClick={() => profileItem && handleNavigation(profileItem)}
+          <div
+            onClick={() => profileItem && handleNavigation(profileItem)}
             className={`
               relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center border border-transparent
               ${isProfileActive ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/20 border-[var(--color-primary)]/70" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-primary)]/60 hover:border-[var(--color-border-primary)] hover:text-[var(--color-primary)]"}
@@ -233,9 +228,7 @@ const Sidebar = ({ navItems }) => {
               {user.profileImage ? (
                 <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
               ) : user.name?.charAt(0).toUpperCase() ? (
-                <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
+                <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>{user.name.charAt(0).toUpperCase()}</div>
               ) : (
                 <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[var(--color-primary)]"}`} />
               )}
@@ -248,7 +241,8 @@ const Sidebar = ({ navItems }) => {
 
     return (
       <div className="relative">
-        <div onClick={() => profileItem && handleNavigation(profileItem)}
+        <div
+          onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
             group relative rounded-xl transition-all duration-200 cursor-pointer border
             ${isProfileActive ? "bg-[var(--color-primary)] text-white border-transparent shadow-sm" : "text-[var(--color-text-muted)] border-transparent hover:bg-[var(--color-bg-tertiary)] hover:border-[var(--color-border-primary)]"}
@@ -261,9 +255,7 @@ const Sidebar = ({ navItems }) => {
                   {user.profileImage ? (
                     <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
                   ) : user.name?.charAt(0).toUpperCase() ? (
-                    <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
+                    <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>{user.name.charAt(0).toUpperCase()}</div>
                   ) : (
                     <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[var(--color-primary)]"}`} />
                   )}
@@ -278,18 +270,16 @@ const Sidebar = ({ navItems }) => {
 
             {logoutItem && (
               <div className="relative flex-shrink-0 ml-3 group/logout">
-                <button onClick={(e) => {
-                  e.stopPropagation()
-                  handleNavigation(logoutItem)
-                }}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleNavigation(logoutItem)
+                  }}
                   title="Logout"
                   className={`
                     w-9 h-9 rounded-[10px] flex items-center justify-center
                     transition-all duration-200 border
-                    ${isProfileActive
-                      ? "hover:bg-white/20 text-white border-transparent"
-                      : "border-transparent hover:border-[var(--color-danger-light)] hover:bg-[var(--color-danger-bg-light)] text-[var(--color-text-muted)] hover:text-[var(--color-danger)]"
-                    }
+                    ${isProfileActive ? "hover:bg-white/20 text-white border-transparent" : "border-transparent hover:border-[var(--color-danger-light)] hover:bg-[var(--color-danger-bg-light)] text-[var(--color-text-muted)] hover:text-[var(--color-danger)]"}
                   `}
                   aria-label="Logout"
                 >
@@ -311,7 +301,12 @@ const Sidebar = ({ navItems }) => {
 
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
-      <div className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`} style={{ boxShadow: 'var(--shadow-sm)', }} >
+      <div
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
+          isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
+        } overflow-hidden`}
+        style={{ boxShadow: "var(--shadow-sm)" }}
+      >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
           <div className={`border-b border-[var(--color-border-primary)] ${isMobile ? "hidden" : ""} h-16`}>
@@ -325,11 +320,19 @@ const Sidebar = ({ navItems }) => {
 
               {/* Toggle Button */}
               {isOpen ? (
-                <button onClick={() => setIsOpen(!isOpen)} title="Minimize" className="w-9 h-9 rounded-[10px] border border-[var(--color-border-secondary)] flex items-center justify-center text-[var(--color-text-tertiary)] bg-[var(--color-bg-primary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)] transition-all duration-200">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  title="Minimize"
+                  className="w-9 h-9 rounded-[10px] border border-[var(--color-border-secondary)] flex items-center justify-center text-[var(--color-text-tertiary)] bg-[var(--color-bg-primary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)] transition-all duration-200"
+                >
                   <HiMenuAlt2 className="text-[19px]" />
                 </button>
               ) : (
-                <button onClick={() => setIsOpen(!isOpen)} title="Expand" className="w-9 h-9 rounded-[10px] bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)] hover:border-[var(--color-border-hover)] flex items-center justify-center transition-all duration-200">
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  title="Expand"
+                  className="w-9 h-9 rounded-[10px] bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)] hover:border-[var(--color-border-hover)] flex items-center justify-center transition-all duration-200"
+                >
                   <HiMenuAlt3 className="text-[19px]" />
                 </button>
               )}
@@ -347,32 +350,27 @@ const Sidebar = ({ navItems }) => {
               {isOpen ? (
                 <>
                   <div className="relative">
-                    <select id="activeHostelSelect" value={activeHostelId || ""} onChange={handleHostelChange} disabled={isUpdatingHostel} className="w-full p-2.5 text-sm border border-[var(--color-border-primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/60 focus:border-[var(--color-primary)]/60 bg-[var(--color-bg-primary)]/70 shadow-sm appearance-none pr-9 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-[var(--color-text-body)]" >
-                      {!activeHostelId && assignedHostels.length > 0 && (
-                        <option value="" disabled>
-                          Select Active Hostel
-                        </option>
-                      )}
-                      {assignedHostels.map((hostel) => {
-                        const hostelId = typeof hostel === "string" ? hostel : hostel?._id
-                        const hostelName = typeof hostel === "string" ? `Hostel (${hostelId?.slice(-4) || "Unknown"})` : hostel?.name || "Unknown Hostel"
-                        if (!hostelId) return null
-                        return (
-                          <option key={hostelId} value={hostelId}>
-                            {hostelName}
-                          </option>
-                        )
-                      })}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      {isUpdatingHostel ? (
+                    <Select
+                      id="activeHostelSelect"
+                      value={activeHostelId || ""}
+                      onChange={handleHostelChange}
+                      disabled={isUpdatingHostel}
+                      options={[
+                        ...(!activeHostelId && assignedHostels.length > 0 ? [{ value: "", label: "Select Active Hostel", disabled: true }] : []),
+                        ...assignedHostels
+                          .map((hostel) => {
+                            const hostelId = typeof hostel === "string" ? hostel : hostel?._id
+                            const hostelName = typeof hostel === "string" ? `Hostel (${hostelId?.slice(-4) || "Unknown"})` : hostel?.name || "Unknown Hostel"
+                            return { value: hostelId, label: hostelName }
+                          })
+                          .filter((opt) => opt.value),
+                      ]}
+                    />
+                    {isUpdatingHostel && (
+                      <div className="absolute inset-y-0 right-8 flex items-center pointer-events-none">
                         <CgSpinner className="animate-spin text-[var(--color-primary)]" />
-                      ) : (
-                        <svg className="w-4 h-4 text-[var(--color-text-disabled)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path>
-                        </svg>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (
@@ -386,9 +384,7 @@ const Sidebar = ({ navItems }) => {
           )}
 
           {/* Profile and Logout */}
-          <div className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>
-            {renderProfileSection()}
-          </div>
+          <div className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>{renderProfileSection()}</div>
         </div>
       </div>
     </>

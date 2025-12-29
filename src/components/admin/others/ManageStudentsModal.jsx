@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 import { adminApi } from "../../../services/adminApi"
 import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
@@ -70,8 +71,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
 
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
             <div style={{ position: 'relative', width: '100%', maxWidth: '20rem' }}>
-              <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
-              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." style={{ width: '100%', paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
+              <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
             </div>
             <Button onClick={() => setShowBulkUpload(true)} variant="success" size="medium" icon={<FaFileCsv />}>
               Add Students (CSV)

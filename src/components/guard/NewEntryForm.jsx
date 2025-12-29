@@ -3,6 +3,7 @@ import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import Button from "../common/Button"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
+import Input from "../common/ui/Input"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -84,60 +85,41 @@ const NewEntryForm = ({ onAddEntry }) => {
           <>
             <div style={{ gridColumn: 'span 2' }}>
               <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Unit</label>
-              <input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="Unit" style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-                onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-                required
-              />
+              <Input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="Unit" required />
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
               <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Room</label>
-              <input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room" style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-                onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-                required
-              />
+              <Input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room" required />
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
               <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Bed #</label>
-              <input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-                onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-                required
-              />
+              <Input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" required />
             </div>
           </>
         ) : (
           <>
             <div style={{ gridColumn: 'span 4' }}>
               <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Room Number</label>
-              <input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room Number" style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-                onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-                required
-              />
+              <Input type="text" name="room" value={formData.room} onChange={handleChange} placeholder="Room Number" required />
             </div>
 
             <div style={{ gridColumn: 'span 2' }}>
               <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Bed #</label>
-              <input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-                onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-                required
-              />
+              <Input type="text" name="bed" value={formData.bed} onChange={handleChange} placeholder="Bed Number" required />
             </div>
           </>
         )}
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Date</label>
-          <input type="date" name="date" value={formData.date} onChange={handleChange} style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-            onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-          />
+          <Input type="date" name="date" value={formData.date} onChange={handleChange} />
         </div>
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Time</label>
-          <input type="time" name="time" value={formData.time} onChange={handleChange} style={inputStyle} onFocus={(e) => e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'}
-            onBlur={(e) => e.currentTarget.style.boxShadow = 'none'}
-          />
+          <Input type="time" name="time" value={formData.time} onChange={handleChange} />
         </div>
 
         <div style={{ gridColumn: 'span 2' }}>

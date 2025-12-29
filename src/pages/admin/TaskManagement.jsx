@@ -7,6 +7,8 @@ import TaskForm from "../../components/tasks/TaskForm"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
 import Pagination from "../../components/common/Pagination"
 import TaskManagementHeader from "../../components/headers/TaskManagementHeader"
+import Input from "../../components/common/ui/Input"
+import Select from "../../components/common/ui/Select"
 
 const TaskManagement = () => {
   const { user } = useAuth()
@@ -185,35 +187,26 @@ const TaskManagement = () => {
               <label htmlFor="priorityFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
                 Priority
               </label>
-              <select id="priorityFilter" value={filters.priority} onChange={(e) => updateFilter("priority", e.target.value)} className="block w-full rounded-lg border-[var(--color-border-input)] shadow-sm focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)] text-[var(--color-text-body)]">
-                <option value="all">All Priorities</option>
-                {TASK_PRIORITIES.map((priority) => (
-                  <option key={priority} value={priority}>
-                    {priority}
-                  </option>
-                ))}
-              </select>
+              <Select id="priorityFilter" value={filters.priority} onChange={(e) => updateFilter("priority", e.target.value)} options={[
+                { value: "all", label: "All Priorities" },
+                ...TASK_PRIORITIES.map((priority) => ({ value: priority, label: priority }))
+              ]} />
             </div>
             <div>
               <label htmlFor="categoryFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
                 Category
               </label>
-              <select id="categoryFilter" value={filters.category} onChange={(e) => updateFilter("category", e.target.value)} className="block w-full rounded-lg border-[var(--color-border-input)] shadow-sm focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)] text-[var(--color-text-body)]">
-                <option value="all">All Categories</option>
-                {TASK_CATEGORIES.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
+              <Select id="categoryFilter" value={filters.category} onChange={(e) => updateFilter("category", e.target.value)} options={[
+                { value: "all", label: "All Categories" },
+                ...TASK_CATEGORIES.map((category) => ({ value: category, label: category }))
+              ]} />
             </div>
             <div>
               <label htmlFor="searchFilter" className="block text-sm font-medium text-[var(--color-text-body)] mb-2">
                 Search
               </label>
-              <input type="text" id="searchFilter" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
+              <Input type="text" id="searchFilter" value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
                 placeholder="Search tasks..."
-                className="block w-full rounded-lg border-[var(--color-border-input)] shadow-sm focus:ring-2 focus:ring-[var(--color-primary-bg)] focus:border-[var(--color-primary)] outline-none transition-all bg-[var(--color-bg-primary)] text-[var(--color-text-body)]"
               />
             </div>
           </div>
