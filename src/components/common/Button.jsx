@@ -73,9 +73,15 @@ const Button = ({
   }
 
   const sizeClasses = {
-    small: "py-2 px-4 text-sm",
-    medium: "py-2.5 px-5 text-sm",
-    large: "py-3 px-6 text-base",
+    small: "py-2 px-4",
+    medium: "py-2.5 px-5",
+    large: "py-3 px-6",
+  }
+
+  const sizeStyles = {
+    small: { fontSize: 'var(--font-size-xs)' },      // 12px
+    medium: { fontSize: 'var(--font-size-base)' },   // 14px
+    large: { fontSize: 'var(--font-size-lg)' },      // 16px
   }
 
   const widthClasses = fullWidth ? "w-full" : ""
@@ -100,13 +106,16 @@ const Button = ({
     ${className}
   `.replace(/\s+/g, ' ').trim()
 
-  // Gradient styles for primary variant - using CSS variables
-  const gradientStyle = gradient && variant === "primary" ? {
-    background: 'var(--gradient-primary)',
-    boxShadow: isHovered ? 'var(--shadow-button-primary-hover)' : 'var(--shadow-button-primary)',
-    transition: 'var(--transition-all)',
+  // Combined styles including size-based font size and user styles
+  const combinedStyle = {
+    ...sizeStyles[size],
+    ...(gradient && variant === "primary" ? {
+      background: 'var(--gradient-primary)',
+      boxShadow: isHovered ? 'var(--shadow-button-primary-hover)' : 'var(--shadow-button-primary)',
+      transition: 'var(--transition-all)',
+    } : {}),
     ...style,
-  } : style
+  }
 
   const handleClick = (e) => {
     // Create ripple effect if animation is ripple
@@ -133,7 +142,7 @@ const Button = ({
   }
 
   return (
-    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonClasses} style={gradientStyle} onMouseEnter={() => setIsHovered(true)}
+    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonClasses} style={combinedStyle} onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       {...rest}
     >
