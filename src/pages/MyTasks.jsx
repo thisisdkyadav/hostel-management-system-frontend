@@ -218,16 +218,6 @@ const MyTasks = () => {
             onChange={(e) => updateFilter("searchTerm", e.target.value)}
             placeholder="Search tasks..."
           />
-            }}
-            onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--shadow-focus-primary)';
-              e.target.style.borderColor = 'var(--color-primary)';
-            }}
-            onBlur={(e) => {
-              e.target.style.boxShadow = 'var(--shadow-sm)';
-              e.target.style.borderColor = 'var(--color-border-input)';
-            }}
-          />
         </div>
 
         {/* Task Cards with Quick Actions */}

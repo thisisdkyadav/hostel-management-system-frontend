@@ -1,6 +1,8 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
 import Button from "../../../common/Button"
+import Input from "../../../common/ui/Input"
+import Textarea from "../../../common/ui/Textarea"
 
 const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onCheckIn, onCheckOut, onUpdateTimes, onCancel }) => {
   const today = new Date()
@@ -143,33 +145,11 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
         <div>
           <label style={labelStyle}>Check-in Date</label>
-          <input type="date" value={newCheckInDate} onChange={(e) => setNewCheckInDate(e.target.value)}
-            style={inputStyle}
-            onFocus={(e) => {
-              e.target.style.borderColor = "var(--color-primary)"
-              e.target.style.boxShadow = "var(--input-focus-ring)"
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "var(--color-border-input)"
-              e.target.style.boxShadow = "var(--shadow-sm)"
-            }}
-            disabled={!isEditMode && isCheckedIn} // Only editable if in edit mode
-          />
+          <Input type="date" value={newCheckInDate} onChange={(e) => setNewCheckInDate(e.target.value)} disabled={!isEditMode && isCheckedIn} />
         </div>
         <div>
           <label style={labelStyle}>Check-in Time</label>
-          <input type="time" value={newCheckInTime} onChange={(e) => setNewCheckInTime(e.target.value)}
-            style={inputStyle}
-            onFocus={(e) => {
-              e.target.style.borderColor = "var(--color-primary)"
-              e.target.style.boxShadow = "var(--input-focus-ring)"
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "var(--color-border-input)"
-              e.target.style.boxShadow = "var(--shadow-sm)"
-            }}
-            disabled={!isEditMode && isCheckedIn} // Only editable if in edit mode
-          />
+          <Input type="time" value={newCheckInTime} onChange={(e) => setNewCheckInTime(e.target.value)} disabled={!isEditMode && isCheckedIn} />
         </div>
       </div>
 
@@ -178,53 +158,18 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
           <div>
             <label style={labelStyle}>Check-out Date</label>
-            <input type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)}
-              style={inputStyle}
-              onFocus={(e) => {
-                e.target.style.borderColor = "var(--color-primary)"
-                e.target.style.boxShadow = "var(--input-focus-ring)"
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "var(--color-border-input)"
-                e.target.style.boxShadow = "var(--shadow-sm)"
-              }}
-            />
+            <Input type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)} />
           </div>
           <div>
             <label style={labelStyle}>Check-out Time</label>
-            <input type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)}
-              style={inputStyle}
-              onFocus={(e) => {
-                e.target.style.borderColor = "var(--color-primary)"
-                e.target.style.boxShadow = "var(--input-focus-ring)"
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "var(--color-border-input)"
-                e.target.style.boxShadow = "var(--shadow-sm)"
-              }}
-            />
+            <Input type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)} />
           </div>
         </div>
       )}
 
       <div>
         <label style={labelStyle}>Security Notes (optional)</label>
-        <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
-          rows="2"
-          style={{
-            ...inputStyle,
-            resize: "vertical",
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = "var(--color-primary)"
-            e.target.style.boxShadow = "var(--input-focus-ring)"
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "var(--color-border-input)"
-            e.target.style.boxShadow = "var(--shadow-sm)"
-          }}
-          placeholder="Add any security notes about the visitors..."
-        ></textarea>
+        <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} resize="vertical" placeholder="Add any security notes about the visitors..." />
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-2)", }} >

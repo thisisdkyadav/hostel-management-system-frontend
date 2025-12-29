@@ -6,6 +6,7 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
 import Select from "../../common/ui/Select"
+import Textarea from "../../common/ui/Textarea"
 
 const InventoryManagement = () => {
   const { user } = useAuth()
@@ -204,7 +205,7 @@ const InventoryManagement = () => {
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
-              <textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows="3" className="w-full" placeholder="Any additional notes..."></textarea>
+              <Textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows={3} placeholder="Any additional notes..." />
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-2)' }}>
