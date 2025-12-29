@@ -62,7 +62,7 @@ const UnitCard = ({ unit, onClick }) => {
         </div>
       </div>
 
-      <Button onClick={onClick} variant="outline" size="medium" style={{ marginTop: 'var(--spacing-5)', width: '100%' }}>
+      <Button onClick={onClick} variant="outline" size="medium" fullWidth>
         View Rooms
       </Button>
     </div>

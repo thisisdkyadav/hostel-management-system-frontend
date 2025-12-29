@@ -7,6 +7,7 @@ import QRScanner from "../../components/guard/QRScanner"
 import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"
 import { useAuth } from "../../contexts/AuthProvider"
 import Button from "../../components/common/Button"
+import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
 
 const AddStudentEntry = () => {
   const { user } = useAuth()
@@ -146,12 +147,19 @@ const AddStudentEntry = () => {
 
         {/* Tabs */}
         <div style={styles.tabContainer}>
-          <Button onClick={() => setActiveTab("qr")} variant={activeTab === "qr" ? "primary" : "ghost"} size="medium" icon={<FaQrcode />} style={{ flex: 1 }}>
-            QR Scanner
-          </Button>
-          <Button onClick={() => setActiveTab("manual")} variant={activeTab === "manual" ? "primary" : "ghost"} size="medium" icon={<FaRegKeyboard />} style={{ flex: 1 }}>
-            Manual Entry
-          </Button>
+          <ToggleButtonGroup
+            options={[
+              { value: "qr", label: "QR Scanner", icon: <FaQrcode /> },
+              { value: "manual", label: "Manual Entry", icon: <FaRegKeyboard /> },
+            ]}
+            value={activeTab}
+            onChange={setActiveTab}
+            shape="rounded"
+            size="medium"
+            variant="muted"
+            fullWidth
+            hideLabelsOnMobile={false}
+          />
         </div>
 
         {/* Scanner Status Indicator */}

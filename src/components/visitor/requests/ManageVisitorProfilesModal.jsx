@@ -109,7 +109,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                       ) : (
                         <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
                           <Button onClick={() => handleEditProfile(profile)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit profile" />
-                          <Button onClick={() => handleDeleteProfile(profile._id)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Delete profile" style={{ marginLeft: 'var(--spacing-2)' }} />
+                          <Button onClick={() => handleDeleteProfile(profile._id)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Delete profile" />
                         </td>
                       )}
                     </tr>

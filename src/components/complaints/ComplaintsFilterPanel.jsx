@@ -7,11 +7,10 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
     <div className="border" style={{ marginTop: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', borderColor: 'var(--color-border-light)' }} >
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b" style={{ marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderColor: 'var(--color-border-light)' }} >
         <h3 className="flex items-center mb-2 sm:mb-0" style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }} >
-          <FaFilter className="mr-2" style={{ color: 'var(--color-primary)' }} /> 
+          <FaFilter className="mr-2" style={{ color: 'var(--color-primary)' }} />
           Advanced Filters
         </h3>
-        <Button onClick={resetFilters} variant="outline" size="small" className="hover:text-[var(--color-primary)]" style={{ color: 'var(--color-text-muted)' }} icon={<MdClearAll />}
-        >
+        <Button onClick={resetFilters} variant="outline" size="small" icon={<MdClearAll />}>
           Reset Filters
         </Button>
       </div>
@@ -23,14 +22,14 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
               Hostel
             </label>
             <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--color-primary)';
-              }}
+              e.target.style.boxShadow = 'var(--input-focus-ring)';
+              e.target.style.borderColor = 'var(--color-primary)';
+            }}
               onBlur={(e) => {
                 e.target.style.boxShadow = 'none';
                 e.target.style.borderColor = 'var(--color-border-input)';
               }}
-              value={filters.hostelId} 
+              value={filters.hostelId}
               onChange={(e) => updateFilter("hostelId", e.target.value)}
             >
               <option value="all">All Hostels</option>
@@ -48,14 +47,14 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
             Category
           </label>
           <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--color-primary)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--color-primary)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.category} 
+            value={filters.category}
             onChange={(e) => updateFilter("category", e.target.value)}
           >
             <option value="all">All Categories</option>
@@ -72,14 +71,14 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
             Priority
           </label>
           <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--color-primary)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--color-primary)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.priority} 
+            value={filters.priority}
             onChange={(e) => updateFilter("priority", e.target.value)}
           >
             <option value="all">All Priorities</option>
@@ -96,14 +95,14 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
             Items Per Page
           </label>
           <select className="w-full focus:outline-none" style={{ paddingLeft: 'var(--spacing-2-5)', paddingRight: 'var(--spacing-2-5)', paddingTop: 'var(--spacing-2-5)', paddingBottom: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--color-primary)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--color-primary)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.limit} 
+            value={filters.limit}
             onChange={(e) => updateFilter("limit", Number(e.target.value))}
           >
             <option value={5}>5</option>

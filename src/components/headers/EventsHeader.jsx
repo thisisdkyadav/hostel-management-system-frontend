@@ -6,8 +6,7 @@ const EventsHeader = ({ onAddEvent, userRole }) => {
   return (
     <PageHeader title="Events">
       {["Admin"].includes(userRole) && (
-        <Button variant="primary" onClick={onAddEvent} icon={<FaPlus style={{ fontSize: 'var(--icon-md)' }} />}
-        >
+        <Button variant="primary" onClick={onAddEvent} icon={<FaPlus />}>
           Add Event
         </Button>
       )}

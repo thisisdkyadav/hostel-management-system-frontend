@@ -142,7 +142,7 @@ const NewEntryForm = ({ onAddEntry }) => {
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>&nbsp;</label>
-          <Button type="submit" variant="primary" size="small" icon={<FaPlus />} fullWidth style={{ marginTop: 'var(--spacing-1)' }}>
+          <Button type="submit" variant="primary" size="small" icon={<FaPlus />} fullWidth>
             Add
           </Button>
         </div>

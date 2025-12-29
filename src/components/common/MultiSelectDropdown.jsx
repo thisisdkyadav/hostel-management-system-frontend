@@ -50,7 +50,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
                   <span key={value} className="inline-flex items-center px-2 py-1 text-xs font-medium bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-md">
                     {value}
                     {!disabled && (
-                      <Button type="button" onClick={(e) => handleRemoveOption(value, e)} variant="ghost" size="small" icon={<FaTimes className="w-2 h-2" />} aria-label="Remove option" style={{ marginLeft: '0.25rem', padding: '0.125rem' }} />
+                      <Button type="button" onClick={(e) => handleRemoveOption(value, e)} variant="ghost" size="small" icon={<FaTimes className="w-2 h-2" />} aria-label="Remove option" />
                     )}
                   </span>
                 ))
@@ -59,7 +59,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
 
             <div className="flex items-center gap-2 ml-2">
               {selectedValues.length > 0 && !disabled && (
-                <Button type="button" onClick={handleClearAll} variant="ghost" size="small" icon={<FaTimes className="w-3 h-3" />} aria-label="Clear all" style={{ padding: '0.125rem' }} />
+                <Button type="button" onClick={handleClearAll} variant="ghost" size="small" icon={<FaTimes className="w-3 h-3" />} aria-label="Clear all" />
               )}
               <FaChevronDown className={`w-4 h-4 text-[var(--color-text-disabled)] transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </div>

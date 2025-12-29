@@ -107,7 +107,6 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
                 variant="ghost"
                 size="small"
                 icon={<FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} />}
-                style={{ padding: 0 }}
               />
             ))}
             {feedbackRating > 0 && (

@@ -133,7 +133,7 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           </div>
         </div>
 
-        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FaFileUpload />} style={{ whiteSpace: 'nowrap' }}>
+        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FaFileUpload />}>
           Bulk Update via CSV
         </Button>
       </div>

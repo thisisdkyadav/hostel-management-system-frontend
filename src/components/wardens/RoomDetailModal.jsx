@@ -203,7 +203,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaUserAlt style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
                 <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No students allocated to this room</p>
                 {room.capacity > 0 && (
-                  <Button onClick={onAllocate} variant="primary" size="medium" icon={<FaUserPlus />} style={{ marginTop: 'var(--spacing-4)' }}>
+                  <Button onClick={onAllocate} variant="primary" size="medium" icon={<FaUserPlus />}>
                     Allocate Student
                   </Button>
                 )}

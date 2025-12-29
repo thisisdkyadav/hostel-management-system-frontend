@@ -152,7 +152,7 @@ const ItemTypes = () => {
         <div className="relative">
           <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." style={{ paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-2)', paddingBottom: 'var(--spacing-2)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-primary)'; e.currentTarget.style.boxShadow = 'var(--input-focus-ring)'; }} onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-input)'; e.currentTarget.style.boxShadow = 'none'; }} />
           <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-placeholder)' }} />
-          <Button onClick={handleSearch} variant="ghost" size="small" style={{ position: 'absolute', right: 'var(--spacing-2)', top: '50%', transform: 'translateY(-50%)' }}>
+          <Button onClick={handleSearch} variant="ghost" size="small">
             Search
           </Button>
         </div>
@@ -173,7 +173,7 @@ const ItemTypes = () => {
           <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
             <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
             <p style={{ color: 'var(--color-text-muted)' }}>No inventory item types found</p>
-            <Button onClick={openNewItemModal} variant="primary" size="small" icon={<FaPlus />} style={{ marginTop: 'var(--spacing-4)' }}>
+            <Button onClick={openNewItemModal} variant="primary" size="small" icon={<FaPlus />}>
               Add your first item
             </Button>
           </div>

@@ -167,7 +167,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
 
             {/* Action Buttons */}
             <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', gap: 'var(--spacing-4)' }}>
-              <Button onClick={onReset} variant="secondary" size="medium" icon={<FaTimes />} style={{ flex: 1 }}>
+              <Button onClick={onReset} variant="secondary" size="medium" icon={<FaTimes />} fullWidth>
                 Reset
               </Button>
 
@@ -175,7 +175,7 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
                 disabled={recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())}
                 variant="primary" size="medium"
                 icon={getNextStatus() === "Checked In" ? <FaSignInAlt /> : <FaSignOutAlt />}
-                style={{ flex: 1 }}
+                fullWidth
               >
                 {getNextStatus() === "Checked In" ? "Check In" : "Check Out"}
               </Button>

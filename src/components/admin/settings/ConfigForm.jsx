@@ -259,18 +259,8 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
       </div>
 
       <div style={styles.buttonContainer}>
-        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} style={{ ...styles.button, opacity: isLoading || !hasChanges() ? "var(--opacity-disabled)" : 1, cursor: isLoading || !hasChanges() ? "not-allowed" : "pointer" }}>
-          {isLoading ? (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div style={styles.spinner}></div>
-              Saving...
-            </div>
-          ) : (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <HiSave style={styles.buttonIcon} />
-              Save Changes
-            </div>
-          )}
+        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} variant="primary" size="medium" icon={<HiSave />} isLoading={isLoading}>
+          Save Changes
         </Button>
       </div>
 

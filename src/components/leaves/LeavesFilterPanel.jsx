@@ -9,10 +9,7 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', marginBottom: 0 }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
         </h3>
-        <Button onClick={resetFilters} variant="outline" size="small" style={{ color: 'var(--color-text-muted)' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
-          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
-          icon={<MdClearAll />}
-        >
+        <Button onClick={resetFilters} variant="outline" size="small" icon={<MdClearAll />}>
           Reset Filters
         </Button>
       </div>
@@ -21,14 +18,14 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Status</label>
           <select style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.status} 
+            value={filters.status}
             onChange={(e) => updateFilter("status", e.target.value)}
           >
             <option value="all">All</option>
@@ -41,44 +38,44 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Start Date</label>
           <input type="date" style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.startDate} 
-            onChange={(e) => updateFilter("startDate", e.target.value)} 
+            value={filters.startDate}
+            onChange={(e) => updateFilter("startDate", e.target.value)}
           />
         </div>
 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>End Date</label>
           <input type="date" style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.endDate} 
-            onChange={(e) => updateFilter("endDate", e.target.value)} 
+            value={filters.endDate}
+            onChange={(e) => updateFilter("endDate", e.target.value)}
           />
         </div>
 
         <div>
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }}>Items Per Page</label>
           <select style={{ width: '100%', padding: 'var(--spacing-2-5)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
+            e.target.style.boxShadow = 'var(--input-focus-ring)';
+            e.target.style.borderColor = 'var(--input-border-focus)';
+          }}
             onBlur={(e) => {
               e.target.style.boxShadow = 'none';
               e.target.style.borderColor = 'var(--color-border-input)';
             }}
-            value={filters.limit} 
+            value={filters.limit}
             onChange={(e) => updateFilter("limit", Number(e.target.value))}
           >
             <option value={5}>5</option>

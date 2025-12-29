@@ -316,7 +316,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             <div style={{ textAlign: 'center', padding: 'var(--spacing-6) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
               <p style={{ color: 'var(--color-text-muted)' }}>No family members added yet.</p>
               {editable && (
-                <Button onClick={() => setShowAddForm(true)} variant="outline" size="small" icon={<FiPlus />} style={{ marginTop: 'var(--spacing-2)' }}>
+                <Button onClick={() => setShowAddForm(true)} variant="outline" size="small" icon={<FiPlus />}>
                   Add Family Member
                 </Button>
               )}

@@ -30,7 +30,6 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
             <Button key={pageNum} onClick={() => paginate(pageNum)}
               variant={currentPage === pageNum ? "primary" : "secondary"}
               size="small"
-              style={{ width: '2.25rem', height: '2.25rem', padding: 0 }}
             >
               {pageNum}
             </Button>
