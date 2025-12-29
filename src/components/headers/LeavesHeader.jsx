@@ -1,4 +1,5 @@
 import Button from "../common/Button"
+import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
 import { FaFilter, FaPlus, FaList, FaTh, FaCalendarAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
@@ -7,85 +8,50 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
   const { user } = useAuth()
   const canCreate = ["Admin", "Hostel Supervisor", "Maintenance Staff"].includes(user?.role)
 
+  const viewModeOptions = [
+    { value: "list", label: "List", icon: <FaList /> },
+    { value: "cards", label: "Grid", icon: <FaTh /> },
+  ]
+
+  const selfViewOptions = [
+    { value: false, label: "All" },
+    { value: true, label: "Mine" },
+  ]
+
   return (
     <PageHeader title={title}>
-      <Button onClick={() => setShowFilters(!showFilters)} 
-        variant={showFilters ? "primary" : "white"} 
-        size="small" 
-        icon={<FaFilter />} 
+      <Button onClick={() => setShowFilters(!showFilters)}
+        variant={showFilters ? "primary" : "white"}
+        size="medium"
+        icon={<FaFilter />}
         style={{ transition: 'var(--transition-all)' }}
       >
         Filters
       </Button>
 
       {isAdmin && (
-        <div style={{ display: 'flex', border: `var(--border-1) solid var(--color-border-gray)`, borderRadius: 'var(--radius-full)', overflow: 'hidden', backgroundColor: 'var(--color-bg-primary)' }} >
-          <Button onClick={() => setViewSelfOnly(false)} 
-            variant={!viewSelfOnly ? "primary" : "white"} 
-            size="small" 
-            style={{
-              borderRadius: 'var(--radius-none)',
-              paddingLeft: 'var(--spacing-3)',
-              paddingRight: 'var(--spacing-3)',
-              paddingTop: 'var(--spacing-1-5)',
-              paddingBottom: 'var(--spacing-1-5)',
-              transition: 'var(--transition-colors)'
-            }}
-          >
-            All
-          </Button>
-          <Button onClick={() => setViewSelfOnly(true)} 
-            variant={viewSelfOnly ? "primary" : "white"} 
-            size="small" 
-            style={{
-              borderRadius: 'var(--radius-none)',
-              paddingLeft: 'var(--spacing-3)',
-              paddingRight: 'var(--spacing-3)',
-              paddingTop: 'var(--spacing-1-5)',
-              paddingBottom: 'var(--spacing-1-5)',
-              transition: 'var(--transition-colors)'
-            }}
-          >
-            Mine
-          </Button>
-        </div>
+        <ToggleButtonGroup
+          options={selfViewOptions}
+          value={viewSelfOnly}
+          onChange={setViewSelfOnly}
+          shape="pill"
+          size="medium"
+          variant="muted"
+          hideLabelsOnMobile={false}
+        />
       )}
 
-      <div style={{ display: 'flex', border: `var(--border-1) solid var(--color-border-gray)`, borderRadius: 'var(--radius-full)', overflow: 'hidden', backgroundColor: 'var(--color-bg-primary)' }} >
-        <Button onClick={() => setViewMode("list")} 
-          variant={viewMode === "list" ? "primary" : "white"} 
-          size="small" 
-          style={{
-            borderRadius: 'var(--radius-none)',
-            paddingLeft: 'var(--spacing-3)',
-            paddingRight: 'var(--spacing-3)',
-            paddingTop: 'var(--spacing-1-5)',
-            paddingBottom: 'var(--spacing-1-5)',
-            transition: 'var(--transition-colors)'
-          }}
-          icon={<FaList />}
-        >
-          List
-        </Button>
-        <Button onClick={() => setViewMode("cards")} 
-          variant={viewMode === "cards" ? "primary" : "white"} 
-          size="small" 
-          style={{
-            borderRadius: 'var(--radius-none)',
-            paddingLeft: 'var(--spacing-3)',
-            paddingRight: 'var(--spacing-3)',
-            paddingTop: 'var(--spacing-1-5)',
-            paddingBottom: 'var(--spacing-1-5)',
-            transition: 'var(--transition-colors)'
-          }}
-          icon={<FaTh />}
-        >
-          Grid
-        </Button>
-      </div>
+      <ToggleButtonGroup
+        options={viewModeOptions}
+        value={viewMode}
+        onChange={setViewMode}
+        shape="pill"
+        size="medium"
+        variant="muted"
+      />
 
       {canCreate && (
-        <Button onClick={onCreate} variant="primary" size="small" icon={<FaPlus />} 
+        <Button onClick={onCreate} variant="primary" size="medium" icon={<FaPlus />}
           style={{ transition: 'var(--transition-all)' }}
         >
           Create Leave

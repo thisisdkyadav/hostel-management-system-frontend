@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
 import Button from "../../components/common/Button"
+import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
 
 const StudentInventory = () => {
   const [activeTab, setActiveTab] = useState("available")
@@ -63,22 +64,18 @@ const StudentInventory = () => {
 
       {/* Tabs */}
       <div style={styles.tabContainer}>
-        <nav style={styles.tabNav}>
-          <Button onClick={() => setActiveTab("available")}
-            variant={activeTab === "available" ? "primary" : "ghost"}
-            size="medium"
-            style={{ borderBottom: activeTab === "available" ? 'var(--border-2) solid var(--color-primary)' : 'var(--border-2) solid transparent' }}
-          >
-            Available Inventory
-          </Button>
-          <Button onClick={() => setActiveTab("assignments")}
-            variant={activeTab === "assignments" ? "primary" : "ghost"}
-            size="medium"
-            style={{ borderBottom: activeTab === "assignments" ? 'var(--border-2) solid var(--color-primary)' : 'var(--border-2) solid transparent' }}
-          >
-            Student Assignments
-          </Button>
-        </nav>
+        <ToggleButtonGroup
+          options={[
+            { value: "available", label: "Available Inventory" },
+            { value: "assignments", label: "Student Assignments" },
+          ]}
+          value={activeTab}
+          onChange={setActiveTab}
+          shape="rounded"
+          size="medium"
+          variant="muted"
+          hideLabelsOnMobile={false}
+        />
       </div>
 
       {/* Tab Content */}

@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import Button from "../common/Button"
+import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 
@@ -69,24 +70,18 @@ const StudentEntryForm = ({ onAddEntry }) => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>Add New Student Entry</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-          <div style={{ display: 'flex', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-            <Button type="button" onClick={() => handleStatusChange("Checked In")}
-              variant={entryData.status === "Checked In" ? "primary" : "ghost"}
-              size="small"
-              icon={<FaSignInAlt />}
-              style={{ borderRadius: 0 }}
-            >
-              Checked In
-            </Button>
-            <Button type="button" onClick={() => handleStatusChange("Checked Out")}
-              variant={entryData.status === "Checked Out" ? "primary" : "ghost"}
-              size="small"
-              icon={<FaSignOutAlt />}
-              style={{ borderRadius: 0 }}
-            >
-              Checked Out
-            </Button>
-          </div>
+          <ToggleButtonGroup
+            options={[
+              { value: "Checked In", label: "Checked In", icon: <FaSignInAlt /> },
+              { value: "Checked Out", label: "Checked Out", icon: <FaSignOutAlt /> },
+            ]}
+            value={entryData.status}
+            onChange={handleStatusChange}
+            shape="rounded"
+            size="small"
+            variant="primary"
+            hideLabelsOnMobile={false}
+          />
           <Button type="button" variant="primary" onClick={handleReset} className="flex items-center">
             Reset
           </Button>

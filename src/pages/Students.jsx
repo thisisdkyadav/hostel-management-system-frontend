@@ -17,6 +17,7 @@ import { studentApi } from "../services/apiService"
 import { hostelApi } from "../services/hostelApi"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
 import Button from "../components/common/Button"
+import ToggleButtonGroup from "../components/common/ToggleButtonGroup"
 
 // Shimmer loader components
 const ShimmerLoader = ({ height, width = "100%", className = "" }) => (
@@ -25,7 +26,7 @@ const ShimmerLoader = ({ height, width = "100%", className = "" }) => (
     style={{
       height,
       width,
-      background: `linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-highlight) 50%, var(--skeleton-base) 75%)`,
+      background: `linear - gradient(90deg, var(--skeleton - base) 25 %, var(--skeleton - highlight) 50 %, var(--skeleton - base) 75 %)`,
       backgroundSize: '200% 100%',
       animation: 'shimmer var(--skeleton-animation-duration) infinite',
       borderRadius: 'var(--radius-lg)'
@@ -130,13 +131,13 @@ const Students = () => {
     try {
       const result = await importStudents(importedStudents)
       if (result.error) {
-        alert(`Error importing students: ${result.error.message}`)
+        alert(`Error importing students: ${result.error.message} `)
         return false
       }
       alert("Students imported successfully")
       return true
     } catch (error) {
-      alert(`An error occurred: ${error.message}`)
+      alert(`An error occurred: ${error.message} `)
       return false
     }
   }
@@ -148,7 +149,7 @@ const Students = () => {
       refreshStudents()
       return true
     } catch (error) {
-      alert(`An error occurred: ${error.message}`)
+      alert(`An error occurred: ${error.message} `)
       return false
     }
   }
@@ -160,7 +161,7 @@ const Students = () => {
         refreshStudents()
         const errors = response.errors || []
         if (errors.length > 0) {
-          alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")}`)
+          alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")} `)
         } else {
           alert("Allocations updated successfully")
         }
@@ -274,22 +275,18 @@ const Students = () => {
             Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{students.length}</span> out of <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{totalCount}</span> students
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
-            <Button
-              onClick={() => setViewMode("table")}
-              variant={viewMode === "table" ? "primary" : "ghost"}
-              size="small"
-              icon={<FaTable />}
-              aria-label="Table view"
-            />
-            <Button
-              onClick={() => setViewMode("card")}
-              variant={viewMode === "card" ? "primary" : "ghost"}
-              size="small"
-              icon={<FaThLarge />}
-              aria-label="Card view"
-            />
-          </div>
+          <ToggleButtonGroup
+            options={[
+              { value: "table", icon: <FaTable />, ariaLabel: "Table view" },
+              { value: "card", icon: <FaThLarge />, ariaLabel: "Card view" },
+            ]}
+            value={viewMode}
+            onChange={setViewMode}
+            shape="rounded"
+            size="medium"
+            variant="muted"
+            hideLabelsOnMobile={false}
+          />
         </div>
 
         {loading ? (
