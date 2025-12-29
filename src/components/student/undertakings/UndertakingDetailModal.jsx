@@ -2,6 +2,7 @@ import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Checkbox from "../../common/ui/Checkbox"
 
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
   const [isAccepting, setIsAccepting] = useState(false)
@@ -82,22 +83,7 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
         </div>
 
         {/* Confirmation checkbox */}
-        <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <input type="checkbox" id="confirm-read" checked={hasConfirmed} onChange={() => setHasConfirmed(!hasConfirmed)}
-            style={{
-              marginTop: 'var(--spacing-1)',
-              height: 'var(--icon-md)',
-              width: 'var(--icon-md)',
-              borderRadius: 'var(--radius-sm)',
-              border: `var(--border-1) solid var(--color-border-input)`,
-              accentColor: 'var(--color-info)',
-              cursor: 'pointer'
-            }}
-          />
-          <label htmlFor="confirm-read" style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', cursor: 'pointer' }} >
-            I confirm that I have read and understood the above undertaking and agree to abide by it.
-          </label>
-        </div>
+        <Checkbox id="confirm-read" checked={hasConfirmed} onChange={() => setHasConfirmed(!hasConfirmed)} label="I confirm that I have read and understood the above undertaking and agree to abide by it." />
 
         {/* Action buttons */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
