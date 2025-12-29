@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { uploadApi } from "../../../../services/uploadApi"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import Button from "../../../common/Button"
+import Input from "../../../common/ui/Input"
+import Textarea from "../../../common/ui/Textarea"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   const [formData, setFormData] = useState({
@@ -158,9 +160,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
               Payment Amount <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
-            <input type="number" name="amount" value={formData.amount} onChange={handleInputChange} step="0.01" min="0" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: `var(--border-1) solid ${errors.amount ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-base)', outline: 'none', transition: 'var(--transition-colors)' }} placeholder="Enter payment amount" onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
-              onBlur={(e) => e.target.style.boxShadow = 'none'}
-            />
+            <Input type="number" name="amount" value={formData.amount} onChange={handleInputChange} step="0.01" min="0" placeholder="Enter payment amount" error={errors.amount} />
             {errors.amount && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.amount}</p>}
           </div>
 
@@ -169,9 +169,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
               Date of Payment <span style={{ color: 'var(--color-danger)' }}>*</span>
             </label>
-            <input type="date" name="dateOfPayment" value={formData.dateOfPayment} onChange={handleInputChange} max={new Date().toISOString().split("T")[0]} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: `var(--border-1) solid ${errors.dateOfPayment ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-base)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
-              onBlur={(e) => e.target.style.boxShadow = 'none'}
-            />
+            <Input type="date" name="dateOfPayment" value={formData.dateOfPayment} onChange={handleInputChange} max={new Date().toISOString().split("T")[0]} error={errors.dateOfPayment} />
             {errors.dateOfPayment && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.dateOfPayment}</p>}
           </div>
         </div>
@@ -181,9 +179,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
             Transaction ID <span style={{ color: 'var(--color-danger)' }}>*</span>
           </label>
-          <input type="text" name="transactionId" value={formData.transactionId} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: `var(--border-1) solid ${errors.transactionId ? 'var(--color-danger)' : 'var(--color-border-input)'}`, borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-base)', outline: 'none', transition: 'var(--transition-colors)' }} placeholder="Enter transaction ID" onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
-            onBlur={(e) => e.target.style.boxShadow = 'none'}
-          />
+          <Input type="text" name="transactionId" value={formData.transactionId} onChange={handleInputChange} placeholder="Enter transaction ID" error={errors.transactionId} />
           {errors.transactionId && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.transactionId}</p>}
         </div>
 
@@ -246,9 +242,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
           <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
             Additional Information <span style={{ color: 'var(--color-text-light)' }}>(Optional)</span>
           </label>
-          <textarea name="additionalInfo" value={formData.additionalInfo} onChange={handleInputChange} rows={3} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-base)', outline: 'none', transition: 'var(--transition-colors)', resize: 'vertical' }} placeholder="Any additional notes about the payment..." onFocus={(e) => e.target.style.boxShadow = 'var(--input-focus-ring)'}
-            onBlur={(e) => e.target.style.boxShadow = 'none'}
-          />
+          <Textarea name="additionalInfo" value={formData.additionalInfo} onChange={handleInputChange} rows={3} resize="vertical" placeholder="Any additional notes about the payment..." />
         </div>
 
         {/* Action Buttons */}

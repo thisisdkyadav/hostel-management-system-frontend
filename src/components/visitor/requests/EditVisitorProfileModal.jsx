@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 
 const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -66,74 +68,29 @@ const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Visitor Name</label>
-            <input type="text" name="name" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+            <Input type="text" name="name" value={formData.name} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone Number</label>
-            <input type="tel" name="phone" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
+            <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Email Address</label>
-            <input type="email" name="email" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            <Input type="email" name="email" value={formData.email} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Relation with Student</label>
-            <select name="relation" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.relation}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select relation</option>
-              <option value="Parent">Parent</option>
-              <option value="Sibling">Sibling</option>
-              <option value="Guardian">Guardian</option>
-              <option value="Relative">Relative</option>
-              <option value="Friend">Friend</option>
-              <option value="Other">Other</option>
-            </select>
+            <Select name="relation" value={formData.relation} onChange={handleChange} placeholder="Select relation" options={[
+              { value: "Parent", label: "Parent" },
+              { value: "Sibling", label: "Sibling" },
+              { value: "Guardian", label: "Guardian" },
+              { value: "Relative", label: "Relative" },
+              { value: "Friend", label: "Friend" },
+              { value: "Other", label: "Other" }
+            ]} />
           </div>
         </div>
 

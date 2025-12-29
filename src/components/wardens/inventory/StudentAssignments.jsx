@@ -7,6 +7,7 @@ import { useAuth } from "../../../contexts/AuthProvider"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
 import Select from "../../common/ui/Select"
+import Textarea from "../../common/ui/Textarea"
 
 const StudentAssignments = () => {
   const { user, canAccess } = useAuth()
@@ -343,7 +344,7 @@ const StudentAssignments = () => {
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
-              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" placeholder="Update notes..."></textarea>
+              <Textarea name="notes" value={formData.notes} onChange={handleFormChange} rows={3} placeholder="Update notes..." />
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
@@ -390,7 +391,7 @@ const StudentAssignments = () => {
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
-              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" placeholder="Notes about returned item..."></textarea>
+              <Textarea name="notes" value={formData.notes} onChange={handleFormChange} rows={3} placeholder="Notes about returned item..." />
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>

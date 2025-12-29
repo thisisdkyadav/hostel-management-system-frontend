@@ -3,6 +3,8 @@ import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckC
 import Modal from "../../common/Modal"
 import { uploadApi } from "../../../services/uploadApi"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Textarea from "../../common/ui/Textarea"
 
 const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {
   const [formData, setFormData] = useState({
@@ -233,56 +235,20 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
-            <input type="date" name="fromDate" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.fromDate}
-              onChange={handleChange}
-              min={minDateString}
-              required
-            />
+            <Input type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Must be at least 2 days from today</p>
           </div>
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
-            <input type="date" name="toDate" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => {
-              e.target.style.borderColor = 'var(--input-border-focus)';
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-            }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--input-border)';
-                e.target.style.boxShadow = 'none';
-              }}
-              value={formData.toDate}
-              onChange={handleChange}
-              min={formData.fromDate || minDateString}
-              required
-            />
+            <Input type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
           </div>
         </div>
 
         {/* Reason for Visit */}
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
-          <textarea name="reason" rows="4" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)', resize: 'none' }} onFocus={(e) => {
-            e.target.style.borderColor = 'var(--input-border-focus)';
-            e.target.style.boxShadow = 'var(--input-focus-ring)';
-          }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--input-border)';
-              e.target.style.boxShadow = 'none';
-            }}
-            value={formData.reason}
-            onChange={handleChange}
-            placeholder="Please provide details about the purpose of the visit"
-            required
-          />
+          <Textarea name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
         </div>
 
         {/* H2 Form Upload */}

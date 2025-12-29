@@ -1,6 +1,7 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
 import Button from "../../../common/Button"
+import Input from "../../../common/ui/Input"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (
@@ -19,49 +20,13 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
                   <label htmlFor={`unit-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
                     Unit
                   </label>
-                  <input id={`unit-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)}
-                    className="w-full border focus:outline-none"
-                    style={{
-                      padding: 'var(--input-padding)',
-                      borderColor: 'var(--input-border)',
-                      borderRadius: 'var(--radius-md)',
-                      fontSize: 'var(--font-size-sm)',
-                      backgroundColor: 'var(--input-bg)'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--input-border-focus)';
-                      e.target.style.boxShadow = 'var(--input-focus-ring)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'var(--input-border)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                    placeholder="A"
-                  />
+                  <Input id={`unit-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)} placeholder="A" />
                 </div>
                 <div className="flex-1">
                   <label htmlFor={`room-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
                     Room Number
                   </label>
-                  <input id={`room-${index}`} type="text" value={room[1] || ""} onChange={(e) => onRoomChange(index, 1, e.target.value)}
-                    className="w-full border focus:outline-none"
-                    style={{
-                      padding: 'var(--input-padding)',
-                      borderColor: 'var(--input-border)',
-                      borderRadius: 'var(--radius-md)',
-                      fontSize: 'var(--font-size-sm)',
-                      backgroundColor: 'var(--input-bg)'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--input-border-focus)';
-                      e.target.style.boxShadow = 'var(--input-focus-ring)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'var(--input-border)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                    placeholder="101"
-                  />
+                  <Input id={`room-${index}`} type="text" value={room[1] || ""} onChange={(e) => onRoomChange(index, 1, e.target.value)} placeholder="101" />
                 </div>
               </>
             ) : (
@@ -69,25 +34,7 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
                 <label htmlFor={`room-${index}`} className="block mb-1" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>
                   Room Number
                 </label>
-                <input id={`room-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)}
-                  className="w-full border focus:outline-none"
-                  style={{
-                    padding: 'var(--input-padding)',
-                    borderColor: 'var(--input-border)',
-                    borderRadius: 'var(--radius-md)',
-                    fontSize: 'var(--font-size-sm)',
-                    backgroundColor: 'var(--input-bg)'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--input-border-focus)';
-                    e.target.style.boxShadow = 'var(--input-focus-ring)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--input-border)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                  placeholder="101"
-                />
+                <Input id={`room-${index}`} type="text" value={room[0] || ""} onChange={(e) => onRoomChange(index, 0, e.target.value)} placeholder="101" />
               </div>
             )}
 

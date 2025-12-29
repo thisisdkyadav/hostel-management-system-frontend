@@ -1,5 +1,7 @@
 import React from "react"
 import Button from "../../../common/Button"
+import Select from "../../../common/ui/Select"
+import Textarea from "../../../common/ui/Textarea"
 
 const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
   const containerStyle = {
@@ -66,27 +68,7 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
         <label htmlFor="hostel-select" style={labelStyle}>
           Assign Hostel <span style={{ color: "var(--color-danger)" }}>*</span>
         </label>
-        <select id="hostel-select" value={selectedHostel} onChange={(e) => onHostelChange(e.target.value)}
-          style={{
-            ...inputStyle,
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = "var(--color-primary)"
-            e.target.style.boxShadow = "var(--input-focus-ring)"
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "var(--color-border-input)"
-            e.target.style.boxShadow = "none"
-          }}
-          required
-        >
-          <option value="">Select a hostel</option>
-          {hostelList.map((hostel) => (
-            <option key={hostel._id} value={hostel._id}>
-              {hostel.name}
-            </option>
-          ))}
-        </select>
+        <Select id="hostel-select" value={selectedHostel} onChange={(e) => onHostelChange(e.target.value)} placeholder="Select a hostel" options={hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name }))} />
       </div>
 
       {/* Payment Amount (Optional) */}
@@ -102,22 +84,7 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
         <label htmlFor="approval-information" style={labelStyle}>
           Approval Information
         </label>
-        <textarea id="approval-information" value={approvalInformation} onChange={(e) => onApprovalInformationChange(e.target.value)}
-          style={{
-            ...inputStyle,
-            minHeight: "80px",
-            resize: "vertical",
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = "var(--color-primary)"
-            e.target.style.boxShadow = "var(--input-focus-ring)"
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "var(--color-border-input)"
-            e.target.style.boxShadow = "none"
-          }}
-          placeholder="Enter approval information"
-        />
+        <Textarea id="approval-information" value={approvalInformation} onChange={(e) => onApprovalInformationChange(e.target.value)} placeholder="Enter approval information" rows={3} resize="vertical" />
       </div>
 
       {/* Action Buttons */}

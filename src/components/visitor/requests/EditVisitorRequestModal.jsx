@@ -4,6 +4,7 @@ import Modal from "../../common/Modal"
 import { visitorApi } from "../../../services/visitorApi"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
+import Textarea from "../../common/ui/Textarea"
 
 const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
   const [formData, setFormData] = useState({
@@ -129,19 +130,7 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
         {/* Reason for Visit */}
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
-          <textarea name="reason" rows="4" style={{ width: '100%', padding: 'var(--input-padding)', border: 'var(--border-1) solid var(--input-border)', borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)', resize: 'none' }} onFocus={(e) => {
-            e.target.style.borderColor = 'var(--input-border-focus)';
-            e.target.style.boxShadow = 'var(--input-focus-ring)';
-          }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--input-border)';
-              e.target.style.boxShadow = 'none';
-            }}
-            value={formData.reason}
-            onChange={handleChange}
-            placeholder="Please provide details about the purpose of the visit"
-            required
-          />
+          <Textarea name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
         </div>
 
         {/* Submit Section */}

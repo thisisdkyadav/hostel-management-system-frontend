@@ -339,40 +339,18 @@ const HostelAllocation = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hostel</label>
-              <select name="hostelId" value={currentAllocation.hostelId} onChange={handleInputChange} required disabled={isEditMode} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: isEditMode ? 'var(--color-bg-disabled)' : 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => !isEditMode && (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
-                <option value="">Select Hostel</option>
-                {hostelList &&
-                  hostelList.map((hostel) => (
-                    <option key={hostel._id} value={hostel._id}>
-                      {hostel.name}
-                    </option>
-                  ))}
-              </select>
+              <Select name="hostelId" value={currentAllocation.hostelId} onChange={handleInputChange} placeholder="Select Hostel" disabled={isEditMode} options={hostelList ? hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name })) : []} />
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item Type</label>
-              <select name="itemTypeId" value={currentAllocation.itemTypeId} onChange={handleInputChange} required disabled={isEditMode} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: isEditMode ? 'var(--color-bg-disabled)' : 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => !isEditMode && (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
-                <option value="">Select Item Type</option>
-                {itemTypes.map((item) => (
-                  <option key={item._id} value={item._id}>
-                    {item.name} - Available:{" "}
-                    {item.totalCount -
-                      hostelInventory.reduce((sum, allocation) => {
-                        if (allocation.itemTypeId._id === item._id) {
-                          return sum + allocation.allocatedCount
-                        }
-                        return sum
-                      }, 0)}
-                  </option>
-                ))}
-              </select>
+              <Select name="itemTypeId" value={currentAllocation.itemTypeId} onChange={handleInputChange} placeholder="Select Item Type" disabled={isEditMode} options={itemTypes.map((item) => ({ value: item._id, label: `${item.name} - Available: ${item.totalCount - hostelInventory.reduce((sum, allocation) => allocation.itemTypeId._id === item._id ? sum + allocation.allocatedCount : sum, 0)}` }))} />
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
                 Allocated Count
                 {currentAllocation.itemTypeId && <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-2)', color: 'var(--color-text-muted)' }}>(Max: {calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)})</span>}
               </label>
-              <input type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min="1" max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')} />
+              <Input type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min={1} max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required />
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
               <Button type="button" onClick={closeModal} variant="secondary" size="medium">

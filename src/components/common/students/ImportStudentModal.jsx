@@ -5,6 +5,9 @@ import Papa from "papaparse"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import FileInput from "../../common/ui/FileInput"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
+import Textarea from "../../common/ui/Textarea"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../services/adminApi"
 
@@ -47,37 +50,22 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label style={formStyles.label}>Name *</label>
-          <input type="text" value={manualStudent.name} onChange={(e) => handleManualInputChange("name", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter student's full name"
-            required
-          />
+          <Input type="text" value={manualStudent.name} onChange={(e) => handleManualInputChange("name", e.target.value)} placeholder="Enter student's full name" required />
         </div>
 
         <div>
           <label style={formStyles.label}>Email *</label>
-          <input type="email" value={manualStudent.email} onChange={(e) => handleManualInputChange("email", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter email address"
-            required
-          />
+          <Input type="email" value={manualStudent.email} onChange={(e) => handleManualInputChange("email", e.target.value)} placeholder="Enter email address" required />
         </div>
 
         <div>
           <label style={formStyles.label}>Roll Number *</label>
-          <input type="text" value={manualStudent.rollNumber} onChange={(e) => handleManualInputChange("rollNumber", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter roll number"
-            required
-          />
+          <Input type="text" value={manualStudent.rollNumber} onChange={(e) => handleManualInputChange("rollNumber", e.target.value)} placeholder="Enter roll number" required />
         </div>
 
         <div>
           <label style={formStyles.label}>Phone</label>
-          <input type="tel" value={manualStudent.phone} onChange={(e) => handleManualInputChange("phone", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter phone number"
-          />
+          <Input type="tel" value={manualStudent.phone} onChange={(e) => handleManualInputChange("phone", e.target.value)} placeholder="Enter phone number" />
         </div>
 
         {/* Optional Fields */}
@@ -87,86 +75,50 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label style={formStyles.label}>Password</label>
-          <input type="password" value={manualStudent.password} onChange={(e) => handleManualInputChange("password", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter password"
-          />
+          <Input type="password" value={manualStudent.password} onChange={(e) => handleManualInputChange("password", e.target.value)} placeholder="Enter password" />
         </div>
 
         <div>
           <label style={formStyles.label}>Gender</label>
-          <select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} style={formStyles.input}>
-            <option value="">Select gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
+          <Select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} placeholder="Select gender" options={[{ value: "Male", label: "Male" }, { value: "Female", label: "Female" }]} />
         </div>
 
         <div>
           <label style={formStyles.label}>Date of Birth</label>
-          <input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} style={formStyles.input} />
+          <Input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} />
         </div>
 
         <div>
           <label style={formStyles.label}>Degree</label>
           {validDegrees.length > 0 ? (
-            <select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} style={formStyles.input}>
-              <option value="">Select degree</option>
-              {validDegrees.map((degree) => (
-                <option key={degree} value={degree}>
-                  {degree}
-                </option>
-              ))}
-            </select>
+            <Select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} placeholder="Select degree" options={validDegrees.map((degree) => ({ value: degree, label: degree }))} />
           ) : (
-            <input type="text" value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)}
-              style={formStyles.input}
-              placeholder="Enter degree"
-            />
+            <Input type="text" value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} placeholder="Enter degree" />
           )}
         </div>
 
         <div>
           <label style={formStyles.label}>Department</label>
           {validDepartments.length > 0 ? (
-            <select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} style={formStyles.input}>
-              <option value="">Select department</option>
-              {validDepartments.map((department) => (
-                <option key={department} value={department}>
-                  {department}
-                </option>
-              ))}
-            </select>
+            <Select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} placeholder="Select department" options={validDepartments.map((department) => ({ value: department, label: department }))} />
           ) : (
-            <input type="text" value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)}
-              style={formStyles.input}
-              placeholder="Enter department"
-            />
+            <Input type="text" value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} placeholder="Enter department" />
           )}
         </div>
 
         <div>
           <label style={formStyles.label}>Year</label>
-          <input type="number" value={manualStudent.year} onChange={(e) => handleManualInputChange("year", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter year"
-            min="1"
-            max="10"
-          />
+          <Input type="number" value={manualStudent.year} onChange={(e) => handleManualInputChange("year", e.target.value)} placeholder="Enter year" min="1" max="10" />
         </div>
 
         <div>
           <label style={formStyles.label}>Admission Date</label>
-          <input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} style={formStyles.input} />
+          <Input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} />
         </div>
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={formStyles.label}>Address</label>
-          <textarea value={manualStudent.address} onChange={(e) => handleManualInputChange("address", e.target.value)}
-            rows={3}
-            style={formStyles.input}
-            placeholder="Enter address"
-          />
+          <Textarea value={manualStudent.address} onChange={(e) => handleManualInputChange("address", e.target.value)} rows={3} placeholder="Enter address" />
         </div>
 
         {/* Guardian Information */}
@@ -176,26 +128,17 @@ const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegree
 
         <div>
           <label style={formStyles.label}>Guardian Name</label>
-          <input type="text" value={manualStudent.guardian} onChange={(e) => handleManualInputChange("guardian", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter guardian's name"
-          />
+          <Input type="text" value={manualStudent.guardian} onChange={(e) => handleManualInputChange("guardian", e.target.value)} placeholder="Enter guardian's name" />
         </div>
 
         <div>
           <label style={formStyles.label}>Guardian Phone</label>
-          <input type="tel" value={manualStudent.guardianPhone} onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter guardian's phone"
-          />
+          <Input type="tel" value={manualStudent.guardianPhone} onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)} placeholder="Enter guardian's phone" />
         </div>
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={formStyles.label}>Guardian Email</label>
-          <input type="email" value={manualStudent.guardianEmail} onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)}
-            style={formStyles.input}
-            placeholder="Enter guardian's email"
-          />
+          <Input type="email" value={manualStudent.guardianEmail} onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)} placeholder="Enter guardian's email" />
         </div>
       </div>
 
