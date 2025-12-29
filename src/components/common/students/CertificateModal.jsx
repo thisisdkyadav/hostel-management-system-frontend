@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
 import FormField from "../../common/FormField"
 import Button from "../../common/Button"
+import FileInput from "../../common/ui/FileInput"
 import { FaTrash, FaUpload } from "react-icons/fa"
 import { uploadApi } from "../../../services/uploadApi"
 import { addCertificate, updateCertificate } from "../../../services/certificatesApi"
@@ -267,10 +268,10 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
             </label>
             <div style={styles.uploadContainer}>
               <label style={{ cursor: isUploading ? "not-allowed" : "pointer" }}>
-                <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} style={styles.hiddenInput} disabled={isUploading} />
+                <FileInput accept=".pdf,.png,.jpg,.jpeg,.webp,.gif" onChange={handleFileChange} disabled={isUploading} hidden />
                 <div style={styles.uploadButton} onMouseEnter={(e) => {
-                    if (!isUploading) e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)"
-                  }}
+                  if (!isUploading) e.currentTarget.style.backgroundColor = "var(--color-primary-bg-hover)"
+                }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "var(--color-primary-bg)"
                   }}

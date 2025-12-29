@@ -4,6 +4,7 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import FileInput from "../../common/ui/FileInput"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../services/adminApi"
 
@@ -566,7 +567,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                   <strong>Optional fields:</strong> {availableFields.filter((field) => !requiredFields.includes(field)).join(", ")}
                 </p>
-                <input type="file" ref={fileInputRef} style={{ display: 'none' }} accept=".csv" onChange={handleFileUpload} />
+                <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

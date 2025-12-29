@@ -3,6 +3,8 @@ import { FaPlus, FaHeartbeat, FaHospital, FaMedkit, FaEye, FaEdit, FaCalendarChe
 import { healthApi } from "../../../services/healthApi"
 import { Link } from "react-router-dom"
 import Button from "../Button"
+import Input from "../ui/Input"
+import Select from "../ui/Select"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -221,29 +223,29 @@ const HealthTab = ({ userId }) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
               <div>
                 <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Blood Group</label>
-                <select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }}>
-                  <option value="">Select Blood Group</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
+                <Select name="bloodGroup" value={healthFormData.bloodGroup} onChange={handleHealthInputChange}
+                  options={[
+                    { value: "", label: "Select Blood Group" },
+                    { value: "A+", label: "A+" },
+                    { value: "A-", label: "A-" },
+                    { value: "B+", label: "B+" },
+                    { value: "B-", label: "B-" },
+                    { value: "AB+", label: "AB+" },
+                    { value: "AB-", label: "AB-" },
+                    { value: "O+", label: "O+" },
+                    { value: "O-", label: "O-" },
+                  ]}
+                />
               </div>
 
               <div>
                 <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Provider</label>
-                <select name="insuranceProvider" value={healthFormData.insuranceProvider} onChange={handleHealthInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }}>
-                  <option value="">Select Insurance Provider</option>
-                  {insuranceProviders.map((provider) => (
-                    <option key={provider._id} value={provider._id}>
-                      {provider.name}
-                    </option>
-                  ))}
-                </select>
+                <Select name="insuranceProvider" value={healthFormData.insuranceProvider} onChange={handleHealthInputChange}
+                  options={[
+                    { value: "", label: "Select Insurance Provider" },
+                    ...insuranceProviders.map((provider) => ({ value: provider._id, label: provider.name }))
+                  ]}
+                />
 
                 {selectedProvider && (
                   <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
@@ -254,7 +256,7 @@ const HealthTab = ({ userId }) => {
 
               <div>
                 <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Number</label>
-                <input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter insurance number" />
+                <Input type="text" name="insuranceNumber" value={healthFormData.insuranceNumber} onChange={handleHealthInputChange} placeholder="Enter insurance number" />
               </div>
             </div>
 

@@ -7,6 +7,10 @@ import Button from "../../common/Button"
 import ToggleButtonGroup from "../../common/ToggleButtonGroup"
 import StudentDetailModal from "./StudentDetailModal"
 import CsvUploader from "../../common/CsvUploader"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
+import Checkbox from "../../common/ui/Checkbox"
+import FileInput from "../../common/ui/FileInput"
 import { healthApi } from "../../../services/healthApi"
 import { adminApi } from "../../../services/adminApi"
 import toast from "react-hot-toast"
@@ -621,10 +625,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           <h3 className="text-lg font-medium text-gray-800">Update Family Members</h3>
           <div className="mt-2 sm:mt-0">
             <div className="flex items-center">
-              <input type="checkbox" id="deleteExisting" checked={deleteExistingFamily} onChange={(e) => setDeleteExistingFamily(e.target.checked)} style={styles.checkbox} />
-              <label htmlFor="deleteExisting" className="ml-2 text-sm text-gray-700">
-                Replace existing family members
-              </label>
+              <Checkbox
+                id="deleteExisting"
+                checked={deleteExistingFamily}
+                onChange={(e) => setDeleteExistingFamily(e.target.checked)}
+                label="Replace existing family members"
+              />
             </div>
           </div>
         </div>
@@ -657,27 +663,27 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
-                      <input type="text" value={member.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                      <Input type="text" value={member.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                      <input type="text" value={member.name} onChange={(e) => handleChange(index, "name", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                      <Input type="text" value={member.name} onChange={(e) => handleChange(index, "name", e.target.value)} required />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Relationship</label>
-                      <input type="text" value={member.relationship} onChange={(e) => handleChange(index, "relationship", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
+                      <Input type="text" value={member.relationship} onChange={(e) => handleChange(index, "relationship", e.target.value)} />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                      <input type="tel" value={member.phone} onChange={(e) => handleChange(index, "phone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
+                      <Input type="tel" value={member.phone} onChange={(e) => handleChange(index, "phone", e.target.value)} />
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <input type="email" value={member.email} onChange={(e) => handleChange(index, "email", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
+                      <Input type="email" value={member.email} onChange={(e) => handleChange(index, "email", e.target.value)} />
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                      <input type="text" value={member.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} />
+                      <Input type="text" value={member.address} onChange={(e) => handleChange(index, "address", e.target.value)} />
                     </div>
                   </div>
                 </div>
@@ -779,13 +785,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">Select Status to Apply</label>
-          <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} style={styles.select}>
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
+          <Select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            options={statusOptions.map((status) => ({ value: status, label: status }))}
+          />
           <p className="mt-1 text-sm text-gray-500">All selected students will be updated to this status</p>
         </div>
 
@@ -966,26 +970,26 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Roll Number *</label>
-                      <input type="text" value={student.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                      <Input type="text" value={student.rollNumber} onChange={(e) => handleChange(index, "rollNumber", e.target.value)} required />
                     </div>
 
                     {dayScholarMode === "add" && (
                       <>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Owner Name *</label>
-                          <input type="text" value={student.ownerName} onChange={(e) => handleChange(index, "ownerName", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                          <Input type="text" value={student.ownerName} onChange={(e) => handleChange(index, "ownerName", e.target.value)} required />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Owner Phone *</label>
-                          <input type="tel" value={student.ownerPhone} onChange={(e) => handleChange(index, "ownerPhone", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                          <Input type="tel" value={student.ownerPhone} onChange={(e) => handleChange(index, "ownerPhone", e.target.value)} required />
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Owner Email *</label>
-                          <input type="email" value={student.ownerEmail} onChange={(e) => handleChange(index, "ownerEmail", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                          <Input type="email" value={student.ownerEmail} onChange={(e) => handleChange(index, "ownerEmail", e.target.value)} required />
                         </div>
                         <div className="sm:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
-                          <input type="text" value={student.address} onChange={(e) => handleChange(index, "address", e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-1" style={styles.input} required />
+                          <Input type="text" value={student.address} onChange={(e) => handleChange(index, "address", e.target.value)} required />
                         </div>
                       </>
                     )}
@@ -1071,7 +1075,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <p className="mt-1 text-xs text-gray-500">
                   <strong>Updatable fields:</strong> {availableFields.join(", ")}
                 </p>
-                <input type="file" ref={fileInputRef} className="hidden" accept=".csv" onChange={handleFileUpload} />
+                <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleFileUpload} />
               </div>
               <div className="flex flex-col items-center">
                 <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
