@@ -82,17 +82,13 @@ const ChangePasswordModal = ({ onClose, email }) => {
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>Current Password</label>
-          <div style={{ position: "relative" }}>
-            <Input type="password" name="currentPassword" id="currentPassword" value={formData.currentPassword} onChange={handleChange} placeholder="Enter your current password" error={errors.currentPassword} />
-          </div>
+          <Input type="password" name="currentPassword" id="currentPassword" value={formData.currentPassword} onChange={handleChange} placeholder="Enter your current password" error={errors.currentPassword} />
           {errors.currentPassword && <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.currentPassword}</p>}
         </div>
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>New Password</label>
-          <div style={{ position: "relative" }}>
-            <Input type="password" name="newPassword" id="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="Enter your new password" error={errors.newPassword} />
-          </div>
+          <Input type="password" name="newPassword" id="newPassword" value={formData.newPassword} onChange={handleChange} placeholder="Enter your new password" error={errors.newPassword} />
           {errors.newPassword ? (
             <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.newPassword}</p>
           ) : (
@@ -106,9 +102,7 @@ const ChangePasswordModal = ({ onClose, email }) => {
 
         <div>
           <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-2)" }}>Confirm New Password</label>
-          <div style={{ position: "relative" }}>
-            <Input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm your new password" error={errors.confirmPassword} />
-          </div>
+          <Input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm your new password" error={errors.confirmPassword} />
           {errors.confirmPassword && <p style={{ marginTop: "var(--spacing-1-5)", fontSize: "var(--font-size-sm)", color: "var(--color-danger-text)" }}>{errors.confirmPassword}</p>}
         </div>
 
