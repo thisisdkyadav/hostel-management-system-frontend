@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import Button from "../common/Button"
+import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import Modal from "../common/Modal"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -49,24 +50,18 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
     <Modal title="Edit Student Entry" onClose={onClose}>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 'var(--spacing-4)' }}>
-          <div style={{ display: 'flex', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 'var(--spacing-4)', width: 'fit-content' }}>
-            <Button type="button" onClick={() => handleStatusChange("Checked In")}
-              variant={formData.status === "Checked In" ? "primary" : "ghost"}
-              size="small"
-              icon={<FaSignInAlt />}
-              style={{ borderRadius: 0 }}
-            >
-              Checked In
-            </Button>
-            <Button type="button" onClick={() => handleStatusChange("Checked Out")}
-              variant={formData.status === "Checked Out" ? "primary" : "ghost"}
-              size="small"
-              icon={<FaSignOutAlt />}
-              style={{ borderRadius: 0 }}
-            >
-              Checked Out
-            </Button>
-          </div>
+          <ToggleButtonGroup
+            options={[
+              { value: "Checked In", label: "Checked In", icon: <FaSignInAlt /> },
+              { value: "Checked Out", label: "Checked Out", icon: <FaSignOutAlt /> },
+            ]}
+            value={formData.status}
+            onChange={handleStatusChange}
+            shape="rounded"
+            size="medium"
+            variant="primary"
+            hideLabelsOnMobile={false}
+          />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>

@@ -12,6 +12,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, LogarithmicScale } from "chart.js"
 import { Bar } from "react-chartjs-2"
 import Button from "../../components/common/Button"
+import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
 
 ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend)
 
@@ -140,14 +141,18 @@ const DashboardWarden = () => {
           </h2>
 
           <div className="flex items-center">
-            <div className="flex items-center rounded-full p-1 text-xs" style={{ backgroundColor: 'var(--color-bg-muted)' }}>
-              <Button onClick={() => setNormalizedView(false)} variant={!normalizedView ? "success" : "ghost"} size="small">
-                Absolute
-              </Button>
-              <Button onClick={() => setNormalizedView(true)} variant={normalizedView ? "success" : "ghost"} size="small">
-                Normalized
-              </Button>
-            </div>
+            <ToggleButtonGroup
+              options={[
+                { value: false, label: "Absolute" },
+                { value: true, label: "Normalized" },
+              ]}
+              value={normalizedView}
+              onChange={setNormalizedView}
+              shape="pill"
+              size="small"
+              variant="muted"
+              hideLabelsOnMobile={false}
+            />
           </div>
         </div>
 

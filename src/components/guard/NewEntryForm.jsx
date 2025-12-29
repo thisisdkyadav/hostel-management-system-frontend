@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import Button from "../common/Button"
+import ToggleButtonGroup from "../common/ToggleButtonGroup"
 
 const NewEntryForm = ({ onAddEntry }) => {
   const { user } = useAuth()
@@ -64,24 +65,18 @@ const NewEntryForm = ({ onAddEntry }) => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
         <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>New Check In/Out Entry</h2>
 
-        <div style={{ display: 'flex', border: `var(--border-1) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-          <Button type="button" onClick={() => handleStatusChange("Checked In")}
-            variant={formData.status === "Checked In" ? "primary" : "ghost"}
-            size="small"
-            icon={<FaSignInAlt />}
-            style={{ borderRadius: 0 }}
-          >
-            In
-          </Button>
-          <Button type="button" onClick={() => handleStatusChange("Checked Out")}
-            variant={formData.status === "Checked Out" ? "primary" : "ghost"}
-            size="small"
-            icon={<FaSignOutAlt />}
-            style={{ borderRadius: 0 }}
-          >
-            Out
-          </Button>
-        </div>
+        <ToggleButtonGroup
+          options={[
+            { value: "Checked In", label: "In", icon: <FaSignInAlt /> },
+            { value: "Checked Out", label: "Out", icon: <FaSignOutAlt /> },
+          ]}
+          value={formData.status}
+          onChange={handleStatusChange}
+          shape="rounded"
+          size="small"
+          variant="primary"
+          hideLabelsOnMobile={false}
+        />
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 'var(--spacing-2)' }}>

@@ -19,6 +19,7 @@ import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
 import { useWarden } from "../contexts/WardenProvider"
 import Button from "../components/common/Button"
+import ToggleButtonGroup from "../components/common/ToggleButtonGroup"
 
 const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()
@@ -443,10 +444,18 @@ const UnitsAndRooms = () => {
             Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</span> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
             {totalItems > 0 && ` of ${totalItems} total`}
           </div>
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
-            <Button onClick={() => setViewMode("table")} variant={viewMode === "table" ? "primary" : "ghost"} size="small" icon={<FaTable />} aria-label="Table view" />
-            <Button onClick={() => setViewMode("card")} variant={viewMode === "card" ? "primary" : "ghost"} size="small" icon={<FaThLarge />} aria-label="Card view" />
-          </div>
+          <ToggleButtonGroup
+            options={[
+              { value: "table", icon: <FaTable />, ariaLabel: "Table view" },
+              { value: "card", icon: <FaThLarge />, ariaLabel: "Card view" },
+            ]}
+            value={viewMode}
+            onChange={setViewMode}
+            shape="rounded"
+            size="medium"
+            variant="muted"
+            hideLabelsOnMobile={false}
+          />
         </div>
 
         {loading ? (
