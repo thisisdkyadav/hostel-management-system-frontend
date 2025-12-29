@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
 import Modal from "../Modal"
 import Button from "../Button"
+import Input from "../ui/Input"
+import Select from "../ui/Select"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
@@ -185,14 +187,12 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Insurance Provider</label>
-            <select name="insuranceProvider" value={formData.insuranceProvider} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
-              <option value="">Select Insurance Provider</option>
-              {insuranceProviders.map((provider) => (
-                <option key={provider._id} value={provider._id}>
-                  {provider.name}
-                </option>
-              ))}
-            </select>
+            <Select name="insuranceProvider" value={formData.insuranceProvider} onChange={handleInputChange} required
+              options={[
+                { value: "", label: "Select Insurance Provider" },
+                ...insuranceProviders.map((provider) => ({ value: provider._id, label: provider.name }))
+              ]}
+            />
 
             {selectedProvider && (
               <div style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
@@ -203,12 +203,12 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Amount</label>
-            <input type="number" name="amount" value={formData.amount} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter claim amount" required />
+            <Input type="number" name="amount" value={formData.amount} onChange={handleInputChange} placeholder="Enter claim amount" required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hospital Name</label>
-            <input type="text" name="hospitalName" value={formData.hospitalName} onChange={handleInputChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} placeholder="Enter hospital name" required />
+            <Input type="text" name="hospitalName" value={formData.hospitalName} onChange={handleInputChange} placeholder="Enter hospital name" required />
           </div>
 
           <div style={{ gridColumn: 'span 2' }}>

@@ -5,6 +5,8 @@ import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
 import MultiSelectDropdown from "../MultiSelectDropdown"
 import Button from "../Button"
+import Input from "../ui/Input"
+import Select from "../ui/Select"
 import { getDepartmentList, getDegreesList } from "../../../services/studentService"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
@@ -58,7 +60,6 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
     fetchDegrees()
   }, [])
 
-  const inputStyle = { width: '100%', padding: 'var(--spacing-2-5)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)' }
   const labelStyle = { display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1-5)' }
 
   return (
@@ -74,58 +75,50 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         <div>
-          <div style={{ position: 'relative' }}>
-            <input type="text" placeholder="Search by name, roll number, or email..." style={{ ...inputStyle, paddingLeft: 'var(--spacing-10)', paddingRight: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', paddingBottom: 'var(--spacing-3)', borderRadius: 'var(--radius-xl)' }} value={filters.searchTerm} onChange={(e) => updateFilter("searchTerm", e.target.value)}
-            />
-            <FaSearch style={{ position: 'absolute', left: 'var(--spacing-3)', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-disabled)' }} />
-          </div>
+          <Input
+            type="text"
+            placeholder="Search by name, roll number, or email..."
+            value={filters.searchTerm}
+            onChange={(e) => updateFilter("searchTerm", e.target.value)}
+            icon={<FaSearch />}
+          />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)' }}>
           {hostels.length > 0 && (
             <div>
               <label style={labelStyle}>Hostel</label>
-              <select style={inputStyle} value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)}>
-                <option value="">All Hostels</option>
-                {hostels.map((hostel, index) => (
-                  <option key={index} value={hostel._id || hostel.id}>
-                    {hostel.name || hostel}
-                  </option>
-                ))}
-              </select>
+              <Select
+                value={filters.hostelId}
+                onChange={(e) => updateFilter("hostelId", e.target.value)}
+                placeholder="All Hostels"
+                options={hostels.map((hostel) => ({
+                  value: hostel._id || hostel.id,
+                  label: hostel.name || hostel
+                }))}
+              />
             </div>
           )}
 
           <div>
             <label style={labelStyle}>Unit</label>
-            <input type="text" placeholder="Unit number" style={inputStyle} value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
+            <Input type="text" placeholder="Unit number" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
           </div>
 
           <div>
             <label style={labelStyle}>Room Number</label>
-            <input type="text" placeholder="Room number" style={inputStyle} value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
+            <Input type="text" placeholder="Room number" value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
           </div>
 
           <div>
             <label style={labelStyle}>Department</label>
-            <select style={inputStyle} value={filters.department} onChange={(e) => updateFilter("department", e.target.value)} disabled={loading}>
-              <option value="">All Departments</option>
-              {loading ? (
-                <option value="" disabled>
-                  Loading departments...
-                </option>
-              ) : error ? (
-                <option value="" disabled>
-                  Error loading departments
-                </option>
-              ) : (
-                departments.map((dept, index) => (
-                  <option key={index} value={dept}>
-                    {dept}
-                  </option>
-                ))
-              )}
-            </select>
+            <Select
+              value={filters.department}
+              onChange={(e) => updateFilter("department", e.target.value)}
+              disabled={loading}
+              placeholder="All Departments"
+              options={loading ? [{ value: "", label: "Loading departments..." }] : error ? [{ value: "", label: "Error loading departments" }] : departments.map((dept) => ({ value: dept, label: dept }))}
+            />
             {error && (
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{error}</p>
@@ -138,24 +131,13 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
           <div>
             <label style={labelStyle}>Degree</label>
-            <select style={inputStyle} value={filters.degree} onChange={(e) => updateFilter("degree", e.target.value)} disabled={degreesLoading}>
-              <option value="">All Degrees</option>
-              {degreesLoading ? (
-                <option value="" disabled>
-                  Loading degrees...
-                </option>
-              ) : degreesError ? (
-                <option value="" disabled>
-                  Error loading degrees
-                </option>
-              ) : (
-                degreeOptions.map((degree, index) => (
-                  <option key={index} value={degree}>
-                    {degree}
-                  </option>
-                ))
-              )}
-            </select>
+            <Select
+              value={filters.degree}
+              onChange={(e) => updateFilter("degree", e.target.value)}
+              disabled={degreesLoading}
+              placeholder="All Degrees"
+              options={degreesLoading ? [{ value: "", label: "Loading degrees..." }] : degreesError ? [{ value: "", label: "Error loading degrees" }] : degreeOptions.map((degree) => ({ value: degree, label: degree }))}
+            />
             {degreesError && (
               <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
                 <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{degreesError}</p>
@@ -168,52 +150,72 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
 
           <div>
             <label style={labelStyle}>Gender</label>
-            <select style={inputStyle} value={filters.gender} onChange={(e) => updateFilter("gender", e.target.value)}>
-              <option value="">All Genders</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
+            <Select
+              value={filters.gender}
+              onChange={(e) => updateFilter("gender", e.target.value)}
+              placeholder="All Genders"
+              options={[
+                { value: "Male", label: "Male" },
+                { value: "Female", label: "Female" },
+                { value: "Other", label: "Other" }
+              ]}
+            />
           </div>
 
           <div>
             <label style={labelStyle}>Status</label>
-            <select style={inputStyle} value={filters.status} onChange={(e) => updateFilter("status", e.target.value)}>
-              <option value="Active">Active</option>
-              <option value="Graduated">Graduated</option>
-              <option value="Dropped">Dropped</option>
-              <option value="Inactive">Inactive</option>
-              <option value="">All Statuses</option>
-            </select>
+            <Select
+              value={filters.status}
+              onChange={(e) => updateFilter("status", e.target.value)}
+              options={[
+                { value: "Active", label: "Active" },
+                { value: "Graduated", label: "Graduated" },
+                { value: "Dropped", label: "Dropped" },
+                { value: "Inactive", label: "Inactive" },
+                { value: "", label: "All Statuses" }
+              ]}
+            />
           </div>
 
           <div>
             <label style={labelStyle}>Allocation Status</label>
-            <select style={inputStyle} value={filters.hasAllocation} onChange={(e) => updateFilter("hasAllocation", e.target.value)}>
-              <option value="">All Students</option>
-              <option value="true">Allocated Room</option>
-              <option value="false">No Allocation</option>
-            </select>
+            <Select
+              value={filters.hasAllocation}
+              onChange={(e) => updateFilter("hasAllocation", e.target.value)}
+              placeholder="All Students"
+              options={[
+                { value: "true", label: "Allocated Room" },
+                { value: "false", label: "No Allocation" }
+              ]}
+            />
           </div>
 
           <div>
             <label style={labelStyle}>Day Scholar</label>
-            <select style={inputStyle} value={filters.isDayScholar} onChange={(e) => updateFilter("isDayScholar", e.target.value)}>
-              <option value="">All Students</option>
-              <option value="true">Day Scholar</option>
-              <option value="false">Hosteller</option>
-            </select>
+            <Select
+              value={filters.isDayScholar}
+              onChange={(e) => updateFilter("isDayScholar", e.target.value)}
+              placeholder="All Students"
+              options={[
+                { value: "true", label: "Day Scholar" },
+                { value: "false", label: "Hosteller" }
+              ]}
+            />
           </div>
 
           <div>
             <label style={labelStyle}>Students per page</label>
-            <select style={inputStyle} value={filters.studentsPerPage} onChange={(e) => setPageSize(e.target.value)}>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <option value="200">200</option>
-            </select>
+            <Select
+              value={filters.studentsPerPage}
+              onChange={(e) => setPageSize(e.target.value)}
+              options={[
+                { value: "10", label: "10" },
+                { value: "20", label: "20" },
+                { value: "50", label: "50" },
+                { value: "100", label: "100" },
+                { value: "200", label: "200" }
+              ]}
+            />
           </div>
 
           {missingOptions.length > 0 && (

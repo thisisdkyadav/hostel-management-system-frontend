@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaUserGraduate } from "react-icons/fa"
 import FormField from "../../../FormField"
+import Select from "../../../ui/Select"
 import { adminApi } from "../../../../../services/adminApi"
 
 const AcademicInfoSection = ({ data, onChange }) => {
@@ -41,42 +42,24 @@ const AcademicInfoSection = ({ data, onChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Department</label>
-          <select name="department" value={data.department || ""} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none" style={{ '--tw-ring-color': 'var(--color-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} disabled={isLoading}>
-            <option value="">Select Department</option>
-            {isLoading ? (
-              <option value="" disabled>
-                Loading departments...
-              </option>
-            ) : (
-              validDepartments.map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))
-            )}
-            {/* Allow custom value if current department is not in the valid list */}
-            {data.department && !validDepartments.includes(data.department) && <option value={data.department}>{data.department}</option>}
-          </select>
+          <Select name="department" value={data.department || ""} onChange={handleChange} disabled={isLoading}
+            options={[
+              { value: "", label: "Select Department" },
+              ...(isLoading ? [{ value: "", label: "Loading departments...", disabled: true }] : validDepartments.map((dept) => ({ value: dept, label: dept }))),
+              ...(data.department && !validDepartments.includes(data.department) ? [{ value: data.department, label: data.department }] : [])
+            ]}
+          />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
-          <select name="degree" value={data.degree || ""} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none" style={{ '--tw-ring-color': 'var(--color-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} disabled={isLoading}>
-            <option value="">Select Degree</option>
-            {isLoading ? (
-              <option value="" disabled>
-                Loading degrees...
-              </option>
-            ) : (
-              validDegrees.map((degree) => (
-                <option key={degree} value={degree}>
-                  {degree}
-                </option>
-              ))
-            )}
-            {/* Allow custom value if current degree is not in the valid list */}
-            {data.degree && !validDegrees.includes(data.degree) && <option value={data.degree}>{data.degree}</option>}
-          </select>
+          <Select name="degree" value={data.degree || ""} onChange={handleChange} disabled={isLoading}
+            options={[
+              { value: "", label: "Select Degree" },
+              ...(isLoading ? [{ value: "", label: "Loading degrees...", disabled: true }] : validDegrees.map((degree) => ({ value: degree, label: degree }))),
+              ...(data.degree && !validDegrees.includes(data.degree) ? [{ value: data.degree, label: data.degree }] : [])
+            ]}
+          />
         </div>
 
         <FormField label="Admission Date" name="admissionDate" type="date" value={data.admissionDate ? (data.admissionDate instanceof Date ? data.admissionDate.toISOString().split("T")[0] : new Date(data.admissionDate).toISOString().split("T")[0]) : ""} onChange={handleChange} />

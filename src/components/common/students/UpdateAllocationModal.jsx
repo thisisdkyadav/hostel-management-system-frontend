@@ -6,6 +6,8 @@ import Papa from "papaparse"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import Modal from "../Modal"
 import Button from "../Button"
+import Select from "../ui/Select"
+import FileInput from "../ui/FileInput"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
@@ -215,14 +217,16 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
             <label htmlFor="hostel-select" style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>
               Select Hostel
             </label>
-            <select id="hostel-select" style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "1px solid var(--color-border-input)", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-body)", outline: "none" }} value={selectedHostel?._id || ""} onChange={handleHostelChange}>
-              <option value="">-- Select a hostel --</option>
-              {hostelList.map((hostel) => (
-                <option key={hostel._id} value={hostel._id}>
-                  {hostel.name} ({hostel.type})
-                </option>
-              ))}
-            </select>
+            <Select
+              id="hostel-select"
+              value={selectedHostel?._id || ""}
+              onChange={handleHostelChange}
+              placeholder="-- Select a hostel --"
+              options={hostelList.map((hostel) => ({
+                value: hostel._id,
+                label: `${hostel.name} (${hostel.type})`
+              }))}
+            />
           </div>
 
           {selectedHostel ? (
@@ -233,7 +237,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
                 <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                   <strong>Required fields:</strong> {requiredFields.join(", ")}
                 </p>
-                <input type="file" ref={fileInputRef} style={{ display: "none" }} accept=".csv" onChange={handleFileUpload} />
+                <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleFileUpload} />
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
