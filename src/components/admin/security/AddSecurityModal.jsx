@@ -5,6 +5,8 @@ import { adminApi } from "../../../services/apiService"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 
 const AddSecurityModal = ({ show, onClose, onSuccess }) => {
   const { hostelList } = useAdmin()
@@ -70,50 +72,30 @@ const AddSecurityModal = ({ show, onClose, onSuccess }) => {
 
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Security Name</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
-              <FiUser />
-            </div>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)' }} placeholder="Enter security staff name" required />
-          </div>
+          <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Enter security staff name" required />
         </div>
 
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Email Address</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
-              <FiMail />
-            </div>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)' }} placeholder="security@example.com" required />
-          </div>
+          <Input type="email" name="email" value={formData.email} onChange={handleChange} icon={<FiMail />} placeholder="security@example.com" required />
         </div>
 
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Password</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
-              <FiLock />
-            </div>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)' }} placeholder="Enter a strong password" required />
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginLeft: 'var(--spacing-1)' }}>Password should be at least 8 characters</div>
-          </div>
+          <Input type="password" name="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Enter a strong password" required />
+          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginLeft: 'var(--spacing-1)' }}>Password should be at least 8 characters</div>
         </div>
 
         <div>
           <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Assign Hostel</label>
-          <div style={{ position: 'relative' }}>
-            <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
-              <FiHome />
-            </div>
-            <select name="hostelId" value={formData.hostelId} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', appearance: 'none', backgroundColor: 'var(--input-bg)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)' }} required>
-              <option value="">Select a hostel</option>
-              {hostelList.map((hostel) => (
-                <option key={hostel._id} value={hostel._id}>
-                  {hostel.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            name="hostelId"
+            value={formData.hostelId}
+            onChange={handleChange}
+            icon={<FiHome />}
+            options={[{ value: "", label: "Select a hostel" }, ...hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
+            required
+          />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>

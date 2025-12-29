@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const styles = {
   form: {
@@ -211,49 +212,20 @@ const UpdatePasswordForm = ({ onSubmit }) => {
     <form onSubmit={handleSubmit} style={styles.form}>
       <div style={styles.formGroup}>
         <label style={styles.label}>Email Address</label>
-        <div style={styles.inputWrapper}>
-          <div style={styles.inputIcon}>
-            <HiMail size={20} />
-          </div>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} style={getInputStyle(errors.email)} placeholder="Enter user's email address" />
-        </div>
-        {errors.email && (
-          <p style={styles.errorMessage}>
-            <HiExclamationCircle style={styles.errorIcon} /> {errors.email}
-          </p>
-        )}
+        <Input type="email" name="email" value={formData.email} onChange={handleChange} icon={<HiMail size={20} />} placeholder="Enter user's email address" error={errors.email} />
       </div>
 
       <div style={styles.formGroup}>
         <label style={styles.label}>New Password</label>
-        <div style={styles.inputWrapper}>
-          <div style={styles.inputIcon}>
-            <HiLockClosed size={20} />
-          </div>
-          <input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} style={getInputStyle(errors.newPassword)} placeholder="Enter new password" />
-        </div>
-        {errors.newPassword ? (
-          <p style={styles.errorMessage}>
-            <HiExclamationCircle style={styles.errorIcon} /> {errors.newPassword}
-          </p>
-        ) : (
+        <Input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Enter new password" error={errors.newPassword} />
+        {!errors.newPassword && (
           <p style={styles.hintText}>Password must be at least 6 characters long</p>
         )}
       </div>
 
       <div style={styles.formGroup}>
         <label style={styles.label}>Confirm New Password</label>
-        <div style={styles.inputWrapper}>
-          <div style={styles.inputIcon}>
-            <HiLockClosed size={20} />
-          </div>
-          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} style={getInputStyle(errors.confirmPassword)} placeholder="Confirm new password" />
-        </div>
-        {errors.confirmPassword && (
-          <p style={styles.errorMessage}>
-            <HiExclamationCircle style={styles.errorIcon} /> {errors.confirmPassword}
-          </p>
-        )}
+        <Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Confirm new password" error={errors.confirmPassword} />
       </div>
 
       <div style={styles.footer}>

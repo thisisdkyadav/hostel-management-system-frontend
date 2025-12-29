@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 import { FaTable, FaEdit } from "react-icons/fa"
 
 const UnitBasedForm = ({ formData, setFormData }) => {
@@ -191,28 +192,12 @@ const UnitBasedForm = ({ formData, setFormData }) => {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
             <div style={{ marginBottom: "var(--spacing-4)" }}>
               <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Number of Floors</label>
-              <input type="number" name="floors" value={unitConfig.floors} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-              }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--input-border)"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              />
+              <Input type="number" name="floors" value={unitConfig.floors} onChange={handleChange} min="1" />
             </div>
 
             <div style={{ marginBottom: "var(--spacing-4)" }}>
               <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Default Rooms per Unit</label>
-              <input type="number" name="defaultRoomsPerUnit" value={unitConfig.defaultRoomsPerUnit} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-              }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--input-border)"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              />
+              <Input type="number" name="defaultRoomsPerUnit" value={unitConfig.defaultRoomsPerUnit} onChange={handleChange} min="1" />
             </div>
           </div>
 
@@ -223,15 +208,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               return (
                 <div key={floor} style={{ marginBottom: "var(--spacing-2)" }}>
                   <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)", fontWeight: "var(--font-weight-medium)" }}>{`Floor ${floor}`}</label>
-                  <input type="number" name={`floor-${floor}`} value={unitConfig.unitsPerFloor[floor] || ""} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-                  }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = "var(--input-border)"
-                      e.currentTarget.style.boxShadow = "none"
-                    }}
-                  />
+                  <Input type="number" name={`floor-${floor}`} value={unitConfig.unitsPerFloor[floor] || ""} onChange={handleChange} min="1" />
                 </div>
               )
             })}
@@ -239,15 +216,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
 
           <div style={{ marginBottom: "var(--spacing-4)" }}>
             <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Standard Room Capacity</label>
-            <input type="number" name="standardCapacity" value={unitConfig.standardCapacity} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-              e.currentTarget.style.borderColor = "var(--input-border-focus)"
-              e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-            }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--input-border)"
-                e.currentTarget.style.boxShadow = "none"
-              }}
-            />
+            <Input type="number" name="standardCapacity" value={unitConfig.standardCapacity} onChange={handleChange} min="1" />
           </div>
 
           <div style={{ marginTop: "var(--spacing-4)" }}>
@@ -257,47 +226,8 @@ const UnitBasedForm = ({ formData, setFormData }) => {
             </div>
             {unitConfig.exceptions.map((ex, index) => (
               <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
-                <input type="text" placeholder="Unit Number (e.g., 101)" value={ex.unitNumber} onChange={(e) => handleExceptionChange(index, "unitNumber", e.target.value)}
-                  style={{
-                    padding: "var(--input-padding)",
-                    border: `var(--border-1) solid var(--input-border)`,
-                    borderRadius: "var(--input-radius)",
-                    fontSize: "var(--font-size-base)",
-                    color: "var(--color-text-primary)",
-                    backgroundColor: "var(--input-bg)",
-                    outline: "none",
-                    transition: "var(--transition-colors)",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border)"
-                    e.currentTarget.style.boxShadow = "none"
-                  }}
-                />
-                <input type="number" placeholder="Rooms in Unit" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)}
-                  min="1"
-                  style={{
-                    padding: "var(--input-padding)",
-                    border: `var(--border-1) solid var(--input-border)`,
-                    borderRadius: "var(--input-radius)",
-                    fontSize: "var(--font-size-base)",
-                    color: "var(--color-text-primary)",
-                    backgroundColor: "var(--input-bg)",
-                    outline: "none",
-                    transition: "var(--transition-colors)",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border)"
-                    e.currentTarget.style.boxShadow = "none"
-                  }}
-                />
+                <Input type="text" placeholder="Unit Number (e.g., 101)" value={ex.unitNumber} onChange={(e) => handleExceptionChange(index, "unitNumber", e.target.value)} />
+                <Input type="number" placeholder="Rooms in Unit" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)} min="1" />
                 <Button
                   type="button"
                   onClick={() => removeException(index)}

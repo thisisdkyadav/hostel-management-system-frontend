@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 import ConfirmationDialog from "../../common/ConfirmationDialog"
 
 const styles = {
@@ -298,9 +299,8 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
 
         <div style={styles.inputContainer}>
           <div style={styles.inputWrapper}>
-            <input type="text" value={newItem} onChange={(e) => { setNewItem(e.target.value); setError("") }}
+            <Input type="text" value={newItem} onChange={(e) => { setNewItem(e.target.value); setError("") }}
               placeholder={placeholder || `Enter ${itemLabel}`}
-              style={styles.input}
               disabled={isLoading}
             />
             <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="medium" icon={<HiPlus />} />
@@ -339,9 +339,8 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
               <label style={styles.modalLabel}>Rename {itemLabel}</label>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <input type="text" value={newItemName} onChange={(e) => { setNewItemName(e.target.value); setError("") }}
+                <Input type="text" value={newItemName} onChange={(e) => { setNewItemName(e.target.value); setError("") }}
                   placeholder={`Enter new ${itemLabel.toLowerCase()} name`}
-                  style={styles.modalInput}
                   disabled={renameLoading}
                 />
               </div>

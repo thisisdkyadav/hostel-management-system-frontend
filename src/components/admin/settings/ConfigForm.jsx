@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiInformationCircle } from "react-icons/hi"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Checkbox from "../../common/ui/Checkbox"
 
 const ConfigForm = ({ config, onUpdate, isLoading }) => {
   const [formData, setFormData] = useState({})
@@ -208,17 +210,17 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
     const inputType = getInputType(value)
 
     if (inputType === "checkbox") {
-      return <input type="checkbox" id={`config-${key}`} checked={formData[key] || false} onChange={(e) => handleInputChange(key, e.target.checked)} style={styles.checkbox} disabled={isLoading} />
+      return <Checkbox id={`config-${key}`} checked={formData[key] || false} onChange={(e) => handleInputChange(key, e.target.checked)} disabled={isLoading} />
     }
 
     if (inputType === "number") {
       return (
-        <input type="number" id={`config-${key}`} value={formData[key] || 0} onChange={(e) => handleInputChange(key, parseFloat(e.target.value) || 0)} style={styles.input} disabled={isLoading} />
+        <Input type="number" id={`config-${key}`} value={formData[key] || 0} onChange={(e) => handleInputChange(key, parseFloat(e.target.value) || 0)} disabled={isLoading} />
       )
     }
 
     // Text input for strings and other types
-    return <input type="text" id={`config-${key}`} value={formData[key] || ""} onChange={(e) => handleInputChange(key, e.target.value)} style={styles.input} disabled={isLoading} />
+    return <Input type="text" id={`config-${key}`} value={formData[key] || ""} onChange={(e) => handleInputChange(key, e.target.value)} disabled={isLoading} />
   }
 
   if (!config || Object.keys(config).length === 0) {

@@ -7,6 +7,8 @@ import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import Pagination from "../../components/common/Pagination"
 import { securityApi } from "../../services/apiService"
 import Button from "../../components/common/Button"
+import Input from "../../components/common/ui/Input"
+import Select from "../../components/common/ui/Select"
 
 const ENTRY_FILTER_TABS = [
   { label: "All", value: "all" },
@@ -238,16 +240,16 @@ const StudentEntries = () => {
             <div style={styles.filterGrid}>
               <div>
                 <label style={styles.filterLabel}>Filter by Date</label>
-                <input type="date" value={filterDate} onChange={handleDateFilterChange} style={styles.filterInput} />
+                <Input type="date" value={filterDate} onChange={handleDateFilterChange} />
               </div>
               <div>
                 <label style={styles.filterLabel}>Items Per Page</label>
-                <select value={itemsPerPage} onChange={handleItemsPerPageChange} style={styles.filterSelect}>
-                  <option value={5}>5</option>
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
+                <Select value={itemsPerPage} onChange={handleItemsPerPageChange} options={[
+                  { value: 5, label: "5" },
+                  { value: 10, label: "10" },
+                  { value: 20, label: "20" },
+                  { value: 50, label: "50" }
+                ]} />
               </div>
               <div style={{ display: "flex", alignItems: "flex-end" }}>
                 <Button onClick={handleClearDateFilter} variant="secondary" size="medium">

@@ -4,6 +4,8 @@ import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 
 const InventoryManagement = () => {
   const { user } = useAuth()
@@ -176,34 +178,33 @@ const InventoryManagement = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item</label>
-              <select name="hostelInventoryId" value={assignFormData.hostelInventoryId} onChange={handleAssignFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
-                <option value="">Select Item</option>
-                {hostelInventory.map((item) => (
-                  <option key={item._id} value={item._id}>
-                    {item.itemTypeId.name} - Available: {item.availableCount}
-                  </option>
-                ))}
-              </select>
+              <Select name="hostelInventoryId" value={assignFormData.hostelInventoryId} onChange={handleAssignFormChange} options={[
+                { value: "", label: "Select Item" },
+                ...hostelInventory.map((item) => ({
+                  value: item._id,
+                  label: `${item.itemTypeId.name} - Available: ${item.availableCount}`
+                }))
+              ]} required />
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Count</label>
-              <input type="number" name="count" value={assignFormData.count} onChange={handleAssignFormChange} min="1" max={getMaxCount()} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required />
+              <Input type="number" name="count" value={assignFormData.count} onChange={handleAssignFormChange} min="1" max={getMaxCount()} required />
               {assignFormData.hostelInventoryId && <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum available: {getMaxCount()}</p>}
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
-              <select name="condition" value={assignFormData.condition} onChange={handleAssignFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-              </select>
+              <Select name="condition" value={assignFormData.condition} onChange={handleAssignFormChange} options={[
+                { value: "Good", label: "Good" },
+                { value: "Fair", label: "Fair" },
+                { value: "Poor", label: "Poor" }
+              ]} required />
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
-              <textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows="3" className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} placeholder="Any additional notes..."></textarea>
+              <textarea name="notes" value={assignFormData.notes} onChange={handleAssignFormChange} rows="3" className="w-full" placeholder="Any additional notes..."></textarea>
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-2)' }}>

@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { FaPrint } from "react-icons/fa"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import Checkbox from "../common/ui/Checkbox"
 
 const PrintComplaints = ({ complaints }) => {
   const [showPrintModal, setShowPrintModal] = useState(false)
@@ -113,13 +114,7 @@ const PrintComplaints = ({ complaints }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
               {printStatusOptions.map(status => (
-                <label key={status} style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-md)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <input type="checkbox" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', cursor: 'pointer', accentColor: 'var(--color-primary)' }} checked={selectedPrintStatuses.includes(status)} onChange={() => togglePrintStatus(status)}
-                  />
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{status}</span>
-                </label>
+                <Checkbox key={status} checked={selectedPrintStatuses.includes(status)} onChange={() => togglePrintStatus(status)} label={status} />
               ))}
             </div>
 

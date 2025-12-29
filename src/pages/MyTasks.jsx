@@ -6,6 +6,7 @@ import TaskDetailModal from "../components/tasks/TaskDetailModal"
 import Pagination from "../components/common/Pagination"
 import MyTasksHeader from "../components/headers/MyTasksHeader"
 import Button from "../components/common/Button"
+import Input from "../components/common/ui/Input"
 
 const MyTasks = () => {
   const { user } = useAuth()
@@ -211,22 +212,12 @@ const MyTasks = () => {
 
         {/* Search Bar */}
         <div style={{ marginBottom: 'var(--spacing-6)' }}>
-          <input
+          <Input
             type="text"
             value={filters.searchTerm}
             onChange={(e) => updateFilter("searchTerm", e.target.value)}
             placeholder="Search tasks..."
-            style={{
-              display: 'block',
-              width: '100%',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--color-border-input)',
-              boxShadow: 'var(--shadow-sm)',
-              outline: 'none',
-              padding: 'var(--spacing-3) var(--spacing-4)',
-              backgroundColor: 'var(--color-bg-primary)',
-              color: 'var(--color-text-body)',
-              transition: 'var(--transition-all)'
+          />
             }}
             onFocus={(e) => {
               e.target.style.boxShadow = 'var(--shadow-focus-primary)';

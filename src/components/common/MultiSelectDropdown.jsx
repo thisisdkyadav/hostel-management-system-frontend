@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { FaChevronDown, FaTimes } from "react-icons/fa"
 import Button from "./Button"
+import Checkbox from "./ui/Checkbox"
 
 const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, placeholder = "Select options...", label, disabled = false, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -81,9 +82,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
                   <div key={option} className={`px-3 py-2 text-sm cursor-pointer hover:bg-[var(--color-bg-tertiary)] ${selectedValues.includes(option) ? "bg-[var(--color-primary-bg)] text-[var(--color-primary)]" : "text-[var(--color-text-body)]"}`} onClick={() => handleToggleOption(option)}
                   >
                     <div className="flex items-center">
-                      <input type="checkbox" checked={selectedValues.includes(option)} onChange={() => { }}
-                        className="mr-2 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-[var(--color-border-input)] rounded"
-                      />
+                      <Checkbox checked={selectedValues.includes(option)} onChange={() => { }} className="mr-2" />
                       {option}
                     </div>
                   </div>

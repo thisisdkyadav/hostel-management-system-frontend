@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 import { FaTable, FaEdit } from "react-icons/fa"
 
 const RoomOnlyForm = ({ formData, setFormData }) => {
@@ -139,43 +140,19 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
             <div style={{ marginBottom: "var(--spacing-4)" }}>
               <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Number of Floors</label>
-              <input type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-              }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--input-border)"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              />
+              <Input type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" />
             </div>
 
             <div style={{ marginBottom: "var(--spacing-4)" }}>
               <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Default Rooms per Floor</label>
-              <input type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-              }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--input-border)"
-                  e.currentTarget.style.boxShadow = "none"
-                }}
-              />
+              <Input type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" />
               <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-placeholder)", marginTop: "var(--spacing-1)" }}>Room numbers will be generated as 101, 102... (Ground floor), 201, 202... (First floor)</p>
             </div>
           </div>
 
           <div style={{ marginBottom: "var(--spacing-4)" }}>
             <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Standard Room Capacity</label>
-            <input type="number" name="standardCapacity" value={roomConfig.standardCapacity} onChange={handleChange} min="1" style={{ width: "100%", padding: "var(--input-padding)", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--input-radius)", fontSize: "var(--font-size-base)", color: "var(--color-text-primary)", backgroundColor: "var(--input-bg)", outline: "none", transition: "var(--transition-colors)", }} onFocus={(e) => {
-              e.currentTarget.style.borderColor = "var(--input-border-focus)"
-              e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-            }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--input-border)"
-                e.currentTarget.style.boxShadow = "none"
-              }}
-            />
+            <Input type="number" name="standardCapacity" value={roomConfig.standardCapacity} onChange={handleChange} min="1" />
           </div>
 
           <div style={{ marginTop: "var(--spacing-4)" }}>
@@ -185,48 +162,8 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
             </div>
             {roomConfig.exceptions.map((ex, index) => (
               <div key={index} style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-2)" }}>
-                <input type="number" placeholder="Floor Number" value={ex.floor} onChange={(e) => handleExceptionChange(index, "floor", e.target.value)}
-                  min="1"
-                  style={{
-                    padding: "var(--input-padding)",
-                    border: `var(--border-1) solid var(--input-border)`,
-                    borderRadius: "var(--input-radius)",
-                    fontSize: "var(--font-size-base)",
-                    color: "var(--color-text-primary)",
-                    backgroundColor: "var(--input-bg)",
-                    outline: "none",
-                    transition: "var(--transition-colors)",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border)"
-                    e.currentTarget.style.boxShadow = "none"
-                  }}
-                />
-                <input type="number" placeholder="Rooms on Floor" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)}
-                  min="1"
-                  style={{
-                    padding: "var(--input-padding)",
-                    border: `var(--border-1) solid var(--input-border)`,
-                    borderRadius: "var(--input-radius)",
-                    fontSize: "var(--font-size-base)",
-                    color: "var(--color-text-primary)",
-                    backgroundColor: "var(--input-bg)",
-                    outline: "none",
-                    transition: "var(--transition-colors)",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border-focus)"
-                    e.currentTarget.style.boxShadow = "var(--input-focus-ring)"
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "var(--input-border)"
-                    e.currentTarget.style.boxShadow = "none"
-                  }}
-                />
+                <Input type="number" placeholder="Floor Number" value={ex.floor} onChange={(e) => handleExceptionChange(index, "floor", e.target.value)} min="1" />
+                <Input type="number" placeholder="Rooms on Floor" value={ex.roomsOverride} onChange={(e) => handleExceptionChange(index, "roomsOverride", e.target.value)} min="1" />
                 <Button
                   type="button"
                   onClick={() => removeException(index)}

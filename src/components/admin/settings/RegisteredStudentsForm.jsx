@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiPlus, HiSave } from "react-icons/hi"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
 
 const styles = {
   container: {
@@ -273,15 +274,15 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
               <div style={styles.inputGrid}>
                 <div>
                   <label htmlFor={`total-${degree}`} style={styles.inputLabel}>Total</label>
-                  <input type="number" id={`total-${degree}`} min="0" value={counts[degree]?.total || 0} onChange={(e) => handleCountChange(degree, "total", e.target.value)} style={styles.input} disabled={isLoading} />
+                  <Input type="number" id={`total-${degree}`} min="0" value={counts[degree]?.total || 0} onChange={(e) => handleCountChange(degree, "total", e.target.value)} disabled={isLoading} />
                 </div>
                 <div>
                   <label htmlFor={`boys-${degree}`} style={styles.inputLabel}>Boys</label>
-                  <input type="number" id={`boys-${degree}`} min="0" value={counts[degree]?.boys || 0} onChange={(e) => handleCountChange(degree, "boys", e.target.value)} style={styles.input} disabled={isLoading} />
+                  <Input type="number" id={`boys-${degree}`} min="0" value={counts[degree]?.boys || 0} onChange={(e) => handleCountChange(degree, "boys", e.target.value)} disabled={isLoading} />
                 </div>
                 <div>
                   <label htmlFor={`girls-${degree}`} style={styles.inputLabel}>Girls</label>
-                  <input type="number" id={`girls-${degree}`} min="0" value={counts[degree]?.girls || 0} onChange={(e) => handleCountChange(degree, "girls", e.target.value)} style={styles.input} disabled={isLoading} />
+                  <Input type="number" id={`girls-${degree}`} min="0" value={counts[degree]?.girls || 0} onChange={(e) => handleCountChange(degree, "girls", e.target.value)} disabled={isLoading} />
                 </div>
               </div>
             </div>

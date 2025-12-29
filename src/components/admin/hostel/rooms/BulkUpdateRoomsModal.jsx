@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Modal from "../../../common/Modal"
 import CsvUploader from "../../../common/CsvUploader"
 import Button from "../../../common/Button"
+import Checkbox from "../../../common/ui/Checkbox"
 import { FaExclamationTriangle, FaUpload } from "react-icons/fa"
 import { hostelApi } from "../../../../services/hostelApi"
 
@@ -171,12 +172,12 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <input type="checkbox" id="confirm-delete" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', borderRadius: 'var(--radius-sm)' }} />
-                <label htmlFor="confirm-delete" style={{ marginLeft: 'var(--spacing-2)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)' }}>
-                  I understand that updating these rooms will delete all associated allocations
-                </label>
-              </div>
+              <Checkbox
+                id="confirm-delete"
+                checked={confirmed}
+                onChange={(e) => setConfirmed(e.target.checked)}
+                label="I understand that updating these rooms will delete all associated allocations"
+              />
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
                 <Button variant="secondary" onClick={onClose}>

@@ -10,6 +10,7 @@ import { dashboardApi } from "../../services/dashboardApi"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
 import Card from "../../components/common/Card"
+import Checkbox from "../../components/common/ui/Checkbox"
 
 // Chart components
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"
@@ -388,15 +389,13 @@ const Dashboard = () => {
                           <tr>
                             <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[40%]">
                               <div className="flex items-center gap-[var(--spacing-2)]">
-                                <input type="checkbox" checked={allHostelsSelected} onChange={() => {
+                                <Checkbox checked={allHostelsSelected} onChange={() => {
                                   if (allHostelsSelected) {
                                     setSelectedHostels([])
                                   } else {
                                     setSelectedHostels(dashboardData.hostels.map((_, index) => index))
                                   }
-                                }}
-                                  className="w-3.5 h-3.5 text-[var(--color-primary)] bg-[var(--color-bg-primary)] border-[var(--color-border-dark)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:ring-1 cursor-pointer accent-[var(--color-primary)]"
-                                />
+                                }} />
                                 Hostel
                               </div>
                             </th>
@@ -418,9 +417,7 @@ const Dashboard = () => {
                               <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
                                 <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[40%]">
                                   <div className="flex items-center gap-[var(--spacing-2)]">
-                                    <input type="checkbox" checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)}
-                                      className={`w-3.5 h-3.5 text-[var(--color-primary)] bg-[var(--color-bg-primary)] border-[var(--color-border-dark)] rounded-[var(--radius-sm)] focus:ring-[var(--color-primary)] focus:ring-1 cursor-pointer accent-[var(--color-primary)] transition-opacity ${allHostelsSelected ? "opacity-40" : "opacity-100"}`}
-                                    />
+                                    <Checkbox checked={selectedHostels.includes(index)} onChange={() => toggleHostelSelection(index)} />
                                     <span className={`text-[0.8125rem] font-semibold transition-colors ${selectedHostels.includes(index) ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{hostel.name}</span>
                                   </div>
                                 </td>

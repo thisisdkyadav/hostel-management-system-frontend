@@ -42,6 +42,8 @@ import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import Button from "../../common/Button"
+import Input from "../ui/Input"
+import Select from "../ui/Select"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()
@@ -960,14 +962,17 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {inventoryModalType === "assign" && (
               <div style={{ marginBottom: 'var(--spacing-4)' }}>
                 <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item</label>
-                <select name="hostelInventoryId" value={inventoryFormData.hostelInventoryId} onChange={handleInventoryFormChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
-                  <option value="">Select Item</option>
-                  {availableInventory.map((item) => (
-                    <option key={item._id} value={item._id}>
-                      {item.itemTypeId.name} - Available: {item.availableCount}
-                    </option>
-                  ))}
-                </select>
+                <Select
+                  name="hostelInventoryId"
+                  value={inventoryFormData.hostelInventoryId}
+                  onChange={handleInventoryFormChange}
+                  placeholder="Select Item"
+                  options={availableInventory.map((item) => ({
+                    value: item._id,
+                    label: `${item.itemTypeId.name} - Available: ${item.availableCount}`
+                  }))}
+                  required
+                />
               </div>
             )}
 
@@ -975,7 +980,15 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {inventoryModalType === "assign" && (
               <div style={{ marginBottom: 'var(--spacing-4)' }}>
                 <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Count</label>
-                <input type="number" name="count" value={inventoryFormData.count} onChange={handleInventoryFormChange} min="1" max={getMaxCount()} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required />
+                <Input
+                  type="number"
+                  name="count"
+                  value={inventoryFormData.count}
+                  onChange={handleInventoryFormChange}
+                  min={1}
+                  max={getMaxCount()}
+                  required
+                />
                 {inventoryFormData.hostelInventoryId && <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Maximum available: {getMaxCount()}</p>}
               </div>
             )}
@@ -984,23 +997,35 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             {inventoryModalType === "edit" && (
               <div style={{ marginBottom: 'var(--spacing-4)' }}>
                 <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
-                <select name="status" value={inventoryFormData.status} onChange={handleInventoryFormChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
-                  <option value="Issued">Issued</option>
-                  <option value="Damaged">Damaged</option>
-                  <option value="Lost">Lost</option>
-                </select>
+                <Select
+                  name="status"
+                  value={inventoryFormData.status}
+                  onChange={handleInventoryFormChange}
+                  options={[
+                    { value: "Issued", label: "Issued" },
+                    { value: "Damaged", label: "Damaged" },
+                    { value: "Lost", label: "Lost" }
+                  ]}
+                  required
+                />
               </div>
             )}
 
             {/* Condition - for all modes */}
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
-              <select name="condition" value={inventoryFormData.condition} onChange={handleInventoryFormChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' }} required>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-              </select>
+              <Select
+                name="condition"
+                value={inventoryFormData.condition}
+                onChange={handleInventoryFormChange}
+                options={[
+                  { value: "Excellent", label: "Excellent" },
+                  { value: "Good", label: "Good" },
+                  { value: "Fair", label: "Fair" },
+                  { value: "Poor", label: "Poor" }
+                ]}
+                required
+              />
             </div>
 
             {/* Notes - for all modes */}

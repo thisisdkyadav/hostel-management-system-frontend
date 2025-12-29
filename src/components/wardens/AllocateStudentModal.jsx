@@ -4,6 +4,7 @@ import { hostelApi } from "../../services/hostelApi"
 import { useStudents } from "../../hooks/useStudents"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import Input from "../common/ui/Input"
 
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -130,20 +131,7 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         <div>
-          <div style={{ position: 'relative' }}>
-            <input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', fontSize: 'var(--font-size-base)' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
-              onBlur={(e) => {
-                e.target.style.boxShadow = 'none';
-                e.target.style.borderColor = 'var(--color-border-input)';
-              }}
-            />
-            <span style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)', fontSize: 'var(--icon-md)' }}>
-              <FaSearch />
-            </span>
-          </div>
+          <Input type="text" placeholder="Search student by name, ID or email..." value={filters.searchTerm} onChange={handleSearchChange} icon={<FaSearch />} />
         </div>
 
         {/* Bed Selection Section */}

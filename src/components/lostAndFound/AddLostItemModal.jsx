@@ -3,6 +3,9 @@ import { lostAndFoundApi } from "../../services/apiService"
 import { uploadApi } from "../../services/uploadApi"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import Input from "../common/ui/Input"
+import Select from "../common/ui/Select"
+import FileInput from "../common/ui/FileInput"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
 
 const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
@@ -94,37 +97,12 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-md)' }}>
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Item Name</label>
-            <div style={{ position: 'relative' }}>
-              <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
-                <FaClipboardList />
-              </div>
-              <input type="text" name="itemName" value={formData.itemName} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--input-border-focus)';
-              }}
-                onBlur={(e) => {
-                  e.target.style.boxShadow = 'none';
-                  e.target.style.borderColor = 'var(--color-border-input)';
-                }}
-                placeholder="Enter item name"
-                required
-              />
-            </div>
+            <Input type="text" name="itemName" value={formData.itemName} onChange={handleChange} icon={<FaClipboardList />} placeholder="Enter item name" required />
           </div>
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} onFocus={(e) => {
-              e.target.style.boxShadow = 'var(--input-focus-ring)';
-              e.target.style.borderColor = 'var(--input-border-focus)';
-            }}
-              onBlur={(e) => {
-                e.target.style.boxShadow = 'none';
-                e.target.style.borderColor = 'var(--color-border-input)';
-              }}
-              placeholder="Describe the item, condition, where it was found, etc."
-              required
-            ></textarea>
+            <textarea name="description" value={formData.description} onChange={handleChange} rows="4" style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', resize: 'none' }} placeholder="Describe the item, condition, where it was found, etc." required></textarea>
           </div>
 
           <div>
@@ -135,9 +113,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
               </div>
             </label>
             <div style={{ position: 'relative' }}>
-              <input type="file" accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => e.target.style.outline = 'none'}
-                onBlur={(e) => e.target.style.outline = 'none'}
-              />
+              <FileInput accept="image/*" multiple onChange={handleImageUpload} disabled={uploading} />
               {uploading && (
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-info-text)', marginTop: 'var(--spacing-2)' }}>Uploading images...</p>
               )}
@@ -171,38 +147,15 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--gap-md)' }}>
             <div>
               <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Date Found</label>
-              <div style={{ position: 'relative' }}>
-                <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-placeholder)' }}>
-                  <FaCalendarAlt />
-                </div>
-                <input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => {
-                  e.target.style.boxShadow = 'var(--input-focus-ring)';
-                  e.target.style.borderColor = 'var(--input-border-focus)';
-                }}
-                  onBlur={(e) => {
-                    e.target.style.boxShadow = 'none';
-                    e.target.style.borderColor = 'var(--color-border-input)';
-                  }}
-                  required
-                />
-              </div>
+              <Input type="date" name="dateFound" value={formData.dateFound} onChange={handleChange} icon={<FaCalendarAlt />} required />
             </div>
 
             <div>
               <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Status</label>
-              <select name="status" value={formData.status} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: `var(--border-1) solid var(--color-border-input)`, borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => {
-                e.target.style.boxShadow = 'var(--input-focus-ring)';
-                e.target.style.borderColor = 'var(--input-border-focus)';
-              }}
-                onBlur={(e) => {
-                  e.target.style.boxShadow = 'none';
-                  e.target.style.borderColor = 'var(--color-border-input)';
-                }}
-                required
-              >
-                <option value="Active">Active</option>
-                <option value="Claimed">Claimed</option>
-              </select>
+              <Select name="status" value={formData.status} onChange={handleChange} options={[
+                { value: "Active", label: "Active" },
+                { value: "Claimed", label: "Claimed" }
+              ]} required />
             </div>
           </div>
         </div>

@@ -7,6 +7,8 @@ import { accessControlApi } from "../../../services/accessControlApi"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Checkbox from "../../common/ui/Checkbox"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
@@ -250,22 +252,12 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
               <div>
                 <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone Number</label>
-                <div style={{ position: 'relative' }}>
-                  <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-                    <FaPhone />
-                  </div>
-                  <input type="text" name="phone" value={formData.phone} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="Enter phone number" />
-                </div>
+                <Input type="text" name="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="Enter phone number" />
               </div>
 
               <div>
                 <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
-                <div style={{ position: 'relative' }}>
-                  <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-                    <FiTag />
-                  </div>
-                  <input type="text" name="category" value={formData.category} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="e.g., Senior, Junior" />
-                </div>
+                <Input type="text" name="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
               </div>
 
               <div>
@@ -274,7 +266,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   {hostelList.length > 0 ? (
                     hostelList.map((hostel) => (
                       <div key={hostel._id} style={{ display: 'flex', alignItems: 'center' }}>
-                        <input id={`hostel-${hostel._id}`} name="hostelIds" type="checkbox" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', borderRadius: 'var(--radius-sm)' }} />
+                        <Checkbox id={`hostel-${hostel._id}`} name="hostelIds" checked={formData.hostelIds.includes(hostel._id)} onChange={(e) => handleChange({ target: { name: 'hostelIds', type: 'checkbox', value: hostel._id, checked: e.target.checked } })} />
                         <label htmlFor={`hostel-${hostel._id}`} style={{ marginLeft: 'var(--spacing-3)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }}>
                           {hostel.name}
                         </label>
@@ -288,12 +280,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
 
               <div>
                 <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Join Date</label>
-                <div style={{ position: 'relative' }}>
-                  <div style={{ position: 'absolute', left: 'var(--spacing-3)', top: 'var(--spacing-3)', color: 'var(--color-text-muted)' }}>
-                    <FaCalendarAlt />
-                  </div>
-                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', paddingLeft: 'var(--spacing-10)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} />
-                </div>
+                <Input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FaCalendarAlt />} />
               </div>
             </div>
           </>
@@ -345,8 +332,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                         <td style={{ padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{resource.label}</td>
                         {actions.map((action) => (
                           <td key={`${resource.id}-${action.id}`} style={{ padding: 'var(--spacing-3)', textAlign: 'center' }}>
-                            <input type="checkbox" checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
-                              style={{ height: 'var(--icon-md)', width: 'var(--icon-md)', accentColor: 'var(--color-primary)', borderRadius: 'var(--radius-sm)', opacity: !currentAllowedChanges[resource.id]?.includes(action.id) ? 'var(--opacity-60)' : 'var(--opacity-100)', backgroundColor: !currentAllowedChanges[resource.id]?.includes(action.id) ? 'var(--color-bg-hover)' : 'transparent' }}
+                            <Checkbox checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
                               disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
                             />
                           </td>

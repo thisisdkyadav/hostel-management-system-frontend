@@ -3,6 +3,7 @@ import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import Button from "../common/Button"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import Modal from "../common/Modal"
+import Input from "../common/ui/Input"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
@@ -67,39 +68,39 @@ const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Email</label>
-            <input type="text" name="studentId" value={formData.userId.email} onChange={handleChange} readOnly style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} required />
+            <Input type="text" name="studentId" value={formData.userId.email} onChange={handleChange} readOnly />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Student Name</label>
-            <input type="text" name="studentName" value={formData.userId.name} onChange={handleChange} readOnly style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} required />
+            <Input type="text" name="studentName" value={formData.userId.name} onChange={handleChange} readOnly />
           </div>
 
           {hostelType === "unit-based" && (
             <div>
               <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Unit</label>
-              <input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} />
+              <Input type="text" name="unit" value={formData.unit || ""} onChange={handleChange} readOnly />
             </div>
           )}
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Room</label>
-            <input type="text" name="room" value={formData.room} onChange={handleChange} readOnly style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} required />
+            <Input type="text" name="room" value={formData.room} onChange={handleChange} readOnly required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Bed</label>
-            <input type="text" name="bed" value={formData.bed} onChange={handleChange} readOnly style={{ width: '100%', backgroundColor: 'var(--color-bg-muted)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} required />
+            <Input type="text" name="bed" value={formData.bed} onChange={handleChange} readOnly required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Date</label>
-            <input type="date" name="date" value={formData.date} onChange={handleChange} style={{ width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} required />
+            <Input type="date" name="date" value={formData.date} onChange={handleChange} required />
           </div>
 
           <div>
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Time</label>
-            <input type="time" name="time" value={formData.time} onChange={handleChange} style={{ width: '100%', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-secondary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-input)', border: `var(--border-1) solid var(--color-border-input)`, fontSize: 'var(--font-size-base)' }} required />
+            <Input type="time" name="time" value={formData.time} onChange={handleChange} required />
           </div>
         </div>
 

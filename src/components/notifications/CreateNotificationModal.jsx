@@ -5,6 +5,10 @@ import Button from "../common/Button"
 import { notificationApi } from "../../services/notificationApi"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { getDepartmentList, getDegreesList } from "../../services/studentService"
+import Input from "../common/ui/Input"
+import Select from "../common/ui/Select"
+import Checkbox from "../common/ui/Checkbox"
+import Textarea from "../common/ui/Textarea"
 
 const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   const { hostelList } = useGlobal()
@@ -174,121 +178,113 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   }
 
   return (
-    <Modal title={step === 1 ? "Create New Notification" : "Review & Send Notification"} onClose={() => {
-      onClose()
-      handleReset()
-    }}
+    <Modal
+      title={step === 1 ? "Create New Notification" : "Review & Send Notification"}
+      onClose={() => {
+        onClose()
+        handleReset()
+      }}
       width={700}
     >
       {step === 1 ? (
-        <form style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <form style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
           {error && (
-            <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-              <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+            <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
+              <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
               <p>{error}</p>
             </div>
           )}
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Notification Title</label>
-            <input type="text" name="title" value={formData.title} onChange={handleChange} style={{ width: '100%', padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }} placeholder="Enter notification title" required />
+            <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Notification Title</label>
+            <Input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter notification title" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Message</label>
-            <textarea name="message" value={formData.message} onChange={handleChange} rows={4} style={{ width: '100%', padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }} placeholder="Enter notification message" required />
+            <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Message</label>
+            <Textarea name="message" value={formData.message} onChange={handleChange} rows={4} placeholder="Enter notification message" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Expiry Date</label>
-            <input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} style={{ width: '100%', padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }} min={new Date().toISOString().split("T")[0]} required />
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Notifications will be shown to students until this date</p>
+            <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Expiry Date</label>
+            <Input type="date" name="expiryDate" value={formData.expiryDate} onChange={handleChange} min={new Date().toISOString().split("T")[0]} required />
+            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Notifications will be shown to students until this date</p>
           </div>
 
-          <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-4)' }}>
-            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)' }}>Target Recipients (Optional)</h3>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-4)' }}>Leave all fields empty to target all students</p>
+          <div style={{ borderTop: `var(--border-1) solid var(--color-border-light)`, paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-4)" }}>
+            <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)" }}>Target Recipients (Optional)</h3>
+            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-4)" }}>Leave all fields empty to target all students</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Hostel(s)</label>
-                <div style={{ maxHeight: '160px', overflowY: 'auto', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-primary)' }}>
+                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Hostel(s)</label>
+                <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {hostelList && hostelList.length > 0 ? (
-                    hostelList.map((hostel) => (
-                      <div key={hostel._id} style={{ display: 'flex', alignItems: 'center' }}>
-                        <input type="checkbox" id={`hostel-${hostel._id}`} name="hostelIds" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} style={{ height: 'var(--spacing-4)', width: 'var(--spacing-4)', accentColor: 'var(--color-primary)', borderColor: 'var(--input-border)', borderRadius: 'var(--radius-sm)' }} />
-                        <label htmlFor={`hostel-${hostel._id}`} style={{ marginLeft: 'var(--spacing-2)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>
-                          {hostel.name}
-                        </label>
-                      </div>
-                    ))
+                    hostelList.map((hostel) => <Checkbox key={hostel._id} id={`hostel-${hostel._id}`} name="hostelIds" value={hostel._id} checked={formData.hostelIds.includes(hostel._id)} onChange={handleChange} label={hostel.name} />)
                   ) : (
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>No hostels available.</p>
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No hostels available.</p>
                   )}
                 </div>
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Select one or more hostels</p>
+                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more hostels</p>
               </div>
 
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Department(s)</label>
-                <div style={{ maxHeight: '160px', overflowY: 'auto', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-primary)' }}>
+                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Department(s)</label>
+                <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {loadingOptions ? (
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Loading departments...</p>
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Loading departments...</p>
                   ) : availableDepartments && availableDepartments.length > 0 ? (
-                    availableDepartments.map((department) => (
-                      <div key={department} style={{ display: 'flex', alignItems: 'center' }}>
-                        <input type="checkbox" id={`dept-${department}`} name="departments" value={department} checked={formData.departments.includes(department)} onChange={handleChange} style={{ height: 'var(--spacing-4)', width: 'var(--spacing-4)', accentColor: 'var(--color-primary)', borderColor: 'var(--input-border)', borderRadius: 'var(--radius-sm)' }} />
-                        <label htmlFor={`dept-${department}`} style={{ marginLeft: 'var(--spacing-2)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>
-                          {department}
-                        </label>
-                      </div>
-                    ))
+                    availableDepartments.map((department) => <Checkbox key={department} id={`dept-${department}`} name="departments" value={department} checked={formData.departments.includes(department)} onChange={handleChange} label={department} />)
                   ) : (
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>No departments available.</p>
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No departments available.</p>
                   )}
                 </div>
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Select one or more departments</p>
+                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more departments</p>
               </div>
 
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Degree(s)</label>
-                <div style={{ maxHeight: '160px', overflowY: 'auto', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-primary)' }}>
+                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Degree(s)</label>
+                <div style={{ maxHeight: "160px", overflowY: "auto", border: `var(--border-1) solid var(--input-border)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)" }}>
                   {loadingOptions ? (
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Loading degrees...</p>
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Loading degrees...</p>
                   ) : availableDegrees && availableDegrees.length > 0 ? (
-                    availableDegrees.map((degree) => (
-                      <div key={degree} style={{ display: 'flex', alignItems: 'center' }}>
-                        <input type="checkbox" id={`degree-${degree}`} name="degrees" value={degree} checked={formData.degrees.includes(degree)} onChange={handleChange} style={{ height: 'var(--spacing-4)', width: 'var(--spacing-4)', accentColor: 'var(--color-primary)', borderColor: 'var(--input-border)', borderRadius: 'var(--radius-sm)' }} />
-                        <label htmlFor={`degree-${degree}`} style={{ marginLeft: 'var(--spacing-2)', display: 'block', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>
-                          {degree}
-                        </label>
-                      </div>
-                    ))
+                    availableDegrees.map((degree) => <Checkbox key={degree} id={`degree-${degree}`} name="degrees" value={degree} checked={formData.degrees.includes(degree)} onChange={handleChange} label={degree} />)
                   ) : (
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>No degrees available.</p>
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No degrees available.</p>
                   )}
                 </div>
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Select one or more degrees</p>
+                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Select one or more degrees</p>
               </div>
 
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Gender</label>
-                <select name="gender" value={formData.gender} onChange={handleChange} style={{ width: '100%', padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none', transition: 'var(--transition-colors)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)' }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)' }}>
-                  <option value="">All Genders</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
+                <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Gender</label>
+                <Select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  options={[
+                    { value: "", label: "All Genders" },
+                    { value: "Male", label: "Male" },
+                    { value: "Female", label: "Female" },
+                    { value: "Other", label: "Other" },
+                  ]}
+                />
               </div>
             </div>
           </div>
 
-          <div style={{ paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-4)' }}>
-              <Button type="button" onClick={() => {
-                onClose()
-                handleReset()
-              }} variant="secondary" size="medium" icon={<FaTimes />}>
+          <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-4)" }}>
+              <Button
+                type="button"
+                onClick={() => {
+                  onClose()
+                  handleReset()
+                }}
+                variant="secondary"
+                size="medium"
+                icon={<FaTimes />}
+              >
                 Cancel
               </Button>
               <Button type="button" onClick={moveToStep2} variant="primary" size="medium" icon={<FaArrowRight />}>
@@ -298,61 +294,61 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
           </div>
         </form>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
           {error && (
-            <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-              <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+            <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
+              <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
               <p>{error}</p>
             </div>
           )}
 
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
-            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>Notification Summary</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--color-text-muted)' }}>Title:</span>
-                <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{formData.title}</span>
+          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
+            <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Notification Summary</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "var(--color-text-muted)" }}>Title:</span>
+                <span style={{ fontWeight: "var(--font-weight-medium)" }}>{formData.title}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--color-text-muted)' }}>Type:</span>
-                <span style={{ fontWeight: 'var(--font-weight-medium)', textTransform: 'capitalize' }}>{formData.type}</span>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "var(--color-text-muted)" }}>Type:</span>
+                <span style={{ fontWeight: "var(--font-weight-medium)", textTransform: "capitalize" }}>{formData.type}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--color-text-muted)' }}>Expiry:</span>
-                <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{new Date(formData.expiryDate).toLocaleDateString()}</span>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "var(--color-text-muted)" }}>Expiry:</span>
+                <span style={{ fontWeight: "var(--font-weight-medium)" }}>{new Date(formData.expiryDate).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
 
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
-            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>Target Recipients</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
+          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
+            <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Target Recipients</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
               {!formData.hostelIds?.length && !formData.departments?.length && !formData.degrees?.length && !formData.gender ? (
-                <p style={{ color: 'var(--color-text-body)' }}>All Students</p>
+                <p style={{ color: "var(--color-text-body)" }}>All Students</p>
               ) : (
                 <>
                   {formData.hostelIds.length > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-muted)' }}>Hostel(s):</span>
-                      <span style={{ fontWeight: 'var(--font-weight-medium)', textAlign: 'right' }}>{getHostelNamesByIds(formData.hostelIds)}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "var(--color-text-muted)" }}>Hostel(s):</span>
+                      <span style={{ fontWeight: "var(--font-weight-medium)", textAlign: "right" }}>{getHostelNamesByIds(formData.hostelIds)}</span>
                     </div>
                   )}
                   {formData.departments.length > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-muted)' }}>Department(s):</span>
-                      <span style={{ fontWeight: 'var(--font-weight-medium)', textAlign: 'right' }}>{formData.departments.join(", ")}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "var(--color-text-muted)" }}>Department(s):</span>
+                      <span style={{ fontWeight: "var(--font-weight-medium)", textAlign: "right" }}>{formData.departments.join(", ")}</span>
                     </div>
                   )}
                   {formData.degrees.length > 0 && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-muted)' }}>Degree(s):</span>
-                      <span style={{ fontWeight: 'var(--font-weight-medium)', textAlign: 'right' }}>{formData.degrees.join(", ")}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "var(--color-text-muted)" }}>Degree(s):</span>
+                      <span style={{ fontWeight: "var(--font-weight-medium)", textAlign: "right" }}>{formData.degrees.join(", ")}</span>
                     </div>
                   )}
                   {formData.gender && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--color-text-muted)' }}>Gender:</span>
-                      <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{formData.gender}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: "var(--color-text-muted)" }}>Gender:</span>
+                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>{formData.gender}</span>
                     </div>
                   )}
                 </>
@@ -360,13 +356,13 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
           </div>
 
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)' }}>
-            <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>Message</h3>
-            <p style={{ color: 'var(--color-text-body)', whiteSpace: 'pre-line' }}>{formData.message}</p>
+          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)" }}>
+            <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Message</h3>
+            <p style={{ color: "var(--color-text-body)", whiteSpace: "pre-line" }}>{formData.message}</p>
           </div>
 
-          <div style={{ paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-4)' }}>
+          <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-4)" }}>
               <Button type="button" onClick={() => setStep(1)} variant="secondary" size="medium" icon={<FaArrowLeft />}>
                 Back
               </Button>

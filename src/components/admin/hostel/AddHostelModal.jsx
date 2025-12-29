@@ -4,6 +4,8 @@ import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../services/apiService"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 
 const AddHostelModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -52,25 +54,18 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
 
           <div>
             <label style={{ display: 'block', color: 'var(--color-text-tertiary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Hostel Name</label>
-            <input type="text" name="name" value={formData.name} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} placeholder="Enter hostel name" required />
+            <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter hostel name" required />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--spacing-4)' }} className="sm:grid-cols-2">
             <div>
               <label style={{ display: 'block', color: 'var(--color-text-tertiary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} required>
-                <option value="Boys">Boys</option>
-                <option value="Girls">Girls</option>
-                <option value="Co-ed">Co-ed</option>
-              </select>
+              <Select name="gender" value={formData.gender} onChange={handleChange} options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} required />
             </div>
 
             <div>
               <label style={{ display: 'block', color: 'var(--color-text-tertiary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Hostel Type</label>
-              <select name="type" value={formData.type} onChange={handleChange} style={{ width: '100%', padding: 'var(--spacing-3)', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', outline: 'none', transition: 'var(--transition-all)', backgroundColor: 'var(--color-bg-primary)' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--color-primary)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--color-border-input)'; }} required>
-                <option value="unit-based">Unit-based</option>
-                <option value="room-only">Room-only</option>
-              </select>
+              <Select name="type" value={formData.type} onChange={handleChange} options={[{ value: "unit-based", label: "Unit-based" }, { value: "room-only", label: "Room-only" }]} required />
             </div>
           </div>
         </div>

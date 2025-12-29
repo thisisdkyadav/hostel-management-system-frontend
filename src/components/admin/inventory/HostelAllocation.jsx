@@ -5,6 +5,8 @@ import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Pagination from "../../common/Pagination"
 import { useGlobal } from "../../../contexts/GlobalProvider"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 
 const HostelAllocation = () => {
   const { hostelList } = useGlobal()
@@ -221,26 +223,27 @@ const HostelAllocation = () => {
         <div className="flex flex-col md:flex-row gap-4 items-end">
           <div className="flex-1">
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hostel</label>
-            <select name="hostelId" value={filters.hostelId} onChange={handleFilterChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
-              <option value="">All Hostels</option>
-              {hostelList &&
-                hostelList.map((hostel) => (
-                  <option key={hostel._id} value={hostel._id}>
-                    {hostel.name}
-                  </option>
-                ))}
-            </select>
+            <Select
+              name="hostelId"
+              value={filters.hostelId}
+              onChange={handleFilterChange}
+              options={[
+                { value: "", label: "All Hostels" },
+                ...(hostelList || []).map((hostel) => ({ value: hostel._id, label: hostel.name })),
+              ]}
+            />
           </div>
           <div className="flex-1">
             <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item Type</label>
-            <select name="itemTypeId" value={filters.itemTypeId} onChange={handleFilterChange} style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}>
-              <option value="">All Item Types</option>
-              {itemTypes.map((item) => (
-                <option key={item._id} value={item._id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <Select
+              name="itemTypeId"
+              value={filters.itemTypeId}
+              onChange={handleFilterChange}
+              options={[
+                { value: "", label: "All Item Types" },
+                ...itemTypes.map((item) => ({ value: item._id, label: item.name })),
+              ]}
+            />
           </div>
           <div className="flex gap-2">
             <Button onClick={resetFilters} variant="secondary" size="medium">

@@ -5,6 +5,8 @@ import Pagination from "../../common/Pagination"
 import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import Button from "../../common/Button"
+import Input from "../../common/ui/Input"
+import Select from "../../common/ui/Select"
 
 const StudentAssignments = () => {
   const { user, canAccess } = useAuth()
@@ -174,17 +176,17 @@ const StudentAssignments = () => {
         <div className="flex flex-col md:flex-row items-end" style={{ gap: 'var(--gap-md)' }}>
           <div className="flex-1">
             <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
-            <select name="status" value={filters.status} onChange={handleFilterChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }}>
-              <option value="">All Statuses</option>
-              <option value="Issued">Issued</option>
-              <option value="Returned">Returned</option>
-              <option value="Damaged">Damaged</option>
-              <option value="Lost">Lost</option>
-            </select>
+            <Select name="status" value={filters.status} onChange={handleFilterChange} options={[
+              { value: "", label: "All Statuses" },
+              { value: "Issued", label: "Issued" },
+              { value: "Returned", label: "Returned" },
+              { value: "Damaged", label: "Damaged" },
+              { value: "Lost", label: "Lost" }
+            ]} />
           </div>
           <div className="flex-1">
             <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Roll Number</label>
-            <input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} />
+            <Input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." />
           </div>
           <div className="flex self-end" style={{ gap: 'var(--gap-sm)' }}>
             <Button onClick={resetFilters} variant="secondary" size="medium">
@@ -322,26 +324,26 @@ const StudentAssignments = () => {
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Status</label>
-              <select name="status" value={formData.status} onChange={handleFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
-                <option value="Issued">Issued</option>
-                <option value="Damaged">Damaged</option>
-                <option value="Lost">Lost</option>
-              </select>
+              <Select name="status" value={formData.status} onChange={handleFormChange} options={[
+                { value: "Issued", label: "Issued" },
+                { value: "Damaged", label: "Damaged" },
+                { value: "Lost", label: "Lost" }
+              ]} required />
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
-              <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-              </select>
+              <Select name="condition" value={formData.condition} onChange={handleFormChange} options={[
+                { value: "Excellent", label: "Excellent" },
+                { value: "Good", label: "Good" },
+                { value: "Fair", label: "Fair" },
+                { value: "Poor", label: "Poor" }
+              ]} required />
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
-              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} placeholder="Update notes..."></textarea>
+              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" placeholder="Update notes..."></textarea>
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
@@ -378,17 +380,17 @@ const StudentAssignments = () => {
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Condition</label>
-              <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} required>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-                <option value="Poor">Poor</option>
-              </select>
+              <Select name="condition" value={formData.condition} onChange={handleFormChange} options={[
+                { value: "Excellent", label: "Excellent" },
+                { value: "Good", label: "Good" },
+                { value: "Fair", label: "Fair" },
+                { value: "Poor", label: "Poor" }
+              ]} required />
             </div>
 
             <div style={{ marginBottom: 'var(--spacing-4)' }}>
               <label className="block" style={{ fontSize: 'var(--text-label)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Notes</label>
-              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" style={{ padding: 'var(--input-padding)', border: `var(--border-1) solid var(--input-border)`, borderRadius: 'var(--input-radius)', outline: 'none' }} onFocus={(e) => { e.target.style.boxShadow = 'var(--input-focus-ring)'; e.target.style.borderColor = 'var(--input-border-focus)'; }} onBlur={(e) => { e.target.style.boxShadow = 'none'; e.target.style.borderColor = 'var(--input-border)'; }} placeholder="Notes about returned item..."></textarea>
+              <textarea name="notes" value={formData.notes} onChange={handleFormChange} rows="3" className="w-full" placeholder="Notes about returned item..."></textarea>
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>

@@ -3,6 +3,7 @@ import Cropper from "react-cropper"
 import "cropperjs/dist/cropper.css"
 import Modal from "./common/Modal"
 import Button from "./common/Button"
+import FileInput from "./common/ui/FileInput"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi } from "../services/uploadApi"
 import { IDcardApi } from "../services/IDcardApi"
@@ -113,7 +114,7 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
                 <p className="text-[var(--color-text-muted)] text-sm font-medium">Maximum file size: 1MB</p>
               </div>
               <label className="inline-block">
-                <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                <FileInput hidden accept="image/*" onChange={handleFileChange} />
                 <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-hover)] cursor-pointer inline-block transition-colors">Select Image</span>
               </label>
             </div>

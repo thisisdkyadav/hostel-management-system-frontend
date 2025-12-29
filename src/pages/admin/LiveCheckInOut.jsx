@@ -4,6 +4,8 @@ import { MdLogin, MdLogout, MdSwapHoriz, MdHome } from "react-icons/md"
 import { RiRadarLine } from "react-icons/ri"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
+import Input from "../../components/common/ui/Input"
+import Select from "../../components/common/ui/Select"
 
 const formatDateTime = (value) => {
   if (!value) return "-"
@@ -847,44 +849,39 @@ const LiveCheckInOut = () => {
 
         {/* Compact Inline Filters */}
         <div style={styles.filtersContainer}>
-          <div style={styles.searchContainer}>
-            <FiSearch style={styles.searchIcon} />
-            <input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
+          <div style={{ flex: 1 }}>
+            <Input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
               placeholder="Search student, room, reason..."
-              style={styles.searchInput}
+              icon={<FiSearch />}
             />
           </div>
 
-          <select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} style={styles.selectInput}>
-            <option value="">All Status</option>
-            <option value="Checked In">Checked In</option>
-            <option value="Checked Out">Checked Out</option>
-          </select>
+          <Select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} options={[
+            { value: "", label: "All Status" },
+            { value: "Checked In", label: "Checked In" },
+            { value: "Checked Out", label: "Checked Out" }
+          ]} />
 
-          <select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} style={styles.selectInput}>
-            <option value="">All Types</option>
-            <option value="true">Same Hostel</option>
-            <option value="false">Cross-Hostel</option>
-          </select>
+          <Select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} options={[
+            { value: "", label: "All Types" },
+            { value: "true", label: "Same Hostel" },
+            { value: "false", label: "Cross-Hostel" }
+          ]} />
 
-          <select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} style={styles.selectInput}>
-            <option value="">All Hostels</option>
-            {hostelList?.map((hostel) => (
-              <option key={hostel._id} value={hostel._id}>
-                {hostel.name}
-              </option>
-            ))}
-          </select>
+          <Select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} options={[
+            { value: "", label: "All Hostels" },
+            ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
+          ]} />
 
-          <input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} style={styles.dateInput} />
+          <Input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} />
 
-          <input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} style={styles.dateInput} />
+          <Input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} />
 
-          <select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} style={styles.selectInput}>
-            <option value="20">20/page</option>
-            <option value="50">50/page</option>
-            <option value="100">100/page</option>
-          </select>
+          <Select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} options={[
+            { value: "20", label: "20/page" },
+            { value: "50", label: "50/page" },
+            { value: "100", label: "100/page" }
+          ]} />
 
           {(filters.search || filters.status || filters.hostelId || filters.isSameHostel || filters.startDate || filters.endDate) && (
             <button onClick={resetFilters} style={styles.clearButton}>
@@ -1049,66 +1046,59 @@ const LiveCheckInOut = () => {
             <div style={styles.sidebarContent}>
               <div style={styles.formGroup}>
                 <label style={styles.formLabel}>Search</label>
-                <div style={{ position: "relative" }}>
-                  <FiSearch style={styles.searchIcon} />
-                  <input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
-                    style={styles.formInputWithIcon}
-                    placeholder="Student, room, reason..."
-                  />
-                </div>
+                <Input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
+                  placeholder="Student, room, reason..."
+                  icon={<FiSearch />}
+                />
               </div>
 
               <div style={styles.formGrid}>
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Status</label>
-                  <select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} style={styles.formInputFull}>
-                    <option value="">All</option>
-                    <option value="Checked In">Checked In</option>
-                    <option value="Checked Out">Checked Out</option>
-                  </select>
+                  <Select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} options={[
+                    { value: "", label: "All" },
+                    { value: "Checked In", label: "Checked In" },
+                    { value: "Checked Out", label: "Checked Out" }
+                  ]} />
                 </div>
 
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Type</label>
-                  <select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} style={styles.formInputFull}>
-                    <option value="">All</option>
-                    <option value="true">Same Hostel</option>
-                    <option value="false">Cross-Hostel</option>
-                  </select>
+                  <Select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} options={[
+                    { value: "", label: "All" },
+                    { value: "true", label: "Same Hostel" },
+                    { value: "false", label: "Cross-Hostel" }
+                  ]} />
                 </div>
               </div>
 
               <div style={styles.formGroup}>
                 <label style={styles.formLabel}>Hostel</label>
-                <select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} style={styles.formInputFull}>
-                  <option value="">All Hostels</option>
-                  {hostelList?.map((hostel) => (
-                    <option key={hostel._id} value={hostel._id}>
-                      {hostel.name}
-                    </option>
-                  ))}
-                </select>
+                <Select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} options={[
+                  { value: "", label: "All Hostels" },
+                  ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
+                ]} />
               </div>
 
               <div style={styles.formGrid}>
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Start Date</label>
-                  <input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} style={styles.formInputFull} />
+                  <Input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} />
                 </div>
 
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>End Date</label>
-                  <input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} style={styles.formInputFull} />
+                  <Input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} />
                 </div>
               </div>
 
               <div style={styles.formGroup}>
                 <label style={styles.formLabel}>Page Size</label>
-                <select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} style={styles.formInputFull}>
-                  <option value="20">20 per page</option>
-                  <option value="50">50 per page</option>
-                  <option value="100">100 per page</option>
-                </select>
+                <Select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} options={[
+                  { value: "20", label: "20 per page" },
+                  { value: "50", label: "50 per page" },
+                  { value: "100", label: "100 per page" }
+                ]} />
               </div>
 
               <div style={styles.sidebarActions}>
