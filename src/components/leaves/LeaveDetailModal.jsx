@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
-import { leaveApi } from "../../services/leaveApi"
+import { leaveApi } from "../../service"
 
 const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {
   const [loading, setLoading] = useState(false)

@@ -3,7 +3,7 @@ import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
 

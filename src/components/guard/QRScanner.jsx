@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes } from "react-icons/fa"
-import { securityApi } from "../../services/securityApi"
+import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
 import Button from "../common/Button"

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGraduate } from "react-icons/fa"
-import { hostelApi } from "../../services/hostelApi"
+import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
 import Modal from "../common/Modal"
 import Button from "../common/Button"

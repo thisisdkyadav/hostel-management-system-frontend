@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { lostAndFoundApi } from "../../services/apiService"
-import { uploadApi } from "../../services/uploadApi"
+import { lostAndFoundApi } from "../../service"
+import { uploadApi } from "../../service"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Input from "../common/ui/Input"

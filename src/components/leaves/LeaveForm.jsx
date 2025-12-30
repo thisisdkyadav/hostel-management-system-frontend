@@ -2,7 +2,7 @@ import { useState } from "react"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Input from "../common/ui/Input"
-import { leaveApi } from "../../services/leaveApi"
+import { leaveApi } from "../../service"
 
 const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
   const [formData, setFormData] = useState({ reason: "", startDate: "", endDate: "" })

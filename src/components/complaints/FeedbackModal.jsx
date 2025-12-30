@@ -3,7 +3,7 @@ import { FaStar } from "react-icons/fa"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Select from "../common/ui/Select"
-import { complaintApi } from "../../services/complaintApi"
+import { complaintApi } from "../../service"
 
 const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
   const [feedback, setFeedback] = useState("")

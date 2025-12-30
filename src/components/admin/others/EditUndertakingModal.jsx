@@ -3,7 +3,7 @@ import { FaFileSignature, FaCalendarAlt, FaInfoCircle } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 
 const EditUndertakingModal = ({ show, undertaking, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaQrcode, FaHistory } from "react-icons/fa"
 import SecurityQRGenerator from "../../components/guard/SecurityQRGenerator"
-import { securityApi } from "../../services/apiService"
+import { securityApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const Attendance = () => {

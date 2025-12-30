@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCalendarAlt, FaUsers } from "react-icons/fa"
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
-import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
+import { insuranceProviderApi } from "../../../service"
 import Card from "../../common/Card"
 import Button from "../../common/Button"
 

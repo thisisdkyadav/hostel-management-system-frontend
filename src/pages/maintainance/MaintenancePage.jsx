@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { maintenanceApi } from "../../services/apiService"
+import { maintenanceApi } from "../../service"
 import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants"
 import ComplaintStats from "../../components/complaints/ComplaintStats"
 import ComplaintDetailModal from "../../components/complaints/ComplaintDetailModal"

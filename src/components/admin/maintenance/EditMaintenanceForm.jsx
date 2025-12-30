@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaTrash, FaSave, FaTools, FaExclamationTriangle, FaPhone } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
-import { adminApi } from "../../../services/apiService"
+import { adminApi } from "../../../service"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import ImageUploadModal from "../../common/ImageUploadModal"

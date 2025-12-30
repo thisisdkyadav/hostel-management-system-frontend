@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
-import { IDcardApi } from "../../services/IDcardApi"
+import { idCardApi } from "../../service"
 import { HiCamera, HiInformationCircle } from "react-icons/hi"
 import Button from "../../components/common/Button"
 import IDCardUploadModal from "../../components/IDCardUploadModal"
@@ -18,7 +18,7 @@ const IDCard = () => {
     const fetchIDCard = async () => {
       try {
         setLoading(true)
-        const data = await IDcardApi.getIDcard(user._id)
+        const data = await idCardApi.getIDcard(user._id)
         setIdCardData(data)
       } catch (err) {
         console.error("Error fetching ID card:", err)

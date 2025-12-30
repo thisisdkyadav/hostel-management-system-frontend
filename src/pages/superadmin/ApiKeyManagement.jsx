@@ -5,7 +5,7 @@ import FilterTabs from "../../components/common/FilterTabs"
 import NoResults from "../../components/common/NoResults"
 import BaseTable from "../../components/common/table/BaseTable"
 import Modal from "../../components/common/Modal"
-import superAdminService from "../../services/superAdminService"
+import { superAdminApi } from "../../service"
 import Button from "../../components/common/Button"
 import Input from "../../components/common/ui/Input"
 
@@ -30,7 +30,7 @@ const ApiKeyManagement = () => {
     try {
       setLoading(true)
       setError(null)
-      const data = await superAdminService.getAllApiKeys()
+      const data = await superAdminApi.getAllApiKeys()
       const apiKeysData = data || []
       setApiKeys(apiKeysData)
 
@@ -76,7 +76,7 @@ const ApiKeyManagement = () => {
   const handleAddApiKey = async (keyData) => {
     try {
       setLoading(true)
-      const response = await superAdminService.createApiKey(keyData)
+      const response = await superAdminApi.createApiKey(keyData)
 
       window.alert(`New API key created successfully!\n\nAPI KEY: ${response.apiKey}`)
 
@@ -102,7 +102,7 @@ const ApiKeyManagement = () => {
 
     try {
       setLoading(true)
-      await superAdminService.deleteApiKey(id)
+      await superAdminApi.deleteApiKey(id)
       window.alert("API key deleted successfully")
       fetchApiKeys()
     } catch (err) {
@@ -116,7 +116,7 @@ const ApiKeyManagement = () => {
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       setLoading(true)
-      await superAdminService.updateApiKeyStatus(id, !currentStatus)
+      await superAdminApi.updateApiKeyStatus(id, !currentStatus)
       window.alert(`API key ${currentStatus ? "deactivated" : "activated"} successfully`)
       fetchApiKeys()
     } catch (err) {

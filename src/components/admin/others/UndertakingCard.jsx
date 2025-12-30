@@ -3,7 +3,7 @@ import { FaFileSignature, FaEdit, FaTrash, FaCalendarAlt, FaUsers, FaInfoCircle,
 import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 import Card from "../../common/Card"
 import Button from "../../common/Button"
 

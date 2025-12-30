@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
-import { studentApi, authApi } from "../../services/apiService"
+import { studentApi, authApi } from "../../service"
 import { BiError } from "react-icons/bi"
 import { FaQrcode } from "react-icons/fa"
 import OfflineBanner from "../../components/common/OfflineBanner"

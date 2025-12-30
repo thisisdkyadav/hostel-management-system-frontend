@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaQrcode, FaHistory } from "react-icons/fa"
 import AttendanceQRScanner from "../../components/guard/AttendanceQRScanner"
-import { securityApi } from "../../services/apiService"
+import { securityApi } from "../../service"
 
 const HostelGateAttendance = () => {
   const [attendanceRecords, setAttendanceRecords] = useState([])

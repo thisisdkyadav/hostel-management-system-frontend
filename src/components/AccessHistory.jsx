@@ -6,7 +6,7 @@ import Pagination from "./common/Pagination"
 import Button from "./common/Button"
 import Input from "./common/ui/Input"
 import Select from "./common/ui/Select"
-import { securityApi } from "../services/apiService"
+import { securityApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
 
 const ENTRY_FILTER_TABS = [

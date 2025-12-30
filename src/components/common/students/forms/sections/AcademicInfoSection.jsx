@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { FaUserGraduate } from "react-icons/fa"
 import FormField from "../../../FormField"
 import Select from "../../../ui/Select"
-import { adminApi } from "../../../../../services/adminApi"
+import { adminApi } from "../../../../../service"
 
 const AcademicInfoSection = ({ data, onChange }) => {
   const [validDegrees, setValidDegrees] = useState([])

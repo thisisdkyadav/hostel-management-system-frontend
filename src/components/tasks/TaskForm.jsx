@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { taskApi } from "../../services/taskApi"
+import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"

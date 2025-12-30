@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
-import { adminApi } from "../../services/adminApi"
+import { adminApi } from "../../service"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"

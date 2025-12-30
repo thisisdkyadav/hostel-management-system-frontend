@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { FaPlus, FaFileAlt, FaFilePdf, FaImage } from "react-icons/fa"
-import { getCertificatesByStudent, deleteCertificate } from "../../../services/certificatesApi"
+import { certificateApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import Button from "../Button"
 import CertificateModal from "./CertificateModal"
@@ -20,7 +20,7 @@ const Certificates = ({ userId }) => {
   const fetchCertificates = async () => {
     try {
       setLoading(true)
-      const res = await getCertificatesByStudent(userId)
+      const res = await certificateApi.getCertificatesByStudent(userId)
       setCertificates(res.certificates)
     } catch (err) {
       setError(err)
@@ -55,7 +55,7 @@ const Certificates = ({ userId }) => {
 
   const handleDeleteClick = async (certificateId) => {
     try {
-      await deleteCertificate(certificateId)
+      await certificateApi.deleteCertificate(certificateId)
       fetchCertificates() // Refresh the list
     } catch (error) {
       console.error("Error deleting certificate:", error)

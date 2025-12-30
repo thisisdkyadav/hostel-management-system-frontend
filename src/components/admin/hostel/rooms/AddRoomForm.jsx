@@ -3,7 +3,7 @@ import Button from "../../../common/Button"
 import Input from "../../../common/ui/Input"
 import Select from "../../../common/ui/Select"
 import { FaDoorOpen, FaUsers, FaPlusCircle } from "react-icons/fa"
-import { hostelApi } from "../../../../services/hostelApi"
+import { hostelApi } from "../../../../service"
 
 const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const isUnitBased = hostel.type === "unit-based"

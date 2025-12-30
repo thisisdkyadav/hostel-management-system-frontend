@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
-import { hostelGateApi } from "../../../services/hostelGateApi"
+import { hostelGateApi } from "../../../service"
 
 const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({

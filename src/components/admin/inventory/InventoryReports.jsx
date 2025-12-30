@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { inventoryApi } from "../../../services/inventoryApi"
+import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import Button from "../../common/Button"

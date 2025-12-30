@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
-import { studentUndertakingApi } from "../../services/studentUndertakingApi"
+import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
 import LoadingState from "../../components/common/LoadingState"
 import ErrorState from "../../components/common/ErrorState"
@@ -28,7 +28,7 @@ const Undertakings = () => {
       setError(null)
 
       // Fetch both types of undertakings in parallel
-      const [pendingResponse, acceptedResponse] = await Promise.all([studentUndertakingApi.getPendingUndertakings(), studentUndertakingApi.getAcceptedUndertakings()])
+      const [pendingResponse, acceptedResponse] = await Promise.all([undertakingApi.getPendingUndertakings(), undertakingApi.getAcceptedUndertakings()])
 
       setPendingUndertakings(pendingResponse.pendingUndertakings || [])
       setAcceptedUndertakings(acceptedResponse.acceptedUndertakings || [])
@@ -44,7 +44,7 @@ const Undertakings = () => {
   const handleViewUndertaking = async (undertakingId) => {
     try {
       setLoading(true)
-      const response = await studentUndertakingApi.getUndertakingDetails(undertakingId)
+      const response = await undertakingApi.getUndertakingDetails(undertakingId)
       setSelectedUndertaking(response.undertaking)
       setShowDetailModal(true)
     } catch (err) {
@@ -58,7 +58,7 @@ const Undertakings = () => {
   // Function to accept an undertaking
   const handleAcceptUndertaking = async (undertakingId) => {
     try {
-      await studentUndertakingApi.acceptUndertaking(undertakingId)
+      await undertakingApi.acceptUndertaking(undertakingId)
       alert("Undertaking accepted successfully!")
       setShowDetailModal(false)
       fetchUndertakings() // Refresh the lists

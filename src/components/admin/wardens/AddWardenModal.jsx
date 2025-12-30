@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag } from "react-icons/fi"
-import { adminApi } from "../../../services/apiService"
+import { adminApi } from "../../../service"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"

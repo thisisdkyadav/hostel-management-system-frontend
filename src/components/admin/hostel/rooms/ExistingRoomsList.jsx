@@ -5,8 +5,8 @@ import Input from "../../../common/ui/Input"
 import Select from "../../../common/ui/Select"
 import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
-import { adminApi } from "../../../../services/apiService"
-import { hostelApi } from "../../../../services/hostelApi"
+import { adminApi } from "../../../../service"
+import { hostelApi } from "../../../../service"
 
 const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const [rooms, setRooms] = useState([])

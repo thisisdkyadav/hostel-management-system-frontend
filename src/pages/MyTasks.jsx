@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../contexts/AuthProvider"
-import { taskApi } from "../services/taskApi"
+import { taskApi } from "../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../constants/taskConstants"
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
 import Pagination from "../components/common/Pagination"

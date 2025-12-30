@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { HiAnnotation, HiUser, HiCalendar, HiClock, HiEye, HiReply, HiTrash, HiPencilAlt, HiMail } from "react-icons/hi"
-import { feedbackApi } from "../services/feedbackApi"
+import { feedbackApi } from "../service"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { useAuth } from "../contexts/AuthProvider"

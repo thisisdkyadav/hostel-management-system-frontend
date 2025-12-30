@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { uploadApi } from "../../../../services/uploadApi"
+import { uploadApi } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import Button from "../../../common/Button"
 import Input from "../../../common/ui/Input"

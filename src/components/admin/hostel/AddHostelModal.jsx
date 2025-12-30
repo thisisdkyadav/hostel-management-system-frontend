@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
-import { adminApi } from "../../../services/apiService"
+import { adminApi } from "../../../service"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"

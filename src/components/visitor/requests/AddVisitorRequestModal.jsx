@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
 import Modal from "../../common/Modal"
-import { uploadApi } from "../../../services/uploadApi"
+import { uploadApi } from "../../../service"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
 import Textarea from "../../common/ui/Textarea"

@@ -6,7 +6,7 @@ import Button from "../common/Button"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import UpdateComplaintModal from "./UpdateComplaintModal"
-import { getStudentId } from "../../services/studentService"
+import { studentApi } from "../../service"
 import StudentDetailModal from "../common/students/StudentDetailModal"
 import FeedbackModal from "./FeedbackModal"
 
@@ -42,7 +42,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
   useEffect(() => {
     const fetchStudentId = async () => {
       if (complaintData.reportedBy.role !== "Student") return
-      const studentId = await getStudentId(complaintData.reportedBy.id)
+      const studentId = await studentApi.getStudentId(complaintData.reportedBy.id)
       setStudentId(studentId)
     }
     fetchStudentId()

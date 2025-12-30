@@ -3,7 +3,7 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTrash, FaSave, FaCal
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
-import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
+import { insuranceProviderApi } from "../../../service"
 
 const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({

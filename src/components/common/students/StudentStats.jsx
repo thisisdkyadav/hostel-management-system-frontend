@@ -3,7 +3,7 @@ import { BsGenderMale, BsGenderFemale } from "react-icons/bs"
 import { IoMdSchool } from "react-icons/io"
 import StatCards from "../StatCards"
 import { useEffect, useState } from "react"
-import { dashboardApi } from "../../../services/dashboardApi"
+import { dashboardApi } from "../../../service"
 
 // Shimmer loader component for stats
 const StatCardShimmer = () => (

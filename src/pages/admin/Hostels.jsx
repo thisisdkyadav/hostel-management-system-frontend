@@ -8,7 +8,7 @@ import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
 import HostelsHeader from "../../components/headers/HostelsHeader"
 import { HOSTEL_FILTER_TABS } from "../../constants/adminConstants"
 import { filterHostels } from "../../utils/adminUtils"
-import { adminApi } from "../../services/apiService"
+import { adminApi } from "../../service"
 
 const Hostels = () => {
   const [activeTab, setActiveTab] = useState("all")

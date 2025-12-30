@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiHome } from "react-icons/fi"
 import { FaExclamationTriangle } from "react-icons/fa"
-import { adminApi } from "../../../services/apiService"
+import { adminApi } from "../../../service"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"

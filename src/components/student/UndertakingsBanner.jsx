@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { FaExclamationTriangle, FaFileSignature, FaTimes } from "react-icons/fa"
-import { studentUndertakingApi } from "../../services/studentUndertakingApi"
+import { undertakingApi } from "../../service"
 import Button from "../common/Button"
 
 const UndertakingsBanner = () => {
@@ -13,7 +13,7 @@ const UndertakingsBanner = () => {
     const fetchPendingCount = async () => {
       try {
         setLoading(true)
-        const response = await studentUndertakingApi.pendingUndertakingsCount()
+        const response = await undertakingApi.pendingUndertakingsCount()
         console.log(response)
 
         setPendingCount(response.count || 0)

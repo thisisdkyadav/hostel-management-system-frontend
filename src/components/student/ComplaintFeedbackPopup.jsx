@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
-import { complaintApi } from "../../services/complaintApi"
+import { complaintApi } from "../../service"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaPhone, FaUserShield } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
-import superAdminService from "../../../services/superAdminService"
+import { superAdminApi } from "../../../service"
 import Modal from "../../common/Modal"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
@@ -75,7 +75,7 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
         category: formData.category,
       }
 
-      await superAdminService.updateAdmin(admin.id, payload)
+      await superAdminApi.updateAdmin(admin.id, payload)
       alert("Administrator updated successfully!")
       if (onSave) onSave()
       onClose()
@@ -92,7 +92,7 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
     if (confirmDelete) {
       setIsLoading(true)
       try {
-        await superAdminService.deleteAdmin(admin.id)
+        await superAdminApi.deleteAdmin(admin.id)
         alert("Administrator deleted successfully!")
         if (onDelete) onDelete()
         onClose()

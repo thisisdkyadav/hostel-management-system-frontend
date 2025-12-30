@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
-import { hostelGateApi } from "../../../services/hostelGateApi"
+import { hostelGateApi } from "../../../service"
 import Card from "../../common/Card"
 import Button from "../../common/Button"
 

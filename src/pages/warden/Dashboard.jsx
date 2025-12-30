@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { statsApi } from "../../services/apiService"
-import { dashboardApi } from "../../services/dashboardApi"
+import { statsApi } from "../../service"
+import { dashboardApi } from "../../service"
 import StatCards from "../../components/common/StatCards"
 import { BiError, BiCalendarEvent, BiBuildings } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"

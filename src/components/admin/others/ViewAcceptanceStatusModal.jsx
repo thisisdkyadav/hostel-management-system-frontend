@@ -3,7 +3,7 @@ import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 
 const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onClose }) => {

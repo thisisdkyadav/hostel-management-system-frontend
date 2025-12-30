@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserCog, FaKey } from "react-icons/fa"
-import superAdminService from "../../services/superAdminService"
+import { superAdminApi } from "../../service"
 import { Link } from "react-router-dom"
 
 const Dashboard = () => {
@@ -16,7 +16,7 @@ const Dashboard = () => {
     try {
       setLoading(true)
       setError(null)
-      const data = await superAdminService.getDashboardStats()
+      const data = await superAdminApi.getDashboardStats()
       setStats({
         totalAdmins: data.totalAdmins || 0,
         totalApiKeys: data.totalApiKeys || 0,

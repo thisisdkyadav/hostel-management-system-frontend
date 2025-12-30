@@ -4,8 +4,7 @@ import FormField from "../../common/FormField"
 import Button from "../../common/Button"
 import FileInput from "../../common/ui/FileInput"
 import { FaTrash, FaUpload } from "react-icons/fa"
-import { uploadApi } from "../../../services/uploadApi"
-import { addCertificate, updateCertificate } from "../../../services/certificatesApi"
+import { uploadApi, certificateApi } from "../../../service"
 
 const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null, studentId }) => {
   const [formData, setFormData] = useState({
@@ -113,9 +112,9 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
     try {
       const submitFunction = async () => {
         if (isEditing) {
-          await updateCertificate(initialData._id, formData)
+          await certificateApi.updateCertificate(initialData._id, formData)
         } else {
-          await addCertificate({ ...formData, studentId })
+          await certificateApi.addCertificate({ ...formData, studentId })
         }
       }
 

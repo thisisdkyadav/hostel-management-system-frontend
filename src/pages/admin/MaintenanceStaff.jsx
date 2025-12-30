@@ -9,7 +9,7 @@ import MaintenanceStats from "../../components/admin/maintenance/MaintenanceStat
 import MaintenanceStaffHeader from "../../components/headers/MaintenanceStaffHeader"
 import { filterMaintenanceStaff } from "../../utils/adminUtils"
 import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants"
-import { adminApi } from "../../services/apiService"
+import { adminApi } from "../../service"
 
 const MaintenanceStaff = () => {
   const [searchTerm, setSearchTerm] = useState("")

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaQrcode, FaRegKeyboard, FaHistory, FaInfoCircle } from "react-icons/fa"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
-import { securityApi } from "../../services/apiService"
+import { securityApi } from "../../service"
 import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
 import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"

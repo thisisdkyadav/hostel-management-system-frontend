@@ -4,7 +4,7 @@ import Modal from "./Modal"
 import Button from "./Button"
 import FileInput from "./ui/FileInput"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
-import { uploadApi } from "../../services/apiService"
+import { uploadApi } from "../../service"
 
 const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
   const [image, setImage] = useState(null)
