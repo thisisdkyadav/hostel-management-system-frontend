@@ -60,6 +60,7 @@ export { sheetApi } from "./modules/sheet.api"
 export { superAdminApi } from "./modules/superAdmin.api"
 export { undertakingApi } from "./modules/undertaking.api"
 export { discoApi } from "./modules/disco.api"
+export { faceScannerApi } from "./modules/faceScanner.api"
 
 // Default export with all APIs grouped
 import { authApi } from "./modules/auth.api"
@@ -96,6 +97,7 @@ import { sheetApi } from "./modules/sheet.api"
 import { superAdminApi } from "./modules/superAdmin.api"
 import { undertakingApi } from "./modules/undertaking.api"
 import { discoApi } from "./modules/disco.api"
+import { faceScannerApi } from "./modules/faceScanner.api"
 
 const api = {
   auth: authApi,
@@ -134,6 +136,7 @@ const api = {
   superAdmin: superAdminApi,
   undertaking: undertakingApi,
   disco: discoApi,
+  faceScanner: faceScannerApi,
 }
 
 export default api

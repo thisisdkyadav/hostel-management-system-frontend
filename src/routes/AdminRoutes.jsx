@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom"
 import AdminLayout from "../layouts/AdminLayout"
 import AdminDashboard from "../pages/admin/Dashboard"
 import LiveCheckInOut from "../pages/admin/LiveCheckInOut.jsx"
+import FaceScanners from "../pages/admin/FaceScanners.jsx"
 import AdminHostels from "../pages/admin/Hostels"
 import UnitsAndRooms from "../pages/UnitsAndRooms.jsx"
 import AdminAdminManagement from "../pages/admin/AdminManagement.jsx"
@@ -33,6 +34,7 @@ const AdminRoutes = () => (
             <Route element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="live-checkinout" element={<LiveCheckInOut />} />
+                <Route path="face-scanners" element={<FaceScanners />} />
                 <Route path="hostels" element={<AdminHostels />} />
                 <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
                 <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
