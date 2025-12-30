@@ -1,10 +1,24 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaBuilding, FaUserTie, FaUsers, FaSignOutAlt, FaSearch, FaCalendarAlt, FaExchangeAlt, FaBoxes, FaTasks, FaBell, FaFileSignature } from "react-icons/fa"
-import { MdSpaceDashboard } from "react-icons/md"
+import {
+  LayoutDashboard,
+  Building2,
+  Users,
+  CalendarOff,
+  Package,
+  ListTodo,
+  Search,
+  CalendarDays,
+  UserRoundCheck,
+  Bell,
+  ClipboardList,
+  MessageCircle,
+  FileSignature,
+  User,
+  LogOut
+} from "lucide-react"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
-import { HiAnnotation } from "react-icons/hi"
 
 const HostelSupervisorLayout = () => {
   const navigate = useNavigate()
@@ -23,22 +37,22 @@ const HostelSupervisorLayout = () => {
   }
 
   const navItems = [
-    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/hostel-supervisor" },
-    { name: "Units and Rooms", icon: FaBuilding, section: "main", path: `/hostel-supervisor/hostels/${user?.hostel?.name}`, pathPattern: "^/hostel-supervisor/hostels(/.*)?$" },
-    { name: "Students", icon: FaUsers, section: "main", path: "/hostel-supervisor/students" },
-    { name: "Leaves", icon: FaCalendarAlt, section: "main", path: "/hostel-supervisor/leaves" },
-    { name: "Student Inventory", icon: FaBoxes, section: "main", path: "/hostel-supervisor/student-inventory" },
-    { name: "My Tasks", icon: FaTasks, section: "main", path: "/hostel-supervisor/my-tasks" },
-    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/hostel-supervisor/lost-and-found" },
-    { name: "Events", icon: FaCalendarAlt, section: "main", path: "/hostel-supervisor/events" },
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/hostel-supervisor" },
+    { name: "Units and Rooms", icon: Building2, section: "main", path: `/hostel-supervisor/hostels/${user?.hostel?.name}`, pathPattern: "^/hostel-supervisor/hostels(/.*)?$" },
+    { name: "Students", icon: Users, section: "main", path: "/hostel-supervisor/students" },
+    { name: "Leaves", icon: CalendarOff, section: "main", path: "/hostel-supervisor/leaves" },
+    { name: "Student Inventory", icon: Package, section: "main", path: "/hostel-supervisor/student-inventory" },
+    { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-supervisor/my-tasks" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-supervisor/lost-and-found" },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/hostel-supervisor/events" },
     // { name: "Room Change Requests", icon: FaExchangeAlt, section: "main", path: "/hostel-supervisor/room-change-requests" },
-    { name: "Visitors", icon: FaUserTie, section: "main", path: "/hostel-supervisor/visitors" },
-    { name: "Notifications", icon: FaBell, section: "main", path: "/hostel-supervisor/notifications" },
-    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/hostel-supervisor/complaints" },
-    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/hostel-supervisor/feedbacks" },
-    { name: "Undertakings", icon: FaFileSignature, section: "main", path: "/hostel-supervisor/undertakings" },
-    { name: "Profile", icon: FaUser, section: "bottom", path: "/hostel-supervisor/profile" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Visitors", icon: UserRoundCheck, section: "main", path: "/hostel-supervisor/visitors" },
+    { name: "Notifications", icon: Bell, section: "main", path: "/hostel-supervisor/notifications" },
+    { name: "Complaints", icon: ClipboardList, section: "main", path: "/hostel-supervisor/complaints" },
+    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/hostel-supervisor/feedbacks" },
+    { name: "Undertakings", icon: FileSignature, section: "main", path: "/hostel-supervisor/undertakings" },
+    { name: "Profile", icon: User, section: "bottom", path: "/hostel-supervisor/profile" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   return (
