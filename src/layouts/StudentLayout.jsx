@@ -1,11 +1,21 @@
 import Sidebar from "../components/Sidebar"
 import BottomBar from "../components/BottomBar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUser, FaClipboardList, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBell, FaUserFriends, FaIdCard } from "react-icons/fa"
-import { MdOutlineSpaceDashboard, MdOutlineEvent, MdOutlineSearch, MdSpaceDashboard } from "react-icons/md"
-import { LuClipboardList } from "react-icons/lu"
+import {
+  LayoutDashboard,
+  ClipboardList,
+  Search,
+  CalendarDays,
+  Users,
+  MessageCircle,
+  Bell,
+  ShieldCheck,
+  IdCard,
+  FileSignature,
+  User,
+  LogOut
+} from "lucide-react"
 import { useAuth } from "../contexts/AuthProvider"
-import { HiAnnotation } from "react-icons/hi"
 import { useEffect, useState } from "react"
 import { notificationApi } from "../service"
 import usePwaMobile from "../hooks/usePwaMobile"
@@ -61,26 +71,26 @@ const StudentLayout = () => {
 
   // All navigation items
   const allNavItems = [
-    { name: "Dashboard", icon: MdOutlineSpaceDashboard, section: "main", path: "/student" },
-    { name: "Complaints", icon: LuClipboardList, section: "main", path: "/student/complaints" },
-    { name: "Lost and Found", icon: MdOutlineSearch, section: "main", path: "/student/lost-and-found" },
-    { name: "Events", icon: MdOutlineEvent, section: "main", path: "/student/events" },
-    { name: "Visitors", icon: FaUserFriends, section: "main", path: "/student/visitors" },
-    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
-    { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications", badge: notificationsCount },
-    { name: "Security", icon: FaUser, section: "main", path: "/student/security" },
-    { name: "ID Card", icon: FaIdCard, section: "main", path: "/student/id-card" },
-    { name: "Undertakings", icon: FaClipboardList, section: "main", path: "/student/undertakings" },
-    { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/student" },
+    { name: "Complaints", icon: ClipboardList, section: "main", path: "/student/complaints" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/student/lost-and-found" },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/student/events" },
+    { name: "Visitors", icon: Users, section: "main", path: "/student/visitors" },
+    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/student/feedbacks" },
+    { name: "Notifications", icon: Bell, section: "main", path: "/student/notifications", badge: notificationsCount },
+    { name: "Security", icon: ShieldCheck, section: "main", path: "/student/security" },
+    { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
+    { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
+    { name: "Profile", icon: User, section: "bottom", path: "/student/profile" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   // For the PWA bottom bar, we need 4 main items and the rest will be in the dropdown
   const pwaBottomBarMainItems = [
-    { name: "Home", icon: MdOutlineSpaceDashboard, path: "/student" },
-    { name: "Complaints", icon: LuClipboardList, path: "/student/complaints" },
-    { name: "Lost & Found", icon: MdOutlineSearch, path: "/student/lost-and-found" },
-    { name: "Events", icon: MdOutlineEvent, path: "/student/events" },
+    { name: "Home", icon: LayoutDashboard, path: "/student" },
+    { name: "Complaints", icon: ClipboardList, path: "/student/complaints" },
+    { name: "Lost & Found", icon: Search, path: "/student/lost-and-found" },
+    { name: "Events", icon: CalendarDays, path: "/student/events" },
   ]
 
   // Hidden items for the PWA bottom bar dropdown
@@ -88,18 +98,18 @@ const StudentLayout = () => {
 
   // Standard sidebar items for non-PWA view
   const sidebarNavItems = [
-    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/student" },
-    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/student/complaints" },
-    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/student/lost-and-found" },
-    { name: "Events", icon: FaCalendarAlt, section: "main", path: "/student/events" },
-    { name: "Visitors", icon: FaUserFriends, section: "main", path: "/student/visitors" },
-    { name: "Feedbacks", icon: HiAnnotation, section: "main", path: "/student/feedbacks" },
-    { name: "Notifications", icon: FaBell, section: "main", path: "/student/notifications", badge: notificationsCount },
-    { name: "Security", icon: FaUser, section: "main", path: "/student/security" },
-    { name: "ID Card", icon: FaIdCard, section: "main", path: "/student/id-card" },
-    { name: "Undertakings", icon: FaClipboardList, section: "main", path: "/student/undertakings" },
-    { name: "Profile", icon: FaUser, section: "bottom", path: "/student/profile" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/student" },
+    { name: "Complaints", icon: ClipboardList, section: "main", path: "/student/complaints" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/student/lost-and-found" },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/student/events" },
+    { name: "Visitors", icon: Users, section: "main", path: "/student/visitors" },
+    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/student/feedbacks" },
+    { name: "Notifications", icon: Bell, section: "main", path: "/student/notifications", badge: notificationsCount },
+    { name: "Security", icon: ShieldCheck, section: "main", path: "/student/security" },
+    { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
+    { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
+    { name: "Profile", icon: User, section: "bottom", path: "/student/profile" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   // Navigation handler

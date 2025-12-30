@@ -1,7 +1,15 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaSignOutAlt, FaExclamationTriangle, FaSearch, FaUserPlus, FaClipboardList, FaUserClock, FaUsers, FaQrcode, FaTasks } from "react-icons/fa"
-import { MdSpaceDashboard } from "react-icons/md"
+import {
+  LayoutDashboard,
+  UserPlus,
+  Clock,
+  CheckSquare,
+  Users,
+  ListTodo,
+  Search,
+  LogOut
+} from "lucide-react"
 import { useAuth } from "../contexts/AuthProvider"
 
 const SecurityLayout = () => {
@@ -22,23 +30,23 @@ const SecurityLayout = () => {
   }
 
   const hostelGateNavItems = [
-    { name: "Add Student Entry", icon: MdSpaceDashboard, section: "main", path: "/hostel-gate" },
-    { name: "Student Entries", icon: FaUserClock, section: "main", path: "/hostel-gate/entries" },
-    { name: "Attendance", icon: FaQrcode, section: "main", path: "/hostel-gate/attendance" },
-    { name: "Visitors", icon: FaUsers, section: "main", path: "/hostel-gate/visitors" },
-    { name: "My Tasks", icon: FaTasks, section: "main", path: "/hostel-gate/my-tasks" },
-    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/hostel-gate/lost-and-found" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Add Student Entry", icon: UserPlus, section: "main", path: "/hostel-gate" },
+    { name: "Student Entries", icon: Clock, section: "main", path: "/hostel-gate/entries" },
+    { name: "Attendance", icon: CheckSquare, section: "main", path: "/hostel-gate/attendance" },
+    { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
+    { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   const guardNavItems = [
-    // { name: "Add Student Entry", icon: MdSpaceDashboard, section: "main", path: "/guard" },
-    // { name: "Student Entries", icon: FaUserClock, section: "main", path: "/guard/entries" },
-    { name: "Attendance", icon: FaQrcode, section: "main", path: "/guard" },
-    // { name: "Visitors", icon: FaUsers, section: "main", path: "/guard/visitors" },
-    { name: "My Tasks", icon: FaTasks, section: "main", path: "/guard/my-tasks" },
-    { name: "Lost and Found", icon: FaSearch, section: "main", path: "/guard/lost-and-found" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    // { name: "Add Student Entry", icon: LayoutDashboard, section: "main", path: "/guard" },
+    // { name: "Student Entries", icon: Clock, section: "main", path: "/guard/entries" },
+    { name: "Attendance", icon: CheckSquare, section: "main", path: "/guard" },
+    // { name: "Visitors", icon: Users, section: "main", path: "/guard/visitors" },
+    { name: "My Tasks", icon: ListTodo, section: "main", path: "/guard/my-tasks" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/guard/lost-and-found" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   // const navItems = isHostelGate ? hostelGateNavItems : guardNavItems

@@ -1,7 +1,12 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaSignOutAlt, FaTools, FaClipboardList, FaQrcode, FaTasks, FaCalendarAlt } from "react-icons/fa"
-import { MdSpaceDashboard } from "react-icons/md"
+import {
+  ClipboardList,
+  CalendarOff,
+  ListTodo,
+  CheckSquare,
+  LogOut
+} from "lucide-react"
 import { useAuth } from "../contexts/AuthProvider"
 
 const MaintenanceLayout = () => {
@@ -21,11 +26,11 @@ const MaintenanceLayout = () => {
   }
 
   const navItems = [
-    { name: "Complaints", icon: FaClipboardList, section: "main", path: "/maintenance" },
-    { name: "Leaves", icon: FaCalendarAlt, section: "main", path: "/maintenance/leaves" },
-    { name: "My Tasks", icon: FaTasks, section: "main", path: "/maintenance/my-tasks" },
-    { name: "Attendance", icon: FaQrcode, section: "main", path: "/maintenance/attendance" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Complaints", icon: ClipboardList, section: "main", path: "/maintenance" },
+    { name: "Leaves", icon: CalendarOff, section: "main", path: "/maintenance/leaves" },
+    { name: "My Tasks", icon: ListTodo, section: "main", path: "/maintenance/my-tasks" },
+    { name: "Attendance", icon: CheckSquare, section: "main", path: "/maintenance/attendance" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   return (

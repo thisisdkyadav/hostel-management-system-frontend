@@ -1,7 +1,12 @@
 import Sidebar from "../components/Sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
-import { FaUserCog, FaUser, FaKey, FaSignOutAlt } from "react-icons/fa"
-import { MdSpaceDashboard } from "react-icons/md"
+import {
+  LayoutDashboard,
+  UserCog,
+  KeyRound,
+  User,
+  LogOut
+} from "lucide-react"
 import { useAuth } from "../contexts/AuthProvider"
 
 const SuperAdminLayout = () => {
@@ -21,11 +26,11 @@ const SuperAdminLayout = () => {
   }
 
   const navItems = [
-    { name: "Dashboard", icon: MdSpaceDashboard, section: "main", path: "/super-admin" },
-    { name: "Admin Management", icon: FaUserCog, section: "main", path: "/super-admin/admins" },
-    { name: "API Keys", icon: FaKey, section: "main", path: "/super-admin/api-keys" },
-    { name: "Profile", icon: FaUser, section: "bottom", path: "/super-admin/profile" },
-    { name: "Logout", icon: FaSignOutAlt, section: "bottom", action: handleLogout },
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/super-admin" },
+    { name: "Admin Management", icon: UserCog, section: "main", path: "/super-admin/admins" },
+    { name: "API Keys", icon: KeyRound, section: "main", path: "/super-admin/api-keys" },
+    { name: "Profile", icon: User, section: "bottom", path: "/super-admin/profile" },
+    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
   ]
 
   return (
