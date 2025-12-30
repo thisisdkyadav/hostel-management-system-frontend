@@ -4,7 +4,7 @@ import SearchBar from "../../components/common/SearchBar"
 import BaseTable from "../../components/common/table/BaseTable"
 import NoResults from "../../components/common/NoResults"
 import Modal from "../../components/common/Modal"
-import superAdminService from "../../services/superAdminService"
+import { superAdminApi } from "../../service"
 import Button from "../../components/common/Button"
 import Input from "../../components/common/ui/Input"
 
@@ -21,7 +21,7 @@ const AdminManagement = () => {
     try {
       setLoading(true)
       setError(null)
-      const data = await superAdminService.getAllAdmins()
+      const data = await superAdminApi.getAllAdmins()
       setAdmins(data || [])
       setFilteredAdmins(data || [])
     } catch (err) {
@@ -53,7 +53,7 @@ const AdminManagement = () => {
   const handleAddAdmin = async (adminData) => {
     try {
       setLoading(true)
-      await superAdminService.createAdmin(adminData)
+      await superAdminApi.createAdmin(adminData)
       window.alert("Administrator added successfully")
       fetchAdmins()
       setShowAddModal(false)
@@ -68,7 +68,7 @@ const AdminManagement = () => {
   const handleUpdateAdmin = async (updatedAdmin) => {
     try {
       setLoading(true)
-      await superAdminService.updateAdmin(updatedAdmin.id, updatedAdmin)
+      await superAdminApi.updateAdmin(updatedAdmin.id, updatedAdmin)
       window.alert("Administrator updated successfully")
       fetchAdmins()
       setEditAdmin(null)
@@ -86,7 +86,7 @@ const AdminManagement = () => {
 
     try {
       setLoading(true)
-      await superAdminService.deleteAdmin(id)
+      await superAdminApi.deleteAdmin(id)
       window.alert("Administrator deleted successfully")
       fetchAdmins()
     } catch (err) {

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
-import { notificationApi } from "../../services/notificationApi"
+import { notificationApi, studentApi } from "../../service"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { getDepartmentList, getDegreesList } from "../../services/studentService"
 import Input from "../common/ui/Input"
 import Select from "../common/ui/Select"
 import Checkbox from "../common/ui/Checkbox"
@@ -44,7 +43,7 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
     const fetchOptions = async () => {
       setLoadingOptions(true)
       try {
-        const [departmentsResponse, degreesResponse] = await Promise.all([getDepartmentList(), getDegreesList()])
+        const [departmentsResponse, degreesResponse] = await Promise.all([studentApi.getDepartmentList(), studentApi.getDegreesList()])
 
         setAvailableDepartments(departmentsResponse || [])
         setAvailableDegrees(degreesResponse || [])

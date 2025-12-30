@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { addDisCoAction, getDisCoActionsByStudent, updateDisCoAction, deleteDisCoAction } from "../../../services/apiService.js"
+import { discoApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { FaPlus } from "react-icons/fa"
 import Button from "../../common/Button"
@@ -17,7 +17,7 @@ const DisCoActions = ({ userId }) => {
   const fetchDisCoActions = async () => {
     try {
       setLoading(true)
-      const res = await getDisCoActionsByStudent(userId)
+      const res = await discoApi.getDisCoActionsByStudent(userId)
       setActions(res.actions)
     } catch (err) {
       setError(err)
@@ -47,7 +47,7 @@ const DisCoActions = ({ userId }) => {
 
   const handleDeleteClick = async (actionId) => {
     try {
-      await deleteDisCoAction(actionId)
+      await discoApi.deleteDisCoAction(actionId)
       fetchDisCoActions() // Refresh the list
     } catch (error) {
       console.error("Error deleting disciplinary action:", error)
@@ -58,9 +58,9 @@ const DisCoActions = ({ userId }) => {
   const handleModalSubmit = async (formData) => {
     try {
       if (isEditing) {
-        await updateDisCoAction(currentAction._id, { ...formData })
+        await discoApi.updateDisCoAction(currentAction._id, { ...formData })
       } else {
-        await addDisCoAction({ ...formData, studentId: userId })
+        await discoApi.addDisCoAction({ ...formData, studentId: userId })
       }
       fetchDisCoActions() // Refresh the list
       setIsModalOpen(false)

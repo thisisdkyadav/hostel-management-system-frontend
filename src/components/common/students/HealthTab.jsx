@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaPlus, FaHeartbeat, FaHospital, FaMedkit, FaEye, FaEdit, FaCalendarCheck, FaCog } from "react-icons/fa"
-import { healthApi } from "../../../services/healthApi"
+import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
 import Button from "../Button"
 import Input from "../ui/Input"

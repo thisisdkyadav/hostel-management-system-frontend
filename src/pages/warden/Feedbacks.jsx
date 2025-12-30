@@ -6,7 +6,7 @@ import NoResults from "../../components/common/NoResults"
 import FeedbackStats from "../../components/FeedbackStats"
 import FeedbackCard from "../../components/FeedbackCard"
 import { useAuth } from "../../contexts/AuthProvider"
-import { feedbackApi } from "../../services/feedbackApi"
+import { feedbackApi } from "../../service"
 import FeedbackFormModal from "../../components/student/feedback/FeedbackFormModal"
 import FeedbackHeader from "../../components/headers/FeedbackHeader"
 

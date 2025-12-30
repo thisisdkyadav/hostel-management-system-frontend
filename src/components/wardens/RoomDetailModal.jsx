@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
-import { hostelApi } from "../../services/hostelApi"
+import { hostelApi } from "../../service"
 import Modal from "../common/Modal"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"

@@ -9,7 +9,7 @@ import Input from "../../common/ui/Input"
 import Select from "../../common/ui/Select"
 import Textarea from "../../common/ui/Textarea"
 import StudentDetailModal from "./StudentDetailModal"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 
 // Extracted to avoid remounting on each parent render which caused input focus loss
 const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {

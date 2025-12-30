@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { adminApi, wardenApi, associateWardenApi, hostelSupervisorApi } from "../services/apiService"
+import { adminApi, wardenApi, associateWardenApi, hostelSupervisorApi } from "../service"
 import { useAuth } from "./AuthProvider"
 
 const WardenContext = createContext(null)

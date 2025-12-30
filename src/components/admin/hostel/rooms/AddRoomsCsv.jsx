@@ -3,7 +3,7 @@ import CsvUploader from "../../../common/CsvUploader"
 import RoomStatsSummary from "../../forms/RoomStatsSummary"
 import Button from "../../../common/Button"
 import { FaUpload } from "react-icons/fa"
-import { adminApi } from "../../../../services/apiService"
+import { adminApi } from "../../../../service"
 
 const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   const [parsedCsvData, setParsedCsvData] = useState([])

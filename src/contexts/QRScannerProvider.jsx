@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect, useRef } from "react"
-import { securityApi } from "../services/securityApi"
+import { securityApi } from "../service"
 import { useAuth } from "./AuthProvider"
 import { useNotification } from "./NotificationProvider"
 

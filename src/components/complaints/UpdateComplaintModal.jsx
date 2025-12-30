@@ -3,7 +3,7 @@ import { FaEdit } from "react-icons/fa"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Select from "../common/ui/Select"
-import { complaintApi } from "../../services/complaintApi"
+import { complaintApi } from "../../service"
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
   const [status, setStatus] = useState(complaint?.status || "")

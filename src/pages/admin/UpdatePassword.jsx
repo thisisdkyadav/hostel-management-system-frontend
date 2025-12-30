@@ -4,7 +4,7 @@ import UpdatePasswordForm from "../../components/admin/password/UpdatePasswordFo
 import BulkPasswordUpdateModal from "../../components/admin/password/BulkPasswordUpdateModal"
 import RemovePasswordsByRoleModal from "../../components/admin/password/RemovePasswordsByRoleModal"
 import { useAuth } from "../../contexts/AuthProvider"
-import { adminApi } from "../../services/apiService"
+import { adminApi } from "../../service"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
 import Card from "../../components/common/Card"

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect, use } from "react"
 import { Navigate, useLocation, useSearchParams } from "react-router-dom"
-import { authApi } from "../services/apiService"
+import { authApi } from "../service"
 import LoadingScreen from "../components/common/LoadingScreen"
 import useNetworkStatus from "../hooks/useNetworkStatus"
 

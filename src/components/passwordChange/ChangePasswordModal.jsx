@@ -3,7 +3,7 @@ import Modal from "../common/Modal"
 import Button from "../common/Button"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
-import { authApi } from "../../services/apiService"
+import { authApi } from "../../service"
 import Input from "../common/ui/Input"
 
 const ChangePasswordModal = ({ onClose, email }) => {

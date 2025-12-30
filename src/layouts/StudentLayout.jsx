@@ -7,7 +7,7 @@ import { LuClipboardList } from "react-icons/lu"
 import { useAuth } from "../contexts/AuthProvider"
 import { HiAnnotation } from "react-icons/hi"
 import { useEffect, useState } from "react"
-import { notificationApi } from "../services/notificationApi"
+import { notificationApi } from "../service"
 import usePwaMobile from "../hooks/usePwaMobile"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"

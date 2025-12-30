@@ -5,7 +5,7 @@ import NoResults from "../../common/NoResults"
 import Button from "../../common/Button"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"
-import { insuranceProviderApi } from "../../../services/insuranceProviderApi"
+import { insuranceProviderApi } from "../../../service"
 
 const filterInsuranceProviders = (providers, filterStatus, searchTerm) => {
   return providers

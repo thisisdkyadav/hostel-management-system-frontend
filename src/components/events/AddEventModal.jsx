@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { eventsApi } from "../../services/apiService"
+import { eventsApi } from "../../service"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Input from "../common/ui/Input"

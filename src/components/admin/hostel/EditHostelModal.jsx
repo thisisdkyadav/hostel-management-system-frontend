@@ -5,7 +5,7 @@ import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
 import Select from "../../common/ui/Select"
 import RoomManagementModal from "./RoomManagementModal"
-import { hostelApi } from "../../../services/hostelApi"
+import { hostelApi } from "../../../service"
 
 const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
   const [formData, setFormData] = useState({

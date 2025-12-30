@@ -4,7 +4,7 @@ import SearchBar from "../../components/common/SearchBar"
 import NoResults from "../../components/common/NoResults"
 import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
-import { adminApi } from "../../services/adminApi"
+import { adminApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import Button from "../../components/common/Button"
 

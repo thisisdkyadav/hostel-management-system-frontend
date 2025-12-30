@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
-import { studentProfileApi } from "../../services/apiService"
+import { studentProfileApi } from "../../service"
 import Button from "../common/Button"
 import ConfirmationDialog from "../common/ConfirmationDialog"
 import Input from "../common/ui/Input"

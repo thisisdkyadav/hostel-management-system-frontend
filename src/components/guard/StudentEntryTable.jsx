@@ -3,7 +3,7 @@ import { FaEdit } from "react-icons/fa"
 import StatusBadge from "../common/StatusBadge"
 import Button from "../common/Button"
 import EditStudentEntryModal from "./EditStudentEntryModal"
-import { securityApi } from "../../services/apiService"
+import { securityApi } from "../../service"
 
 const StudentEntryTable = ({ entries, refresh }) => {
   const [selectedEntry, setSelectedEntry] = useState(null)

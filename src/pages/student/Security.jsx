@@ -3,7 +3,7 @@ import QRCodeGenerator from "../../components/QRCodeGenerator"
 import AccessHistory from "../../components/AccessHistory"
 import OfflineBanner from "../../components/common/OfflineBanner"
 import { useAuth } from "../../contexts/AuthProvider"
-import { securityApi } from "../../services/apiService"
+import { securityApi } from "../../service"
 
 const SECURITY_CACHE_KEY = "student_security_data"
 

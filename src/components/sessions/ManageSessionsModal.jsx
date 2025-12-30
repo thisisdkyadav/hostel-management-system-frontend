@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
-import { authApi } from "../../services/apiService"
+import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
 import { HiDesktopComputer, HiDeviceMobile, HiGlobeAlt, HiOutlineLogout } from "react-icons/hi"
 

@@ -6,7 +6,7 @@ import AdminCard from "../../components/admin/admins/AdminCard"
 import AddAdminModal from "../../components/admin/admins/AddAdminModal"
 import AdminStats from "../../components/admin/admins/AdminStats"
 import AdminManagementHeader from "../../components/headers/AdminManagementHeader"
-import superAdminService from "../../services/superAdminService"
+import { superAdminApi } from "../../service"
 
 const AdminManagement = () => {
   const [admins, setAdmins] = useState([])
@@ -20,7 +20,7 @@ const AdminManagement = () => {
     try {
       setLoading(true)
       setError(null)
-      const data = await superAdminService.getAllAdmins()
+      const data = await superAdminApi.getAllAdmins()
       setAdmins(data || [])
       setFilteredAdmins(data || [])
     } catch (err) {

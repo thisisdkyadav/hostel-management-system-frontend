@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { adminApi } from "../services/apiService"
+import { adminApi } from "../service"
 
 const AdminContext = createContext(null)
 export const useAdmin = () => useContext(AdminContext)

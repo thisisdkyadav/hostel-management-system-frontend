@@ -3,7 +3,7 @@ import { FaFilter, FaCalendarAlt, FaUserCog, FaUsers, FaSearch, FaUserCheck, FaC
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Select from "../../common/ui/Select"
-import { securityApi } from "../../../services/apiService"
+import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import Pagination from "../../common/Pagination"

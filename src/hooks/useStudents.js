@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react"
-import { studentApi } from "../services/apiService"
+import { studentApi } from "../service"
 import { buildStudentQueryParams, DEFAULT_FILTERS, DEFAULT_SORTING } from "../utils/studentUtils"
 
 export const useStudents = (options = {}) => {

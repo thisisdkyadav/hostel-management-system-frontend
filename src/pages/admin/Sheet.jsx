@@ -7,7 +7,7 @@ import {
 import { useVirtualizer } from "@tanstack/react-virtual"
 import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes, FaChartBar } from "react-icons/fa"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { sheetApi } from "../../services/sheetApi"
+import { sheetApi } from "../../service"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"

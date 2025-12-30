@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaQrcode, FaHistory } from "react-icons/fa"
 import MaintenanceQRGenerator from "../../components/guard/MaintenanceQRGenerator"
-import { securityApi } from "../../services/apiService"
+import { securityApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const MaintenanceAttendance = () => {

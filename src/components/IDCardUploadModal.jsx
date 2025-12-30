@@ -5,8 +5,7 @@ import Modal from "./common/Modal"
 import Button from "./common/Button"
 import FileInput from "./common/ui/FileInput"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
-import { uploadApi } from "../services/uploadApi"
-import { IDcardApi } from "../services/IDcardApi"
+import { uploadApi, idCardApi } from "../service"
 
 const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => {
   const [image, setImage] = useState(null)
@@ -63,11 +62,11 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
       const imageUrl = uploadResponse.url
 
       // Get current ID card data to preserve the other side
-      const currentData = await IDcardApi.getIDcard(userId)
+      const currentData = await idCardApi.getIDcard(userId)
 
       // Then update the ID card record with the new image URL
       // while preserving the other side
-      await IDcardApi.updateIDcard(userId, side === "front" ? imageUrl : currentData.front, side === "back" ? imageUrl : currentData.back)
+      await idCardApi.updateIDcard(userId, side === "front" ? imageUrl : currentData.front, side === "back" ? imageUrl : currentData.back)
 
       setUploaded(true)
       onImageUpload(imageUrl)

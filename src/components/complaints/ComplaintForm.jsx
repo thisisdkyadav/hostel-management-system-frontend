@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
-import { complaintApi } from "../../services/complaintApi"
+import { complaintApi } from "../../service"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Input from "../common/ui/Input"

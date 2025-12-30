@@ -4,7 +4,7 @@ import Papa from "papaparse"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import FileInput from "../../common/ui/FileInput"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 
 const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId, undertakingTitle }) => {
   const [csvFile, setCsvFile] = useState(null)

@@ -4,7 +4,7 @@ import CsvUploader from "../../../common/CsvUploader"
 import Button from "../../../common/Button"
 import Checkbox from "../../../common/ui/Checkbox"
 import { FaExclamationTriangle, FaUpload } from "react-icons/fa"
-import { hostelApi } from "../../../../services/hostelApi"
+import { hostelApi } from "../../../../service"
 
 const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoading }) => {
   const [parsedCsvData, setParsedCsvData] = useState([])

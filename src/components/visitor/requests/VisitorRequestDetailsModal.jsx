@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
-import { visitorApi } from "../../../services/visitorApi"
+import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import Button from "../../common/Button"
@@ -290,10 +290,10 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   if (loading) {
     return (
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
-          <div style={{ position: 'relative', width: 'var(--avatar-4xl)', height: 'var(--avatar-4xl)' }}>
-            <div style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-border-primary)', borderRadius: 'var(--radius-full)' }}></div>
-            <div style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', border: 'var(--border-4) solid var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite', borderTopColor: 'transparent' }}></div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" }}>
+          <div style={{ position: "relative", width: "var(--avatar-4xl)", height: "var(--avatar-4xl)" }}>
+            <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", border: "var(--border-4) solid var(--color-border-primary)", borderRadius: "var(--radius-full)" }}></div>
+            <div style={{ position: "absolute", top: "0", left: "0", width: "100%", height: "100%", border: "var(--border-4) solid var(--color-primary)", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite", borderTopColor: "transparent" }}></div>
           </div>
         </div>
       </Modal>
@@ -304,8 +304,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   if (!request) {
     return (
       <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-        <div style={{ padding: 'var(--spacing-8)', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No request details found.</p>
+        <div style={{ padding: "var(--spacing-8)", textAlign: "center" }}>
+          <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-base)" }}>No request details found.</p>
         </div>
       </Modal>
     )
@@ -314,7 +314,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   // Main render with request data
   return (
     <Modal title="Visitor Request Details" onClose={onClose} width={650}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
         {/* Status Badge */}
         {["Admin", "Student"].includes(user.role) && <StatusBadge status={request.status} rejectionReason={request.rejectionReason} approvedAt={request.ApprovedAt} requestId={request._id} />}
 
@@ -322,7 +322,7 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         <StudentDetails studentName={request.studentName} studentEmail={request.studentEmail} studentProfileImage={request.studentProfileImage} />
 
         {/* Visit Information and Accommodation Details */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
           <VisitInformation fromDate={request.fromDate} toDate={request.toDate} />
 
           {request.status === "Approved" && <AccommodationDetails hostelName={request.hostelName} allocatedRooms={request.allocatedRooms} />}
@@ -333,17 +333,17 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* H2 Form Section */}
         {request.h2FormUrl && (
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                <div style={{ width: 'var(--icon-2xl)', height: 'var(--icon-2xl)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
+          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                   </svg>
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>H2 Form Document</h4>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Guest Room Booking Form</p>
+                  <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>H2 Form Document</h4>
+                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Guest Room Booking Form</p>
                 </div>
               </div>
               <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="small" icon={<FaEye />}>
@@ -358,18 +358,34 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Status */}
         {request.paymentStatus && (
-          <div style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-2)' }}>
-            <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', marginRight: 'var(--spacing-2)' }}>Payment Status:</span>
-            <span style={{ padding: 'var(--spacing-2) var(--badge-padding-sm)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', backgroundColor: request.paymentStatus === "paid" ? 'var(--color-success-bg)' : 'var(--color-warning-bg)', color: request.paymentStatus === "paid" ? 'var(--color-success-text)' : 'var(--color-warning-text)' }}>{request.paymentStatus === "paid" ? "Paid" : "Pending"}</span>
+          <div style={{ fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-2)" }}>
+            <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)", marginRight: "var(--spacing-2)" }}>Payment Status:</span>
+            <span
+              style={{
+                padding: "var(--spacing-2) var(--badge-padding-sm)",
+                borderRadius: "var(--radius-full)",
+                fontSize: "var(--font-size-xs)",
+                fontWeight: "var(--font-weight-medium)",
+                backgroundColor: request.paymentStatus === "paid" ? "var(--color-success-bg)" : "var(--color-warning-bg)",
+                color: request.paymentStatus === "paid" ? "var(--color-success-text)" : "var(--color-warning-text)",
+              }}
+            >
+              {request.paymentStatus === "paid" ? "Paid" : "Pending"}
+            </span>
           </div>
         )}
 
         {/* Payment Link (Student only) */}
         {user.role === "Student" && ["Approved"].includes(request.status) && request.visitorPaymentLink && (
-          <div style={{ fontSize: 'var(--font-size-sm)' }}>
-            <span style={{ fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }}>Payment Link:</span>
-            <a href={request.visitorPaymentLink} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none', wordBreak: 'break-all' }} onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'}
-              onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
+          <div style={{ fontSize: "var(--font-size-sm)" }}>
+            <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)", marginRight: "var(--spacing-2)" }}>Payment Link:</span>
+            <a
+              href={request.visitorPaymentLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--color-primary)", textDecoration: "none", wordBreak: "break-all" }}
+              onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
+              onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
             >
               {request.visitorPaymentLink}
             </a>
@@ -378,17 +394,17 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
         {/* Payment Information Submission (Student only) */}
         {user.role === "Student" && request.status === "Approved" && !request.paymentInfo.transactionId && !showPaymentForm && (
-          <div style={{ backgroundColor: 'var(--color-info-bg-light)', border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                <div style={{ width: 'var(--icon-2xl)', height: 'var(--icon-2xl)', backgroundColor: 'var(--color-info-bg)', borderRadius: 'var(--radius-full)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg style={{ width: 'var(--icon-md)', height: 'var(--icon-md)', color: 'var(--color-primary)' }} fill="currentColor" viewBox="0 0 20 20">
+          <div style={{ backgroundColor: "var(--color-info-bg-light)", border: `var(--border-1) solid var(--color-info-bg)`, borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <div style={{ width: "var(--icon-2xl)", height: "var(--icon-2xl)", backgroundColor: "var(--color-info-bg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg style={{ width: "var(--icon-md)", height: "var(--icon-md)", color: "var(--color-primary)" }} fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2h8zM6 8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h2z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-info-text)' }}>Payment Information Required</h4>
-                  <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>Submit your payment details for verification</p>
+                  <h4 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-info-text)" }}>Payment Information Required</h4>
+                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)" }}>Submit your payment details for verification</p>
                 </div>
               </div>
               <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="small" icon={<FaMoneyBillWave />}>
@@ -426,7 +442,12 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         {["Admin"].includes(user.role) && request.status === "Pending" && showRejectForm && <RejectionForm rejectionReason={rejectionReason} onReasonChange={setRejectionReason} onCancel={() => setShowRejectForm(false)} onSubmit={handleRejectRequest} />}
 
         {/* Action Buttons */}
-        <ActionButtons userRole={user.role} requestStatus={request.status} onClose={onClose} onCancelRequest={handleCancelRequest} onEditRequest={() => setShowEditModal(true)}
+        <ActionButtons
+          userRole={user.role}
+          requestStatus={request.status}
+          onClose={onClose}
+          onCancelRequest={handleCancelRequest}
+          onEditRequest={() => setShowEditModal(true)}
           onShowApproveForm={toggleApproveForm}
           onShowRejectForm={toggleRejectForm}
           showApproveForm={showApproveForm}
@@ -443,9 +464,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         />
       </div>
 
-      <EditVisitorRequestModal isOpen={showEditModal} onClose={() => {
-        setShowEditModal(false)
-      }}
+      <EditVisitorRequestModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+        }}
         request={request}
         onRefresh={onRefresh}
       />

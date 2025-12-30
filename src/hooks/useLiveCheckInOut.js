@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { useSocket } from "../contexts/SocketProvider"
-import { liveCheckInOutApi } from "../services/liveCheckInOutApi"
+import { liveCheckInOutApi } from "../service"
 
 /**
  * Custom hook for managing live check-in/out data with Socket.IO integration

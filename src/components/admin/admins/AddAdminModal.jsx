@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
-import superAdminService from "../../../services/superAdminService"
+import { superAdminApi } from "../../../service"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
@@ -60,7 +60,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
 
     setIsSubmitting(true)
     try {
-      await superAdminService.createAdmin(formData)
+      await superAdminApi.createAdmin(formData)
       alert("Administrator added successfully!")
       onAdd()
 

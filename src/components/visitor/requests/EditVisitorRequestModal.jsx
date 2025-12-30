@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
 import Modal from "../../common/Modal"
-import { visitorApi } from "../../../services/visitorApi"
+import { visitorApi } from "../../../service"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
 import Textarea from "../../common/ui/Textarea"
@@ -89,52 +89,52 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
   return (
     <Modal title="Edit Visitor Request" onClose={onClose} width={600}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
         {error && (
-          <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-            <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
+          <div style={{ backgroundColor: "var(--color-danger-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
+            <FaExclamationTriangle style={{ color: "var(--color-danger)", marginTop: "var(--spacing-1)", marginRight: "var(--spacing-3)", flexShrink: 0 }} />
+            <p style={{ color: "var(--color-danger-text)" }}>{error}</p>
           </div>
         )}
 
-        <div style={{ backgroundColor: 'var(--color-info-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-info-text)' }}>
+        <div style={{ backgroundColor: "var(--color-info-bg-light)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
             <strong>Note:</strong> You can only modify the dates and reason for your visit. If you need to change visitors, please cancel this request and create a new one.
           </p>
         </div>
 
         {/* Visitor Information (Non-editable) */}
         <div>
-          <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-3)' }}>Visitor Information</h3>
-          <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
-              <span style={{ fontWeight: 'var(--font-weight-medium)' }}>Visitors:</span> {request.visitors?.map((v) => v.name).join(", ")}
+          <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)", marginBottom: "var(--spacing-3)" }}>Visitor Information</h3>
+          <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-secondary)" }}>
+              <span style={{ fontWeight: "var(--font-weight-medium)" }}>Visitors:</span> {request.visitors?.map((v) => v.name).join(", ")}
             </p>
           </div>
         </div>
 
         {/* Visit Details */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
+            <label style={{ display: "block", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>From Date</label>
             <Input type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Must be at least 2 days from today</p>
+            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Must be at least 2 days from today</p>
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
+            <label style={{ display: "block", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>To Date</label>
             <Input type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
           </div>
         </div>
 
         {/* Reason for Visit */}
         <div>
-          <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
+          <label style={{ display: "block", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Reason for Visit</label>
           <Textarea name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
         </div>
 
         {/* Submit Section */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', gap: 'var(--spacing-3)' }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", gap: "var(--spacing-3)" }}>
           <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
           </Button>

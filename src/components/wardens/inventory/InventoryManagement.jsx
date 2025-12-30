@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { inventoryApi } from "../../../services/inventoryApi"
+import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"

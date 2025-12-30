@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 import { FaPlus } from "react-icons/fa"
 import Button from "../../common/Button"
 import FamilyMemberModal from "./FamilyMemberModal"

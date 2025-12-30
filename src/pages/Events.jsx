@@ -8,7 +8,7 @@ import EventCard from "../components/events/EventCard"
 import AddEventModal from "../components/events/AddEventModal"
 import EventsHeader from "../components/headers/EventsHeader"
 import { useAuth } from "../contexts/AuthProvider"
-import { eventsApi } from "../services/apiService"
+import { eventsApi } from "../service"
 import { isUpcoming } from "../utils/dateUtils"
 
 const EVENT_FILTER_TABS = [

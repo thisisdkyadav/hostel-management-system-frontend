@@ -6,7 +6,7 @@ import NoResults from "../../common/NoResults"
 import Button from "../../common/Button"
 import HostelGateCard from "./HostelGateCard"
 import AddHostelGateModal from "./AddHostelGateModal"
-import { hostelGateApi } from "../../../services/hostelGateApi"
+import { hostelGateApi } from "../../../service"
 
 const filterHostelGates = (gates, searchTerm) => {
   if (!gates) return []

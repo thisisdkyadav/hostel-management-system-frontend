@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { onlineUsersService } from "../services/onlineUsersService"
+import { onlineUsersApi } from "../service"
 import { useSocket } from "../contexts/SocketProvider"
 
 /**
@@ -25,7 +25,7 @@ export const useOnlineUsers = (options = {}) => {
       setLoading(true)
       setError(null)
 
-      const response = await onlineUsersService.getOnlineStats()
+      const response = await onlineUsersApi.getOnlineStats()
 
       if (response.success) {
         setStats(response.data)
@@ -102,7 +102,7 @@ export const useOnlineUsersList = (options = {}) => {
       if (role) params.role = role
       if (hostelId) params.hostelId = hostelId
 
-      const response = await onlineUsersService.getOnlineUsers(params)
+      const response = await onlineUsersApi.getOnlineUsers(params)
 
       if (response.success) {
         setUsers(response.data)

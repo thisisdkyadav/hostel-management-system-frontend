@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaClipboardList } from "react-icons/fa"
-import { studentApi } from "../../../../services/apiService"
+import { studentApi } from "../../../../service"
 import ComplaintDetailModal from "../../../complaints/ComplaintDetailModal"
 
 const ComplaintsTab = ({ userId }) => {

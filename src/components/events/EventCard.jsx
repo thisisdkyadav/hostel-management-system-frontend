@@ -3,7 +3,7 @@ import { FaEdit, FaCalendarAlt, FaBuilding, FaUserFriends } from "react-icons/fa
 import { BsClock } from "react-icons/bs"
 import EventEditForm from "./EventEditForm"
 import EventDetailModal from "./EventDetailModal"
-import { eventsApi } from "../../services/apiService"
+import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 import Card from "../common/Card"

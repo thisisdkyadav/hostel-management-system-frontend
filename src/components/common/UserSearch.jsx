@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { userApi } from "../../services/userApi"
+import { userApi } from "../../service"
 import Input from "./ui/Input"
 
 const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder = "Search users...", maxResults = 5, disabled = false }) => {

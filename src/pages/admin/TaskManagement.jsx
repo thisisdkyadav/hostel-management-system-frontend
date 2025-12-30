@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
-import { taskApi } from "../../services/taskApi"
+import { taskApi } from "../../service"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES, TASK_FILTER_TABS, TASK_STATUS_COLORS, TASK_PRIORITY_COLORS } from "../../constants/taskConstants"
 import TaskStats from "../../components/tasks/TaskStats"
 import TaskForm from "../../components/tasks/TaskForm"

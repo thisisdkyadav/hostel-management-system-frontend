@@ -7,7 +7,7 @@ import MultiSelectDropdown from "../MultiSelectDropdown"
 import Button from "../Button"
 import Input from "../ui/Input"
 import Select from "../ui/Select"
-import { getDepartmentList, getDegreesList } from "../../../services/studentService"
+import { studentApi } from "../../../service"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
   const [departments, setDepartments] = useState([])
@@ -21,7 +21,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
     setLoading(true)
     setError(null)
     try {
-      const departmentData = await getDepartmentList()
+      const departmentData = await studentApi.getDepartmentList()
       if (departmentData && Array.isArray(departmentData)) {
         setDepartments(departmentData)
       } else {
@@ -40,7 +40,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
     setDegreesLoading(true)
     setDegreesError(null)
     try {
-      const degreesData = await getDegreesList()
+      const degreesData = await studentApi.getDegreesList()
       if (degreesData && Array.isArray(degreesData)) {
         setDegreeOptions(degreesData)
       } else {

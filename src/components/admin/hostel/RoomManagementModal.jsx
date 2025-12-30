@@ -7,7 +7,7 @@ import FilterTabs from "../../common/FilterTabs"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
 import AddRoomsCsv from "./rooms/AddRoomsCsv"
-import { hostelApi } from "../../../services/hostelApi"
+import { hostelApi } from "../../../service"
 import { toast } from "react-hot-toast"
 import { createPortal } from "react-dom"
 

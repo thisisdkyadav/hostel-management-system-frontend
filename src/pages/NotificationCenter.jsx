@@ -8,7 +8,7 @@ import NoResults from "../components/common/NoResults"
 import Pagination from "../components/common/Pagination"
 import FilterTabs from "../components/common/FilterTabs"
 import NotificationCenterHeader from "../components/headers/NotificationCenterHeader"
-import { notificationApi } from "../services/notificationApi"
+import { notificationApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
 
 const NotificationCenter = () => {

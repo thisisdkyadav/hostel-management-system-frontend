@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUserFriends } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
-import { visitorApi } from "../services/visitorApi"
+import { visitorApi } from "../service"
 import VisitorRequestTable from "../components/visitor/requests/VisitorRequestTable"
 import AddVisitorProfileModal from "../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../components/visitor/requests/AddVisitorRequestModal"
@@ -106,51 +106,36 @@ const VisitorRequests = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <VisitorRequestsHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
-        onAddProfile={() => setShowAddProfileModal(true)}
-        onManageProfiles={() => setShowManageProfilesModal(true)}
-        onNewRequest={() => setShowAddRequestModal(true)}
-        userRole={user.role}
-      />
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <VisitorRequestsHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)} onAddProfile={() => setShowAddProfileModal(true)} onManageProfiles={() => setShowManageProfilesModal(true)} onNewRequest={() => setShowAddRequestModal(true)} userRole={user.role} />
 
-      <div style={{ flex: '1', overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
-
+      <div style={{ flex: "1", overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
         {showFilters && (
-          <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+          <div style={{ backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", marginBottom: "var(--spacing-6)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
               <div>
-                <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Status:</h3>
-                <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
+                <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Status:</h3>
+                <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                   {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
                     ? ["all", "approved"].map((status) => (
-                      <Button key={status} onClick={() => setStatusFilter(status)}
-                        variant={statusFilter === status ? "primary" : "ghost"}
-                        size="small"
-                      >
-                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
-                      </Button>
-                    ))
+                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="small">
+                          {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+                        </Button>
+                      ))
                     : ["all", "pending", "approved", "rejected"].map((status) => (
-                      <Button key={status} onClick={() => setStatusFilter(status)}
-                        variant={statusFilter === status ? "primary" : "ghost"}
-                        size="small"
-                      >
-                        {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
-                      </Button>
-                    ))}
+                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="small">
+                          {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+                        </Button>
+                      ))}
                 </div>
               </div>
 
               {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                 <div>
-                  <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Filter by Allocation:</h3>
-                  <div style={{ display: 'flex', gap: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-muted)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-lg)' }}>
+                  <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Allocation:</h3>
+                  <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                     {["all", "allocated", "unallocated"].map((status) => (
-                      <Button key={status} onClick={() => setAllocationFilter(status)}
-                        variant={allocationFilter === status ? "primary" : "ghost"}
-                        size="small"
-                      >
+                      <Button key={status} onClick={() => setAllocationFilter(status)} variant={allocationFilter === status ? "primary" : "ghost"} size="small">
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </Button>
                     ))}
@@ -162,15 +147,16 @@ const VisitorRequests = () => {
         )}
 
         {visitorRequests.length === 0 ? (
-          <EmptyState icon={() => <FaUserFriends style={{ color: 'var(--color-text-placeholder)' }} size={48} />}
+          <EmptyState
+            icon={() => <FaUserFriends style={{ color: "var(--color-text-placeholder)" }} size={48} />}
             title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
             message={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "There are no visitor requests assigned to your hostel yet." : "You haven't made any visitor accommodation requests yet. Create a new request to get started."}
             buttonText={user.role === "Student" ? "Create Request" : null}
             buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
           />
         ) : filteredRequests.length === 0 ? (
-          <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-8)', textAlign: 'center' }}>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No requests found matching your filters.</p>
+          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", padding: "var(--spacing-8)", textAlign: "center" }}>
+            <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-base)" }}>No requests found matching your filters.</p>
           </div>
         ) : (
           <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />

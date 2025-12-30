@@ -11,8 +11,8 @@ import Input from "../../common/ui/Input"
 import Select from "../../common/ui/Select"
 import Checkbox from "../../common/ui/Checkbox"
 import FileInput from "../../common/ui/FileInput"
-import { healthApi } from "../../../services/healthApi"
-import { adminApi } from "../../../services/adminApi"
+import { healthApi } from "../../../service"
+import { adminApi } from "../../../service"
 import toast from "react-hot-toast"
 
 // Reusable styles using theme CSS variables

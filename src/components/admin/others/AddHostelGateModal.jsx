@@ -4,7 +4,7 @@ import Modal from "../../common/Modal"
 import Button from "../../common/Button"
 import Input from "../../common/ui/Input"
 import Select from "../../common/ui/Select"
-import { hostelGateApi } from "../../../services/hostelGateApi"
+import { hostelGateApi } from "../../../service"
 
 const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
   const [formData, setFormData] = useState({

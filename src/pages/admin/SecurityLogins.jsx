@@ -9,7 +9,7 @@ import SecurityStats from "../../components/admin/security/SecurityStats"
 import SecurityLoginsHeader from "../../components/headers/SecurityLoginsHeader"
 import { filterSecurity } from "../../utils/adminUtils"
 import { SECURITY_FILTER_TABS } from "../../constants/adminConstants"
-import { adminApi } from "../../services/apiService"
+import { adminApi } from "../../service"
 import { useAdmin } from "../../contexts/AdminProvider"
 
 const SecurityLogins = () => {

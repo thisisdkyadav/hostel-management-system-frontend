@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Modal from "../../common/Modal"
 import StudentEditForm from "./forms/StudentEditForm"
-import { studentApi } from "../../../services/apiService"
+import { studentApi } from "../../../service"
 
 const EditStudentModal = ({ isOpen, onClose, studentData, onUpdate }) => {
   const [loading, setLoading] = useState(false)

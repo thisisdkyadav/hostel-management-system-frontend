@@ -7,7 +7,7 @@ import LostAndFoundCard from "../components/lostAndFound/LostAndFoundCard"
 import AddLostItemModal from "../components/lostAndFound/AddLostItemModal"
 import LostAndFoundHeader from "../components/headers/LostAndFoundHeader"
 import { filterLostItems } from "../utils/adminUtils"
-import { lostAndFoundApi } from "../services/apiService"
+import { lostAndFoundApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
 import { MdInventory } from "react-icons/md"
 

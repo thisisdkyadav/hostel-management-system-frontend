@@ -5,7 +5,7 @@ import NoResults from "../../common/NoResults"
 import Button from "../../common/Button"
 import UndertakingCard from "./UndertakingCard"
 import AddUndertakingModal from "./AddUndertakingModal"
-import { adminApi } from "../../../services/adminApi"
+import { adminApi } from "../../../service"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
   return undertakings

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaTrash, FaSave, FaBuilding, FaUser, FaExclamationTriangle } from "react-icons/fa"
-import { adminApi } from "../../../services/apiService"
+import { adminApi } from "../../../service"
 import { useAdmin } from "../../../contexts/AdminProvider"
 import Modal from "../../common/Modal"
 import Button from "../../common/Button"
