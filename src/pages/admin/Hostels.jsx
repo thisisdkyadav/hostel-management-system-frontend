@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import FilterTabs from "../../components/common/FilterTabs"
-import SearchBar from "../../components/common/SearchBar"
-import NoResults from "../../components/common/NoResults"
+import { Tabs, TabList, Tab, SearchInput, EmptyState } from "@/components/ui"
+import { FaSearch } from "react-icons/fa"
 import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"
 import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
@@ -67,9 +66,21 @@ const Hostels = () => {
 
           <div className="mt-[var(--spacing-8)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
             <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-              <FilterTabs tabs={HOSTEL_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <Tabs value={activeTab} onChange={setActiveTab} variant="pills" size="small">
+                <TabList>
+                  {HOSTEL_FILTER_TABS.map((tab) => (
+                    <Tab key={tab.value} value={tab.value}>{tab.label}</Tab>
+                  ))}
+                </TabList>
+              </Tabs>
             </div>
-            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search hostel..." className="w-full sm:w-[16rem] md:w-[18rem]" />
+            <div className="w-full sm:w-[16rem] md:w-[18rem]">
+              <SearchInput 
+                value={searchTerm} 
+                onChange={(e) => setSearchTerm(e.target.value)} 
+                placeholder="Search hostel..." 
+              />
+            </div>
           </div>
 
           <div className="mt-[var(--spacing-6)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-4)] md:gap-[var(--spacing-6)]">
@@ -78,7 +89,13 @@ const Hostels = () => {
             ))}
           </div>
 
-          {filteredHostels.length === 0 && <NoResults />}
+          {filteredHostels.length === 0 && (
+            <EmptyState 
+              icon={FaSearch} 
+              title="No Hostels Found" 
+              message="No hostels match your search criteria. Try adjusting your filters." 
+            />
+          )}
         </div>
       </div>
 

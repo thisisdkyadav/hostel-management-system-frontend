@@ -1,4 +1,4 @@
-import StatCards from "../../common/StatCards"
+import { StatCards } from "@/components/ui"
 import { FaBuilding, FaBed } from "react-icons/fa"
 import { MdOutlinePersonOutline } from "react-icons/md"
 import { GiVacuumCleaner } from "react-icons/gi"

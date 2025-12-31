@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react"
-import Modal from "../../common/Modal"
+import { Modal, Button, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
 import { FaBuilding, FaUser, FaDoorOpen, FaArchive } from "react-icons/fa"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
 import RoomManagementModal from "./RoomManagementModal"
 import { hostelApi } from "../../../service"
 
@@ -95,61 +92,54 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
 
   return (
     <>
-      <Modal title="Edit Hostel Details" onClose={onClose} width={500}>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-          {errors.form && (
-            <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              {errors.form}
+      <Modal isOpen={true} onClose={onClose} title="Edit Hostel Details" width={500}>
+        <form onSubmit={handleSubmit}>
+          <VStack gap="large">
+            {errors.form && (
+              <Alert type="error" icon>
+                {errors.form}
+              </Alert>
+            )}
+
+            <div>
+              <Label htmlFor="name" required>Hostel Name</Label>
+              <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<FaBuilding />} placeholder="Enter hostel name" error={errors.name} />
             </div>
-          )}
 
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Hostel Name</label>
-            <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<FaBuilding />} placeholder="Enter hostel name" error={errors.name} />
-            {errors.name && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.name}</p>}
-          </div>
+            <div>
+              <Label htmlFor="gender" required>Gender</Label>
+              <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUser />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
+            </div>
 
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Gender</label>
-            <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUser />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
-            {errors.gender && <p style={{ marginTop: 'var(--spacing-1-5)', fontSize: 'var(--font-size-sm)', color: 'var(--color-danger)' }}>{errors.gender}</p>}
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type="button" onClick={handleArchiveToggle} variant="secondary" icon={<FaArchive />} animation="ripple" fullWidth>
+            <Button type="button" onClick={handleArchiveToggle} variant="secondary" icon={<FaArchive />} fullWidth>
               {isArchived ? "Unarchive Hostel" : "Archive Hostel"}
             </Button>
-          </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button type="button" onClick={() => setShowRoomManagementModal(true)} variant="secondary" icon={<FaDoorOpen />} animation="ripple" fullWidth>
+            <Button type="button" onClick={() => setShowRoomManagementModal(true)} variant="secondary" icon={<FaDoorOpen />} fullWidth>
               Manage Hostel Rooms
             </Button>
-          </div>
 
-          <div style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-            <Button
-              type="button"
-              onClick={onClose}
-              variant="secondary"
-              size="medium"
-            >
-              Cancel
-            </Button>
+            <HStack justify="between" gap="small" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+              <Button
+                type="button"
+                onClick={onClose}
+                variant="secondary"
+                size="medium"
+              >
+                Cancel
+              </Button>
 
-            <Button
-              type="submit"
-              variant="primary"
-              size="medium"
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Saving Changes..." : "Save Changes"}
-            </Button>
-          </div>
+              <Button
+                type="submit"
+                variant="primary"
+                size="medium"
+                isLoading={isSubmitting}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Saving Changes..." : "Save Changes"}
+              </Button>
+            </HStack>
+          </VStack>
         </form>
       </Modal>
 

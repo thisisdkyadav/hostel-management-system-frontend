@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../../common/CsvUploader"
 import RoomStatsSummary from "../../forms/RoomStatsSummary"
-import Button from "../../../common/Button"
+import { Button, Alert, VStack, HStack } from "@/components/ui"
 import { FaUpload } from "react-icons/fa"
 import { adminApi } from "../../../../service"
 
@@ -75,29 +75,23 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
   )
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
+    <VStack gap="large">
       {successMessage && (
-        <div style={{ backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
+        <Alert type="success" icon>
           {successMessage}
-        </div>
+        </Alert>
       )}
 
       {error && (
-        <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', display: 'flex', alignItems: 'flex-start' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" style={{ height: 'var(--icon-lg)', width: 'var(--icon-lg)', marginRight: 'var(--spacing-2)', marginTop: 'var(--spacing-0-5)', flexShrink: 0 }} viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
+        <Alert type="error" icon>
           {error}
-        </div>
+        </Alert>
       )}
 
       <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName={isUnitBased ? "unit_based_rooms_template.csv" : "room_only_template.csv"} templateHeaders={requiredFields} instructionText={templateInstructions} maxRecords={1000} />
 
       {parsedCsvData.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+        <VStack gap="medium">
           <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-3) var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>
             <h5 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary-dark)' }}>CSV Data Preview</h5>
             <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>Review the rooms that will be added to {hostel.name}</p>
@@ -105,14 +99,14 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
 
           <RoomStatsSummary data={parsedCsvData} isUnitBased={isUnitBased} />
 
-          <div style={{ paddingTop: 'var(--spacing-2)', display: 'flex', justifyContent: 'flex-end' }}>
-            <Button onClick={handleAddRooms} variant="primary" size="medium" icon={<FaUpload />} animation="ripple">
+          <HStack justify="end" style={{ paddingTop: 'var(--spacing-2)' }}>
+            <Button onClick={handleAddRooms} variant="primary" size="medium" icon={<FaUpload />}>
               Add {parsedCsvData.length} Room(s)
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       )}
-    </div>
+    </VStack>
   )
 }
 
