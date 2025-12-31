@@ -1,10 +1,8 @@
 import React, { useState } from "react"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import { Button, Modal, Input } from "@/components/ui"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
-import Input from "../common/ui/Input"
 
 const ChangePasswordModal = ({ onClose, email }) => {
   const [formData, setFormData] = useState({

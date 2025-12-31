@@ -2,7 +2,7 @@ import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
 import UnitCard from "./UnitCard"
 import BaseTable from "../common/table/BaseTable"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 
 const UnitListView = ({ units, viewMode, onUnitClick }) => {
   const columns = [

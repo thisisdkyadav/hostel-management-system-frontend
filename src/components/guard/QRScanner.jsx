@@ -4,7 +4,7 @@ import { FaQrcode, FaTimes } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()

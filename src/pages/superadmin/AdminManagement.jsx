@@ -3,10 +3,8 @@ import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
 import SearchBar from "../../components/common/SearchBar"
 import BaseTable from "../../components/common/table/BaseTable"
 import NoResults from "../../components/common/NoResults"
-import Modal from "../../components/common/Modal"
+import { Modal, Button, Input } from "@/components/ui"
 import { superAdminApi } from "../../service"
-import Button from "../../components/common/Button"
-import Input from "../../components/common/ui/Input"
 
 const AdminManagement = () => {
   const [admins, setAdmins] = useState([])

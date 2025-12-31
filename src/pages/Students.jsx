@@ -8,7 +8,7 @@ import StudentDetailModal from "../components/common/students/StudentDetailModal
 import ImportStudentModal from "../components/common/students/ImportStudentModal"
 import UpdateStudentsModal from "../components/common/students/UpdateStudentsModal"
 import StudentTableView from "../components/common/students/StudentTableView"
-import Pagination from "../components/common/Pagination"
+import { Pagination, Button } from "@/components/ui"
 import StudentsHeader from "../components/headers/StudentsHeader"
 import { useStudents } from "../hooks/useStudents"
 import { useGlobal } from "../contexts/GlobalProvider"
@@ -16,7 +16,6 @@ import { useAuth } from "../contexts/AuthProvider"
 import { studentApi } from "../service"
 import { hostelApi } from "../service"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
-import Button from "../components/common/Button"
 import ToggleButtonGroup from "../components/common/ToggleButtonGroup"
 
 // Shimmer loader components

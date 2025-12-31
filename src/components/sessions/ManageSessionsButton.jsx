@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { MdComputer } from "react-icons/md"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import ManageSessionsModal from "./ManageSessionsModal"
 
 const ManageSessionsButton = ({ email }) => {

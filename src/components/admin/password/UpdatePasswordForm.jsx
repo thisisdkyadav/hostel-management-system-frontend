@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Button, Input, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const styles = {
   form: {
@@ -209,27 +208,27 @@ const UpdatePasswordForm = ({ onSubmit }) => {
   })
 
   return (
-    <form onSubmit={handleSubmit} style={styles.form}>
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Email Address</label>
-        <Input type="email" name="email" value={formData.email} onChange={handleChange} icon={<HiMail size={20} />} placeholder="Enter user's email address" error={errors.email} />
-      </div>
+    <form onSubmit={handleSubmit}>
+      <VStack gap="large">
+        <div>
+          <Label htmlFor="email" required>Email Address</Label>
+          <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} icon={<HiMail size={20} />} placeholder="Enter user's email address" error={errors.email} />
+        </div>
 
-      <div style={styles.formGroup}>
-        <label style={styles.label}>New Password</label>
-        <Input type="password" name="newPassword" value={formData.newPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Enter new password" error={errors.newPassword} />
-        {!errors.newPassword && (
-          <p style={styles.hintText}>Password must be at least 6 characters long</p>
-        )}
-      </div>
+        <div>
+          <Label htmlFor="newPassword" required>New Password</Label>
+          <Input type="password" id="newPassword" name="newPassword" value={formData.newPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Enter new password" error={errors.newPassword} />
+          {!errors.newPassword && (
+            <p style={styles.hintText}>Password must be at least 6 characters long</p>
+          )}
+        </div>
 
-      <div style={styles.formGroup}>
-        <label style={styles.label}>Confirm New Password</label>
-        <Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Confirm new password" error={errors.confirmPassword} />
-      </div>
+        <div>
+          <Label htmlFor="confirmPassword" required>Confirm New Password</Label>
+          <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<HiLockClosed size={20} />} placeholder="Confirm new password" error={errors.confirmPassword} />
+        </div>
 
-      <div style={styles.footer}>
-        <div style={styles.footerContent}>
+        <VStack gap="medium" align="center" style={{ paddingTop: 'var(--spacing-4)' }}>
           <div style={styles.warningText}>
             <p style={styles.warningContent}>
               <HiExclamation style={styles.warningIcon} />
@@ -240,8 +239,8 @@ const UpdatePasswordForm = ({ onSubmit }) => {
           <Button type="submit" variant="primary" size="large" fullWidth isLoading={isSubmitting} disabled={isSubmitting}>
             {isSubmitting ? "Processing..." : "Update Password"}
           </Button>
-        </div>
-      </div>
+        </VStack>
+      </VStack>
     </form>
   )
 }

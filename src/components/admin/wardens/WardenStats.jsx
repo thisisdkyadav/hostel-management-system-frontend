@@ -1,4 +1,4 @@
-import StatCards from "../../common/StatCards"
+import { StatCards } from "@/components/ui"
 import { FaUsers } from "react-icons/fa"
 import { MdVerified } from "react-icons/md"
 import { FaBuilding } from "react-icons/fa"

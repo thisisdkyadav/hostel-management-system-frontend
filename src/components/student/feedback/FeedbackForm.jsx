@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Textarea from "../../common/ui/Textarea"
+import { Button, Input, Textarea, VStack, Label } from "@/components/ui"
 
 const FeedbackForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -63,33 +61,33 @@ const FeedbackForm = ({ onSubmit }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-      <div>
-        <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Feedback Title</label>
-        <Input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<HiPencil size={20} />} />
+    <VStack as="form" gap="large" onSubmit={handleSubmit}>
+      <VStack gap="xsmall">
+        <Label htmlFor="feedbackTitle" required>Feedback Title</Label>
+        <Input id="feedbackTitle" type="text" name="title" value={formData.title} onChange={handleChange} placeholder="Enter feedback title" error={errors.title} icon={<HiPencil size={20} />} />
         {errors.title && (
-          <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-1-5)", display: "flex", alignItems: "center" }}>
+          <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", display: "flex", alignItems: "center" }}>
             <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.title}
           </p>
         )}
-      </div>
+      </VStack>
 
-      <div>
-        <label style={{ display: "block", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Description</label>
-        <Textarea name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<HiDocumentText size={20} />} />
+      <VStack gap="xsmall">
+        <Label htmlFor="feedbackDescription" required>Description</Label>
+        <Textarea id="feedbackDescription" name="description" value={formData.description} onChange={handleChange} rows={5} placeholder="Describe your feedback in detail" error={errors.description} icon={<HiDocumentText size={20} />} />
         {errors.description && (
-          <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-1-5)", display: "flex", alignItems: "center" }}>
+          <p style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)", display: "flex", alignItems: "center" }}>
             <HiExclamationCircle style={{ marginRight: "var(--spacing-1-5)", flexShrink: 0 }} /> {errors.description}
           </p>
         )}
-      </div>
+      </VStack>
 
       <div style={{ paddingTop: "var(--spacing-4)" }}>
         <Button type="submit" disabled={isSubmitting} variant="primary" size="large" fullWidth isLoading={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit Feedback"}
         </Button>
       </div>
-    </form>
+    </VStack>
   )
 }
 

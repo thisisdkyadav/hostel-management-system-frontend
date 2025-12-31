@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
-import { useStudents } from "../../../hooks/useStudents"
+import { useStudents } from "../../hooks/useStudents"
 import { FaSearch, FaFilter, FaUserGraduate, FaUniversity, FaCalendarAlt } from "react-icons/fa"
-import Input from "../common/ui/Input"
-import Checkbox from "../common/ui/Checkbox"
+import { Input, Checkbox } from "@/components/ui"
 
 const SelectStudentsForm = ({ targetType, targets, onChange, hostels, departments, degrees }) => {
   if (targetType === "all") return null

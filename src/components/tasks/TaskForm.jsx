@@ -3,11 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import Button from "../common/Button"
-import Modal from "../common/Modal"
-import Input from "../common/ui/Input"
-import Select from "../common/ui/Select"
-import Textarea from "../common/ui/Textarea"
+import { Button, Modal, Input, Select, Textarea } from "@/components/ui"
 
 const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
   const { user } = useAuth()

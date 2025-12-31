@@ -18,9 +18,7 @@ import { useGlobal } from "../contexts/GlobalProvider"
 import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
 import { useWarden } from "../contexts/WardenProvider"
-import Input from "../components/common/ui/Input"
-import Checkbox from "../components/common/ui/Checkbox"
-import Button from "../components/common/Button"
+import { Input, Checkbox, Button } from "@/components/ui"
 import ToggleButtonGroup from "../components/common/ToggleButtonGroup"
 
 const UnitsAndRooms = () => {

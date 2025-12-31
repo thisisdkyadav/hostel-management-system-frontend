@@ -2,9 +2,7 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
 import { superAdminApi } from "../../../service"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Modal, Button, Input, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const AddAdminModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -81,24 +79,23 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
     }
   }
 
-  if (!show) return null
-
   return (
-    <Modal title="Add New Administrator" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="bg-[var(--color-primary-bg)] p-[var(--spacing-4)] rounded-[var(--radius-lg)] mb-[var(--spacing-4)]">
-          <div className="flex items-center text-[var(--color-primary)]">
-            <FaUserShield className="mr-[var(--spacing-2)]" />
-            <h4 className="font-[var(--font-weight-medium)]">Administrator Information</h4>
+    <Modal isOpen={show} title="Add New Administrator" onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          <div className="bg-[var(--color-primary-bg)] p-[var(--spacing-4)] rounded-[var(--radius-lg)]">
+            <div className="flex items-center text-[var(--color-primary)]">
+              <FaUserShield className="mr-[var(--spacing-2)]" />
+              <h4 className="font-[var(--font-weight-medium)]">Administrator Information</h4>
+            </div>
           </div>
-        </div>
 
-        <div className="space-y-4">
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Name *</label>
+            <Label htmlFor="name" required>Name</Label>
             <Input
               type="text"
               name="name"
+              id="name"
               value={formData.name}
               onChange={handleChange}
               icon={<FiUser />}
@@ -110,10 +107,11 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Email *</label>
+            <Label htmlFor="email" required>Email</Label>
             <Input
               type="email"
               name="email"
+              id="email"
               value={formData.email}
               onChange={handleChange}
               icon={<FiMail />}
@@ -121,14 +119,15 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               required
               error={errors.email}
             />
-            {errors.email && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.email}</p>}
+            {errors.email && <Alert type="error">{errors.email}</Alert>}
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Password *</label>
+            <Label htmlFor="password" required>Password</Label>
             <Input
               type="password"
               name="password"
+              id="password"
               value={formData.password}
               onChange={handleChange}
               icon={<FiLock />}
@@ -136,59 +135,60 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               required
               error={errors.password}
             />
-            {errors.password && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.password}</p>}
+            {errors.password && <Alert type="error">{errors.password}</Alert>}
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category *</label>
+            <Label htmlFor="category" required>Category</Label>
             <Input
               type="text"
               name="category"
+              id="category"
               value={formData.category}
               onChange={handleChange}
               placeholder="Admin"
               required
               error={errors.category}
             />
-            {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
+            {errors.category && <Alert type="error">{errors.category}</Alert>}
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Phone (Optional)</label>
+            <Label htmlFor="phone">Phone (Optional)</Label>
             <Input
               type="tel"
               name="phone"
+              id="phone"
               value={formData.phone}
               onChange={handleChange}
               icon={<FiPhone />}
               placeholder="+91 9876543210"
               error={errors.phone}
             />
-            {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
+            {errors.phone && <Alert type="error">{errors.phone}</Alert>}
           </div>
-        </div>
 
-        <div className="flex flex-col sm:flex-row justify-end pt-[var(--spacing-5)] mt-[var(--spacing-6)] border-t border-[var(--color-border-light)] space-y-[var(--spacing-3)] sm:space-y-0 sm:space-x-[var(--spacing-3)]">
-          <Button
-            type="button"
-            onClick={onClose}
-            variant="secondary"
-            size="medium"
-            disabled={isSubmitting}
-            className="order-last sm:order-first"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            size="medium"
-            isLoading={isSubmitting}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Adding..." : "Add Administrator"}
-          </Button>
-        </div>
+          <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="secondary"
+              size="medium"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="medium"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Adding..." : "Add Administrator"}
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Modal>
   )

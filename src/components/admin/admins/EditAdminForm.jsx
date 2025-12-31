@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaPhone, FaUserShield } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { superAdminApi } from "../../../service"
-import Modal from "../../common/Modal"
+import { Modal, Button, Input, VStack, HStack, Label } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
 
 const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
@@ -106,14 +104,15 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
   }
 
   return (
-    <Modal title={`Edit Administrator: ${admin.name}`} onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="bg-[var(--color-primary-bg)] p-[var(--spacing-4)] rounded-[var(--radius-lg)] mb-[var(--spacing-4)]">
-          <div className="flex items-center text-[var(--color-primary)]">
-            <FaUserShield className="mr-[var(--spacing-2)]" />
-            <h4 className="font-[var(--font-weight-medium)]">Administrator Information</h4>
+    <Modal isOpen={true} title={`Edit Administrator: ${admin.name}`} onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          <div className="bg-[var(--color-primary-bg)] p-[var(--spacing-4)] rounded-[var(--radius-lg)]">
+            <div className="flex items-center text-[var(--color-primary)]">
+              <FaUserShield className="mr-[var(--spacing-2)]" />
+              <h4 className="font-[var(--font-weight-medium)]">Administrator Information</h4>
+            </div>
           </div>
-        </div>
 
         <div className="flex flex-col items-center mb-[var(--spacing-6)]">
           <div className="relative h-[var(--avatar-3xl)] w-[var(--avatar-3xl)] rounded-[var(--radius-full)] mb-[var(--spacing-2)]">
@@ -133,24 +132,24 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
 
         {isImageModalOpen && <ImageUploadModal userId={admin.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
-        <div className="space-y-4">
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Name</label>
+            <Label>Name</Label>
             <Input type="text" value={admin.name} disabled />
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Name cannot be changed</p>
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Email</label>
+            <Label>Email</Label>
             <Input type="email" value={admin.email} disabled />
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Email cannot be changed</p>
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Phone Number</label>
+            <Label htmlFor="phone">Phone Number</Label>
             <Input
               type="text"
               name="phone"
+              id="phone"
               value={formData.phone}
               onChange={handleChange}
               icon={<FaPhone />}
@@ -161,10 +160,11 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
           </div>
 
           <div>
-            <label className="block text-[var(--color-text-tertiary)] text-[var(--font-size-sm)] font-[var(--font-weight-medium)] mb-[var(--spacing-2)]">Category</label>
+            <Label htmlFor="category">Category</Label>
             <Input
               type="text"
               name="category"
+              id="category"
               value={formData.category}
               onChange={handleChange}
               placeholder="Admin"
@@ -172,32 +172,31 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
             />
             {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
           </div>
-        </div>
 
-        <div className="flex flex-col-reverse sm:flex-row justify-between pt-[var(--spacing-5)] mt-[var(--spacing-6)] border-t border-[var(--color-border-light)]">
-          <Button
-            type="button"
-            onClick={handleDelete}
-            variant="danger"
-            size="medium"
-            icon={<FaTrash />}
-            disabled={isLoading}
-            className="mt-[var(--spacing-3)] sm:mt-0"
-          >
-            Delete Administrator
-          </Button>
+          <HStack gap="small" justify="between" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+            <Button
+              type="button"
+              onClick={handleDelete}
+              variant="danger"
+              size="medium"
+              icon={<FaTrash />}
+              disabled={isLoading}
+            >
+              Delete Administrator
+            </Button>
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="medium"
-            icon={<FaSave />}
-            isLoading={isLoading}
-            disabled={isLoading}
-          >
-            {isLoading ? "Saving..." : "Save Changes"}
-          </Button>
-        </div>
+            <Button
+              type="submit"
+              variant="primary"
+              size="medium"
+              icon={<FaSave />}
+              isLoading={isLoading}
+              disabled={isLoading}
+            >
+              {isLoading ? "Saving..." : "Save Changes"}
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Modal>
   )

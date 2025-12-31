@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Button, Input, VStack, HStack, Label } from "@/components/ui"
 import { FaTable, FaEdit } from "react-icons/fa"
 
 const RoomOnlyForm = ({ formData, setFormData }) => {
@@ -138,22 +137,22 @@ const RoomOnlyForm = ({ formData, setFormData }) => {
       {inputMethod === "form" ? (
         <>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)" }} className="md:grid-cols-2">
-            <div style={{ marginBottom: "var(--spacing-4)" }}>
-              <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Number of Floors</label>
-              <Input type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" />
-            </div>
+            <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
+              <Label htmlFor="floors">Number of Floors</Label>
+              <Input id="floors" type="number" name="floors" value={roomConfig.floors} onChange={handleChange} min="1" />
+            </VStack>
 
-            <div style={{ marginBottom: "var(--spacing-4)" }}>
-              <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Default Rooms per Floor</label>
-              <Input type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" />
+            <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
+              <Label htmlFor="defaultRoomsPerFloor">Default Rooms per Floor</Label>
+              <Input id="defaultRoomsPerFloor" type="number" name="defaultRoomsPerFloor" value={roomConfig.defaultRoomsPerFloor} onChange={handleChange} min="1" />
               <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-placeholder)", marginTop: "var(--spacing-1)" }}>Room numbers will be generated as 101, 102... (Ground floor), 201, 202... (First floor)</p>
-            </div>
+            </VStack>
           </div>
 
-          <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <label style={{ display: "block", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>Standard Room Capacity</label>
-            <Input type="number" name="standardCapacity" value={roomConfig.standardCapacity} onChange={handleChange} min="1" />
-          </div>
+          <VStack gap="xsmall" style={{ marginBottom: "var(--spacing-4)" }}>
+            <Label htmlFor="standardCapacity">Standard Room Capacity</Label>
+            <Input id="standardCapacity" type="number" name="standardCapacity" value={roomConfig.standardCapacity} onChange={handleChange} min="1" />
+          </VStack>
 
           <div style={{ marginTop: "var(--spacing-4)" }}>
             <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", marginBottom: "var(--spacing-2)" }}>

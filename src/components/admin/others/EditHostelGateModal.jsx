@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaKey, FaTrash, FaSave } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Modal, Button, Input, VStack, HStack, Label, Alert } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
 
 const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
@@ -74,45 +72,49 @@ const EditHostelGateModal = ({ show, gate, onClose, onUpdate }) => {
   if (!show) return null
 
   return (
-    <Modal title="Edit Hostel Gate Login" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }}>{error}</div>}
+    <Modal isOpen={show} title="Edit Hostel Gate Login" onClose={onClose} width={500}>
+      <VStack gap="large">
+        {error && <Alert type="error">{error}</Alert>}
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Hostel</label>
-          <Input type="text" value={gate.userId?.name || "Unknown Hostel"} icon={<FaBuilding />} disabled />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <VStack gap="large">
+            <div>
+              <Label>Hostel</Label>
+              <Input type="text" value={gate.userId?.name || "Unknown Hostel"} icon={<FaBuilding />} disabled />
+            </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Email</label>
-          <Input type="email" value={gate.userId?.email} icon={<FaEnvelope />} disabled />
-        </div>
+            <div>
+              <Label>Email</Label>
+              <Input type="email" value={gate.userId?.email} icon={<FaEnvelope />} disabled />
+            </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>New Password</label>
-          <Input type="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter new password" required />
-        </div>
+            <div>
+              <Label htmlFor="password" required>New Password</Label>
+              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter new password" required />
+            </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Confirm Password</label>
-          <Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm new password" required />
-        </div>
+            <div>
+              <Label htmlFor="confirmPassword" required>Confirm Password</Label>
+              <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm new password" required />
+            </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
-            Delete Gate Login
-          </Button>
+            <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+              <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
+                Delete Gate Login
+              </Button>
 
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-            <Button type="button" onClick={onClose} variant="secondary" size="medium">
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading || !formData.password || !formData.confirmPassword}>
-              Update Password
-            </Button>
-          </div>
-        </div>
-      </form>
+              <HStack gap="small">
+                <Button type="button" onClick={onClose} variant="secondary" size="medium">
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading || !formData.password || !formData.confirmPassword}>
+                  Update Password
+                </Button>
+              </HStack>
+            </HStack>
+          </VStack>
+        </form>
+      </VStack>
     </Modal>
   )
 }

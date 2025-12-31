@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
-import Button from "../../common/Button"
+import { Button, VStack, HStack, Badge } from "@/components/ui"
 
 const getFieldDescription = (field) => {
   const descriptions = {

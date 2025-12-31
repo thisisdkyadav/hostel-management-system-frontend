@@ -1,13 +1,10 @@
 import React, { useState } from "react"
-import { FaTrash, FaSave, FaTools, FaExclamationTriangle, FaPhone } from "react-icons/fa"
+import { FaTrash, FaSave, FaTools, FaPhone } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
+import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
 const CATEGORY_DISPLAY_LABELS = {
   Plumbing: "Plumber",
@@ -96,70 +93,68 @@ const EditMaintenanceForm = ({ staff, onClose, onUpdate, onDelete }) => {
   }
 
   return (
-    <Modal title="Edit Maintenance Staff" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-        {error && (
-          <div style={{ padding: "var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "flex-start" }}>
-            <FaExclamationTriangle style={{ marginTop: "var(--spacing-0-5)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-            <p>{error}</p>
-          </div>
-        )}
+    <Modal isOpen={true} title="Edit Maintenance Staff" onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          {error && <Alert type="error">{error}</Alert>}
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "var(--spacing-6)" }}>
-          <div style={{ position: "relative", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
-            {formData.profileImage ? (
-              <img src={getMediaUrl(formData.profileImage)} alt={formData.name} style={{ height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }} />
-            ) : (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
-                <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-primary)" }} />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "var(--spacing-6)" }}>
+            <div style={{ position: "relative", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", marginBottom: "var(--spacing-2)" }}>
+              {formData.profileImage ? (
+                <img src={getMediaUrl(formData.profileImage)} alt={formData.name} style={{ height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", objectFit: "cover", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }} />
+              ) : (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "var(--avatar-3xl)", width: "var(--avatar-3xl)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-4) solid var(--color-primary)", boxShadow: "var(--shadow-md)" }}>
+                  <FaTools style={{ height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-primary)" }} />
+                </div>
+              )}
+              <div onClick={() => setIsImageModalOpen(true)} style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", color: "var(--color-white)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }}>
+                <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
               </div>
-            )}
-            <div onClick={() => setIsImageModalOpen(true)} style={{ position: "absolute", bottom: 0, right: 0, backgroundColor: "var(--color-primary)", color: "var(--color-white)", padding: "var(--spacing-1-5)", borderRadius: "var(--radius-full)", cursor: "pointer", transition: "var(--transition-colors)" }}>
-              <HiCamera style={{ width: "var(--icon-md)", height: "var(--icon-md)" }} />
             </div>
+            <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Click the camera icon to change profile photo</span>
           </div>
-          <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Click the camera icon to change profile photo</span>
-        </div>
 
-        {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
+          {isImageModalOpen && <ImageUploadModal userId={staff.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
 
-        <div>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Staff Name</label>
-          <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter staff name" required />
-        </div>
+          <div>
+            <Label htmlFor="name" required>Staff Name</Label>
+            <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="Enter staff name" required />
+          </div>
 
-        <div>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Phone Number</label>
-          <Input type="text" name="phone" value={formData.phone} onChange={handleChange} placeholder="+91 9876543210" icon={<FaPhone />} />
-        </div>
+          <div>
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} placeholder="+91 9876543210" icon={<FaPhone />} />
+          </div>
 
-        <div>
-          <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Specialty Category</label>
-          <Select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            placeholder="Select a category"
-            icon={<FaTools />}
-            options={MAINTENANCE_CATEGORIES.map((category) => ({
-              value: category,
-              label: getCategoryDisplayLabel(category),
-            }))}
-            required
-          />
-        </div>
-
+          <div>
+            <Label htmlFor="category" required>Specialty Category</Label>
+            <Select
+              name="category"
+              id="category"
+              value={formData.category}
+              onChange={handleChange}
+              placeholder="Select a category"
+              icon={<FaTools />}
+              options={MAINTENANCE_CATEGORIES.map((category) => ({
+                value: category,
+                label: getCategoryDisplayLabel(category),
+              }))}
+              required
+            />
+          </div>
 
 
-        <div className="flex flex-row justify-between pt-4 mt-5 border-t gap-3" style={{ borderColor: "var(--color-border-light)" }}>
-          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
-            Delete Account
-          </Button>
 
-          <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
-            Save Changes
-          </Button>
-        </div>
+          <HStack gap="small" justify="between" style={{ paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-5)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+            <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
+              Delete Account
+            </Button>
+
+            <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
+              Save Changes
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Modal>
   )

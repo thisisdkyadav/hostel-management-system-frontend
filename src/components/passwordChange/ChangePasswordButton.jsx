@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaKey } from "react-icons/fa"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import ChangePasswordModal from "./ChangePasswordModal"
 
 const ChangePasswordButton = ({ email }) => {

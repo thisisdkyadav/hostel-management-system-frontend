@@ -5,10 +5,8 @@ import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES, TASK_FILTER_TABS, TASK
 import TaskStats from "../../components/tasks/TaskStats"
 import TaskForm from "../../components/tasks/TaskForm"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import Pagination from "../../components/common/Pagination"
+import { Pagination, Input, Select } from "@/components/ui"
 import TaskManagementHeader from "../../components/headers/TaskManagementHeader"
-import Input from "../../components/common/ui/Input"
-import Select from "../../components/common/ui/Select"
 
 const TaskManagement = () => {
   const { user } = useAuth()

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
-import Modal from "../../common/Modal"
+import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
 import { visitorApi } from "../../../service"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Textarea from "../../common/ui/Textarea"
 
 const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
   const [formData, setFormData] = useState({
@@ -115,33 +112,33 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
         {/* Visit Details */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)" }}>
-          <div>
-            <label style={{ display: "block", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>From Date</label>
-            <Input type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Must be at least 2 days from today</p>
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="fromDate" required>From Date</Label>
+            <Input id="fromDate" type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
+            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Must be at least 2 days from today</p>
+          </VStack>
 
-          <div>
-            <label style={{ display: "block", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>To Date</label>
-            <Input type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="toDate" required>To Date</Label>
+            <Input id="toDate" type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
+          </VStack>
         </div>
 
         {/* Reason for Visit */}
-        <div>
-          <label style={{ display: "block", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>Reason for Visit</label>
-          <Textarea name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
-        </div>
+        <VStack gap="xsmall">
+          <Label htmlFor="reason" required>Reason for Visit</Label>
+          <Textarea id="reason" name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
+        </VStack>
 
         {/* Submit Section */}
-        <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", gap: "var(--spacing-3)" }}>
+        <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
           <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="medium" disabled={loading} isLoading={loading}>
             {loading ? "Saving..." : "Update Request"}
           </Button>
-        </div>
+        </HStack>
       </form>
     </Modal>
   )

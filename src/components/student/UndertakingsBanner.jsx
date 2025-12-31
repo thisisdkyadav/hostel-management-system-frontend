@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { FaExclamationTriangle, FaFileSignature, FaTimes } from "react-icons/fa"
 import { undertakingApi } from "../../service"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 
 const UndertakingsBanner = () => {
   const [pendingCount, setPendingCount] = useState(0)

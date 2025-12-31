@@ -2,10 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import LoadingState from "../../components/common/LoadingState"
-import ErrorState from "../../components/common/ErrorState"
-import EmptyState from "../../components/common/EmptyState"
-import Button from "../../components/common/Button"
+import { LoadingState, ErrorState, EmptyState, Button } from "@/components/ui"
 
 const Undertakings = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])

@@ -6,7 +6,7 @@ import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
 import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"
 import { useAuth } from "../../contexts/AuthProvider"
-import Button from "../../components/common/Button"
+import { Button } from "@/components/ui"
 import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
 
 const AddStudentEntry = () => {

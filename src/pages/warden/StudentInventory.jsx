@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
-import Button from "../../components/common/Button"
+import { Button } from "@/components/ui"
 import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
 
 const StudentInventory = () => {

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react"
-import Modal from "../../common/Modal"
 import FormField from "../../common/FormField"
-import Button from "../../common/Button"
-import FileInput from "../../common/ui/FileInput"
 import { FaTrash, FaUpload } from "react-icons/fa"
 import { uploadApi, certificateApi } from "../../../service"
+import { Button, Modal, FileInput } from "@/components/ui"
 
 const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null, studentId }) => {
   const [formData, setFormData] = useState({

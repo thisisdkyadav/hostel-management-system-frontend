@@ -1,10 +1,7 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import Modal from "../../common/Modal"
+import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
 import { uploadApi } from "../../../service"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Textarea from "../../common/ui/Textarea"
 
 const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {
   const [formData, setFormData] = useState({
@@ -233,36 +230,34 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
         {/* Visit Details */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>From Date</label>
-            <Input type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>Must be at least 2 days from today</p>
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="fromDate" required>From Date</Label>
+            <Input id="fromDate" type="date" name="fromDate" value={formData.fromDate} onChange={handleChange} min={minDateString} required />
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Must be at least 2 days from today</p>
+          </VStack>
 
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>To Date</label>
-            <Input type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="toDate" required>To Date</Label>
+            <Input id="toDate" type="date" name="toDate" value={formData.toDate} onChange={handleChange} min={formData.fromDate || minDateString} required />
+          </VStack>
         </div>
 
         {/* Reason for Visit */}
-        <div>
-          <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Reason for Visit</label>
-          <Textarea name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
-        </div>
+        <VStack gap="xsmall">
+          <Label htmlFor="reason" required>Reason for Visit</Label>
+          <Textarea id="reason" name="reason" value={formData.reason} onChange={handleChange} placeholder="Please provide details about the purpose of the visit" rows={4} resize="none" required />
+        </VStack>
 
         {/* H2 Form Upload */}
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-3)' }}>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-              H2 Form Upload <span style={{ color: 'var(--color-danger)' }}>*</span>
-            </label>
+          <HStack justify="between" style={{ marginBottom: 'var(--spacing-3)' }}>
+            <Label required>H2 Form Upload</Label>
             <a href="https://hostel.iiti.ac.in/docs/H2%20Form.pdf" target="_blank" rel="noopener noreferrer" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-primary)', textDecoration: 'underline', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-primary-hover)'}
               onMouseLeave={(e) => e.target.style.color = 'var(--color-primary)'}
             >
               Download H2 Form
             </a>
-          </div>
+          </HStack>
 
           {!h2FormUploaded ? (
             <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-6)' }}>

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
 import Pagination from "../../common/Pagination"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Button, Input } from "@/components/ui"
 
 const AvailableInventory = () => {
   const [hostelInventory, setHostelInventory] = useState([])

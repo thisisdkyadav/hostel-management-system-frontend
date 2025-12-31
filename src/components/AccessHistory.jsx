@@ -3,9 +3,7 @@ import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock 
 import FilterTabs from "./common/FilterTabs"
 import NoResults from "./common/NoResults"
 import Pagination from "./common/Pagination"
-import Button from "./common/Button"
-import Input from "./common/ui/Input"
-import Select from "./common/ui/Select"
+import { Button, Input, Select } from "@/components/ui"
 import { securityApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
 

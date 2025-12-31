@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Modal, Button, Input, VStack, HStack, Alert, SearchInput } from "@/components/ui"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 
@@ -78,9 +76,9 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
   if (!show) return null
 
   return (
-    <Modal title={`Acceptance Status - ${undertakingTitle}`} onClose={onClose} size="lg" width={900}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }}>{error}</div>}
+    <Modal isOpen={show} title={`Acceptance Status - ${undertakingTitle}`} onClose={onClose} size="lg" width={900}>
+      <VStack gap="large">
+        {error && <Alert type="error">{error}</Alert>}
 
         {/* Statistics */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--spacing-4)' }}>
@@ -114,8 +112,8 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         </div>
 
         {/* Filters and search */}
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-          <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
+        <HStack gap="medium" justify="between" align="center">
+          <HStack gap="xsmall">
             <Button onClick={() => setStatusFilter("all")} variant={statusFilter === "all" ? "primary" : "ghost"} size="small">
               All
             </Button>
@@ -128,17 +126,15 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
             <Button onClick={() => setStatusFilter("not_viewed")} variant={statusFilter === "not_viewed" ? "secondary" : "ghost"} size="small">
               Not Viewed
             </Button>
-          </div>
+          </HStack>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)' }}>
-            <div style={{ position: 'relative' }}>
-              <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
-            </div>
+          <HStack gap="small" align="center">
+            <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
             <Button onClick={exportToCSV} variant="primary" size="medium" icon={<FaFileDownload />} title="Export to CSV">
               Export
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </HStack>
 
         {/* Students list */}
         {loading ? (
@@ -192,12 +188,12 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+        <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
           <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Close
           </Button>
-        </div>
-      </div>
+        </HStack>
+      </VStack>
     </Modal>
   )
 }

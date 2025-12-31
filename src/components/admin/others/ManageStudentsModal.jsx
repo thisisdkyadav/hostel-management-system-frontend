@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Modal, Button, Input, VStack, HStack, Alert, SearchInput } from "@/components/ui"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
@@ -65,18 +63,18 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
 
   return (
     <>
-      <Modal title={`Manage Students - ${undertakingTitle}`} onClose={onClose} size="lg" width={900}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-          {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }}>{error}</div>}
+      <Modal isOpen={show} title={`Manage Students - ${undertakingTitle}`} onClose={onClose} size="lg" width={900}>
+        <VStack gap="large">
+          {error && <Alert type="error">{error}</Alert>}
 
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+          <HStack gap="medium" justify="between" align="center">
             <div style={{ position: 'relative', width: '100%', maxWidth: '20rem' }}>
               <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
             </div>
             <Button onClick={() => setShowBulkUpload(true)} variant="success" size="medium" icon={<FaFileCsv />}>
               Add Students (CSV)
             </Button>
-          </div>
+          </HStack>
 
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '16rem' }}>
@@ -131,12 +129,12 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
             </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+          <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
             <Button type="button" onClick={onClose} variant="secondary" size="medium">
               Close
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       </Modal>
 
       {/* Bulk Upload Modal */}

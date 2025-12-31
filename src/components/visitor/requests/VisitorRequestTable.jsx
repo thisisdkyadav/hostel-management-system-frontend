@@ -5,7 +5,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import BaseTable from "../../common/table/BaseTable"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Button from "../../common/Button"
+import { Button } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },

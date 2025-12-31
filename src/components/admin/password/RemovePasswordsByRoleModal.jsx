@@ -1,9 +1,6 @@
 import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Select from "../../common/ui/Select"
-import Input from "../../common/ui/Input"
+import { Modal, Button, Select, Input, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
 
@@ -259,7 +256,7 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
   if (!isOpen) return null
 
   return (
-    <Modal title="Remove Passwords by Role" onClose={handleClose} width={500}>
+    <Modal isOpen={isOpen} title="Remove Passwords by Role" onClose={handleClose} width={500}>
       {!isConfirming ? (
         <div style={styles.spaceY6}>
           <div style={styles.warningBanner}>
@@ -275,10 +272,8 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
             </div>
           </div>
 
-          <div style={styles.formGroup}>
-            <label htmlFor="role" style={styles.label}>
-              Select Role
-            </label>
+          <div>
+            <Label htmlFor="role" required>Select Role</Label>
             <Select
               id="role"
               name="role"

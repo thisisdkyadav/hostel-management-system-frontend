@@ -1,8 +1,5 @@
 import React, { useState } from "react"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
+import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 import { faceScannerApi, adminApi } from "../../../service"
 import { useEffect } from "react"
 
@@ -88,99 +85,78 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
     ]
 
     return (
-        <Modal title={credentials ? "Scanner Created" : "Add Face Scanner"} onClose={handleClose} width={500}>
+        <Modal isOpen={show} title={credentials ? "Scanner Created" : "Add Face Scanner"} onClose={handleClose} width={500}>
             {credentials ? (
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-                    <div
-                        style={{
-                            backgroundColor: "var(--color-success-bg)",
-                            padding: "var(--spacing-4)",
-                            borderRadius: "var(--radius-lg)",
-                            border: "var(--border-1) solid var(--color-success)",
-                        }}
-                    >
-                        <p style={{ color: "var(--color-success-dark)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
+                <VStack gap="large">
+                    <Alert type="success">
+                        <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
                             Scanner created successfully!
                         </p>
-                        <p style={{ color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)" }}>
+                        <p style={{ fontSize: "var(--font-size-sm)" }}>
                             Save these credentials now. The password will not be shown again.
                         </p>
+                    </Alert>
+
+                    <div>
+                        <Label>Username</Label>
+                        <HStack gap="small">
+                            <Input type="text" value={credentials.username} readOnly />
+                            <Button variant="secondary" size="medium" onClick={() => copyToClipboard(credentials.username)}>
+                                Copy
+                            </Button>
+                        </HStack>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-                        <div>
-                            <label style={{ display: "block", color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-2)" }}>
-                                Username
-                            </label>
-                            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-                                <Input type="text" value={credentials.username} readOnly />
-                                <Button variant="secondary" size="medium" onClick={() => copyToClipboard(credentials.username)}>
-                                    Copy
-                                </Button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label style={{ display: "block", color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-2)" }}>
-                                Password
-                            </label>
-                            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-                                <Input type="text" value={credentials.password} readOnly />
-                                <Button variant="secondary" size="medium" onClick={() => copyToClipboard(credentials.password)}>
-                                    Copy
-                                </Button>
-                            </div>
-                        </div>
+                    <div>
+                        <Label>Password</Label>
+                        <HStack gap="small">
+                            <Input type="text" value={credentials.password} readOnly />
+                            <Button variant="secondary" size="medium" onClick={() => copyToClipboard(credentials.password)}>
+                                Copy
+                            </Button>
+                        </HStack>
                     </div>
 
-                    <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+                    <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
                         <Button variant="primary" size="medium" onClick={handleClose}>
                             Done
                         </Button>
-                    </div>
-                </div>
+                    </HStack>
+                </VStack>
             ) : (
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+                <form onSubmit={handleSubmit}>
+                    <VStack gap="large">
                         <div>
-                            <label style={{ display: "block", color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
-                                Scanner Name
-                            </label>
-                            <Input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g., Boys Hostel Entry Scanner" required />
+                            <Label htmlFor="name" required>Scanner Name</Label>
+                            <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} placeholder="e.g., Boys Hostel Entry Scanner" required />
                         </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
-                            <div>
-                                <label style={{ display: "block", color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
-                                    Type
-                                </label>
-                                <Select name="type" value={formData.type} onChange={handleChange} options={typeOptions} required />
+                        <HStack gap="medium">
+                            <div style={{ flex: 1 }}>
+                                <Label htmlFor="type" required>Type</Label>
+                                <Select name="type" id="type" value={formData.type} onChange={handleChange} options={typeOptions} required />
                             </div>
 
-                            <div>
-                                <label style={{ display: "block", color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
-                                    Direction
-                                </label>
-                                <Select name="direction" value={formData.direction} onChange={handleChange} options={directionOptions} required />
+                            <div style={{ flex: 1 }}>
+                                <Label htmlFor="direction" required>Direction</Label>
+                                <Select name="direction" id="direction" value={formData.direction} onChange={handleChange} options={directionOptions} required />
                             </div>
-                        </div>
+                        </HStack>
 
                         <div>
-                            <label style={{ display: "block", color: "var(--color-text-tertiary)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)" }}>
-                                Hostel (Optional)
-                            </label>
-                            <Select name="hostelId" value={formData.hostelId} onChange={handleChange} options={hostelOptions} />
+                            <Label htmlFor="hostelId">Hostel (Optional)</Label>
+                            <Select name="hostelId" id="hostelId" value={formData.hostelId} onChange={handleChange} options={hostelOptions} />
                         </div>
-                    </div>
 
-                    <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)", gap: "var(--spacing-3)" }}>
-                        <Button type="button" onClick={handleClose} variant="secondary" size="medium">
-                            Cancel
-                        </Button>
-                        <Button type="submit" variant="primary" size="medium" disabled={loading}>
-                            {loading ? "Creating..." : "Create Scanner"}
-                        </Button>
-                    </div>
+                        <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+                            <Button type="button" onClick={handleClose} variant="secondary" size="medium">
+                                Cancel
+                            </Button>
+                            <Button type="submit" variant="primary" size="medium" disabled={loading}>
+                                {loading ? "Creating..." : "Create Scanner"}
+                            </Button>
+                        </HStack>
+                    </VStack>
                 </form>
             )}
         </Modal>

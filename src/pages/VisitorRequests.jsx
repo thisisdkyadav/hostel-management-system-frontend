@@ -6,11 +6,8 @@ import VisitorRequestTable from "../components/visitor/requests/VisitorRequestTa
 import AddVisitorProfileModal from "../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../components/visitor/requests/ManageVisitorProfilesModal"
-import LoadingState from "../components/common/LoadingState"
-import ErrorState from "../components/common/ErrorState"
-import EmptyState from "../components/common/EmptyState"
+import { LoadingState, ErrorState, EmptyState, Button } from "@/components/ui"
 import VisitorRequestsHeader from "../components/headers/VisitorRequestsHeader"
-import Button from "../components/common/Button"
 
 const VisitorRequests = () => {
   const { user, canAccess } = useAuth()

@@ -3,8 +3,7 @@ import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye 
 import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useAdmin } from "../../../contexts/AdminProvider"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
   const { hostelList } = useAdmin()
@@ -32,7 +31,7 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
           <span style={{ marginLeft: 'var(--spacing-1-5)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: statusColor.text }}>{security.hostelId ? "Assigned" : "Unassigned"}</span>
         </div>
 
-        <Card.Header style={{ marginBottom: 0 }}>
+        <CardHeader style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-white)', fontSize: 'var(--font-size-xl)', marginRight: 'var(--spacing-4)' }} className="sm:w-16 sm:h-16">
               <FaShieldAlt />
@@ -45,9 +44,9 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
               </div>
             </div>
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
+        <CardBody style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ width: 'var(--spacing-7)', height: 'var(--spacing-7)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 'var(--spacing-3)' }}>
               <FaEnvelope style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-xs)' }} />
@@ -63,16 +62,16 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
               <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{hostelName}</span>
             </div>
           </div>
-        </Card.Body>
+        </CardBody>
 
-        <Card.Footer style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', gap: 'var(--spacing-2)' }}>
+        <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', gap: 'var(--spacing-2)' }}>
           <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="small" icon={<FaEye />} fullWidth>
             View Details
           </Button>
           <Button onClick={() => setShowEditForm(true)} variant="secondary" size="small" icon={<FaEdit />} fullWidth>
             Edit
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {showEditForm && <EditSecurityForm security={security} onClose={() => setShowEditForm(false)} onUpdate={onUpdate} onDelete={onDelete} />}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react"
 import { FaCheck, FaSearch, FaTimes } from "react-icons/fa"
-import Input from "../common/ui/Input"
+import { Input } from "@/components/ui"
 
 const styles = {
   // Dropdown container

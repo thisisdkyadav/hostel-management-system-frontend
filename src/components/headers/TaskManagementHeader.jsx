@@ -1,4 +1,4 @@
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { WHO_CAN_CREATE_TASK } from "../../constants/taskConstants"
 
