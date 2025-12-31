@@ -248,6 +248,37 @@ A group of toggle buttons for switching between options. Supports icons, labels,
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
 
+### DatePicker
+
+Material Design 3 inspired date picker with calendar dropdown.
+
+| Prop | Type | Default | Values/Description |
+|------|------|---------|-------------------|
+| `name` | `string` | - | Input name attribute |
+| `value` | `string` | - | Selected date in `YYYY-MM-DD` format |
+| `onChange` | `function` | - | Change handler (receives event-like object with `target.value`) |
+| `placeholder` | `string` | `"Select date"` | Placeholder text |
+| `icon` | `React.ReactNode` | `<FaCalendarAlt />` | Optional custom icon |
+| `error` | `boolean\|string` | - | Error state (boolean) or error message (string) |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `readOnly` | `boolean` | `false` | ReadOnly state |
+| `required` | `boolean` | `false` | Required field |
+| `min` | `string` | - | Minimum selectable date (`YYYY-MM-DD`) |
+| `max` | `string` | - | Maximum selectable date (`YYYY-MM-DD`) |
+| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
+| `id` | `string` | - | Optional id (defaults to name) |
+| `className` | `string` | `""` | Additional CSS classes |
+| `style` | `object` | `{}` | Inline styles |
+
+**Features:**
+- Smart dropdown positioning (shows above if no space below)
+- Month/year navigation with double arrows
+- Today button for quick selection
+- Clear button to reset value
+- Disabled date ranges (min/max)
+- Keyboard accessible
+- M3 transitions and hover states
+
 ### Label
 
 | Prop | Type | Default | Values/Description |
