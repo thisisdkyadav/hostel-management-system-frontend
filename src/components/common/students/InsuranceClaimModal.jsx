@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import Modal from "../Modal"
-import Button from "../Button"
-import Input from "../ui/Input"
-import Select from "../ui/Select"
+import { Modal, Button, Input, Select } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {

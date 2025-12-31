@@ -5,8 +5,7 @@ import NotificationTable from "../components/notifications/NotificationTable"
 import NotificationFilterSection from "../components/notifications/NotificationFilterSection"
 import CreateNotificationModal from "../components/notifications/CreateNotificationModal"
 import NoResults from "../components/common/NoResults"
-import { Pagination } from "@/components/ui"
-import FilterTabs from "../components/common/FilterTabs"
+import { Pagination, Tabs } from "@/components/ui"
 import NotificationCenterHeader from "../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
@@ -157,7 +156,7 @@ const NotificationCenter = () => {
         {stats && <NotificationStats stats={stats} />}
 
         <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)' }}>
-          <FilterTabs tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
+          <Tabs tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
         </div>
 
         {showFilters && <NotificationFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} />}

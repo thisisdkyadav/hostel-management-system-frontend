@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
-import SearchBar from "../../common/SearchBar"
+import { SearchInput, Button } from "@/components/ui"
 import NoResults from "../../common/NoResults"
-import { Button } from "@/components/ui"
 import UndertakingCard from "./UndertakingCard"
 import AddUndertakingModal from "./AddUndertakingModal"
 import { adminApi } from "../../../service"
@@ -59,7 +58,7 @@ const Undertakings = () => {
       </header>
 
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="w-full sm:w-64 md:w-72" />
+        <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="w-full sm:w-64 md:w-72" />
       </div>
 
       {loading ? (

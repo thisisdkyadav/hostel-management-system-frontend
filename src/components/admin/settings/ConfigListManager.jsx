@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
-import { Modal, Button, Input, VStack, HStack, Label } from "@/components/ui"
-import ConfirmationDialog from "../../common/ConfirmationDialog"
+import { Modal, Button, Input, VStack, HStack, Label, ConfirmDialog } from "@/components/ui"
 
 const styles = {
   form: {
@@ -357,7 +356,7 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         </Modal>
       )}
 
-      <ConfirmationDialog isOpen={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}
+      <ConfirmDialog isOpen={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}
         onConfirm={handleRemoveItem}
         title={`Delete ${itemLabel}`}
         message={`Are you sure you want to delete "${selectedItem}"? This action cannot be undone.`}

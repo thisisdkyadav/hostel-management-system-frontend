@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import SearchBar from "../../components/common/SearchBar"
+import { SearchInput, Tabs } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import FaceScannerCard from "../../components/admin/faceScanner/FaceScannerCard"
 import FaceScannerStats from "../../components/admin/faceScanner/FaceScannerStats"
 import AddFaceScannerModal from "../../components/admin/faceScanner/AddFaceScannerModal"
 import FaceScannersHeader from "../../components/headers/FaceScannersHeader"
-import FilterTabs from "../../components/common/FilterTabs"
 import { faceScannerApi } from "../../service"
 
 const SCANNER_FILTER_TABS = [
@@ -73,9 +72,9 @@ const FaceScanners = () => {
                     {/* Filters */}
                     <div className="mt-[var(--spacing-4)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
                         <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-                            <FilterTabs tabs={SCANNER_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+                            <Tabs tabs={SCANNER_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
                         </div>
-                        <SearchBar
+                        <SearchInput
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search scanners..."

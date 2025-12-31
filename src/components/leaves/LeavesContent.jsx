@@ -1,5 +1,5 @@
 import NoResults from "../common/NoResults"
-import Pagination from "../common/Pagination"
+import { Pagination } from "@/components/ui"
 import { FaCalendarAlt } from "react-icons/fa"
 
 // Helper function to get status colors using theme variables

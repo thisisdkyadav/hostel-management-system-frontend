@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { Button, Input, Select, Textarea } from "@/components/ui"
-import ConfirmationDialog from "../common/ConfirmationDialog"
+import { Button, Input, Select, Textarea, ConfirmDialog } from "@/components/ui"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
   const [loading, setLoading] = useState(true)
@@ -345,7 +344,7 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
       )}
 
       {showDeleteDialog && (
-        <ConfirmationDialog
+        <ConfirmDialog
           isOpen={showDeleteDialog}
           onClose={() => setShowDeleteDialog(false)}
           onConfirm={handleDelete}

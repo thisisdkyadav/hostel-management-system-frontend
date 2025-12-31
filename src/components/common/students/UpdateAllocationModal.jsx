@@ -4,10 +4,7 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import Modal from "../Modal"
-import Button from "../Button"
-import Select from "../ui/Select"
-import FileInput from "../ui/FileInput"
+import { Modal, Button, Select, FileInput } from "@/components/ui"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {

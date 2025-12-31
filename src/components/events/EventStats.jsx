@@ -1,5 +1,5 @@
 import React from "react"
-import StatCards from "../common/StatCards"
+import { StatCards } from "@/components/ui"
 import { FaCalendarAlt, FaCalendarCheck, FaCalendarDay } from "react-icons/fa"
 import { MdEventAvailable } from "react-icons/md"
 

@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect, use } from "react"
 import { Navigate, useLocation, useSearchParams } from "react-router-dom"
 import { authApi } from "../service"
-import LoadingScreen from "../components/common/LoadingScreen"
+import { LoadingState } from "@/components/ui"
 import useNetworkStatus from "../hooks/useNetworkStatus"
 
 export const AuthContext = createContext(null)
@@ -195,7 +195,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   if (starting) {
-    return <LoadingScreen />
+    return <LoadingState fullScreen />
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

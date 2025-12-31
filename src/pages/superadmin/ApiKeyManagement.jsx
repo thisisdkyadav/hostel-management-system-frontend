@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaKey, FaPlus, FaTrash, FaCopy, FaCheckCircle } from "react-icons/fa"
-import SearchBar from "../../components/common/SearchBar"
-import FilterTabs from "../../components/common/FilterTabs"
+import { SearchInput, Tabs, DataTable, Modal, Button, Input } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
-import BaseTable from "../../components/common/table/BaseTable"
-import { Modal, Button, Input } from "@/components/ui"
 import { superAdminApi } from "../../service"
 
 const API_KEY_FILTER_TABS = [
@@ -212,9 +209,9 @@ const ApiKeyManagement = () => {
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div className="w-full sm:w-auto pb-2">
-            <FilterTabs tabs={filterTabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+            <Tabs tabs={filterTabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
           </div>
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search API keys by name" className="w-full sm:w-64 md:w-72" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search API keys by name" className="w-full sm:w-64 md:w-72" />
         </div>
       </div>
 
@@ -236,7 +233,7 @@ const ApiKeyManagement = () => {
       ) : filteredApiKeys.length === 0 ? (
         <NoResults icon={<FaKey className="text-gray-300 text-3xl" />} message="No API keys found" suggestion="Try changing your search or filter criteria" />
       ) : (
-        <BaseTable columns={columns} data={filteredApiKeys} emptyMessage="No API keys found" isLoading={loading} />
+        <DataTable columns={columns} data={filteredApiKeys} emptyMessage="No API keys found" isLoading={loading} />
       )}
 
       {/* Add API Key Modal */}

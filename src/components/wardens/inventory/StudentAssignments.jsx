@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import Pagination from "../../common/Pagination"
+import { Pagination, Button, Modal, Input, Select, Textarea } from "@/components/ui"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Button, Modal, Input, Select, Textarea } from "@/components/ui"
 
 const StudentAssignments = () => {
   const { user, canAccess } = useAuth()

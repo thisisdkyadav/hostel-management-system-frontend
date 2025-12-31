@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiAnnotation } from "react-icons/hi"
-import FilterTabs from "../../components/common/FilterTabs"
-import SearchBar from "../../components/common/SearchBar"
+import { Tabs, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import FeedbackStats from "../../components/FeedbackStats"
 import FeedbackCard from "../../components/FeedbackCard"
@@ -97,9 +96,9 @@ const Feedbacks = () => {
 
           <div style={styles.filterSection} className="filter-responsive">
             <div style={styles.tabWrapper}>
-              <FilterTabs tabs={FEEDBACK_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <Tabs tabs={FEEDBACK_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
-            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search feedbacks..." className="search-responsive" />
+            <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search feedbacks..." className="search-responsive" />
           </div>
 
           {isLoading ? (

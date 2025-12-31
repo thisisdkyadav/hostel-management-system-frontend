@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react"
 import { FaUserGraduate, FaFilter } from "react-icons/fa"
-import SearchBar from "../../components/common/SearchBar"
-import FilterTabs from "../../components/common/FilterTabs"
+import { SearchInput, Tabs, Pagination, Button, Input, Select } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
-import { Pagination, Button, Input, Select } from "@/components/ui"
 import { securityApi } from "../../service"
 
 const ENTRY_FILTER_TABS = [
@@ -228,8 +226,8 @@ const StudentEntries = () => {
 
       <div style={styles.filterSection}>
         <div style={styles.filterRow}>
-          <FilterTabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} />
-          <SearchBar value={searchTerm} onChange={handleSearchChange} placeholder="Search by unit, room" style={{ width: "50%" }} />
+          <Tabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} />
+          <SearchInput value={searchTerm} onChange={handleSearchChange} placeholder="Search by unit, room" style={{ width: "50%" }} />
         </div>
 
         {showFilters && (

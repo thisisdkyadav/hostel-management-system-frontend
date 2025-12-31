@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaTools } from "react-icons/fa"
-import FilterTabs from "../../components/common/FilterTabs"
-import SearchBar from "../../components/common/SearchBar"
+import { Tabs, SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import MaintenanceCard from "../../components/admin/maintenance/MaintenanceCard"
 import AddMaintenanceModal from "../../components/admin/maintenance/AddMaintenanceModal"
@@ -42,9 +41,9 @@ const MaintenanceStaff = () => {
 
         <div className="mt-[var(--spacing-8)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
           <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-            <FilterTabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filterCategory} setActiveTab={setFilterCategory} />
+            <Tabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filterCategory} setActiveTab={setFilterCategory} />
           </div>
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search staff by name or category" className="w-full sm:w-[16rem] md:w-[20rem]" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search staff by name or category" className="w-full sm:w-[16rem] md:w-[20rem]" />
         </div>
 
         {filteredStaff.length > 0 ? (

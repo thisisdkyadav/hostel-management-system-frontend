@@ -1,6 +1,5 @@
 import { useState, useEffect, use } from "react"
-import FilterTabs from "../components/common/FilterTabs"
-import SearchBar from "../components/common/SearchBar"
+import { Tabs, SearchInput } from "@/components/ui"
 import NoResults from "../components/common/NoResults"
 import LostAndFoundStats from "../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../components/lostAndFound/LostAndFoundCard"
@@ -54,9 +53,9 @@ const LostAndFound = () => {
 
           <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div className="w-full sm:w-auto pb-2">
-              <FilterTabs tabs={LOST_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <Tabs tabs={LOST_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
-            <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." className="w-full sm:w-64 md:w-72" />
+            <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search items..." className="w-full sm:w-64 md:w-72" />
           </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">

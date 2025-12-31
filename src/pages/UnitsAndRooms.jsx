@@ -3,14 +3,13 @@ import { Link, useParams, useNavigate } from "react-router-dom"
 import { FaBuilding, FaDoorOpen, FaFileImport, FaTable, FaThLarge } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../service"
-import Pagination from "../components/common/Pagination"
+import { Pagination, SearchInput } from "@/components/ui"
 import NoResults from "../components/common/NoResults"
 import UnitStats from "../components/wardens/UnitStats"
 import UnitListView from "../components/wardens/UnitListView"
 import RoomListView from "../components/wardens/RoomListView"
 import RoomDetailModal from "../components/wardens/RoomDetailModal"
 import AllocateStudentModal from "../components/wardens/AllocateStudentModal"
-import SearchBar from "../components/common/SearchBar"
 import RoomStats from "../components/wardens/RoomStats"
 import UpdateAllocationModal from "../components/common/students/UpdateAllocationModal"
 import UnitsAndRoomsHeader from "../components/headers/UnitsAndRoomsHeader"
@@ -395,7 +394,7 @@ const UnitsAndRooms = () => {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-4">
-                <SearchBar value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
+                <SearchInput value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
 
                 {/* Only show all filters for units view */}
                 {hostelType === "unit-based" && currentView === "units" && (

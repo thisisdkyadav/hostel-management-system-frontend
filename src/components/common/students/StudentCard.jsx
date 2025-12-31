@@ -2,8 +2,7 @@ import React from "react"
 import { IoMdSchool } from "react-icons/io"
 import { FaBuilding, FaEnvelope, FaIdCard, FaEye } from "react-icons/fa"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Card from "../Card"
-import Button from "../Button"
+import { Card, Button } from "@/components/ui"
 
 const StudentCard = ({ student, onClick }) => {
   return (

@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
-import SearchBar from "../../components/common/SearchBar"
-import BaseTable from "../../components/common/table/BaseTable"
+import { SearchInput, DataTable, Modal, Button, Input } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
-import { Modal, Button, Input } from "@/components/ui"
 import { superAdminApi } from "../../service"
 
 const AdminManagement = () => {
@@ -151,7 +149,7 @@ const AdminManagement = () => {
         <div className="text-gray-600 mb-4">System administrators have complete access to the admin portal, allowing them to manage hostels, wardens, students, and other system resources.</div>
 
         <div className="flex justify-end">
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search admins by name or email" className="w-full sm:w-64 md:w-72" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search admins by name or email" className="w-full sm:w-64 md:w-72" />
         </div>
       </div>
 
@@ -173,7 +171,7 @@ const AdminManagement = () => {
       ) : filteredAdmins.length === 0 ? (
         <NoResults icon={<FaUserShield className="text-gray-300 text-3xl" />} message="No administrators found" suggestion="Try changing your search criteria" />
       ) : (
-        <BaseTable columns={columns} data={filteredAdmins} emptyMessage="No administrators found" isLoading={loading} />
+        <DataTable columns={columns} data={filteredAdmins} emptyMessage="No administrators found" isLoading={loading} />
       )}
 
       {showAddModal && <AdminModal onClose={() => setShowAddModal(false)} onSubmit={handleAddAdmin} title="Add Admin" />}

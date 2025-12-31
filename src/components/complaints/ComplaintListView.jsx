@@ -1,6 +1,6 @@
 import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
-import BaseTable from "../common/table/BaseTable"
+import { DataTable } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ComplaintListView = ({ complaints, onViewDetails }) => {
@@ -72,7 +72,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
     },
   ]
 
-  return <BaseTable columns={columns} data={complaints} emptyMessage="No complaints to display" onRowClick={onViewDetails} />
+  return <DataTable columns={columns} data={complaints} emptyMessage="No complaints to display" onRowClick={onViewDetails} />
 }
 
 export default ComplaintListView
