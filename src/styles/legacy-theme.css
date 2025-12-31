@@ -1,0 +1,115 @@
+/* ============================================
+   LEGACY THEME VARIABLES
+   
+   These variables were removed or renamed in the theme update.
+   Import this file to maintain backward compatibility with old code.
+   
+   Usage: @import './styles/legacy-theme.css';
+   
+   TODO: Update your code to use new variables, then remove this file.
+   ============================================ */
+
+:root {
+  /* ============================================
+     DEPRECATED RADIUS VARIABLES
+     These have been replaced with more semantic names
+     ============================================ */
+  
+  /* Old: --radius-button (9999px pill default)
+     New: --radius-button-pill (explicit pill variant)
+     Action: Buttons now use --radius-button-md (12px) by default */
+  --radius-button: 9999px;
+  
+  /* Old: --radius-button-rect (10px rectangular)
+     New: Use --radius-button-md (12px) or --radius-lg (10px)
+     Action: Replace with appropriate new variable */
+  --radius-button-rect: 10px;
+
+  /* ============================================
+     DEPRECATED SIZE VALUES
+     Old values that changed in the harmonization
+     ============================================ */
+  
+  /* Old radius-xs was 2px, now 4px
+     If you need 2px, use: border-radius: 2px; */
+  --radius-xs-legacy: 2px;
+
+  /* Old radius-card was 20px, now 16px
+     For 20px, use: --radius-card-lg */
+  --radius-card-legacy: 20px;
+  
+  /* Old radius-input was 12px, now 10px
+     For 12px inputs, use: --radius-xl */
+  --radius-input-legacy: 12px;
+
+  /* Old radius-icon was 14px, now 10px
+     For 14px, use: --radius-2xl */
+  --radius-icon-legacy: 14px;
+}
+
+/* Dark mode legacy support */
+[data-theme="dark"],
+.dark {
+  /* ============================================
+     OLD BLUE-TINTED DARK MODE COLORS
+     These were the previous dark mode colors with blue tint.
+     New dark mode uses neutral grays.
+     ============================================ */
+  
+  /* Old primary color (more saturated blue) */
+  --color-primary-legacy: #4C9AEF;
+  
+  /* Old background colors (blue-tinted slate) */
+  --color-bg-primary-legacy: #1E293B;
+  --color-bg-secondary-legacy: #0F172A;
+  --color-bg-page-legacy: #0F172A;
+  --color-bg-hover-legacy: #334155;
+  
+  /* Old text colors (blue-gray tint) */
+  --color-text-primary-legacy: #F1F5F9;
+  --color-text-body-legacy: #CBD5E1;
+  --color-text-muted-legacy: #64748B;
+  
+  /* Old border colors (blue-gray tint) */
+  --color-border-primary-legacy: #334155;
+  --color-border-input-legacy: #475569;
+}
+
+/* ============================================
+   MIGRATION GUIDE
+   ============================================
+   
+   Radius Changes:
+   ---------------
+   OLD                      NEW
+   --radius-button          --radius-button-pill (for pills)
+                            --radius-button-md (for default)
+   --radius-button-rect     --radius-button-md
+   --radius-xs (2px)        --radius-xs (4px) - just use 2px if needed
+   --radius-card (20px)     --radius-card (16px) or --radius-card-lg (20px)
+   --radius-input (12px)    --radius-input (10px) or --radius-xl (12px)
+   --radius-icon (14px)     --radius-icon (10px) or --radius-2xl (14px)
+   
+   New Additions:
+   --------------
+   --radius-card-sm (12px)
+   --radius-button-pill (9999px)
+   --radius-badge-pill (9999px)
+   --radius-tooltip (8px)
+   --radius-dropdown (12px)
+   
+   Dark Mode Color Changes:
+   ------------------------
+   All backgrounds changed from blue-tinted slate to neutral grays:
+   - #1E293B → #1A1A1A (bg-primary)
+   - #0F172A → #121212 (bg-secondary)
+   - #334155 → #262626 (bg-hover)
+   
+   Text colors changed to warm neutrals:
+   - #CBD5E1 → #D4D4D4 (text-body)
+   - #64748B → #737373 (text-muted)
+   
+   Primary blue is softer:
+   - #4C9AEF → #5B9FE8
+   
+   ============================================ */

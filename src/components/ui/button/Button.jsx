@@ -1,8 +1,42 @@
-import React from "react"
+import React, { forwardRef, useState } from "react"
 import PropTypes from "prop-types"
 
-const Button = ({ children, onClick, type = "button", variant = "primary", size = "medium", className = "", icon, isLoading = false, disabled = false, fullWidth = false, animation = "none", gradient = false, rounded = false, style = {}, ...rest }) => {
-  const [isHovered, setIsHovered] = React.useState(false)
+/**
+ * Button Component - Matches existing design language
+ * 
+ * @param {React.ReactNode} children - Button content
+ * @param {function} onClick - Click handler
+ * @param {string} type - Button type: button, submit, reset
+ * @param {string} variant - Style variant: primary, secondary, danger, success, outline, ghost, white
+ * @param {string} size - Size variant: small, medium, large
+ * @param {React.ReactNode} icon - Optional icon
+ * @param {boolean} isLoading - Loading state
+ * @param {boolean} disabled - Disabled state
+ * @param {boolean} fullWidth - Full width button
+ * @param {boolean} gradient - Use gradient background (primary only)
+ * @param {boolean} rounded - Pill-shaped button
+ * @param {string} animation - Animation type: none, pulse, bounce, glow, ripple
+ * @param {string} className - Additional class names
+ * @param {object} style - Additional inline styles
+ */
+const Button = forwardRef(({
+  children,
+  onClick,
+  type = "button",
+  variant = "primary",
+  size = "medium",
+  icon,
+  isLoading = false,
+  disabled = false,
+  fullWidth = false,
+  gradient = false,
+  rounded = false,
+  animation = "none",
+  className = "",
+  style = {},
+  ...rest
+}, ref) => {
+  const [isHovered, setIsHovered] = useState(false)
 
   // Border radius based on size and rounded prop
   const radiusClasses = {
@@ -61,9 +95,9 @@ const Button = ({ children, onClick, type = "button", variant = "primary", size 
   }
 
   const sizeStyles = {
-    small: { fontSize: "var(--font-size-xs)" }, // 12px
-    medium: { fontSize: "var(--font-size-base)" }, // 14px
-    large: { fontSize: "var(--font-size-lg)" }, // 16px
+    small: { fontSize: "var(--font-size-xs)" },
+    medium: { fontSize: "var(--font-size-base)" },
+    large: { fontSize: "var(--font-size-lg)" },
   }
 
   const widthClasses = fullWidth ? "w-full" : ""
@@ -73,10 +107,8 @@ const Button = ({ children, onClick, type = "button", variant = "primary", size 
     none: "",
     pulse: "hover:animate-pulse",
     bounce: "",
-    slideIn: "",
     glow: "hover:shadow-glow",
     ripple: "ripple-effect",
-    shake: "",
   }
 
   const buttonClasses = `
@@ -90,7 +122,7 @@ const Button = ({ children, onClick, type = "button", variant = "primary", size 
     .replace(/\s+/g, " ")
     .trim()
 
-  // Combined styles including size-based font size and user styles
+  // Combined styles
   const combinedStyle = {
     ...sizeStyles[size],
     ...(gradient && variant === "primary"
@@ -128,7 +160,17 @@ const Button = ({ children, onClick, type = "button", variant = "primary", size 
   }
 
   return (
-    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonClasses} style={combinedStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} {...rest}>
+    <button
+      ref={ref}
+      type={type}
+      onClick={handleClick}
+      disabled={disabled || isLoading}
+      className={buttonClasses}
+      style={combinedStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      {...rest}
+    >
       {isLoading ? (
         <>
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
@@ -142,10 +184,12 @@ const Button = ({ children, onClick, type = "button", variant = "primary", size 
       )}
     </button>
   )
-}
+})
+
+Button.displayName = "Button"
 
 Button.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   onClick: PropTypes.func,
   type: PropTypes.oneOf(["button", "submit", "reset"]),
   variant: PropTypes.oneOf(["primary", "secondary", "danger", "success", "outline", "white", "ghost"]),
@@ -155,11 +199,10 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   disabled: PropTypes.bool,
   fullWidth: PropTypes.bool,
-  animation: PropTypes.oneOf(["none", "pulse", "bounce", "slideIn", "glow", "ripple", "shake"]),
+  animation: PropTypes.oneOf(["none", "pulse", "bounce", "glow", "ripple"]),
   gradient: PropTypes.bool,
   rounded: PropTypes.bool,
   style: PropTypes.object,
 }
 
-export { Button as default, Button } from "@/components/ui/button"
-// export default Button
+export default Button
