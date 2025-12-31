@@ -3,12 +3,12 @@ import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt, FaShieldAlt, FaRed
 import { FiTag } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi, accessControlApi } from "../../../service"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Modal, Button, Input, Checkbox, VStack, HStack, Label, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Tabs, TabList, Tab, Spinner } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)

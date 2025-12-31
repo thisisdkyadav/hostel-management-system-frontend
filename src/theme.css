@@ -884,3 +884,48 @@
 .transition-theme-colors { transition: var(--transition-colors); }
 .transition-theme-transform { transition: var(--transition-transform); }
 .transition-theme-shadow { transition: var(--transition-shadow); }
+
+/* ============================================
+   LAYOUT UTILITIES
+   Shared layout classes for all role layouts
+   ============================================ */
+
+/* Main layout container */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-bg-page);
+}
+
+@media (min-width: 768px) {
+  .layout-container {
+    flex-direction: row;
+  }
+}
+
+/* PWA container variant */
+.layout-container.pwa-container {
+  /* PWA-specific styles if needed */
+}
+
+/* Main content area */
+.layout-content {
+  flex: 1;
+  overflow: auto;
+  height: 100vh;
+  padding-top: 4rem; /* Mobile header offset (pt-16) */
+}
+
+@media (min-width: 768px) {
+  .layout-content {
+    padding-top: 0;
+  }
+}
+
+/* PWA bottom bar offset */
+.layout-content.pwa-bottom-padding {
+  padding-top: 0;
+  padding-bottom: 4rem;
+}
+

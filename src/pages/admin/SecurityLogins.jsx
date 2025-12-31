@@ -9,10 +9,10 @@ import SecurityLoginsHeader from "../../components/headers/SecurityLoginsHeader"
 import { filterSecurity } from "../../utils/adminUtils"
 import { SECURITY_FILTER_TABS } from "../../constants/adminConstants"
 import { adminApi } from "../../service"
-import { useAdmin } from "../../contexts/AdminProvider"
+import { useGlobal } from "../../contexts/GlobalProvider"
 
 const SecurityLogins = () => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
 
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")

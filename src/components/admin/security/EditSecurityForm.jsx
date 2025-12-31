@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 

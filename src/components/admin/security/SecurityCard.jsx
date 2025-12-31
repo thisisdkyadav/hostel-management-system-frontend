@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye } from "react-icons/fa"
 import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const [showEditForm, setShowEditForm] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
 

@@ -2,12 +2,12 @@ import React, { useState } from "react"
 import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/fa"
 import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const [showEditForm, setShowEditForm] = useState(false)
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
 
