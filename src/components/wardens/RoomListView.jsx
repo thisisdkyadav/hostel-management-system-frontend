@@ -3,7 +3,7 @@ import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import RoomCard from "./RoomCard"
 import BaseTable from "../common/table/BaseTable"
 import { useAuth } from "../../contexts/AuthProvider"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 
 const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()

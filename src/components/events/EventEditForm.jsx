@@ -4,9 +4,7 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import Button from "../common/Button"
-import Input from "../common/ui/Input"
-import Select from "../common/ui/Select"
+import { Button, Input, Select } from "@/components/ui"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   const { hostelList } = useGlobal()

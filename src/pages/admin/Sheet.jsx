@@ -11,7 +11,7 @@ import { sheetApi } from "../../service"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
-import Input from "../../components/common/ui/Input"
+import { Input } from "@/components/ui"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28

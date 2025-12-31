@@ -4,10 +4,8 @@ import SearchBar from "../../components/common/SearchBar"
 import FilterTabs from "../../components/common/FilterTabs"
 import NoResults from "../../components/common/NoResults"
 import BaseTable from "../../components/common/table/BaseTable"
-import Modal from "../../components/common/Modal"
+import { Modal, Button, Input } from "@/components/ui"
 import { superAdminApi } from "../../service"
-import Button from "../../components/common/Button"
-import Input from "../../components/common/ui/Input"
 
 const API_KEY_FILTER_TABS = [
   { value: "all", label: "All", count: 0 },

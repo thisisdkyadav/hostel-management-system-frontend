@@ -4,10 +4,7 @@ import { FiTag } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi, accessControlApi } from "../../../service"
 import { useAdmin } from "../../../contexts/AdminProvider"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Checkbox from "../../common/ui/Checkbox"
+import { Modal, Button, Input, Checkbox, VStack, HStack, Label, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Tabs, TabList, Tab, Spinner } from "@/components/ui"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
@@ -208,59 +205,62 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
   ]
 
   return (
-    <Modal title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={activeTab === "permissions" ? 800 : 500}>
+    <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={activeTab === "permissions" ? 800 : 500}>
       <div style={{ marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
-        <div style={{ display: 'flex' }}>
-          <Button variant={activeTab === "basic" ? "primary" : "ghost"} size="medium" onClick={() => setActiveTab("basic")}>
-            Basic Information
-          </Button>
-          <Button variant={activeTab === "permissions" ? "primary" : "ghost"} size="medium" onClick={() => setActiveTab("permissions")}>
-            Permissions
-          </Button>
-        </div>
+        <Tabs>
+          <TabList>
+            <Tab isSelected={activeTab === "basic"} onClick={() => setActiveTab("basic")}>
+              Basic Information
+            </Tab>
+            <Tab isSelected={activeTab === "permissions"} onClick={() => setActiveTab("permissions")}>
+              Permissions
+            </Tab>
+          </TabList>
+        </Tabs>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        {activeTab === "basic" && (
-          <>
-            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
-                <FaBuilding style={{ marginRight: 'var(--spacing-2)' }} />
-                <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>{staffTitle} Information</h4>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
-              <div style={{ position: 'relative', height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-2)' }}>
-                {formData.profileImage ? (
-                  <img src={getMediaUrl(formData.profileImage)} alt={warden.name} style={{ height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)' }} />
-                ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg-hover)', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)' }}>
-                    <FaBuilding style={{ height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-primary)' }} />
-                  </div>
-                )}
-                <div onClick={() => setIsImageModalOpen(true)} style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
-                  <HiCamera style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          {activeTab === "basic" && (
+            <>
+              <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
+                  <FaBuilding style={{ marginRight: 'var(--spacing-2)' }} />
+                  <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>{staffTitle} Information</h4>
                 </div>
               </div>
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Click the camera icon to change profile photo</span>
-            </div>
 
-            {isImageModalOpen && <ImageUploadModal userId={warden.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 'var(--spacing-6)' }}>
+                <div style={{ position: 'relative', height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', marginBottom: 'var(--spacing-2)' }}>
+                  {formData.profileImage ? (
+                    <img src={getMediaUrl(formData.profileImage)} alt={warden.name} style={{ height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', objectFit: 'cover', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)' }} />
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 'var(--spacing-24)', width: 'var(--spacing-24)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg-hover)', border: 'var(--border-4) solid var(--color-primary)', boxShadow: 'var(--shadow-md)' }}>
+                      <FaBuilding style={{ height: 'var(--icon-3xl)', width: 'var(--icon-3xl)', color: 'var(--color-primary)' }} />
+                    </div>
+                  )}
+                  <div onClick={() => setIsImageModalOpen(true)} style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', padding: 'var(--spacing-1-5)', borderRadius: 'var(--radius-full)', cursor: 'pointer', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary-hover)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}>
+                    <HiCamera style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
+                  </div>
+                </div>
+                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Click the camera icon to change profile photo</span>
+              </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
+              {isImageModalOpen && <ImageUploadModal userId={warden.id} isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} onImageUpload={handleImageUpload} />}
+
+            <VStack gap="medium">
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone Number</label>
-                <Input type="text" name="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="Enter phone number" />
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FaPhone />} placeholder="Enter phone number" />
               </div>
 
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
-                <Input type="text" name="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
+                <Label htmlFor="category">Category</Label>
+                <Input type="text" name="category" id="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
               </div>
 
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Hostel Assignments</label>
+                <Label>Hostel Assignments</Label>
                 <div style={{ marginTop: 'var(--spacing-2)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', maxHeight: '12rem', overflowY: 'auto', border: 'var(--border-1) solid var(--color-border-input)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-3)' }}>
                   {hostelList.length > 0 ? (
                     hostelList.map((hostel) => (
@@ -278,17 +278,17 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
               </div>
 
               <div>
-                <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Join Date</label>
-                <Input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FaCalendarAlt />} />
+                <Label htmlFor="joinDate">Join Date</Label>
+                <Input type="date" name="joinDate" id="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FaCalendarAlt />} />
               </div>
-            </div>
+            </VStack>
           </>
         )}
 
         {activeTab === "permissions" && (
           <>
-            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+              <HStack gap="small" justify="between">
                 <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
                   <FaShieldAlt style={{ marginRight: 'var(--spacing-2)' }} />
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Manage Permissions</h4>
@@ -296,7 +296,7 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                 <Button type="button" onClick={handleResetPermissions} variant="ghost" size="small" icon={<FaRedo />}>
                   Reset to Default
                 </Button>
-              </div>
+              </HStack>
               <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-1)' }}>Configure what {warden.name} can access and modify in the system.</p>
               <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
                 <span style={{ display: 'flex', alignItems: 'center', marginRight: 'var(--spacing-4)' }}>
@@ -311,43 +311,44 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
             </div>
 
             {isLoading && !permissions ? (
-              <div style={{ textAlign: 'center', padding: 'var(--spacing-4)' }}>Loading permissions...</div>
-            ) : permissions ? (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ minWidth: '100%', backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-                  <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-                    <tr>
-                      <th style={{ textAlign: 'left', padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)' }}>Resource</th>
-                      {actions.map((action) => (
-                        <th key={action.id} style={{ textAlign: 'center', padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)' }}>
-                          {action.label}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
-                    {resources.map((resource) => (
-                      <tr key={resource.id} style={{ borderBottom: 'var(--border-1) solid var(--color-border-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                        <td style={{ padding: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)' }}>{resource.label}</td>
-                        {actions.map((action) => (
-                          <td key={`${resource.id}-${action.id}`} style={{ padding: 'var(--spacing-3)', textAlign: 'center' }}>
-                            <Checkbox checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
-                              disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div style={{ textAlign: 'center', padding: 'var(--spacing-4)' }}>
+                <Spinner size="medium" />
+                <p>Loading permissions...</p>
               </div>
+            ) : permissions ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Resource</TableHead>
+                    {actions.map((action) => (
+                      <TableHead key={action.id} style={{ textAlign: 'center' }}>
+                        {action.label}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {resources.map((resource) => (
+                    <TableRow key={resource.id}>
+                      <TableCell style={{ fontWeight: 'var(--font-weight-medium)' }}>{resource.label}</TableCell>
+                      {actions.map((action) => (
+                        <TableCell key={`${resource.id}-${action.id}`} style={{ textAlign: 'center' }}>
+                          <Checkbox checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
+                            disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
+                          />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             ) : (
               <div style={{ textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-danger)' }}>Failed to load permissions. Please try again.</div>
             )}
           </>
         )}
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+        <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
           <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={isLoading} disabled={isLoading}>
             Delete {staffTitle}
           </Button>
@@ -355,7 +356,8 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
           <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={isLoading} disabled={isLoading}>
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
-        </div>
+        </HStack>
+        </VStack>
       </form>
     </Modal>
   )

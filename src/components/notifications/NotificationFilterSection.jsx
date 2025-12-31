@@ -1,8 +1,6 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import Button from "../common/Button"
-import Input from "../common/ui/Input"
-import Select from "../common/ui/Select"
+import { Button, Input, Select } from "@/components/ui"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
   const handleChange = (e) => {

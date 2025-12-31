@@ -3,10 +3,8 @@ import { useAuth } from "../contexts/AuthProvider"
 import { taskApi } from "../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../constants/taskConstants"
 import TaskDetailModal from "../components/tasks/TaskDetailModal"
-import Pagination from "../components/common/Pagination"
+import { Pagination, Button, Input } from "@/components/ui"
 import MyTasksHeader from "../components/headers/MyTasksHeader"
-import Button from "../components/common/Button"
-import Input from "../components/common/ui/Input"
 
 const MyTasks = () => {
   const { user } = useAuth()

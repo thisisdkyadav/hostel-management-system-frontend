@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaTasks, FaCheckCircle, FaHourglass, FaExclamationTriangle, FaChartBar } from "react-icons/fa"
 import { StatCard } from "../common/StatCards"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import DetailedTaskStats from "./DetailedTaskStats"
 
 const TaskStats = ({ stats }) => {

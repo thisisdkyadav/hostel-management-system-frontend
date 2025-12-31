@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
-import Button from "../../../common/Button"
-import Input from "../../../common/ui/Input"
-import Textarea from "../../../common/ui/Textarea"
+import { Button, Input, Textarea, VStack, HStack, Label } from "@/components/ui"
 
 const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onCheckIn, onCheckOut, onUpdateTimes, onCancel }) => {
   const today = new Date()
@@ -70,28 +68,7 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
     color: "var(--color-text-primary)",
   }
 
-  const labelStyle = {
-    display: "block",
-    fontSize: "var(--font-size-sm)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-secondary)",
-    marginBottom: "var(--spacing-1)",
-  }
-
-  const inputStyle = {
-    display: "block",
-    width: "100%",
-    border: `var(--border-1) solid var(--color-border-input)`,
-    borderRadius: "var(--radius-md)",
-    boxShadow: "var(--shadow-sm)",
-    fontSize: "var(--font-size-sm)",
-    padding: "var(--spacing-2)",
-    outline: "none",
-    transition: "var(--transition-colors)",
-  }
-
   const readOnlyStyle = {
-    ...inputStyle,
     padding: "var(--spacing-2)",
     backgroundColor: "var(--color-bg-disabled)",
     borderRadius: "var(--radius-md)",
@@ -136,41 +113,41 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
       <h3 style={headingStyle}>{getFormTitle()}</h3>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
-        <div>
-          <label style={labelStyle}>Visitor Name(s)</label>
+        <VStack gap="xsmall">
+          <Label>Visitor Name(s)</Label>
           <div style={readOnlyStyle}>{visitorInfo}</div>
-        </div>
+        </VStack>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
-        <div>
-          <label style={labelStyle}>Check-in Date</label>
-          <Input type="date" value={newCheckInDate} onChange={(e) => setNewCheckInDate(e.target.value)} disabled={!isEditMode && isCheckedIn} />
-        </div>
-        <div>
-          <label style={labelStyle}>Check-in Time</label>
-          <Input type="time" value={newCheckInTime} onChange={(e) => setNewCheckInTime(e.target.value)} disabled={!isEditMode && isCheckedIn} />
-        </div>
+        <VStack gap="xsmall">
+          <Label htmlFor="checkInDate">Check-in Date</Label>
+          <Input id="checkInDate" type="date" value={newCheckInDate} onChange={(e) => setNewCheckInDate(e.target.value)} disabled={!isEditMode && isCheckedIn} />
+        </VStack>
+        <VStack gap="xsmall">
+          <Label htmlFor="checkInTime">Check-in Time</Label>
+          <Input id="checkInTime" type="time" value={newCheckInTime} onChange={(e) => setNewCheckInTime(e.target.value)} disabled={!isEditMode && isCheckedIn} />
+        </VStack>
       </div>
 
       {/* Show check-out fields if already checked in or checked out */}
       {isCheckedIn && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "var(--spacing-4)", }} >
-          <div>
-            <label style={labelStyle}>Check-out Date</label>
-            <Input type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)} />
-          </div>
-          <div>
-            <label style={labelStyle}>Check-out Time</label>
-            <Input type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)} />
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="checkOutDate">Check-out Date</Label>
+            <Input id="checkOutDate" type="date" value={newCheckOutDate} onChange={(e) => setNewCheckOutDate(e.target.value)} />
+          </VStack>
+          <VStack gap="xsmall">
+            <Label htmlFor="checkOutTime">Check-out Time</Label>
+            <Input id="checkOutTime" type="time" value={newCheckOutTime} onChange={(e) => setNewCheckOutTime(e.target.value)} />
+          </VStack>
         </div>
       )}
 
-      <div>
-        <label style={labelStyle}>Security Notes (optional)</label>
-        <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} resize="vertical" placeholder="Add any security notes about the visitors..." />
-      </div>
+      <VStack gap="xsmall">
+        <Label htmlFor="securityNotes">Security Notes (optional)</Label>
+        <Textarea id="securityNotes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} resize="vertical" placeholder="Add any security notes about the visitors..." />
+      </VStack>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-2)", }} >
         <Button type="button" onClick={onCancel} variant="secondary" size="medium">

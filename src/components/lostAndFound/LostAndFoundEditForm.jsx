@@ -4,11 +4,7 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import Button from "../common/Button"
-import Input from "../common/ui/Input"
-import Select from "../common/ui/Select"
-import FileInput from "../common/ui/FileInput"
-import Textarea from "../common/ui/Textarea"
+import { Button, Input, Select, FileInput, Textarea } from "@/components/ui"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   const [formData, setFormData] = useState({

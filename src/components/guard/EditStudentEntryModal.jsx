@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
-import Button from "../common/Button"
+import { Button, Modal, Input } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
-import Modal from "../common/Modal"
-import Input from "../common/ui/Input"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const EditStudentEntryModal = ({ entry, onClose, onSave, onDelete }) => {

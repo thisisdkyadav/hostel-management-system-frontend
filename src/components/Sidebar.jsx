@@ -9,7 +9,7 @@ import { HiMenuAlt2, HiMenuAlt3 } from "react-icons/hi"
 import { useWarden } from "../contexts/WardenProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
-import Select from "./common/ui/Select"
+import { Select } from "@/components/ui"
 
 const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
 

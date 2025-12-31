@@ -3,9 +3,8 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import Button from "../common/Button"
+import { Button, Modal } from "@/components/ui"
 import { FaEdit, FaTrash } from "react-icons/fa"
-import Modal from "../common/Modal"
 
 const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedStatusUpdates = TASK_STATUSES, isUserView = false }) => {
   const { user } = useAuth()

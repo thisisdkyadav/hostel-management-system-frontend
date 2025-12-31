@@ -3,8 +3,7 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -49,7 +48,7 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   return (
     <>
       <Card>
-        <Card.Header style={{ marginBottom: 0 }}>
+        <CardHeader style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
@@ -62,9 +61,9 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
               <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete provider" />
             </div>
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
+        <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <span style={{ color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>{provider.email}</span>
@@ -85,13 +84,13 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
               </span>
             </div>
           </div>
-        </Card.Body>
+        </CardBody>
 
-        <Card.Footer style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+        <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
           <Button onClick={() => setShowBulkUpdateModal(true)} variant="secondary" size="medium" icon={<FaUsers />} fullWidth>
             Update Student Insurance Details
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {showEditModal && <EditInsuranceProviderModal show={showEditModal} provider={provider} onClose={() => setShowEditModal(false)} onUpdate={onUpdate} />}

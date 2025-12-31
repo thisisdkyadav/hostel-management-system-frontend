@@ -1,7 +1,5 @@
 import React from "react"
-import Button from "../../../common/Button"
-import Select from "../../../common/ui/Select"
-import Textarea from "../../../common/ui/Textarea"
+import { Button, Select, Textarea } from "@/components/ui"
 
 const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
   const containerStyle = {

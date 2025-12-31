@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import Button from "../../common/Button"
-import Select from "../../common/ui/Select"
+import { Button, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const InventoryReports = () => {
   const { hostelList } = useGlobal()
@@ -94,12 +93,12 @@ const InventoryReports = () => {
         {/* Hostel Filter (only for student and item type tabs) */}
         {activeTab !== "hostel" && (
           <div className="flex items-center gap-2">
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <VStack gap="medium">
               <div>
-                <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Choose Hostel</label>
+                <Label>Choose Hostel</Label>
                 <Select value={selectedHostel} onChange={handleHostelChange} icon={<FaBuilding />} options={[{ value: "", label: "Select a hostel..." }, ...hostelList.map((h) => ({ value: h._id, label: h.name }))]} />
               </div>
-            </div>
+            </VStack>
           </div>
         )}
       </div>

@@ -4,11 +4,8 @@ import SearchBar from "../../components/common/SearchBar"
 import FilterTabs from "../../components/common/FilterTabs"
 import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
-import Pagination from "../../components/common/Pagination"
+import { Pagination, Button, Input, Select } from "@/components/ui"
 import { securityApi } from "../../service"
-import Button from "../../components/common/Button"
-import Input from "../../components/common/ui/Input"
-import Select from "../../components/common/ui/Select"
 
 const ENTRY_FILTER_TABS = [
   { label: "All", value: "all" },

@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import { FaPrint } from "react-icons/fa"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
-import Checkbox from "../common/ui/Checkbox"
+import { Modal, Button, Checkbox } from "@/components/ui"
 
 const PrintComplaints = ({ complaints }) => {
   const [showPrintModal, setShowPrintModal] = useState(false)

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes, FaChartBar, FaTasks } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
+import { Modal, Button, VStack, HStack, Label, Spinner, Pagination, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, EmptyState, Badge, Tabs, TabList, Tab, StatCards } from "@/components/ui"
 import { securityApi } from "../../../service"
 import { adminApi } from "../../../service"
-import Pagination from "../../common/Pagination"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
@@ -118,19 +116,19 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
   }
 
   return (
-    <Modal title={`${staff.name} - Details`} onClose={onClose} width={900}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
+    <Modal isOpen={true} title={`${staff.name} - Details`} onClose={onClose} width={900}>
+      <VStack gap="large">
         {/* Tab Navigation */}
-        <div style={{ borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-          <nav style={{ marginBottom: "-1px", display: "flex", gap: "var(--spacing-8)" }}>
-            <Button onClick={() => setActiveTab("attendance")} variant={activeTab === "attendance" ? "primary" : "ghost"} size="medium" icon={<FaHistory />}>
+        <Tabs>
+          <TabList>
+            <Tab isSelected={activeTab === "attendance"} onClick={() => setActiveTab("attendance")} icon={<FaHistory />}>
               Attendance History
-            </Button>
-            <Button onClick={() => setActiveTab("workStats")} variant={activeTab === "workStats" ? "primary" : "ghost"} size="medium" icon={<FaChartBar />}>
+            </Tab>
+            <Tab isSelected={activeTab === "workStats"} onClick={() => setActiveTab("workStats")} icon={<FaChartBar />}>
               Work Statistics
-            </Button>
-          </nav>
-        </div>
+            </Tab>
+          </TabList>
+        </Tabs>
 
         {activeTab === "attendance" && (
           <>
@@ -139,13 +137,13 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
               <h3 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-3)", display: "flex", alignItems: "center" }}>
                 <FaFilter style={{ marginRight: "var(--spacing-2)", color: "var(--color-text-muted)" }} /> Filter Records
               </h3>
-              <div style={{ display: "flex", flexDirection: "row", gap: "var(--spacing-4)", alignItems: "flex-end" }}>
+              <HStack gap="medium" align="end">
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>Start Date</label>
+                  <Label htmlFor="startDate">Start Date</Label>
                   <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholderText="Select start date & time" />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-1)" }}>End Date</label>
+                  <Label htmlFor="endDate">End Date</Label>
                   <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}
                     showTimeSelect
                     dateFormat="MMMM d, yyyy h:mm aa"
@@ -159,60 +157,51 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
                     Clear
                   </Button>
                 </div>
-              </div>
+              </HStack>
             </div>
 
             {/* Attendance Content */}
             <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-border-primary)" }}>
               {loading ? (
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "var(--spacing-12) 0" }}>
-                  <div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite" }}></div>
+                  <Spinner size="large" />
                 </div>
               ) : attendanceRecords.length > 0 ? (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ minWidth: "100%", borderCollapse: "collapse" }}>
-                    <thead style={{ backgroundColor: "var(--color-bg-tertiary)" }}>
-                      <tr>
-                        <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
-                          Date
-                        </th>
-                        <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
-                          Time
-                        </th>
-                        <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
-                          Type
-                        </th>
-                        <th scope="col" style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "var(--letter-spacing-wider)" }}>
-                          Hostel
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody style={{ backgroundColor: "var(--color-bg-primary)" }}>
-                      {attendanceRecords.map((record) => (
-                        <tr key={record._id} style={{ borderTop: "var(--border-1) solid var(--color-border-primary)" }}>
-                          <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{formatDate(record.createdAt).split(" ")[0]}</td>
-                          <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{formatDate(record.createdAt).split(" ")[1]}</td>
-                          <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
-                            <span style={{ padding: "var(--spacing-0-5) var(--spacing-2)", display: "inline-flex", fontSize: "var(--font-size-xs)", lineHeight: "var(--line-height-snug)", fontWeight: "var(--font-weight-semibold)", borderRadius: "var(--radius-full)", backgroundColor: record.type === "checkIn" ? "var(--color-success-bg)" : "var(--color-danger-bg)", color: record.type === "checkIn" ? "var(--color-success-text)" : "var(--color-danger-text)" }}>{record.type === "checkIn" ? "Check In" : "Check Out"}</span>
-                          </td>
-                          <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{record.hostelId?.name || "N/A"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Date</TableHeader>
+                      <TableHeader>Time</TableHeader>
+                      <TableHeader>Type</TableHeader>
+                      <TableHeader>Hostel</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {attendanceRecords.map((record) => (
+                      <TableRow key={record._id}>
+                        <TableCell>{formatDate(record.createdAt).split(" ")[0]}</TableCell>
+                        <TableCell>{formatDate(record.createdAt).split(" ")[1]}</TableCell>
+                        <TableCell>
+                          <Badge variant={record.type === "checkIn" ? "success" : "danger"}>
+                            {record.type === "checkIn" ? "Check In" : "Check Out"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{record.hostelId?.name || "N/A"}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               ) : (
-                <div style={{ textAlign: "center", padding: "var(--spacing-8) 0" }}>
-                  <p style={{ color: "var(--color-text-muted)" }}>No attendance records found.</p>
-                </div>
+                <EmptyState
+                  title="No Records Found"
+                  description="No attendance records found for the selected filters."
+                />
               )}
             </div>
 
             {/* Pagination */}
             {attendanceRecords.length > 0 && (
-              <div style={{ marginTop: "var(--spacing-4)" }}>
-                <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-              </div>
+              <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
             )}
           </>
         )}
@@ -221,7 +210,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
           <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-lg)", border: "var(--border-1) solid var(--color-border-primary)", padding: "var(--spacing-6)" }}>
             {statsLoading ? (
               <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "var(--spacing-12) 0" }}>
-                <div style={{ width: "var(--icon-4xl)", height: "var(--icon-4xl)", border: "var(--border-4) solid var(--color-primary)", borderTopColor: "transparent", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite" }}></div>
+                <Spinner size="large" />
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-6)" }}>
@@ -256,7 +245,7 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
             )}
           </div>
         )}
-      </div>
+      </VStack>
     </Modal>
   )
 }

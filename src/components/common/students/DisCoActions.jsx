@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { FaPlus } from "react-icons/fa"
-import Button from "../../common/Button"
 import DisCoActionModal from "./DisCoActionModal"
+import { Button } from "@/components/ui"
 
 const DisCoActions = ({ userId }) => {
   const { canAccess } = useAuth()

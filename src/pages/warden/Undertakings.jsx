@@ -6,7 +6,7 @@ import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
 import { adminApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import Button from "../../components/common/Button"
+import { Button } from "@/components/ui"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
   return undertakings

@@ -1,9 +1,8 @@
 import React, { useState } from "react"
 import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboard, FaArrowDown, FaArrowRight, FaInfoCircle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import StatusBadge from "../../components/common/StatusBadge"
+import { StatusBadge, Button } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import Button from "../../components/common/Button"
 
 const ScannerEntries = () => {
   const { scannerEntries, pendingCrossHostelEntries, loading, error, fetchScannerEntries, updateCrossHostelReason } = useQRScanner()

@@ -4,8 +4,7 @@ import { MdLogin, MdLogout, MdSwapHoriz, MdHome } from "react-icons/md"
 import { RiRadarLine } from "react-icons/ri"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import Input from "../../components/common/ui/Input"
-import Select from "../../components/common/ui/Select"
+import { Input, Select } from "@/components/ui"
 
 const formatDateTime = (value) => {
   if (!value) return "-"

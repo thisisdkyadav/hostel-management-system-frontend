@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button, Badge } from "@/components/ui"
 import { faceScannerApi } from "../../../service"
 
 const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
@@ -89,7 +88,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
     return (
         <Card className="group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             {/* Header with Icon and Title */}
-            <Card.Header>
+            <CardHeader>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-4)" }}>
                     <div
                         className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? directionStyle.hover : directionStyle.base}`}
@@ -104,23 +103,14 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                             {scanner.type === "hostel-gate" ? "Hostel Gate" : scanner.type}
                         </p>
                     </div>
-                    <div
-                        style={{
-                            padding: "var(--spacing-1) var(--spacing-3)",
-                            borderRadius: "var(--radius-full)",
-                            fontSize: "var(--font-size-xs)",
-                            fontWeight: "var(--font-weight-medium)",
-                            backgroundColor: scanner.isActive ? "var(--color-success-bg)" : "var(--color-error-bg)",
-                            color: scanner.isActive ? "var(--color-success-dark)" : "var(--color-error-dark)",
-                        }}
-                    >
+                    <Badge variant={scanner.isActive ? "success" : "danger"}>
                         {scanner.isActive ? "Active" : "Inactive"}
-                    </div>
+                    </Badge>
                 </div>
-            </Card.Header>
+            </CardHeader>
 
             {/* Info Section */}
-            <Card.Body style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", marginBottom: "var(--spacing-4)" }}>
+            <CardBody style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)", marginBottom: "var(--spacing-4)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>
                     {directionStyle.icon}
                     <span>Direction: {directionStyle.label}</span>
@@ -140,7 +130,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                         Last active: {new Date(scanner.lastActiveAt).toLocaleString()}
                     </div>
                 )}
-            </Card.Body>
+            </CardBody>
 
             {/* Credentials Display */}
             {showCredentials && newCredentials && (
@@ -168,7 +158,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
             )}
 
             {/* Action Buttons */}
-            <Card.Footer style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
+            <CardFooter style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
                     <Button onClick={handleRegeneratePassword} variant="secondary" size="medium" icon={<FaKey />} fullWidth disabled={loading}>
                         New Password
@@ -180,7 +170,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                 <Button onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} fullWidth disabled={loading}>
                     Delete Scanner
                 </Button>
-            </Card.Footer>
+            </CardFooter>
         </Card>
     )
 }
