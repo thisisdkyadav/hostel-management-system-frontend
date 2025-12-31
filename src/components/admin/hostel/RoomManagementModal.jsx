@@ -1,9 +1,7 @@
 import React, { useState } from "react"
-import Modal from "../../common/Modal"
+import { Modal, Button, VStack, HStack, Tabs, TabList, Tab } from "@/components/ui"
 import { FaTable, FaEdit, FaTrash, FaTimes } from "react-icons/fa"
 import { FiAlertTriangle } from "react-icons/fi"
-import Button from "../../common/Button"
-import FilterTabs from "../../common/FilterTabs"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
 import AddRoomsCsv from "./rooms/AddRoomsCsv"
@@ -18,11 +16,6 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
   if (!hostel) return null
-
-  const tabs = [
-    { label: "View Existing Rooms", value: "view" },
-    { label: "Add New Rooms", value: "add" },
-  ]
 
   const handleDeleteAllAllocations = async () => {
     try {
@@ -46,7 +39,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
       <div style={{ position: 'fixed', inset: 0, backgroundColor: 'var(--color-bg-modal-overlay)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60, padding: 'var(--spacing-4)' }}>
         <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-2xl)', overflow: 'auto', animation: 'fadeIn 0.2s', width: '100%', maxWidth: '28rem', boxShadow: 'var(--shadow-modal)' }}>
           <div style={{ padding: 'var(--spacing-4) var(--spacing-6)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <HStack justify="between" align="center">
               <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-primary)' }}>Delete All Allocations</h3>
               <Button
                 onClick={() => setShowDeleteConfirmation(false)}
@@ -54,35 +47,35 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                 size="small"
                 icon={<FaTimes />}
               />
-            </div>
+            </HStack>
           </div>
 
           <div style={{ padding: 'var(--spacing-5) var(--spacing-6)' }}>
-            <div style={{ padding: 'var(--spacing-4) 0' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-6)' }}>
+            <VStack gap="large">
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
                   <FiAlertTriangle size={32} />
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)' }}>
+              <VStack gap="medium" align="center">
                 <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)' }}>CRITICAL WARNING</p>
-                <p style={{ color: 'var(--color-text-secondary)' }}>
+                <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center' }}>
                   This will remove <span style={{ fontWeight: 'var(--font-weight-bold)' }}>ALL</span> student room allocations from <span style={{ fontWeight: 'var(--font-weight-bold)' }}>{hostel.name}</span>.
                 </p>
-                <p style={{ color: 'var(--color-text-secondary)' }}>All students will be immediately removed from their rooms.</p>
+                <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center' }}>All students will be immediately removed from their rooms.</p>
                 <p style={{ color: 'var(--color-danger)', fontWeight: 'var(--font-weight-semibold)' }}>This action CANNOT be undone.</p>
-              </div>
+              </VStack>
 
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
+              <HStack gap="medium" justify="center">
                 <Button onClick={() => setShowDeleteConfirmation(false)} variant="outline" disabled={isLoading}>
                   Cancel
                 </Button>
                 <Button onClick={handleDeleteAllAllocations} variant="danger" disabled={isLoading} isLoading={isLoading}>
                   Delete All Allocations
                 </Button>
-              </div>
-            </div>
+              </HStack>
+            </VStack>
           </div>
         </div>
       </div>,
@@ -92,23 +85,28 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
 
   return (
     <>
-      <Modal title={`Manage Rooms - ${hostel.name}`} onClose={onClose} width={800}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-          <div style={{ paddingBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <FilterTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Modal isOpen={true} onClose={onClose} title={`Manage Rooms - ${hostel.name}`} width={800}>
+        <VStack gap="large">
+          <HStack justify="between" align="center" style={{ paddingBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)', width: '100%' }}>
+            <Tabs value={activeTab} onChange={setActiveTab} variant="pills" size="small">
+              <TabList>
+                <Tab value="view">View Existing Rooms</Tab>
+                <Tab value="add">Add New Rooms</Tab>
+              </TabList>
+            </Tabs>
 
             {activeTab === "view" && (
               <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} animation="pulse" size="small" icon={<FaTrash />}>
                 Delete All Allocations
               </Button>
             )}
-          </div>
+          </HStack>
 
           {activeTab === "view" && <ExistingRoomsList hostel={hostel} onRoomsUpdated={onRoomsUpdated} setIsLoading={setIsLoading} />}
 
           {activeTab === "add" && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--spacing-6)' }}>
+            <VStack gap="large">
+              <HStack justify="center" style={{ marginBottom: 'var(--spacing-6)' }}>
                 <div style={{ display: 'inline-flex', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-sm)' }} role="group">
                   <Button
                     type="button"
@@ -131,18 +129,18 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                     CSV Import
                   </Button>
                 </div>
-              </div>
+              </HStack>
 
               {inputMethod === "form" ? <AddRoomForm hostel={hostel} onRoomsUpdated={onRoomsUpdated} setIsLoading={setIsLoading} /> : <AddRoomsCsv hostel={hostel} onRoomsUpdated={onRoomsUpdated} setIsLoading={setIsLoading} />}
-            </div>
+            </VStack>
           )}
 
-          <div style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', justifyContent: 'flex-end' }}>
+          <HStack justify="end" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', width: '100%' }}>
             <Button onClick={onClose} variant="outline" animation="ripple">
               Close
             </Button>
-          </div>
-        </div>
+          </HStack>
+        </VStack>
       </Modal>
 
       <DeleteConfirmationDialog />
