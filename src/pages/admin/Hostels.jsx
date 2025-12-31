@@ -66,7 +66,7 @@ const Hostels = () => {
 
           <div className="mt-[var(--spacing-8)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
             <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-              <Tabs value={activeTab} onChange={setActiveTab} variant="pills" size="small">
+              <Tabs value={activeTab} onChange={setActiveTab} size="small">
                 <TabList>
                   {HOSTEL_FILTER_TABS.map((tab) => (
                     <Tab key={tab.value} value={tab.value}>{tab.label}</Tab>
