@@ -4,7 +4,7 @@ import { FaArrowRight } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 import ModernHeader from "../components/home/ModernHeader"
 import StatisticsGraphic from "../components/home/StatisticsGraphic"
-import LoadingScreen from "../components/common/LoadingScreen"
+import { LoadingState } from "@/components/ui"
 
 const HomePage = () => {
   const { user, getHomeRoute, isStandalone } = useAuth()
@@ -21,7 +21,7 @@ const HomePage = () => {
   }, [isStandalone, navigate])
 
   if (isStandalone) {
-    return <LoadingScreen />
+    return <LoadingState fullScreen />
   }
 
   return (

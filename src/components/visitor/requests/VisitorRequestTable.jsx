@@ -3,9 +3,8 @@ import { FaEye, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/f
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import BaseTable from "../../common/table/BaseTable"
+import { DataTable, Button } from "@/components/ui"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Button } from "@/components/ui"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
@@ -141,7 +140,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
 
   return (
     <>
-      <BaseTable columns={columns} data={requests} emptyMessage="No visitor requests to display" />
+      <DataTable columns={columns} data={requests} emptyMessage="No visitor requests to display" />
 
       {selectedRequestId && (
         <VisitorRequestDetailsModal

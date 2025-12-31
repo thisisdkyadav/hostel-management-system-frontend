@@ -4,9 +4,7 @@ import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
 import SimpleDatePicker from "../SimpleDatePicker"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import Button from "../Button"
-import Input from "../ui/Input"
-import Select from "../ui/Select"
+import { Button, Input, Select } from "@/components/ui"
 import { studentApi } from "../../../service"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {

@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import { useAdmin } from "../../../contexts/AdminProvider"
-import SearchBar from "../../common/SearchBar"
+import { SearchInput, Button } from "@/components/ui"
 import NoResults from "../../common/NoResults"
-import { Button } from "@/components/ui"
 import HostelGateCard from "./HostelGateCard"
 import AddHostelGateModal from "./AddHostelGateModal"
 import { hostelGateApi } from "../../../service"
@@ -60,7 +59,7 @@ const HostelLogins = () => {
       </header>
 
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-4)' }} className="sm:flex-row sm:items-center sm:space-y-0">
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by hostel name" className="w-full sm:w-64 md:w-72" />
+        <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by hostel name" className="w-full sm:w-64 md:w-72" />
       </div>
 
       {loading ? (

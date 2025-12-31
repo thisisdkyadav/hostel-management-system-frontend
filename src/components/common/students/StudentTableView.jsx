@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
-import BaseTable from "../table/BaseTable"
+import { DataTable } from "@/components/ui"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails }) => {
@@ -79,7 +79,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
     },
   ]
 
-  return <BaseTable columns={columns} data={currentStudents} emptyMessage="No students to display" onRowClick={viewStudentDetails} />
+  return <DataTable columns={columns} data={currentStudents} emptyMessage="No students to display" onRowClick={viewStudentDetails} />
 }
 
 export default StudentTableView

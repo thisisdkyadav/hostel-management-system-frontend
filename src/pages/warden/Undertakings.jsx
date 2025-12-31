@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
-import SearchBar from "../../components/common/SearchBar"
+import { SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
@@ -78,7 +78,7 @@ const WardenUndertakings = () => {
       </header>
 
       <div style={styles.filterSection} className="filter-responsive">
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="search-responsive" />
+        <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search undertakings by title, description or dates" className="search-responsive" />
       </div>
 
       {loading ? (

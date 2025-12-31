@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import UpdatePasswordHeader from "../../components/headers/UpdatePasswordHeader"
-import Card from "../../components/common/Card"
+import { Card } from "@/components/ui"
 
 const styles = {
   pageContainer: {

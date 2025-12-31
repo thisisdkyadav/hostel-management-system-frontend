@@ -1,6 +1,6 @@
 import React from "react"
 import { FaMapMarkerAlt } from "react-icons/fa"
-import FormField from "../../../FormField"
+import { FormField } from "@/components/ui"
 
 const GuardianInfoSection = ({ data, onChange }) => {
   const handleChange = (e) => {

@@ -62,10 +62,9 @@ const SearchInput = forwardRef(({
 
   const currentSize = sizes[size] || sizes.md
 
-  // Container styles
+  // Container styles - width controlled by className
   const containerStyles = {
     position: "relative",
-    width: "100%",
   }
 
   // Input styles
@@ -145,7 +144,7 @@ const SearchInput = forwardRef(({
   }
 
   return (
-    <div style={containerStyles}>
+    <div style={containerStyles} className={className}>
       {/* Search Icon */}
       <span style={searchIconStyles}>
         <FaSearch size={currentSize.iconSize} />
@@ -160,7 +159,6 @@ const SearchInput = forwardRef(({
         placeholder={placeholder}
         disabled={disabled}
         style={inputStyles}
-        className={className}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}

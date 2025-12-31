@@ -9,7 +9,7 @@ import ConfigForm from "../../components/admin/settings/ConfigForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import toast from "react-hot-toast"
-import Card from "../../components/common/Card"
+import { Card } from "@/components/ui"
 
 const Settings = () => {
   const { user } = useAuth()

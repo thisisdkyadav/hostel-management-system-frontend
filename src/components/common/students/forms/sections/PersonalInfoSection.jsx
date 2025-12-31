@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUserGraduate } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
-import FormField from "../../../FormField"
+import { FormField } from "@/components/ui"
 import ImageUploadModal from "../../../ImageUploadModal"
 import { getMediaUrl } from "../../../../../utils/mediaUtils"
 const PersonalInfoSection = ({ data, onChange }) => {

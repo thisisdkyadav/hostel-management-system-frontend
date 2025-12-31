@@ -39,8 +39,10 @@ const DataTable = forwardRef(({
   pageSize = 10,
   currentPage: controlledPage,
   onPageChange,
-  loading = false,
+  loading: loadingProp = false,
+  isLoading: isLoadingProp = false,
   emptyState,
+  emptyMessage,
   onRowClick,
   getRowId = (row) => row.id,
   variant = "default",
@@ -48,6 +50,9 @@ const DataTable = forwardRef(({
   style = {},
   ...rest
 }, ref) => {
+  // Support both loading and isLoading props
+  const loading = loadingProp || isLoadingProp
+  
   const [sortKey, setSortKey] = useState(defaultSortKey)
   const [sortDir, setSortDir] = useState(defaultSortDir)
   const [internalPage, setInternalPage] = useState(1)
@@ -205,7 +210,7 @@ const DataTable = forwardRef(({
       <div ref={ref} className={className} style={containerStyles} {...rest}>
         {emptyState || (
           <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
-            No data available
+            {emptyMessage || "No data available"}
           </div>
         )}
       </div>
@@ -235,7 +240,7 @@ const DataTable = forwardRef(({
                 sortDirection={sortKey === col.key ? sortDir : null}
                 onSort={() => handleSort(col.key)}
               >
-                {col.header}
+                {col.customHeaderRender ? col.customHeaderRender() : col.header}
               </TableHeader>
             ))}
           </TableRow>
@@ -260,8 +265,8 @@ const DataTable = forwardRef(({
                   </TableCell>
                 )}
                 {columns.map((col) => (
-                  <TableCell key={col.key} align={col.align}>
-                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                  <TableCell key={col.key} align={col.align} className={col.className}>
+                    {col.render ? col.render(row, row[col.key]) : row[col.key]}
                   </TableCell>
                 ))}
               </TableRow>

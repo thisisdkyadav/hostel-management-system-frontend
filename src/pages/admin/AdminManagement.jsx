@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserShield } from "react-icons/fa"
-import SearchBar from "../../components/common/SearchBar"
+import { SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import AdminCard from "../../components/admin/admins/AdminCard"
 import AddAdminModal from "../../components/admin/admins/AddAdminModal"
@@ -66,7 +66,7 @@ const AdminManagement = () => {
         <div className="text-[var(--color-text-muted)] mb-[var(--spacing-4)]">Manage system administrators who have access to the admin portal. Administrators can manage hostels, wardens, students, and other system resources.</div>
 
         <div className="flex justify-end">
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search administrators by name or email" className="w-full sm:w-[var(--spacing-64)] md:w-[var(--spacing-72)]" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search administrators by name or email" className="w-full sm:w-[var(--spacing-64)] md:w-[var(--spacing-72)]" />
         </div>
       </div>
 

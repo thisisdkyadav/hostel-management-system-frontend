@@ -2,8 +2,7 @@ import React from "react"
 import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
 import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
-import StatCards from "../common/StatCards"
-import LoadingState from "../common/LoadingState"
+import { StatCards, LoadingState } from "@/components/ui"
 
 const ComplaintStats = ({ statsData, loading }) => {
   if (loading) {

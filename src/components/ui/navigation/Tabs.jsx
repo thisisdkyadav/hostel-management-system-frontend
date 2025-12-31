@@ -8,9 +8,16 @@ const TabsContext = createContext(null)
 /**
  * Tabs Component - Tab navigation
  * 
- * @param {React.ReactNode} children - Tab components
+ * Supports two usage patterns:
+ * 1. Compound pattern: <Tabs value={} onChange={}><TabList><Tab value="x">...</Tab></TabList></Tabs>
+ * 2. Simple array pattern (FilterTabs compatible): <Tabs tabs={[{label, value, icon, count}]} activeTab={} setActiveTab={} />
+ * 
+ * @param {React.ReactNode} children - Tab components (for compound pattern)
+ * @param {Array} tabs - Array of tab objects [{label, value, icon, count}] (for simple pattern)
  * @param {string|number} value - Current active tab value
+ * @param {string|number} activeTab - Alias for value (FilterTabs compatible)
  * @param {function} onChange - Tab change handler
+ * @param {function} setActiveTab - Alias for onChange (FilterTabs compatible)
  * @param {string} variant - Style variant: underline, pills, enclosed
  * @param {string} size - Size: small, medium, large
  * @param {boolean} fullWidth - Tabs take full width
@@ -19,15 +26,21 @@ const TabsContext = createContext(null)
  */
 const Tabs = forwardRef(({
   children,
+  tabs,
   value,
+  activeTab,
   onChange,
-  variant = "underline",
+  setActiveTab,
+  variant = "pills",
   size = "medium",
   fullWidth = false,
   className = "",
   style = {},
   ...rest
 }, ref) => {
+  // Support both value/onChange and activeTab/setActiveTab APIs
+  const currentValue = value !== undefined ? value : activeTab
+  const handleChange = onChange || setActiveTab
 
   const containerStyles = {
     display: "flex",
@@ -35,8 +48,45 @@ const Tabs = forwardRef(({
     ...style,
   }
 
+  // Simple array-based tabs (FilterTabs compatible mode)
+  if (tabs && Array.isArray(tabs)) {
+    return (
+      <div ref={ref} className={`flex flex-wrap gap-2 ${className}`} style={style} {...rest}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => handleChange?.(tab.value)}
+            className={`
+              inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium border-none cursor-pointer 
+              focus:outline-none transition-all duration-200
+              ${currentValue === tab.value 
+                ? "bg-[var(--color-primary)] text-white shadow-sm hover:bg-[var(--color-primary-dark)]" 
+                : "bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] hover:bg-[var(--color-primary-bg-hover)] hover:text-[var(--color-primary)] border border-[var(--color-border-light)]"
+              }
+            `}
+          >
+            {tab.icon && <span className="text-sm">{tab.icon}</span>}
+            {tab.label}
+            {tab.count !== undefined && (
+              <span className={`
+                px-2 py-0.5 rounded-md text-xs font-semibold
+                ${currentValue === tab.value 
+                  ? "bg-white/20 text-white" 
+                  : "bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]"
+                }
+              `}>
+                {tab.count}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  // Compound component pattern
   return (
-    <TabsContext.Provider value={{ value, onChange, variant, size, fullWidth }}>
+    <TabsContext.Provider value={{ value: currentValue, onChange: handleChange, variant, size, fullWidth }}>
       <div ref={ref} className={className} style={containerStyles} {...rest}>
         {children}
       </div>

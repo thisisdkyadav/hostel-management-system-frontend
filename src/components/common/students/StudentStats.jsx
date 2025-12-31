@@ -1,7 +1,7 @@
 import { FaUsers } from "react-icons/fa"
 import { BsGenderMale, BsGenderFemale } from "react-icons/bs"
 import { IoMdSchool } from "react-icons/io"
-import StatCards from "../StatCards"
+import { StatCards } from "@/components/ui"
 import { useEffect, useState } from "react"
 import { dashboardApi } from "../../../service"
 

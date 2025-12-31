@@ -9,8 +9,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
-import Card from "../../components/common/Card"
-import { Checkbox } from "@/components/ui"
+import { Card, Checkbox } from "@/components/ui"
 
 // Chart components
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, PointElement, LineElement, LogarithmicScale } from "chart.js"

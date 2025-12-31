@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import FormField from "../../common/FormField"
+import { FormField } from "@/components/ui"
 import { FaTrash, FaUpload } from "react-icons/fa"
 import { uploadApi, certificateApi } from "../../../service"
 import { Button, Modal, FileInput } from "@/components/ui"

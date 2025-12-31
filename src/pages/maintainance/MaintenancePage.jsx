@@ -9,7 +9,7 @@ import ComplaintsHeader from "../../components/headers/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import PrintComplaints from "../../components/maintenance/PrintComplaints"
-import FilterTabs from "../../components/common/FilterTabs"
+import { Tabs } from "@/components/ui"
 
 const MAINTENANCE_STATUS_TABS = [
   { label: "All", value: "all", color: "primary" },
@@ -147,13 +147,13 @@ const MaintenancePage = () => {
           <div style={styles.filterGroup}>
             <p style={styles.filterLabel}>Filter by Status:</p>
             <div style={styles.tabScrollContainer}>
-              <FilterTabs tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+              <Tabs tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
             </div>
           </div>
           <div style={styles.filterGroup}>
             <p style={styles.filterLabel}>Filter by Category:</p>
             <div style={styles.tabScrollContainer}>
-              <FilterTabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
+              <Tabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
             </div>
           </div>
         </div>
