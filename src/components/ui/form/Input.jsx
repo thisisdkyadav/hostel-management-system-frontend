@@ -146,7 +146,7 @@ const Input = forwardRef(({
     right: "var(--spacing-3)",
     top: "50%",
     transform: "translateY(-50%)",
-    background: "none",
+    background: "transparent",
     border: "none",
     padding: "var(--spacing-1)",
     cursor: "pointer",
@@ -155,6 +155,15 @@ const Input = forwardRef(({
     alignItems: "center",
     justifyContent: "center",
     transition: "var(--transition-colors)",
+    borderRadius: "var(--radius-sm)",
+  }
+
+  // Password toggle button hover state
+  const [isPasswordHovered, setIsPasswordHovered] = useState(false)
+  const passwordToggleHoverStyles = {
+    ...passwordToggleStyles,
+    background: isPasswordHovered ? "var(--color-bg-hover)" : "transparent",
+    color: isPasswordHovered ? "var(--color-primary)" : "var(--color-text-placeholder)",
   }
 
   const handleFocus = (e) => {
@@ -209,9 +218,11 @@ const Input = forwardRef(({
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          style={passwordToggleStyles}
+          style={passwordToggleHoverStyles}
           tabIndex={-1}
           aria-label={showPassword ? "Hide password" : "Show password"}
+          onMouseEnter={() => setIsPasswordHovered(true)}
+          onMouseLeave={() => setIsPasswordHovered(false)}
         >
           {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
         </button>

@@ -123,9 +123,14 @@ const Textarea = forwardRef(({
     fontSize: "var(--font-size-xs)",
     color: maxLength && characterCount >= maxLength
       ? "var(--color-danger)"
-      : "var(--color-text-muted)",
+      : characterCount >= (maxLength * 0.9)
+        ? "var(--color-warning)"
+        : "var(--color-text-muted)",
     pointerEvents: "none",
     transition: "var(--transition-colors)",
+    backgroundColor: "var(--color-bg-primary)",
+    padding: "0 var(--spacing-1)",
+    borderRadius: "var(--radius-xs)",
   }
 
   const handleFocus = (e) => {

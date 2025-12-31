@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, useState } from "react"
 
 /**
  * Checkbox Component - Styled checkbox input
@@ -27,6 +27,7 @@ const Checkbox = forwardRef(({
   style = {},
   ...rest
 }, ref) => {
+  const [isFocused, setIsFocused] = useState(false)
 
   // Size mappings
   const sizes = {
@@ -55,6 +56,7 @@ const Checkbox = forwardRef(({
     alignItems: description ? "flex-start" : "center",
     gap: "var(--spacing-2-5)",
     cursor: disabled ? "not-allowed" : "pointer",
+    ...style,
   }
 
   // Checkbox wrapper styles
@@ -88,6 +90,7 @@ const Checkbox = forwardRef(({
     alignItems: "center",
     justifyContent: "center",
     opacity: disabled ? 0.5 : 1,
+    boxShadow: isFocused && !disabled ? "0 0 0 2px var(--color-primary-muted)" : "none",
   }
 
   // Checkmark styles
@@ -136,6 +139,8 @@ const Checkbox = forwardRef(({
           disabled={disabled}
           style={hiddenCheckboxStyles}
           className={className}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           {...rest}
         />
         <div style={customCheckboxStyles}>

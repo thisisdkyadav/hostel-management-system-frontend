@@ -35,8 +35,8 @@ const Divider = forwardRef(({
   // Color configurations
   const colors = {
     default: "var(--color-border-primary)",
-    muted: "var(--color-border-muted)",
-    primary: "var(--color-primary)",
+    muted: "var(--color-border-light)",
+    primary: "var(--color-primary-muted)",
   }
 
   // Border style

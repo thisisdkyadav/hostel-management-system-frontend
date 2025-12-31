@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, useState } from "react"
 
 /**
  * Radio Component - Single radio button
@@ -29,6 +29,7 @@ const Radio = forwardRef(({
   style = {},
   ...rest
 }, ref) => {
+  const [isFocused, setIsFocused] = useState(false)
 
   // Size mappings
   const sizes = {
@@ -60,6 +61,7 @@ const Radio = forwardRef(({
     alignItems: description ? "flex-start" : "center",
     gap: "var(--spacing-2-5)",
     cursor: disabled ? "not-allowed" : "pointer",
+    ...style,
   }
 
   // Radio wrapper styles
@@ -93,6 +95,7 @@ const Radio = forwardRef(({
     alignItems: "center",
     justifyContent: "center",
     opacity: disabled ? 0.5 : 1,
+    boxShadow: isFocused && !disabled ? "0 0 0 2px var(--color-primary-muted)" : "none",
   }
 
   // Inner dot styles
@@ -145,6 +148,8 @@ const Radio = forwardRef(({
           disabled={disabled}
           style={hiddenRadioStyles}
           className={className}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           {...rest}
         />
         <div style={customRadioStyles}>

@@ -89,10 +89,35 @@ const Modal = ({
   )
 
   return createPortal(
-    <div
-      className="fixed inset-0 bg-[var(--color-bg-modal-overlay)] backdrop-blur-sm flex items-center justify-center z-50 p-4 md:p-6"
-      onClick={handleBackdropClick}
-    >
+    <>
+      <style>
+        {`
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95) translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+          @keyframes backdropFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          .animate-fadeIn {
+            animation: fadeIn 0.2s ease-out forwards;
+          }
+          .animate-backdrop {
+            animation: backdropFadeIn 0.15s ease-out forwards;
+          }
+        `}
+      </style>
+      <div
+        className="fixed inset-0 bg-[var(--color-bg-modal-overlay)] backdrop-blur-sm flex items-center justify-center z-50 p-4 md:p-6 animate-backdrop"
+        onClick={handleBackdropClick}
+      >
       <div
         ref={modalRef}
         className={`bg-[var(--color-bg-primary)] rounded-[var(--radius-modal)] overflow-auto animate-fadeIn ${autoWidth ? "w-auto" : "w-full"} ${fullHeight ? "h-[calc(100vh-32px)]" : "max-h-[90vh]"} ${width ? `max-w-[${width}px]` : "max-w-2xl"}`}
@@ -160,7 +185,8 @@ const Modal = ({
           </div>
         )}
       </div>
-    </div>,
+      </div>
+    </>,
     document.body
   )
 }
