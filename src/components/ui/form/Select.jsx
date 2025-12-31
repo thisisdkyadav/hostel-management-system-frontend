@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, forwardRef } from "react"
+import React, { useState, useRef, useEffect, forwardRef, useCallback } from "react"
 import { FaChevronDown, FaCheck } from "react-icons/fa"
 
 /**
@@ -37,32 +37,55 @@ const Select = forwardRef(({
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const [dropdownPosition, setDropdownPosition] = useState("bottom") // "bottom" or "top"
   const containerRef = useRef(null)
   const dropdownRef = useRef(null)
 
   const hasError = Boolean(error)
   const hasIcon = Boolean(icon)
 
-  // Size variants
+  // Size variants with consistent padding
   const sizes = {
     small: {
-      padding: "var(--spacing-2) var(--spacing-3)",
+      paddingY: "var(--spacing-1-5)",
+      paddingX: "var(--spacing-2-5)",
       fontSize: "var(--font-size-sm)",
       height: "var(--input-height-sm)",
+      iconSpace: "var(--spacing-8)",
     },
     medium: {
-      padding: "var(--spacing-2-5) var(--spacing-3)",
+      paddingY: "var(--spacing-2)",
+      paddingX: "var(--spacing-3)",
       fontSize: "var(--font-size-base)",
       height: "var(--input-height-md)",
+      iconSpace: "var(--spacing-10)",
     },
     large: {
-      padding: "var(--spacing-3) var(--spacing-4)",
+      paddingY: "var(--spacing-2-5)",
+      paddingX: "var(--spacing-4)",
       fontSize: "var(--font-size-lg)",
       height: "var(--input-height-lg)",
+      iconSpace: "var(--spacing-12)",
     },
   }
 
   const currentSize = sizes[size] || sizes.medium
+
+  // Calculate dropdown position based on available space
+  const calculateDropdownPosition = useCallback(() => {
+    if (!containerRef.current) return "bottom"
+    
+    const rect = containerRef.current.getBoundingClientRect()
+    const dropdownHeight = 240 // max-height of dropdown
+    const spaceBelow = window.innerHeight - rect.bottom
+    const spaceAbove = rect.top
+    
+    // If not enough space below but enough above, show on top
+    if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+      return "top"
+    }
+    return "bottom"
+  }, [])
 
   // Normalize options to { value, label } format
   const normalizedOptions = options.map((opt) => {
@@ -87,6 +110,30 @@ const Select = forwardRef(({
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
+
+  // Update dropdown position when opening
+  useEffect(() => {
+    if (isOpen) {
+      setDropdownPosition(calculateDropdownPosition())
+    }
+  }, [isOpen, calculateDropdownPosition])
+
+  // Recalculate position on scroll/resize when open
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handlePositionUpdate = () => {
+      setDropdownPosition(calculateDropdownPosition())
+    }
+
+    window.addEventListener("scroll", handlePositionUpdate, true)
+    window.addEventListener("resize", handlePositionUpdate)
+    
+    return () => {
+      window.removeEventListener("scroll", handlePositionUpdate, true)
+      window.removeEventListener("resize", handlePositionUpdate)
+    }
+  }, [isOpen, calculateDropdownPosition])
 
   // Handle keyboard navigation
   const handleKeyDown = (e) => {
@@ -162,9 +209,9 @@ const Select = forwardRef(({
   const triggerStyles = {
     width: "100%",
     height: currentSize.height,
-    padding: currentSize.padding,
-    paddingLeft: hasIcon ? "var(--spacing-10)" : currentSize.padding,
-    paddingRight: "var(--spacing-10)",
+    padding: `${currentSize.paddingY} ${currentSize.paddingX}`,
+    paddingLeft: hasIcon ? currentSize.iconSpace : currentSize.paddingX,
+    paddingRight: currentSize.iconSpace,
     border: `var(--border-1) solid ${hasError
       ? "var(--color-danger-border)"
       : isOpen || isFocused
@@ -230,10 +277,13 @@ const Select = forwardRef(({
     fontSize: "var(--icon-sm)",
   }
 
-  // Dropdown styles
+  // Dropdown styles with dynamic positioning
   const dropdownStyles = {
     position: "absolute",
-    top: "calc(100% + var(--spacing-1))",
+    ...(dropdownPosition === "bottom" 
+      ? { top: "calc(100% + var(--spacing-1))" }
+      : { bottom: "calc(100% + var(--spacing-1))" }
+    ),
     left: 0,
     right: 0,
     backgroundColor: "var(--color-bg-primary)",
@@ -247,7 +297,11 @@ const Select = forwardRef(({
     padding: "var(--spacing-1)",
     opacity: isOpen ? 1 : 0,
     visibility: isOpen ? "visible" : "hidden",
-    transform: isOpen ? "translateY(0)" : "translateY(-8px)",
+    transform: isOpen 
+      ? "translateY(0)" 
+      : dropdownPosition === "bottom" 
+        ? "translateY(-8px)" 
+        : "translateY(8px)",
     transition: "opacity 0.2s ease, transform 0.2s ease, visibility 0.2s",
   }
 
