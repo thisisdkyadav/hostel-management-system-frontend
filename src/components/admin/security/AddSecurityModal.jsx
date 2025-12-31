@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiHome } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const AddSecurityModal = ({ show, onClose, onSuccess }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 

@@ -1,46 +1,12 @@
-import Sidebar from "../components/Sidebar"
-import { Outlet, useNavigate } from "react-router-dom"
-import {
-  LayoutDashboard,
-  UserCog,
-  KeyRound,
-  User,
-  LogOut
-} from "lucide-react"
-import { useAuth } from "../contexts/AuthProvider"
+import BaseLayout from "./BaseLayout"
+import { getSuperAdminNavItems } from "../constants/navigationConfig"
+import { useLogout } from "../hooks/useLogout"
 
 const SuperAdminLayout = () => {
-  const navigate = useNavigate()
-  const { logout } = useAuth ? useAuth() : { logout: () => { } }
+  const handleLogout = useLogout()
+  const navItems = getSuperAdminNavItems(handleLogout)
 
-  const handleLogout = async () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?")
-    if (!confirmLogout) return
-
-    try {
-      await logout()
-      navigate("/")
-    } catch (error) {
-      console.error("Logout failed:", error)
-    }
-  }
-
-  const navItems = [
-    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/super-admin" },
-    { name: "Admin Management", icon: UserCog, section: "main", path: "/super-admin/admins" },
-    { name: "API Keys", icon: KeyRound, section: "main", path: "/super-admin/api-keys" },
-    { name: "Profile", icon: User, section: "bottom", path: "/super-admin/profile" },
-    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
-  ]
-
-  return (
-    <div className="flex flex-col md:flex-row min-h-screen" style={{ backgroundColor: 'var(--color-bg-page)' }} >
-      <Sidebar navItems={navItems} />
-      <div className="flex-1 overflow-auto pt-16 md:pt-0" style={{ height: '100vh' }} >
-        <Outlet />
-      </div>
-    </div>
-  )
+  return <BaseLayout navItems={navItems} />
 }
 
 export default SuperAdminLayout

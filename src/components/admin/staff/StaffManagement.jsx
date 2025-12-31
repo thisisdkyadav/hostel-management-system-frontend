@@ -9,7 +9,7 @@ import StaffManagementHeader from "../../headers/StaffManagementHeader"
 import { filterWardens } from "../../../utils/adminUtils"
 import { WARDEN_FILTER_TABS } from "../../../constants/adminConstants"
 import { adminApi } from "../../../service"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 
 const StaffManagement = ({ staffType = "warden" }) => {
   const isWarden = staffType === "warden"
