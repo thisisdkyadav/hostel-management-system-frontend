@@ -1,13 +1,14 @@
 import React, { forwardRef, useState } from "react"
 
 /**
- * Table Component - Base table wrapper
+ * Table Component - Base table wrapper with Material UI inspired design
  * 
  * @param {React.ReactNode} children - Table content
  * @param {string} variant - Style variant: default, striped, bordered
  * @param {string} size - Size: sm, md, lg
  * @param {boolean} hoverable - Highlight row on hover
  * @param {boolean} stickyHeader - Sticky header
+ * @param {boolean} elevated - Add elevation/shadow to table
  * @param {string} className - Additional class names
  * @param {object} style - Additional inline styles
  */
@@ -17,6 +18,7 @@ const Table = forwardRef(({
   size = "md",
   hoverable = true,
   stickyHeader = false,
+  elevated = true,
   className = "",
   style = {},
   ...rest
@@ -24,16 +26,24 @@ const Table = forwardRef(({
 
   const containerStyles = {
     width: "100%",
-    overflow: "auto",
+    overflow: "hidden",
     background: "var(--color-bg-primary)",
-    borderRadius: "var(--radius-table)",
-    border: variant === "bordered" ? "1px solid var(--color-border-primary)" : "none",
+    borderRadius: "var(--radius-xl)",
+    border: "none",
+    boxShadow: elevated ? "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" : "none",
     ...style,
+  }
+
+  const scrollContainerStyles = {
+    width: "100%",
+    overflowX: "auto",
+    overflowY: "visible",
   }
 
   const tableStyles = {
     width: "100%",
-    borderCollapse: "collapse",
+    borderCollapse: "separate",
+    borderSpacing: 0,
     fontSize: size === "sm" ? "var(--font-size-xs)" : size === "lg" ? "var(--font-size-base)" : "var(--font-size-sm)",
   }
 
@@ -47,9 +57,11 @@ const Table = forwardRef(({
 
   return (
     <div style={containerStyles}>
-      <table ref={ref} className={className} style={tableStyles} {...rest}>
-        {childrenWithProps}
-      </table>
+      <div style={scrollContainerStyles}>
+        <table ref={ref} className={className} style={tableStyles} {...rest}>
+          {childrenWithProps}
+        </table>
+      </div>
     </div>
   )
 })
@@ -57,7 +69,7 @@ const Table = forwardRef(({
 Table.displayName = "Table"
 
 /**
- * TableHead Component - Table header section
+ * TableHead Component - Table header section with Material UI styling
  */
 export const TableHead = forwardRef(({
   children,
@@ -71,7 +83,8 @@ export const TableHead = forwardRef(({
     ...(stickyHeader && {
       position: "sticky",
       top: 0,
-      zIndex: 1,
+      zIndex: 2,
+      backdropFilter: "blur(8px)",
     }),
     ...style,
   }
@@ -103,6 +116,7 @@ export const TableBody = forwardRef(({
         variant, 
         hoverable,
         isEven: index % 2 === 0,
+        isLast: index === React.Children.count(children) - 1,
       })
     }
     return child
@@ -118,13 +132,14 @@ export const TableBody = forwardRef(({
 TableBody.displayName = "TableBody"
 
 /**
- * TableRow Component - Table row
+ * TableRow Component - Table row with enhanced hover states
  */
 export const TableRow = forwardRef(({
   children,
   variant,
   hoverable,
   isEven,
+  isLast = false,
   selected = false,
   onClick,
   className = "",
@@ -133,17 +148,18 @@ export const TableRow = forwardRef(({
 }, ref) => {
   const [isHovered, setIsHovered] = useState(false)
 
+  const getBackground = () => {
+    if (selected) return "color-mix(in srgb, var(--color-primary) 8%, transparent)"
+    if (variant === "striped" && isEven) return "var(--color-bg-secondary)"
+    if (isHovered && hoverable) return "color-mix(in srgb, var(--color-text-primary) 4%, transparent)"
+    return "transparent"
+  }
+
   const rowStyles = {
-    borderBottom: "1px solid var(--color-border-primary)",
-    background: selected 
-      ? "var(--color-primary-bg)"
-      : variant === "striped" && isEven 
-        ? "var(--color-bg-secondary)" 
-        : isHovered && hoverable 
-          ? "var(--color-bg-hover)" 
-          : "transparent",
+    borderBottom: isLast ? "none" : "1px solid color-mix(in srgb, var(--color-text-muted) 12%, transparent)",
+    background: getBackground(),
     cursor: onClick ? "pointer" : "default",
-    transition: "var(--transition-colors)",
+    transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
     ...style,
   }
 
@@ -165,7 +181,7 @@ export const TableRow = forwardRef(({
 TableRow.displayName = "TableRow"
 
 /**
- * TableHeader Component - Table header cell
+ * TableHeader Component - Table header cell with modern styling
  */
 export const TableHeader = forwardRef(({
   children,
@@ -181,16 +197,19 @@ export const TableHeader = forwardRef(({
   const [isHovered, setIsHovered] = useState(false)
 
   const thStyles = {
-    padding: "var(--spacing-3) var(--spacing-4)",
+    padding: "14px 16px",
     textAlign: align,
-    fontWeight: "var(--font-weight-semibold)",
+    fontWeight: "500",
     color: "var(--color-text-muted)",
+    fontSize: "var(--font-size-xs)",
+    letterSpacing: "0.02em",
     whiteSpace: "nowrap",
     cursor: sortable ? "pointer" : "default",
     userSelect: sortable ? "none" : "auto",
-    background: isHovered && sortable ? "var(--color-bg-hover)" : "transparent",
+    background: isHovered && sortable ? "color-mix(in srgb, var(--color-text-muted) 6%, transparent)" : "transparent",
     width: width,
-    transition: "var(--transition-colors)",
+    transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+    borderBottom: "1px solid color-mix(in srgb, var(--color-text-muted) 12%, transparent)",
     ...style,
   }
 
@@ -202,9 +221,16 @@ export const TableHeader = forwardRef(({
 
   const getSortIcon = () => {
     if (!sortable) return null
-    if (sortDirection === "asc") return " ↑"
-    if (sortDirection === "desc") return " ↓"
-    return " ↕"
+    const iconStyle = {
+      marginLeft: "var(--spacing-1)",
+      opacity: sortDirection ? 1 : 0.4,
+      display: "inline-flex",
+      verticalAlign: "middle",
+      fontSize: "0.75em",
+    }
+    if (sortDirection === "asc") return <span style={iconStyle}>↑</span>
+    if (sortDirection === "desc") return <span style={iconStyle}>↓</span>
+    return <span style={iconStyle}>↕</span>
   }
 
   return (
@@ -217,8 +243,10 @@ export const TableHeader = forwardRef(({
       onMouseLeave={() => setIsHovered(false)}
       {...rest}
     >
-      {children}
-      {sortable && <span style={{ opacity: 0.5 }}>{getSortIcon()}</span>}
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+        {children}
+        {getSortIcon()}
+      </span>
     </th>
   )
 })
@@ -226,7 +254,7 @@ export const TableHeader = forwardRef(({
 TableHeader.displayName = "TableHeader"
 
 /**
- * TableCell Component - Table data cell
+ * TableCell Component - Table data cell with M3 list item spacing
  */
 export const TableCell = forwardRef(({
   children,
@@ -236,9 +264,12 @@ export const TableCell = forwardRef(({
   ...rest
 }, ref) => {
   const tdStyles = {
-    padding: "var(--spacing-3) var(--spacing-4)",
+    padding: "14px 16px",
     textAlign: align,
     color: "var(--color-text-body)",
+    verticalAlign: "middle",
+    lineHeight: "1.43",
+    fontSize: "var(--font-size-sm)",
     ...style,
   }
 

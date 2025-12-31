@@ -131,7 +131,11 @@ const DataTable = forwardRef(({
   const containerStyles = {
     display: "flex",
     flexDirection: "column",
-    gap: "var(--spacing-4)",
+    background: "var(--color-bg-primary)",
+    borderRadius: "var(--radius-xl)",
+    border: "none",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+    overflow: "hidden",
     ...style,
   }
 
@@ -139,8 +143,9 @@ const DataTable = forwardRef(({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "var(--spacing-3) var(--spacing-4)",
-    borderTop: "1px solid var(--color-border-primary)",
+    padding: "12px 16px",
+    background: "transparent",
+    borderTop: "1px solid color-mix(in srgb, var(--color-text-muted) 12%, transparent)",
     fontSize: "var(--font-size-sm)",
     color: "var(--color-text-muted)",
   }
@@ -149,15 +154,15 @@ const DataTable = forwardRef(({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "32px",
-    height: "32px",
-    borderRadius: "var(--radius-sm)",
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
     background: "transparent",
-    border: "1px solid var(--color-border-primary)",
-    color: disabled ? "var(--color-text-muted)" : "var(--color-text-secondary)",
+    border: "none",
+    color: disabled ? "var(--color-text-muted)" : "var(--color-text-body)",
     cursor: disabled ? "not-allowed" : "pointer",
-    opacity: disabled ? 0.5 : 1,
-    transition: "var(--transition-colors)",
+    opacity: disabled ? 0.38 : 1,
+    transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
   })
 
   // Loading state
@@ -167,7 +172,7 @@ const DataTable = forwardRef(({
         <Table variant={variant}>
           <TableHead>
             <TableRow>
-              {selectable && <TableHeader width="40px" />}
+              {selectable && <TableHeader width="48px" />}
               {columns.map((col) => (
                 <TableHeader key={col.key} align={col.align} width={col.width}>
                   {col.header}
@@ -177,15 +182,29 @@ const DataTable = forwardRef(({
           </TableHead>
           <TableBody>
             {[...Array(5)].map((_, i) => (
-              <TableRow key={i}>
+              <TableRow key={i} isLast={i === 4}>
                 {selectable && (
                   <TableCell>
-                    <div style={{ width: 16, height: 16, background: "var(--color-bg-tertiary)", borderRadius: 4 }} />
+                    <div style={{ 
+                      width: 18, 
+                      height: 18, 
+                      background: "linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-hover) 50%, var(--color-bg-tertiary) 75%)",
+                      backgroundSize: "200% 100%",
+                      borderRadius: 4,
+                      animation: "shimmer 1.5s infinite"
+                    }} />
                   </TableCell>
                 )}
                 {columns.map((col) => (
                   <TableCell key={col.key}>
-                    <div style={{ width: "60%", height: 16, background: "var(--color-bg-tertiary)", borderRadius: 4, animation: "pulse 1.5s ease-in-out infinite" }} />
+                    <div style={{ 
+                      width: `${40 + Math.random() * 40}%`, 
+                      height: 14, 
+                      background: "linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-hover) 50%, var(--color-bg-tertiary) 75%)",
+                      backgroundSize: "200% 100%",
+                      borderRadius: "var(--radius-sm)",
+                      animation: "shimmer 1.5s infinite"
+                    }} />
                   </TableCell>
                 ))}
               </TableRow>
@@ -194,9 +213,9 @@ const DataTable = forwardRef(({
         </Table>
         <style>
           {`
-            @keyframes pulse {
-              0%, 100% { opacity: 1; }
-              50% { opacity: 0.5; }
+            @keyframes shimmer {
+              0% { background-position: 200% 0; }
+              100% { background-position: -200% 0; }
             }
           `}
         </style>
@@ -209,8 +228,21 @@ const DataTable = forwardRef(({
     return (
       <div ref={ref} className={className} style={containerStyles} {...rest}>
         {emptyState || (
-          <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
-            {emptyMessage || "No data available"}
+          <div style={{ 
+            padding: "var(--spacing-12) var(--spacing-6)", 
+            textAlign: "center", 
+            color: "var(--color-text-muted)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "var(--spacing-2)"
+          }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.5 }}>
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>
+              {emptyMessage || "No data available"}
+            </span>
           </div>
         )}
       </div>
@@ -219,11 +251,11 @@ const DataTable = forwardRef(({
 
   return (
     <div ref={ref} className={className} style={containerStyles} {...rest}>
-      <Table variant={variant} hoverable>
+      <Table variant={variant} hoverable elevated={false}>
         <TableHead>
           <TableRow>
             {selectable && (
-              <TableHeader width="40px">
+              <TableHeader width="48px">
                 <Checkbox
                   checked={allSelected}
                   indeterminate={someSelected && !allSelected}
@@ -246,15 +278,18 @@ const DataTable = forwardRef(({
           </TableRow>
         </TableHead>
         <TableBody>
-          {paginatedData.map((row) => {
+          {paginatedData.map((row, index) => {
             const rowId = getRowId(row)
             const isSelected = selectedRows.includes(rowId)
+            const isLast = index === paginatedData.length - 1
 
             return (
               <TableRow
                 key={rowId}
                 selected={isSelected}
+                isLast={isLast}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
+                style={{ cursor: onRowClick ? "pointer" : "default" }}
               >
                 {selectable && (
                   <TableCell onClick={(e) => e.stopPropagation()}>
@@ -277,26 +312,29 @@ const DataTable = forwardRef(({
 
       {pagination && totalPages > 1 && (
         <div style={paginationStyles}>
-          <span>
-            Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, data.length)} of {data.length} results
+          <span style={{ color: "var(--color-text-body)" }}>
+            {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, data.length)} of {data.length}
           </span>
-          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             <button
               style={pageButtonStyles(page <= 1)}
               onClick={() => setPage(page - 1)}
               disabled={page <= 1}
+              onMouseEnter={(e) => { if (page > 1) e.target.style.background = "color-mix(in srgb, var(--color-text-muted) 8%, transparent)" }}
+              onMouseLeave={(e) => e.target.style.background = "transparent"}
+              aria-label="Previous page"
             >
-              <FaChevronLeft size={12} />
+              <FaChevronLeft size={16} />
             </button>
-            <span style={{ display: "flex", alignItems: "center", padding: "0 var(--spacing-2)" }}>
-              Page {page} of {totalPages}
-            </span>
             <button
               style={pageButtonStyles(page >= totalPages)}
               onClick={() => setPage(page + 1)}
               disabled={page >= totalPages}
+              onMouseEnter={(e) => { if (page < totalPages) e.target.style.background = "color-mix(in srgb, var(--color-text-muted) 8%, transparent)" }}
+              onMouseLeave={(e) => e.target.style.background = "transparent"}
+              aria-label="Next page"
             >
-              <FaChevronRight size={12} />
+              <FaChevronRight size={16} />
             </button>
           </div>
         </div>
