@@ -3,7 +3,7 @@ import { FaChevronDown, FaCheck } from "react-icons/fa"
 
 /**
  * Select Component - Custom styled dropdown select
- *
+ * 
  * @param {string} name - Select name attribute
  * @param {string} value - Controlled selected value
  * @param {function} onChange - Change handler
@@ -13,11 +13,27 @@ import { FaChevronDown, FaCheck } from "react-icons/fa"
  * @param {boolean|string} error - Error state
  * @param {boolean} disabled - Disabled state
  * @param {boolean} required - Required field
+ * @param {string} size - Size variant: small, medium, large
  * @param {string} id - Optional id (defaults to name)
  * @param {string} className - Additional class names
  * @param {object} style - Additional inline styles
  */
-const Select = forwardRef(({ name, value, onChange, options = [], placeholder, icon, error, disabled = false, required = false, id, className = "", style = {}, ...rest }, ref) => {
+const Select = forwardRef(({
+  name,
+  value,
+  onChange,
+  options = [],
+  placeholder,
+  icon,
+  error,
+  disabled = false,
+  required = false,
+  size = "medium",
+  id,
+  className = "",
+  style = {},
+  ...rest
+}, ref) => {
   const [isOpen, setIsOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
@@ -26,6 +42,27 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
 
   const hasError = Boolean(error)
   const hasIcon = Boolean(icon)
+
+  // Size variants
+  const sizes = {
+    small: {
+      padding: "var(--spacing-2) var(--spacing-3)",
+      fontSize: "var(--font-size-sm)",
+      height: "var(--input-height-sm)",
+    },
+    medium: {
+      padding: "var(--spacing-2-5) var(--spacing-3)",
+      fontSize: "var(--font-size-base)",
+      height: "var(--input-height-md)",
+    },
+    large: {
+      padding: "var(--spacing-3) var(--spacing-4)",
+      fontSize: "var(--font-size-lg)",
+      height: "var(--input-height-lg)",
+    },
+  }
+
+  const currentSize = sizes[size] || sizes.medium
 
   // Normalize options to { value, label } format
   const normalizedOptions = options.map((opt) => {
@@ -36,7 +73,7 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
   })
 
   // Find selected option label
-  const selectedOption = normalizedOptions.find((opt) => opt.value === value)
+  const selectedOption = normalizedOptions.find(opt => opt.value === value)
   const displayValue = selectedOption?.label || ""
 
   // Close dropdown when clicking outside
@@ -70,13 +107,17 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
         if (!isOpen) {
           setIsOpen(true)
         } else {
-          setHighlightedIndex((prev) => (prev < normalizedOptions.length - 1 ? prev + 1 : 0))
+          setHighlightedIndex(prev =>
+            prev < normalizedOptions.length - 1 ? prev + 1 : 0
+          )
         }
         break
       case "ArrowUp":
         e.preventDefault()
         if (isOpen) {
-          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : normalizedOptions.length - 1))
+          setHighlightedIndex(prev =>
+            prev > 0 ? prev - 1 : normalizedOptions.length - 1
+          )
         }
         break
       case "Escape":
@@ -120,18 +161,36 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
   // Trigger button styles
   const triggerStyles = {
     width: "100%",
-    padding: "var(--input-padding)",
-    paddingLeft: hasIcon ? "var(--spacing-10)" : "var(--input-padding)",
+    height: currentSize.height,
+    padding: currentSize.padding,
+    paddingLeft: hasIcon ? "var(--spacing-10)" : currentSize.padding,
     paddingRight: "var(--spacing-10)",
-    border: `var(--border-1) solid ${hasError ? "var(--color-danger-border)" : isOpen || isFocused ? "var(--input-border-focus)" : "var(--input-border)"}`,
-    borderRadius: "var(--input-radius)",
-    backgroundColor: disabled ? "var(--color-bg-disabled)" : hasError ? "var(--color-danger-bg-light)" : "var(--input-bg)",
-    color: disabled ? "var(--color-text-disabled)" : value ? "var(--color-text-body)" : "var(--color-text-placeholder)",
-    fontSize: "var(--font-size-base)",
+    border: `var(--border-1) solid ${hasError
+      ? "var(--color-danger-border)"
+      : isOpen || isFocused
+        ? "var(--input-border-focus)"
+        : "var(--input-border)"
+      }`,
+    borderRadius: "var(--radius-input)",
+    backgroundColor: disabled
+      ? "var(--color-bg-disabled)"
+      : hasError
+        ? "var(--color-danger-bg-light)"
+        : "var(--input-bg)",
+    color: disabled
+      ? "var(--color-text-disabled)"
+      : value
+        ? "var(--color-text-body)"
+        : "var(--color-text-placeholder)",
+    fontSize: currentSize.fontSize,
     fontWeight: "var(--font-weight-normal)",
     outline: "none",
     transition: "var(--transition-all)",
-    boxShadow: (isOpen || isFocused) && !hasError ? "var(--input-focus-ring)" : hasError && isFocused ? "var(--shadow-focus-danger)" : "none",
+    boxShadow: (isOpen || isFocused) && !hasError
+      ? "var(--input-focus-ring)"
+      : hasError && isFocused
+        ? "var(--shadow-focus-danger)"
+        : "none",
     cursor: disabled ? "not-allowed" : "pointer",
     display: "flex",
     alignItems: "center",
@@ -146,7 +205,11 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
     left: "var(--spacing-3)",
     top: "50%",
     transform: "translateY(-50%)",
-    color: hasError ? "var(--color-danger)" : isOpen || isFocused ? "var(--color-primary)" : "var(--color-text-placeholder)",
+    color: hasError
+      ? "var(--color-danger)"
+      : isOpen || isFocused
+        ? "var(--color-primary)"
+        : "var(--color-text-placeholder)",
     pointerEvents: "none",
     transition: "var(--transition-colors)",
     display: "flex",
@@ -175,7 +238,7 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
     right: 0,
     backgroundColor: "var(--color-bg-primary)",
     border: "var(--border-1) solid var(--color-border-primary)",
-    borderRadius: "var(--radius-lg)",
+    borderRadius: "var(--radius-dropdown)",
     boxShadow: "var(--shadow-dropdown)",
     zIndex: "var(--z-dropdown)",
     maxHeight: "240px",
@@ -199,8 +262,14 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
     gap: "var(--spacing-2)",
     fontSize: "var(--font-size-base)",
     fontWeight: option.value === value ? "var(--font-weight-medium)" : "var(--font-weight-normal)",
-    color: option.value === value ? "var(--color-primary)" : "var(--color-text-body)",
-    backgroundColor: option.value === value ? "var(--color-primary-bg)" : highlightedIndex === index ? "var(--color-bg-hover)" : "transparent",
+    color: option.value === value
+      ? "var(--color-primary)"
+      : "var(--color-text-body)",
+    backgroundColor: option.value === value
+      ? "var(--color-primary-bg)"
+      : highlightedIndex === index
+        ? "var(--color-bg-hover)"
+        : "transparent",
     transition: "var(--transition-colors)",
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -245,18 +314,33 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
       </select>
 
       {/* Left Icon */}
-      {hasIcon && <span style={iconStyles}>{icon}</span>}
+      {hasIcon && (
+        <span style={iconStyles}>
+          {icon}
+        </span>
+      )}
 
       {/* Custom Trigger Button */}
-      <button type="button" style={triggerStyles} className={className} onClick={toggleDropdown} onKeyDown={handleKeyDown} onFocus={() => setIsFocused(true)} onBlur={() => !isOpen && setIsFocused(false)} disabled={disabled} aria-haspopup="listbox" aria-expanded={isOpen} aria-labelledby={id || name}>
-        <span
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            flex: 1,
-          }}
-        >
+      <button
+        type="button"
+        style={triggerStyles}
+        className={className}
+        onClick={toggleDropdown}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => !isOpen && setIsFocused(false)}
+        disabled={disabled}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-labelledby={id || name}
+        aria-invalid={hasError}
+      >
+        <span style={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          flex: 1,
+        }}>
           {displayValue || placeholder || "Select..."}
         </span>
       </button>
@@ -267,16 +351,25 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
       </span>
 
       {/* Custom Dropdown */}
-      <div ref={dropdownRef} style={dropdownStyles} role="listbox" aria-activedescendant={highlightedIndex >= 0 ? `option-${highlightedIndex}` : undefined}>
+      <div
+        ref={dropdownRef}
+        style={dropdownStyles}
+        role="listbox"
+        aria-activedescendant={highlightedIndex >= 0 ? `option-${highlightedIndex}` : undefined}
+      >
         {/* Placeholder option if exists */}
         {placeholder && !required && (
-          <div style={getOptionStyles({ value: "", label: placeholder }, -1)} onClick={() => handleSelect({ value: "", label: placeholder })} onMouseEnter={() => setHighlightedIndex(-1)} role="option" aria-selected={value === ""}>
-            <span
-              style={{
-                color: "var(--color-text-placeholder)",
-                fontStyle: "italic",
-              }}
-            >
+          <div
+            style={getOptionStyles({ value: "", label: placeholder }, -1)}
+            onClick={() => handleSelect({ value: "", label: placeholder })}
+            onMouseEnter={() => setHighlightedIndex(-1)}
+            role="option"
+            aria-selected={value === ""}
+          >
+            <span style={{
+              color: "var(--color-text-placeholder)",
+              fontStyle: "italic",
+            }}>
               {placeholder}
             </span>
           </div>
@@ -284,30 +377,36 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
 
         {/* Options */}
         {normalizedOptions.map((opt, index) => (
-          <div key={opt.value} id={`option-${index}`} style={getOptionStyles(opt, index)} onClick={() => handleSelect(opt)} onMouseEnter={() => setHighlightedIndex(index)} role="option" aria-selected={opt.value === value}>
-            <span
-              style={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                flex: 1,
-              }}
-            >
+          <div
+            key={opt.value}
+            id={`option-${index}`}
+            style={getOptionStyles(opt, index)}
+            onClick={() => handleSelect(opt)}
+            onMouseEnter={() => setHighlightedIndex(index)}
+            role="option"
+            aria-selected={opt.value === value}
+          >
+            <span style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              flex: 1,
+            }}>
               {opt.label}
             </span>
-            {opt.value === value && <FaCheck style={checkIconStyles} />}
+            {opt.value === value && (
+              <FaCheck style={checkIconStyles} />
+            )}
           </div>
         ))}
 
         {/* Empty state */}
         {normalizedOptions.length === 0 && (
-          <div
-            style={{
-              padding: "var(--spacing-3)",
-              color: "var(--color-text-muted)",
-              fontSize: "var(--font-size-sm)",
-              textAlign: "center",
-            }}
-          >
+          <div style={{
+            padding: "var(--spacing-3)",
+            color: "var(--color-text-muted)",
+            fontSize: "var(--font-size-sm)",
+            textAlign: "center",
+          }}>
             No options available
           </div>
         )}
@@ -318,5 +417,4 @@ const Select = forwardRef(({ name, value, onChange, options = [], placeholder, i
 
 Select.displayName = "Select"
 
-// export default Select
-export { Select as default, Select } from "@/components/ui/form"
+export default Select
