@@ -1,0 +1,11 @@
+// Common pages - shared across multiple roles
+export { default as ComplaintsPage } from './ComplaintsPage'
+export { default as EventsPage } from './EventsPage'
+export { default as LeavesPage } from './LeavesPage'
+export { default as LostAndFoundPage } from './LostAndFoundPage'
+export { default as MyTasksPage } from './MyTasksPage'
+export { default as NotificationCenterPage } from './NotificationCenterPage'
+export { default as ProfilePage } from './ProfilePage'
+export { default as StudentsPage } from './StudentsPage'
+export { default as UnitsAndRoomsPage } from './UnitsAndRoomsPage'
+export { default as VisitorRequestsPage } from './VisitorRequestsPage'

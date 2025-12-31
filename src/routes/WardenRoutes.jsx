@@ -1,18 +1,27 @@
 import { Routes, Route } from "react-router-dom"
 import WardenLayout from "../layouts/WardenLayout.jsx"
-import WardenDashboard from "../pages/warden/Dashboard.jsx"
-import UnitsAndRooms from "../pages/UnitsAndRooms.jsx"
-import Complaint from "../pages/Complaints.jsx"
-import Students from "../pages/Students"
-import VisitorRequests from "../pages/VisitorRequests.jsx"
-import NotificationCenter from "../pages/NotificationCenter"
-import LostAndFound from "../pages/LostAndFound.jsx"
-import Events from "../pages/Events.jsx"
-import StudentInventory from "../pages/warden/StudentInventory.jsx"
-import Profile from "../pages/Profile.jsx"
-import Feedbacks from "../pages/warden/Feedbacks.jsx"
-import WardenUndertakings from "../pages/warden/Undertakings.jsx"
-import MyTasks from "../pages/MyTasks.jsx"
+
+// Warden-specific pages
+import {
+    DashboardPage as WardenDashboard,
+    StudentInventoryPage,
+    FeedbacksPage,
+    UndertakingsPage as WardenUndertakings
+} from "../pages/warden"
+
+// Common pages
+import {
+    UnitsAndRoomsPage,
+    ComplaintsPage,
+    StudentsPage,
+    VisitorRequestsPage,
+    NotificationCenterPage,
+    LostAndFoundPage,
+    EventsPage,
+    ProfilePage,
+    MyTasksPage
+} from "../pages/common"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const WardenRoutes = () => (
@@ -20,19 +29,19 @@ const WardenRoutes = () => (
         <Routes>
             <Route element={<WardenLayout />}>
                 <Route index element={<WardenDashboard />} />
-                <Route path="hostels/:hostelName" element={<UnitsAndRooms />} />
-                <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRooms />} />
-                <Route path="complaints" element={<Complaint />} />
-                <Route path="students" element={<Students />} />
-                <Route path="visitors" element={<VisitorRequests />} />
-                <Route path="notifications" element={<NotificationCenter />} />
-                <Route path="lost-and-found" element={<LostAndFound />} />
-                <Route path="events" element={<Events />} />
-                <Route path="student-inventory" element={<StudentInventory />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="feedbacks" element={<Feedbacks />} />
+                <Route path="hostels/:hostelName" element={<UnitsAndRoomsPage />} />
+                <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRoomsPage />} />
+                <Route path="complaints" element={<ComplaintsPage />} />
+                <Route path="students" element={<StudentsPage />} />
+                <Route path="visitors" element={<VisitorRequestsPage />} />
+                <Route path="notifications" element={<NotificationCenterPage />} />
+                <Route path="lost-and-found" element={<LostAndFoundPage />} />
+                <Route path="events" element={<EventsPage />} />
+                <Route path="student-inventory" element={<StudentInventoryPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="feedbacks" element={<FeedbacksPage />} />
                 <Route path="undertakings" element={<WardenUndertakings />} />
-                <Route path="my-tasks" element={<MyTasks />} />
+                <Route path="my-tasks" element={<MyTasksPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>
