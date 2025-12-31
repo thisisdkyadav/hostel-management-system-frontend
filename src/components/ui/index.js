@@ -29,6 +29,7 @@ export { default as FormField } from './form/FormField'
 export { default as Button } from './button/Button'
 export { default as IconButton } from './button/IconButton'
 export { default as ButtonGroup } from './button/ButtonGroup'
+export { default as ToggleButtonGroup } from './button/ToggleButtonGroup'
 
 // ==============================================
 // LAYOUT COMPONENTS
@@ -65,6 +66,7 @@ export { default as StatCards, StatCard } from './data-display/StatCard'
 // NAVIGATION COMPONENTS
 // ==============================================
 export { default as Tabs, TabList, Tab, TabPanels, TabPanel } from './navigation/Tabs'
+export { default as UnderlineTabs } from './navigation/UnderlineTabs'
 export { default as Pagination } from './navigation/Pagination'
 export { default as Breadcrumb } from './navigation/Breadcrumb'
 

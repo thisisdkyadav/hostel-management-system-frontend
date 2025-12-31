@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { StatCards, Button } from "@/components/ui"
+import { StatCards, Button, ToggleButtonGroup } from "@/components/ui"
 import { BiError, BiCalendarEvent, BiBuildings } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { MdChangeCircle, MdDashboard } from "react-icons/md"
@@ -11,7 +11,6 @@ import { useWarden } from "../../contexts/WardenProvider"
 import { useAuth } from "../../contexts/AuthProvider"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, LogarithmicScale } from "chart.js"
 import { Bar } from "react-chartjs-2"
-import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
 
 ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend)
 

@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
+import UnderlineTabs from "../navigation/UnderlineTabs"
 
 /**
  * Modal Component - Matches existing design language
  * 
+ * @param {boolean} isOpen - Whether the modal is open
  * @param {string} title - Modal title
  * @param {React.ReactNode} children - Modal content
  * @param {function} onClose - Close handler
@@ -19,6 +21,7 @@ import { createPortal } from "react-dom"
  * @param {boolean} fullHeight - Take full viewport height
  */
 const Modal = ({
+  isOpen = true,
   title,
   children,
   onClose,
@@ -32,6 +35,10 @@ const Modal = ({
   hideTitle = false,
   fullHeight = false,
 }) => {
+  // Don't render if not open
+  if (!isOpen) {
+    return null
+  }
   const modalRef = useRef(null)
   const [contentHeight, setContentHeight] = useState("auto")
 
@@ -108,26 +115,20 @@ const Modal = ({
                   <CloseButton />
                 </div>
               )}
-              <div className="flex justify-between items-center">
-                <nav className="flex space-x-4 overflow-x-auto -mb-4">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => onTabChange && onTabChange(tab.id)}
-                      className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                        activeTab === tab.id
-                          ? "bg-[var(--color-primary)] text-white rounded-[var(--radius-button-sm)]"
-                          : "bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-primary)] rounded-[var(--radius-button-sm)]"
-                      }`}
-                      style={{
-                        borderBottom: activeTab === tab.id ? "2px solid var(--color-primary)" : "2px solid transparent",
-                      }}
-                    >
-                      {tab.icon && <span className="text-sm">{tab.icon}</span>}
-                      {tab.name}
-                    </button>
-                  ))}
-                </nav>
+              <div className="flex justify-between items-center gap-4">
+                <div className="flex-1 min-w-0 overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>
+                  <UnderlineTabs
+                    tabs={tabs.map(tab => ({ 
+                      value: tab.id, 
+                      label: tab.name, 
+                      icon: tab.icon 
+                    }))}
+                    value={activeTab}
+                    onChange={(tabValue) => onTabChange && onTabChange(tabValue)}
+                    size="medium"
+                    showBorder={false}
+                  />
+                </div>
                 {hideTitle && <CloseButton />}
               </div>
             </div>

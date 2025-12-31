@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom"
 import { FaBuilding, FaDoorOpen, FaFileImport, FaTable, FaThLarge } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../service"
-import { Pagination, SearchInput } from "@/components/ui"
+import { Pagination, SearchInput, ToggleButtonGroup } from "@/components/ui"
 import NoResults from "../components/common/NoResults"
 import UnitStats from "../components/wardens/UnitStats"
 import UnitListView from "../components/wardens/UnitListView"
@@ -18,7 +18,6 @@ import { useAuth } from "../contexts/AuthProvider"
 import AccessDenied from "../components/common/AccessDenied"
 import { useWarden } from "../contexts/WardenProvider"
 import { Input, Checkbox, Button } from "@/components/ui"
-import ToggleButtonGroup from "../components/common/ToggleButtonGroup"
 
 const UnitsAndRooms = () => {
   const { user, getHomeRoute } = useAuth()

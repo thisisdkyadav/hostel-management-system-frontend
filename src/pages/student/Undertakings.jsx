@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { LoadingState, ErrorState, EmptyState, Button } from "@/components/ui"
+import { LoadingState, ErrorState, EmptyState, Button, UnderlineTabs } from "@/components/ui"
 
 const Undertakings = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -106,13 +106,16 @@ const Undertakings = () => {
 
       {/* Tabs */}
       <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)' }}>
-        <div className="flex" style={{ borderBottom: '1px solid var(--color-border-primary)' }}>
-          <button className={`font-medium ${activeTab === "pending" ? "" : ""}`} style={{ padding: 'var(--spacing-3) var(--spacing-6)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "pending" ? '2px solid var(--color-info)' : 'none', color: activeTab === "pending" ? 'var(--color-info)' : 'var(--color-text-muted)' }} onClick={() => setActiveTab("pending")} onMouseEnter={(e) => { if (activeTab !== "pending") e.currentTarget.style.color = 'var(--color-text-body)' }} onMouseLeave={(e) => { if (activeTab !== "pending") e.currentTarget.style.color = 'var(--color-text-muted)' }}>
-            Pending ({pendingUndertakings.length})
-          </button>
-          <button className={`font-medium ${activeTab === "accepted" ? "" : ""}`} style={{ padding: 'var(--spacing-3) var(--spacing-6)', fontSize: 'var(--font-size-sm)', borderBottom: activeTab === "accepted" ? '2px solid var(--color-info)' : 'none', color: activeTab === "accepted" ? 'var(--color-info)' : 'var(--color-text-muted)' }} onClick={() => setActiveTab("accepted")} onMouseEnter={(e) => { if (activeTab !== "accepted") e.currentTarget.style.color = 'var(--color-text-body)' }} onMouseLeave={(e) => { if (activeTab !== "accepted") e.currentTarget.style.color = 'var(--color-text-muted)' }}>
-            Accepted ({acceptedUndertakings.length})
-          </button>
+        <div style={{ padding: '0 var(--spacing-4)' }}>
+          <UnderlineTabs
+            tabs={[
+              { value: "pending", label: `Pending (${pendingUndertakings.length})` },
+              { value: "accepted", label: `Accepted (${acceptedUndertakings.length})` },
+            ]}
+            value={activeTab}
+            onChange={setActiveTab}
+            size="medium"
+          />
         </div>
       </div>
 

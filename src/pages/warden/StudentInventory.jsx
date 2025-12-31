@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
-import { Button } from "@/components/ui"
-import ToggleButtonGroup from "../../components/common/ToggleButtonGroup"
+import { Button, UnderlineTabs } from "@/components/ui"
 
 const StudentInventory = () => {
   const [activeTab, setActiveTab] = useState("available")
@@ -64,17 +63,14 @@ const StudentInventory = () => {
 
       {/* Tabs */}
       <div style={styles.tabContainer}>
-        <ToggleButtonGroup
-          options={[
+        <UnderlineTabs
+          tabs={[
             { value: "available", label: "Available Inventory" },
             { value: "assignments", label: "Student Assignments" },
           ]}
           value={activeTab}
           onChange={setActiveTab}
-          shape="rounded"
           size="medium"
-          variant="muted"
-          hideLabelsOnMobile={false}
         />
       </div>
 

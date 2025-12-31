@@ -70,6 +70,24 @@ import { Modal, Toast, Alert } from '@/components/ui/feedback'
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
 
+### ToggleButtonGroup
+
+A group of toggle buttons for switching between options. Supports icons, labels, multiple shapes and variants.
+
+| Prop | Type | Default | Values/Description |
+|------|------|---------|-------------------|
+| `options` | `Array` | **required** | `[{ value, label?, icon?, disabled?, ariaLabel? }]` |
+| `value` | `string\|number` | - | Currently selected value |
+| `onChange` | `function` | - | Change handler `(value) => void` |
+| `shape` | `string` | `"pill"` | `"pill"`, `"rounded"`, `"square"` |
+| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
+| `variant` | `string` | `"muted"` | `"muted"`, `"primary"`, `"outline"`, `"white"` |
+| `fullWidth` | `boolean` | `false` | Buttons fill available width |
+| `hideLabelsOnMobile` | `boolean` | `true` | Hide labels on mobile, show icons only |
+| `disabled` | `boolean` | `false` | Disable all buttons |
+| `className` | `string` | `""` | Additional CSS classes |
+| `style` | `object` | `{}` | Inline styles |
+
 ---
 
 ## Form Components
@@ -576,6 +594,21 @@ import { Modal, Toast, Alert } from '@/components/ui/feedback'
 | `style` | `object` | `{}` | Inline styles |
 
 **Also exports:** `TabList`, `TabPanels`
+
+### UnderlineTabs
+
+Simple horizontal tabs with underlined active indicator. Designed for page/section navigation (not filter chips).
+
+| Prop | Type | Default | Values/Description |
+|------|------|---------|-------------------|
+| `tabs` | `Array` | `[]` | `[{ value, label, icon?, count?, disabled? }]` |
+| `value` | `string\|number` | - | Currently active tab value |
+| `onChange` | `function` | - | Change handler `(value) => void` |
+| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
+| `fullWidth` | `boolean` | `false` | Tabs fill available width |
+| `showBorder` | `boolean` | `true` | Show bottom border line |
+| `className` | `string` | `""` | Additional CSS classes |
+| `style` | `object` | `{}` | Inline styles |
 
 ### Pagination
 
