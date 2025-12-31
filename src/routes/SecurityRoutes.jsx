@@ -7,6 +7,9 @@ import { AttendancePage } from "../pages/guard"
 // Common pages
 import { LostAndFoundPage, MyTasksPage } from "../pages/common"
 
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const SecurityRoutes = () => (
@@ -16,6 +19,7 @@ const SecurityRoutes = () => (
                 <Route index element={<AttendancePage />} />
                 <Route path="lost-and-found" element={<LostAndFoundPage />} />
                 <Route path="my-tasks" element={<MyTasksPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>
