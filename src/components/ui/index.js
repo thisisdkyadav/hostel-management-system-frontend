@@ -20,6 +20,7 @@ export { default as RadioGroup } from './form/RadioGroup'
 export { default as Switch } from './form/Switch'
 export { default as FileInput } from './form/FileInput'
 export { default as SearchInput } from './form/SearchInput'
+export { default as DatePicker } from './form/DatePicker'
 export { default as Label } from './form/Label'
 export { default as FormField } from './form/FormField'
 
