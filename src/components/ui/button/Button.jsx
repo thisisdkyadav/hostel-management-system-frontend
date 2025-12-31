@@ -52,6 +52,7 @@ const Button = forwardRef(({
     disabled:cursor-not-allowed disabled:opacity-60
     relative overflow-hidden
     focus:outline-none
+    focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2
     active:scale-[0.98]
   `
 

@@ -75,7 +75,7 @@ const Alert = forwardRef(({
     gap: "var(--spacing-3)",
     padding: "var(--spacing-4)",
     background: currentVariant.background,
-    borderRadius: "var(--radius-alert)",
+    borderRadius: "var(--radius-lg)",
     borderLeft: `4px solid ${currentVariant.borderColor}`,
     ...style,
   }

@@ -29,6 +29,7 @@ const SearchInput = forwardRef(({
   ...rest
 }, ref) => {
   const [isFocused, setIsFocused] = useState(false)
+  const [isClearHovered, setIsClearHovered] = useState(false)
 
   const hasValue = Boolean(value)
 
@@ -106,11 +107,11 @@ const SearchInput = forwardRef(({
     right: "var(--spacing-3)",
     top: "50%",
     transform: "translateY(-50%)",
-    background: "none",
+    background: isClearHovered ? "var(--color-bg-hover)" : "transparent",
     border: "none",
     padding: "var(--spacing-1)",
     cursor: "pointer",
-    color: "var(--color-text-muted)",
+    color: isClearHovered ? "var(--color-danger)" : "var(--color-text-muted)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -173,6 +174,8 @@ const SearchInput = forwardRef(({
           style={clearButtonStyles}
           tabIndex={-1}
           aria-label="Clear search"
+          onMouseEnter={() => setIsClearHovered(true)}
+          onMouseLeave={() => setIsClearHovered(false)}
         >
           <FaTimes size={currentSize.iconSize} />
         </button>

@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, useState } from "react"
 
 /**
  * Switch Component - Toggle switch for boolean values
@@ -29,6 +29,7 @@ const Switch = forwardRef(({
   style = {},
   ...rest
 }, ref) => {
+  const [isFocused, setIsFocused] = useState(false)
 
   // Size mappings
   const sizes = {
@@ -74,6 +75,7 @@ const Switch = forwardRef(({
     transition: "var(--transition-all)",
     opacity: disabled ? 0.5 : 1,
     flexShrink: 0,
+    boxShadow: isFocused && !disabled ? "0 0 0 2px var(--color-primary-muted)" : "none",
   }
 
   // Thumb styles
@@ -147,6 +149,8 @@ const Switch = forwardRef(({
           style={hiddenInputStyles}
           className={className}
           aria-checked={checked}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           {...rest}
         />
         <div style={thumbStyles} />

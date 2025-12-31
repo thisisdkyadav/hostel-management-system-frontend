@@ -86,6 +86,9 @@ const IconButton = forwardRef(({
 
   const currentVariant = variants[variant] || variants.ghost
 
+  // Focus state for accessibility
+  const [isFocused, setIsFocused] = useState(false)
+
   // Button styles
   const buttonStyles = {
     display: "inline-flex",
@@ -102,6 +105,7 @@ const IconButton = forwardRef(({
     opacity: isDisabled ? 0.5 : 1,
     transition: "var(--transition-all)",
     outline: "none",
+    boxShadow: isFocused && !isDisabled ? "0 0 0 2px var(--color-primary-muted)" : "none",
     flexShrink: 0,
     ...style,
   }
@@ -151,6 +155,8 @@ const IconButton = forwardRef(({
         onMouseLeave={() => { setIsHovered(false); setIsActive(false); }}
         onMouseDown={() => setIsActive(true)}
         onMouseUp={() => setIsActive(false)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         aria-label={ariaLabel}
         {...rest}
       >

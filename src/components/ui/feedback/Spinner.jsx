@@ -49,7 +49,7 @@ const Spinner = forwardRef(({
     display: "inline-block",
     width: spinnerSize,
     height: spinnerSize,
-    border: `${borderWidth} solid transparent`,
+    border: `${borderWidth} solid rgba(0, 0, 0, 0.1)`,
     borderTopColor: spinnerColor,
     borderRadius: "50%",
     animation: "spin 0.7s linear infinite",

@@ -48,8 +48,9 @@ const Skeleton = forwardRef(({
     width: width || defaultWidths[variant],
     height: height || defaultHeights[variant],
     borderRadius: borderRadii[variant],
-    background: "var(--color-bg-tertiary)",
-    animation: animation ? "pulse 1.5s ease-in-out infinite" : "none",
+    background: "linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-hover) 50%, var(--color-bg-tertiary) 75%)",
+    backgroundSize: "200% 100%",
+    animation: animation ? "shimmer 1.5s ease-in-out infinite" : "none",
     ...style,
   }
 
@@ -91,9 +92,9 @@ const Skeleton = forwardRef(({
     <>
       <style>
         {`
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
           }
         `}
       </style>

@@ -73,7 +73,7 @@ const Progress = forwardRef(({
     width: variant === "indeterminate" ? "30%" : `${percentage}%`,
     background: colors[color] || colors.primary,
     borderRadius: "var(--radius-full)",
-    transition: variant === "indeterminate" ? "none" : "width 0.3s ease",
+    transition: variant === "indeterminate" ? "none" : "width 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
     animation: variant === "indeterminate" 
       ? "indeterminate 1.5s ease-in-out infinite"
       : variant === "striped" && animate
