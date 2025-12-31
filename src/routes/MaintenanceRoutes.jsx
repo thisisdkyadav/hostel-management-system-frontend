@@ -7,6 +7,9 @@ import { MaintenancePage, AttendancePage as MaintenanceAttendance } from "../pag
 // Common pages
 import { MyTasksPage, LeavesPage } from "../pages/common"
 
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const MaintenanceRoutes = () => (
@@ -17,6 +20,7 @@ const MaintenanceRoutes = () => (
                 <Route path="attendance" element={<MaintenanceAttendance />} />
                 <Route path="my-tasks" element={<MyTasksPage />} />
                 <Route path="leaves" element={<LeavesPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>

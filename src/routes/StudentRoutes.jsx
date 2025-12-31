@@ -22,6 +22,9 @@ import {
 // Warden pages (shared)
 import { FeedbacksPage } from "../pages/warden"
 
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const StudentRoutes = () => (
@@ -39,6 +42,7 @@ const StudentRoutes = () => (
                 <Route path="security" element={<SecurityPage />} />
                 <Route path="id-card" element={<IDCardPage />} />
                 <Route path="undertakings" element={<UndertakingsPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>

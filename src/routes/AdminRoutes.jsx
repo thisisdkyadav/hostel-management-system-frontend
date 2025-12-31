@@ -37,6 +37,9 @@ import {
 // Warden pages (shared)
 import { FeedbacksPage } from "../pages/warden"
 
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const AdminRoutes = () => (
@@ -70,6 +73,7 @@ const AdminRoutes = () => (
                 <Route path="others" element={<OthersPage />} />
                 <Route path="task-management" element={<TaskManagementPage />} />
                 <Route path="sheet" element={<SheetPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>

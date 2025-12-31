@@ -22,6 +22,9 @@ import {
     MyTasksPage
 } from "../pages/common"
 
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const WardenRoutes = () => (
@@ -42,6 +45,7 @@ const WardenRoutes = () => (
                 <Route path="feedbacks" element={<FeedbacksPage />} />
                 <Route path="undertakings" element={<WardenUndertakings />} />
                 <Route path="my-tasks" element={<MyTasksPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>
