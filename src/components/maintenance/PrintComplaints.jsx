@@ -71,7 +71,6 @@ const PrintComplaints = ({ complaints }) => {
       '<th>Location Info</th>' +
       '<th>Category</th>' +
       '<th>Status</th>' +
-      '<th>Priority</th>' +
       '</tr></thead>')
     printWindow.document.write('<tbody>')
     complaintsData.forEach(complaint => {
@@ -84,7 +83,6 @@ const PrintComplaints = ({ complaints }) => {
           <td>${getLocationInfo(complaint)}</td>
           <td>${complaint.category}</td>
           <td>${complaint.status}</td>
-          <td>${complaint.priority}</td>
         </tr>`
       )
     })

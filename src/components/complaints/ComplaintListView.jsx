@@ -1,4 +1,4 @@
-import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
+import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import { DataTable } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -63,12 +63,6 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       header: "Status",
       key: "status",
       render: (complaint) => <span className={`${getStatusColor(complaint.status)}`} style={{ padding: 'var(--badge-padding-sm)', display: 'inline-flex', fontSize: 'var(--badge-font-sm)', lineHeight: 'var(--line-height-tight)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>,
-    },
-    {
-      header: "Priority",
-      key: "priority",
-      className: "hidden lg:table-cell",
-      render: (complaint) => <span className={`${getPriorityColor(complaint.priority)}`} style={{ padding: 'var(--badge-padding-sm)', display: 'inline-flex', fontSize: 'var(--badge-font-sm)', lineHeight: 'var(--line-height-tight)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.priority}</span>,
     },
   ]
 

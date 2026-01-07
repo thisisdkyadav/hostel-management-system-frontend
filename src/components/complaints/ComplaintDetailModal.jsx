@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaEdit, FaStar } from "react-icons/fa"
-import { getStatusColor, getPriorityColor } from "../../utils/adminUtils"
+import { getStatusColor } from "../../utils/adminUtils"
 import { Modal, Button } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { useAuth } from "../../contexts/AuthProvider"
@@ -84,9 +84,6 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", marginTop: "var(--spacing-3)", }} className="sm:mt-0" >
               <span className={`${getStatusColor(complaintData.status)}`} style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
                 {complaintData.status}
-              </span>
-              <span className={`${getPriorityColor(complaintData.priority)}`} style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
-                {complaintData.priority}
               </span>
               <span style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-body)", }} >
                 {complaintData.category}

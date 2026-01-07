@@ -1,6 +1,6 @@
 import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
-import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
+import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Card } from "@/components/ui"
 
@@ -21,14 +21,11 @@ const ComplaintCardView = ({ complaints, onViewDetails }) => {
           </Card.Header>
 
           <Card.Body>
-            <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', fontSize: 'var(--font-size-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-                <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="truncate max-w-[150px]">
-                  {complaint.hostel}, Room {complaint.roomNumber}
-                </span>
-              </div>
-              <span className={`${getPriorityColor(complaint.priority)}`} style={{ padding: 'var(--badge-padding-sm)', fontSize: 'var(--badge-font-sm)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.priority}</span>
+            <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
+              <FaBuilding style={{ color: 'var(--color-primary)', opacity: 'var(--opacity-70)', fontSize: 'var(--font-size-sm)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-body)' }} className="truncate max-w-[150px]">
+                {complaint.hostel}, Room {complaint.roomNumber}
+              </span>
             </div>
 
             <div style={{ marginTop: 'var(--spacing-4)' }}>

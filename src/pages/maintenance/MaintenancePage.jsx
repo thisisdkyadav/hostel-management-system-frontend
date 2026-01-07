@@ -23,11 +23,9 @@ const MaintenancePage = () => {
   const { hostelList = [] } = useGlobal()
   const hostels = ["Admin", "Maintenance Staff"].includes(user?.role) ? hostelList : []
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
-  const priorities = ["Low", "Medium", "High", "Urgent"]
 
   const [filters, setFilters] = useState({
     status: "all",
-    priority: "all",
     category: "all",
     hostelId: "all",
     searchTerm: "",
@@ -51,7 +49,7 @@ const MaintenancePage = () => {
   }
 
   const resetFilters = () => {
-    setFilters({ status: "all", priority: "all", category: "all", hostelId: "all", searchTerm: "", page: 1, limit: filters.limit })
+    setFilters({ status: "all", category: "all", hostelId: "all", searchTerm: "", page: 1, limit: filters.limit })
   }
 
   const viewComplaintDetails = (complaint) => {
@@ -69,7 +67,6 @@ const MaintenancePage = () => {
       setLoading(true)
       const queryParams = new URLSearchParams()
       if (filters.status !== "all") queryParams.append("status", filters.status)
-      if (filters.priority !== "all") queryParams.append("priority", filters.priority)
       if (filters.category !== "all") queryParams.append("category", filters.category)
       if (filters.hostelId !== "all") queryParams.append("hostelId", filters.hostelId)
       if (filters.searchTerm) queryParams.append("search", filters.searchTerm)
@@ -139,7 +136,7 @@ const MaintenancePage = () => {
       <ComplaintStats statsData={statsData} loading={statsLoading} />
 
       {showFilters && (
-        <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} priorities={priorities} />
+        <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />
       )}
 
       <div style={styles.filterPanel}>
