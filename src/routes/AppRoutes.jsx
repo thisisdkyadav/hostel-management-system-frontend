@@ -2,11 +2,16 @@ import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 
 // Public/Auth routes - Always loaded (not lazy)
-import { HomePage, LoginPage, AboutPage, ContactPage, SSOLoginPage } from "../pages/auth"
+import { HomePage, LoginPage } from "../pages/auth"
 
 // Utility pages - Always loaded
 import NotFoundPage from "../pages/NotFoundPage"
 import LoadingPage from "../pages/LoadingPage"
+
+// Public pages - Lazy loaded
+const AboutPage = lazy(() => import("../pages/auth/AboutPage"))
+const ContactPage = lazy(() => import("../pages/auth/ContactPage"))
+const SSOLoginPage = lazy(() => import("../pages/auth/SSOLoginPage"))
 
 // Role-based routes - Lazy loaded (loads all pages for a role when user visits that role's routes)
 const SuperAdminRoutes = lazy(() => import("./SuperAdminRoutes"))
@@ -22,12 +27,26 @@ const AdminRoutes = lazy(() => import("./AdminRoutes"))
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes - Always loaded, no Suspense needed */}
+      {/* Public Routes - HomePage and LoginPage always loaded */}
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="/sso" element={<SSOLoginPage />} />
+
+      {/* Public Routes - Lazy loaded */}
+      <Route path="/about" element={
+        <Suspense fallback={<LoadingPage message="Loading..." />}>
+          <AboutPage />
+        </Suspense>
+      } />
+      <Route path="/contact" element={
+        <Suspense fallback={<LoadingPage message="Loading..." />}>
+          <ContactPage />
+        </Suspense>
+      } />
+      <Route path="/sso" element={
+        <Suspense fallback={<LoadingPage message="Loading..." />}>
+          <SSOLoginPage />
+        </Suspense>
+      } />
 
       {/* Role-based routes - Lazy loaded with Suspense */}
       <Route path="/super-admin/*" element={
