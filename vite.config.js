@@ -88,12 +88,9 @@ export default defineConfig({
             return "tanstack";
           }
           
-          // QR/Image processing - only needed for specific features
-          if (id.includes("node_modules/html5-qrcode") ||
-              id.includes("node_modules/qrcode.react") ||
-              id.includes("node_modules/react-cropper") ||
-              id.includes("node_modules/react-easy-crop")) {
-            return "media-utils";
+          // QR Scanner - pure JS, no React dependency
+          if (id.includes("node_modules/html5-qrcode")) {
+            return "qr-scanner";
           }
           
           // Capacitor - mobile features
