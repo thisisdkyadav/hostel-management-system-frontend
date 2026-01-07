@@ -66,11 +66,6 @@ export default defineConfig({
             return "icons-react";
           }
           
-          // Chart.js - only needed for dashboards
-          if (id.includes("node_modules/chart.js") || 
-              id.includes("node_modules/react-chartjs-2")) {
-            return "charts";
-          }
           
           // Socket.io - only needed when authenticated
           if (id.includes("node_modules/socket.io")) {

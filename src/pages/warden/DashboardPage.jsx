@@ -9,10 +9,7 @@ import { FiSearch } from "react-icons/fi"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useWarden } from "../../contexts/WardenProvider"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, ArcElement, Tooltip, Legend, LogarithmicScale } from "chart.js"
-import { Bar } from "react-chartjs-2"
-
-ChartJS.register(CategoryScale, LinearScale, LogarithmicScale, BarElement, Title, ArcElement, Tooltip, Legend)
+// (Removed chart.js imports as they were unused)
 
 const DashboardPage = () => {
   const { profile, isAssociateWardenOrSupervisor } = useWarden()
