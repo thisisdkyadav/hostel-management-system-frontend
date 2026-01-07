@@ -68,7 +68,7 @@ const StudentStats = () => {
   ]
 
   return loading ? (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "var(--spacing-4)", marginBottom: "var(--spacing-6)", }} className="md:grid-cols-3" >
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" >
       <StatCardShimmer />
       <StatCardShimmer />
       <StatCardShimmer />
