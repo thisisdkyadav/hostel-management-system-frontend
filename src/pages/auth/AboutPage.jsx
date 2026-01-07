@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { FaArrowLeft } from "react-icons/fa"
+import { ArrowLeft } from "lucide-react"
 import ModernHeader from "../../components/home/ModernHeader"
 
 const AboutPage = () => {
@@ -73,7 +73,7 @@ const AboutPage = () => {
           <div className="text-center mt-4">
             <Link to="/" className="group px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-base font-medium rounded-lg hover:from-blue-700 hover:to-indigo-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-400/20 flex items-center relative overflow-hidden mx-auto inline-flex" >
               <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-              <FaArrowLeft className="mr-2 transform transition-transform duration-300 group-hover:-translate-x-1.5 relative" />
+              <ArrowLeft className="mr-2 transform transition-transform duration-300 group-hover:-translate-x-1.5 relative" size={16} />
               <span className="relative">Back to Home</span>
             </Link>
           </div>

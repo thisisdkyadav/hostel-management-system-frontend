@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { FaArrowRight } from "react-icons/fa"
+import { ArrowRight } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 import ModernHeader from "../../components/home/ModernHeader"
 import StatisticsGraphic from "../../components/home/StatisticsGraphic"
@@ -85,13 +85,13 @@ const HomePage = () => {
                 <Link to={getHomeRoute()} className="homepage-cta-button">
                   <span className="homepage-cta-button-overlay"></span>
                   <span className="homepage-cta-button-text">Go to Dashboard</span>
-                  <FaArrowRight className="homepage-cta-button-icon" />
+                  <ArrowRight className="homepage-cta-button-icon" size={18} />
                 </Link>
               ) : (
                 <Link to="/login" className="homepage-cta-button">
                   <span className="homepage-cta-button-overlay"></span>
                   <span className="homepage-cta-button-text">Login Now</span>
-                  <FaArrowRight className="homepage-cta-button-icon" />
+                  <ArrowRight className="homepage-cta-button-icon" size={18} />
                 </Link>
               )}
             </div>

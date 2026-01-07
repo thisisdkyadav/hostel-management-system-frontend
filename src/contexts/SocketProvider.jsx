@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from "react"
-import { io } from "socket.io-client"
 import { useAuth } from "./AuthProvider"
 
 const SocketContext = createContext(null)
@@ -14,7 +13,6 @@ export const useSocket = () => {
 
 export const SocketProvider = ({ children }) => {
   const { user } = useAuth()
-  console.log(user, "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 
   const [socket, setSocket] = useState(null)
   const [isConnected, setIsConnected] = useState(false)
@@ -25,7 +23,6 @@ export const SocketProvider = ({ children }) => {
   const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || window.location.origin
 
   useEffect(() => {
-    console.log("---------------------------------------------------------------------------------------------------------------------------------------------")
     // Only connect if user is authenticated
     if (!user) {
       // Disconnect if socket exists
@@ -37,70 +34,82 @@ export const SocketProvider = ({ children }) => {
       return
     }
 
-    console.log("---------------------------------------------------------------------------------------------------------------------------------------------")
+    // Dynamically import socket.io-client only when user is authenticated
+    // This keeps the socket library out of the initial bundle
+    let newSocket = null
+    let isMounted = true
 
-    // Create socket connection with explicit path for nginx
-    const newSocket = io(SOCKET_URL, {
-      path: "/socket.io", // Must match nginx proxy path
-      withCredentials: true,
-      transports: ["websocket", "polling"],
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5,
-    })
+    const initSocket = async () => {
+      const { io } = await import("socket.io-client")
 
-    // Connection event handlers
-    newSocket.on("connect", () => {
-      console.log("✓ Socket.IO connected:", newSocket.id)
-      setIsConnected(true)
-    })
+      if (!isMounted) return
 
-    newSocket.on("connected", (data) => {
-      console.log("✓ Authentication successful:", data)
-    })
-
-    newSocket.on("disconnect", (reason) => {
-      console.log("✗ Socket.IO disconnected:", reason)
-      setIsConnected(false)
-    })
-
-    newSocket.on("connect_error", (error) => {
-      console.error("Socket.IO connection error:", error.message)
-      setIsConnected(false)
-    })
-
-    newSocket.on("error", (error) => {
-      console.error("Socket.IO error:", error)
-    })
-
-    // Listen for online/offline events (for admin dashboard)
-    newSocket.on("user:online", (userData) => {
-      console.log("User came online:", userData)
-      setOnlineUsers((prev) => {
-        // Check if user already exists
-        const exists = prev.find((u) => u.userId === userData.userId)
-        if (exists) return prev
-        return [...prev, userData]
+      // Create socket connection with explicit path for nginx
+      newSocket = io(SOCKET_URL, {
+        path: "/socket.io", // Must match nginx proxy path
+        withCredentials: true,
+        transports: ["websocket", "polling"],
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5,
       })
-    })
 
-    newSocket.on("user:offline", (userData) => {
-      console.log("User went offline:", userData)
-      setOnlineUsers((prev) => prev.filter((u) => u.userId !== userData.userId))
-    })
+      // Connection event handlers
+      newSocket.on("connect", () => {
+        console.log("✓ Socket.IO connected:", newSocket.id)
+        setIsConnected(true)
+      })
 
-    setSocket(newSocket)
+      newSocket.on("connected", (data) => {
+        console.log("✓ Authentication successful:", data)
+      })
 
-    // Setup activity heartbeat (every 30 seconds)
-    activityIntervalRef.current = setInterval(() => {
-      if (newSocket && newSocket.connected) {
-        newSocket.emit("activity")
-      }
-    }, 30000)
+      newSocket.on("disconnect", (reason) => {
+        console.log("✗ Socket.IO disconnected:", reason)
+        setIsConnected(false)
+      })
+
+      newSocket.on("connect_error", (error) => {
+        console.error("Socket.IO connection error:", error.message)
+        setIsConnected(false)
+      })
+
+      newSocket.on("error", (error) => {
+        console.error("Socket.IO error:", error)
+      })
+
+      // Listen for online/offline events (for admin dashboard)
+      newSocket.on("user:online", (userData) => {
+        console.log("User came online:", userData)
+        setOnlineUsers((prev) => {
+          // Check if user already exists
+          const exists = prev.find((u) => u.userId === userData.userId)
+          if (exists) return prev
+          return [...prev, userData]
+        })
+      })
+
+      newSocket.on("user:offline", (userData) => {
+        console.log("User went offline:", userData)
+        setOnlineUsers((prev) => prev.filter((u) => u.userId !== userData.userId))
+      })
+
+      setSocket(newSocket)
+
+      // Setup activity heartbeat (every 30 seconds)
+      activityIntervalRef.current = setInterval(() => {
+        if (newSocket && newSocket.connected) {
+          newSocket.emit("activity")
+        }
+      }, 30000)
+    }
+
+    initSocket()
 
     // Cleanup on unmount
     return () => {
+      isMounted = false
       if (activityIntervalRef.current) {
         clearInterval(activityIntervalRef.current)
       }
