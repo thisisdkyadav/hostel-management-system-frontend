@@ -1,14 +1,13 @@
 import { useState } from "react"
-import { FaUserGraduate, FaTable, FaThLarge } from "react-icons/fa"
+import { FaUserGraduate, FaTable } from "react-icons/fa"
 import NoResults from "../../components/common/NoResults"
 import StudentStats from "../../components/common/students/StudentStats"
 import StudentFilterSection from "../../components/common/students/StudentFilterSection"
-import StudentCard from "../../components/common/students/StudentCard"
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import ImportStudentModal from "../../components/common/students/ImportStudentModal"
 import UpdateStudentsModal from "../../components/common/students/UpdateStudentsModal"
 import StudentTableView from "../../components/common/students/StudentTableView"
-import { Pagination, Button, ToggleButtonGroup } from "@/components/ui"
+import { Pagination, Button } from "@/components/ui"
 import StudentsHeader from "../../components/headers/StudentsHeader"
 import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"
@@ -57,45 +56,12 @@ const TableShimmer = ({ rows = 10 }) => (
   </div>
 )
 
-const CardShimmer = () => (
-  <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-4)', border: 'var(--border-1) solid var(--color-border-light)' }}>
-    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-      <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--skeleton-base)', marginRight: 'var(--spacing-3)' }}></div>
-      <div style={{ flex: 1 }}>
-        <ShimmerLoader height="1.2rem" width="70%" className="mb-2" />
-        <ShimmerLoader height="0.9rem" width="50%" />
-      </div>
-    </div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
-      {[...Array(4)].map((_, i) => (
-        <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ShimmerLoader height="0.8rem" width="40%" />
-          <ShimmerLoader height="0.8rem" width="30%" />
-        </div>
-      ))}
-    </div>
-    <div style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', justifyContent: 'flex-end' }}>
-      <ShimmerLoader height="2rem" width="30%" />
-    </div>
-  </div>
-)
-
-const CardsGridShimmer = () => (
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-3">
-    {[...Array(6)].map((_, i) => (
-      <CardShimmer key={i} />
-    ))}
-  </div>
-)
-
 const StudentsPage = () => {
   const { user } = useAuth()
-  const { hostelList = [], unitList = [] } = useGlobal()
+  const { hostelList = [] } = useGlobal()
   const hostels = ["Admin"].includes(user.role) ? hostelList : []
-  const units = unitList?.map((unit) => ({ id: unit.id, name: unit.name })) || []
 
   const [showFilters, setShowFilters] = useState(true)
-  const [viewMode, setViewMode] = useState("table")
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
@@ -106,24 +72,6 @@ const StudentsPage = () => {
     perPage: 10,
     autoFetch: true,
   })
-
-  const departments = ["Computer Science", "Electrical Engineering", "Mechanical Engineering", "Civil Engineering", "Chemical Engineering", "Mathematics", "Physics", "Chemistry", "Humanities"]
-
-  const years = [
-    { value: "1", label: "1st Year" },
-    { value: "2", label: "2nd Year" },
-    { value: "3", label: "3rd Year" },
-    { value: "4", label: "4th Year" },
-    { value: "5", label: "5th Year" },
-  ]
-
-  const degrees = ["B.Tech", "M.Tech", "PhD", "BSc", "MSc", "MBA", "BBA"]
-
-  const dayScholarOptions = [
-    { value: "", label: "All Students" },
-    { value: "true", label: "Day Scholar" },
-    { value: "false", label: "Hosteller" },
-  ]
 
   const handleImportStudents = async (importedStudents) => {
     try {
@@ -265,46 +213,21 @@ const StudentsPage = () => {
         <StudentStats />
 
         {showFilters && (
-          <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} units={units} years={years} departments={departments} degrees={degrees} setPageSize={setPageSize} dayScholarOptions={dayScholarOptions} missingOptions={missingOptions} />
+          <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} setPageSize={setPageSize} missingOptions={missingOptions} />
         )}
 
         <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-3)' }} className="sm:flex-row sm:items-center sm:gap-0">
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
             Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{students.length}</span> out of <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{totalCount}</span> students
           </div>
-
-          <ToggleButtonGroup
-            options={[
-              { value: "table", icon: <FaTable />, ariaLabel: "Table view" },
-              { value: "card", icon: <FaThLarge />, ariaLabel: "Card view" },
-            ]}
-            value={viewMode}
-            onChange={setViewMode}
-            shape="rounded"
-            size="medium"
-            variant="muted"
-            hideLabelsOnMobile={false}
-          />
         </div>
 
         {loading ? (
-          viewMode === "table" ? (
-            <TableShimmer rows={pagination.pageSize || 10} />
-          ) : (
-            <CardsGridShimmer />
-          )
+          <TableShimmer rows={pagination.pageSize || 10} />
         ) : (
           <>
             <div style={{ marginTop: 'var(--spacing-4)' }}>
-              {viewMode === "table" && <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />}
-
-              {viewMode === "card" && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-3">
-                  {students.map((student) => (
-                    <StudentCard key={student.id} student={student} onClick={() => viewStudentDetails(student)} />
-                  ))}
-                </div>
-              )}
+              <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />
             </div>
 
             <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />

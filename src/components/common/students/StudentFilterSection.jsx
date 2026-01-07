@@ -4,7 +4,7 @@ import MultiSelectDropdown from "../MultiSelectDropdown"
 import { Button, Input, Select, DatePicker, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
 import { studentApi } from "../../../service"
 
-const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
+const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, setPageSize, missingOptions = [] }) => {
   const [departments, setDepartments] = useState([])
   const [degreeOptions, setDegreeOptions] = useState([])
   const [loading, setLoading] = useState(false)
