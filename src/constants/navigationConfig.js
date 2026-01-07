@@ -16,7 +16,7 @@ import {
   ListTodo,
   BedDouble,
   CalendarDays,
-  MessageSquareWarning,
+
   CalendarOff,
   Search,
   MessageCircle,
@@ -77,7 +77,7 @@ export const getAdminNavItems = (handleLogout) => [
   { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
   { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
   { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
-  { name: "Complaints", icon: MessageSquareWarning, section: "main", path: "/admin/complaints" },
+  { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints" },
   { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found" },
   { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/admin/feedbacks" },
