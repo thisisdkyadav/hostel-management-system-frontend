@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { BsFilterRight } from "react-icons/bs"
-import { MdClearAll } from "react-icons/md"
-import { FaSearch } from "react-icons/fa"
+import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import { Button, Input, Select, DatePicker } from "@/components/ui"
+import { Button, Input, Select, DatePicker, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
 import { studentApi } from "../../../service"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
@@ -13,6 +11,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
   const [error, setError] = useState(null)
   const [degreesLoading, setDegreesLoading] = useState(false)
   const [degreesError, setDegreesError] = useState(null)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const fetchDepartments = async () => {
     setLoading(true)
@@ -57,195 +56,229 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
     fetchDegrees()
   }, [])
 
-  const labelStyle = { display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1-5)' }
+  // Count active filters (excluding searchTerm and studentsPerPage)
+  const getActiveFilterCount = () => {
+    let count = 0
+    if (filters.hostelId) count++
+    if (filters.unitNumber) count++
+    if (filters.roomNumber) count++
+    if (filters.department) count++
+    if (filters.degree) count++
+    if (filters.gender) count++
+    if (filters.status) count++
+    if (filters.hasAllocation) count++
+    if (filters.isDayScholar) count++
+    if (filters.admissionDateFrom) count++
+    if (filters.admissionDateTo) count++
+    if (filters.missingOptions && filters.missingOptions.length > 0) count++
+    return count
+  }
+
+  const activeFilterCount = getActiveFilterCount()
 
   return (
-    <div style={{ marginTop: 'var(--spacing-6)', backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6)', overflow: 'visible' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
-        <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
-          <BsFilterRight style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--font-size-lg)' }} /> Filter Students
-        </h3>
-        <Button onClick={resetFilters} variant="ghost" size="small" icon={<MdClearAll />}>
-          Reset Filters
-        </Button>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-        <div>
+    <Card style={{ marginTop: 'var(--spacing-6)', overflow: 'visible' }} padding="p-4">
+      {/* Compact row: Search + More Filters + Reset */}
+      <HStack gap="small" align="center">
+        <div style={{ flex: 1 }}>
           <Input
             type="text"
             placeholder="Search by name, roll number, or email..."
             value={filters.searchTerm}
             onChange={(e) => updateFilter("searchTerm", e.target.value)}
-            icon={<FaSearch />}
+            icon={<Search size={16} />}
           />
         </div>
+        <Button
+          onClick={() => setIsExpanded(!isExpanded)}
+          variant="secondary"
+          size="small"
+          icon={<SlidersHorizontal size={16} />}
+        >
+          {isExpanded ? "Less" : "More"}
+          {activeFilterCount > 0 && !isExpanded && (
+            <Badge variant="primary" size="small" style={{ marginLeft: 'var(--spacing-1-5)' }}>
+              {activeFilterCount}
+            </Badge>
+          )}
+          {isExpanded ? <ChevronUp size={14} style={{ marginLeft: 'var(--spacing-1)' }} /> : <ChevronDown size={14} style={{ marginLeft: 'var(--spacing-1)' }} />}
+        </Button>
+        <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
+          Reset
+        </Button>
+      </HStack>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)' }}>
-          {hostels.length > 0 && (
-            <div>
-              <label style={labelStyle}>Hostel</label>
+      {/* Expanded filters section */}
+      {isExpanded && (
+        <VStack gap="medium" style={{ marginTop: 'var(--spacing-4)' }}>
+          <Divider spacing="none" />
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
+            {hostels.length > 0 && (
+              <VStack gap="xsmall">
+                <Label size="sm">Hostel</Label>
+                <Select
+                  value={filters.hostelId}
+                  onChange={(e) => updateFilter("hostelId", e.target.value)}
+                  placeholder="All Hostels"
+                  options={hostels.map((hostel) => ({
+                    value: hostel._id || hostel.id,
+                    label: hostel.name || hostel
+                  }))}
+                />
+              </VStack>
+            )}
+
+            <VStack gap="xsmall">
+              <Label size="sm">Unit</Label>
+              <Input type="text" placeholder="Unit number" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
+            </VStack>
+
+            <VStack gap="xsmall">
+              <Label size="sm">Room Number</Label>
+              <Input type="text" placeholder="Room number" value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
+            </VStack>
+
+            <VStack gap="xsmall">
+              <Label size="sm">Department</Label>
               <Select
-                value={filters.hostelId}
-                onChange={(e) => updateFilter("hostelId", e.target.value)}
-                placeholder="All Hostels"
-                options={hostels.map((hostel) => ({
-                  value: hostel._id || hostel.id,
-                  label: hostel.name || hostel
-                }))}
+                value={filters.department}
+                onChange={(e) => updateFilter("department", e.target.value)}
+                disabled={loading}
+                placeholder="All Departments"
+                options={loading ? [{ value: "", label: "Loading departments..." }] : error ? [{ value: "", label: "Error loading departments" }] : departments.map((dept) => ({ value: dept, label: dept }))}
               />
-            </div>
-          )}
+              {error && (
+                <HStack gap="small" align="center">
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{error}</span>
+                  <Button onClick={fetchDepartments} variant="ghost" size="small" disabled={loading}>
+                    Retry
+                  </Button>
+                </HStack>
+              )}
+            </VStack>
 
-          <div>
-            <label style={labelStyle}>Unit</label>
-            <Input type="text" placeholder="Unit number" value={filters.unitNumber} onChange={(e) => updateFilter("unitNumber", e.target.value)} />
-          </div>
+            <VStack gap="xsmall">
+              <Label size="sm">Degree</Label>
+              <Select
+                value={filters.degree}
+                onChange={(e) => updateFilter("degree", e.target.value)}
+                disabled={degreesLoading}
+                placeholder="All Degrees"
+                options={degreesLoading ? [{ value: "", label: "Loading degrees..." }] : degreesError ? [{ value: "", label: "Error loading degrees" }] : degreeOptions.map((degree) => ({ value: degree, label: degree }))}
+              />
+              {degreesError && (
+                <HStack gap="small" align="center">
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{degreesError}</span>
+                  <Button onClick={fetchDegrees} variant="ghost" size="small" disabled={degreesLoading}>
+                    Retry
+                  </Button>
+                </HStack>
+              )}
+            </VStack>
 
-          <div>
-            <label style={labelStyle}>Room Number</label>
-            <Input type="text" placeholder="Room number" value={filters.roomNumber} onChange={(e) => updateFilter("roomNumber", e.target.value)} />
-          </div>
+            <VStack gap="xsmall">
+              <Label size="sm">Gender</Label>
+              <Select
+                value={filters.gender}
+                onChange={(e) => updateFilter("gender", e.target.value)}
+                placeholder="All Genders"
+                options={[
+                  { value: "Male", label: "Male" },
+                  { value: "Female", label: "Female" },
+                  { value: "Other", label: "Other" }
+                ]}
+              />
+            </VStack>
 
-          <div>
-            <label style={labelStyle}>Department</label>
-            <Select
-              value={filters.department}
-              onChange={(e) => updateFilter("department", e.target.value)}
-              disabled={loading}
-              placeholder="All Departments"
-              options={loading ? [{ value: "", label: "Loading departments..." }] : error ? [{ value: "", label: "Error loading departments" }] : departments.map((dept) => ({ value: dept, label: dept }))}
-            />
-            {error && (
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{error}</p>
-                <Button onClick={fetchDepartments} variant="ghost" size="small" disabled={loading}>
-                  Retry
-                </Button>
+            <VStack gap="xsmall">
+              <Label size="sm">Status</Label>
+              <Select
+                value={filters.status}
+                onChange={(e) => updateFilter("status", e.target.value)}
+                options={[
+                  { value: "Active", label: "Active" },
+                  { value: "Graduated", label: "Graduated" },
+                  { value: "Dropped", label: "Dropped" },
+                  { value: "Inactive", label: "Inactive" },
+                  { value: "", label: "All Statuses" }
+                ]}
+              />
+            </VStack>
+
+            <VStack gap="xsmall">
+              <Label size="sm">Allocation Status</Label>
+              <Select
+                value={filters.hasAllocation}
+                onChange={(e) => updateFilter("hasAllocation", e.target.value)}
+                placeholder="All Students"
+                options={[
+                  { value: "true", label: "Allocated Room" },
+                  { value: "false", label: "No Allocation" }
+                ]}
+              />
+            </VStack>
+
+            <VStack gap="xsmall">
+              <Label size="sm">Day Scholar</Label>
+              <Select
+                value={filters.isDayScholar}
+                onChange={(e) => updateFilter("isDayScholar", e.target.value)}
+                placeholder="All Students"
+                options={[
+                  { value: "true", label: "Day Scholar" },
+                  { value: "false", label: "Hosteller" }
+                ]}
+              />
+            </VStack>
+
+            <VStack gap="xsmall">
+              <Label size="sm">Students per page</Label>
+              <Select
+                value={filters.studentsPerPage}
+                onChange={(e) => setPageSize(e.target.value)}
+                options={[
+                  { value: "10", label: "10" },
+                  { value: "20", label: "20" },
+                  { value: "50", label: "50" },
+                  { value: "100", label: "100" },
+                  { value: "200", label: "200" }
+                ]}
+              />
+            </VStack>
+
+            {missingOptions.length > 0 && (
+              <div>
+                <MultiSelectDropdown label="Missing Information" options={missingOptions} selectedValues={filters.missingOptions || []} onChange={(selectedValues) => updateFilter("missingOptions", selectedValues)} placeholder="Select missing fields..." />
               </div>
             )}
           </div>
 
-          <div>
-            <label style={labelStyle}>Degree</label>
-            <Select
-              value={filters.degree}
-              onChange={(e) => updateFilter("degree", e.target.value)}
-              disabled={degreesLoading}
-              placeholder="All Degrees"
-              options={degreesLoading ? [{ value: "", label: "Loading degrees..." }] : degreesError ? [{ value: "", label: "Error loading degrees" }] : degreeOptions.map((degree) => ({ value: degree, label: degree }))}
-            />
-            {degreesError && (
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: 'var(--spacing-1)' }}>
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)', marginRight: 'var(--spacing-2)' }}>{degreesError}</p>
-                <Button onClick={fetchDegrees} variant="ghost" size="small" disabled={degreesLoading}>
-                  Retry
-                </Button>
-              </div>
-            )}
-          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)' }}>
+            <VStack gap="xsmall">
+              <Label size="sm">Admission Date From</Label>
+              <DatePicker
+                name="admissionDateFrom"
+                value={filters.admissionDateFrom}
+                onChange={(e) => updateFilter("admissionDateFrom", e.target.value)}
+                placeholder="Select start date"
+              />
+            </VStack>
 
-          <div>
-            <label style={labelStyle}>Gender</label>
-            <Select
-              value={filters.gender}
-              onChange={(e) => updateFilter("gender", e.target.value)}
-              placeholder="All Genders"
-              options={[
-                { value: "Male", label: "Male" },
-                { value: "Female", label: "Female" },
-                { value: "Other", label: "Other" }
-              ]}
-            />
+            <VStack gap="xsmall">
+              <Label size="sm">Admission Date To</Label>
+              <DatePicker
+                name="admissionDateTo"
+                value={filters.admissionDateTo}
+                onChange={(e) => updateFilter("admissionDateTo", e.target.value)}
+                placeholder="Select end date"
+                min={filters.admissionDateFrom}
+              />
+            </VStack>
           </div>
-
-          <div>
-            <label style={labelStyle}>Status</label>
-            <Select
-              value={filters.status}
-              onChange={(e) => updateFilter("status", e.target.value)}
-              options={[
-                { value: "Active", label: "Active" },
-                { value: "Graduated", label: "Graduated" },
-                { value: "Dropped", label: "Dropped" },
-                { value: "Inactive", label: "Inactive" },
-                { value: "", label: "All Statuses" }
-              ]}
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Allocation Status</label>
-            <Select
-              value={filters.hasAllocation}
-              onChange={(e) => updateFilter("hasAllocation", e.target.value)}
-              placeholder="All Students"
-              options={[
-                { value: "true", label: "Allocated Room" },
-                { value: "false", label: "No Allocation" }
-              ]}
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Day Scholar</label>
-            <Select
-              value={filters.isDayScholar}
-              onChange={(e) => updateFilter("isDayScholar", e.target.value)}
-              placeholder="All Students"
-              options={[
-                { value: "true", label: "Day Scholar" },
-                { value: "false", label: "Hosteller" }
-              ]}
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Students per page</label>
-            <Select
-              value={filters.studentsPerPage}
-              onChange={(e) => setPageSize(e.target.value)}
-              options={[
-                { value: "10", label: "10" },
-                { value: "20", label: "20" },
-                { value: "50", label: "50" },
-                { value: "100", label: "100" },
-                { value: "200", label: "200" }
-              ]}
-            />
-          </div>
-
-          {missingOptions.length > 0 && (
-            <div>
-              <MultiSelectDropdown label="Missing Information" options={missingOptions} selectedValues={filters.missingOptions || []} onChange={(selectedValues) => updateFilter("missingOptions", selectedValues)} placeholder="Select missing fields..." />
-            </div>
-          )}
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-2)' }}>
-          <div>
-            <label style={labelStyle}>Admission Date From</label>
-            <DatePicker
-              name="admissionDateFrom"
-              value={filters.admissionDateFrom}
-              onChange={(e) => updateFilter("admissionDateFrom", e.target.value)}
-              placeholder="Select start date"
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Admission Date To</label>
-            <DatePicker
-              name="admissionDateTo"
-              value={filters.admissionDateTo}
-              onChange={(e) => updateFilter("admissionDateTo", e.target.value)}
-              placeholder="Select end date"
-              min={filters.admissionDateFrom}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+        </VStack>
+      )}
+    </Card>
   )
 }
 
