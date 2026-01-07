@@ -191,7 +191,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   if (starting) {
-    return <LoadingPage message="Starting..." />
+    return <LoadingPage message="Starting" />
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
