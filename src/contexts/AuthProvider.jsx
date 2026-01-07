@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect, use } from "react"
 import { Navigate, useLocation, useSearchParams } from "react-router-dom"
 import { authApi } from "../service"
-import { LoadingState } from "@/components/ui"
+import LoadingPage from "@/pages/LoadingPage"
 import useNetworkStatus from "../hooks/useNetworkStatus"
 
 export const AuthContext = createContext(null)
@@ -12,11 +12,7 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const location = useLocation()
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-      </div>
-    )
+    return <LoadingPage message="Authenticating..." />
   }
 
   if (!user) {
@@ -178,7 +174,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, [isOnline])
 
-  useEffect(() => {}, [user])
+  useEffect(() => { }, [user])
 
   const value = {
     user,
@@ -195,7 +191,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   if (starting) {
-    return <LoadingState fullScreen />
+    return <LoadingPage message="Starting..." />
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

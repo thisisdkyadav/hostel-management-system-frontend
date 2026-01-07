@@ -4,7 +4,7 @@ import { FaArrowRight } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import ModernHeader from "../../components/home/ModernHeader"
 import StatisticsGraphic from "../../components/home/StatisticsGraphic"
-import { LoadingState } from "@/components/ui"
+import LoadingPage from "@/pages/LoadingPage"
 
 const HomePage = () => {
   const { user, getHomeRoute, isStandalone } = useAuth()
@@ -21,7 +21,7 @@ const HomePage = () => {
   }, [isStandalone, navigate])
 
   if (isStandalone) {
-    return <LoadingState fullScreen />
+    return <LoadingPage message="Redirecting..." />
   }
 
   return (
