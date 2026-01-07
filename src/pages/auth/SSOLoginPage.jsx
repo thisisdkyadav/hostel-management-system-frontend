@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
-import { FiLogIn, FiArrowRight } from "react-icons/fi"
+import { LogIn, ArrowRight } from "lucide-react"
 
 const SSOLoginPage = () => {
   const [searchParams] = useSearchParams()
@@ -93,7 +93,7 @@ const SSOLoginPage = () => {
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
                 <span className="relative">Return to Login</span>
-                <FiArrowRight className="ml-3 transform transition-transform duration-300 group-hover:translate-x-1.5 relative" />
+                <ArrowRight className="ml-3 transform transition-transform duration-300 group-hover:translate-x-1.5 relative" size={18} />
               </button>
             </div>
           </div>

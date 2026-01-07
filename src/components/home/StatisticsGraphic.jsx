@@ -1,8 +1,16 @@
 import React, { useState } from "react"
-import { MdMeetingRoom, MdPeople, MdSecurity, MdDashboard } from "react-icons/md"
-import { FaClipboardCheck, FaTools, FaUserClock } from "react-icons/fa"
-import { HiOutlineDocumentReport } from "react-icons/hi"
-import { FiBell, FiUsers } from "react-icons/fi"
+import {
+  DoorOpen,
+  Users,
+  FileWarning,
+  ClipboardCheck,
+  Shield,
+  Wrench,
+  Bell,
+  LayoutDashboard,
+  UserCheck
+} from "lucide-react"
+
 
 const StatisticsGraphic = () => {
   const [activeCard, setActiveCard] = useState(null)
@@ -10,55 +18,55 @@ const StatisticsGraphic = () => {
   // Core hostel management features
   const features = [
     {
-      icon: <MdMeetingRoom style={{ fontSize: '1.25rem' }} />,
+      icon: <DoorOpen size={20} />,
       color: "#3B82F6", // Blue
       label: "Room Management",
       description: "Allocate and manage hostel rooms efficiently",
     },
     {
-      icon: <FiUsers style={{ fontSize: '1.25rem' }} />,
+      icon: <Users size={20} />,
       color: "#8B5CF6", // Purple
       label: "Student Management",
       description: "Track student information and history",
     },
     {
-      icon: <HiOutlineDocumentReport style={{ fontSize: '1.25rem' }} />,
+      icon: <FileWarning size={20} />,
       color: "#EF4444", // Red
       label: "Complaints",
       description: "Process and resolve student issues quickly",
     },
     {
-      icon: <FaClipboardCheck style={{ fontSize: '1.25rem' }} />,
+      icon: <ClipboardCheck size={20} />,
       color: "#10B981", // Green
       label: "Approvals",
       description: "Streamline student request approvals",
     },
     {
-      icon: <MdSecurity style={{ fontSize: '1.25rem' }} />,
+      icon: <Shield size={20} />,
       color: "#F59E0B", // Amber
       label: "Security",
       description: "Ensure campus safety and security",
     },
     {
-      icon: <FaTools style={{ fontSize: '1.25rem' }} />,
+      icon: <Wrench size={20} />,
       color: "#6B7280", // Gray
       label: "Maintenance",
       description: "Manage repair tasks and requests",
     },
     {
-      icon: <FiBell style={{ fontSize: '1.25rem' }} />,
+      icon: <Bell size={20} />,
       color: "#F97316", // Orange
       label: "Notifications",
       description: "Real-time alerts for all residents",
     },
     {
-      icon: <MdDashboard style={{ fontSize: '1.25rem' }} />,
+      icon: <LayoutDashboard size={20} />,
       color: "#9333EA", // Indigo
       label: "Dashboard",
       description: "Monitor all hostel activities",
     },
     {
-      icon: <FaUserClock style={{ fontSize: '1.25rem' }} />,
+      icon: <UserCheck size={20} />,
       color: "#14B8A6", // Teal
       label: "Visitor Management",
       description: "Track and manage campus visitors",

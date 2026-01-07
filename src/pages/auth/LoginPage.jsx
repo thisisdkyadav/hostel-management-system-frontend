@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import LoginWithGoogle from "../../components/LoginWithGoogle"
-import { FaArrowRight } from "react-icons/fa"
+import { ArrowRight } from "lucide-react"
 
 const LoginPage = () => {
   const [email, setEmail] = useState("")
@@ -164,7 +164,7 @@ const LoginPage = () => {
                   ) : (
                     <>
                       Login
-                      <FaArrowRight className="ml-2 sm:ml-3 transform transition-transform duration-300 group-hover:translate-x-1.5 text-xs sm:text-sm" />
+                      <ArrowRight className="ml-2 sm:ml-3 transform transition-transform duration-300 group-hover:translate-x-1.5" size={16} />
                     </>
                   )}
                 </span>

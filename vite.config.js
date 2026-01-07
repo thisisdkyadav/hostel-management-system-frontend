@@ -42,6 +42,69 @@ export default defineConfig({
     },
   },
 
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Core React - keep together for better caching
+          if (id.includes("node_modules/react/") || 
+              id.includes("node_modules/react-dom/") ||
+              id.includes("node_modules/scheduler/")) {
+            return "react-core";
+          }
+          
+          // React Router - separate chunk
+          if (id.includes("node_modules/react-router")) {
+            return "react-router";
+          }
+          
+          // Icons libraries - large, lazy load
+          if (id.includes("node_modules/lucide-react")) {
+            return "icons-lucide";
+          }
+          if (id.includes("node_modules/react-icons")) {
+            return "icons-react";
+          }
+          
+          // Chart.js - only needed for dashboards
+          if (id.includes("node_modules/chart.js") || 
+              id.includes("node_modules/react-chartjs-2")) {
+            return "charts";
+          }
+          
+          // Socket.io - only needed when authenticated
+          if (id.includes("node_modules/socket.io")) {
+            return "socket";
+          }
+          
+          // Date picker - only needed in forms
+          if (id.includes("node_modules/react-datepicker") || 
+              id.includes("node_modules/date-fns")) {
+            return "datepicker";
+          }
+          
+          // TanStack (table/virtual) - only needed for data grids
+          if (id.includes("node_modules/@tanstack")) {
+            return "tanstack";
+          }
+          
+          // QR/Image processing - only needed for specific features
+          if (id.includes("node_modules/html5-qrcode") ||
+              id.includes("node_modules/qrcode.react") ||
+              id.includes("node_modules/react-cropper") ||
+              id.includes("node_modules/react-easy-crop")) {
+            return "media-utils";
+          }
+          
+          // Capacitor - mobile features
+          if (id.includes("node_modules/@capacitor")) {
+            return "capacitor";
+          }
+        },
+      },
+    },
+  },
+
   plugins: [
     tailwindcss(),
 

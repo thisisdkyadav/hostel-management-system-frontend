@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
-import { FiMenu, FiX, FiChevronDown, FiLogOut, FiUser, FiHome, FiPhone, FiInfo, FiCode, FiBook, FiExternalLink } from "react-icons/fi"
-import { FaUserCircle } from "react-icons/fa"
+import { Menu, X, ChevronDown, LogOut, User, Home, Phone, Info, Code, BookOpen, ExternalLink, UserCircle } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ModernHeader = () => {
@@ -20,7 +19,7 @@ const ModernHeader = () => {
   const homeNavItems = [
     {
       label: "Resources",
-      icon: <FiBook className="modern-header-nav-icon" />,
+      icon: <BookOpen className="modern-header-nav-icon" size={18} />,
       submenu: [
         { label: "Academic Calendar", path: "https://academic.iiti.ac.in/Document/2025/2024-25_Academic%20Calendar_Updated%20-%2029-1-2025.pdf" },
         { label: "Hostel Rules", path: "https://academic.iiti.ac.in/New_student/Hall%20of%20Residence%20Rules%20&%20Decl.pdf" },
@@ -28,13 +27,13 @@ const ModernHeader = () => {
         { label: "Menu", path: "/" },
       ],
     },
-    { label: "Contact", icon: <FiPhone className="modern-header-nav-icon" />, path: "/contact" },
-    { label: "Dev Team", icon: <FiCode className="modern-header-nav-icon" />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
+    { label: "Contact", icon: <Phone className="modern-header-nav-icon" size={18} />, path: "/contact" },
+    { label: "Dev Team", icon: <Code className="modern-header-nav-icon" size={18} />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
   ]
 
   const aboutNavItems = [
-    { label: "Home", icon: <FiHome className="modern-header-nav-icon" />, path: "/" },
-    { label: "Dev Team", icon: <FiCode className="modern-header-nav-icon" />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
+    { label: "Home", icon: <Home className="modern-header-nav-icon" size={18} />, path: "/" },
+    { label: "Dev Team", icon: <Code className="modern-header-nav-icon" size={18} />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
   ]
 
   const navItems = isAboutPage ? aboutNavItems : homeNavItems
@@ -110,7 +109,7 @@ const ModernHeader = () => {
                     >
                       {item.icon}
                       {item.label}
-                      <FiChevronDown className={`modern-header-nav-chevron ${activeDropdown === index ? "open" : ""}`} />
+                      <ChevronDown className={`modern-header-nav-chevron ${activeDropdown === index ? "open" : ""}`} size={16} />
                     </button>
                     {activeDropdown === index && (
                       <div className="modern-header-dropdown">
@@ -124,7 +123,7 @@ const ModernHeader = () => {
                               className="modern-header-dropdown-item"
                             >
                               {subItem.label}
-                              {subItem.path.startsWith("http") && <FiExternalLink className="modern-header-dropdown-external-icon" />}
+                              {subItem.path.startsWith("http") && <ExternalLink className="modern-header-dropdown-external-icon" size={14} />}
                             </a>
                           ))}
                         </div>
@@ -140,7 +139,7 @@ const ModernHeader = () => {
                   >
                     {item.icon}
                     {item.label}
-                    <FiExternalLink className="modern-header-external-icon" />
+                    <ExternalLink className="modern-header-external-icon" size={14} />
                   </a>
                 ) : (
                   <Link to={item.path} className="modern-header-nav-link">
@@ -166,7 +165,7 @@ const ModernHeader = () => {
                   ) : user?.name?.charAt(0).toUpperCase() ? (
                     <span>{user.name.charAt(0).toUpperCase()}</span>
                   ) : (
-                    <FaUserCircle />
+                    <UserCircle size={24} />
                   )}
                 </button>
 
@@ -192,11 +191,11 @@ const ModernHeader = () => {
                     {/* Menu Items */}
                     <div className="modern-header-profile-menu">
                       <Link to={getHomeRoute()} className="modern-header-profile-menu-item" onClick={() => setIsProfileOpen(false)}>
-                        <FiHome className="modern-header-profile-menu-icon" />
+                        <Home className="modern-header-profile-menu-icon" size={18} />
                         <span>Dashboard</span>
                       </Link>
                       <Link to={`${getHomeRoute()}/profile`} className="modern-header-profile-menu-item" onClick={() => setIsProfileOpen(false)}>
-                        <FiUser className="modern-header-profile-menu-icon" />
+                        <User className="modern-header-profile-menu-icon" size={18} />
                         <span>My Profile</span>
                       </Link>
 
@@ -204,7 +203,7 @@ const ModernHeader = () => {
                       <div className="modern-header-profile-divider"></div>
 
                       <button onClick={handleLogout} className="modern-header-profile-menu-item logout">
-                        <FiLogOut className="modern-header-profile-menu-icon" />
+                        <LogOut className="modern-header-profile-menu-icon" size={18} />
                         <span>Logout</span>
                       </button>
                     </div>
@@ -224,10 +223,10 @@ const ModernHeader = () => {
               aria-label="Toggle menu"
             >
               <div className={`modern-header-mobile-icon ${isMenuOpen ? "hidden" : "visible"}`}>
-                <FiMenu />
+                <Menu size={24} />
               </div>
               <div className={`modern-header-mobile-icon modern-header-mobile-icon-close ${isMenuOpen ? "visible" : "hidden"}`}>
-                <FiX />
+                <X size={24} />
               </div>
             </button>
           </div>
@@ -246,7 +245,7 @@ const ModernHeader = () => {
                       {item.icon}
                       {item.label}
                     </span>
-                    <FiChevronDown className={`modern-header-nav-chevron ${activeDropdown === index ? "open" : ""}`} />
+                    <ChevronDown className={`modern-header-nav-chevron ${activeDropdown === index ? "open" : ""}`} size={16} />
                   </button>
 
                   <div className={`modern-header-mobile-submenu ${activeDropdown === index ? "open" : ""}`}>
@@ -276,7 +275,7 @@ const ModernHeader = () => {
                 >
                   {item.icon}
                   {item.label}
-                  <FiExternalLink className="modern-header-external-icon" />
+                  <ExternalLink className="modern-header-external-icon" size={14} />
                 </a>
               ) : (
                 <Link
@@ -295,7 +294,7 @@ const ModernHeader = () => {
           {!user && (
             <div className="modern-header-mobile-login">
               <Link to="/login" className="modern-header-mobile-login-button" onClick={() => setIsMenuOpen(false)}>
-                <FiUser className="modern-header-nav-icon" />
+                <User className="modern-header-nav-icon" size={18} />
                 Login
               </Link>
             </div>
