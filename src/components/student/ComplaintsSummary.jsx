@@ -2,7 +2,7 @@ import React from "react"
 import { FaExclamationCircle, FaEye } from "react-icons/fa"
 import { MdPendingActions } from "react-icons/md"
 import { Link } from "react-router-dom"
-import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
+import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 
 const ComplaintsSummary = ({ complaints = [], loading = false }) => {
   if (loading) {

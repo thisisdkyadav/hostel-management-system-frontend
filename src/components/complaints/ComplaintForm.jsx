@@ -11,7 +11,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
     description: "",
     category: "",
     attachments: "",
-    priority: "",
     location: "",
   })
   const [loading, setLoading] = useState(false)
@@ -39,7 +38,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         description: formData.description,
         category: formData.category,
         attachments: formData.attachments,
-        priority: formData.priority,
         location: formData.location,
       }
 
@@ -51,7 +49,6 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         description: "",
         category: "",
         attachments: "",
-        priority: "",
         location: "",
       })
     } catch (err) {
@@ -90,27 +87,16 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-4)' }} className="sm:grid-cols-2">
-            <div>
-              <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
-              <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<FaClipboardList />} options={[
-                { value: "Plumbing", label: "Plumbing" },
-                { value: "Electrical", label: "Electrical" },
-                { value: "Internet", label: "Internet" },
-                { value: "Cleanliness", label: "Cleanliness" },
-                { value: "Civil", label: "Civil" },
-                { value: "Other", label: "Other" }
-              ]} required />
-            </div>
-
-            <div>
-              <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Priority</label>
-              <Select name="priority" value={formData.priority} onChange={handleChange} placeholder="Select Priority" options={[
-                { value: "Low", label: "Low" },
-                { value: "Medium", label: "Medium" },
-                { value: "High", label: "High" }
-              ]} required />
-            </div>
+          <div>
+            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
+            <Select name="category" value={formData.category} onChange={handleChange} placeholder="Select Category" icon={<FaClipboardList />} options={[
+              { value: "Plumbing", label: "Plumbing" },
+              { value: "Electrical", label: "Electrical" },
+              { value: "Internet", label: "Internet" },
+              { value: "Cleanliness", label: "Cleanliness" },
+              { value: "Civil", label: "Civil" },
+              { value: "Other", label: "Other" }
+            ]} required />
           </div>
         </div>
 

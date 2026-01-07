@@ -5,5 +5,4 @@ export const getPrintableComplaintData = (complaint) => ({
   description: complaint.description,
   location: complaint.location,
   status: complaint.status,
-  priority: complaint.priority,
 });

@@ -17,11 +17,9 @@ const ComplaintsPage = () => {
   const { hostelList = [] } = useGlobal()
   const hostels = ["Admin"].includes(user?.role) ? hostelList : []
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
-  const priorities = ["Low", "Medium", "High", "Urgent"]
 
   const [filters, setFilters] = useState({
     status: "all",
-    priority: "all",
     category: "all",
     hostelId: "all",
     searchTerm: "",
@@ -52,7 +50,6 @@ const ComplaintsPage = () => {
   const resetFilters = () => {
     setFilters({
       status: "all",
-      priority: "all",
       category: "all",
       hostelId: "all",
       searchTerm: "",
@@ -76,7 +73,6 @@ const ComplaintsPage = () => {
       setLoading(true)
       const queryParams = new URLSearchParams()
       if (filters.status !== "all") queryParams.append("status", filters.status)
-      if (filters.priority !== "all") queryParams.append("priority", filters.priority)
       if (filters.category !== "all") queryParams.append("category", filters.category)
       if (filters.hostelId !== "all") queryParams.append("hostelId", filters.hostelId)
       if (filters.searchTerm) queryParams.append("search", filters.searchTerm)
@@ -133,7 +129,7 @@ const ComplaintsPage = () => {
       <div className="px-4 sm:px-6 lg:px-8 py-6">
         <ComplaintStats statsData={statsData} loading={statsLoading} />
 
-        {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} priorities={priorities} />}
+        {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />}
 
         <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={COMPLAINT_FILTER_TABS} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
       </div>

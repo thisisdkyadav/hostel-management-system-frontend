@@ -45,12 +45,11 @@ export const filterHostels = (hostels, activeTab, searchTerm) => {
     .filter((hostel) => hostel.name.toLowerCase().includes(searchTerm.toLowerCase()))
 }
 
-export const filterComplaints = (complaints, filterStatus, filterPriority, filterCategory, filterHostel, searchTerm) => {
-  if (!filterStatus && !filterPriority && !filterCategory && !filterHostel && !searchTerm) return complaints
+export const filterComplaints = (complaints, filterStatus, filterCategory, filterHostel, searchTerm) => {
+  if (!filterStatus && !filterCategory && !filterHostel && !searchTerm) return complaints
   if (!complaints) return []
   return complaints.filter((complaint) => {
     if (filterStatus !== "all" && complaint.status !== filterStatus) return false
-    if (filterPriority !== "all" && complaint.priority !== filterPriority) return false
     if (filterCategory !== "all" && complaint.category !== filterCategory) return false
     if (filterHostel !== "all" && complaint.hostel !== filterHostel) return false
 
@@ -127,18 +126,7 @@ export const getStatusColor = (status) => {
   }
 }
 
-export const getPriorityColor = (priority) => {
-  switch (priority) {
-    case "Low":
-      return "bg-green-100 text-green-700"
-    case "Medium":
-      return "bg-yellow-100 text-yellow-700"
-    case "High":
-      return "bg-red-100 text-red-700"
-    default:
-      return "bg-gray-100 text-gray-700"
-  }
-}
+
 
 export const filterMaintenanceStaff = (staff, category, searchTerm) => {
   return staff.filter((member) => {
