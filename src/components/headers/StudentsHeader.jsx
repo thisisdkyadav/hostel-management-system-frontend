@@ -1,4 +1,4 @@
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { MdFilterAlt, MdClearAll } from "react-icons/md"
 import { FaFileExport, FaFileImport, FaEdit } from "react-icons/fa"

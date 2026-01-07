@@ -1,17 +1,13 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
-import { wardenApi, associateWardenApi, hostelSupervisorApi } from "../service"
-import { FaUserCircle, FaBuilding } from "react-icons/fa"
-import { CgSpinner } from "react-icons/cg"
+import { FaUserCircle } from "react-icons/fa"
 import { HiMenuAlt2, HiMenuAlt3 } from "react-icons/hi"
-import { useWarden } from "../contexts/WardenProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
-import Select from "./common/ui/Select"
-
-const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
+import useLayoutPreference from "../hooks/useLayoutPreference"
+import HostelSwitcher from "./sidebar/HostelSwitcher"
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
@@ -21,47 +17,12 @@ const Sidebar = ({ navItems }) => {
   const location = useLocation()
   const { user } = useAuth()
   const { isPwaMobile } = usePwaMobile()
-  const [isUpdatingHostel, setIsUpdatingHostel] = useState(false)
-  const [assignedHostels, setAssignedHostels] = useState([])
-  const [activeHostelId, setActiveHostelId] = useState(null)
-  const prevHostelIdRef = useRef(null)
-  const [layoutPreference, setLayoutPreference] = useState("sidebar")
-
-  const wardenContext = useWarden()
-  const fetchProfile = wardenContext?.fetchProfile
-
-  const isWardenRole = user?.role === "Warden" || user?.role === "Associate Warden" || user?.role === "Hostel Supervisor"
-
-  // Load layout preference
-  useEffect(() => {
-    try {
-      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
-      if (savedPreference) {
-        setLayoutPreference(savedPreference)
-      }
-    } catch (error) {
-      console.error("Error loading layout preference:", error)
-    }
-  }, [])
+  const { layoutPreference } = useLayoutPreference()
 
   // Skip sidebar rendering for student PWA in mobile mode with bottombar preference
   if (user?.role === "Student" && isPwaMobile && layoutPreference === "bottombar") {
     return null
   }
-
-  useEffect(() => {
-    if (isWardenRole && wardenContext) {
-      const profileData = wardenContext?.profile || user
-      const hostels = profileData?.hostels || profileData?.hostelIds || []
-      const currentActiveId = profileData?.activeHostelId?._id || profileData?.activeHostelId || user?.hostel?._id
-
-      setAssignedHostels(hostels)
-      setActiveHostelId(currentActiveId)
-    } else {
-      setAssignedHostels([])
-      setActiveHostelId(null)
-    }
-  }, [user, wardenContext?.profile, isWardenRole, wardenContext])
 
   useEffect(() => {
     const currentItem = navItems?.find((item) => {
@@ -110,37 +71,6 @@ const Sidebar = ({ navItems }) => {
 
     if (window.innerWidth < 768) {
       setIsOpen(false)
-    }
-  }
-
-  const handleHostelChange = async (event) => {
-    const newHostelId = event.target.value
-    if (!newHostelId || newHostelId === activeHostelId) {
-      return
-    }
-
-    setIsUpdatingHostel(true)
-    try {
-      if (user?.role === "Warden") {
-        await wardenApi.setActiveHostel(newHostelId)
-      } else if (user?.role === "Associate Warden") {
-        await associateWardenApi.setActiveHostel(newHostelId)
-      } else if (user?.role === "Hostel Supervisor") {
-        await hostelSupervisorApi.setActiveHostel(newHostelId)
-      }
-
-      if (fetchProfile) {
-        await fetchProfile()
-      } else {
-        console.warn("fetchProfile function not available from context.")
-        alert("Active hostel updated (manual refresh might be needed).")
-      }
-    } catch (error) {
-      console.error("Failed to update active hostel:", error)
-      alert(`Error updating active hostel: ${error.message}`)
-      event.target.value = activeHostelId
-    } finally {
-      setIsUpdatingHostel(false)
     }
   }
 
@@ -344,44 +274,8 @@ const Sidebar = ({ navItems }) => {
             <ul className="space-y-0">{mainNavItems.map(renderNavItem)}</ul>
           </div>
 
-          {/* Active Hostel */}
-          {isWardenRole && assignedHostels && assignedHostels.length > 0 && (
-            <div className={`border-t border-[var(--color-border-primary)] bg-[var(--color-bg-primary)]/70 backdrop-blur ${isOpen ? "p-3" : "p-2"}`}>
-              {isOpen ? (
-                <>
-                  <div className="relative">
-                    <Select
-                      id="activeHostelSelect"
-                      value={activeHostelId || ""}
-                      onChange={handleHostelChange}
-                      disabled={isUpdatingHostel}
-                      options={[
-                        ...(!activeHostelId && assignedHostels.length > 0 ? [{ value: "", label: "Select Active Hostel", disabled: true }] : []),
-                        ...assignedHostels
-                          .map((hostel) => {
-                            const hostelId = typeof hostel === "string" ? hostel : hostel?._id
-                            const hostelName = typeof hostel === "string" ? `Hostel (${hostelId?.slice(-4) || "Unknown"})` : hostel?.name || "Unknown Hostel"
-                            return { value: hostelId, label: hostelName }
-                          })
-                          .filter((opt) => opt.value),
-                      ]}
-                    />
-                    {isUpdatingHostel && (
-                      <div className="absolute inset-y-0 right-8 flex items-center pointer-events-none">
-                        <CgSpinner className="animate-spin text-[var(--color-primary)]" />
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="relative group" title="Active Hostel">
-                  <div className="w-full py-3 flex justify-center">
-                    <FaBuilding className="text-xl text-[var(--color-primary)]" />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          {/* Active Hostel Switcher */}
+          <HostelSwitcher isOpen={isOpen} />
 
           {/* Profile and Logout */}
           <div className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>{renderProfileSection()}</div>

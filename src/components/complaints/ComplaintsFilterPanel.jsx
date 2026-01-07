@@ -1,7 +1,6 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import Button from "../common/Button"
-import Select from "../common/ui/Select"
+import { Button, Select } from "@/components/ui"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories, priorities }) => {
   return (

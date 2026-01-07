@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { FaFilter, FaCalendarAlt, FaUserCog, FaUsers, FaSearch, FaUserCheck, FaCheck, FaTimes } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Select from "../../common/ui/Select"
+import { Modal, Button, Select, Label, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, Badge, Spinner, Pagination } from "@/components/ui"
 import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import Pagination from "../../common/Pagination"
 
 const HostelDetailsModal = ({ hostel, onClose }) => {
   const [activeTab, setActiveTab] = useState("entries")
@@ -85,7 +82,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     if (loading) {
       return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
-          <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: 'var(--border-4) solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+          <Spinner size="lg" />
         </div>
       )
     }
@@ -100,48 +97,42 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
 
     return (
       <>
-        <div style={{ overflowX: 'auto', marginTop: 'var(--spacing-4)' }}>
-          <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-              <tr>
-                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                  Name
-                </th>
-                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                  Role
-                </th>
-                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                  Time
-                </th>
-                <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-              {attendanceRecords.map((record) => (
-                <tr key={record._id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
-                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                    <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{record.userId.name}</div>
-                    <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.userId.email}</div>
-                  </td>
-                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                    <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: record.userId.role === "Security" ? 'var(--color-purple-light-bg)' : 'var(--color-primary-bg)', color: record.userId.role === "Security" ? 'var(--color-purple-text)' : 'var(--color-primary-dark)' }}>{record.userId.role}</span>
-                  </td>
-                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{formatDate(record.createdAt)}</td>
-                  <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                    <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: record.type === "checkIn" ? 'var(--color-success-bg)' : 'var(--color-danger-bg)', color: record.type === "checkIn" ? 'var(--color-success-text)' : 'var(--color-danger-text)' }}>{record.type === "checkIn" ? "Check In" : "Check Out"}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Table style={{ marginTop: 'var(--spacing-4)' }}>
+          <TableHead>
+            <TableRow>
+              <TableHeader>Name</TableHeader>
+              <TableHeader>Role</TableHeader>
+              <TableHeader>Time</TableHeader>
+              <TableHeader>Status</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {attendanceRecords.map((record) => (
+              <TableRow key={record._id}>
+                <TableCell>
+                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{record.userId.name}</div>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.userId.email}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant={record.userId.role === "Security" ? "purple" : "primary"}>
+                    {record.userId.role}
+                  </Badge>
+                </TableCell>
+                <TableCell>{formatDate(record.createdAt)}</TableCell>
+                <TableCell>
+                  <Badge variant={record.type === "checkIn" ? "success" : "danger"}>
+                    {record.type === "checkIn" ? "Check In" : "Check Out"}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
         {/* Pagination */}
         {totalPages > 1 && (
           <div style={{ marginTop: 'var(--spacing-4)' }}>
-            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={paginate} />
           </div>
         )}
       </>
@@ -152,7 +143,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     if (loading) {
       return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--spacing-12) 0' }}>
-          <div style={{ width: 'var(--spacing-12)', height: 'var(--spacing-12)', border: 'var(--border-4) solid var(--color-primary)', borderTopColor: 'transparent', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
+          <Spinner size="lg" />
         </div>
       )
     }
@@ -166,68 +157,58 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     }
 
     return (
-      <div style={{ overflowX: 'auto', marginTop: 'var(--spacing-4)' }}>
-        <table style={{ minWidth: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ backgroundColor: 'var(--table-header-bg)' }}>
-            <tr>
-              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                Name
-              </th>
-              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                Role
-              </th>
-              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                Email
-              </th>
-              <th scope="col" style={{ padding: 'var(--spacing-3) var(--spacing-6)', textAlign: 'left', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: 'var(--letter-spacing-wider)' }}>
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-            {presentStaff.map((staff) => (
-              <tr key={staff._id} style={{ borderTop: 'var(--border-1) solid var(--color-border-primary)' }}>
-                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                  <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{staff.name}</div>
-                </td>
-                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                  <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: staff.role === "Security" ? 'var(--color-purple-light-bg)' : 'var(--color-primary-bg)', color: staff.role === "Security" ? 'var(--color-purple-text)' : 'var(--color-primary-dark)' }}>{staff.role}</span>
-                </td>
-                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{staff.email}</td>
-                <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                  <span style={{ padding: 'var(--spacing-0-5) var(--spacing-2)', display: 'inline-flex', alignItems: 'center', fontSize: 'var(--font-size-xs)', lineHeight: '1.25rem', fontWeight: 'var(--font-weight-semibold)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }}>
-                    <FaCheck style={{ marginRight: 'var(--spacing-1)' }} /> Present
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table style={{ marginTop: 'var(--spacing-4)' }}>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Name</TableHeader>
+            <TableHeader>Role</TableHeader>
+            <TableHeader>Email</TableHeader>
+            <TableHeader>Status</TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {presentStaff.map((staff) => (
+            <TableRow key={staff._id}>
+              <TableCell>
+                <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{staff.name}</div>
+              </TableCell>
+              <TableCell>
+                <Badge variant={staff.role === "Security" ? "purple" : "primary"}>
+                  {staff.role}
+                </Badge>
+              </TableCell>
+              <TableCell>{staff.email}</TableCell>
+              <TableCell>
+                <Badge variant="success" icon={<FaCheck />}>
+                  Present
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     )
   }
 
   return (
-    <Modal title={`${hostel.name} - Staff Attendance`} onClose={onClose} width={900}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-
-
+    <Modal isOpen={true} onClose={onClose} title={`${hostel.name} - Staff Attendance`} width={900}>
+      <VStack gap="large">
         {/* Filters */}
-        <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+        <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', width: '100%' }}>
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
             <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-4)', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          <HStack gap="medium" align="end" wrap>
             <div style={{ flex: 1, minWidth: '150px' }}>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Staff Type</label>
+              <Label>Staff Type</Label>
               <Select value={staffType} onChange={(e) => setStaffType(e.target.value)} options={[{ value: "all", label: "All Staff" }, { value: "security", label: "Security Guards" }, { value: "maintenance", label: "Maintenance Staff" }]} />
             </div>
             <div style={{ flex: 1, minWidth: '150px' }}>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Start Date</label>
+              <Label>Start Date</Label>
               <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} showTimeSelect dateFormat="MMMM d, yyyy h:mm aa" className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholderText="Select start date & time" />
             </div>
             <div style={{ flex: 1, minWidth: '150px' }}>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>End Date</label>
+              <Label>End Date</Label>
               <DatePicker selected={endDate} onChange={(date) => setEndDate(date)}
                 showTimeSelect
                 dateFormat="MMMM d, yyyy h:mm aa"
@@ -246,12 +227,12 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
                 Clear
               </Button>
             </div>
-          </div>
+          </HStack>
         </div>
 
         {/* Content */}
-        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) solid var(--color-border-primary)' }}>{renderAttendanceEntries()}</div>
-      </div>
+        <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', border: 'var(--border-1) solid var(--color-border-primary)', width: '100%' }}>{renderAttendanceEntries()}</div>
+      </VStack>
     </Modal>
   )
 }

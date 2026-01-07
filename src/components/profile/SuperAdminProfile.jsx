@@ -3,9 +3,7 @@ import { FiMail, FiPhone, FiShield, FiKey, FiUser, FiClock } from "react-icons/f
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import LoadingState from "../common/LoadingState"
-import ErrorState from "../common/ErrorState"
-import EmptyState from "../common/EmptyState"
+import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
 import { useAuth } from "../../contexts/AuthProvider"
 import { format } from "date-fns"
 

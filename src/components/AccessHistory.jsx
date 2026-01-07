@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa"
-import FilterTabs from "./common/FilterTabs"
+import { Tabs, Pagination, Button, Input, Select } from "@/components/ui"
 import NoResults from "./common/NoResults"
-import Pagination from "./common/Pagination"
-import Button from "./common/Button"
-import Input from "./common/ui/Input"
-import Select from "./common/ui/Select"
 import { securityApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
 
@@ -164,7 +160,7 @@ const AccessHistory = ({ cachedData }) => {
 
         {/* Filter Tabs */}
         <div className="mb-5">
-          <FilterTabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} disabled={!isOnline && !cachedData} />
+          <Tabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} disabled={!isOnline && !cachedData} />
         </div>
 
         {/* Additional Filters */}

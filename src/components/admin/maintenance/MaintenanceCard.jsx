@@ -3,8 +3,7 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button, Badge } from "@/components/ui"
 
 const CATEGORY_DISPLAY_LABELS = {
   Plumbing: "Plumber",
@@ -67,7 +66,7 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
           <span style={{ padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", backgroundColor: categoryColor.bg, color: categoryColor.text }}>{getCategoryDisplayLabel(staff.category)}</span>
         </div>
 
-        <Card.Header className="mb-0">
+        <CardHeader className="mb-0">
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ width: "var(--avatar-lg)", height: "var(--avatar-lg)", borderRadius: "var(--radius-full)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-4)", overflow: "hidden" }}>
               {staff.profileImage ? (
@@ -86,9 +85,9 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
               </div>
             </div>
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+        <CardBody style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)", display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ width: "var(--spacing-7)", height: "var(--spacing-7)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
               <FaEnvelope style={{ color: "var(--color-primary)", fontSize: "var(--font-size-xs)" }} />
@@ -102,19 +101,19 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
             </div>
             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{staff.phone || "Not provided"}</span>
           </div>
-        </Card.Body>
+        </CardBody>
 
 
 
 
-        <Card.Footer className="pt-4 border-t flex gap-2" style={{ borderColor: "var(--color-border-light)" }}>
+        <CardFooter className="pt-4 border-t flex gap-2" style={{ borderColor: "var(--color-border-light)" }}>
           <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="medium" icon={<FaEye />} fullWidth>
             View Details
           </Button>
           <Button onClick={() => setShowEditForm(true)} variant="secondary" size="medium" icon={<FaEdit />} fullWidth>
             Edit
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {showEditForm && <EditMaintenanceForm staff={staff} onClose={() => setShowEditForm(false)} onUpdate={onUpdate} onDelete={onDelete} />}

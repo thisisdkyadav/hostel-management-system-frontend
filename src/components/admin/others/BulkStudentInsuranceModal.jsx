@@ -1,9 +1,7 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import FileInput from "../../common/ui/FileInput"
+import { Modal, Button, VStack, HStack, Alert, FileInput } from "@/components/ui"
 
 const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, providerName }) => {
   const [csvFile, setCsvFile] = useState(null)

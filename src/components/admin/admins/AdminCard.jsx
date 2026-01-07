@@ -3,8 +3,7 @@ import { FaEdit, FaEnvelope, FaPhone, FaUserShield, FaTrash } from "react-icons/
 import { BsCalendarCheck } from "react-icons/bs"
 import EditAdminForm from "./EditAdminForm"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button, Badge } from "@/components/ui"
 
 const AdminCard = ({ admin, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
@@ -49,7 +48,7 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
           <div className={`absolute rotate-45 transform origin-bottom-right ${statusColor.bg} text-[var(--color-white)] text-[var(--font-size-xs)] font-[var(--font-weight-medium)] py-[var(--spacing-1)] right-[-6px] top-[-2px] w-[var(--spacing-24)] text-center`}>{status === "active" ? "Active" : "Inactive"}</div>
         </div>
 
-        <Card.Header className="mb-0">
+        <CardHeader className="mb-0">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="flex-shrink-0 mb-[var(--spacing-3)] md:mb-0 md:mr-[var(--spacing-4)]">
               {admin.profileImage ? (
@@ -65,9 +64,9 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
               <div className="text-[var(--font-size-sm)] text-[var(--color-text-muted)] mt-[var(--spacing-0-5)] truncate">{admin.category || "Admin"}</div>
             </div>
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body className="mt-[var(--spacing-5)] space-y-[var(--spacing-3)] text-[var(--font-size-sm)]">
+        <CardBody className="mt-[var(--spacing-5)] space-y-[var(--spacing-3)] text-[var(--font-size-sm)]">
           <div className="flex items-center">
             <div className="flex-shrink-0 w-[var(--spacing-8)] flex justify-center">
               <FaEnvelope className="text-[var(--color-text-placeholder)]" />
@@ -88,9 +87,9 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
             </div>
             <span className="font-[var(--font-weight-medium)] text-[var(--color-text-secondary)] break-words">System Administrator</span>
           </div>
-        </Card.Body>
+        </CardBody>
 
-        <Card.Footer className="mt-[var(--spacing-5)] pt-[var(--spacing-4)] border-t border-[var(--color-border-light)] flex items-center justify-between">
+        <CardFooter className="mt-[var(--spacing-5)] pt-[var(--spacing-4)] border-t border-[var(--color-border-light)] flex items-center justify-between">
           <div className="text-[var(--font-size-xs)] text-[var(--color-text-muted)]">
             Added on{" "}
             {admin.createdAt
@@ -111,7 +110,7 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
               aria-label="Edit administrator"
             />
           </div>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {showEditForm && <EditAdminForm admin={admin} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={handleDelete} />}

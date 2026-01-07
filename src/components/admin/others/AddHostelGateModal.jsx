@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaEnvelope, FaKey } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
+import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 import { hostelGateApi } from "../../../service"
 
 const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
@@ -99,50 +96,55 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
   if (!show) return null
 
   return (
-    <Modal title="Add Hostel Gate Login" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)' }}>{error}</div>}
+    <Modal isOpen={show} title="Add Hostel Gate Login" onClose={onClose} width={500}>
+      <VStack gap="large">
+        {error && <Alert type="error">{error}</Alert>}
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Select Hostel</label>
-          <Select
-            name="hostelId"
-            value={formData.hostelId}
-            onChange={handleChange}
-            icon={<FaBuilding />}
-            options={[{ value: "", label: "Select a hostel" }, ...availableHostels.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
-            required
-          />
-          {availableHostels.length === 0 && <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)' }}>All hostels already have gate logins created.</p>}
-        </div>
+        <form onSubmit={handleSubmit}>
+          <VStack gap="large">
+            <div>
+              <Label htmlFor="hostelId" required>Select Hostel</Label>
+              <Select
+                id="hostelId"
+                name="hostelId"
+                value={formData.hostelId}
+                onChange={handleChange}
+                icon={<FaBuilding />}
+                options={[{ value: "", label: "Select a hostel" }, ...availableHostels.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
+                required
+              />
+              {availableHostels.length === 0 && <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-warning)' }}>All hostels already have gate logins created.</p>}
+            </div>
 
-        {generatedEmail && (
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Generated Email</label>
-            <Input type="text" value={generatedEmail} icon={<FaEnvelope />} disabled />
-            <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>This email will be automatically created for the hostel gate login.</p>
-          </div>
-        )}
+            {generatedEmail && (
+              <div>
+                <Label>Generated Email</Label>
+                <Input type="text" value={generatedEmail} icon={<FaEnvelope />} disabled />
+                <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>This email will be automatically created for the hostel gate login.</p>
+              </div>
+            )}
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Password</label>
-          <Input type="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter password" required />
-        </div>
+            <div>
+              <Label htmlFor="password" required>Password</Label>
+              <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} icon={<FaKey />} placeholder="Enter password" required />
+            </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Confirm Password</label>
-          <Input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm password" required />
-        </div>
+            <div>
+              <Label htmlFor="confirmPassword" required>Confirm Password</Label>
+              <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} icon={<FaKey />} placeholder="Confirm password" required />
+            </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)', gap: 'var(--spacing-2)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
-            Cancel
-          </Button>
-          <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading || !formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0}>
-            Create Gate Login
-          </Button>
-        </div>
-      </form>
+            <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+              <Button type="button" onClick={onClose} variant="secondary" size="medium">
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading || !formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0}>
+                Create Gate Login
+              </Button>
+            </HStack>
+          </VStack>
+        </form>
+      </VStack>
     </Modal>
   )
 }

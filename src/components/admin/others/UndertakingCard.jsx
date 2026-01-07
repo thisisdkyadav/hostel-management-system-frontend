@@ -4,8 +4,7 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -42,7 +41,7 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
   return (
     <>
       <Card>
-        <Card.Header style={{ marginBottom: 0 }}>
+        <CardHeader style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
@@ -57,9 +56,9 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
               </div>
             )}
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
+        <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <div style={{ color: 'var(--color-text-muted)' }}>
             <p style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{undertaking.description}</p>
           </div>
@@ -86,9 +85,9 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
               <div style={{ backgroundColor: 'var(--color-success)', height: '0.625rem', borderRadius: 'var(--radius-full)', width: `${acceptancePercentage}%` }}></div>
             </div>
           </div>
-        </Card.Body>
+        </CardBody>
 
-        <Card.Footer style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'grid', gridTemplateColumns: isReadOnly ? '1fr' : 'repeat(2, 1fr)', gap: 'var(--spacing-3)' }}>
+        <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'grid', gridTemplateColumns: isReadOnly ? '1fr' : 'repeat(2, 1fr)', gap: 'var(--spacing-3)' }}>
           {!isReadOnly && (
             <Button onClick={() => setShowManageStudentsModal(true)} variant="secondary" size="small" icon={<FaUsers />}>
               Manage Students
@@ -97,7 +96,7 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
           <Button onClick={() => setShowStatusModal(true)} variant="success" size="small" icon={<FaClipboardCheck />}>
             View Status
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {!isReadOnly && showEditModal && <EditUndertakingModal show={showEditModal} undertaking={undertaking} onClose={() => setShowEditModal(false)} onUpdate={onUpdate} />}

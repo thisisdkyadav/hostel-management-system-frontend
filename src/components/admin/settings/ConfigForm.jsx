@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiInformationCircle } from "react-icons/hi"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Checkbox from "../../common/ui/Checkbox"
+import { Button, Input, Checkbox, Alert, VStack, Label } from "@/components/ui"
 
 const ConfigForm = ({ config, onUpdate, isLoading }) => {
   const [formData, setFormData] = useState({})

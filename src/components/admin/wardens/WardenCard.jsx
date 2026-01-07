@@ -2,13 +2,12 @@ import React, { useState } from "react"
 import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/fa"
 import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const [showEditForm, setShowEditForm] = useState(false)
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
 
@@ -66,7 +65,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           <div style={{ position: 'absolute', transform: 'rotate(45deg)', transformOrigin: 'bottom right', backgroundColor: statusColor.bg, color: 'var(--color-white)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', padding: 'var(--spacing-1) 0', right: '-6px', top: '-2px', width: 'var(--spacing-24)', textAlign: 'center' }}>{status === "assigned" ? "Assigned" : "Unassigned"}</div>
         </div>
 
-        <Card.Header className="mb-0">
+        <CardHeader className="mb-0">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
               {warden.profileImage ? (
@@ -82,9 +81,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               {warden.category && <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{warden.category}</div>}
             </div>
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
+        <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ flexShrink: 0, width: 'var(--spacing-8)', display: 'flex', justifyContent: 'center' }}>
               <FaEnvelope style={{ color: 'var(--color-text-muted)' }} />
@@ -107,9 +106,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             </div>
             <span style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', wordBreak: 'break-word' }}> {getAssignedHostelNames()}</span>
           </div>
-        </Card.Body>
+        </CardBody>
 
-        <Card.Footer style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
             Joined on{" "}
             {warden.joinDate
@@ -122,7 +121,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
           </div>
 
           <Button onClick={() => setShowEditForm(true)} variant="ghost" size="small" icon={<FaEdit />} aria-label={`Edit ${staffTitle.toLowerCase()}`} />
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {showEditForm && <EditWardenForm warden={warden} staffType={staffType} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={handleDelete} />}

@@ -1,6 +1,6 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaUserGraduate } from "react-icons/fa"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 
 const UnitCard = ({ unit, onClick }) => {
   const occupancyPercentage = unit.roomCount ? Math.round(((unit.occupiedRoomCount || 0) / unit.roomCount) * 100) : 0

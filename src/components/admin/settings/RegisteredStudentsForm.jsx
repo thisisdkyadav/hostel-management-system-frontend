@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiPlus, HiSave } from "react-icons/hi"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Button, Input, VStack, HStack, Label } from "@/components/ui"
 
 const styles = {
   container: {

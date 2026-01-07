@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import ConfirmationDialog from "../../common/ConfirmationDialog"
+import { Modal, Button, Input, VStack, HStack, Label, ConfirmDialog } from "@/components/ui"
 
 const styles = {
   form: {
@@ -331,22 +328,20 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
       </form>
 
       {showItemModal && (
-        <Modal title={`Manage ${itemLabel}`} onClose={() => { setShowItemModal(false); setError("") }} width={400}>
-          <div style={styles.modalContent}>
+        <Modal isOpen={showItemModal} title={`Manage ${itemLabel}`} onClose={() => { setShowItemModal(false); setError("") }} width={400}>
+          <VStack gap="medium">
             <p style={styles.modalText}>
               Current {itemLabel}: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{selectedItem}</span>
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-              <label style={styles.modalLabel}>Rename {itemLabel}</label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Input type="text" value={newItemName} onChange={(e) => { setNewItemName(e.target.value); setError("") }}
+            <div>
+              <Label>Rename {itemLabel}</Label>
+              <Input type="text" value={newItemName} onChange={(e) => { setNewItemName(e.target.value); setError("") }}
                   placeholder={`Enter new ${itemLabel.toLowerCase()} name`}
                   disabled={renameLoading}
                 />
-              </div>
               {error && <p style={styles.errorText}>{error}</p>}
             </div>
-            <div style={styles.modalActions}>
+            <HStack gap="small" justify="end">
               <Button type="button" onClick={() => setShowItemModal(false)} variant="secondary" size="medium" disabled={renameLoading}>
                 Cancel
               </Button>
@@ -356,12 +351,12 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               <Button type="button" onClick={handleRename} variant="primary" size="medium" icon={<HiPencil />} isLoading={renameLoading} disabled={renameLoading}>
                 {renameLoading ? "Renaming..." : "Rename"}
               </Button>
-            </div>
-          </div>
+            </HStack>
+          </VStack>
         </Modal>
       )}
 
-      <ConfirmationDialog isOpen={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}
+      <ConfirmDialog isOpen={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}
         onConfirm={handleRemoveItem}
         title={`Delete ${itemLabel}`}
         message={`Are you sure you want to delete "${selectedItem}"? This action cannot be undone.`}

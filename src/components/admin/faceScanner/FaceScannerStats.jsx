@@ -1,4 +1,4 @@
-import StatCards from "../../common/StatCards"
+import { StatCards } from "@/components/ui"
 import { FaCamera, FaCheckCircle, FaArrowRight, FaArrowLeft } from "react-icons/fa"
 
 const FaceScannerStats = ({ scanners }) => {

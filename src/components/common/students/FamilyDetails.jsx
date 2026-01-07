@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { adminApi } from "../../../service"
 import { FaPlus } from "react-icons/fa"
-import Button from "../../common/Button"
 import FamilyMemberModal from "./FamilyMemberModal"
 import { useAuth } from "../../../contexts/AuthProvider"
+import { Button } from "@/components/ui"
 
 const FamilyDetails = ({ userId }) => {
   const { canAccess } = useAuth()

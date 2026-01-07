@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Modal, Button, Input, VStack, HStack, Label } from "@/components/ui"
 
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
@@ -54,55 +52,55 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
   if (!show) return null
 
   return (
-    <Modal title={`Add New ${staffTitle}`} onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--spacing-4)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
-            <FiUser style={{ marginRight: 'var(--spacing-2)' }} />
-            <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Basic Information</h4>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Name</label>
-            <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Dr. Full Name" required />
+    <Modal isOpen={show} title={`Add New ${staffTitle}`} onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--color-primary-dark)' }}>
+              <FiUser style={{ marginRight: 'var(--spacing-2)' }} />
+              <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Basic Information</h4>
+            </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Email</label>
-            <Input type="email" name="email" value={formData.email} onChange={handleChange} icon={<FiMail />} placeholder="email@iiti.ac.in" required />
+            <Label htmlFor="name" required>Name</Label>
+            <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Dr. Full Name" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Password</label>
-            <Input type="password" name="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Enter password" required />
+            <Label htmlFor="email" required>Email</Label>
+            <Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} icon={<FiMail />} placeholder="email@iiti.ac.in" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone</label>
-            <Input type="text" name="phone" value={formData.phone} onChange={handleChange} icon={<FiPhone />} placeholder="+91 9876543210" />
+            <Label htmlFor="password" required>Password</Label>
+            <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Enter password" required />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Category</label>
-            <Input type="text" name="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
+            <Label htmlFor="phone">Phone</Label>
+            <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FiPhone />} placeholder="+91 9876543210" />
           </div>
 
           <div>
-            <label style={{ display: 'block', color: 'var(--color-text-body)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Join Date</label>
-            <Input type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FiCalendar />} />
+            <Label htmlFor="category">Category</Label>
+            <Input type="text" name="category" id="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
           </div>
-        </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)', gap: 'var(--spacing-3)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
-            Cancel
-          </Button>
-          <Button type="submit" variant="primary" size="medium">
-            Add {staffTitle}
-          </Button>
-        </div>
+          <div>
+            <Label htmlFor="joinDate">Join Date</Label>
+            <Input type="date" name="joinDate" id="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FiCalendar />} />
+          </div>
+
+          <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
+            <Button type="button" onClick={onClose} variant="secondary" size="medium">
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" size="medium">
+              Add {staffTitle}
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Modal>
   )

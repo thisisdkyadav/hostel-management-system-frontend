@@ -1,5 +1,5 @@
 import React from "react"
-import StatCards from "../common/StatCards"
+import { StatCards } from "@/components/ui"
 import { MdInventory, MdCheckCircle } from "react-icons/md"
 import { FaSearch, FaCalendarAlt } from "react-icons/fa"
 

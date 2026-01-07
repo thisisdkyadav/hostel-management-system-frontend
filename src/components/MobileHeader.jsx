@@ -4,28 +4,15 @@ import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
-
-const LAYOUT_PREFERENCE_KEY = "student_layout_preference"
+import useLayoutPreference from "../hooks/useLayoutPreference"
 
 const MobileHeader = ({ isOpen, setIsOpen, bottomNavItems, handleNavigation }) => {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { isPwaMobile } = usePwaMobile()
-  const [layoutPreference, setLayoutPreference] = useState("sidebar")
+  const { layoutPreference } = useLayoutPreference()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
-
-  // Load layout preference
-  useEffect(() => {
-    try {
-      const savedPreference = localStorage.getItem(LAYOUT_PREFERENCE_KEY)
-      if (savedPreference) {
-        setLayoutPreference(savedPreference)
-      }
-    } catch (error) {
-      console.error("Error loading layout preference:", error)
-    }
-  }, [])
 
   // Hide the mobile header completely if we're in PWA mobile mode for students with bottombar preference
   if (isPwaMobile && user?.role === "Student" && layoutPreference === "bottombar") {

@@ -2,14 +2,9 @@ import { useState, useRef, useEffect } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaUpload } from "react-icons/fa"
 import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import FileInput from "../../common/ui/FileInput"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
-import Textarea from "../../common/ui/Textarea"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../service"
+import { Button, Modal, FileInput, Input, Select, Textarea } from "@/components/ui"
 
 // Extracted to avoid remounting on each parent render which caused input focus loss
 const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {

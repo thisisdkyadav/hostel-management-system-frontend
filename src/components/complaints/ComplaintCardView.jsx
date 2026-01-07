@@ -2,7 +2,7 @@ import { FaBuilding } from "react-icons/fa"
 import { BiSolidCategory } from "react-icons/bi"
 import { getStatusColor, getPriorityColor, getTimeSince } from "../../utils/adminUtils"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import Card from "../common/Card"
+import { Card } from "@/components/ui"
 
 const ComplaintCardView = ({ complaints, onViewDetails }) => {
   return (

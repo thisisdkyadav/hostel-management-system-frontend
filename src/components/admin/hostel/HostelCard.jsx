@@ -3,8 +3,7 @@ import { FaBuilding, FaEdit, FaDoorClosed, FaUsers, FaDoorOpen, FaTools, FaClipb
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button, VStack, HStack } from "@/components/ui"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -47,13 +46,11 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
 
   return (
     <>
-      <Card className="group" onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+      <Card className="group" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
         {/* Header with Icon and Title */}
-        <Card.Header>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
-            <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`} >
+        <CardHeader>
+          <HStack gap="medium" align="center">
+            <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`}>
               <FaBuilding />
             </div>
             <div>
@@ -62,30 +59,30 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
                 {hostel.gender} {hostel.type && `(${hostel.type})`}
               </p>
             </div>
-          </div>
-        </Card.Header>
+          </HStack>
+        </CardHeader>
 
         {/* Stats and Occupancy Ring */}
-        <Card.Body style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-5)' }}>
+        <CardBody style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--spacing-5)' }}>
           {/* Stats List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+          <VStack gap="xsmall">
+            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
               <FaDoorClosed style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+            </HStack>
+            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
               <FaUsers style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.activeRoomsCapacity} Capacity</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+            </HStack>
+            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
               <FaDoorOpen style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.vacantRooms} Vacant Rooms</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
+            </HStack>
+            <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
               <FaTools style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
               <span>{hostel.maintenanceIssues} maintenance issue{hostel.maintenanceIssues !== 1 ? 's' : ''}</span>
-            </div>
-          </div>
+            </HStack>
+          </VStack>
 
           {/* Occupancy Ring */}
           <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
@@ -104,10 +101,10 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>Occupancy</span>
             </div>
           </div>
-        </Card.Body>
+        </CardBody>
 
         {/* Action Buttons */}
-        <Card.Footer style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 0 }}>
+        <CardFooter style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', marginTop: 0 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-2)' }}>
             <Button
               onClick={() => setShowEditModal(true)}
@@ -138,7 +135,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
           >
             View Details
           </Button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
 
       {showEditModal && <EditHostelModal hostel={hostel} onClose={() => setShowEditModal(false)} onSave={handleSaveHostel} refreshHostels={refreshHostels} />}

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
-import SearchBar from "../../common/SearchBar"
+import { SearchInput, Button } from "@/components/ui"
 import NoResults from "../../common/NoResults"
-import Button from "../../common/Button"
 import InsuranceProviderCard from "./InsuranceProviderCard"
 import AddInsuranceProviderModal from "./AddInsuranceProviderModal"
 import { insuranceProviderApi } from "../../../service"
@@ -68,7 +67,7 @@ const InsuranceProviders = () => {
         {/* <div className="w-full sm:w-auto pb-2">
           <FilterTabs tabs={INSURANCE_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
         </div> */}
-        <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search providers by name, email, phone or dates" className="w-full sm:w-64 md:w-72" />
+        <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search providers by name, email, phone or dates" className="w-full sm:w-64 md:w-72" />
       </div>
 
       {loading ? (

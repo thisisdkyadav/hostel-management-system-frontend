@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
-import Modal from "../../common/Modal"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import Button from "../../common/Button"
+import { Button, Modal } from "@/components/ui"
 
 const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
   const [isLoading, setIsLoading] = useState(true)

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { FaPlus, FaFileAlt, FaFilePdf, FaImage } from "react-icons/fa"
 import { certificateApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import Button from "../Button"
+import { Button } from "@/components/ui"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 

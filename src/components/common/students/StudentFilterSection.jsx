@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react"
 import { BsFilterRight } from "react-icons/bs"
 import { MdClearAll } from "react-icons/md"
 import { FaSearch } from "react-icons/fa"
-import SimpleDatePicker from "../SimpleDatePicker"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import Button from "../Button"
-import Input from "../ui/Input"
-import Select from "../ui/Select"
+import { Button, Input, Select, DatePicker } from "@/components/ui"
 import { studentApi } from "../../../service"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, degrees, setPageSize, dayScholarOptions, missingOptions = [] }) => {
@@ -228,12 +225,23 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, de
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-4)', marginTop: 'var(--spacing-2)' }}>
           <div>
             <label style={labelStyle}>Admission Date From</label>
-            <SimpleDatePicker selectedDate={filters.admissionDateFrom} onChange={(date) => updateFilter("admissionDateFrom", date)} placeholder="Select start date" />
+            <DatePicker
+              name="admissionDateFrom"
+              value={filters.admissionDateFrom}
+              onChange={(e) => updateFilter("admissionDateFrom", e.target.value)}
+              placeholder="Select start date"
+            />
           </div>
 
           <div>
             <label style={labelStyle}>Admission Date To</label>
-            <SimpleDatePicker selectedDate={filters.admissionDateTo} onChange={(date) => updateFilter("admissionDateTo", date)} placeholder="Select end date" minDate={filters.admissionDateFrom} />
+            <DatePicker
+              name="admissionDateTo"
+              value={filters.admissionDateTo}
+              onChange={(e) => updateFilter("admissionDateTo", e.target.value)}
+              placeholder="Select end date"
+              min={filters.admissionDateFrom}
+            />
           </div>
         </div>
       </div>

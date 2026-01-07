@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
-import Modal from "../../common/Modal"
-import FormField from "../../common/FormField"
-import Button from "../../common/Button"
+import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
+import { Button, Modal } from "@/components/ui"
 
 const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
   const [formData, setFormData] = useState({

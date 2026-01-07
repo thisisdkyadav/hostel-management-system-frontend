@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Pagination from "../../common/Pagination"
+import { Modal, Button, Input, Select, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
 
 const HostelAllocation = () => {
   const { hostelList } = useGlobal()
@@ -221,9 +217,10 @@ const HostelAllocation = () => {
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Allocations
         </h3>
         <div className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1">
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hostel</label>
+          <VStack gap="xsmall" className="flex-1">
+            <Label htmlFor="hostelId">Hostel</Label>
             <Select
+              id="hostelId"
               name="hostelId"
               value={filters.hostelId}
               onChange={handleFilterChange}
@@ -232,10 +229,11 @@ const HostelAllocation = () => {
                 ...(hostelList || []).map((hostel) => ({ value: hostel._id, label: hostel.name })),
               ]}
             />
-          </div>
-          <div className="flex-1">
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item Type</label>
+          </VStack>
+          <VStack gap="xsmall" className="flex-1">
+            <Label htmlFor="itemTypeId">Item Type</Label>
             <Select
+              id="itemTypeId"
               name="itemTypeId"
               value={filters.itemTypeId}
               onChange={handleFilterChange}
@@ -244,7 +242,7 @@ const HostelAllocation = () => {
                 ...itemTypes.map((item) => ({ value: item._id, label: item.name })),
               ]}
             />
-          </div>
+          </VStack>
           <div className="flex gap-2">
             <Button onClick={resetFilters} variant="secondary" size="medium">
               Reset
@@ -256,7 +254,7 @@ const HostelAllocation = () => {
         </div>
       </div>
 
-      {error && <div style={{ backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)' }}>{error}</div>}
+      {error && <Alert type="error">{error}</Alert>}
 
       {/* Items List */}
       <div style={{ backgroundColor: 'var(--card-bg)', borderRadius: 'var(--card-radius)', boxShadow: 'var(--shadow-card)', border: '1px solid var(--card-border)', overflow: 'hidden' }}>
@@ -334,35 +332,33 @@ const HostelAllocation = () => {
       {!loading && hostelInventory.length > 0 && <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />}
 
       {/* Modal */}
-      {showModal && (
-        <Modal title={isEditMode ? "Edit Allocation" : "Allocate Inventory to Hostel"} onClose={closeModal}>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Hostel</label>
-              <Select name="hostelId" value={currentAllocation.hostelId} onChange={handleInputChange} placeholder="Select Hostel" disabled={isEditMode} options={hostelList ? hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name })) : []} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Item Type</label>
-              <Select name="itemTypeId" value={currentAllocation.itemTypeId} onChange={handleInputChange} placeholder="Select Item Type" disabled={isEditMode} options={itemTypes.map((item) => ({ value: item._id, label: `${item.name} - Available: ${item.totalCount - hostelInventory.reduce((sum, allocation) => allocation.itemTypeId._id === item._id ? sum + allocation.allocatedCount : sum, 0)}` }))} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
+      <Modal isOpen={showModal} title={isEditMode ? "Edit Allocation" : "Allocate Inventory to Hostel"} onClose={closeModal}>
+          <VStack as="form" gap="medium" onSubmit={handleSubmit}>
+            <VStack gap="xsmall">
+              <Label htmlFor="modal-hostelId" required>Hostel</Label>
+              <Select id="modal-hostelId" name="hostelId" value={currentAllocation.hostelId} onChange={handleInputChange} placeholder="Select Hostel" disabled={isEditMode} options={hostelList ? hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name })) : []} />
+            </VStack>
+            <VStack gap="xsmall">
+              <Label htmlFor="modal-itemTypeId" required>Item Type</Label>
+              <Select id="modal-itemTypeId" name="itemTypeId" value={currentAllocation.itemTypeId} onChange={handleInputChange} placeholder="Select Item Type" disabled={isEditMode} options={itemTypes.map((item) => ({ value: item._id, label: `${item.name} - Available: ${item.totalCount - hostelInventory.reduce((sum, allocation) => allocation.itemTypeId._id === item._id ? sum + allocation.allocatedCount : sum, 0)}` }))} />
+            </VStack>
+            <VStack gap="xsmall">
+              <Label htmlFor="allocatedCount" required>
                 Allocated Count
                 {currentAllocation.itemTypeId && <span style={{ fontSize: 'var(--font-size-sm)', marginLeft: 'var(--spacing-2)', color: 'var(--color-text-muted)' }}>(Max: {calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)})</span>}
-              </label>
-              <Input type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min={1} max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
+              </Label>
+              <Input id="allocatedCount" type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min={1} max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required />
+            </VStack>
+            <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
               <Button type="button" onClick={closeModal} variant="secondary" size="medium">
                 Cancel
               </Button>
               <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
                 {isEditMode ? "Update" : "Allocate"}
               </Button>
-            </div>
-          </form>
+            </HStack>
+          </VStack>
         </Modal>
-      )}
     </div>
   )
 }

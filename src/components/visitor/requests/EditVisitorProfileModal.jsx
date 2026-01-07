@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaExclamationTriangle } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
+import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -53,37 +49,32 @@ const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
     }
   }
 
-  if (!isOpen || !profile) return null
+  if (!profile) return null
 
   return (
-    <Modal title="Edit Visitor Profile" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-        {error && (
-          <div style={{ backgroundColor: 'var(--color-danger-bg-light)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-            <FaExclamationTriangle style={{ color: 'var(--color-danger)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
-            <p style={{ color: 'var(--color-danger-text)' }}>{error}</p>
-          </div>
-        )}
+    <Modal isOpen={isOpen} title="Edit Visitor Profile" onClose={onClose} width={500}>
+      <VStack as="form" gap="large" onSubmit={handleSubmit}>
+        {error && <Alert type="error">{error}</Alert>}
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Visitor Name</label>
-            <Input type="text" name="name" value={formData.name} onChange={handleChange} required />
-          </div>
+        <VStack gap="medium">
+          <VStack gap="xsmall">
+            <Label htmlFor="visitorName" required>Visitor Name</Label>
+            <Input id="visitorName" type="text" name="name" value={formData.name} onChange={handleChange} required />
+          </VStack>
 
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Phone Number</label>
-            <Input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="visitorPhone" required>Phone Number</Label>
+            <Input id="visitorPhone" type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
+          </VStack>
 
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Email Address</label>
-            <Input type="email" name="email" value={formData.email} onChange={handleChange} required />
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="visitorEmail" required>Email Address</Label>
+            <Input id="visitorEmail" type="email" name="email" value={formData.email} onChange={handleChange} required />
+          </VStack>
 
-          <div>
-            <label style={{ display: 'block', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Relation with Student</label>
-            <Select name="relation" value={formData.relation} onChange={handleChange} placeholder="Select relation" options={[
+          <VStack gap="xsmall">
+            <Label htmlFor="visitorRelation">Relation with Student</Label>
+            <Select id="visitorRelation" name="relation" value={formData.relation} onChange={handleChange} placeholder="Select relation" options={[
               { value: "Parent", label: "Parent" },
               { value: "Sibling", label: "Sibling" },
               { value: "Guardian", label: "Guardian" },
@@ -91,18 +82,18 @@ const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
               { value: "Friend", label: "Friend" },
               { value: "Other", label: "Other" }
             ]} />
-          </div>
-        </div>
+          </VStack>
+        </VStack>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', gap: 'var(--spacing-3)' }}>
+        <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
           <Button type="button" onClick={onClose} variant="secondary" size="medium">
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="medium" disabled={loading} isLoading={loading}>
             {loading ? "Saving..." : "Update Profile"}
           </Button>
-        </div>
-      </form>
+        </HStack>
+      </VStack>
     </Modal>
   )
 }

@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import { Button, Modal, Input, Select, Checkbox, Textarea } from "@/components/ui"
 import { notificationApi, studentApi } from "../../service"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import Input from "../common/ui/Input"
-import Select from "../common/ui/Select"
-import Checkbox from "../common/ui/Checkbox"
-import Textarea from "../common/ui/Textarea"
 
 const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
   const { hostelList } = useGlobal()

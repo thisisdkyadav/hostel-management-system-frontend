@@ -390,7 +390,7 @@ export const adminApi = {
    * @param {string} userId - User ID
    */
   getFamilyDetails: (userId) => {
-    return apiClient.get(`/student/family/${userId}`)
+    return apiClient.get(`/family/${userId}`)
   },
 
   /**
@@ -399,7 +399,7 @@ export const adminApi = {
    * @param {Object} familyMemberData - Family member data
    */
   addFamilyMember: (userId, familyMemberData) => {
-    return apiClient.post(`/student/family/${userId}`, familyMemberData)
+    return apiClient.post(`/family/${userId}`, familyMemberData)
   },
 
   /**
@@ -408,7 +408,7 @@ export const adminApi = {
    * @param {Object} familyMemberData - Family member data
    */
   updateFamilyMember: (memberId, familyMemberData) => {
-    return apiClient.put(`/student/family/member/${memberId}`, familyMemberData)
+    return apiClient.put(`/family/${memberId}`, familyMemberData)
   },
 
   /**
@@ -416,7 +416,7 @@ export const adminApi = {
    * @param {string} memberId - Family member ID
    */
   deleteFamilyMember: (memberId) => {
-    return apiClient.delete(`/student/family/member/${memberId}`)
+    return apiClient.delete(`/family/${memberId}`)
   },
 
   /**
@@ -424,7 +424,7 @@ export const adminApi = {
    * @param {Object} familyMembersData - Bulk family members data
    */
   updateBulkFamilyMembers: (familyMembersData) => {
-    return apiClient.put("/student/family/bulk-update", familyMembersData)
+    return apiClient.post("/family/bulk-update", familyMembersData)
   },
 
   // ==================== Bulk Student Operations ====================

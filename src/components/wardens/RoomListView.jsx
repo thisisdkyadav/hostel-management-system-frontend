@@ -1,9 +1,8 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
 import RoomCard from "./RoomCard"
-import BaseTable from "../common/table/BaseTable"
+import { DataTable, Button } from "@/components/ui"
 import { useAuth } from "../../contexts/AuthProvider"
-import Button from "../common/Button"
 
 const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
@@ -110,7 +109,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
   return (
     <>
       {viewMode === "table" ? (
-        <BaseTable columns={columns} data={rooms} onRowClick={onRoomClick} emptyMessage="No rooms to display" />
+        <DataTable columns={columns} data={rooms} onRowClick={onRoomClick} emptyMessage="No rooms to display" />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" >
           {rooms.map((room) => (

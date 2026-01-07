@@ -1,11 +1,10 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import Modal from "../common/Modal"
+import { Button, Modal } from "@/components/ui"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import StudentDetailModal from "../common/students/StudentDetailModal"
-import Button from "../common/Button"
 const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)

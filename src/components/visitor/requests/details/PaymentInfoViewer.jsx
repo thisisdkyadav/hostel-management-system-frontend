@@ -1,6 +1,6 @@
 import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import Button from "../../../common/Button"
+import { Button } from "@/components/ui"
 import { FaEye } from "react-icons/fa"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {

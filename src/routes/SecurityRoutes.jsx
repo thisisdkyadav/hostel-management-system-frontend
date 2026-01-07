@@ -1,17 +1,25 @@
 import { Routes, Route } from "react-router-dom"
 import SecurityLayout from "../layouts/SecurityLayout.jsx"
-import Attendance from "../pages/guard/Attendance.jsx"
-import LostAndFound from "../pages/LostAndFound.jsx"
-import MyTasks from "../pages/MyTasks.jsx"
+
+// Guard-specific pages
+import { AttendancePage } from "../pages/guard"
+
+// Common pages
+import { LostAndFoundPage, MyTasksPage } from "../pages/common"
+
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const SecurityRoutes = () => (
     <ProtectedRoute allowedRoles={["Security"]}>
         <Routes>
             <Route element={<SecurityLayout />}>
-                <Route index element={<Attendance />} />
-                <Route path="lost-and-found" element={<LostAndFound />} />
-                <Route path="my-tasks" element={<MyTasks />} />
+                <Route index element={<AttendancePage />} />
+                <Route path="lost-and-found" element={<LostAndFoundPage />} />
+                <Route path="my-tasks" element={<MyTasksPage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>
