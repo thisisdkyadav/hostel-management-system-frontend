@@ -9,7 +9,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { dashboardApi } from "../../service"
 import { useOnlineUsers } from "../../hooks/useOnlineUsers"
 import DashboardHeader from "../../components/headers/DashboardHeader"
-import { Card, Checkbox } from "@/components/ui"
+import { Card, Checkbox, Popover } from "@/components/ui"
+import OnlineUsersPopupContent from "../../components/admin/OnlineUsersPopupContent"
 
 // Chart components
 // (Removed chart.js imports as they were unused)
@@ -270,15 +271,33 @@ const DashboardPage = () => {
                         <p className="text-lg font-bold text-[var(--color-success-text)] leading-none">{onlineStats?.totalOnline || 0}</p>
                       </div>
                       <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-success-light)] pl-[var(--spacing-2)]">
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium" title="Students online">
-                          S: {onlineStats?.byRole?.Student || 0}
-                        </span>
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium" title="Hostel Supervisors online">
-                          HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
-                        </span>
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium" title="Admins online">
-                          A: {onlineStats?.byRole?.Admin || 0}
-                        </span>
+                        <Popover
+                          trigger="hover"
+                          placement="bottom"
+                          content={<OnlineUsersPopupContent role="Student" roleLabel="Students" />}
+                        >
+                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg-light)] transition-[var(--transition-colors)]">
+                            S: {onlineStats?.byRole?.Student || 0}
+                          </span>
+                        </Popover>
+                        <Popover
+                          trigger="hover"
+                          placement="bottom"
+                          content={<OnlineUsersPopupContent role="Hostel Supervisor" roleLabel="Hostel Supervisors" />}
+                        >
+                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg-light)] transition-[var(--transition-colors)]">
+                            HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
+                          </span>
+                        </Popover>
+                        <Popover
+                          trigger="hover"
+                          placement="bottom"
+                          content={<OnlineUsersPopupContent role="Admin" roleLabel="Admins" />}
+                        >
+                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg-light)] transition-[var(--transition-colors)]">
+                            A: {onlineStats?.byRole?.Admin || 0}
+                          </span>
+                        </Popover>
                       </div>
                     </div>
                   </div>
