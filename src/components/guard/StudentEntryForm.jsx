@@ -1,7 +1,6 @@
 import React, { useState } from "react"
-import Button from "../common/Button"
+import { Button, Input } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
-import Input from "../common/ui/Input"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 

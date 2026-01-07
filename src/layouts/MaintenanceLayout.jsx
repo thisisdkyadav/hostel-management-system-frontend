@@ -1,46 +1,12 @@
-import Sidebar from "../components/Sidebar"
-import { Outlet, useNavigate } from "react-router-dom"
-import {
-  ClipboardList,
-  CalendarOff,
-  ListTodo,
-  CheckSquare,
-  LogOut
-} from "lucide-react"
-import { useAuth } from "../contexts/AuthProvider"
+import BaseLayout from "./BaseLayout"
+import { getMaintenanceNavItems } from "../constants/navigationConfig"
+import { useLogout } from "../hooks/useLogout"
 
 const MaintenanceLayout = () => {
-  const navigate = useNavigate()
-  const { logout } = useAuth ? useAuth() : { logout: () => { } }
+  const handleLogout = useLogout()
+  const navItems = getMaintenanceNavItems(handleLogout)
 
-  const handleLogout = async () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?")
-    if (!confirmLogout) return
-
-    try {
-      await logout()
-      navigate("/")
-    } catch (error) {
-      console.error("Logout failed:", error)
-    }
-  }
-
-  const navItems = [
-    { name: "Complaints", icon: ClipboardList, section: "main", path: "/maintenance" },
-    { name: "Leaves", icon: CalendarOff, section: "main", path: "/maintenance/leaves" },
-    { name: "My Tasks", icon: ListTodo, section: "main", path: "/maintenance/my-tasks" },
-    { name: "Attendance", icon: CheckSquare, section: "main", path: "/maintenance/attendance" },
-    { name: "Logout", icon: LogOut, section: "bottom", action: handleLogout },
-  ]
-
-  return (
-    <div className="flex flex-col md:flex-row min-h-screen" style={{ backgroundColor: 'var(--color-bg-page)' }} >
-      <Sidebar navItems={navItems} />
-      <div className="flex-1 overflow-auto pt-16 md:pt-0" style={{ height: '100vh' }} >
-        <Outlet />
-      </div>
-    </div>
-  )
+  return <BaseLayout navItems={navItems} />
 }
 
 export default MaintenanceLayout

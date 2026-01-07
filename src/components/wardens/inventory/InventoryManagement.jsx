@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
-import Modal from "../../common/Modal"
 import { useAuth } from "../../../contexts/AuthProvider"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
-import Textarea from "../../common/ui/Textarea"
+import { Button, Modal, Input, Select, Textarea } from "@/components/ui"
 
 const InventoryManagement = () => {
   const { user } = useAuth()

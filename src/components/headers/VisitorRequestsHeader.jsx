@@ -1,4 +1,4 @@
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { FaFilter, FaPlus, FaUserEdit } from "react-icons/fa"
 

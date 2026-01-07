@@ -1,4 +1,4 @@
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
 import { FaFilter, FaPlus, FaList, FaTh, FaCalendarAlt } from "react-icons/fa"

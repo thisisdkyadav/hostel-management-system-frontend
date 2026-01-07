@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react"
-import Modal from "../../common/Modal"
 import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import Button from "../../common/Button"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
+import { Button, Modal } from "@/components/ui"
 
 // Import smaller components
 import StatusBadge from "./details/StatusBadge"

@@ -1,4 +1,4 @@
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { HiUpload, HiTrash } from "react-icons/hi"
 

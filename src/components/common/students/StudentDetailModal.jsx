@@ -31,7 +31,6 @@ import { visitorApi } from "../../../service"
 import { securityApi } from "../../../service"
 import { feedbackApi } from "../../../service"
 import { inventoryApi, idCardApi } from "../../../service"
-import Modal from "../../common/Modal"
 import EditStudentModal from "./EditStudentModal"
 import DisCoActions from "./DisCoActions"
 import Certificates from "./Certificates"
@@ -40,9 +39,7 @@ import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import Button from "../../common/Button"
-import Input from "../ui/Input"
-import Select from "../ui/Select"
+import { Button, Modal, Input, Select } from "@/components/ui"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()

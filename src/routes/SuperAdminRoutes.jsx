@@ -1,9 +1,19 @@
 import { Routes, Route } from "react-router-dom"
 import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
-import SuperAdminDashboard from "../pages/superadmin/Dashboard.jsx"
-import SuperAdminAdminManagement from "../pages/superadmin/AdminManagement.jsx"
-import ApiKeyManagement from "../pages/superadmin/ApiKeyManagement.jsx"
-import Profile from "../pages/Profile.jsx"
+
+// SuperAdmin-specific pages
+import {
+    DashboardPage as SuperAdminDashboard,
+    AdminManagementPage as SuperAdminAdminManagement,
+    ApiKeyManagementPage
+} from "../pages/superadmin"
+
+// Common pages
+import { ProfilePage } from "../pages/common"
+
+// Utility pages
+import NotFoundPage from "../pages/NotFoundPage"
+
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
 const SuperAdminRoutes = () => (
@@ -12,8 +22,9 @@ const SuperAdminRoutes = () => (
             <Route element={<SuperAdminLayout />}>
                 <Route index element={<SuperAdminDashboard />} />
                 <Route path="admins" element={<SuperAdminAdminManagement />} />
-                <Route path="api-keys" element={<ApiKeyManagement />} />
-                <Route path="profile" element={<Profile />} />
+                <Route path="api-keys" element={<ApiKeyManagementPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>
     </ProtectedRoute>

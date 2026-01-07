@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import StatusBadge from "../common/StatusBadge"
-import Button from "../common/Button"
+import { StatusBadge, Button } from "@/components/ui"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
 

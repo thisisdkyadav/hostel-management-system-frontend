@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { uploadApi } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import Button from "../../../common/Button"
-import Input from "../../../common/ui/Input"
-import Textarea from "../../../common/ui/Textarea"
+import { Button, Input, Textarea, VStack, HStack, Label } from "@/components/ui"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   const [formData, setFormData] = useState({
@@ -156,38 +154,30 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-4)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 'var(--spacing-4)' }}>
           {/* Payment Amount */}
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
-              Payment Amount <span style={{ color: 'var(--color-danger)' }}>*</span>
-            </label>
-            <Input type="number" name="amount" value={formData.amount} onChange={handleInputChange} step="0.01" min="0" placeholder="Enter payment amount" error={errors.amount} />
-            {errors.amount && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.amount}</p>}
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="amount" required>Payment Amount</Label>
+            <Input id="amount" type="number" name="amount" value={formData.amount} onChange={handleInputChange} step="0.01" min="0" placeholder="Enter payment amount" error={errors.amount} />
+            {errors.amount && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)' }}>{errors.amount}</p>}
+          </VStack>
 
           {/* Date of Payment */}
-          <div>
-            <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
-              Date of Payment <span style={{ color: 'var(--color-danger)' }}>*</span>
-            </label>
-            <Input type="date" name="dateOfPayment" value={formData.dateOfPayment} onChange={handleInputChange} max={new Date().toISOString().split("T")[0]} error={errors.dateOfPayment} />
-            {errors.dateOfPayment && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.dateOfPayment}</p>}
-          </div>
+          <VStack gap="xsmall">
+            <Label htmlFor="dateOfPayment" required>Date of Payment</Label>
+            <Input id="dateOfPayment" type="date" name="dateOfPayment" value={formData.dateOfPayment} onChange={handleInputChange} max={new Date().toISOString().split("T")[0]} error={errors.dateOfPayment} />
+            {errors.dateOfPayment && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)' }}>{errors.dateOfPayment}</p>}
+          </VStack>
         </div>
 
         {/* Transaction ID */}
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
-            Transaction ID <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
-          <Input type="text" name="transactionId" value={formData.transactionId} onChange={handleInputChange} placeholder="Enter transaction ID" error={errors.transactionId} />
-          {errors.transactionId && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.transactionId}</p>}
-        </div>
+        <VStack gap="xsmall">
+          <Label htmlFor="transactionId" required>Transaction ID</Label>
+          <Input id="transactionId" type="text" name="transactionId" value={formData.transactionId} onChange={handleInputChange} placeholder="Enter transaction ID" error={errors.transactionId} />
+          {errors.transactionId && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)' }}>{errors.transactionId}</p>}
+        </VStack>
 
         {/* Payment Screenshot */}
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
-            Payment Screenshot <span style={{ color: 'var(--color-danger)' }}>*</span>
-          </label>
+        <VStack gap="xsmall">
+          <Label required>Payment Screenshot</Label>
 
           {!formData.screenshot ? (
             <div style={{ marginTop: 'var(--spacing-1)', display: 'flex', justifyContent: 'center', padding: 'var(--spacing-6) var(--spacing-6) var(--spacing-6)', border: `var(--border-2) dashed var(--color-border-input)`, borderRadius: 'var(--radius-lg)', transition: 'var(--transition-colors)', cursor: 'pointer' }} onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-dark)'}
@@ -234,26 +224,24 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
             </div>
           )}
 
-          {errors.screenshot && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)', marginTop: 'var(--spacing-1)' }}>{errors.screenshot}</p>}
-        </div>
+          {errors.screenshot && <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-xs)' }}>{errors.screenshot}</p>}
+        </VStack>
 
         {/* Additional Information */}
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>
-            Additional Information <span style={{ color: 'var(--color-text-light)' }}>(Optional)</span>
-          </label>
-          <Textarea name="additionalInfo" value={formData.additionalInfo} onChange={handleInputChange} rows={3} resize="vertical" placeholder="Any additional notes about the payment..." />
-        </div>
+        <VStack gap="xsmall">
+          <Label htmlFor="additionalInfo">Additional Information <span style={{ color: 'var(--color-text-light)' }}>(Optional)</span></Label>
+          <Textarea id="additionalInfo" name="additionalInfo" value={formData.additionalInfo} onChange={handleInputChange} rows={3} resize="vertical" placeholder="Any additional notes about the payment..." />
+        </VStack>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
+        <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
           <Button type="button" onClick={onCancel} variant="secondary" size="medium">
             Cancel
           </Button>
           <Button type="submit" disabled={uploading} variant="primary" size="medium" isLoading={uploading}>
             {uploading ? "Processing..." : "Submit Payment Info"}
           </Button>
-        </div>
+        </HStack>
       </form>
     </div>
   )

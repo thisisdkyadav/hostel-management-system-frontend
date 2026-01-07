@@ -1,4 +1,4 @@
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { Link } from "react-router-dom"
 import { FaBuilding, FaFileImport } from "react-icons/fa"

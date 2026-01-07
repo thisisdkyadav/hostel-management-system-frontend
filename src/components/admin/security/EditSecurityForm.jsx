@@ -1,14 +1,11 @@
 import React, { useState } from "react"
-import { FaTrash, FaSave, FaBuilding, FaUser, FaExclamationTriangle } from "react-icons/fa"
+import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
-import { useAdmin } from "../../../contexts/AdminProvider"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
-import Select from "../../common/ui/Select"
+import { useGlobal } from "../../../contexts/GlobalProvider"
+import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
 
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
-  const { hostelList } = useAdmin()
+  const { hostelList } = useGlobal()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -74,40 +71,38 @@ const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
   }
 
   return (
-    <Modal title="Edit Security Staff" onClose={onClose} width={500}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
-        {error && (
-          <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'flex-start' }}>
-            <FaExclamationTriangle style={{ marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
-            <p>{error}</p>
+    <Modal isOpen={true} title="Edit Security Staff" onClose={onClose} width={500}>
+      <form onSubmit={handleSubmit}>
+        <VStack gap="large">
+          {error && <Alert type="error">{error}</Alert>}
+
+          <div>
+            <Label htmlFor="name">Security Name</Label>
+            <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FaUser />} placeholder="Enter security staff name" required />
           </div>
-        )}
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Security Name</label>
-          <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<FaUser />} placeholder="Enter security staff name" required />
-        </div>
+          <div>
+            <Label htmlFor="hostelId">Hostel Assignment</Label>
+            <Select
+              name="hostelId"
+              id="hostelId"
+              value={formData.hostelId}
+              onChange={handleChange}
+              icon={<FaBuilding />}
+              options={[{ value: "", label: "Not assigned to any hostel" }, ...hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
+            />
+          </div>
 
-        <div>
-          <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Hostel Assignment</label>
-          <Select
-            name="hostelId"
-            value={formData.hostelId}
-            onChange={handleChange}
-            icon={<FaBuilding />}
-            options={[{ value: "", label: "Not assigned to any hostel" }, ...hostelList.map((hostel) => ({ value: hostel._id, label: hostel.name }))]}
-          />
-        </div>
+          <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
+            <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
+              Delete Account
+            </Button>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
-            Delete Account
-          </Button>
-
-          <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
-            Save Changes
-          </Button>
-        </div>
+            <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
+              Save Changes
+            </Button>
+          </HStack>
+        </VStack>
       </form>
     </Modal>
   )

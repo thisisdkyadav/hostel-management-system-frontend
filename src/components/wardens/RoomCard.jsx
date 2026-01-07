@@ -1,7 +1,7 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaUserGraduate } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 
 const RoomCard = ({ room, onClick, onAllocate }) => {
   const { user } = useAuth()

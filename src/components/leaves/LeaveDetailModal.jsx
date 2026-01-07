@@ -1,6 +1,5 @@
 import { useState } from "react"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import { Modal, Button } from "@/components/ui"
 import { leaveApi } from "../../service"
 
 const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {

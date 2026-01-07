@@ -1,10 +1,8 @@
 import React, { useState } from "react"
 import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons/fa"
-import Modal from "../../common/Modal"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
-import Button from "../../common/Button"
-import Input from "../../common/ui/Input"
+import { Button, Modal, Input } from "@/components/ui"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState("")

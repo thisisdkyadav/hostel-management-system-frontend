@@ -1,9 +1,7 @@
 import React, { useState, useRef } from "react"
 import Cropper from "react-cropper"
 import "cropperjs/dist/cropper.css"
-import Modal from "./common/Modal"
-import Button from "./common/Button"
-import FileInput from "./common/ui/FileInput"
+import { Modal, Button, FileInput } from "@/components/ui"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi, idCardApi } from "../service"
 

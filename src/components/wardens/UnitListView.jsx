@@ -1,8 +1,7 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
 import UnitCard from "./UnitCard"
-import BaseTable from "../common/table/BaseTable"
-import Button from "../common/Button"
+import { DataTable, Button } from "@/components/ui"
 
 const UnitListView = ({ units, viewMode, onUnitClick }) => {
   const columns = [
@@ -79,7 +78,7 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
   return (
     <>
       {viewMode === "table" ? (
-        <BaseTable columns={columns} data={units} onRowClick={onUnitClick} emptyMessage="No units to display" />
+        <DataTable columns={columns} data={units} onRowClick={onUnitClick} emptyMessage="No units to display" />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" >
           {units.map((unit) => (

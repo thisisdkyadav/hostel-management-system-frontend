@@ -2,8 +2,7 @@ import { FaClipboardList } from "react-icons/fa"
 import NoResults from "../common/NoResults"
 import ComplaintListView from "./ComplaintListView"
 import ComplaintCardView from "./ComplaintCardView"
-import Pagination from "../common/Pagination"
-import FilterTabs from "../common/FilterTabs"
+import { Pagination, Tabs } from "@/components/ui"
 
 const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages, COMPLAINT_FILTER_TABS, updateFilter, onViewDetails, paginate }) => {
   if (loading) {
@@ -21,7 +20,7 @@ const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages,
     <>
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start' }} className="sm:flex-row sm:items-center space-y-4 sm:space-y-0">
         <div style={{ width: '100%', paddingBottom: 'var(--spacing-2)' }} className="sm:w-auto">
-          <FilterTabs tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+          <Tabs tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
         </div>
       </div>
 

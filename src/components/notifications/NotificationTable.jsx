@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
-import BaseTable from "../common/table/BaseTable"
+import { DataTable } from "@/components/ui"
 
 const NotificationTable = ({ notifications, onRefresh }) => {
   const [selectedNotification, setSelectedNotification] = useState(null)
@@ -68,7 +68,7 @@ const NotificationTable = ({ notifications, onRefresh }) => {
 
   return (
     <>
-      <BaseTable columns={columns} data={notifications} emptyMessage="No notifications to display" onRowClick={handleViewNotification} />
+      <DataTable columns={columns} data={notifications} emptyMessage="No notifications to display" onRowClick={handleViewNotification} />
 
       {showViewModal && <ViewNotificationModal isOpen={showViewModal} onClose={() => setShowViewModal(false)} notification={selectedNotification} />}
     </>

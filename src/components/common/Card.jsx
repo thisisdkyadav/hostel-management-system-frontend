@@ -45,10 +45,12 @@ const Card = ({
     ${border ? "border" : ""}
     ${onClick ? "cursor-pointer" : ""}
     ${className}
-  `.replace(/\s+/g, ' ').trim()
+  `
+    .replace(/\s+/g, " ")
+    .trim()
 
   return (
-    <div className={baseClasses} style={dynamicStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick} {...props} >
+    <div className={baseClasses} style={dynamicStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={onClick} {...props}>
       {children}
     </div>
   )
@@ -59,7 +61,7 @@ Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, sub
   return (
     <div className={`flex items-center gap-4 mb-5 ${className}`} style={style}>
       {icon && (
-        <div className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg || ''} group-hover:${iconHoverBg || ''}`} style={!iconBg ? { backgroundColor: 'var(--color-primary-bg)' } : {}} >
+        <div className={`w-[50px] h-[50px] rounded-[var(--radius-icon)] flex items-center justify-center text-xl transition-all duration-300 ${iconBg || ""} group-hover:${iconHoverBg || ""}`} style={!iconBg ? { backgroundColor: "var(--color-primary-bg)" } : {}}>
           {icon}
         </div>
       )}
@@ -76,12 +78,21 @@ Card.Header = ({ children, className = "", icon, iconBg, iconHoverBg, title, sub
 
 // Card Body Component
 Card.Body = ({ children, className = "", style }) => {
-  return <div className={className} style={style}>{children}</div>
+  return (
+    <div className={className} style={style}>
+      {children}
+    </div>
+  )
 }
 
 // Card Footer Component
 Card.Footer = ({ children, className = "", style }) => {
-  return <div className={`mt-5 ${className}`} style={style}>{children}</div>
+  return (
+    <div className={`mt-5 ${className}`} style={style}>
+      {children}
+    </div>
+  )
 }
 
-export default Card
+// export default Card
+export { Card as default, Card } from "@/components/ui/layout"

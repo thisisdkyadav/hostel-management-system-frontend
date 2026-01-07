@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import Modal from "../../common/Modal"
-import Button from "../../common/Button"
-import Pagination from "../../common/Pagination"
-import Input from "../../common/ui/Input" // Added Input component
+import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
 
 const ItemTypes = () => {
   const [itemTypes, setItemTypes] = useState([])
@@ -217,28 +214,30 @@ const ItemTypes = () => {
 
       {/* Modal */}
       {showModal && (
-        <Modal title={isEditMode ? "Edit Item Type" : "Add New Item Type"} onClose={closeModal}>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Name</label>
-              <Input type="text" name="name" value={currentItemType.name} onChange={handleInputChange} required />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Description</label>
-              <textarea name="description" value={currentItemType.description} onChange={handleInputChange} rows="3" style={{ width: '100%', padding: 'var(--spacing-2) var(--spacing-3)', border: '1px solid var(--color-border-input)', borderRadius: 'var(--radius-md)', outline: 'none', backgroundColor: 'var(--input-bg)', color: 'var(--color-text-primary)' }} onFocus={(e) => (e.currentTarget.style.boxShadow = 'var(--input-focus-ring)')} onBlur={(e) => (e.currentTarget.style.boxShadow = 'none')}></textarea>
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' }}>Total Count</label>
-              <Input type="number" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)' }}>
-              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
-                Cancel
-              </Button>
-              <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
-                {isEditMode ? "Update" : "Create"}
-              </Button>
-            </div>
+        <Modal isOpen={showModal} title={isEditMode ? "Edit Item Type" : "Add New Item Type"} onClose={closeModal}>
+          <form onSubmit={handleSubmit}>
+            <VStack gap="large">
+              <div>
+                <Label htmlFor="name" required>Name</Label>
+                <Input type="text" id="name" name="name" value={currentItemType.name} onChange={handleInputChange} required />
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea id="description" name="description" value={currentItemType.description} onChange={handleInputChange} rows={3} />
+              </div>
+              <div>
+                <Label htmlFor="totalCount" required>Total Count</Label>
+                <Input type="number" id="totalCount" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required />
+              </div>
+              <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
+                <Button type="button" onClick={closeModal} variant="secondary" size="medium">
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+                  {isEditMode ? "Update" : "Create"}
+                </Button>
+              </HStack>
+            </VStack>
           </form>
         </Modal>
       )}

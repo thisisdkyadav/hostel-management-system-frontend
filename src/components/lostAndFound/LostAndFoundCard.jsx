@@ -8,8 +8,7 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import Card from "../common/Card"
-import Button from "../common/Button"
+import { Card, Button } from "@/components/ui"
 
 const LostAndFoundCard = ({ item, refresh }) => {
   const { user, canAccess } = useAuth()

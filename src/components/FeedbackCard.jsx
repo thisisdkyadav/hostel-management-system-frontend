@@ -5,8 +5,7 @@ import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
-import Card from "./common/Card"
-import Button from "./common/Button"
+import { Card, Button } from "@/components/ui"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   const { canAccess } = useAuth()

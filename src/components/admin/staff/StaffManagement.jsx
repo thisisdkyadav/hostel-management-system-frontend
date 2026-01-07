@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaUserTie } from "react-icons/fa"
-import FilterTabs from "../../common/FilterTabs"
-import SearchBar from "../../common/SearchBar"
+import { Tabs, SearchInput } from "@/components/ui"
 import NoResults from "../../common/NoResults"
 import WardenCard from "../wardens/WardenCard"
 import AddWardenModal from "../wardens/AddWardenModal"
@@ -10,7 +9,7 @@ import StaffManagementHeader from "../../headers/StaffManagementHeader"
 import { filterWardens } from "../../../utils/adminUtils"
 import { WARDEN_FILTER_TABS } from "../../../constants/adminConstants"
 import { adminApi } from "../../../service"
-import { useAdmin } from "../../../contexts/AdminProvider"
+import { useGlobal } from "../../../contexts/GlobalProvider"
 
 const StaffManagement = ({ staffType = "warden" }) => {
   const isWarden = staffType === "warden"
@@ -50,9 +49,9 @@ const StaffManagement = ({ staffType = "warden" }) => {
 
         <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div className="w-full sm:w-auto pb-2">
-            <FilterTabs tabs={WARDEN_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+            <Tabs tabs={WARDEN_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
           </div>
-          <SearchBar value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={`Search ${staffTitle.toLowerCase()}s by name or hostel`} className="w-full sm:w-64 md:w-72" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={`Search ${staffTitle.toLowerCase()}s by name or hostel`} className="w-full sm:w-64 md:w-72" />
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">

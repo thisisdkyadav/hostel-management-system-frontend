@@ -1,8 +1,6 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
-import Select from "../common/ui/Select"
+import { Modal, Button, Select } from "@/components/ui"
 import { complaintApi } from "../../service"
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {

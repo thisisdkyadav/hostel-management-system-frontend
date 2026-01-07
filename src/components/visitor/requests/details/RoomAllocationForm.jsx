@@ -1,7 +1,6 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
-import Button from "../../../common/Button"
-import Input from "../../../common/ui/Input"
+import { Button, Input } from "@/components/ui"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (

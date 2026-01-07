@@ -1,5 +1,5 @@
 import PageHeader from "../common/PageHeader"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import { HiPlus } from "react-icons/hi"
 
 const FeedbackHeader = ({ userRole, onAddFeedback }) => {

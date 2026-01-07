@@ -1,8 +1,6 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import Button from "../common/Button"
-import Select from "../common/ui/Select"
-import Input from "../common/ui/Input"
+import { Button, Select, Input } from "@/components/ui"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
   return (

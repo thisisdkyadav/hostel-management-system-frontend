@@ -1,24 +1,25 @@
 import React from "react"
+import { StatusBadge } from "@/components/ui"
 
 const RoomStatusBadge = ({ status }) => {
-  const getBadgeStyles = () => {
+  const getStatusType = () => {
     switch (status) {
       case "Active":
-        return { backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }
+        return "success"
       case "Inactive":
-        return { backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-secondary)' }
+        return "inactive"
       case "Maintenance":
-        return { backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' }
+        return "warning"
       case "Occupied":
-        return { backgroundColor: 'var(--color-info-bg)', color: 'var(--color-info-text)' }
+        return "info"
       case "Reserved":
-        return { backgroundColor: 'var(--color-purple-light-bg)', color: 'var(--color-purple-text)' }
+        return "purple"
       default:
-        return { backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-secondary)' }
+        return "default"
     }
   }
 
-  return <span style={{ display: 'inline-flex', alignItems: 'center', padding: 'var(--spacing-0-5) var(--spacing-2-5)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', ...getBadgeStyles() }}>{status}</span>
+  return <StatusBadge status={getStatusType()}>{status}</StatusBadge>
 }
 
 export default RoomStatusBadge

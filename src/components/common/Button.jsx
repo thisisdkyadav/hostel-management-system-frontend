@@ -1,23 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-const Button = ({
-  children,
-  onClick,
-  type = "button",
-  variant = "primary",
-  size = "medium",
-  className = "",
-  icon,
-  isLoading = false,
-  disabled = false,
-  fullWidth = false,
-  animation = "none",
-  gradient = false,
-  rounded = false,
-  style = {},
-  ...rest
-}) => {
+const Button = ({ children, onClick, type = "button", variant = "primary", size = "medium", className = "", icon, isLoading = false, disabled = false, fullWidth = false, animation = "none", gradient = false, rounded = false, style = {}, ...rest }) => {
   const [isHovered, setIsHovered] = React.useState(false)
 
   // Border radius based on size and rounded prop
@@ -39,9 +23,7 @@ const Button = ({
 
   // Variant classes using CSS variables
   const variantClasses = {
-    primary: gradient
-      ? `text-white disabled:opacity-50`
-      : `bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50`,
+    primary: gradient ? `text-white disabled:opacity-50` : `bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] disabled:opacity-50`,
     secondary: `
       bg-[var(--color-primary-bg)] text-[var(--color-primary)]
       hover:bg-[var(--color-primary-bg-hover)]
@@ -79,9 +61,9 @@ const Button = ({
   }
 
   const sizeStyles = {
-    small: { fontSize: 'var(--font-size-xs)' },      // 12px
-    medium: { fontSize: 'var(--font-size-base)' },   // 14px
-    large: { fontSize: 'var(--font-size-lg)' },      // 16px
+    small: { fontSize: "var(--font-size-xs)" }, // 12px
+    medium: { fontSize: "var(--font-size-base)" }, // 14px
+    large: { fontSize: "var(--font-size-lg)" }, // 16px
   }
 
   const widthClasses = fullWidth ? "w-full" : ""
@@ -104,16 +86,20 @@ const Button = ({
     ${widthClasses} 
     ${animationClasses[animation] || ""} 
     ${className}
-  `.replace(/\s+/g, ' ').trim()
+  `
+    .replace(/\s+/g, " ")
+    .trim()
 
   // Combined styles including size-based font size and user styles
   const combinedStyle = {
     ...sizeStyles[size],
-    ...(gradient && variant === "primary" ? {
-      background: 'var(--gradient-primary)',
-      boxShadow: isHovered ? 'var(--shadow-button-primary-hover)' : 'var(--shadow-button-primary)',
-      transition: 'var(--transition-all)',
-    } : {}),
+    ...(gradient && variant === "primary"
+      ? {
+          background: "var(--gradient-primary)",
+          boxShadow: isHovered ? "var(--shadow-button-primary-hover)" : "var(--shadow-button-primary)",
+          transition: "var(--transition-all)",
+        }
+      : {}),
     ...style,
   }
 
@@ -142,10 +128,7 @@ const Button = ({
   }
 
   return (
-    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonClasses} style={combinedStyle} onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      {...rest}
-    >
+    <button type={type} onClick={handleClick} disabled={disabled || isLoading} className={buttonClasses} style={combinedStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} {...rest}>
       {isLoading ? (
         <>
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
@@ -178,4 +161,5 @@ Button.propTypes = {
   style: PropTypes.object,
 }
 
-export default Button
+export { Button as default, Button } from "@/components/ui/button"
+// export default Button

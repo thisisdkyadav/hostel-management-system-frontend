@@ -1,7 +1,6 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import { Modal, Button } from "@/components/ui"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {
   if (!show) return null

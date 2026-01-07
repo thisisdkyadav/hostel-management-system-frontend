@@ -6,8 +6,7 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
-import Card from "../common/Card"
-import Button from "../common/Button"
+import { Card, Button } from "@/components/ui"
 
 const EventCard = ({ event, refresh }) => {
   const { user } = useAuth()

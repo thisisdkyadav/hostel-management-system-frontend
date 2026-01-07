@@ -2,8 +2,7 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import Card from "../../common/Card"
-import Button from "../../common/Button"
+import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -35,7 +34,7 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
   return (
     <>
       <Card>
-        <Card.Header style={{ marginBottom: 0 }}>
+        <CardHeader style={{ marginBottom: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-2)', borderRadius: 'var(--radius-lg)', marginRight: 'var(--spacing-3)' }}>
@@ -48,9 +47,9 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
               <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete hostel gate login" />
             </div>
           </div>
-        </Card.Header>
+        </CardHeader>
 
-        <Card.Body style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
+        <CardBody style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-4)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <FaEnvelope style={{ color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)', marginRight: 'var(--spacing-3)', flexShrink: 0 }} />
             <span style={{ color: 'var(--color-text-muted)', wordBreak: 'break-all' }}>{gate.userId?.email}</span>
@@ -67,7 +66,7 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
             </div>
             <span style={{ color: 'var(--color-text-muted)' }}>{formatDate(gate.updatedAt)}</span>
           </div>
-        </Card.Body>
+        </CardBody>
       </Card>
 
       {showEditModal && <EditHostelGateModal show={showEditModal} gate={gate} onClose={() => setShowEditModal(false)} onUpdate={onUpdate} />}

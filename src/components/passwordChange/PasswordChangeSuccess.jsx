@@ -1,6 +1,5 @@
 import React from "react"
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import { Button, Modal } from "@/components/ui"
 import { FaCheck } from "react-icons/fa"
 
 const PasswordChangeSuccess = ({ email, onClose }) => {

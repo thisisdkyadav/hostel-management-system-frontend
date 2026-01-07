@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
 import ManageSessionsButton from "../sessions/ManageSessionsButton"
-import Button from "../common/Button"
+import { Button } from "@/components/ui"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
 
