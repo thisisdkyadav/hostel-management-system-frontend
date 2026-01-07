@@ -75,7 +75,7 @@ export const getAdminNavItems = (handleLogout) => [
   { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory" },
   { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications" },
   { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
-  { name: "Visitor Accomodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
+  { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
   { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
   { name: "Complaints", icon: MessageSquareWarning, section: "main", path: "/admin/complaints" },
   { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
