@@ -28,9 +28,9 @@ const Table = forwardRef(({
     width: "100%",
     overflow: "hidden",
     background: "var(--color-bg-primary)",
-    borderRadius: "var(--radius-xl)",
-    border: "none",
-    boxShadow: elevated ? "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)" : "none",
+    borderRadius: "var(--radius-card)",
+    border: variant === "bordered" ? "1px solid var(--color-border-primary)" : "none",
+    boxShadow: elevated ? "var(--shadow-card)" : "none",
     ...style,
   }
 
@@ -79,12 +79,13 @@ export const TableHead = forwardRef(({
   ...rest
 }, ref) => {
   const theadStyles = {
-    background: "var(--color-bg-secondary)",
+    background: "var(--table-header-bg)",
     ...(stickyHeader && {
       position: "sticky",
       top: 0,
-      zIndex: 2,
+      zIndex: 10,
       backdropFilter: "blur(8px)",
+      boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
     }),
     ...style,
   }
@@ -112,8 +113,8 @@ export const TableBody = forwardRef(({
   // Pass props to rows
   const childrenWithProps = React.Children.map(children, (child, index) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { 
-        variant, 
+      return React.cloneElement(child, {
+        variant,
         hoverable,
         isEven: index % 2 === 0,
         isLast: index === React.Children.count(children) - 1,
@@ -149,17 +150,17 @@ export const TableRow = forwardRef(({
   const [isHovered, setIsHovered] = useState(false)
 
   const getBackground = () => {
-    if (selected) return "color-mix(in srgb, var(--color-primary) 8%, transparent)"
-    if (variant === "striped" && isEven) return "var(--color-bg-secondary)"
-    if (isHovered && hoverable) return "color-mix(in srgb, var(--color-text-primary) 4%, transparent)"
+    if (selected) return "var(--color-primary-bg)"; // Selected state
+    if (variant === "striped" && isEven) return "var(--table-stripe-bg)";
+    if (isHovered && hoverable) return "var(--table-row-hover)";
     return "transparent"
   }
 
   const rowStyles = {
-    borderBottom: isLast ? "none" : "1px solid color-mix(in srgb, var(--color-text-muted) 12%, transparent)",
+    borderBottom: isLast ? "none" : "1px solid var(--color-border-light)",
     background: getBackground(),
     cursor: onClick ? "pointer" : "default",
-    transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+    transition: "background-color var(--transition-fast) ease",
     ...style,
   }
 
@@ -197,19 +198,20 @@ export const TableHeader = forwardRef(({
   const [isHovered, setIsHovered] = useState(false)
 
   const thStyles = {
-    padding: "14px 16px",
+    padding: "var(--spacing-3) var(--spacing-4)",
     textAlign: align,
-    fontWeight: "500",
-    color: "var(--color-text-muted)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--table-header-text)",
     fontSize: "var(--font-size-xs)",
     letterSpacing: "0.02em",
+    textTransform: "uppercase",
     whiteSpace: "nowrap",
     cursor: sortable ? "pointer" : "default",
     userSelect: sortable ? "none" : "auto",
-    background: isHovered && sortable ? "color-mix(in srgb, var(--color-text-muted) 6%, transparent)" : "transparent",
+    background: isHovered && sortable ? "var(--color-bg-hover)" : "transparent",
     width: width,
-    transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-    borderBottom: "1px solid color-mix(in srgb, var(--color-text-muted) 12%, transparent)",
+    transition: "background-color var(--transition-fast) ease",
+    borderBottom: "1px solid var(--color-border-primary)",
     ...style,
   }
 
@@ -219,18 +221,15 @@ export const TableHeader = forwardRef(({
     }
   }
 
+  // Determine sort icon
+  // If children provides its own icon logic, this might be redundant, 
+  // but often TableHeader is used directly. 
+  // We'll let DataTable handle specific icons usually, but provide a slot or default here.
   const getSortIcon = () => {
     if (!sortable) return null
-    const iconStyle = {
-      marginLeft: "var(--spacing-1)",
-      opacity: sortDirection ? 1 : 0.4,
-      display: "inline-flex",
-      verticalAlign: "middle",
-      fontSize: "0.75em",
-    }
-    if (sortDirection === "asc") return <span style={iconStyle}>↑</span>
-    if (sortDirection === "desc") return <span style={iconStyle}>↓</span>
-    return <span style={iconStyle}>↕</span>
+    // We expect the icon to be passed as a child or handled by the parent using this component.
+    // However, for standalone usage:
+    return null;
   }
 
   return (
@@ -243,10 +242,15 @@ export const TableHeader = forwardRef(({
       onMouseLeave={() => setIsHovered(false)}
       {...rest}
     >
-      <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: align === "right" ? "flex-end" : align === "center" ? "center" : "flex-start",
+        gap: "var(--spacing-1)"
+      }}>
         {children}
         {getSortIcon()}
-      </span>
+      </div>
     </th>
   )
 })
@@ -264,12 +268,13 @@ export const TableCell = forwardRef(({
   ...rest
 }, ref) => {
   const tdStyles = {
-    padding: "14px 16px",
+    padding: "var(--spacing-3-5) var(--spacing-4)",
     textAlign: align,
     color: "var(--color-text-body)",
     verticalAlign: "middle",
-    lineHeight: "1.43",
+    lineHeight: "1.5",
     fontSize: "var(--font-size-sm)",
+    borderBottom: "1px solid var(--color-border-light)",
     ...style,
   }
 
