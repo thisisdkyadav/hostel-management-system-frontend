@@ -224,6 +224,39 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             </div>
           )}
 
+          {complaintData.status === "Resolved" && complaintData.resolvedBy && (
+            <div>
+              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
+                <FaUserCircle style={{ marginRight: "var(--spacing-2)" }} /> Resolved By
+              </h4>
+              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", }} >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {complaintData.resolvedBy?.profileImage ? (
+                    <img src={getMediaUrl(complaintData.resolvedBy.profileImage)} alt={complaintData.resolvedBy.name} style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", objectFit: "cover", marginRight: "var(--spacing-4)", }} />
+                  ) : (
+                    <div style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-success-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-success-text)", fontWeight: "var(--font-weight-medium)", marginRight: "var(--spacing-4)", }} >
+                      {complaintData.resolvedBy?.name?.charAt(0) || "S"}
+                    </div>
+                  )}
+                  <div>
+                    <div style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.resolvedBy?.name}</div>
+                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
+                      Email: {complaintData.resolvedBy?.email}
+                    </div>
+                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
+                      {complaintData.resolvedBy?.phone}
+                    </div>
+                    {complaintData.resolutionDate && (
+                      <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-2)", }} >
+                        Resolved on: {new Date(complaintData.resolutionDate).toLocaleString()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)`, }} >
             <div>Created: {new Date(complaintData.createdDate).toLocaleString()}</div>
             {complaintData.lastUpdated !== complaintData.createdDate && <div>Last Updated: {new Date(complaintData.lastUpdated).toLocaleString()}</div>}
