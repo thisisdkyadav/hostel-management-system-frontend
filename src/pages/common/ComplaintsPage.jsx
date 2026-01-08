@@ -23,6 +23,8 @@ const ComplaintsPage = () => {
     category: "all",
     hostelId: "all",
     searchTerm: "",
+    feedbackRating: "all",
+    satisfactionStatus: "all",
     page: 1,
     limit: 10,
   })
@@ -53,6 +55,8 @@ const ComplaintsPage = () => {
       category: "all",
       hostelId: "all",
       searchTerm: "",
+      feedbackRating: "all",
+      satisfactionStatus: "all",
       page: 1,
       limit: filters.limit,
     })
@@ -76,6 +80,8 @@ const ComplaintsPage = () => {
       if (filters.category !== "all") queryParams.append("category", filters.category)
       if (filters.hostelId !== "all") queryParams.append("hostelId", filters.hostelId)
       if (filters.searchTerm) queryParams.append("search", filters.searchTerm)
+      if (filters.feedbackRating !== "all") queryParams.append("feedbackRating", filters.feedbackRating)
+      if (filters.satisfactionStatus !== "all") queryParams.append("satisfactionStatus", filters.satisfactionStatus)
       queryParams.append("page", filters.page)
       queryParams.append("limit", filters.limit)
 

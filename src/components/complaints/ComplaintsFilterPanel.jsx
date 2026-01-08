@@ -1,56 +1,98 @@
-import { FaFilter } from "react-icons/fa"
-import { MdClearAll } from "react-icons/md"
-import { Button, Select } from "@/components/ui"
+import React from "react"
+import { RotateCcw } from "lucide-react"
+import { Button, Select, Card, VStack, Label } from "@/components/ui"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
   return (
-    <div className="border" style={{ marginTop: 'var(--spacing-4)', backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-5)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', borderColor: 'var(--color-border-light)' }} >
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b" style={{ marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderColor: 'var(--color-border-light)' }} >
-        <h3 className="flex items-center mb-2 sm:mb-0" style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }} >
-          <FaFilter className="mr-2" style={{ color: 'var(--color-primary)' }} />
-          Advanced Filters
+    <Card style={{ marginTop: 'var(--spacing-6)', overflow: 'visible' }} padding="p-4">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
+        <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)' }}>
+          Filters
         </h3>
-        <Button onClick={resetFilters} variant="outline" size="small" icon={<MdClearAll />}>
-          Reset Filters
+        <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
+          Reset
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--spacing-4)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)' }}>
         {hostels.length > 0 && (
-          <div>
-            <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
-              Hostel
-            </label>
-            <Select value={filters.hostelId} onChange={(e) => updateFilter("hostelId", e.target.value)} options={[
-              { value: "all", label: "All Hostels" },
-              ...hostels.map((hostel) => ({ value: hostel._id, label: hostel.name }))
-            ]} />
-          </div>
+          <VStack gap="xsmall">
+            <Label size="sm">Hostel</Label>
+            <Select
+              value={filters.hostelId}
+              onChange={(e) => updateFilter("hostelId", e.target.value)}
+              placeholder="All Hostels"
+              options={[
+                { value: "all", label: "All Hostels" },
+                ...hostels.map((hostel) => ({
+                  value: hostel._id || hostel.id,
+                  label: hostel.name || hostel
+                }))
+              ]}
+            />
+          </VStack>
         )}
 
-        <div>
-          <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
-            Category
-          </label>
-          <Select value={filters.category} onChange={(e) => updateFilter("category", e.target.value)} options={[
-            { value: "all", label: "All Categories" },
-            ...categories.map((category) => ({ value: category, label: category }))
-          ]} />
-        </div>
+        <VStack gap="xsmall">
+          <Label size="sm">Category</Label>
+          <Select
+            value={filters.category}
+            onChange={(e) => updateFilter("category", e.target.value)}
+            placeholder="All Categories"
+            options={[
+              { value: "all", label: "All Categories" },
+              ...categories.map((category) => ({ value: category, label: category }))
+            ]}
+          />
+        </VStack>
 
-        <div>
-          <label className="block" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-tertiary)', marginBottom: 'var(--spacing-1-5)' }} >
-            Items Per Page
-          </label>
-          <Select value={filters.limit} onChange={(e) => updateFilter("limit", Number(e.target.value))} options={[
-            { value: 5, label: "5" },
-            { value: 10, label: "10" },
-            { value: 20, label: "20" },
-            { value: 50, label: "50" }
-          ]} />
-        </div>
+        <VStack gap="xsmall">
+          <Label size="sm">Feedback Rating</Label>
+          <Select
+            value={filters.feedbackRating}
+            onChange={(e) => updateFilter("feedbackRating", e.target.value)}
+            placeholder="All Ratings"
+            options={[
+              { value: "all", label: "All Ratings" },
+              { value: "5", label: "5 - Excellent" },
+              { value: "4", label: "4 - Good" },
+              { value: "3", label: "3 - Average" },
+              { value: "2", label: "2 - Poor" },
+              { value: "1", label: "1 - Very Poor" }
+            ]}
+          />
+        </VStack>
+
+        <VStack gap="xsmall">
+          <Label size="sm">Satisfaction Status</Label>
+          <Select
+            value={filters.satisfactionStatus}
+            onChange={(e) => updateFilter("satisfactionStatus", e.target.value)}
+            placeholder="All Statuses"
+            options={[
+              { value: "all", label: "All Statuses" },
+              { value: "Satisfied", label: "Satisfied" },
+              { value: "Unsatisfied", label: "Unsatisfied" },
+              { value: "False Resolution", label: "False Resolution" }
+            ]}
+          />
+        </VStack>
+
+        <VStack gap="xsmall">
+          <Label size="sm">Items per page</Label>
+          <Select
+            value={filters.limit}
+            onChange={(e) => updateFilter("limit", Number(e.target.value))}
+            options={[
+              { value: 5, label: "5" },
+              { value: 10, label: "10" },
+              { value: 20, label: "20" },
+              { value: 50, label: "50" }
+            ]}
+          />
+        </VStack>
       </div>
-    </div>
+    </Card>
   )
 }
 
