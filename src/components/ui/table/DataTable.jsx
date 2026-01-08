@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useMemo } from "react"
 import Table, { TableHead, TableBody, TableRow, TableHeader, TableCell } from "./Table"
-import { FaSort, FaSortUp, FaSortDown, FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import { ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, FileQuestion } from "lucide-react"
 import Checkbox from "../form/Checkbox"
 
 /**
@@ -52,7 +52,7 @@ const DataTable = forwardRef(({
 }, ref) => {
   // Support both loading and isLoading props
   const loading = loadingProp || isLoadingProp
-  
+
   const [sortKey, setSortKey] = useState(defaultSortKey)
   const [sortDir, setSortDir] = useState(defaultSortDir)
   const [internalPage, setInternalPage] = useState(1)
@@ -132,9 +132,9 @@ const DataTable = forwardRef(({
     display: "flex",
     flexDirection: "column",
     background: "var(--color-bg-primary)",
-    borderRadius: "var(--radius-xl)",
-    border: "none",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)",
+    borderRadius: "var(--radius-card)",
+    border: "1px solid var(--color-border-primary)",
+    boxShadow: "var(--shadow-card)",
     overflow: "hidden",
     ...style,
   }
@@ -143,9 +143,9 @@ const DataTable = forwardRef(({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "12px 16px",
-    background: "transparent",
-    borderTop: "1px solid color-mix(in srgb, var(--color-text-muted) 12%, transparent)",
+    padding: "var(--spacing-3) var(--spacing-4)",
+    background: "var(--color-bg-primary)",
+    borderTop: "1px solid var(--color-border-light)",
     fontSize: "var(--font-size-sm)",
     color: "var(--color-text-muted)",
   }
@@ -154,16 +154,24 @@ const DataTable = forwardRef(({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "40px",
-    height: "40px",
-    borderRadius: "50%",
+    width: "32px",
+    height: "32px",
+    borderRadius: "var(--radius-md)",
     background: "transparent",
-    border: "none",
-    color: disabled ? "var(--color-text-muted)" : "var(--color-text-body)",
+    border: "1px solid transparent",
+    color: disabled ? "var(--color-text-disabled)" : "var(--color-text-body)",
     cursor: disabled ? "not-allowed" : "pointer",
-    opacity: disabled ? 0.38 : 1,
-    transition: "background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+    opacity: disabled ? 0.5 : 1,
+    transition: "all var(--transition-fast) ease",
   })
+
+  // Render Sort Icon
+  const renderSortIcon = (key) => {
+    if (sortKey !== key) return <ArrowUpDown size={14} style={{ opacity: 0.3 }} />
+    return sortDir === "asc"
+      ? <ArrowUp size={14} style={{ color: "var(--color-primary)" }} />
+      : <ArrowDown size={14} style={{ color: "var(--color-primary)" }} />
+  }
 
   // Loading state
   if (loading) {
@@ -185,9 +193,9 @@ const DataTable = forwardRef(({
               <TableRow key={i} isLast={i === 4}>
                 {selectable && (
                   <TableCell>
-                    <div style={{ 
-                      width: 18, 
-                      height: 18, 
+                    <div style={{
+                      width: 18,
+                      height: 18,
                       background: "linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-hover) 50%, var(--color-bg-tertiary) 75%)",
                       backgroundSize: "200% 100%",
                       borderRadius: 4,
@@ -197,9 +205,9 @@ const DataTable = forwardRef(({
                 )}
                 {columns.map((col) => (
                   <TableCell key={col.key}>
-                    <div style={{ 
-                      width: `${40 + Math.random() * 40}%`, 
-                      height: 14, 
+                    <div style={{
+                      width: `${40 + Math.random() * 40}%`,
+                      height: 16,
                       background: "linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-hover) 50%, var(--color-bg-tertiary) 75%)",
                       backgroundSize: "200% 100%",
                       borderRadius: "var(--radius-sm)",
@@ -228,21 +236,36 @@ const DataTable = forwardRef(({
     return (
       <div ref={ref} className={className} style={containerStyles} {...rest}>
         {emptyState || (
-          <div style={{ 
-            padding: "var(--spacing-12) var(--spacing-6)", 
-            textAlign: "center", 
+          <div style={{
+            padding: "var(--spacing-16) var(--spacing-6)",
+            textAlign: "center",
             color: "var(--color-text-muted)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: "var(--spacing-2)"
+            justifyContent: "center",
+            gap: "var(--spacing-4)"
           }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.5 }}>
-              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-medium)" }}>
-              {emptyMessage || "No data available"}
-            </span>
+            <div style={{
+              width: "64px",
+              height: "64px",
+              borderRadius: "50%",
+              background: "var(--color-bg-secondary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--color-text-placeholder)"
+            }}>
+              <FileQuestion size={32} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+              <span style={{ fontSize: "var(--font-size-md)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+                No Data Found
+              </span>
+              <span style={{ fontSize: "var(--font-size-sm)", maxWidth: "300px" }}>
+                {emptyMessage || "There are no records to display at this time."}
+              </span>
+            </div>
           </div>
         )}
       </div>
@@ -272,7 +295,10 @@ const DataTable = forwardRef(({
                 sortDirection={sortKey === col.key ? sortDir : null}
                 onSort={() => handleSort(col.key)}
               >
-                {col.customHeaderRender ? col.customHeaderRender() : col.header}
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", justifyContent: col.align === "right" ? "flex-end" : col.align === "center" ? "center" : "flex-start" }}>
+                  {col.customHeaderRender ? col.customHeaderRender() : col.header}
+                  {sortable && col.sortable !== false && renderSortIcon(col.key)}
+                </div>
               </TableHeader>
             ))}
           </TableRow>
@@ -313,28 +339,28 @@ const DataTable = forwardRef(({
       {pagination && totalPages > 1 && (
         <div style={paginationStyles}>
           <span style={{ color: "var(--color-text-body)" }}>
-            {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, data.length)} of {data.length}
+            Showing <strong>{(page - 1) * pageSize + 1}-{Math.min(page * pageSize, data.length)}</strong> of <strong>{data.length}</strong>
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
             <button
               style={pageButtonStyles(page <= 1)}
               onClick={() => setPage(page - 1)}
               disabled={page <= 1}
-              onMouseEnter={(e) => { if (page > 1) e.target.style.background = "color-mix(in srgb, var(--color-text-muted) 8%, transparent)" }}
+              onMouseEnter={(e) => { if (page > 1) e.target.style.background = "var(--color-bg-hover)" }}
               onMouseLeave={(e) => e.target.style.background = "transparent"}
               aria-label="Previous page"
             >
-              <FaChevronLeft size={16} />
+              <ChevronLeft size={16} />
             </button>
             <button
               style={pageButtonStyles(page >= totalPages)}
               onClick={() => setPage(page + 1)}
               disabled={page >= totalPages}
-              onMouseEnter={(e) => { if (page < totalPages) e.target.style.background = "color-mix(in srgb, var(--color-text-muted) 8%, transparent)" }}
+              onMouseEnter={(e) => { if (page < totalPages) e.target.style.background = "var(--color-bg-hover)" }}
               onMouseLeave={(e) => e.target.style.background = "transparent"}
               aria-label="Next page"
             >
-              <FaChevronRight size={16} />
+              <ChevronRight size={16} />
             </button>
           </div>
         </div>
