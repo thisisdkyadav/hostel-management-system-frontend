@@ -1,9 +1,8 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
-import UnitCard from "./UnitCard"
 import { DataTable, Button } from "@/components/ui"
 
-const UnitListView = ({ units, viewMode, onUnitClick }) => {
+const UnitListView = ({ units, onUnitClick }) => {
   const columns = [
     {
       header: "Unit Number",
@@ -75,24 +74,7 @@ const UnitListView = ({ units, viewMode, onUnitClick }) => {
     },
   ]
 
-  return (
-    <>
-      {viewMode === "table" ? (
-        <DataTable columns={columns} data={units} onRowClick={onUnitClick} emptyMessage="No units to display" />
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" >
-          {units.map((unit) => (
-            <UnitCard key={unit.id} unit={unit} onClick={() => onUnitClick(unit)} />
-          ))}
-          {units.length === 0 && (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-8) 0", color: "var(--color-text-muted)", }} >
-              No units to display
-            </div>
-          )}
-        </div>
-      )}
-    </>
-  )
+  return <DataTable columns={columns} data={units} onRowClick={onUnitClick} emptyMessage="No units to display" />
 }
 
 export default UnitListView

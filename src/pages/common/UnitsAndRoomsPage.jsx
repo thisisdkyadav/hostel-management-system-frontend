@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
-import { FaBuilding, FaDoorOpen, FaFileImport, FaTable, FaThLarge } from "react-icons/fa"
+import { FaBuilding, FaDoorOpen } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../../service"
-import { SearchInput, ToggleButtonGroup } from "@/components/ui"
+import { SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import UnitStats from "../../components/wardens/UnitStats"
 import UnitListView from "../../components/wardens/UnitListView"
@@ -29,7 +29,6 @@ const UnitsAndRoomsPage = () => {
   const hostelName = decodeURIComponent(encodedHostelName)
   // const currentHostel = hostelList?.find((hostel) => hostel.name.toLowerCase() === hostelName.toLowerCase())
 
-  const [viewMode, setViewMode] = useState("table")
   const [loading, setLoading] = useState(false)
   const [units, setUnits] = useState([])
   const [allUnits, setAllUnits] = useState([])
@@ -424,23 +423,11 @@ const UnitsAndRoomsPage = () => {
           </div>
         )}
 
-        <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ marginTop: 'var(--spacing-6)' }}>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
             Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{hostelType === "unit-based" ? (currentView === "units" ? units.length : rooms.length) : rooms.length}</span> {hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}
             {totalItems > 0 && ` of ${totalItems} total`}
           </div>
-          <ToggleButtonGroup
-            options={[
-              { value: "table", icon: <FaTable />, ariaLabel: "Table view" },
-              { value: "card", icon: <FaThLarge />, ariaLabel: "Card view" },
-            ]}
-            value={viewMode}
-            onChange={setViewMode}
-            shape="rounded"
-            size="medium"
-            variant="muted"
-            hideLabelsOnMobile={false}
-          />
         </div>
 
         {loading ? (
@@ -452,7 +439,7 @@ const UnitsAndRoomsPage = () => {
           </div>
         ) : (
           <>
-            <div style={{ marginTop: 'var(--spacing-4)' }}>{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} viewMode={viewMode} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} viewMode={viewMode} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
+            <div style={{ marginTop: 'var(--spacing-4)' }}>{hostelType === "unit-based" && currentView === "units" ? <UnitListView units={units} onUnitClick={handleUnitClick} /> : <RoomListView rooms={rooms} onRoomClick={handleRoomClick} onAllocateClick={handleAllocateStudent} />}</div>
 
             {((hostelType === "unit-based" && currentView === "units" && units.length === 0) || (((hostelType === "unit-based" && currentView === "rooms") || hostelType === "room-only") && rooms.length === 0)) && !loading && (
               <NoResults icon={hostelType === "unit-based" && currentView === "units" ? <FaBuilding style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} /> : <MdMeetingRoom style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />}
