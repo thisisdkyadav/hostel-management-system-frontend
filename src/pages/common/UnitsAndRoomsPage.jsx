@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom"
 import { FaBuilding, FaDoorOpen, FaFileImport, FaTable, FaThLarge } from "react-icons/fa"
 import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
 import { hostelApi } from "../../service"
-import { Pagination, SearchInput, ToggleButtonGroup } from "@/components/ui"
+import { SearchInput, ToggleButtonGroup } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import UnitStats from "../../components/wardens/UnitStats"
 import UnitListView from "../../components/wardens/UnitListView"
@@ -41,8 +41,7 @@ const UnitsAndRoomsPage = () => {
   const [showRoomDetail, setShowRoomDetail] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(10)
+
   const [showFilters, setShowFilters] = useState(true)
   const [currentHostel, setCurrentHostel] = useState(null)
   const hostelType = currentHostel?.type || "unit-based"
@@ -210,9 +209,7 @@ const UnitsAndRoomsPage = () => {
     navigate(`${getHomeRoute()}/hostels/${encodedHostelName}`)
   }
 
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  }
+
 
   const filterRooms = () => {
     let filtered = [...allRooms]
@@ -225,12 +222,7 @@ const UnitsAndRoomsPage = () => {
     return filtered
   }
 
-  // Get paginated rooms
-  const getPaginatedRooms = (allFilteredRooms) => {
-    const indexOfLastItem = currentPage * itemsPerPage
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage
-    return allFilteredRooms.slice(indexOfFirstItem, indexOfLastItem)
-  }
+
 
   useEffect(() => {
     if (hostelId) {
@@ -269,14 +261,14 @@ const UnitsAndRoomsPage = () => {
     }
   }, [unitNumber, hostelId, hostelType, currentView])
 
-  // Apply filters and pagination whenever filters, currentPage, or allRooms change
+  // Apply filters whenever filters or allRooms change
   useEffect(() => {
     if (currentView === "rooms") {
       const filteredRooms = filterRooms()
       setTotalItems(filteredRooms.length)
-      setRooms(getPaginatedRooms(filteredRooms))
+      setRooms(filteredRooms)
     }
-  }, [filters, currentPage, allRooms, currentView])
+  }, [filters, allRooms, currentView])
 
   // Apply filters for units
   useEffect(() => {
@@ -325,9 +317,7 @@ const UnitsAndRoomsPage = () => {
     }
   }, [allUnits, filters, currentView])
 
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [filters])
+
 
   useEffect(() => {
     if (hostelList) {
@@ -361,7 +351,7 @@ const UnitsAndRoomsPage = () => {
     return <AccessDenied />
   }
 
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
+
 
   const dynamicTitle = `${currentHostel.name}: ${hostelType === "unit-based" ? (currentView === "units" ? "Unit Management" : `Rooms in ${selectedUnit?.unitNumber || unitNumber || "Selected Unit"}`) : "Room Management"}`
 
@@ -473,11 +463,7 @@ const UnitsAndRoomsPage = () => {
           </>
         )}
 
-        {totalPages > 1 && (
-          <div style={{ marginTop: 'var(--spacing-6)' }}>
-            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-          </div>
-        )}
+
 
         {showRoomDetail && selectedRoom && <RoomDetailModal room={selectedRoom} onClose={() => setShowRoomDetail(false)} onUpdate={handleUpdateSuccess} onAllocate={() => setShowAllocateModal(true)} />}
 
