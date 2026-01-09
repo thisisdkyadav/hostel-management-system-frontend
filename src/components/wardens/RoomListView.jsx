@@ -1,10 +1,9 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
-import RoomCard from "./RoomCard"
 import { DataTable, Button } from "@/components/ui"
 import { useAuth } from "../../contexts/AuthProvider"
 
-const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
+const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
   const { user } = useAuth()
 
   const columns = [
@@ -106,24 +105,7 @@ const RoomListView = ({ rooms, viewMode, onRoomClick, onAllocateClick }) => {
     },
   ]
 
-  return (
-    <>
-      {viewMode === "table" ? (
-        <DataTable columns={columns} data={rooms} onRowClick={onRoomClick} emptyMessage="No rooms to display" />
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(1, minmax(0, 1fr))", gap: "var(--gap-md)", }} className="sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" >
-          {rooms.map((room) => (
-            <RoomCard key={room.id} room={room} onClick={() => onRoomClick(room)} onAllocate={() => onAllocateClick(room)} />
-          ))}
-          {rooms.length === 0 && (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "var(--spacing-8) 0", color: "var(--color-text-muted)", }} >
-              No rooms to display
-            </div>
-          )}
-        </div>
-      )}
-    </>
-  )
+  return <DataTable columns={columns} data={rooms} onRowClick={onRoomClick} emptyMessage="No rooms to display" />
 }
 
 export default RoomListView
