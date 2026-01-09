@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Modal, Button, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
-import { FaBuilding, FaUser, FaDoorOpen, FaArchive } from "react-icons/fa"
+import { Building, User, DoorOpen, Archive } from "lucide-react"
 import RoomManagementModal from "./RoomManagementModal"
 import { hostelApi } from "../../../service"
 
@@ -103,19 +103,19 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
 
             <div>
               <Label htmlFor="name" required>Hostel Name</Label>
-              <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<FaBuilding />} placeholder="Enter hostel name" error={errors.name} />
+              <Input type="text" name="name" value={formData.name} onChange={handleChange} icon={<Building size={16} />} placeholder="Enter hostel name" error={errors.name} />
             </div>
 
             <div>
               <Label htmlFor="gender" required>Gender</Label>
-              <Select name="gender" value={formData.gender} onChange={handleChange} icon={<FaUser />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
+              <Select name="gender" value={formData.gender} onChange={handleChange} icon={<User size={16} />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
             </div>
 
-            <Button type="button" onClick={handleArchiveToggle} variant="secondary" icon={<FaArchive />} fullWidth>
+            <Button type="button" onClick={handleArchiveToggle} variant="secondary" icon={<Archive size={16} />} fullWidth>
               {isArchived ? "Unarchive Hostel" : "Archive Hostel"}
             </Button>
 
-            <Button type="button" onClick={() => setShowRoomManagementModal(true)} variant="secondary" icon={<FaDoorOpen />} fullWidth>
+            <Button type="button" onClick={() => setShowRoomManagementModal(true)} variant="secondary" icon={<DoorOpen size={16} />} fullWidth>
               Manage Hostel Rooms
             </Button>
 

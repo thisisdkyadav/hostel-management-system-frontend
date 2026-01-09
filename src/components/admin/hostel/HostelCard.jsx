@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { FaBuilding, FaEdit, FaDoorClosed, FaUsers, FaDoorOpen, FaTools, FaClipboardList } from "react-icons/fa"
+import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } from "lucide-react"
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
@@ -51,7 +51,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
         <CardHeader>
           <HStack gap="medium" align="center">
             <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`}>
-              <FaBuilding />
+              <Building size={20} />
             </div>
             <div>
               <h3 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)' }}>{hostel.name}</h3>
@@ -67,19 +67,19 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
           {/* Stats List */}
           <VStack gap="xsmall">
             <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <FaDoorClosed style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
+              <DoorClosed size={16} style={{ color: 'var(--color-text-muted)' }} />
               <span>{hostel.totalRooms} Rooms ({hostel.totalActiveRooms} Active)</span>
             </HStack>
             <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <FaUsers style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
+              <Users size={16} style={{ color: 'var(--color-text-muted)' }} />
               <span>{hostel.activeRoomsCapacity} Capacity</span>
             </HStack>
             <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <FaDoorOpen style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
+              <DoorOpen size={16} style={{ color: 'var(--color-text-muted)' }} />
               <span>{hostel.vacantRooms} Vacant Rooms</span>
             </HStack>
             <HStack gap="xsmall" align="center" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)' }}>
-              <FaTools style={{ color: 'var(--color-text-muted)', width: 'var(--icon-md)' }} />
+              <Wrench size={16} style={{ color: 'var(--color-text-muted)' }} />
               <span>{hostel.maintenanceIssues} maintenance issue{hostel.maintenanceIssues !== 1 ? 's' : ''}</span>
             </HStack>
           </VStack>
@@ -110,7 +110,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               onClick={() => setShowEditModal(true)}
               variant="secondary"
               size="medium"
-              icon={<FaEdit />}
+              icon={<Pencil size={16} />}
               fullWidth
             >
               Edit Details
@@ -119,7 +119,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
               <Button
                 variant="secondary"
                 size="medium"
-                icon={<FaDoorOpen />}
+                icon={<DoorOpen size={16} />}
                 fullWidth
               >
                 View {hostel.type === "room-only" ? "Rooms" : "Units"}
@@ -130,7 +130,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             onClick={() => setShowDetailsModal(true)}
             variant="secondary"
             size="medium"
-            icon={<FaClipboardList />}
+            icon={<ClipboardList size={16} />}
             fullWidth
           >
             View Details

@@ -1,7 +1,5 @@
 import { StatCards } from "@/components/ui"
-import { FaBuilding, FaBed } from "react-icons/fa"
-import { MdOutlinePersonOutline } from "react-icons/md"
-import { GiVacuumCleaner } from "react-icons/gi"
+import { Building, Bed, UserRound, Sparkles } from "lucide-react"
 
 const HostelStats = ({ hostels }) => {
   const totalHostels = hostels.length
@@ -14,28 +12,28 @@ const HostelStats = ({ hostels }) => {
       title: "Total Hostels",
       value: totalHostels,
       subtitle: "Across campus",
-      icon: <FaBuilding style={{ fontSize: 'var(--icon-xl)' }} />,
+      icon: <Building size={20} />,
       color: "var(--color-primary)",
     },
     {
       title: "Total Rooms",
       value: totalRooms,
       subtitle: "Available for allocation",
-      icon: <FaBed style={{ fontSize: 'var(--icon-xl)' }} />,
+      icon: <Bed size={20} />,
       color: "var(--color-primary)",
     },
     {
       title: "Occupancy Rate",
       value: `${occupancyRate}%`,
       subtitle: "Current utilization",
-      icon: <MdOutlinePersonOutline style={{ fontSize: 'var(--icon-xl)' }} />,
+      icon: <UserRound size={20} />,
       color: "var(--color-success)",
     },
     {
       title: "Available Rooms",
       value: availableRooms,
       subtitle: "Ready for allocation",
-      icon: <GiVacuumCleaner style={{ fontSize: 'var(--icon-xl)' }} />,
+      icon: <Sparkles size={20} />,
       color: "var(--color-warning)",
     },
   ]

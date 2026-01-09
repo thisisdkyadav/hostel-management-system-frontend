@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Modal, Button, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
-import { FaDoorOpen, FaUsers, FaTrash } from "react-icons/fa"
+import { DoorOpen, Users, Trash2 } from "lucide-react"
 
 const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
   const [formData, setFormData] = useState({
@@ -95,18 +95,18 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
             {isUnitBased && (
               <div>
                 <Label>Unit Number</Label>
-                <Input type="text" value={formData.unitNumber} icon={<FaDoorOpen />} disabled />
+                <Input type="text" value={formData.unitNumber} icon={<DoorOpen size={16} />} disabled />
               </div>
             )}
 
             <div>
               <Label>Room {isUnitBased ? "Letter" : "Number"}</Label>
-              <Input type="text" value={formData.roomNumber} icon={<FaDoorOpen />} disabled />
+              <Input type="text" value={formData.roomNumber} icon={<DoorOpen size={16} />} disabled />
             </div>
 
             <div>
               <Label htmlFor="capacity" required>Capacity</Label>
-              <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<FaUsers />} placeholder="Room capacity" error={errors.capacity} />
+              <Input type="number" name="capacity" value={formData.capacity} onChange={handleChange} min="1" icon={<Users size={16} />} placeholder="Room capacity" error={errors.capacity} />
             </div>
 
             <div>

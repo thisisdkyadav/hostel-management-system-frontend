@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import CsvUploader from "../../../common/CsvUploader"
 import RoomStatsSummary from "../../forms/RoomStatsSummary"
 import { Button, Alert, VStack, HStack } from "@/components/ui"
-import { FaUpload } from "react-icons/fa"
+import { Upload } from "lucide-react"
 import { adminApi } from "../../../../service"
 
 const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
@@ -100,7 +100,7 @@ const AddRoomsCsv = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           <RoomStatsSummary data={parsedCsvData} isUnitBased={isUnitBased} />
 
           <HStack justify="end" style={{ paddingTop: 'var(--spacing-2)' }}>
-            <Button onClick={handleAddRooms} variant="primary" size="medium" icon={<FaUpload />}>
+            <Button onClick={handleAddRooms} variant="primary" size="medium" icon={<Upload size={16} />}>
               Add {parsedCsvData.length} Room(s)
             </Button>
           </HStack>

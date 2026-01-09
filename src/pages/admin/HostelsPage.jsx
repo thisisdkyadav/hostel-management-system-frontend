@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Tabs, TabList, Tab, SearchInput, EmptyState } from "@/components/ui"
-import { FaSearch } from "react-icons/fa"
+import { Search } from "lucide-react"
 import HostelCard from "../../components/admin/hostel/HostelCard"
 import HostelStats from "../../components/admin/hostel//HostelStats"
 import AddHostelModal from "../../components/admin/hostel/AddHostelModal"
@@ -75,10 +75,10 @@ const HostelsPage = () => {
               </Tabs>
             </div>
             <div className="w-full sm:w-[16rem] md:w-[18rem]">
-              <SearchInput 
-                value={searchTerm} 
-                onChange={(e) => setSearchTerm(e.target.value)} 
-                placeholder="Search hostel..." 
+              <SearchInput
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search hostel..."
               />
             </div>
           </div>
@@ -90,10 +90,10 @@ const HostelsPage = () => {
           </div>
 
           {filteredHostels.length === 0 && (
-            <EmptyState 
-              icon={FaSearch} 
-              title="No Hostels Found" 
-              message="No hostels match your search criteria. Try adjusting your filters." 
+            <EmptyState
+              icon={Search}
+              title="No Hostels Found"
+              message="No hostels match your search criteria. Try adjusting your filters."
             />
           )}
         </div>

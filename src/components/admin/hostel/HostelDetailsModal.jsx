@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaFilter, FaCalendarAlt, FaUserCog, FaUsers, FaSearch, FaUserCheck, FaCheck, FaTimes } from "react-icons/fa"
+import { Filter, Calendar, UserCog, Users, Search, UserCheck, Check, X } from "lucide-react"
 import { Modal, Button, Select, Label, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, Badge, Spinner, Pagination } from "@/components/ui"
 import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
@@ -179,7 +179,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
               </TableCell>
               <TableCell>{staff.email}</TableCell>
               <TableCell>
-                <Badge variant="success" icon={<FaCheck />}>
+                <Badge variant="success" icon={<Check size={12} />}>
                   Present
                 </Badge>
               </TableCell>
@@ -196,7 +196,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
         {/* Filters */}
         <div style={{ backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', width: '100%' }}>
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-3)', display: 'flex', alignItems: 'center' }}>
-            <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
+            <Filter size={14} style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-text-muted)' }} /> Filter Records
           </h3>
           <HStack gap="medium" align="end" wrap>
             <div style={{ flex: 1, minWidth: '150px' }}>
@@ -222,7 +222,7 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
                 onClick={clearFilters}
                 variant="secondary"
                 size="small"
-                icon={<FaTimes />}
+                icon={<X size={14} />}
               >
                 Clear
               </Button>

@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Modal, Button, VStack, HStack, Tabs, TabList, Tab } from "@/components/ui"
-import { FaTable, FaEdit, FaTrash, FaTimes } from "react-icons/fa"
-import { FiAlertTriangle } from "react-icons/fi"
+import { Table, Pencil, Trash2, X, TriangleAlert } from "lucide-react"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
 import AddRoomsCsv from "./rooms/AddRoomsCsv"
@@ -45,7 +44,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                 onClick={() => setShowDeleteConfirmation(false)}
                 variant="ghost"
                 size="small"
-                icon={<FaTimes />}
+                icon={<X size={16} />}
               />
             </HStack>
           </div>
@@ -54,7 +53,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
             <VStack gap="large">
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
-                  <FiAlertTriangle size={32} />
+                  <TriangleAlert size={32} />
                 </div>
               </div>
 
@@ -96,7 +95,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
             </Tabs>
 
             {activeTab === "view" && (
-              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} animation="pulse" size="small" icon={<FaTrash />}>
+              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} animation="pulse" size="small" icon={<Trash2 size={14} />}>
                 Delete All Allocations
               </Button>
             )}
@@ -112,7 +111,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                     type="button"
                     variant={inputMethod === "form" ? "primary" : "white"}
                     size="medium"
-                    icon={<FaEdit />}
+                    icon={<Pencil size={14} />}
                     onClick={() => setInputMethod("form")}
                     style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
                   >
@@ -122,7 +121,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                     type="button"
                     variant={inputMethod === "csv" ? "primary" : "white"}
                     size="medium"
-                    icon={<FaTable />}
+                    icon={<Table size={14} />}
                     onClick={() => setInputMethod("csv")}
                     style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                   >
