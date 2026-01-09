@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaEdit, FaTrash, FaSearch, FaFilter, FaFileUpload } from "react-icons/fa"
+import { Pencil, Trash2, Search, Filter, FileUp } from "lucide-react"
 import { Button, Input, Select, IconButton, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
 import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
@@ -108,15 +108,15 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
       <HStack gap="small" justify="between" align="center" wrap>
         <HStack gap="small" style={{ flex: 1 }}>
           <div style={{ flex: 1, minWidth: '200px' }}>
-            <Input type="text" placeholder={`Search ${isUnitBased ? "units/rooms" : "rooms"}...`} icon={<FaSearch />} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <Input type="text" placeholder={`Search ${isUnitBased ? "units/rooms" : "rooms"}...`} icon={<Search size={16} />} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
 
           <div style={{ minWidth: '150px' }}>
-            <Select icon={<FaFilter />} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} options={[{ value: "all", label: "All Status" }, { value: "Active", label: "Active" }, { value: "Inactive", label: "Inactive" }, { value: "Maintenance", label: "Maintenance" }]} />
+            <Select icon={<Filter size={16} />} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} options={[{ value: "all", label: "All Status" }, { value: "Active", label: "Active" }, { value: "Inactive", label: "Inactive" }, { value: "Maintenance", label: "Maintenance" }]} />
           </div>
         </HStack>
 
-        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FaFileUpload />}>
+        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FileUp size={16} />}>
           Bulk Update via CSV
         </Button>
       </HStack>
@@ -150,7 +150,7 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
                     onClick={() => handleEditRoom(room)}
                     variant="ghost"
                     size="small"
-                    icon={<FaEdit />}
+                    icon={<Pencil size={16} />}
                     ariaLabel="Edit room"
                   />
                 </TableCell>

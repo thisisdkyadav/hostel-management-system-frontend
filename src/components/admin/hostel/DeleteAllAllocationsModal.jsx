@@ -1,6 +1,6 @@
 import React from "react"
 import { Modal, Button, VStack, HStack } from "@/components/ui"
-import { FiAlertTriangle } from "react-icons/fi"
+import { TriangleAlert } from "lucide-react"
 
 const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }) => {
   return (
@@ -8,7 +8,7 @@ const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }
       <VStack gap="large" style={{ padding: 'var(--spacing-4) 0' }}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{ padding: 'var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)', borderRadius: 'var(--radius-full)' }}>
-            <FiAlertTriangle size={32} />
+            <TriangleAlert size={32} />
           </div>
         </div>
 

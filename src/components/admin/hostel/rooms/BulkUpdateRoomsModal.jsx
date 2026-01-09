@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Modal, Button, Checkbox, Alert, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
 import CsvUploader from "../../../common/CsvUploader"
-import { FaExclamationTriangle, FaUpload } from "react-icons/fa"
+import { TriangleAlert, Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
 
 const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoading }) => {
@@ -89,7 +89,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
   return (
     <Modal isOpen={show} onClose={onClose} title="Bulk Update Rooms" width={800}>
       <VStack gap="large">
-        <Alert type="warning" icon={<FaExclamationTriangle />}>
+        <Alert type="warning" icon={<TriangleAlert size={16} />}>
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Important Warnings</h3>
           <div style={{ fontSize: 'var(--font-size-sm)' }}>
             <p>
@@ -166,7 +166,7 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
                 <Button variant="secondary" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button variant="primary" onClick={handleBulkUpdate} icon={<FaUpload />} disabled={!confirmed || parsedCsvData.length === 0}>
+                <Button variant="primary" onClick={handleBulkUpdate} icon={<Upload size={16} />} disabled={!confirmed || parsedCsvData.length === 0}>
                   Update {parsedCsvData.length} Room(s)
                 </Button>
               </HStack>
