@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { Link } from "react-router-dom"
-import { FaBuilding, FaFileImport } from "react-icons/fa"
+import { FaBuilding } from "react-icons/fa"
 
 const UnitsAndRoomsHeader = ({
   title,
   onBackToUnits,
-  onUpdateAllocations,
   showBackToUnits,
   showBackToHostels,
-  showUpdateAllocations,
   userRole
 }) => {
   return (
@@ -26,12 +24,6 @@ const UnitsAndRoomsHeader = ({
             Back to Hostels
           </Button>
         </Link>
-      )}
-
-      {showUpdateAllocations && ["Admin"].includes(userRole) && (
-        <Button variant="white" onClick={onUpdateAllocations} icon={<FaFileImport />}>
-          Update Allocations
-        </Button>
       )}
     </PageHeader>
   )

@@ -9,7 +9,6 @@ import RoomListView from "../../components/wardens/RoomListView"
 import RoomDetailModal from "../../components/wardens/RoomDetailModal"
 import AllocateStudentModal from "../../components/wardens/AllocateStudentModal"
 import RoomStats from "../../components/wardens/RoomStats"
-import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
 import UnitsAndRoomsHeader from "../../components/headers/UnitsAndRoomsHeader"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
@@ -39,7 +38,6 @@ const UnitsAndRoomsPage = () => {
   const [selectedRoom, setSelectedRoom] = useState(null)
   const [showRoomDetail, setShowRoomDetail] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
-  const [showUploadModal, setShowUploadModal] = useState(false)
 
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(false)
   const [currentHostel, setCurrentHostel] = useState(null)
@@ -133,33 +131,7 @@ const UnitsAndRoomsPage = () => {
     }
   }
 
-  const handleUpdateAllocations = async (allocations, hostelId) => {
-    try {
-      setLoading(true)
-      const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
-      if (response.success) {
-        setShowAllocateModal(false)
-        const navigateTo = `${getHomeRoute()}/hostels/${encodedHostelName}`
-        navigate(navigateTo)
 
-        const errors = response.errors || []
-        if (errors.length > 0) {
-          alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")}`)
-        } else {
-          alert("Allocations updated successfully")
-        }
-        return true
-      } else {
-        alert("Failed to update allocations")
-        return false
-      }
-    } catch (error) {
-      alert("An error occurred while updating allocations")
-      return false
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleUnitClick = (unit) => {
     // Reset filters when navigating from units to rooms
@@ -358,10 +330,8 @@ const UnitsAndRoomsPage = () => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <UnitsAndRoomsHeader title={dynamicTitle}
         onBackToUnits={goBackToUnits}
-        onUpdateAllocations={() => setShowUploadModal(true)}
         showBackToUnits={hostelType === "unit-based" && currentView === "rooms"}
         showBackToHostels={true}
-        showUpdateAllocations={true}
         userRole={user.role}
       />
 
@@ -465,7 +435,6 @@ const UnitsAndRoomsPage = () => {
 
         {showAllocateModal && selectedRoom && <AllocateStudentModal room={selectedRoom} isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onSuccess={handleAllocationSuccess} />}
 
-        {showUploadModal && <UpdateAllocationModal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)} onAllocate={handleUpdateAllocations} />}
       </div>
     </div>
   )
