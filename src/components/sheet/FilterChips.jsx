@@ -1,4 +1,4 @@
-import { FaTimes, FaFilter } from "react-icons/fa"
+import { X, Filter } from "lucide-react"
 
 const styles = {
     container: {
@@ -81,7 +81,7 @@ const FilterChips = ({ filters, columns, onClearFilter, onClearAll }) => {
     return (
         <div style={styles.container}>
             <span style={styles.label}>
-                <FaFilter style={{ fontSize: "8px" }} />
+                <Filter size={8} />
                 Filters:
             </span>
             {activeFilters.map(([colId, filter]) => (
@@ -95,7 +95,7 @@ const FilterChips = ({ filters, columns, onClearFilter, onClearAll }) => {
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary-pale)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                     >
-                        <FaTimes style={{ fontSize: "8px" }} />
+                        <X size={8} />
                     </button>
                 </div>
             ))}
