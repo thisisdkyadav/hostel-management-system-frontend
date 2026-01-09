@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { FaTimes, FaEye, FaEyeSlash, FaCheck } from "react-icons/fa"
+import { X, Eye, EyeOff, Check } from "lucide-react"
 
 const styles = {
     // Panel container
@@ -191,7 +191,7 @@ const ColumnVisibilityPanel = ({ isOpen, onClose, columns, visibility, onVisibil
                         Columns ({visibleCount}/{columns.length})
                     </span>
                     <button style={styles.closeButton} onClick={onClose}>
-                        <FaTimes />
+                        <X size={14} />
                     </button>
                 </div>
 
@@ -203,7 +203,7 @@ const ColumnVisibilityPanel = ({ isOpen, onClose, columns, visibility, onVisibil
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-hover)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-primary)")}
                     >
-                        <FaEye /> Show All
+                        <Eye size={12} /> Show All
                     </button>
                     <button
                         style={styles.actionButton}
@@ -211,7 +211,7 @@ const ColumnVisibilityPanel = ({ isOpen, onClose, columns, visibility, onVisibil
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-hover)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-bg-primary)")}
                     >
-                        <FaEyeSlash /> Hide All
+                        <EyeOff size={12} /> Hide All
                     </button>
                 </div>
 
@@ -242,13 +242,13 @@ const ColumnVisibilityPanel = ({ isOpen, onClose, columns, visibility, onVisibil
                                                 ...(visible ? styles.checkboxChecked : {}),
                                             }}
                                         >
-                                            {visible && <FaCheck style={styles.checkIcon} />}
+                                            {visible && <Check size={10} style={styles.checkIcon} />}
                                         </div>
                                         <span style={styles.columnName}>{col.header}</span>
                                         {visible ? (
-                                            <FaEye style={styles.visibilityIcon} />
+                                            <Eye size={10} style={styles.visibilityIcon} />
                                         ) : (
-                                            <FaEyeSlash style={styles.visibilityIcon} />
+                                            <EyeOff size={10} style={styles.visibilityIcon} />
                                         )}
                                     </div>
                                 )

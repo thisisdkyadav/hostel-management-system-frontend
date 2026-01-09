@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react"
-import { FaCheck, FaSearch, FaTimes } from "react-icons/fa"
+import { Check, Search, X } from "lucide-react"
 import { Input } from "@/components/ui"
 
 const styles = {
@@ -274,18 +274,18 @@ const ColumnFilterDropdown = ({ column, columnId, data, isOpen, onClose, onApply
       <div style={styles.dropdownHeader}>
         <span style={styles.dropdownTitle}>{column}</span>
         <button style={styles.closeButton} onClick={onClose}>
-          <FaTimes />
+          <X size={12} />
         </button>
       </div>
 
       {/* Search */}
       <div style={styles.searchContainer}>
-        <Input type="text" placeholder="Search values..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} icon={<FaSearch />} />
+        <Input type="text" placeholder="Search values..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} icon={<Search size={12} />} />
       </div>
 
       {/* Select All */}
       <div style={styles.selectAllRow} onClick={toggleSelectAll}>
-        <div style={{ ...styles.checkbox, ...(allSelected ? styles.checkboxChecked : {}) }}>{allSelected && <FaCheck style={styles.checkIcon} />}</div>
+        <div style={{ ...styles.checkbox, ...(allSelected ? styles.checkboxChecked : {}) }}>{allSelected && <Check size={10} style={styles.checkIcon} />}</div>
         <span>(Select All)</span>
       </div>
 
@@ -311,7 +311,7 @@ const ColumnFilterDropdown = ({ column, columnId, data, isOpen, onClose, onApply
                   ...(selectedValues.has(value) ? styles.checkboxChecked : {}),
                 }}
               >
-                {selectedValues.has(value) && <FaCheck style={styles.checkIcon} />}
+                {selectedValues.has(value) && <Check size={10} style={styles.checkIcon} />}
               </div>
               <span style={styles.valueText}>{value}</span>
               <span style={styles.valueCount}>{count}</span>

@@ -5,7 +5,7 @@ import {
     flexRender,
 } from "@tanstack/react-table"
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes, FaChartBar, FaDownload, FaFileCsv, FaFileExcel, FaFileCode, FaChevronDown } from "react-icons/fa"
+import { Search, User, Filter, Columns3, X, BarChart3, Download, FileSpreadsheet, FileText, FileJson, ChevronDown } from "lucide-react"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { sheetApi } from "../../service"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
@@ -384,7 +384,7 @@ const styles = {
 // Cell renderers
 const renderProfileImage = (value) => {
     if (value) return <img src={value} alt="" style={styles.avatar} />
-    return <span style={styles.avatarPlaceholder}><FaUser /></span>
+    return <span style={styles.avatarPlaceholder}><User size={12} /></span>
 }
 
 const renderStatus = (value) => {
@@ -523,10 +523,10 @@ const exportToExcel = (data, columns, filename) => {
 
 // Export formats configuration
 const EXPORT_FORMATS = [
-    { id: "csv", label: "CSV (.csv)", icon: FaFileCsv, handler: exportToCSV, description: "Comma-separated values" },
-    { id: "excel", label: "Excel (.xls)", icon: FaFileExcel, handler: exportToExcel, description: "Microsoft Excel" },
-    { id: "tsv", label: "TSV (.tsv)", icon: FaFileCsv, handler: exportToTSV, description: "Tab-separated values" },
-    { id: "json", label: "JSON (.json)", icon: FaFileCode, handler: exportToJSON, description: "JavaScript Object Notation" },
+    { id: "csv", label: "CSV (.csv)", icon: FileSpreadsheet, handler: exportToCSV, description: "Comma-separated values" },
+    { id: "excel", label: "Excel (.xls)", icon: FileSpreadsheet, handler: exportToExcel, description: "Microsoft Excel" },
+    { id: "tsv", label: "TSV (.tsv)", icon: FileText, handler: exportToTSV, description: "Tab-separated values" },
+    { id: "json", label: "JSON (.json)", icon: FileJson, handler: exportToJSON, description: "JavaScript Object Notation" },
 ]
 
 // Summary Table Component
@@ -823,7 +823,7 @@ const SheetPage = () => {
                                 placeholder="Search all..."
                                 value={globalFilter}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
-                                icon={<FaSearch />}
+                                icon={<Search size={14} />}
                             />
                         </div>
 
@@ -834,7 +834,7 @@ const SheetPage = () => {
                             }}
                             onClick={() => setShowColumnsPanel(!showColumnsPanel)}
                         >
-                            <FaColumns /> Columns
+                            <Columns3 size={14} /> Columns
                         </button>
 
                         {hasActiveFilters && (
@@ -842,7 +842,7 @@ const SheetPage = () => {
                                 style={{ ...styles.toolbarButton, color: "var(--color-danger)" }}
                                 onClick={handleClearAllFilters}
                             >
-                                <FaTimes /> Clear Filters
+                                <X size={14} /> Clear Filters
                             </button>
                         )}
                     </>
@@ -857,7 +857,7 @@ const SheetPage = () => {
                         onClick={() => setShowExportDropdown(!showExportDropdown)}
                         title="Export data"
                     >
-                        <FaDownload /> Export <FaChevronDown style={{ fontSize: "10px", marginLeft: "2px" }} />
+                        <Download size={14} /> Export <ChevronDown size={10} style={{ marginLeft: "2px" }} />
                     </button>
 
                     {showExportDropdown && (
@@ -967,7 +967,8 @@ const SheetPage = () => {
                                             <span style={styles.headerText}>
                                                 {flexRender(header.column.columnDef.header, header.getContext())}
                                             </span>
-                                            <FaFilter
+                                            <Filter
+                                                size={16}
                                                 style={{
                                                     ...styles.filterIcon,
                                                     ...(hasFilter || openFilterColumn === colId ? styles.filterIconActive : {}),
@@ -1051,7 +1052,7 @@ const SheetPage = () => {
                             }
                         }}
                     >
-                        <FaChartBar /> Summary
+                        <BarChart3 size={14} /> Summary
                     </button>
 
                     {/* Hostel Tabs */}
