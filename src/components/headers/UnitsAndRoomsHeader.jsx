@@ -15,14 +15,14 @@ const UnitsAndRoomsHeader = ({
   return (
     <PageHeader title={title}>
       {showBackToUnits && (
-        <Button variant="white" onClick={onBackToUnits} icon={<FaBuilding />}>
+        <Button variant="outline" onClick={onBackToUnits} icon={<FaBuilding />}>
           Back to Units
         </Button>
       )}
 
       {showBackToHostels && ["Admin"].includes(userRole) && (
         <Link to="/admin/hostels">
-          <Button variant="white" icon={<FaBuilding />}>
+          <Button variant="outline" icon={<FaBuilding />}>
             Back to Hostels
           </Button>
         </Link>
