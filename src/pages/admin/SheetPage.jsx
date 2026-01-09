@@ -5,7 +5,7 @@ import {
     flexRender,
 } from "@tanstack/react-table"
 import { useVirtualizer } from "@tanstack/react-virtual"
-import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes, FaChartBar } from "react-icons/fa"
+import { FaSearch, FaUser, FaFilter, FaColumns, FaTimes, FaChartBar, FaDownload, FaFileCsv, FaFileExcel, FaFileCode, FaChevronDown } from "react-icons/fa"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { sheetApi } from "../../service"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
@@ -401,6 +401,134 @@ const renderDate = (value) => {
     return new Date(value).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })
 }
 
+// Export utility functions
+const prepareExportData = (data, columns) => {
+    if (!data?.length || !columns?.length) return null
+
+    const headers = columns.map((col) => col.header)
+    const rows = data.map((row) =>
+        columns.map((col) => {
+            let value = row[col.accessorKey]
+            if (value === null || value === undefined) return ""
+            if (typeof value === "boolean") return value ? "Yes" : "No"
+            return String(value)
+        })
+    )
+
+    return { headers, rows }
+}
+
+const downloadFile = (content, filename, mimeType) => {
+    const blob = new Blob([content], { type: mimeType })
+    const link = document.createElement("a")
+    link.href = URL.createObjectURL(blob)
+    link.download = filename
+    link.click()
+    URL.revokeObjectURL(link.href)
+}
+
+const exportToCSV = (data, columns, filename) => {
+    const prepared = prepareExportData(data, columns)
+    if (!prepared) return
+
+    const escapeCSV = (value) => {
+        const str = String(value)
+        if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+            return `"${str.replace(/"/g, '""')}"`
+        }
+        return str
+    }
+
+    const csvContent = [
+        prepared.headers.map(escapeCSV).join(","),
+        ...prepared.rows.map((row) => row.map(escapeCSV).join(",")),
+    ].join("\n")
+
+    downloadFile("\ufeff" + csvContent, `${filename}_${new Date().toISOString().split("T")[0]}.csv`, "text/csv;charset=utf-8;")
+}
+
+const exportToTSV = (data, columns, filename) => {
+    const prepared = prepareExportData(data, columns)
+    if (!prepared) return
+
+    const escapeTSV = (value) => {
+        const str = String(value)
+        return str.replace(/\t/g, " ").replace(/\n/g, " ")
+    }
+
+    const tsvContent = [
+        prepared.headers.map(escapeTSV).join("\t"),
+        ...prepared.rows.map((row) => row.map(escapeTSV).join("\t")),
+    ].join("\n")
+
+    downloadFile("\ufeff" + tsvContent, `${filename}_${new Date().toISOString().split("T")[0]}.tsv`, "text/tab-separated-values;charset=utf-8;")
+}
+
+const exportToJSON = (data, columns, filename) => {
+    if (!data?.length || !columns?.length) return
+
+    const jsonData = data.map((row) => {
+        const obj = {}
+        columns.forEach((col) => {
+            let value = row[col.accessorKey]
+            if (typeof value === "boolean") value = value ? "Yes" : "No"
+            obj[col.header] = value ?? ""
+        })
+        return obj
+    })
+
+    const jsonContent = JSON.stringify(jsonData, null, 2)
+    downloadFile(jsonContent, `${filename}_${new Date().toISOString().split("T")[0]}.json`, "application/json;charset=utf-8;")
+}
+
+const exportToExcel = (data, columns, filename) => {
+    const prepared = prepareExportData(data, columns)
+    if (!prepared) return
+
+    // Create Excel XML format (compatible with Excel without external libraries)
+    const escapeXML = (value) => {
+        const str = String(value)
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;")
+    }
+
+    const xmlRows = prepared.rows.map((row) =>
+        `<Row>${row.map((cell) => `<Cell><Data ss:Type="String">${escapeXML(cell)}</Data></Cell>`).join("")}</Row>`
+    ).join("\n")
+
+    const xmlHeaders = `<Row>${prepared.headers.map((h) => `<Cell ss:StyleID="Header"><Data ss:Type="String">${escapeXML(h)}</Data></Cell>`).join("")}</Row>`
+
+    const excelXML = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+  <Styles>
+    <Style ss:ID="Default"><Alignment ss:Vertical="Center"/></Style>
+    <Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#E8F1FE" ss:Pattern="Solid"/></Style>
+  </Styles>
+  <Worksheet ss:Name="Sheet1">
+    <Table>
+      ${xmlHeaders}
+      ${xmlRows}
+    </Table>
+  </Worksheet>
+</Workbook>`
+
+    downloadFile(excelXML, `${filename}_${new Date().toISOString().split("T")[0]}.xls`, "application/vnd.ms-excel;charset=utf-8;")
+}
+
+// Export formats configuration
+const EXPORT_FORMATS = [
+    { id: "csv", label: "CSV (.csv)", icon: FaFileCsv, handler: exportToCSV, description: "Comma-separated values" },
+    { id: "excel", label: "Excel (.xls)", icon: FaFileExcel, handler: exportToExcel, description: "Microsoft Excel" },
+    { id: "tsv", label: "TSV (.tsv)", icon: FaFileCsv, handler: exportToTSV, description: "Tab-separated values" },
+    { id: "json", label: "JSON (.json)", icon: FaFileCode, handler: exportToJSON, description: "JavaScript Object Notation" },
+]
+
 // Summary Table Component
 const SummaryTable = ({ data, onHostelClick }) => {
     if (!data || !data.columns || !data.data) {
@@ -491,7 +619,9 @@ const SheetPage = () => {
     const [columnFilters, setColumnFilters] = useState({})
     const [openFilterColumn, setOpenFilterColumn] = useState(null)
     const [showColumnsPanel, setShowColumnsPanel] = useState(false)
+    const [showExportDropdown, setShowExportDropdown] = useState(false)
     const tableContainerRef = useRef(null)
+    const exportDropdownRef = useRef(null)
 
     const isSummaryTab = selectedTab === SUMMARY_TAB_ID
 
@@ -653,6 +783,30 @@ const SheetPage = () => {
         setSelectedTab(hostelId)
     }
 
+    const handleExport = (format) => {
+        setShowExportDropdown(false)
+        const filename = isSummaryTab ? "hostel_summary" : (selectedHostel?.name || "hostel_sheet")
+        const dataToExport = isSummaryTab ? summaryData?.data : filteredData
+        const columnsToExport = isSummaryTab ? summaryData?.columns : sheetData?.columns?.filter(
+            (col) => columnVisibility[col.accessorKey] !== false
+        )
+
+        if (dataToExport?.length && columnsToExport?.length) {
+            format.handler(dataToExport, columnsToExport, filename)
+        }
+    }
+
+    // Close export dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (exportDropdownRef.current && !exportDropdownRef.current.contains(event.target)) {
+                setShowExportDropdown(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
+
     const hasActiveFilters = Object.keys(columnFilters).length > 0 || globalFilter
 
     const selectedHostel = hostelList?.find((h) => h._id === selectedTab)
@@ -693,6 +847,77 @@ const SheetPage = () => {
                         )}
                     </>
                 )}
+
+                <div style={{ position: "relative" }} ref={exportDropdownRef}>
+                    <button
+                        style={{
+                            ...styles.toolbarButton,
+                            ...(showExportDropdown ? styles.toolbarButtonActive : {}),
+                        }}
+                        onClick={() => setShowExportDropdown(!showExportDropdown)}
+                        title="Export data"
+                    >
+                        <FaDownload /> Export <FaChevronDown style={{ fontSize: "10px", marginLeft: "2px" }} />
+                    </button>
+
+                    {showExportDropdown && (
+                        <div style={{
+                            position: "absolute",
+                            top: "100%",
+                            left: 0,
+                            marginTop: "var(--spacing-1)",
+                            backgroundColor: "var(--color-bg-primary)",
+                            borderRadius: "var(--radius-dropdown)",
+                            boxShadow: "var(--shadow-lg)",
+                            border: "var(--border-1) solid var(--color-border-primary)",
+                            minWidth: "200px",
+                            zIndex: 100,
+                            overflow: "hidden",
+                        }}>
+                            <div style={{
+                                padding: "var(--spacing-2) var(--spacing-3)",
+                                borderBottom: "var(--border-1) solid var(--color-border-light)",
+                                fontSize: "var(--font-size-2xs)",
+                                fontWeight: "var(--font-weight-semibold)",
+                                color: "var(--color-text-muted)",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.05em",
+                            }}>
+                                Export As
+                            </div>
+                            {EXPORT_FORMATS.map((format) => (
+                                <button
+                                    key={format.id}
+                                    onClick={() => handleExport(format)}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "var(--spacing-2)",
+                                        width: "100%",
+                                        padding: "var(--spacing-2) var(--spacing-3)",
+                                        backgroundColor: "transparent",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        fontSize: "var(--font-size-xs)",
+                                        color: "var(--color-text-body)",
+                                        textAlign: "left",
+                                        transition: "var(--transition-colors)",
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "var(--color-bg-hover)"}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+                                >
+                                    <format.icon style={{ fontSize: "14px", color: "var(--color-primary)", flexShrink: 0 }} />
+                                    <div>
+                                        <div style={{ fontWeight: "var(--font-weight-medium)" }}>{format.label}</div>
+                                        <div style={{ fontSize: "var(--font-size-2xs)", color: "var(--color-text-muted)" }}>
+                                            {format.description}
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 <span style={styles.infoText}>
                     {isSummaryTab
