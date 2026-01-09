@@ -2,18 +2,15 @@ import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
 import { Link } from "react-router-dom"
 import { FaBuilding, FaFileImport } from "react-icons/fa"
-import { MdFilterAlt, MdClearAll } from "react-icons/md"
 
-const UnitsAndRoomsHeader = ({ 
-  title, 
-  showFilters, 
-  onToggleFilters, 
-  onBackToUnits, 
-  onUpdateAllocations, 
-  showBackToUnits, 
-  showBackToHostels, 
-  showUpdateAllocations, 
-  userRole 
+const UnitsAndRoomsHeader = ({
+  title,
+  onBackToUnits,
+  onUpdateAllocations,
+  showBackToUnits,
+  showBackToHostels,
+  showUpdateAllocations,
+  userRole
 }) => {
   return (
     <PageHeader title={title}>
@@ -36,10 +33,6 @@ const UnitsAndRoomsHeader = ({
           Update Allocations
         </Button>
       )}
-
-      <Button variant="white" onClick={onToggleFilters} icon={showFilters ? <MdClearAll /> : <MdFilterAlt />}>
-        {showFilters ? "Hide Filters" : "Show Filters"}
-      </Button>
     </PageHeader>
   )
 }

@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { FaBuilding, FaDoorOpen } from "react-icons/fa"
-import { MdFilterAlt, MdClearAll, MdMeetingRoom } from "react-icons/md"
-import { hostelApi } from "../../service"
-import { SearchInput } from "@/components/ui"
+import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import NoResults from "../../components/common/NoResults"
 import UnitStats from "../../components/wardens/UnitStats"
 import UnitListView from "../../components/wardens/UnitListView"
@@ -17,7 +15,9 @@ import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
-import { Input, Checkbox, Button } from "@/components/ui"
+import { hostelApi } from "../../service"
+import { Input, Checkbox, Button, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { MdMeetingRoom } from "react-icons/md"
 
 const UnitsAndRoomsPage = () => {
   const { user, getHomeRoute } = useAuth()
@@ -41,7 +41,7 @@ const UnitsAndRoomsPage = () => {
   const [showAllocateModal, setShowAllocateModal] = useState(false)
   const [showUploadModal, setShowUploadModal] = useState(false)
 
-  const [showFilters, setShowFilters] = useState(true)
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(false)
   const [currentHostel, setCurrentHostel] = useState(null)
   const hostelType = currentHostel?.type || "unit-based"
 
@@ -356,7 +356,7 @@ const UnitsAndRoomsPage = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <UnitsAndRoomsHeader title={dynamicTitle} showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
+      <UnitsAndRoomsHeader title={dynamicTitle}
         onBackToUnits={goBackToUnits}
         onUpdateAllocations={() => setShowUploadModal(true)}
         showBackToUnits={hostelType === "unit-based" && currentView === "rooms"}
@@ -369,59 +369,68 @@ const UnitsAndRoomsPage = () => {
 
         {hostelType === "unit-based" ? <UnitStats units={units} rooms={rooms} currentView={currentView} totalCount={totalItems} /> : <RoomStats rooms={rooms} totalCount={totalItems} />}
 
-        {showFilters && (
-          <div style={{ marginTop: 'var(--spacing-6)' }}>
-            <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-5)', border: 'var(--border-1) solid var(--color-border-light)' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }} className="sm:flex-row sm:items-center">
-                <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center', marginBottom: 'var(--spacing-2)' }} className="sm:mb-0">
-                  <MdFilterAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
-                </h3>
-                <Button onClick={resetFilters} variant="ghost" size="small" icon={<MdClearAll />}>
-                  Reset Filters
-                </Button>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 'var(--gap-md)' }} className="sm:grid-cols-2 lg:grid-cols-4">
-                <SearchInput value={filters.searchTerm} onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })} placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"}...`} className="w-full sm:col-span-2 lg:col-span-1" />
-
-                {/* Only show all filters for units view */}
-                {hostelType === "unit-based" && currentView === "units" && (
-                  <>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <label htmlFor="minCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                        Min Capacity
-                      </label>
-                      <Input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <label htmlFor="maxCapacity" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                        Max Capacity
-                      </label>
-                      <Input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" />
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <label htmlFor="minOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                        Min Occupancy
-                      </label>
-                      <Input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <label htmlFor="maxOccupancy" style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-1)' }}>
-                        Max Occupancy
-                      </label>
-                      <Input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" />
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', paddingTop: 'var(--spacing-4)' }} className="sm:pt-0 sm:items-end sm:pb-1">
-                      <Checkbox id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} label="Show Empty Units Only" />
-                    </div>
-                  </>
-                )}
-              </div>
+        {/* Filter Section - StudentFilterSection style */}
+        <Card style={{ marginTop: 'var(--spacing-6)', overflow: 'visible' }} padding="p-4">
+          {/* Compact row: Search + More Filters + Reset */}
+          <HStack gap="small" align="center">
+            <div style={{ flex: 1 }}>
+              <Input
+                type="text"
+                placeholder={`Search ${hostelType === "unit-based" && currentView === "units" ? "units" : "rooms"} by number...`}
+                value={filters.searchTerm}
+                onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+                icon={<Search size={16} />}
+              />
             </div>
-          </div>
-        )}
+            {hostelType === "unit-based" && currentView === "units" && (
+              <Button
+                onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+                variant="secondary"
+                size="small"
+                icon={<SlidersHorizontal size={16} />}
+              >
+                {isFiltersExpanded ? "Less" : "More"}
+                {isFiltersExpanded ? <ChevronUp size={14} style={{ marginLeft: 'var(--spacing-1)' }} /> : <ChevronDown size={14} style={{ marginLeft: 'var(--spacing-1)' }} />}
+              </Button>
+            )}
+            <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
+              Reset
+            </Button>
+          </HStack>
+
+          {/* Expanded filters section - only for units view */}
+          {isFiltersExpanded && hostelType === "unit-based" && currentView === "units" && (
+            <VStack gap="medium" style={{ marginTop: 'var(--spacing-4)' }}>
+              <Divider spacing="none" />
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)', paddingTop: 'var(--spacing-4)' }}>
+                <VStack gap="xsmall">
+                  <Label size="sm">Min Capacity</Label>
+                  <Input id="minCapacity" type="number" min="0" value={filters.minCapacity} onChange={(e) => setFilters({ ...filters, minCapacity: e.target.value })} placeholder="Any" />
+                </VStack>
+
+                <VStack gap="xsmall">
+                  <Label size="sm">Max Capacity</Label>
+                  <Input id="maxCapacity" type="number" min="0" value={filters.maxCapacity} onChange={(e) => setFilters({ ...filters, maxCapacity: e.target.value })} placeholder="Any" />
+                </VStack>
+
+                <VStack gap="xsmall">
+                  <Label size="sm">Min Occupancy</Label>
+                  <Input id="minOccupancy" type="number" min="0" value={filters.minOccupancy} onChange={(e) => setFilters({ ...filters, minOccupancy: e.target.value })} placeholder="Any" />
+                </VStack>
+
+                <VStack gap="xsmall">
+                  <Label size="sm">Max Occupancy</Label>
+                  <Input id="maxOccupancy" type="number" min="0" value={filters.maxOccupancy} onChange={(e) => setFilters({ ...filters, maxOccupancy: e.target.value })} placeholder="Any" />
+                </VStack>
+
+                <VStack gap="xsmall" style={{ justifyContent: 'flex-end' }}>
+                  <Checkbox id="showEmptyOnly" checked={filters.showEmptyOnly} onChange={(e) => setFilters({ ...filters, showEmptyOnly: e.target.checked })} label="Show Empty Units Only" />
+                </VStack>
+              </div>
+            </VStack>
+          )}
+        </Card>
 
         <div style={{ marginTop: 'var(--spacing-6)' }}>
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
