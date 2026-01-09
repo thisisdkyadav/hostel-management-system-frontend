@@ -85,7 +85,6 @@ const styles = {
   warningText: {
     fontSize: 'var(--font-size-sm)',
     color: 'var(--color-text-light)',
-    maxWidth: '22rem',
     order: 2,
   },
   warningContent: {
