@@ -196,7 +196,7 @@
   --radius-full: 9999px;       /* Only for avatars, pills */
 
   /* Specific Component Radii - Harmonized */
-  --radius-button-sm: 8px;           /* Small buttons */
+  --radius-button-sm: 10px;           /* Small buttons */
   --radius-button-md: 12px;          /* Medium buttons (default) */
   --radius-button-lg: 14px;          /* Large buttons */
   --radius-button-pill: 9999px;      /* Pill variant only */
