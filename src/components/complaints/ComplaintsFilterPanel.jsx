@@ -14,7 +14,23 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
         </Button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', rowGap: 'var(--spacing-4)', columnGap: 'var(--spacing-4)' }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <VStack gap="xsmall">
+          <Label size="sm">Status</Label>
+          <Select
+            value={filters.status}
+            onChange={(e) => updateFilter("status", e.target.value)}
+            placeholder="All Statuses"
+            options={[
+              { value: "all", label: "All Complaints" },
+              { value: "Pending", label: "Pending" },
+              { value: "In Progress", label: "In Progress" },
+              { value: "Forwarded to IDO", label: "Forwarded to IDO" },
+              { value: "Resolved", label: "Resolved" }
+            ]}
+          />
+        </VStack>
+
         {hostels.length > 0 && (
           <VStack gap="xsmall">
             <Label size="sm">Hostel</Label>
