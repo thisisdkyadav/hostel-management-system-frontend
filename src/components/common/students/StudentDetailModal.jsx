@@ -1,31 +1,29 @@
 import React, { useState, useEffect, useRef } from "react"
 import {
-  FaEnvelope,
-  FaPhone,
-  FaUserGraduate,
-  FaCalendarAlt,
-  FaMapMarkerAlt,
-  FaBuilding,
-  FaClipboardList,
-  FaHistory,
-  FaUserFriends,
-  FaComments,
-  FaUsers,
-  FaHeartbeat,
-  FaBoxes,
-  FaPlus,
-  FaEdit,
-  FaTrash,
-  FaUndo,
-  FaIdCard,
-  FaExpand,
-  FaRegClock,
-  FaCheck,
-  FaTimes,
-  FaUserCheck,
-  FaUserSlash,
-  FaUserClock,
-} from "react-icons/fa"
+  Mail,
+  Phone,
+  GraduationCap,
+  Calendar,
+  MapPin,
+  Building,
+  ClipboardList,
+  History,
+  Users,
+  MessageSquare,
+  Heart,
+  Package,
+  Plus,
+  Edit,
+  Trash,
+  Undo,
+  CreditCard,
+  Maximize,
+  Clock,
+  Check,
+  X,
+  UserCheck,
+  UserX,
+} from "lucide-react"
 import { studentApi } from "../../../service"
 import { visitorApi } from "../../../service"
 import { securityApi } from "../../../service"
@@ -80,17 +78,17 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
   // Define tabs for modal
   const modalTabs = [
-    { id: "profile", name: "Profile", icon: <FaUserGraduate /> },
-    { id: "complaints", name: "Complaints", icon: <FaClipboardList /> },
-    { id: "access", name: "Access History", icon: <FaHistory /> },
-    { id: "visitors", name: "Visitors", icon: <FaUserFriends /> },
-    { id: "feedback", name: "Feedback", icon: <FaComments /> },
-    { id: "inventory", name: "Inventory", icon: <FaBoxes /> },
-    { id: "idcard", name: "ID Card", icon: <FaIdCard /> },
-    { id: "disco", name: "DisCo Actions", icon: <FaUserFriends /> },
-    { id: "certificates", name: "Certificates", icon: <FaIdCard /> },
-    { id: "family", name: "Family", icon: <FaUsers /> },
-    { id: "health", name: "Health", icon: <FaHeartbeat /> },
+    { id: "profile", name: "Profile", icon: <GraduationCap size={16} /> },
+    { id: "complaints", name: "Complaints", icon: <ClipboardList size={16} /> },
+    { id: "access", name: "Access History", icon: <History size={16} /> },
+    { id: "visitors", name: "Visitors", icon: <Users size={16} /> },
+    { id: "feedback", name: "Feedback", icon: <MessageSquare size={16} /> },
+    { id: "inventory", name: "Inventory", icon: <Package size={16} /> },
+    { id: "idcard", name: "ID Card", icon: <CreditCard size={16} /> },
+    { id: "disco", name: "DisCo Actions", icon: <Users size={16} /> },
+    { id: "certificates", name: "Certificates", icon: <CreditCard size={16} /> },
+    { id: "family", name: "Family", icon: <Users size={16} /> },
+    { id: "health", name: "Health", icon: <Heart size={16} /> },
   ]
 
   const fetchStudentDetails = async () => {
@@ -292,7 +290,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       flexShrink: 0,
                     }}
                   >
-                    <FaUserGraduate style={{ height: "var(--icon-3xl)", width: "var(--icon-3xl)", color: "var(--color-white)" }} />
+                    <GraduationCap size={48} style={{ color: "var(--color-white)" }} />
                   </div>
                 )}
 
@@ -303,11 +301,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
                   <div style={{ display: "flex", flexDirection: "row", gap: "var(--spacing-4)", alignItems: "center" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <FaEnvelope style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                      <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                       <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.email || "N/A"}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      <FaPhone style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                      <Phone size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                       <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.phone || "N/A"}</span>
                     </div>
                   </div>
@@ -346,22 +344,22 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                   ? "var(--color-text-secondary)"
                                   : "var(--color-info)",
                         border: `var(--border-1) solid ${studentDetails.status === "Active"
-                            ? "var(--color-success-light)"
-                            : studentDetails.status === "Graduated"
-                              ? "var(--color-primary-light)"
-                              : studentDetails.status === "Dropped"
-                                ? "var(--color-danger-light)"
-                                : studentDetails.status === "Inactive"
-                                  ? "var(--color-border-primary)"
-                                  : "var(--color-info-light)"
+                          ? "var(--color-success-light)"
+                          : studentDetails.status === "Graduated"
+                            ? "var(--color-primary-light)"
+                            : studentDetails.status === "Dropped"
+                              ? "var(--color-danger-light)"
+                              : studentDetails.status === "Inactive"
+                                ? "var(--color-border-primary)"
+                                : "var(--color-info-light)"
                           }`,
                       }}
                     >
-                      {studentDetails.status === "Active" && <FaUserCheck style={{ marginRight: "var(--spacing-1)" }} />}
-                      {studentDetails.status === "Graduated" && <FaUserGraduate style={{ marginRight: "var(--spacing-1)" }} />}
-                      {studentDetails.status === "Dropped" && <FaUserSlash style={{ marginRight: "var(--spacing-1)" }} />}
-                      {studentDetails.status === "Inactive" && <FaUserClock style={{ marginRight: "var(--spacing-1)" }} />}
-                      {!["Active", "Graduated", "Dropped", "Inactive"].includes(studentDetails.status) && <FaUserGraduate style={{ marginRight: "var(--spacing-1)" }} />}
+                      {studentDetails.status === "Active" && <UserCheck size={14} style={{ marginRight: "var(--spacing-1)" }} />}
+                      {studentDetails.status === "Graduated" && <GraduationCap size={14} style={{ marginRight: "var(--spacing-1)" }} />}
+                      {studentDetails.status === "Dropped" && <UserX size={14} style={{ marginRight: "var(--spacing-1)" }} />}
+                      {studentDetails.status === "Inactive" && <Clock size={14} style={{ marginRight: "var(--spacing-1)" }} />}
+                      {!["Active", "Graduated", "Dropped", "Inactive"].includes(studentDetails.status) && <GraduationCap size={14} style={{ marginRight: "var(--spacing-1)" }} />}
                       {studentDetails.status || "Active"}
                     </span>
                   </div>
@@ -372,7 +370,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-5)" }}>
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <FaUserGraduate style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                  <GraduationCap size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Academic Information</h4>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
@@ -397,7 +395,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <FaBuilding style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                  <Building size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Hostel Information</h4>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
@@ -424,7 +422,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <FaCalendarAlt style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                  <Calendar size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Personal Information</h4>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
@@ -445,7 +443,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
 
               <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", transition: "var(--transition-all)" }}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", paddingBottom: "var(--spacing-2)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
-                  <FaMapMarkerAlt style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                  <MapPin size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                   <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>Emergency Contact</h4>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2-5)" }}>
@@ -510,7 +508,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : accessRecords.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-                <FaHistory style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                <History size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <p style={{ color: "var(--color-text-muted)" }}>No access records found for this student</p>
               </div>
             ) : (
@@ -564,7 +562,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : visitorRequests.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-                <FaUserFriends style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                <Users size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <p style={{ color: "var(--color-text-muted)" }}>No visitor requests found for this student</p>
               </div>
             ) : (
@@ -620,7 +618,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : feedbacks.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-                <FaComments style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                <MessageSquare size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <p style={{ color: "var(--color-text-muted)" }}>No feedback found for this student</p>
               </div>
             ) : (
@@ -661,7 +659,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)" }}>Student Inventory</h3>
               {user && canAccess("student_inventory", "create") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                <Button onClick={handleOpenAssignInventory} variant="primary" size="small" icon={<FaPlus size={14} />}>
+                <Button onClick={handleOpenAssignInventory} variant="primary" size="small" icon={<Plus size={14} />}>
                   Assign Item
                 </Button>
               )}
@@ -673,7 +671,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : studentInventory.length === 0 ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-                <FaBoxes style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                <Package size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <p style={{ color: "var(--color-text-muted)" }}>No inventory items assigned to this student</p>
               </div>
             ) : (
@@ -697,7 +695,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                         <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
                           <div style={{ display: "flex", alignItems: "center" }}>
                             <div style={{ width: "var(--spacing-8)", height: "var(--spacing-8)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginRight: "var(--spacing-3)" }}>
-                              <FaBoxes style={{ color: "var(--color-primary)" }} />
+                              <Package size={16} style={{ color: "var(--color-primary)" }} />
                             </div>
                             <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>{item.itemTypeId.name}</span>
                           </div>
@@ -739,7 +737,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                 }}
                                 variant="ghost"
                                 size="small"
-                                icon={<FaEdit />}
+                                icon={<Edit size={16} />}
                                 title="View/Edit Item"
                               />
                               {item.status === "Issued" && (
@@ -760,7 +758,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                   }}
                                   variant="success"
                                   size="small"
-                                  icon={<FaUndo />}
+                                  icon={<Undo size={16} />}
                                   title="Return Item"
                                 />
                               )}
@@ -786,7 +784,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               </div>
             ) : !idCardData.front && !idCardData.back ? (
               <div style={{ textAlign: "center", padding: "var(--spacing-10) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
-                <FaIdCard style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-4xl)" }} />
+                <CreditCard size={48} style={{ margin: "0 auto", color: "var(--color-text-disabled)", marginBottom: "var(--spacing-2)" }} />
                 <p style={{ color: "var(--color-text-muted)" }}>No ID card images found for this student</p>
               </div>
             ) : (

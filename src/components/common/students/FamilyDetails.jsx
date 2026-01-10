@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { adminApi } from "../../../service"
-import { FaPlus } from "react-icons/fa"
+import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button } from "@/components/ui"
@@ -229,7 +229,7 @@ const FamilyDetails = ({ userId }) => {
       <div style={styles.header}>
         <h3 style={styles.title}>Family Information</h3>
         {canAccess("students_info", "create") && (
-          <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
+          <Button variant="primary" size="small" icon={<Plus size={16} />} onClick={handleAddClick}>
             Add Family Member
           </Button>
         )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { FaPlus, FaFileAlt, FaFilePdf, FaImage } from "react-icons/fa"
+import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button } from "@/components/ui"
@@ -75,14 +75,14 @@ const Certificates = ({ userId }) => {
   }
 
   const getFileIcon = (url) => {
-    if (!url) return <FaFileAlt style={{ color: "var(--color-text-muted)" }} />
+    if (!url) return <FileText size={24} style={{ color: "var(--color-text-muted)" }} />
     const urlLower = url.toLowerCase()
     if (urlLower.endsWith(".pdf")) {
-      return <FaFilePdf style={{ color: "var(--color-danger)" }} />
+      return <FileType size={24} style={{ color: "var(--color-danger)" }} />
     } else if (urlLower.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
-      return <FaImage style={{ color: "var(--color-primary)" }} />
+      return <Image size={24} style={{ color: "var(--color-primary)" }} />
     }
-    return <FaFileAlt style={{ color: "var(--color-text-muted)" }} />
+    return <FileText size={24} style={{ color: "var(--color-text-muted)" }} />
   }
 
   const styles = {
@@ -233,7 +233,7 @@ const Certificates = ({ userId }) => {
       <div style={styles.header}>
         <h3 style={styles.title}>Certificates Issued</h3>
         {canAccess("students_info", "create") && (
-          <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
+          <Button variant="primary" size="small" icon={<Plus size={16} />} onClick={handleAddClick}>
             Add Certificate
           </Button>
         )}
