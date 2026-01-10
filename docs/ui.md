@@ -649,6 +649,8 @@ Simple horizontal tabs with underlined active indicator. Designed for page/secti
 | `currentPage` | `number` | - | Current active page |
 | `totalPages` | `number` | - | Total number of pages |
 | `paginate` | `function` | - | Page change handler (receives page number) |
+| `compact` | `boolean` | `false` | If true, removes padding/margins for minimal height (ideal for footers) |
+| `showPageInfo` | `boolean` | `true` | If true, shows "Page X of Y" text |
 
 ### Breadcrumb
 

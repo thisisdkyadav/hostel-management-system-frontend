@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { GraduationCap } from "lucide-react"
 import NoResults from "../../components/common/NoResults"
+import PageFooter from "../../components/common/PageFooter"
 import StudentStats from "../../components/common/students/StudentStats"
 import StudentFilterSection from "../../components/common/students/StudentFilterSection"
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
@@ -213,11 +214,7 @@ const StudentsPage = () => {
 
         <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} setPageSize={setPageSize} missingOptions={missingOptions} />
 
-        <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-3)' }} className="sm:flex-row sm:items-center sm:gap-0">
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-            Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{students.length}</span> out of <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{totalCount}</span> students
-          </div>
-        </div>
+
 
         {loading ? (
           <TableShimmer rows={pagination.pageSize || 10} />
@@ -226,8 +223,6 @@ const StudentsPage = () => {
             <div style={{ marginTop: 'var(--spacing-4)' }}>
               <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />
             </div>
-
-            <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />
 
           </>
         )}
@@ -238,6 +233,17 @@ const StudentsPage = () => {
         {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
         {["Admin"].includes(user?.role) && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
       </div>
+
+      <PageFooter
+        leftContent={[
+          <span key="count" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
+            Showing <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{loading ? 0 : students.length}</span> of <span style={{ fontWeight: 'var(--font-weight-semibold)' }}>{loading ? 0 : totalCount}</span> students
+          </span>
+        ]}
+        rightContent={[
+          <Pagination key="pagination" currentPage={pagination.currentPage || 1} totalPages={totalPages || 0} paginate={paginate} compact showPageInfo={false} />
+        ]}
+      />
     </div>
   )
 }

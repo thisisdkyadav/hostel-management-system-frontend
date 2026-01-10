@@ -19,7 +19,8 @@ const PageFooter = ({ leftContent = [], rightContent = [], className = "" }) => 
             className={`sticky bottom-0 z-10 bg-[var(--color-bg-primary)] border-t border-[var(--color-border-primary)] ${className}`}
             style={{
                 boxShadow: 'var(--shadow-sm)',
-                minHeight: '48px',
+                height: '48px',
+                maxHeight: '48px',
             }}
         >
             <div className="h-full px-4 md:px-6 lg:px-8 py-2 flex items-center">

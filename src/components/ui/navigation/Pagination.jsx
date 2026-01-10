@@ -7,13 +7,25 @@ import Button from "@/components/ui/button/Button"
  * @param {number} currentPage - Current active page
  * @param {number} totalPages - Total number of pages
  * @param {function} paginate - Page change handler
+ * @param {boolean} compact - If true, removes padding/margins for minimal height (default: false)
+ * @param {boolean} showPageInfo - If true, shows "Page X of Y" text (default: true)
  */
-const Pagination = ({ currentPage, totalPages, paginate }) => {
+const Pagination = ({ currentPage, totalPages, paginate, compact = false, showPageInfo = true }) => {
+  const wrapperStyles = compact
+    ? { display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }
+    : {}
+
+  const wrapperClass = compact
+    ? ""
+    : "mt-6 flex flex-col sm:flex-row justify-between items-center"
+
   return (
-    <div className="mt-6 flex flex-col sm:flex-row justify-between items-center">
-      <div className="text-sm text-[var(--color-text-muted)] mb-3 sm:mb-0">
-        Page {currentPage} of {totalPages}
-      </div>
+    <div className={wrapperClass} style={wrapperStyles}>
+      {showPageInfo && (
+        <div className={`text-sm text-[var(--color-text-muted)] ${compact ? '' : 'mb-3 sm:mb-0'}`}>
+          Page {currentPage} of {totalPages}
+        </div>
+      )}
 
       <nav className="flex flex-wrap justify-center gap-2">
         <Button
@@ -63,3 +75,4 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
 }
 
 export default Pagination
+
