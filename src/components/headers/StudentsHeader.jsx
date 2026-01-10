@@ -1,14 +1,10 @@
 import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
-import { MdFilterAlt, MdClearAll } from "react-icons/md"
 import { FaFileExport, FaFileImport, FaEdit } from "react-icons/fa"
 
-const StudentsHeader = ({ showFilters, onToggleFilters, onImport, onBulkUpdate, onUpdateAllocations, onExport, userRole }) => {
+const StudentsHeader = ({ onImport, onBulkUpdate, onUpdateAllocations, onExport, userRole }) => {
   return (
     <PageHeader title="Student Management">
-      <Button variant="white" onClick={onToggleFilters} icon={showFilters ? <MdClearAll /> : <MdFilterAlt />}>
-        {showFilters ? "Hide Filters" : "Show Filters"}
-      </Button>
 
       {["Admin"].includes(userRole) && (
         <>

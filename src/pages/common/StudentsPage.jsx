@@ -61,7 +61,6 @@ const StudentsPage = () => {
   const { hostelList = [] } = useGlobal()
   const hostels = ["Admin"].includes(user.role) ? hostelList : []
 
-  const [showFilters, setShowFilters] = useState(true)
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showImportModal, setShowImportModal] = useState(false)
@@ -200,7 +199,7 @@ const StudentsPage = () => {
         </div>
       )}
 
-      <StudentsHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)}
+      <StudentsHeader
         onImport={() => setShowImportModal(true)}
         onBulkUpdate={() => setShowUpdateModal(true)}
         onUpdateAllocations={() => setShowAllocateModal(true)}
@@ -212,9 +211,7 @@ const StudentsPage = () => {
 
         <StudentStats />
 
-        {showFilters && (
-          <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} setPageSize={setPageSize} missingOptions={missingOptions} />
-        )}
+        <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} setPageSize={setPageSize} missingOptions={missingOptions} />
 
         <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-start', gap: 'var(--spacing-3)' }} className="sm:flex-row sm:items-center sm:gap-0">
           <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
