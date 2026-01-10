@@ -15,6 +15,7 @@ import PropTypes from "prop-types"
  * @param {boolean} fullWidth - Full width button
  * @param {boolean} gradient - Use gradient background (primary only)
  * @param {boolean} rounded - Pill-shaped button
+ * @param {boolean} keepTextOnMobile - If true, keeps text visible on mobile (prevents icon-only mode)
  * @param {string} animation - Animation type: none, pulse, bounce, glow, ripple
  * @param {string} className - Additional class names
  * @param {object} style - Additional inline styles
@@ -31,6 +32,7 @@ const Button = forwardRef(({
   fullWidth = false,
   gradient = false,
   rounded = false,
+  keepTextOnMobile = false,
   animation = "none",
   className = "",
   style = {},
@@ -128,10 +130,10 @@ const Button = forwardRef(({
     ...sizeStyles[size],
     ...(gradient && variant === "primary"
       ? {
-          background: "var(--gradient-primary)",
-          boxShadow: isHovered ? "var(--shadow-button-primary-hover)" : "var(--shadow-button-primary)",
-          transition: "var(--transition-all)",
-        }
+        background: "var(--gradient-primary)",
+        boxShadow: isHovered ? "var(--shadow-button-primary-hover)" : "var(--shadow-button-primary)",
+        transition: "var(--transition-all)",
+      }
       : {}),
     ...style,
   }
@@ -203,6 +205,7 @@ Button.propTypes = {
   animation: PropTypes.oneOf(["none", "pulse", "bounce", "glow", "ripple"]),
   gradient: PropTypes.bool,
   rounded: PropTypes.bool,
+  keepTextOnMobile: PropTypes.bool,
   style: PropTypes.object,
 }
 
