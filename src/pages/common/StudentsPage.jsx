@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaUserGraduate, FaTable } from "react-icons/fa"
+import { GraduationCap } from "lucide-react"
 import NoResults from "../../components/common/NoResults"
 import StudentStats from "../../components/common/students/StudentStats"
 import StudentFilterSection from "../../components/common/students/StudentFilterSection"
@@ -229,7 +229,7 @@ const StudentsPage = () => {
 
             <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />
 
-            {students.length === 0 && !loading && <NoResults icon={<FaUserGraduate style={{ color: 'var(--color-text-placeholder)', fontSize: 'var(--font-size-4xl)' }} />} message="No students found" suggestion="Try changing your search or filter criteria" />}
+            {students.length === 0 && !loading && <NoResults icon={<GraduationCap size={48} style={{ color: 'var(--color-text-placeholder)' }} />} message="No students found" suggestion="Try changing your search or filter criteria" />}
           </>
         )}
 
