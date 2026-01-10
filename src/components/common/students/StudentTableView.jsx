@@ -79,7 +79,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
     },
   ]
 
-  return <DataTable columns={columns} data={currentStudents} emptyMessage="No students to display" onRowClick={viewStudentDetails} />
+  return <DataTable columns={columns} data={currentStudents} emptyMessage="Try changing your search or filter criteria" onRowClick={viewStudentDetails} />
 }
 
 export default StudentTableView
