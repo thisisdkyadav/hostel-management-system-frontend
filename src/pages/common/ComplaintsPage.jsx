@@ -139,7 +139,7 @@ const ComplaintsPage = () => {
 
         {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />}
 
-        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={COMPLAINT_FILTER_TABS} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
+        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={COMPLAINT_FILTER_TABS} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} showFilters={showFilters} />
       </div>
 
       {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />}

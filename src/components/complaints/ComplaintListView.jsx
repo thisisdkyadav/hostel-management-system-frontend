@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { DataTable } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
-const ComplaintListView = ({ complaints, onViewDetails }) => {
+const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
   const { user } = useAuth()
 
   const isStudent = user?.role === 'Student'
@@ -68,7 +68,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
     },
   ].filter(Boolean)
 
-  return <DataTable columns={columns} data={complaints} emptyMessage="No complaints to display" onRowClick={onViewDetails} />
+  return <DataTable columns={columns} data={complaints} emptyMessage="No complaints to display" onRowClick={onViewDetails} loading={loading} />
 }
 
 export default ComplaintListView
