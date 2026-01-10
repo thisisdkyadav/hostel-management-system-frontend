@@ -151,7 +151,7 @@ style={{ color: "#1360AB", borderRadius: "12px" }}
 
 | Token | Size | Component |
 |-------|------|-----------|
-| `--radius-button-sm` | 8px | Small buttons |
+| `--radius-button-sm` | 10px | Small buttons |
 | `--radius-button-md` | 12px | **Default buttons** |
 | `--radius-button-lg` | 14px | Large buttons |
 | `--radius-button-pill` | 9999px | Pill buttons (opt-in) |
@@ -205,7 +205,7 @@ style={{ color: "#1360AB", borderRadius: "12px" }}
 ### Button Sizes
 
 ```jsx
-// Small: 32px height, 8px radius
+// Small: 32px height, 10px radius
 { height: "32px", padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-button-sm)" }
 
 // Medium (default): 40px height, 12px radius

@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
 import UnderlineTabs from "../navigation/UnderlineTabs"
+import Button from "../button/Button"
 
 /**
  * Modal Component - Matches existing design language
  * 
  * @param {boolean} isOpen - Whether the modal is open
- * @param {string} title - Modal title
+ * @param {string|React.ReactNode} title - Modal title (string or JSX)
  * @param {React.ReactNode} children - Modal content
  * @param {function} onClose - Close handler
  * @param {number} width - Custom width in pixels
@@ -19,6 +20,7 @@ import UnderlineTabs from "../navigation/UnderlineTabs"
  * @param {function} onTabChange - Tab change handler
  * @param {boolean} hideTitle - Hide the title
  * @param {boolean} fullHeight - Take full viewport height
+ * @param {string} closeButtonVariant - Close button style: "icon" (default) or "button"
  */
 const Modal = ({
   isOpen = true,
@@ -34,6 +36,7 @@ const Modal = ({
   onTabChange = null,
   hideTitle = false,
   fullHeight = false,
+  closeButtonVariant = "icon",
 }) => {
   // Don't render if not open
   if (!isOpen) {
@@ -77,16 +80,31 @@ const Modal = ({
     }
   }
 
-  // Close button component
-  const CloseButton = () => (
-    <button
-      onClick={onClose}
-      className="p-2 rounded-[var(--radius-button)] bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-primary)] transition-all duration-200"
-      aria-label="Close modal"
-    >
-      <FaTimes className="text-lg" />
-    </button>
-  )
+  // Close button component - supports icon or button variant
+  const CloseButton = () => {
+    if (closeButtonVariant === "button") {
+      return (
+        <Button
+          onClick={onClose}
+          variant="primary"
+          size="small"
+          style={{ flexShrink: 0 }}
+        >
+          Close
+        </Button>
+      )
+    }
+    return (
+      <button
+        onClick={onClose}
+        className="p-2 rounded-[var(--radius-button)] bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-primary)] transition-all duration-200"
+        aria-label="Close modal"
+        style={{ flexShrink: 0 }}
+      >
+        <FaTimes className="text-lg" />
+      </button>
+    )
+  }
 
   return createPortal(
     <>
@@ -118,73 +136,73 @@ const Modal = ({
         className="fixed inset-0 bg-[var(--color-bg-modal-overlay)] backdrop-blur-sm flex items-center justify-center z-50 p-4 md:p-6 animate-backdrop"
         onClick={handleBackdropClick}
       >
-      <div
-        ref={modalRef}
-        className={`bg-[var(--color-bg-primary)] rounded-[var(--radius-modal)] overflow-auto animate-fadeIn ${autoWidth ? "w-auto" : "w-full"} ${fullHeight ? "h-[calc(100vh-32px)]" : "max-h-[90vh]"} ${width ? `max-w-[${width}px]` : "max-w-2xl"}`}
-        style={{
-          width: autoWidth ? "auto" : width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%",
-          maxWidth: autoWidth ? "90vw" : undefined,
-          display: fullHeight ? "flex" : "block",
-          flexDirection: fullHeight ? "column" : "initial",
-          boxShadow: "var(--shadow-modal)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] px-6 py-4 border-b border-[var(--color-border-light)] ${fullHeight ? "flex-shrink-0" : ""}`}>
-          {tabs ? (
-            <div className="flex flex-col">
-              {!hideTitle && title && (
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-                  <CloseButton />
+        <div
+          ref={modalRef}
+          className={`bg-[var(--color-bg-primary)] rounded-[var(--radius-modal)] overflow-auto animate-fadeIn ${autoWidth ? "w-auto" : "w-full"} ${fullHeight ? "h-[calc(100vh-32px)]" : "max-h-[90vh]"} ${width ? `max-w-[${width}px]` : "max-w-2xl"}`}
+          style={{
+            width: autoWidth ? "auto" : width ? `${Math.min(width, window.innerWidth - 32)}px` : "100%",
+            maxWidth: autoWidth ? "90vw" : undefined,
+            display: fullHeight ? "flex" : "block",
+            flexDirection: fullHeight ? "column" : "initial",
+            boxShadow: "var(--shadow-modal)",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] px-6 py-4 border-b border-[var(--color-border-light)] ${fullHeight ? "flex-shrink-0" : ""}`}>
+            {tabs ? (
+              <div className="flex flex-col">
+                {!hideTitle && title && (
+                  <div className="flex justify-between items-center gap-4 mb-4">
+                    <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)] flex-1 min-w-0 overflow-hidden">{title}</h3>
+                    <CloseButton />
+                  </div>
+                )}
+                <div className="flex justify-between items-center gap-4">
+                  <div className="flex-1 min-w-0 overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>
+                    <UnderlineTabs
+                      tabs={tabs.map(tab => ({
+                        value: tab.id,
+                        label: tab.name,
+                        icon: tab.icon
+                      }))}
+                      value={activeTab}
+                      onChange={(tabValue) => onTabChange && onTabChange(tabValue)}
+                      size="medium"
+                      showBorder={false}
+                    />
+                  </div>
+                  {hideTitle && <CloseButton />}
                 </div>
-              )}
-              <div className="flex justify-between items-center gap-4">
-                <div className="flex-1 min-w-0 overflow-x-auto pb-1" style={{ scrollbarWidth: 'thin' }}>
-                  <UnderlineTabs
-                    tabs={tabs.map(tab => ({ 
-                      value: tab.id, 
-                      label: tab.name, 
-                      icon: tab.icon 
-                    }))}
-                    value={activeTab}
-                    onChange={(tabValue) => onTabChange && onTabChange(tabValue)}
-                    size="medium"
-                    showBorder={false}
-                  />
-                </div>
-                {hideTitle && <CloseButton />}
               </div>
-            </div>
-          ) : (
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-              <CloseButton />
+            ) : (
+              <div className="flex justify-between items-center gap-4">
+                <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)] flex-1 min-w-0 overflow-hidden">{title}</h3>
+                <CloseButton />
+              </div>
+            )}
+          </div>
+
+          {/* Content */}
+          <div
+            className={`px-6 py-5 overflow-y-auto ${fullHeight ? "flex-grow" : "max-h-[calc(90vh-150px)]"}`}
+            style={{
+              minHeight: minHeight && !fullHeight ? `${minHeight}px` : undefined,
+              height: fullHeight ? contentHeight : "auto",
+              scrollbarWidth: "thin",
+              scrollbarColor: "var(--scrollbar-thumb-active) var(--color-border-gray)",
+            }}
+          >
+            {children}
+          </div>
+
+          {/* Footer */}
+          {footer && (
+            <div className={`sticky bottom-0 z-10 bg-[var(--color-bg-primary)] px-6 py-4 border-t border-[var(--color-border-light)] ${fullHeight ? "flex-shrink-0" : ""}`}>
+              {footer}
             </div>
           )}
         </div>
-
-        {/* Content */}
-        <div
-          className={`px-6 py-5 overflow-y-auto ${fullHeight ? "flex-grow" : "max-h-[calc(90vh-150px)]"}`}
-          style={{
-            minHeight: minHeight && !fullHeight ? `${minHeight}px` : undefined,
-            height: fullHeight ? contentHeight : "auto",
-            scrollbarWidth: "thin",
-            scrollbarColor: "var(--scrollbar-thumb-active) var(--color-border-gray)",
-          }}
-        >
-          {children}
-        </div>
-
-        {/* Footer */}
-        {footer && (
-          <div className={`sticky bottom-0 z-10 bg-[var(--color-bg-primary)] px-6 py-4 border-t border-[var(--color-border-light)] ${fullHeight ? "flex-shrink-0" : ""}`}>
-            {footer}
-          </div>
-        )}
-      </div>
       </div>
     </>,
     document.body

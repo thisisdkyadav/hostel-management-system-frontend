@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { FaMapMarkerAlt, FaUserCircle, FaClipboardList, FaInfoCircle, FaEdit, FaStar } from "react-icons/fa"
+import { MapPin, User, ClipboardList, FileText, Pencil, Star, CheckCircle, CalendarDays, MessageSquare } from "lucide-react"
 import { getStatusColor } from "../../utils/adminUtils"
-import { Modal, Button } from "@/components/ui"
+import { Modal, Button, Badge, HStack, VStack, Divider } from "@/components/ui"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import UpdateComplaintModal from "./UpdateComplaintModal"
@@ -19,7 +19,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
 
   if (!complaintData) return null
 
-  // Check if user has permission to update complaints
+  const isResolved = complaintData.status === "Resolved"
   const canUpdateComplaint = user && ["Maintenance Staff", "Warden", "Associate Warden", "Admin", "Hostel Supervisor", "Super Admin"].includes(user.role)
 
   const handleComplaintUpdate = (updatedComplaint) => {
@@ -47,220 +47,434 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
     fetchStudentId()
   }, [complaintData.reportedBy.id])
 
-  const getSatisfactionStatusStyle = (status) => {
+  const getSatisfactionVariant = (status) => {
     switch (status) {
-      case "Satisfied":
-        return {
-          backgroundColor: "var(--color-success-bg)",
-          color: "var(--color-success-text)",
-        }
-      case "Unsatisfied":
-        return {
-          backgroundColor: "var(--color-danger-bg)",
-          color: "var(--color-danger-text)",
-        }
-      default:
-        return {
-          backgroundColor: "var(--color-warning-bg)",
-          color: "var(--color-warning-text)",
-        }
+      case "Satisfied": return "success"
+      case "Unsatisfied": return "danger"
+      default: return "warning"
     }
   }
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  }
+
+  // Section Card Component for consistent styling
+  const SectionCard = ({ icon: Icon, title, children, accentColor = "var(--color-primary)", onClick, headerAction, className = "" }) => (
+    <div
+      onClick={onClick}
+      style={{
+        background: "var(--color-bg-tertiary)",
+        borderRadius: "var(--radius-lg)",
+        padding: "var(--spacing-3) var(--spacing-4)",
+        border: "1px solid var(--color-border-light)",
+        transition: "all 0.2s ease",
+        cursor: onClick ? "pointer" : "default",
+      }}
+      className={className}
+      onMouseEnter={(e) => {
+        if (onClick) {
+          e.currentTarget.style.borderColor = "var(--color-border-hover)"
+          e.currentTarget.style.transform = "translateY(-1px)"
+          e.currentTarget.style.boxShadow = "var(--shadow-sm)"
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (onClick) {
+          e.currentTarget.style.borderColor = "var(--color-border-light)"
+          e.currentTarget.style.transform = "translateY(0)"
+          e.currentTarget.style.boxShadow = "none"
+        }
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--spacing-2)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+          <div style={{
+            width: "24px",
+            height: "24px",
+            borderRadius: "var(--radius-sm)",
+            background: `linear-gradient(135deg, ${accentColor}15, ${accentColor}25)`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <Icon size={13} style={{ color: accentColor }} />
+          </div>
+          <h4 style={{
+            fontSize: "var(--font-size-xs)",
+            fontWeight: "var(--font-weight-semibold)",
+            color: accentColor,
+            margin: 0,
+            textTransform: "uppercase",
+            letterSpacing: "0.5px"
+          }}>
+            {title}
+          </h4>
+        </div>
+        {headerAction}
+      </div>
+      {children}
+    </div>
+  )
+
+  // Info Row Component
+  const InfoRow = ({ label, value, fullWidth = false }) => (
+    <div style={{
+      display: "flex",
+      justifyContent: fullWidth ? "flex-start" : "space-between",
+      alignItems: "center",
+      gap: "var(--spacing-3)"
+    }}>
+      <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{label}</span>
+      {!fullWidth && <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)" }}>{value}</span>}
+    </div>
+  )
+
+  // Person Card Component
+  const PersonCard = ({ person, label, accentBg = "var(--color-primary-bg)", accentText = "var(--color-primary)" }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+      {person?.profileImage ? (
+        <img
+          src={getMediaUrl(person.profileImage)}
+          alt={person.name}
+          style={{
+            height: "40px",
+            width: "40px",
+            borderRadius: "var(--radius-full)",
+            objectFit: "cover",
+            border: `2px solid ${accentBg}`
+          }}
+        />
+      ) : (
+        <div style={{
+          height: "40px",
+          width: "40px",
+          borderRadius: "var(--radius-full)",
+          backgroundColor: accentBg,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: accentText,
+          fontWeight: "var(--font-weight-semibold)",
+          fontSize: "var(--font-size-base)"
+        }}>
+          {person?.name?.charAt(0) || "?"}
+        </div>
+      )}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontWeight: "var(--font-weight-medium)",
+          color: "var(--color-text-primary)",
+          marginBottom: "2px"
+        }}>
+          {person?.name}
+        </div>
+        <div style={{
+          fontSize: "var(--font-size-xs)",
+          color: "var(--color-text-muted)",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap"
+        }}>
+          {person?.email}
+        </div>
+        {person?.phone && (
+          <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            {person.phone}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+
+  // Star Rating Component
+  const StarRating = ({ rating }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+      {[...Array(5)].map((_, i) => (
+        <Star
+          key={i}
+          size={16}
+          fill={i < rating ? "var(--color-warning)" : "transparent"}
+          stroke={i < rating ? "var(--color-warning)" : "var(--color-border-primary)"}
+          strokeWidth={1.5}
+        />
+      ))}
+      <span style={{
+        marginLeft: "var(--spacing-2)",
+        color: "var(--color-text-body)",
+        fontSize: "var(--font-size-sm)",
+        fontWeight: "var(--font-weight-medium)"
+      }}>
+        {rating}/5
+      </span>
+    </div>
+  )
+
+  // Custom title with truncation and hover tooltip
+  const modalTitle = (
+    <span
+      title={complaintData.title}
+      style={{
+        display: "block",
+        maxWidth: "100%",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap"
+      }}
+    >
+      {complaintData.title}
+    </span>
+  )
+
   return (
     <>
-      <Modal title="Complaint Details" onClose={() => setShowDetailModal(false)} width={800}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", paddingBottom: "var(--spacing-3)", borderBottom: `var(--border-1) solid var(--color-border-light)`, }} className="sm:flex-row sm:items-center" >
-            <div>
-              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", }} >
+      <Modal
+        title={modalTitle}
+        onClose={() => setShowDetailModal(false)}
+        width={800}
+        closeButtonVariant="button"
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+
+          {/* Compact Info Bar - ID, Status, Category, Filed Date, Actions */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "var(--spacing-2)",
+            flexWrap: "wrap",
+            paddingBottom: "var(--spacing-3)",
+            borderBottom: "1px solid var(--color-border-light)"
+          }}>
+            {/* Left - Metadata */}
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+              <span style={{
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-muted)",
+                fontFamily: "monospace",
+                padding: "var(--spacing-0-5) var(--spacing-2)",
+                background: "var(--color-bg-muted)",
+                borderRadius: "var(--radius-sm)"
+              }}>
                 {complaintData.id}
               </span>
-              <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)", }} >
-                {complaintData.title}
-              </h2>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", marginTop: "var(--spacing-3)", }} className="sm:mt-0" >
-              <span className={`${getStatusColor(complaintData.status)}`} style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
+              <span
+                className={getStatusColor(complaintData.status)}
+                style={{
+                  padding: "var(--spacing-0-5) var(--spacing-2)",
+                  fontSize: "var(--font-size-xs)",
+                  fontWeight: "var(--font-weight-semibold)",
+                  borderRadius: "var(--radius-full)"
+                }}
+              >
                 {complaintData.status}
               </span>
-              <span style={{ paddingTop: "var(--spacing-1)", paddingBottom: "var(--spacing-1)", paddingLeft: "var(--spacing-3)", paddingRight: "var(--spacing-3)", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", color: "var(--color-text-body)", }} >
+              <span style={{
+                padding: "var(--spacing-0-5) var(--spacing-2)",
+                fontSize: "var(--font-size-xs)",
+                fontWeight: "var(--font-weight-medium)",
+                borderRadius: "var(--radius-full)",
+                backgroundColor: "var(--color-primary-bg)",
+                color: "var(--color-primary)"
+              }}>
                 {complaintData.category}
               </span>
+              <span style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "var(--spacing-1)",
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-muted)"
+              }}>
+                <CalendarDays size={11} />
+                {formatDate(complaintData.createdDate)}
+              </span>
+            </div>
 
+            {/* Right - Action Buttons */}
+            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
               {canUpdateComplaint && (
-                <Button onClick={() => setShowUpdateModal(true)} variant="outline" size="small" icon={<FaEdit />}>
-                  Update Status & Notes
+                <Button onClick={() => setShowUpdateModal(true)} variant="outline" size="small" icon={<Pencil size={14} />}>
+                  Update
                 </Button>
               )}
-
               {user && user._id === complaintData.reportedBy.id && (
-                <Button onClick={() => setShowFeedbackModal(true)} variant="success" size="small" icon={<FaStar />}>
-                  Give Feedback
+                <Button onClick={() => setShowFeedbackModal(true)} variant="success" size="small" icon={<Star size={14} />}>
+                  Feedback
                 </Button>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-6)" }}>
-            <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", }} >
-              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)", }} >
-                <FaMapMarkerAlt style={{ marginRight: "var(--spacing-2)" }} /> Location Details
-              </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                {complaintData.hostel && (
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-tertiary)" }}>Hostel:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.hostel}</span>
-                  </div>
+          {/* Resolution Section - Shown first when resolved */}
+          {isResolved && (complaintData.feedbackRating || complaintData.resolvedBy) && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+                {/* User Feedback Card */}
+                {complaintData.feedbackRating && (
+                  <SectionCard icon={MessageSquare} title="User Feedback" accentColor="var(--color-warning)">
+                    <VStack gap="small">
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                        <StarRating rating={complaintData.feedbackRating} />
+                        <Badge variant={getSatisfactionVariant(complaintData.satisfactionStatus)} size="small">
+                          {complaintData.satisfactionStatus}
+                        </Badge>
+                      </div>
+                      {complaintData.feedback && (
+                        <div style={{
+                          marginTop: "var(--spacing-2)",
+                          padding: "var(--spacing-2) var(--spacing-3)",
+                          background: "var(--color-bg-secondary)",
+                          borderRadius: "var(--radius-sm)",
+                          borderLeft: "2px solid var(--color-warning)",
+                          fontSize: "var(--font-size-sm)",
+                          color: "var(--color-text-body)",
+                          fontStyle: "italic"
+                        }}>
+                          "{complaintData.feedback}"
+                        </div>
+                      )}
+                    </VStack>
+                  </SectionCard>
                 )}
-                {complaintData.roomNumber && (
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-tertiary)" }}>Room Number:</span>
-                    <span style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.roomNumber}</span>
-                  </div>
-                )}
-                {complaintData.location && (
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span className="break-words">{complaintData.location}</span>
-                  </div>
-                )}
-              </div>
-            </div>
 
-            <div onClick={() => handleReporterClick()}
-              style={{
-                backgroundColor: "var(--color-bg-tertiary)",
-                padding: "var(--spacing-5)",
-                borderRadius: "var(--radius-xl)",
-                cursor: "pointer",
-              }}
-            >
-              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-4)", }} >
-                <FaUserCircle style={{ marginRight: "var(--spacing-2)" }} /> Reported By
-              </h4>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {complaintData.reportedBy?.profileImage ? (
-                  <img src={getMediaUrl(complaintData.reportedBy.profileImage)} alt={complaintData.reportedBy.name} style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", objectFit: "cover", marginRight: "var(--spacing-4)", }} />
-                ) : (
-                  <div style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-primary)", fontWeight: "var(--font-weight-medium)", marginRight: "var(--spacing-4)", }} >
-                    {complaintData.reportedBy?.name?.charAt(0) || "U"}
+                {/* Resolved By Card */}
+                {complaintData.resolvedBy && (
+                  <SectionCard icon={CheckCircle} title="Resolved By" accentColor="var(--color-success)">
+                    <PersonCard
+                      person={complaintData.resolvedBy}
+                      accentBg="var(--color-success-bg)"
+                      accentText="var(--color-success-text)"
+                    />
+                    {complaintData.resolutionDate && (
+                      <div style={{
+                        marginTop: "var(--spacing-2)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "var(--spacing-1-5)",
+                        padding: "var(--spacing-1) var(--spacing-2)",
+                        background: "var(--color-success-bg)",
+                        borderRadius: "var(--radius-sm)",
+                        fontSize: "var(--font-size-xs)",
+                        color: "var(--color-success-text)"
+                      }}>
+                        <CheckCircle size={11} />
+                        <span>Resolved on {formatDate(complaintData.resolutionDate)}</span>
+                      </div>
+                    )}
+                  </SectionCard>
+                )}
+              </div>
+
+              <Divider spacing="sm" color="muted" />
+            </>
+          )}
+
+          {/* Location & Reporter Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+            {/* Location Details */}
+            <SectionCard icon={MapPin} title="Location Details" accentColor="var(--color-info)">
+              <VStack gap="small">
+                {complaintData.hostel && <InfoRow label="Hostel" value={complaintData.hostel} />}
+                {complaintData.roomNumber && <InfoRow label="Room" value={complaintData.roomNumber} />}
+                {complaintData.location && (
+                  <div style={{
+                    marginTop: "var(--spacing-1)",
+                    padding: "var(--spacing-2)",
+                    background: "var(--color-bg-secondary)",
+                    borderRadius: "var(--radius-sm)",
+                    fontSize: "var(--font-size-sm)",
+                    color: "var(--color-text-body)"
+                  }}>
+                    {complaintData.location}
                   </div>
                 )}
-                <div>
-                  <div style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.reportedBy?.name}</div>
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
-                    Email: {complaintData.reportedBy?.email}
-                  </div>
-                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
-                    {complaintData.reportedBy?.phone}
-                  </div>
-                </div>
-              </div>
-            </div>
+              </VStack>
+            </SectionCard>
+
+            {/* Reported By */}
+            <SectionCard
+              icon={User}
+              title="Reported By"
+              accentColor="var(--color-primary)"
+              onClick={complaintData.reportedBy.role === "Student" && canUpdateComplaint ? handleReporterClick : undefined}
+              headerAction={complaintData.reportedBy.role === "Student" && canUpdateComplaint ? (
+                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-primary)", opacity: 0.8 }}>
+                  View profile →
+                </span>
+              ) : null}
+            >
+              <PersonCard person={complaintData.reportedBy} />
+            </SectionCard>
           </div>
 
-          <div>
-            <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
-              <FaClipboardList style={{ marginRight: "var(--spacing-2)" }} /> Description
-            </h4>
-            <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", color: "var(--color-text-body)", }} >
+          {/* Description Section */}
+          <SectionCard icon={ClipboardList} title="Description" accentColor="var(--color-text-tertiary)">
+            <div style={{
+              color: "var(--color-text-body)",
+              fontSize: "var(--font-size-base)",
+              lineHeight: "1.6",
+              whiteSpace: "pre-wrap"
+            }}>
               {complaintData.description}
             </div>
-          </div>
+          </SectionCard>
 
-          <div>
-            <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
-              <FaInfoCircle style={{ marginRight: "var(--spacing-2)" }} /> Resolution Notes
-            </h4>
+          {/* Resolution Notes Section */}
+          <SectionCard icon={FileText} title="Resolution Notes" accentColor="var(--color-success)">
             {complaintData.resolutionNotes ? (
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", color: "var(--color-text-body)", }} >
+              <div style={{
+                color: "var(--color-text-body)",
+                fontSize: "var(--font-size-base)",
+                lineHeight: "1.6",
+                whiteSpace: "pre-wrap"
+              }}>
                 {complaintData.resolutionNotes}
               </div>
             ) : (
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", color: "var(--color-text-muted)", fontStyle: "italic", }} >
-                No resolution notes yet.
+              <div style={{
+                color: "var(--color-text-muted)",
+                fontSize: "var(--font-size-sm)",
+                fontStyle: "italic"
+              }}>
+                No resolution notes added yet
               </div>
             )}
-          </div>
+          </SectionCard>
 
-          {complaintData.feedbackRating && (
-            <div>
-              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
-                <FaStar style={{ marginRight: "var(--spacing-2)" }} /> User Feedback
-              </h4>
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", }} >
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <span style={{ color: "var(--color-text-tertiary)", marginRight: "var(--spacing-2)", }} >
-                      Rating:
-                    </span>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} style={{ fontSize: "var(--font-size-sm)", color: i < complaintData.feedbackRating ? "var(--color-warning)" : "var(--color-border-primary)", }} />
-                      ))}
-                      <span style={{ marginLeft: "var(--spacing-2)", color: "var(--color-text-body)", }} >
-                        ({complaintData.feedbackRating}/5)
-                      </span>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: "var(--color-text-tertiary)" }}>Satisfaction:</span>
-                    <span style={{ ...getSatisfactionStatusStyle(complaintData.satisfactionStatus), padding: "var(--badge-padding-sm)", fontSize: "var(--badge-font-sm)", fontWeight: "var(--font-weight-medium)", borderRadius: "var(--radius-full)", }} >
-                      {complaintData.satisfactionStatus}
-                    </span>
-                  </div>
-                  {complaintData.feedback && (
-                    <div>
-                      <span style={{ color: "var(--color-text-tertiary)", display: "block", marginBottom: "var(--spacing-1)", }} >
-                        Comments:
-                      </span>
-                      <div style={{ color: "var(--color-text-body)" }}>{complaintData.feedback}</div>
-                    </div>
-                  )}
+          {/* Non-resolved state: Show feedback and resolved by at bottom if they exist */}
+          {!isResolved && complaintData.feedbackRating && (
+            <SectionCard icon={MessageSquare} title="User Feedback" accentColor="var(--color-warning)">
+              <VStack gap="small">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+                  <StarRating rating={complaintData.feedbackRating} />
+                  <Badge variant={getSatisfactionVariant(complaintData.satisfactionStatus)} size="small">
+                    {complaintData.satisfactionStatus}
+                  </Badge>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {complaintData.status === "Resolved" && complaintData.resolvedBy && (
-            <div>
-              <h4 style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)", display: "flex", alignItems: "center", marginBottom: "var(--spacing-3)", }} >
-                <FaUserCircle style={{ marginRight: "var(--spacing-2)" }} /> Resolved By
-              </h4>
-              <div style={{ backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-5)", borderRadius: "var(--radius-xl)", }} >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  {complaintData.resolvedBy?.profileImage ? (
-                    <img src={getMediaUrl(complaintData.resolvedBy.profileImage)} alt={complaintData.resolvedBy.name} style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", objectFit: "cover", marginRight: "var(--spacing-4)", }} />
-                  ) : (
-                    <div style={{ height: "var(--avatar-lg)", width: "var(--avatar-lg)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-success-bg)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-success-text)", fontWeight: "var(--font-weight-medium)", marginRight: "var(--spacing-4)", }} >
-                      {complaintData.resolvedBy?.name?.charAt(0) || "S"}
-                    </div>
-                  )}
-                  <div>
-                    <div style={{ fontWeight: "var(--font-weight-medium)" }}>{complaintData.resolvedBy?.name}</div>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
-                      Email: {complaintData.resolvedBy?.email}
-                    </div>
-                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", }} >
-                      {complaintData.resolvedBy?.phone}
-                    </div>
-                    {complaintData.resolutionDate && (
-                      <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-2)", }} >
-                        Resolved on: {new Date(complaintData.resolutionDate).toLocaleString()}
-                      </div>
-                    )}
+                {complaintData.feedback && (
+                  <div style={{
+                    marginTop: "var(--spacing-2)",
+                    padding: "var(--spacing-2) var(--spacing-3)",
+                    background: "var(--color-bg-secondary)",
+                    borderRadius: "var(--radius-sm)",
+                    borderLeft: "2px solid var(--color-warning)",
+                    fontSize: "var(--font-size-sm)",
+                    color: "var(--color-text-body)",
+                    fontStyle: "italic"
+                  }}>
+                    "{complaintData.feedback}"
                   </div>
-                </div>
-              </div>
-            </div>
+                )}
+              </VStack>
+            </SectionCard>
           )}
-
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)`, }} >
-            <div>Created: {new Date(complaintData.createdDate).toLocaleString()}</div>
-            {complaintData.lastUpdated !== complaintData.createdDate && <div>Last Updated: {new Date(complaintData.lastUpdated).toLocaleString()}</div>}
-          </div>
         </div>
       </Modal>
 

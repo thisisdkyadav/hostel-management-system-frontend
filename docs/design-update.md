@@ -180,7 +180,7 @@ All interactive elements MUST have these states:
 --radius-full: 9999px  /* Avatars only */
 
 /* Component-Specific */
---radius-button-sm: 8px      /* Small buttons */
+--radius-button-sm: 10px      /* Small buttons */
 --radius-button-md: 12px     /* Medium buttons (DEFAULT) */
 --radius-button-lg: 14px     /* Large buttons */
 --radius-button-pill: 9999px /* Pill variant (optional) */
@@ -432,7 +432,7 @@ All interactive elements MUST have these states:
 
 | Size | Padding | Font Size | Height | Border Radius |
 |------|---------|-----------|--------|---------------|
-| `small` | `0.5rem 1rem` | 12px | 32px | 8px |
+| `small` | `0.5rem 1rem` | 12px | 32px | 10px |
 | `medium` | `0.625rem 1.25rem` | 14px | 40px | **12px** (default) |
 | `large` | `0.75rem 1.5rem` | 16px | 48px | 14px |
 

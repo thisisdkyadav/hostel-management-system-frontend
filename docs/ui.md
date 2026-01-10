@@ -396,7 +396,7 @@ Material Design 3 inspired date picker with calendar dropdown.
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `title` | `string` | - | Modal title |
+| `title` | `string\|React.ReactNode` | - | Modal title (can be string or JSX for custom styling) |
 | `children` | `React.ReactNode` | - | Modal content |
 | `onClose` | `function` | - | Close handler |
 | `width` | `number` | - | Custom width in pixels |
@@ -408,6 +408,7 @@ Material Design 3 inspired date picker with calendar dropdown.
 | `onTabChange` | `function` | `null` | Tab change handler |
 | `hideTitle` | `boolean` | `false` | Hide the title |
 | `fullHeight` | `boolean` | `false` | Take full viewport height |
+| `closeButtonVariant` | `string` | `"icon"` | Close button style: `"icon"` (X icon) or `"button"` (text button) |
 
 ### Toast (Standalone)
 
