@@ -51,16 +51,30 @@ const Tabs = forwardRef(({
   // Simple array-based tabs (FilterTabs compatible mode)
   if (tabs && Array.isArray(tabs)) {
     return (
-      <div ref={ref} className={`flex flex-wrap gap-2 ${className}`} style={style} {...rest}>
+      <div
+        ref={ref}
+        className={`flex flex-nowrap gap-2 overflow-x-auto scrollbar-hide ${className}`}
+        style={{
+          ...style,
+          scrollbarWidth: 'none', // Firefox
+          msOverflowStyle: 'none', // IE/Edge
+        }}
+        {...rest}
+      >
+        <style>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
         {tabs.map((tab) => (
           <button
             key={tab.value}
             onClick={() => handleChange?.(tab.value)}
             className={`
               inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-sm font-medium border-none cursor-pointer 
-              focus:outline-none transition-all duration-200
-              ${currentValue === tab.value 
-                ? "bg-[var(--color-primary)] text-white shadow-sm hover:bg-[var(--color-primary-dark)]" 
+              focus:outline-none transition-all duration-200 flex-shrink-0 whitespace-nowrap
+              ${currentValue === tab.value
+                ? "bg-[var(--color-primary)] text-white shadow-sm hover:bg-[var(--color-primary-dark)]"
                 : "bg-[var(--color-bg-primary)] text-[var(--color-text-muted)] hover:bg-[var(--color-primary-bg-hover)] hover:text-[var(--color-primary)] border border-[var(--color-border-light)]"
               }
             `}
@@ -70,8 +84,8 @@ const Tabs = forwardRef(({
             {tab.count !== undefined && (
               <span className={`
                 px-2 py-0.5 rounded-md text-xs font-semibold
-                ${currentValue === tab.value 
-                  ? "bg-white/20 text-white" 
+                ${currentValue === tab.value
+                  ? "bg-white/20 text-white"
                   : "bg-[var(--color-bg-muted)] text-[var(--color-text-muted)]"
                 }
               `}>
@@ -144,7 +158,7 @@ export const Tab = forwardRef(({
   const context = useContext(TabsContext)
   const { value, onChange, variant, size, fullWidth } = context || {}
   const [isHovered, setIsHovered] = useState(false)
-  
+
   const isActive = value === tabValue
 
   const sizes = {
