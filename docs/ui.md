@@ -38,6 +38,7 @@ import { Modal, Toast, Alert } from '@/components/ui/feedback'
 | `fullWidth` | `boolean` | `false` | Full width button |
 | `gradient` | `boolean` | `false` | Use gradient background (primary only) |
 | `rounded` | `boolean` | `false` | Pill-shaped button |
+| `keepTextOnMobile` | `boolean` | `false` | If true, keeps text visible on mobile (prevents icon-only mode) |
 | `animation` | `string` | `"none"` | `"none"`, `"pulse"`, `"bounce"`, `"glow"`, `"ripple"` |
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |

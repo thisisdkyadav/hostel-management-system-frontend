@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
-import { FaFilter, FaPlus, FaList, FaTh } from "react-icons/fa"
+import { Filter, Plus, List, LayoutGrid } from "lucide-react"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -9,12 +9,12 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
   const { canAccess } = useAuth()
 
   const viewModeOptions = [
-    { value: "list", label: "List", icon: <FaList style={{ fontSize: 'var(--font-size-xs)' }} /> },
-    { value: "cards", label: "Grid", icon: <FaTh style={{ fontSize: 'var(--font-size-xs)' }} /> },
+    { value: "list", label: "List", icon: <List size={14} /> },
+    { value: "cards", label: "Grid", icon: <LayoutGrid size={14} /> },
   ]
 
   return (
-    <PageHeader title={title}>
+    <PageHeader title={title} hideTitleOnMobile>
       {/* View Toggle */}
       <ToggleButtonGroup
         options={viewModeOptions}
@@ -29,7 +29,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
       <Button onClick={() => setShowFilters(!showFilters)}
         variant={showFilters ? "primary" : "white"}
         size="medium"
-        icon={<FaFilter />}
+        icon={<Filter size={14} />}
       >
         <span className="hidden sm:inline">Filters</span>
       </Button>
@@ -39,10 +39,11 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
         <Button onClick={() => setShowCraftComplaint(true)}
           variant="primary"
           size="medium"
-          icon={<FaPlus style={{ fontSize: 'var(--font-size-xs)' }} />}
+          icon={<Plus size={14} />}
           animation="slideIn"
+        // keepTextOnMobile
         >
-          <span className="hidden sm:inline">New Complaint</span>
+          New Complaint
         </Button>
       )}
     </PageHeader>
@@ -50,4 +51,3 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
 }
 
 export default ComplaintsHeader
-
