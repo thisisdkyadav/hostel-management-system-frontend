@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaPlus, FaHeartbeat, FaHospital, FaMedkit, FaEye, FaEdit, FaCalendarCheck, FaCog } from "react-icons/fa"
+import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
 import { Button, Input, Select } from "@/components/ui"
@@ -195,17 +195,17 @@ const HealthTab = ({ userId }) => {
       <div style={{ marginBottom: 'var(--spacing-6)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
-            <FaHeartbeat style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
+            <Heart size={20} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Health Information
           </h3>
           <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
             {user.role === "Admin" && (
               <Link to="/admin/others" style={{ padding: 'var(--spacing-1) var(--spacing-3)', backgroundColor: 'var(--color-bg-hover)', color: 'var(--color-text-body)', fontSize: 'var(--font-size-xs)', borderRadius: 'var(--radius-md)', transition: 'var(--transition-all)', display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                <FaCog style={{ marginRight: 'var(--spacing-1)' }} /> Manage Providers
+                <Settings size={14} style={{ marginRight: 'var(--spacing-1)' }} /> Manage Providers
               </Link>
             )}
             {canAccess("students_info", "edit") && !editHealthData && (
-              <Button onClick={() => setEditHealthData(true)} variant="primary" size="small" icon={<FaEdit />}>
+              <Button onClick={() => setEditHealthData(true)} variant="primary" size="small" icon={<Edit size={16} />}>
                 Edit
               </Button>
             )}
@@ -286,14 +286,14 @@ const HealthTab = ({ userId }) => {
               {selectedProvider && (
                 <>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaCalendarCheck style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                    <CalendarCheck size={18} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
                       <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy Start Date</p>
                       <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.startDate)}</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <FaCalendarCheck style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
+                    <CalendarCheck size={18} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)', flexShrink: 0 }} />
                     <div>
                       <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Policy End Date</p>
                       <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>{formatDate(selectedProvider.endDate)}</p>
@@ -309,11 +309,11 @@ const HealthTab = ({ userId }) => {
       <div style={{ marginTop: 'var(--spacing-8)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)', display: 'flex', alignItems: 'center' }}>
-            <FaMedkit style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
+            <Pill size={20} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Insurance Claims
           </h3>
           {canAccess("students_info", "edit") && (
-            <Button onClick={handleAddClaim} variant="primary" size="small" icon={<FaPlus />}>
+            <Button onClick={handleAddClaim} variant="primary" size="small" icon={<Plus size={16} />}>
               Add Claim
             </Button>
           )}
@@ -325,7 +325,7 @@ const HealthTab = ({ userId }) => {
           </div>
         ) : insuranceClaims.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 'var(--spacing-10) 0', backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)' }}>
-            <FaHospital style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', fontSize: 'var(--font-size-4xl)', display: 'block' }} />
+            <Hospital size={48} style={{ margin: '0 auto', color: 'var(--color-text-disabled)', marginBottom: 'var(--spacing-2)', display: 'block' }} />
             <p style={{ color: 'var(--color-text-muted)' }}>No insurance claims found</p>
           </div>
         ) : (
@@ -348,7 +348,7 @@ const HealthTab = ({ userId }) => {
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{claim.hospitalName}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-                      <Button onClick={() => handleViewClaim(claim)} variant="ghost" size="small" icon={<FaEye />}>
+                      <Button onClick={() => handleViewClaim(claim)} variant="ghost" size="small" icon={<Eye size={16} />}>
                         View
                       </Button>
                     </td>

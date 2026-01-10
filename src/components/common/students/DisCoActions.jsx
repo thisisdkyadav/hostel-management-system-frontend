@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { FaPlus } from "react-icons/fa"
+import { Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
 import { Button } from "@/components/ui"
 
@@ -195,7 +195,7 @@ const DisCoActions = ({ userId }) => {
       <div style={styles.header}>
         <h3 style={styles.title}>Disciplinary Actions</h3>
         {canAccess("students_info", "create") && (
-          <Button variant="primary" size="small" icon={<FaPlus />} onClick={handleAddClick}>
+          <Button variant="primary" size="small" icon={<Plus size={16} />} onClick={handleAddClick}>
             Add DisCo Action
           </Button>
         )}

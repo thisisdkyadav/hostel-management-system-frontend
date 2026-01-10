@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { FaClipboardList } from "react-icons/fa"
+import { ClipboardList } from "lucide-react"
 import { studentApi } from "../../../../service"
 import ComplaintDetailModal from "../../../complaints/ComplaintDetailModal"
 
@@ -162,7 +162,7 @@ const ComplaintsTab = ({ userId }) => {
         </div>
       ) : complaints.length === 0 ? (
         <div style={styles.emptyState}>
-          <FaClipboardList style={styles.emptyIcon} />
+          <ClipboardList size={48} style={styles.emptyIcon} />
           <p style={styles.emptyText}>No complaints found for this student</p>
         </div>
       ) : (
