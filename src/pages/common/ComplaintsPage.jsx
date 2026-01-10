@@ -133,7 +133,9 @@ const ComplaintsPage = () => {
 
       {/* Main Content with padding */}
       <div className="px-4 sm:px-6 lg:px-8 py-6">
-        <ComplaintStats statsData={statsData} loading={statsLoading} />
+        <div className="hidden sm:block">
+          <ComplaintStats statsData={statsData} loading={statsLoading} />
+        </div>
 
         {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />}
 
