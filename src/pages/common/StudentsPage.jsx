@@ -229,7 +229,6 @@ const StudentsPage = () => {
 
             <Pagination currentPage={pagination.currentPage} totalPages={totalPages} paginate={paginate} />
 
-            {students.length === 0 && !loading && <NoResults icon={<GraduationCap size={48} style={{ color: 'var(--color-text-placeholder)' }} />} message="No students found" suggestion="Try changing your search or filter criteria" />}
           </>
         )}
 
