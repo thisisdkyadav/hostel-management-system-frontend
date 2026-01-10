@@ -435,7 +435,7 @@ export const adminApi = {
    * @param {string} status - Status to set
    */
   bulkUpdateStudentsStatus: (rollNumbers, status) => {
-    return apiClient.post("/student/bulk-update-status", { rollNumbers, status })
+    return apiClient.post("/student/profiles/status", { rollNumbers, status })
   },
 
   /**
@@ -443,7 +443,7 @@ export const adminApi = {
    * @param {Object} dayScholarData - Day scholar data
    */
   bulkUpdateDayScholarDetails: (dayScholarData) => {
-    return apiClient.post("/student/bulk-update-day-scholar", dayScholarData)
+    return apiClient.post("/student/profiles/day-scholar", dayScholarData)
   },
 
   // ==================== Admin Undertakings ====================
