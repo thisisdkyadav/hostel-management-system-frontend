@@ -4,10 +4,10 @@ import PropTypes from "prop-types"
 /**
  * PageHeader - Consistent header across all admin pages
  * 
- * Matches the admin Dashboard header styling:
- * - Title in theme color (text-xl font-semibold)
- * - Date below title (text-xs text-gray-500)
- * - Optional right-side content for actions
+ * Responsive design:
+ * - Mobile: Stacked layout, auto height, smaller text, hidden date
+ * - Tablet+: Horizontal layout, fixed 64px height
+ * - Desktop: Same as tablet with more padding
  */
 const PageHeader = ({ title, children, className = "" }) => {
   const formatDate = () => {
@@ -16,18 +16,21 @@ const PageHeader = ({ title, children, className = "" }) => {
   }
 
   return (
-    <header className={`sticky top-0 z-10 h-16 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`} style={{ boxShadow: 'var(--shadow-sm)', }} >
-      <div className="h-full px-4 md:px-6 lg:px-8 flex items-center">
-        <div className="flex items-center justify-between gap-4 w-full">
+    <header
+      className={`sticky top-0 z-10 bg-[var(--color-bg-primary)] border-b border-[var(--color-border-primary)] ${className}`}
+      style={{ boxShadow: 'var(--shadow-sm)' }}
+    >
+      <div className="px-3 py-2 sm:px-4 sm:py-0 md:px-6 lg:px-8 sm:h-16 flex items-center">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 w-full">
           {/* Left Section - Title & Date */}
-          <div>
-            <h1 className="text-xl font-bold text-[var(--color-primary)] tracking-tight">{title}</h1>
-            <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{formatDate()}</p>
+          <div className="min-w-0 flex-shrink-0">
+            <h1 className="text-lg sm:text-xl font-bold text-[var(--color-primary)] tracking-tight truncate">{title}</h1>
+            <p className="hidden sm:block text-xs text-[var(--color-text-muted)] mt-0.5">{formatDate()}</p>
           </div>
 
           {/* Right Section - Actions (optional) */}
           {children && (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
               {children}
             </div>
           )}
@@ -44,3 +47,4 @@ PageHeader.propTypes = {
 }
 
 export default PageHeader
+
