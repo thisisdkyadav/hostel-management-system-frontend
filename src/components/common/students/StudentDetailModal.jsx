@@ -152,7 +152,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
     if (activeTab !== "idcard" || !selectedStudent?.userId) return
     try {
       setLoadingIdCard(true)
-      const data = await IDcardApi.getIDcard(selectedStudent.userId)
+      const data = await idCardApi.getIDcard(selectedStudent.userId)
       setIdCardData(data)
     } catch (error) {
       console.error("Error fetching student ID card:", error)
@@ -329,33 +329,32 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           studentDetails.status === "Active"
                             ? "var(--color-success-bg-light)"
                             : studentDetails.status === "Graduated"
-                            ? "var(--color-primary-bg)"
-                            : studentDetails.status === "Dropped"
-                            ? "var(--color-danger-bg-light)"
-                            : studentDetails.status === "Inactive"
-                            ? "var(--color-bg-muted)"
-                            : "var(--color-info-bg)",
+                              ? "var(--color-primary-bg)"
+                              : studentDetails.status === "Dropped"
+                                ? "var(--color-danger-bg-light)"
+                                : studentDetails.status === "Inactive"
+                                  ? "var(--color-bg-muted)"
+                                  : "var(--color-info-bg)",
                         color:
                           studentDetails.status === "Active"
                             ? "var(--color-success)"
                             : studentDetails.status === "Graduated"
-                            ? "var(--color-primary)"
-                            : studentDetails.status === "Dropped"
-                            ? "var(--color-danger)"
-                            : studentDetails.status === "Inactive"
-                            ? "var(--color-text-secondary)"
-                            : "var(--color-info)",
-                        border: `var(--border-1) solid ${
-                          studentDetails.status === "Active"
+                              ? "var(--color-primary)"
+                              : studentDetails.status === "Dropped"
+                                ? "var(--color-danger)"
+                                : studentDetails.status === "Inactive"
+                                  ? "var(--color-text-secondary)"
+                                  : "var(--color-info)",
+                        border: `var(--border-1) solid ${studentDetails.status === "Active"
                             ? "var(--color-success-light)"
                             : studentDetails.status === "Graduated"
-                            ? "var(--color-primary-light)"
-                            : studentDetails.status === "Dropped"
-                            ? "var(--color-danger-light)"
-                            : studentDetails.status === "Inactive"
-                            ? "var(--color-border-primary)"
-                            : "var(--color-info-light)"
-                        }`,
+                              ? "var(--color-primary-light)"
+                              : studentDetails.status === "Dropped"
+                                ? "var(--color-danger-light)"
+                                : studentDetails.status === "Inactive"
+                                  ? "var(--color-border-primary)"
+                                  : "var(--color-info-light)"
+                          }`,
                       }}
                     >
                       {studentDetails.status === "Active" && <FaUserCheck style={{ marginRight: "var(--spacing-1)" }} />}
