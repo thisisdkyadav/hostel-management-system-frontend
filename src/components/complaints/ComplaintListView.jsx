@@ -6,6 +6,8 @@ import { getMediaUrl } from "../../utils/mediaUtils"
 const ComplaintListView = ({ complaints, onViewDetails }) => {
   const { user } = useAuth()
 
+  const isStudent = user?.role === 'Student'
+
   const columns = [
     {
       header: "ID/Title",
@@ -17,7 +19,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
         </div>
       ),
     },
-    {
+    !isStudent && {
       header: "Reported",
       key: "reportedBy",
       className: "hidden md:table-cell",
@@ -39,7 +41,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
         </div>
       ),
     },
-    {
+    !isStudent && {
       header: "Location",
       key: "location",
       className: "hidden sm:table-cell",
@@ -64,7 +66,7 @@ const ComplaintListView = ({ complaints, onViewDetails }) => {
       key: "status",
       render: (complaint) => <span className={`${getStatusColor(complaint.status)}`} style={{ padding: 'var(--badge-padding-sm)', display: 'inline-flex', fontSize: 'var(--badge-font-sm)', lineHeight: 'var(--line-height-tight)', fontWeight: 'var(--font-weight-medium)', borderRadius: 'var(--radius-full)' }}>{complaint.status}</span>,
     },
-  ]
+  ].filter(Boolean)
 
   return <DataTable columns={columns} data={complaints} emptyMessage="No complaints to display" onRowClick={onViewDetails} />
 }

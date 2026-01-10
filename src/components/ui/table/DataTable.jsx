@@ -291,6 +291,7 @@ const DataTable = forwardRef(({
                 key={col.key}
                 align={col.align}
                 width={col.width}
+                className={col.className}
                 sortable={sortable && col.sortable !== false}
                 sortDirection={sortKey === col.key ? sortDir : null}
                 onSort={() => handleSort(col.key)}

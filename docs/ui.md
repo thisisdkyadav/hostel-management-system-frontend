@@ -781,7 +781,7 @@ Simple horizontal tabs with underlined active indicator. Designed for page/secti
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
 | `data` | `Array` | `[]` | Array of data objects |
-| `columns` | `Array` | `[]` | Column definitions: `[{ key, header, render, sortable, align, width }]` |
+| `columns` | `Array` | `[]` | Column definitions: `[{ key, header, render, sortable, align, width, className }]` |
 | `selectable` | `boolean` | `false` | Enable row selection |
 | `selectedRows` | `Array` | `[]` | Controlled selected row ids |
 | `onSelectionChange` | `function` | - | Selection change handler |
@@ -794,11 +794,25 @@ Simple horizontal tabs with underlined active indicator. Designed for page/secti
 | `onPageChange` | `function` | - | Page change handler |
 | `loading` | `boolean` | `false` | Loading state |
 | `emptyState` | `React.ReactNode` | - | Custom empty state |
+| `emptyMessage` | `string` | - | Custom empty message text |
 | `onRowClick` | `function` | - | Row click handler |
 | `getRowId` | `function` | `(row) => row.id` | Function to get unique row id |
 | `variant` | `string` | `"default"` | `"default"`, `"striped"`, `"bordered"` |
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
+
+#### Column Definition Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `key` | `string` | Data key to access from row object |
+| `header` | `string` | Column header text |
+| `render` | `function` | Custom render: `(row, cellValue) => ReactNode` |
+| `sortable` | `boolean` | Enable sorting for this column (requires table `sortable` prop) |
+| `align` | `string` | Text alignment: `"left"`, `"center"`, `"right"` |
+| `width` | `string` | Column width (e.g., `"100px"`, `"20%"`) |
+| `className` | `string` | CSS classes applied to both header and cells (useful for responsive hiding, e.g., `"hidden md:table-cell"`) |
+| `customHeaderRender` | `function` | Custom header render: `() => ReactNode` |
 
 ---
 
