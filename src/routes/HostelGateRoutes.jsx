@@ -6,6 +6,7 @@ import {
     AddStudentEntryPage,
     StudentEntriesPage,
     ScannerEntriesPage,
+    FaceScannerEntriesPage,
     HostelGateAttendancePage
 } from "../pages/guard"
 
@@ -26,6 +27,7 @@ const HostelGateRoutes = () => (
                 <Route path="lost-and-found" element={<LostAndFoundPage />} />
                 <Route path="entries" element={<StudentEntriesPage />} />
                 <Route path="scanner-entries" element={<ScannerEntriesPage />} />
+                <Route path="face-scanner-entries" element={<FaceScannerEntriesPage />} />
                 <Route path="attendance" element={<HostelGateAttendancePage />} />
                 <Route path="my-tasks" element={<MyTasksPage />} />
                 <Route path="*" element={<NotFoundPage />} />
@@ -35,3 +37,4 @@ const HostelGateRoutes = () => (
 )
 
 export default HostelGateRoutes
+

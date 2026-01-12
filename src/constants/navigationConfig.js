@@ -36,7 +36,8 @@ import {
   CheckSquare,
   UserRoundCheck,
   FileSignature,
-  IdCard
+  IdCard,
+  Scan
 } from "lucide-react"
 
 // ============================================
@@ -178,6 +179,7 @@ export const getHostelGateNavItems = (handleLogout) => [
   { name: "Add Student Entry", icon: UserPlus, section: "main", path: "/hostel-gate" },
   { name: "Student Entries", icon: Clock, section: "main", path: "/hostel-gate/entries" },
   { name: "Scanner Entries", icon: Keyboard, section: "main", path: "/hostel-gate/scanner-entries" },
+  { name: "Face Scanner", icon: Scan, section: "main", path: "/hostel-gate/face-scanner-entries" },
   { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
   { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },
