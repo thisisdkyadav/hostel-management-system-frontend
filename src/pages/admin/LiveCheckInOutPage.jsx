@@ -1,10 +1,8 @@
 import { useState } from "react"
-import { FiFilter, FiSearch, FiDownload, FiRefreshCw, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi"
-import { MdLogin, MdLogout, MdSwapHoriz, MdHome } from "react-icons/md"
-import { RiRadarLine } from "react-icons/ri"
+import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Input, Select } from "@/components/ui"
+import { Input, Select, Card, HStack, VStack, Button, Badge, Divider, DatePicker, Label } from "@/components/ui"
 
 const formatDateTime = (value) => {
   if (!value) return "-"
@@ -40,655 +38,118 @@ const getTimeAgo = (value) => {
 const DEFAULT_TODAY_STATS = { checkedIn: 0, checkedOut: 0, sameHostel: 0, crossHostel: 0, total: 0 }
 const DEFAULT_TOTAL_STATS = { checkedIn: 0, checkedOut: 0 }
 
-// Styles object using CSS variables from theme.css
-const styles = {
-  // Main container
-  pageContainer: {
-    minHeight: "100vh",
-    backgroundColor: "var(--color-bg-page)",
-    padding: "var(--spacing-4)",
-  },
-  maxWidthContainer: {
-    maxWidth: "1600px",
-    margin: "0 auto",
-  },
+const StatCard = ({ icon: Icon, label, value, color, dotColor }) => (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "var(--spacing-3)",
+      padding: "var(--spacing-3) var(--spacing-4)",
+      backgroundColor: "var(--color-bg-primary)",
+      borderRadius: "var(--radius-lg)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      minWidth: "120px",
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "36px",
+        height: "36px",
+        borderRadius: "var(--radius-md)",
+        backgroundColor: color ? `${color}15` : "var(--color-bg-tertiary)",
+      }}
+    >
+      {Icon ? (
+        <Icon size={18} style={{ color: color || "var(--color-text-muted)" }} />
+      ) : (
+        <div
+          style={{
+            width: "10px",
+            height: "10px",
+            borderRadius: "var(--radius-full)",
+            backgroundColor: dotColor || "var(--color-primary)",
+          }}
+        />
+      )}
+    </div>
+    <div>
+      <p
+        style={{
+          fontSize: "var(--font-size-2xs)",
+          fontWeight: "var(--font-weight-medium)",
+          textTransform: "uppercase",
+          letterSpacing: "var(--letter-spacing-wide)",
+          color: "var(--color-text-muted)",
+          marginBottom: "var(--spacing-0-5)",
+        }}
+      >
+        {label}
+      </p>
+      <p
+        style={{
+          fontSize: "var(--font-size-xl)",
+          fontWeight: "var(--font-weight-semibold)",
+          color: "var(--color-text-primary)",
+        }}
+      >
+        {value}
+      </p>
+    </div>
+  </div>
+)
 
-  // Header
-  header: {
-    backgroundColor: "var(--color-bg-primary)",
-    boxShadow: "var(--shadow-sm)",
-    borderBottom: "var(--border-1) solid var(--color-border-light)",
-    margin: "calc(-1 * var(--spacing-4))",
-    marginBottom: "var(--spacing-3)",
-    padding: "var(--spacing-2-5) var(--spacing-4)",
-  },
-  headerContent: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  headerLeft: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-3)",
-  },
-  pageTitle: {
-    fontSize: "var(--font-size-2xl)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-primary)",
-    letterSpacing: "var(--letter-spacing-tight)",
-  },
-  dateSubtitle: {
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-muted)",
-    marginTop: "var(--spacing-0-5)",
-  },
-  headerRight: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-2)",
-  },
-
-  // Status badge
-  statusBadge: (isConnected) => ({
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-1-5)",
-    borderRadius: "var(--radius-md)",
-    padding: "var(--spacing-0-5) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    backgroundColor: isConnected ? "var(--color-success-bg)" : "var(--color-danger-bg)",
-    color: isConnected ? "var(--color-success-text)" : "var(--color-danger-text)",
-  }),
-  statusDot: (isConnected) => ({
-    height: "var(--spacing-1-5)",
-    width: "var(--spacing-1-5)",
-    borderRadius: "var(--radius-full)",
-    backgroundColor: isConnected ? "var(--color-success)" : "var(--color-danger)",
-  }),
-  lastUpdateText: {
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-light)",
-  },
-
-  // Buttons
-  primaryButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-1-5)",
-    borderRadius: "var(--radius-full)",
-    backgroundColor: "var(--color-primary)",
-    padding: "var(--spacing-1-5) var(--spacing-3)",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-white)",
-    transition: "var(--transition-colors)",
-    border: "none",
-    cursor: "pointer",
-  },
-  primaryButtonHover: {
-    backgroundColor: "var(--color-primary-hover)",
-  },
-  secondaryButton: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-1-5)",
-    borderRadius: "var(--radius-full)",
-    border: "var(--border-1) solid var(--color-border-dark)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1-5) var(--spacing-3)",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-body)",
-    transition: "var(--transition-colors)",
-    cursor: "pointer",
-  },
-
-  // Stats grid
-  statsGrid: {
-    marginBottom: "var(--spacing-3)",
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "var(--spacing-2)",
-  },
-  statCard: {
-    borderRadius: "var(--radius-md)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-2-5) var(--spacing-1-5)",
-  },
-  statHeader: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-1-5)",
-  },
-  statDot: (color) => ({
-    height: "var(--spacing-1-5)",
-    width: "var(--spacing-1-5)",
-    borderRadius: "var(--radius-full)",
-    backgroundColor: color,
-  }),
-  statLabel: {
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-medium)",
-    textTransform: "uppercase",
-    letterSpacing: "var(--letter-spacing-wide)",
-    color: "var(--color-text-muted)",
-  },
-  statValue: {
-    marginTop: "var(--spacing-0-5)",
-    fontSize: "var(--font-size-xl)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-primary)",
-  },
-  statIcon: {
-    height: "var(--icon-xs)",
-    width: "var(--icon-xs)",
-    color: "var(--color-text-light)",
-  },
-
-  // Error banner
-  errorBanner: {
-    marginBottom: "var(--spacing-3)",
-    borderRadius: "var(--radius-md)",
-    border: "var(--border-1) solid var(--color-danger-border)",
-    backgroundColor: "var(--color-danger-bg)",
-    padding: "var(--spacing-3) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-danger-text)",
-  },
-
-  // Filters
-  filtersContainer: {
-    marginBottom: "var(--spacing-3)",
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    gap: "var(--spacing-2)",
-    borderRadius: "var(--radius-md)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-2) var(--spacing-3)",
-  },
-  searchContainer: {
-    position: "relative",
-    minWidth: "200px",
-    flex: "1",
-  },
-  searchIcon: {
-    pointerEvents: "none",
-    position: "absolute",
-    left: "var(--spacing-2)",
-    top: "50%",
-    transform: "translateY(-50%)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-light)",
-  },
-  searchInput: {
-    width: "100%",
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1) var(--spacing-2) var(--spacing-1) var(--spacing-7)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-primary)",
-    outline: "none",
-  },
-  selectInput: {
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-primary)",
-    outline: "none",
-  },
-  dateInput: {
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-primary)",
-    outline: "none",
-  },
-  clearButton: {
-    borderRadius: "var(--radius-sm)",
-    backgroundColor: "var(--color-danger-bg)",
-    padding: "var(--spacing-1) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-danger-text)",
-    border: "none",
-    cursor: "pointer",
-  },
-
-  // Table container
-  tableContainer: {
-    borderRadius: "var(--radius-md)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    boxShadow: "var(--shadow-sm)",
-  },
-  loadingContainer: {
-    display: "flex",
-    height: "256px",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  spinner: {
-    height: "var(--icon-2xl)",
-    width: "var(--icon-2xl)",
-    borderRadius: "var(--radius-full)",
-    border: "var(--border-2) solid var(--color-border-primary)",
-    borderTopColor: "var(--color-primary)",
-    animation: "spin 1s linear infinite",
-  },
-  emptyContainer: {
-    display: "flex",
-    height: "256px",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "var(--spacing-2)",
-    color: "var(--color-text-light)",
-  },
-  emptyIcon: {
-    fontSize: "var(--font-size-3xl)",
-  },
-  emptyText: {
-    fontSize: "var(--font-size-xs)",
-  },
-
-  // Table
-  tableWrapper: {
-    overflowX: "auto",
-  },
-  table: {
-    minWidth: "100%",
-    fontSize: "var(--font-size-xs)",
-  },
-  tableHeader: {
-    borderBottom: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-tertiary)",
-  },
-  tableHeaderCell: {
-    padding: "var(--spacing-2)",
-    textAlign: "left",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-muted)",
-  },
-  tableBody: {
-    // Divider handled via border
-  },
-  tableRow: (isFresh) => ({
-    fontSize: "var(--font-size-xs)",
-    backgroundColor: isFresh ? "var(--color-info-bg-light)" : "transparent",
-    transition: "var(--transition-colors)",
-  }),
-  tableCell: {
-    padding: "var(--spacing-1-5) var(--spacing-2)",
-  },
-  tableCellMuted: {
-    padding: "var(--spacing-1-5) var(--spacing-2)",
-    color: "var(--color-text-muted)",
-  },
-  nameText: {
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-primary)",
-  },
-  emailText: {
-    fontSize: "var(--font-size-2xs)",
-    color: "var(--color-text-muted)",
-  },
-  timeAgoText: {
-    fontSize: "var(--font-size-2xs)",
-    color: "var(--color-text-light)",
-  },
-  hostelTypeText: {
-    fontSize: "var(--font-size-2xs)",
-    color: "var(--color-text-muted)",
-  },
-  roomText: {
-    color: "var(--color-text-body)",
-  },
-  reasonText: {
-    maxWidth: "200px",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    color: "var(--color-text-muted)",
-  },
-
-  // Status badges in table
-  statusBadgeCheckedIn: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-1)",
-    borderRadius: "var(--radius-sm)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-semibold)",
-    border: "var(--border-1) solid var(--color-success-bg)",
-    backgroundColor: "var(--color-success-bg-light)",
-    color: "var(--color-success-text)",
-  },
-  statusBadgeCheckedOut: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-1)",
-    borderRadius: "var(--radius-sm)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-semibold)",
-    border: "var(--border-1) solid var(--color-danger-bg)",
-    backgroundColor: "var(--color-danger-bg-light)",
-    color: "var(--color-danger-text)",
-  },
-  statusBadgeDefault: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-1)",
-    borderRadius: "var(--radius-sm)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-semibold)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-tertiary)",
-    color: "var(--color-text-muted)",
-  },
-
-  // Trajectory badges
-  trajectoryBadgeSame: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-0-5)",
-    borderRadius: "var(--radius-sm)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-medium)",
-    border: "var(--border-1) solid var(--color-info-bg)",
-    backgroundColor: "var(--color-info-bg-light)",
-    color: "var(--color-info-text)",
-  },
-  trajectoryBadgeCross: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-0-5)",
-    borderRadius: "var(--radius-sm)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-medium)",
-    border: "var(--border-1) solid var(--color-purple-light-bg)",
-    backgroundColor: "var(--color-purple-bg)",
-    color: "var(--color-purple-text)",
-  },
-  trajectoryBadgeDefault: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "var(--spacing-0-5)",
-    borderRadius: "var(--radius-sm)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-medium)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-tertiary)",
-    color: "var(--color-text-muted)",
-  },
-
-  // Pagination
-  paginationContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderTop: "var(--border-1) solid var(--color-border-primary)",
-    padding: "var(--spacing-2) var(--spacing-3)",
-    fontSize: "var(--font-size-xs)",
-  },
-  paginationText: {
-    color: "var(--color-text-muted)",
-  },
-  paginationButtons: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-1)",
-  },
-  paginationButton: {
-    display: "flex",
-    height: "var(--spacing-6)",
-    width: "var(--spacing-6)",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-dark)",
-    backgroundColor: "var(--color-bg-primary)",
-    color: "var(--color-text-muted)",
-    cursor: "pointer",
-  },
-  paginationButtonActive: {
-    display: "flex",
-    height: "var(--spacing-6)",
-    width: "var(--spacing-6)",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-primary)",
-    backgroundColor: "var(--color-primary)",
-    color: "var(--color-white)",
-    cursor: "pointer",
-  },
-
-  // Hostel-wise summary
-  hostelSummaryGrid: {
-    marginTop: "var(--spacing-3)",
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "var(--spacing-2)",
-  },
-  hostelCard: {
-    borderRadius: "var(--radius-md)",
-    border: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-2-5) var(--spacing-1-5)",
-  },
-  hostelCardHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  hostelCardInfo: {
-    minWidth: "0",
-    flex: "1",
-  },
-  hostelName: {
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-primary)",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  hostelType: {
-    fontSize: "var(--font-size-2xs)",
-    color: "var(--color-text-muted)",
-  },
-  hostelTotalBadge: {
-    marginLeft: "var(--spacing-2)",
-    borderRadius: "var(--radius-sm)",
-    backgroundColor: "var(--color-info-bg)",
-    padding: "var(--spacing-0-5) var(--spacing-1-5)",
-    fontSize: "var(--font-size-2xs)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-primary)",
-  },
-  hostelStats: {
-    marginTop: "var(--spacing-1-5)",
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-2)",
-    fontSize: "var(--font-size-2xs)",
-    color: "var(--color-text-muted)",
-  },
-  hostelStatItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-0-5)",
-  },
-  hostelStatDot: (color) => ({
-    height: "var(--spacing-1)",
-    width: "var(--spacing-1)",
-    borderRadius: "var(--radius-full)",
-    backgroundColor: color,
-  }),
-
-  // Filter Sidebar
-  sidebarOverlay: {
-    position: "fixed",
-    inset: "0",
-    zIndex: "var(--z-modal)",
-    display: "flex",
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-  },
-  sidebar: {
-    height: "100%",
-    width: "100%",
-    maxWidth: "var(--modal-width-sm)",
-    borderLeft: "var(--border-1) solid var(--color-border-primary)",
-    backgroundColor: "var(--color-bg-primary)",
-    boxShadow: "var(--shadow-xl)",
-  },
-  sidebarHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottom: "var(--border-1) solid var(--color-border-primary)",
-    padding: "var(--spacing-3) var(--spacing-4)",
-  },
-  sidebarTitle: {
-    fontSize: "var(--font-size-sm)",
-    fontWeight: "var(--font-weight-semibold)",
-    color: "var(--color-text-primary)",
-  },
-  sidebarCloseButton: {
-    display: "flex",
-    height: "var(--spacing-7)",
-    width: "var(--spacing-7)",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "var(--radius-sm)",
-    border: "none",
-    backgroundColor: "transparent",
-    cursor: "pointer",
-  },
-  sidebarCloseIcon: {
-    fontSize: "var(--font-size-lg)",
-    color: "var(--color-text-muted)",
-  },
-  sidebarContent: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "var(--spacing-4)",
-    padding: "var(--spacing-4)",
-    fontSize: "var(--font-size-xs)",
-  },
-  formGroup: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  formLabel: {
-    marginBottom: "var(--spacing-1)",
-    display: "block",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-body)",
-  },
-  formInputFull: {
-    width: "100%",
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-dark)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1-5) var(--spacing-2)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-primary)",
-    outline: "none",
-  },
-  formInputWithIcon: {
-    width: "100%",
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-dark)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1-5) var(--spacing-2) var(--spacing-1-5) var(--spacing-7)",
-    fontSize: "var(--font-size-xs)",
-    color: "var(--color-text-primary)",
-    outline: "none",
-  },
-  formGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "var(--spacing-3)",
-  },
-  sidebarActions: {
-    display: "flex",
-    alignItems: "center",
-    gap: "var(--spacing-2)",
-    paddingTop: "var(--spacing-2)",
-  },
-  resetButton: {
-    flex: "1",
-    borderRadius: "var(--radius-sm)",
-    border: "var(--border-1) solid var(--color-border-dark)",
-    backgroundColor: "var(--color-bg-primary)",
-    padding: "var(--spacing-1-5) var(--spacing-3)",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-text-body)",
-    cursor: "pointer",
-  },
-  applyButton: {
-    flex: "1",
-    borderRadius: "var(--radius-sm)",
-    backgroundColor: "var(--color-primary)",
-    padding: "var(--spacing-1-5) var(--spacing-3)",
-    fontSize: "var(--font-size-xs)",
-    fontWeight: "var(--font-weight-medium)",
-    color: "var(--color-white)",
-    border: "none",
-    cursor: "pointer",
-  },
-  iconXs: {
-    height: "var(--icon-xs)",
-    width: "var(--icon-xs)",
-  },
+const StatusBadge = ({ status }) => {
+  const isCheckedIn = status === "Checked In"
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "var(--spacing-1)",
+        borderRadius: "var(--radius-sm)",
+        padding: "var(--spacing-0-5) var(--spacing-2)",
+        fontSize: "var(--font-size-xs)",
+        fontWeight: "var(--font-weight-medium)",
+        backgroundColor: isCheckedIn ? "var(--color-success-bg-light)" : "var(--color-danger-bg-light)",
+        color: isCheckedIn ? "var(--color-success-text)" : "var(--color-danger-text)",
+        border: `var(--border-1) solid ${isCheckedIn ? "var(--color-success-bg)" : "var(--color-danger-bg)"}`,
+      }}
+    >
+      {isCheckedIn ? <LogIn size={12} /> : <LogOut size={12} />}
+      {status}
+    </span>
+  )
 }
 
-// Helper functions for status/trajectory badge styles
-const getStatusBadgeStyle = (status) => {
-  if (status === "Checked In") return styles.statusBadgeCheckedIn
-  if (status === "Checked Out") return styles.statusBadgeCheckedOut
-  return styles.statusBadgeDefault
-}
-
-const getTrajectoryBadgeStyle = (isSameHostel) => {
-  if (isSameHostel === true) return styles.trajectoryBadgeSame
-  if (isSameHostel === false) return styles.trajectoryBadgeCross
-  return styles.trajectoryBadgeDefault
-}
-
-const getStatusIcon = (status) => {
-  if (status === "Checked In") return <MdLogin style={styles.iconXs} />
-  if (status === "Checked Out") return <MdLogout style={styles.iconXs} />
-  return <MdSwapHoriz style={styles.iconXs} />
-}
-
-const getTrajectoryIcon = (isSameHostel) => {
-  if (isSameHostel === true) return <MdHome style={styles.iconXs} />
-  return <MdSwapHoriz style={styles.iconXs} />
+const TrajectoryBadge = ({ isSameHostel }) => {
+  const isSame = isSameHostel === true
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "var(--spacing-1)",
+        borderRadius: "var(--radius-sm)",
+        padding: "var(--spacing-0-5) var(--spacing-2)",
+        fontSize: "var(--font-size-xs)",
+        fontWeight: "var(--font-weight-medium)",
+        backgroundColor: isSame ? "var(--color-info-bg-light)" : "var(--color-purple-bg)",
+        color: isSame ? "var(--color-info-text)" : "var(--color-purple-text)",
+        border: `var(--border-1) solid ${isSame ? "var(--color-info-bg)" : "var(--color-purple-light-bg)"}`,
+      }}
+    >
+      {isSame ? <Home size={12} /> : <ArrowRightLeft size={12} />}
+      {isSame ? "Same" : "Cross"}
+    </span>
+  )
 }
 
 const LiveCheckInOutPage = () => {
   const { hostelList } = useGlobal()
-  const [showFilters, setShowFilters] = useState(false)
+  const [isFiltersExpanded, setIsFiltersExpanded] = useState(false)
 
   const { entries, stats, hostelWiseStats, pagination, loading, error, socketStatus, lastRealtimeEntryId, filters, updateFilters, resetFilters, goToPage, nextPage, prevPage, refresh } = useLiveCheckInOut()
 
@@ -699,13 +160,24 @@ const LiveCheckInOutPage = () => {
   const pageSize = pagination?.limit ?? 10
   const totalPages = pagination?.totalPages ?? 1
 
-  const highlightEntry = entries[0]
-
   const handleFilterChange = (key, value) => updateFilters({ [key]: value })
   const handleLimitChange = (value) => {
     const parsed = Number.parseInt(value, 10)
     handleFilterChange("limit", Number.isNaN(parsed) ? 10 : parsed)
   }
+
+  // Count active filters
+  const getActiveFilterCount = () => {
+    let count = 0
+    if (filters.status) count++
+    if (filters.hostelId) count++
+    if (filters.isSameHostel) count++
+    if (filters.startDate) count++
+    if (filters.endDate) count++
+    return count
+  }
+
+  const activeFilterCount = getActiveFilterCount()
 
   const exportToCSV = () => {
     if (!entries.length) return
@@ -739,221 +211,285 @@ const LiveCheckInOutPage = () => {
   }
 
   return (
-    <div style={styles.pageContainer}>
-      <div style={styles.maxWidthContainer}>
-        {/* Compact Header */}
-        <header style={styles.header}>
-          <div style={styles.headerContent}>
-            <div style={styles.headerLeft}>
-              <div>
-                <h1 style={styles.pageTitle}>Live Check-In/Out Monitor</h1>
-                <p style={styles.dateSubtitle}>{new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-              </div>
-              <span style={styles.statusBadge(socketStatus === "connected")}>
-                <span style={styles.statusDot(socketStatus === "connected")} />
-                {socketStatus === "connected" ? "Live" : "Offline"}
-              </span>
-              {highlightEntry && <span style={styles.lastUpdateText}>Last: {getTimeAgo(highlightEntry.dateAndTime)}</span>}
-            </div>
-
-            <div style={styles.headerRight}>
-              <button onClick={() => refresh()} disabled={loading} style={{ ...styles.primaryButton, opacity: loading ? "var(--opacity-disabled)" : "var(--opacity-100)" }}>
-                <FiRefreshCw style={{ fontSize: "var(--font-size-xs)", animation: loading ? "spin 1s linear infinite" : "none" }} />
-                Refresh
-              </button>
-              <button onClick={exportToCSV} style={styles.secondaryButton}>
-                <FiDownload style={{ fontSize: "var(--font-size-xs)" }} />
-                Export
-              </button>
-              <button onClick={() => setShowFilters(true)} style={styles.secondaryButton}>
-                <FiFilter style={{ fontSize: "var(--font-size-xs)" }} />
-                Filters
-              </button>
-            </div>
-          </div>
-        </header>
-
-        {/* Compact Stats Row */}
-        <div style={styles.statsGrid}>
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <span style={styles.statDot("var(--color-success)")} />
-              <span style={styles.statLabel}>In Today</span>
-            </div>
-            <p style={styles.statValue}>{todayStats.checkedIn}</p>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--color-bg-page)", padding: "var(--spacing-4)" }}>
+      <div style={{ maxWidth: "1600px", margin: "0 auto" }}>
+        {/* Header */}
+        <HStack justify="between" align="center" style={{ marginBottom: "var(--spacing-4)" }}>
+          <div>
+            <HStack gap="small" align="center">
+              <h1
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: "var(--font-weight-bold)",
+                  color: "var(--color-text-primary)",
+                }}
+              >
+                Live Check-In/Out Monitor
+              </h1>
+              <Badge variant={socketStatus === "connected" ? "success" : "danger"} size="small">
+                <HStack gap="xsmall" align="center">
+                  <div
+                    style={{
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: socketStatus === "connected" ? "var(--color-success)" : "var(--color-danger)",
+                    }}
+                  />
+                  {socketStatus === "connected" ? "Live" : "Offline"}
+                </HStack>
+              </Badge>
+            </HStack>
+            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>
+              {new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+            </p>
           </div>
 
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <span style={styles.statDot("var(--color-danger)")} />
-              <span style={styles.statLabel}>Out Today</span>
-            </div>
-            <p style={styles.statValue}>{todayStats.checkedOut}</p>
-          </div>
+          <HStack gap="small">
+            <Button onClick={refresh} disabled={loading} variant="primary" size="small" isLoading={loading} icon={<RefreshCw size={16} />}>
+              Refresh
+            </Button>
+            <Button onClick={exportToCSV} variant="secondary" size="small" icon={<Download size={16} />}>
+              Export
+            </Button>
+          </HStack>
+        </HStack>
 
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <span style={styles.statDot("var(--color-purple-text)")} />
-              <span style={styles.statLabel}>Cross Hostel</span>
-            </div>
-            <p style={styles.statValue}>{todayStats.crossHostel}</p>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <span style={styles.statDot("var(--color-info)")} />
-              <span style={styles.statLabel}>Same Hostel</span>
-            </div>
-            <p style={styles.statValue}>{todayStats.sameHostel}</p>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <MdLogin style={styles.statIcon} />
-              <span style={styles.statLabel}>Total In</span>
-            </div>
-            <p style={styles.statValue}>{totalStats.checkedIn}</p>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <MdLogout style={styles.statIcon} />
-              <span style={styles.statLabel}>Total Out</span>
-            </div>
-            <p style={styles.statValue}>{totalStats.checkedOut}</p>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <RiRadarLine style={styles.statIcon} />
-              <span style={styles.statLabel}>Loaded</span>
-            </div>
-            <p style={styles.statValue}>{loading ? "..." : entries.length}</p>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <span style={{ ...styles.statIcon, fontSize: "var(--font-size-2xs)", fontWeight: "var(--font-weight-bold)" }}>#</span>
-              <span style={styles.statLabel}>Total</span>
-            </div>
-            <p style={styles.statValue}>{totalRecords}</p>
-          </div>
+        {/* Stats Row - All in one row */}
+        <div
+          style={{
+            display: "flex",
+            gap: "var(--spacing-3)",
+            marginBottom: "var(--spacing-4)",
+            overflowX: "auto",
+            paddingBottom: "var(--spacing-2)",
+          }}
+        >
+          <StatCard dotColor="var(--color-success)" label="In Today" value={todayStats.checkedIn} />
+          <StatCard dotColor="var(--color-danger)" label="Out Today" value={todayStats.checkedOut} />
+          <StatCard dotColor="var(--color-purple-text)" label="Cross Hostel" value={todayStats.crossHostel} />
+          <StatCard dotColor="var(--color-info)" label="Same Hostel" value={todayStats.sameHostel} />
+          <StatCard icon={LogIn} label="Total In" value={totalStats.checkedIn} color="var(--color-success)" />
+          <StatCard icon={LogOut} label="Total Out" value={totalStats.checkedOut} color="var(--color-danger)" />
+          <StatCard icon={Activity} label="Loaded" value={loading ? "..." : entries.length} color="var(--color-primary)" />
         </div>
 
+        {/* Error Banner */}
         {error && (
-          <div style={styles.errorBanner}>
+          <div
+            style={{
+              marginBottom: "var(--spacing-4)",
+              borderRadius: "var(--radius-lg)",
+              border: "var(--border-1) solid var(--color-danger-border)",
+              backgroundColor: "var(--color-danger-bg-light)",
+              padding: "var(--spacing-3)",
+              fontSize: "var(--font-size-sm)",
+              color: "var(--color-danger-text)",
+            }}
+          >
             <span style={{ fontWeight: "var(--font-weight-semibold)" }}>Error:</span> {error}
           </div>
         )}
 
-        {/* Compact Inline Filters */}
-        <div style={styles.filtersContainer}>
-          <div style={{ flex: 1 }}>
-            <Input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
-              placeholder="Search student, room, reason..."
-              icon={<FiSearch />}
-            />
-          </div>
+        {/* Filter Section - Like StudentFilterSection */}
+        <Card style={{ marginBottom: "var(--spacing-4)", overflow: "visible" }} padding="p-4">
+          <HStack gap="small" align="center">
+            <div style={{ flex: 1 }}>
+              <Input
+                type="text"
+                value={filters.search}
+                onChange={(e) => handleFilterChange("search", e.target.value)}
+                placeholder="Search student, room, reason..."
+                icon={<Search size={16} />}
+              />
+            </div>
+            <Button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} variant="secondary" size="small" icon={<SlidersHorizontal size={16} />}>
+              {isFiltersExpanded ? "Less" : "More"}
+              {activeFilterCount > 0 && !isFiltersExpanded && (
+                <Badge variant="primary" size="small" style={{ marginLeft: "var(--spacing-1-5)" }}>
+                  {activeFilterCount}
+                </Badge>
+              )}
+              {isFiltersExpanded ? <ChevronUp size={14} style={{ marginLeft: "var(--spacing-1)" }} /> : <ChevronDown size={14} style={{ marginLeft: "var(--spacing-1)" }} />}
+            </Button>
+            <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
+              Reset
+            </Button>
+          </HStack>
 
-          <Select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} options={[
-            { value: "", label: "All Status" },
-            { value: "Checked In", label: "Checked In" },
-            { value: "Checked Out", label: "Checked Out" }
-          ]} />
+          {/* Expanded filters section */}
+          {isFiltersExpanded && (
+            <VStack gap="medium" style={{ marginTop: "var(--spacing-4)" }}>
+              <Divider spacing="none" />
 
-          <Select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} options={[
-            { value: "", label: "All Types" },
-            { value: "true", label: "Same Hostel" },
-            { value: "false", label: "Cross-Hostel" }
-          ]} />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", rowGap: "var(--spacing-4)", columnGap: "var(--spacing-4)", paddingTop: "var(--spacing-4)" }}>
+                <VStack gap="xsmall">
+                  <Label size="sm">Status</Label>
+                  <Select
+                    value={filters.status}
+                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    placeholder="All Status"
+                    options={[
+                      { value: "Checked In", label: "Checked In" },
+                      { value: "Checked Out", label: "Checked Out" },
+                    ]}
+                  />
+                </VStack>
 
-          <Select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} options={[
-            { value: "", label: "All Hostels" },
-            ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
-          ]} />
+                <VStack gap="xsmall">
+                  <Label size="sm">Entry Type</Label>
+                  <Select
+                    value={filters.isSameHostel}
+                    onChange={(e) => handleFilterChange("isSameHostel", e.target.value)}
+                    placeholder="All Types"
+                    options={[
+                      { value: "true", label: "Same Hostel" },
+                      { value: "false", label: "Cross-Hostel" },
+                    ]}
+                  />
+                </VStack>
 
-          <Input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} />
+                <VStack gap="xsmall">
+                  <Label size="sm">Hostel</Label>
+                  <Select
+                    value={filters.hostelId}
+                    onChange={(e) => handleFilterChange("hostelId", e.target.value)}
+                    placeholder="All Hostels"
+                    options={hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []}
+                  />
+                </VStack>
 
-          <Input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} />
+                <VStack gap="xsmall">
+                  <Label size="sm">Entries per page</Label>
+                  <Select
+                    value={filters.limit}
+                    onChange={(e) => handleLimitChange(e.target.value)}
+                    options={[
+                      { value: "20", label: "20" },
+                      { value: "50", label: "50" },
+                      { value: "100", label: "100" },
+                    ]}
+                  />
+                </VStack>
+              </div>
 
-          <Select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} options={[
-            { value: "20", label: "20/page" },
-            { value: "50", label: "50/page" },
-            { value: "100", label: "100/page" }
-          ]} />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
+                <VStack gap="xsmall">
+                  <Label size="sm">Start Date</Label>
+                  <DatePicker
+                    name="startDate"
+                    value={filters.startDate}
+                    onChange={(e) => handleFilterChange("startDate", e.target.value)}
+                    placeholder="Select start date"
+                  />
+                </VStack>
 
-          {(filters.search || filters.status || filters.hostelId || filters.isSameHostel || filters.startDate || filters.endDate) && (
-            <button onClick={resetFilters} style={styles.clearButton}>
-              Clear
-            </button>
+                <VStack gap="xsmall">
+                  <Label size="sm">End Date</Label>
+                  <DatePicker
+                    name="endDate"
+                    value={filters.endDate}
+                    onChange={(e) => handleFilterChange("endDate", e.target.value)}
+                    placeholder="Select end date"
+                    min={filters.startDate}
+                  />
+                </VStack>
+              </div>
+            </VStack>
           )}
-        </div>
+        </Card>
 
-        {/* Compact Main Table */}
-        <div style={styles.tableContainer}>
+        {/* Main Table */}
+        <Card style={{ padding: 0, overflow: "hidden" }}>
           {loading && entries.length === 0 ? (
-            <div style={styles.loadingContainer}>
-              <div style={styles.spinner} />
+            <div style={{ display: "flex", height: "256px", alignItems: "center", justifyContent: "center" }}>
+              <div
+                style={{
+                  height: "32px",
+                  width: "32px",
+                  borderRadius: "var(--radius-full)",
+                  border: "var(--border-3) solid var(--color-border-primary)",
+                  borderTopColor: "var(--color-primary)",
+                  animation: "spin 1s linear infinite",
+                }}
+              />
             </div>
           ) : entries.length === 0 ? (
-            <div style={styles.emptyContainer}>
-              <RiRadarLine style={styles.emptyIcon} />
-              <p style={styles.emptyText}>No entries match filters</p>
+            <div style={{ display: "flex", height: "256px", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "var(--spacing-2)", color: "var(--color-text-muted)" }}>
+              <Activity size={48} />
+              <p style={{ fontSize: "var(--font-size-sm)" }}>No entries match filters</p>
             </div>
           ) : (
             <>
-              <div style={styles.tableWrapper}>
-                <table style={styles.table}>
-                  <thead style={styles.tableHeader}>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", fontSize: "var(--font-size-sm)", borderCollapse: "collapse" }}>
+                  <thead style={{ backgroundColor: "var(--color-bg-tertiary)", borderBottom: "var(--border-1) solid var(--color-border-primary)" }}>
                     <tr>
-                      <th style={styles.tableHeaderCell}>#</th>
-                      <th style={styles.tableHeaderCell}>Time</th>
-                      <th style={styles.tableHeaderCell}>Student</th>
-                      <th style={styles.tableHeaderCell}>Status</th>
-                      <th style={styles.tableHeaderCell}>Hostel</th>
-                      <th style={styles.tableHeaderCell}>Room</th>
-                      <th style={styles.tableHeaderCell}>Type</th>
-                      <th style={styles.tableHeaderCell}>Reason</th>
+                      {["#", "Time", "Student", "Status", "Hostel", "Room", "Type", "Reason"].map((header) => (
+                        <th
+                          key={header}
+                          style={{
+                            padding: "var(--spacing-3)",
+                            textAlign: "left",
+                            fontWeight: "var(--font-weight-semibold)",
+                            fontSize: "var(--font-size-xs)",
+                            color: "var(--color-text-muted)",
+                            textTransform: "uppercase",
+                            letterSpacing: "var(--letter-spacing-wide)",
+                          }}
+                        >
+                          {header}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
-                  <tbody style={{ borderTop: "var(--border-1) solid var(--color-border-light)" }}>
+                  <tbody>
                     {entries.map((entry, index) => {
                       const isFresh = entry._id === lastRealtimeEntryId
-
                       return (
-                        <tr key={entry._id} style={styles.tableRow(isFresh)}>
-                          <td style={styles.tableCellMuted}>{index + 1 + (currentPage - 1) * pageSize}</td>
-                          <td style={styles.tableCell}>
-                            <div style={styles.nameText}>{formatDateTime(entry.dateAndTime)}</div>
-                            <div style={styles.timeAgoText}>{getTimeAgo(entry.dateAndTime)}</div>
+                        <tr
+                          key={entry._id}
+                          style={{
+                            backgroundColor: isFresh ? "var(--color-info-bg-light)" : "transparent",
+                            transition: "var(--transition-colors)",
+                            borderBottom: "var(--border-1) solid var(--color-border-light)",
+                          }}
+                        >
+                          <td style={{ padding: "var(--spacing-3)", color: "var(--color-text-muted)" }}>{index + 1 + (currentPage - 1) * pageSize}</td>
+                          <td style={{ padding: "var(--spacing-3)" }}>
+                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{formatDateTime(entry.dateAndTime)}</div>
+                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-light)" }}>{getTimeAgo(entry.dateAndTime)}</div>
                           </td>
-                          <td style={styles.tableCell}>
-                            <div style={styles.nameText}>{entry.userId?.name || "Unknown"}</div>
-                            <div style={styles.emailText}>{entry.userId?.email || "-"}</div>
+                          <td style={{ padding: "var(--spacing-3)" }}>
+                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.userId?.name || "Unknown"}</div>
+                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{entry.userId?.email || "-"}</div>
                           </td>
-                          <td style={styles.tableCell}>
-                            <span style={getStatusBadgeStyle(entry.status)}>
-                              {getStatusIcon(entry.status)}
-                              {entry.status}
-                            </span>
+                          <td style={{ padding: "var(--spacing-3)" }}>
+                            <StatusBadge status={entry.status} />
                           </td>
-                          <td style={styles.tableCell}>
-                            <div style={styles.nameText}>{entry.hostelName || "-"}</div>
-                            <div style={styles.hostelTypeText}>{entry.hostelId?.type || "-"}</div>
+                          <td style={{ padding: "var(--spacing-3)" }}>
+                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{entry.hostelName || "-"}</div>
+                            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{entry.hostelId?.type || "-"}</div>
                           </td>
-                          <td style={{ ...styles.tableCell, ...styles.roomText }}>
+                          <td style={{ padding: "var(--spacing-3)", color: "var(--color-text-body)" }}>
                             R{entry.room || "?"}
                             {entry.unit ? " U" + entry.unit : ""}
                             {entry.bed ? " B" + entry.bed : ""}
                           </td>
-                          <td style={styles.tableCell}>
-                            <span style={getTrajectoryBadgeStyle(entry.isSameHostel)}>
-                              {getTrajectoryIcon(entry.isSameHostel)}
-                              {entry.isSameHostel ? "Same" : "Cross"}
-                            </span>
+                          <td style={{ padding: "var(--spacing-3)" }}>
+                            <TrajectoryBadge isSameHostel={entry.isSameHostel} />
                           </td>
-                          <td style={styles.tableCell}>
-                            <p style={styles.reasonText} title={entry.reason || "No reason"}>
+                          <td style={{ padding: "var(--spacing-3)" }}>
+                            <p
+                              style={{
+                                maxWidth: "200px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                color: "var(--color-text-muted)",
+                              }}
+                              title={entry.reason || "No reason"}
+                            >
                               {entry.reason || "-"}
                             </p>
                           </td>
@@ -964,15 +500,40 @@ const LiveCheckInOutPage = () => {
                 </table>
               </div>
 
-              {/* Compact Pagination */}
+              {/* Pagination */}
               {totalPages > 1 && (
-                <div style={styles.paginationContainer}>
-                  <p style={styles.paginationText}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderTop: "var(--border-1) solid var(--color-border-primary)",
+                    padding: "var(--spacing-3) var(--spacing-4)",
+                    fontSize: "var(--font-size-sm)",
+                  }}
+                >
+                  <p style={{ color: "var(--color-text-muted)" }}>
                     {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, totalRecords)} of {totalRecords}
                   </p>
-                  <div style={styles.paginationButtons}>
-                    <button onClick={prevPage} disabled={currentPage === 1} style={{ ...styles.paginationButton, opacity: currentPage === 1 ? "var(--opacity-40)" : "var(--opacity-100)" }}>
-                      <FiChevronLeft style={{ fontSize: "var(--font-size-xs)" }} />
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+                    <button
+                      onClick={prevPage}
+                      disabled={currentPage === 1}
+                      style={{
+                        display: "flex",
+                        height: "var(--spacing-7)",
+                        width: "var(--spacing-7)",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "var(--radius-md)",
+                        border: "var(--border-1) solid var(--color-border-dark)",
+                        backgroundColor: "var(--color-bg-primary)",
+                        color: "var(--color-text-muted)",
+                        cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                        opacity: currentPage === 1 ? "0.4" : "1",
+                      }}
+                    >
+                      <ChevronLeft size={16} />
                     </button>
                     {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                       let pageNum
@@ -982,144 +543,121 @@ const LiveCheckInOutPage = () => {
                       else pageNum = currentPage - 2 + i
 
                       return (
-                        <button key={pageNum} onClick={() => goToPage(pageNum)} style={currentPage === pageNum ? styles.paginationButtonActive : styles.paginationButton}>
+                        <button
+                          key={pageNum}
+                          onClick={() => goToPage(pageNum)}
+                          style={{
+                            display: "flex",
+                            height: "var(--spacing-7)",
+                            width: "var(--spacing-7)",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: "var(--radius-md)",
+                            border: currentPage === pageNum ? "var(--border-1) solid var(--color-primary)" : "var(--border-1) solid var(--color-border-dark)",
+                            backgroundColor: currentPage === pageNum ? "var(--color-primary)" : "var(--color-bg-primary)",
+                            color: currentPage === pageNum ? "var(--color-white)" : "var(--color-text-muted)",
+                            cursor: "pointer",
+                            fontSize: "var(--font-size-sm)",
+                          }}
+                        >
                           {pageNum}
                         </button>
                       )
                     })}
-                    <button onClick={nextPage} disabled={currentPage === totalPages} style={{ ...styles.paginationButton, opacity: currentPage === totalPages ? "var(--opacity-40)" : "var(--opacity-100)" }}>
-                      <FiChevronRight style={{ fontSize: "var(--font-size-xs)" }} />
+                    <button
+                      onClick={nextPage}
+                      disabled={currentPage === totalPages}
+                      style={{
+                        display: "flex",
+                        height: "var(--spacing-7)",
+                        width: "var(--spacing-7)",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "var(--radius-md)",
+                        border: "var(--border-1) solid var(--color-border-dark)",
+                        backgroundColor: "var(--color-bg-primary)",
+                        color: "var(--color-text-muted)",
+                        cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                        opacity: currentPage === totalPages ? "0.4" : "1",
+                      }}
+                    >
+                      <ChevronRight size={16} />
                     </button>
                   </div>
                 </div>
               )}
             </>
           )}
-        </div>
+        </Card>
 
-        {/* Hostel-wise summary - Compact */}
+        {/* Hostel-wise summary */}
         {hostelWiseStats.length > 0 && (
-          <div style={styles.hostelSummaryGrid}>
-            {hostelWiseStats.map((hostel) => (
-              <div key={hostel.hostelId || hostel.hostelName} style={styles.hostelCard}>
-                <div style={styles.hostelCardHeader}>
-                  <div style={styles.hostelCardInfo}>
-                    <p style={styles.hostelName} title={hostel.hostelName}>
-                      {hostel.hostelName}
-                    </p>
-                    <p style={styles.hostelType}>{hostel.hostelType}</p>
-                  </div>
-                  <span style={styles.hostelTotalBadge}>{hostel.total}</span>
-                </div>
-                <div style={styles.hostelStats}>
-                  <span style={styles.hostelStatItem}>
-                    <span style={styles.hostelStatDot("var(--color-success)")} />
-                    {hostel.checkedIn}
-                  </span>
-                  <span style={styles.hostelStatItem}>
-                    <span style={styles.hostelStatDot("var(--color-danger)")} />
-                    {hostel.checkedOut}
-                  </span>
-                  <span style={styles.hostelStatItem}>
-                    <span style={styles.hostelStatDot("var(--color-purple-text)")} />
-                    {hostel.crossHostel}
-                  </span>
-                </div>
-              </div>
-            ))}
+          <div style={{ marginTop: "var(--spacing-4)" }}>
+            <h2
+              style={{
+                fontSize: "var(--font-size-lg)",
+                fontWeight: "var(--font-weight-semibold)",
+                color: "var(--color-text-primary)",
+                marginBottom: "var(--spacing-3)",
+              }}
+            >
+              Hostel-wise Summary
+            </h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--spacing-3)" }}>
+              {hostelWiseStats.map((hostel) => (
+                <Card key={hostel.hostelId || hostel.hostelName} padding="p-4">
+                  <HStack justify="between" align="start">
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p
+                        style={{
+                          fontSize: "var(--font-size-sm)",
+                          fontWeight: "var(--font-weight-semibold)",
+                          color: "var(--color-text-primary)",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                        title={hostel.hostelName}
+                      >
+                        {hostel.hostelName}
+                      </p>
+                      <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.hostelType}</p>
+                    </div>
+                    <Badge variant="info" size="small">
+                      {hostel.total}
+                    </Badge>
+                  </HStack>
+                  <HStack gap="medium" style={{ marginTop: "var(--spacing-2)" }}>
+                    <HStack gap="xsmall" align="center">
+                      <div style={{ width: "8px", height: "8px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-success)" }} />
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.checkedIn}</span>
+                    </HStack>
+                    <HStack gap="xsmall" align="center">
+                      <div style={{ width: "8px", height: "8px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-danger)" }} />
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.checkedOut}</span>
+                    </HStack>
+                    <HStack gap="xsmall" align="center">
+                      <div style={{ width: "8px", height: "8px", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-purple-text)" }} />
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{hostel.crossHostel}</span>
+                    </HStack>
+                  </HStack>
+                </Card>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Compact Filter Sidebar */}
-      {showFilters && (
-        <div style={styles.sidebarOverlay}>
-          <div style={styles.sidebar}>
-            <div style={styles.sidebarHeader}>
-              <h3 style={styles.sidebarTitle}>Advanced Filters</h3>
-              <button onClick={() => setShowFilters(false)} style={styles.sidebarCloseButton}>
-                <FiX style={styles.sidebarCloseIcon} />
-              </button>
-            </div>
-
-            <div style={styles.sidebarContent}>
-              <div style={styles.formGroup}>
-                <label style={styles.formLabel}>Search</label>
-                <Input type="text" value={filters.search} onChange={(e) => handleFilterChange("search", e.target.value)}
-                  placeholder="Student, room, reason..."
-                  icon={<FiSearch />}
-                />
-              </div>
-
-              <div style={styles.formGrid}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Status</label>
-                  <Select value={filters.status} onChange={(e) => handleFilterChange("status", e.target.value)} options={[
-                    { value: "", label: "All" },
-                    { value: "Checked In", label: "Checked In" },
-                    { value: "Checked Out", label: "Checked Out" }
-                  ]} />
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Type</label>
-                  <Select value={filters.isSameHostel} onChange={(e) => handleFilterChange("isSameHostel", e.target.value)} options={[
-                    { value: "", label: "All" },
-                    { value: "true", label: "Same Hostel" },
-                    { value: "false", label: "Cross-Hostel" }
-                  ]} />
-                </div>
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.formLabel}>Hostel</label>
-                <Select value={filters.hostelId} onChange={(e) => handleFilterChange("hostelId", e.target.value)} options={[
-                  { value: "", label: "All Hostels" },
-                  ...hostelList?.map((hostel) => ({ value: hostel._id, label: hostel.name })) || []
-                ]} />
-              </div>
-
-              <div style={styles.formGrid}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Start Date</label>
-                  <Input type="date" value={filters.startDate} onChange={(e) => handleFilterChange("startDate", e.target.value)} />
-                </div>
-
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>End Date</label>
-                  <Input type="date" value={filters.endDate} onChange={(e) => handleFilterChange("endDate", e.target.value)} />
-                </div>
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.formLabel}>Page Size</label>
-                <Select value={filters.limit} onChange={(e) => handleLimitChange(e.target.value)} options={[
-                  { value: "20", label: "20 per page" },
-                  { value: "50", label: "50 per page" },
-                  { value: "100", label: "100 per page" }
-                ]} />
-              </div>
-
-              <div style={styles.sidebarActions}>
-                <button onClick={resetFilters} style={styles.resetButton}>
-                  Reset All
-                </button>
-                <button onClick={() => {
-                  refresh()
-                  setShowFilters(false)
-                }}
-                  style={styles.applyButton}
-                >
-                  Apply
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   )
 }
 
 export default LiveCheckInOutPage
-
