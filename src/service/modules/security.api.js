@@ -78,6 +78,14 @@ export const securityApi = {
     return apiClient.patch(`/security/entries/${entryId}/cross-hostel-reason`, { reason })
   },
 
+  /**
+   * Get face scanner entries for hostel gate
+   * @param {Object} filters - Query filters (page, limit, status)
+   */
+  getFaceScannerEntries: (filters = {}) => {
+    return apiClient.get("/security/entries/face-scanner", { params: filters })
+  },
+
   // Staff operations
   /**
    * Verify staff QR code
