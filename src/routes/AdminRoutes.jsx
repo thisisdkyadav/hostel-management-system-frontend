@@ -48,6 +48,8 @@ const AdminRoutes = () => (
             <Route element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="live-checkinout" element={<LiveCheckInOutPage />} />
+                <Route path="lc" element={<LiveCheckInOutPage />} /> // temp shortcut
+                <Route path="fs" element={<FaceScannersPage />} /> // temp shortcut
                 <Route path="face-scanners" element={<FaceScannersPage />} />
                 <Route path="hostels" element={<AdminHostels />} />
                 <Route path="hostels/:hostelName" element={<UnitsAndRoomsPage />} />
