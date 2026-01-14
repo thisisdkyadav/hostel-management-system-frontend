@@ -304,7 +304,7 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
                   Update
                 </Button>
               )}
-              {user && user._id === complaintData.reportedBy.id && (
+              {user?.role === "Student" && user._id === complaintData.reportedBy.id && complaintData.status === "Resolved" && !complaintData.feedbackRating && (
                 <Button onClick={() => setShowFeedbackModal(true)} variant="success" size="small" icon={<Star size={14} />}>
                   Feedback
                 </Button>
