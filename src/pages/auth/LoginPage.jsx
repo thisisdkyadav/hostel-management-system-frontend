@@ -73,22 +73,39 @@ const LoginPage = () => {
   return (
     <div className="login-page">
       <div className="login-bg-container">
-        <div className="login-gradient-top"></div>
-        <div className="login-gradient-bottom"></div>
+        {/* Large background blobs */}
         <div className="login-blob-1"></div>
         <div className="login-blob-2"></div>
         <div className="login-blob-3"></div>
         <div className="login-blob-4"></div>
+
+        {/* Medium size floating elements */}
         <div className="login-blob-5"></div>
         <div className="login-blob-6"></div>
         <div className="login-blob-7"></div>
         <div className="login-blob-8"></div>
         <div className="login-blob-9"></div>
+
+        {/* Smaller dynamic elements */}
         <div className="login-blob-10"></div>
         <div className="login-blob-11"></div>
         <div className="login-blob-12"></div>
         <div className="login-blob-13"></div>
         <div className="login-blob-14"></div>
+
+        {/* Fast moving tiny elements */}
+        <div className="login-blob-15"></div>
+        <div className="login-blob-16"></div>
+        <div className="login-blob-17"></div>
+        <div className="login-blob-18"></div>
+        <div className="login-blob-19"></div>
+
+        {/* Floating elements with float animation */}
+        <div className="login-blob-20"></div>
+        <div className="login-blob-21"></div>
+        <div className="login-blob-22"></div>
+        <div className="login-blob-23"></div>
+        <div className="login-blob-24"></div>
       </div>
 
       <div className="login-content-container">
