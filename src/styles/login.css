@@ -326,10 +326,10 @@
    ============================================ */
 
 .login-card {
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  -moz-backdrop-filter: blur(20px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  -moz-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: 1.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -355,7 +355,7 @@
 .login-card:hover {
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 /* ============================================
@@ -378,7 +378,7 @@
 }
 
 .login-logo {
-  height: 3rem;
+  height: 3.5rem;
   margin-bottom: 0.75rem;
   transition: all 0.5s ease;
   transform: scale(1);
@@ -386,14 +386,14 @@
 
 @media (min-width: 640px) {
   .login-logo {
-    height: 3.5rem;
+    height: 4.5rem;
     margin-bottom: 1.5rem;
   }
 }
 
 @media (min-width: 768px) {
   .login-logo {
-    height: 4rem;
+    height: 5.5rem;
   }
 }
 
@@ -401,14 +401,27 @@
   transform: scale(1.05);
 }
 
+.login-brand-text {
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.05em;
+  text-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
+}
+
+@media (min-width: 640px) {
+  .login-brand-text {
+    font-size: 3.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
 .login-title {
   font-size: 1.125rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #1e40af;
   text-align: center;
   letter-spacing: -0.025em;
   line-height: 1.25;

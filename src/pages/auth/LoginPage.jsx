@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import LoginWithGoogle from "../../components/LoginWithGoogle"
 import { ArrowRight } from "lucide-react"
+import hmsLogo from "../../assets/hms-logo-t-256.svg"
 import "../../styles/login.css"
 
 const LoginPage = () => {
@@ -94,8 +95,7 @@ const LoginPage = () => {
         <div className="login-card-wrapper">
           <div className="login-card">
             <div className="login-logo-section">
-              <img src="/IITILogo.png" className="login-logo" alt="IIT Logo" />
-              <h1 className="login-title">Hostel Management System</h1>
+              <img src={hmsLogo} className="login-logo" alt="HMS Logo" />
             </div>
 
             {error && (
