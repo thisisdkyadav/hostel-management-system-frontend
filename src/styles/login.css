@@ -452,18 +452,7 @@
   transition: all 0.5s ease;
 }
 
-@media (min-width: 640px) {
-  .login-card {
-    border-radius: 1.5rem;
-    padding: 2rem;
-  }
-}
 
-@media (min-width: 768px) {
-  .login-card {
-    padding: 2rem;
-  }
-}
 
 .login-card:hover {
   border-color: rgba(255, 255, 255, 0.5);
@@ -671,7 +660,7 @@
   left: 0;
   height: 2px;
   width: 0;
-  background: linear-gradient(90deg, #2563eb 0%, #2563eb 100%);
+  background-color: #2563eb;
   transition: width 0.3s ease;
 }
 
@@ -687,7 +676,7 @@
   width: 100%;
   position: relative;
   padding: 0.625rem 1.25rem;
-  background: linear-gradient(135deg, #2563eb 0%, #2563eb 100%);
+  background-color: #2563eb;
   color: white;
   font-size: 0.875rem;
   font-weight: 500;
@@ -809,6 +798,10 @@
   position: relative;
   z-index: 10;
   transition: color 0.3s ease;
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 0;
 }
 
 @media (min-width: 640px) {
@@ -899,8 +892,10 @@
   transition: color 0.3s ease;
 }
 
-.login-modal-close:hover {
+.login-modal-close:hover,
+.login-modal-close:focus {
   color: #374151;
+  outline: none;
 }
 
 .login-modal-close-icon {
@@ -956,8 +951,11 @@
   }
 }
 
-.login-modal-close-button:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 100%);
+.login-modal-close-button:hover,
+.login-modal-close-button:focus {
+  background-color: #1d4ed8;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.4);
 }
 
 .login-modal-button-shimmer {

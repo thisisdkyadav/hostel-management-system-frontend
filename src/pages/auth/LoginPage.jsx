@@ -187,9 +187,9 @@ const LoginPage = () => {
               <LoginWithGoogle callback={handleGoogleCallback} />
             </div>
 
-            <p className="login-forgot-password" onClick={handleForgotPassword}>
+            <button type="button" className="login-forgot-password" onClick={handleForgotPassword}>
               Forgot your password?
-            </p>
+            </button>
           </div>
         </div>
       </div>
