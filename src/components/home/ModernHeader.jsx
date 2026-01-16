@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Menu, X, ChevronDown, LogOut, User, Home, Phone, Info, Code, BookOpen, ExternalLink, UserCircle } from "lucide-react"
+import { Menu, X, ChevronDown, LogOut, User, Home, Phone, Info, Code, BookOpen, ExternalLink, UserCircle, Github } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ModernHeader = () => {
@@ -17,18 +17,9 @@ const ModernHeader = () => {
 
   // Different nav items based on current page
   const homeNavItems = [
-    {
-      label: "Resources",
-      icon: <BookOpen className="modern-header-nav-icon" size={18} />,
-      submenu: [
-        { label: "Academic Calendar", path: "https://academic.iiti.ac.in/Document/2025/2024-25_Academic%20Calendar_Updated%20-%2029-1-2025.pdf" },
-        { label: "Hostel Rules", path: "https://academic.iiti.ac.in/New_student/Hall%20of%20Residence%20Rules%20&%20Decl.pdf" },
-        { label: "Dining Rules", path: "/" },
-        { label: "Menu", path: "/" },
-      ],
-    },
     { label: "Contact", icon: <Phone className="modern-header-nav-icon" size={18} />, path: "/contact" },
     { label: "Dev Team", icon: <Code className="modern-header-nav-icon" size={18} />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
+    { label: "GitHub", icon: <Github className="modern-header-nav-icon" size={18} />, path: "https://github.com/thisisdkyadav/hostel-management-system-frontend", isExternal: true },
   ]
 
   const aboutNavItems = [
