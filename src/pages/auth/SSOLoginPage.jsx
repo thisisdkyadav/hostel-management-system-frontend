@@ -45,7 +45,7 @@ const SSOLoginPage = () => {
           <div className="max-w-screen-xl mx-auto flex justify-between items-center">
             <div className="flex items-center space-x-3 group">
               <div className="relative overflow-hidden transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-md">
-                <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-6 md:h-8 z-10 relative" />
+                <img src="/hms-logo.svg" alt="IIT Indore Logo" className="h-6 md:h-8 z-10 relative" />
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-lg"></div>
               </div>
               <div className="text-gray-800">
@@ -129,7 +129,7 @@ const SSOLoginPage = () => {
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-3 group">
             <div className="relative overflow-hidden transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-md">
-              <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-6 md:h-8 z-10 relative" />
+              <img src="/hms-logo.svg" alt="IIT Indore Logo" className="h-6 md:h-8 z-10 relative" />
               <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-indigo-100 opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-lg"></div>
             </div>
             <div className="text-gray-800">
@@ -199,7 +199,7 @@ const SSOLoginPage = () => {
 
             <div className="rounded-2xl overflow-hidden shadow-2xl p-8 backdrop-blur-md bg-white/90 relative z-10 transition-all duration-500 border border-blue-100/80 hover:border-blue-200/90 hover:shadow-2xl hover:bg-white/95">
               <div className="flex flex-col items-center">
-                <img src="/IITILogo.png" alt="IIT Indore Logo" className="h-16 mb-6" />
+                <img src="/hms-logo.svg" alt="IIT Indore Logo" className="h-16 mb-6" />
 
                 <div className="relative w-20 h-20 mb-6">
                   <div className="absolute inset-0 rounded-full border-4 border-blue-100 opacity-30"></div>

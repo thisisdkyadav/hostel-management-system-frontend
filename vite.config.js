@@ -135,13 +135,13 @@ export default defineConfig({
 
         icons: [
           {
-            src: "/IITILogo.png",
+            src: "/hms-logo.svg",
             sizes: "192x192",
             type: "image/png",
             purpose: "any maskable",
           },
           {
-            src: "/IITILogo.png",
+            src: "/hms-logo.svg",
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",
