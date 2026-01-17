@@ -9,8 +9,6 @@ import NotFoundPage from "../pages/NotFoundPage"
 import LoadingPage from "../pages/LoadingPage"
 
 // Public pages - Lazy loaded
-const AboutPage = lazy(() => import("../pages/auth/AboutPage"))
-const ContactPage = lazy(() => import("../pages/auth/ContactPage"))
 const SSOLoginPage = lazy(() => import("../pages/auth/SSOLoginPage"))
 
 // Role-based routes - Lazy loaded (loads all pages for a role when user visits that role's routes)
@@ -32,16 +30,6 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
 
       {/* Public Routes - Lazy loaded */}
-      <Route path="/about" element={
-        <Suspense fallback={<LoadingPage message="Loading..." />}>
-          <AboutPage />
-        </Suspense>
-      } />
-      <Route path="/contact" element={
-        <Suspense fallback={<LoadingPage message="Loading..." />}>
-          <ContactPage />
-        </Suspense>
-      } />
       <Route path="/sso" element={
         <Suspense fallback={<LoadingPage message="Loading..." />}>
           <SSOLoginPage />

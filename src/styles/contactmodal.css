@@ -1,0 +1,345 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.contactmodal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fadeIn 0.2s ease-out;
+  padding: 1rem;
+}
+
+.contactmodal-container {
+  position: relative;
+  width: 100%;
+  max-width: 56rem;
+  max-height: 90vh;
+  background-color: #eff6ff;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  overflow-y: auto;
+  animation: scaleIn 0.3s ease-out;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.contactmodal-bg-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.contactmodal-blob-1 {
+  position: absolute;
+  top: -10rem;
+  left: 5rem;
+  width: 40rem;
+  height: 40rem;
+  background-color: rgba(191, 219, 254, 0.2);
+  border-radius: 50%;
+  filter: blur(48px);
+}
+
+.contactmodal-blob-2 {
+  position: absolute;
+  bottom: -8rem;
+  right: -3rem;
+  width: 35rem;
+  height: 35rem;
+  background-color: rgba(191, 219, 254, 0.25);
+  border-radius: 50%;
+  filter: blur(48px);
+  animation: pulse 18s ease-in-out infinite;
+}
+
+.contactmodal-blob-3 {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  width: 25rem;
+  height: 25rem;
+  background-color: rgba(191, 219, 254, 0.15);
+  border-radius: 50%;
+  filter: blur(32px);
+  animation: pulse 22s ease-in-out infinite 2s;
+}
+
+.contactmodal-blob-4 {
+  position: absolute;
+  bottom: 20%;
+  right: -2rem;
+  width: 28rem;
+  height: 28rem;
+  background-color: rgba(147, 197, 253, 0.15);
+  border-radius: 50%;
+  filter: blur(32px);
+  animation: pulse 25s ease-in-out infinite 4s;
+}
+
+.contactmodal-content {
+  position: relative;
+  z-index: 10;
+  padding: 2rem;
+}
+
+@media (min-width: 768px) {
+  .contactmodal-content {
+    padding: 3rem;
+  }
+}
+
+.contactmodal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background-color: white;
+  color: #374151;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 20;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.contactmodal-close:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+@media (min-width: 768px) {
+  .contactmodal-close {
+    top: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+.contactmodal-title-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.contactmodal-heading {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  animation: slideUp 0.5s ease-out both;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+@media (min-width: 768px) {
+  .contactmodal-heading {
+    font-size: 2.5rem;
+  }
+}
+
+.contactmodal-heading-highlight {
+  display: inline-block;
+  color: #2563eb;
+  margin-left: 0.5rem;
+}
+
+.contactmodal-description {
+  color: rgba(75, 85, 99, 0.9);
+  font-size: 1rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeIn 0.3s ease-out forwards;
+  line-height: 1.625;
+}
+
+@media (min-width: 768px) {
+  .contactmodal-description {
+    font-size: 1.125rem;
+  }
+}
+
+.contactmodal-info-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(219, 234, 254, 0.6);
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+  animation: slideUp 0.5s ease-out 0.1s both;
+}
+
+@media (min-width: 768px) {
+  .contactmodal-info-card {
+    padding: 2rem;
+  }
+}
+
+.contactmodal-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .contactmodal-info-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+.contactmodal-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.25rem;
+}
+
+.contactmodal-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contactmodal-contact-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.contactmodal-contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.contactmodal-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+  margin-top: 0.125rem;
+}
+
+.contactmodal-contact-label {
+  font-weight: 600;
+  color: #374151;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.contactmodal-contact-text {
+  color: #4b5563;
+  line-height: 1.5;
+  font-size: 0.9375rem;
+}
+
+.contactmodal-hours-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contactmodal-hours-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.contactmodal-hours-item:last-child {
+  border-bottom: none;
+}
+
+.contactmodal-hours-day {
+  color: #4b5563;
+  font-size: 0.9375rem;
+}
+
+.contactmodal-hours-time {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9375rem;
+}
+
+.contactmodal-emergency-section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.contactmodal-emergency-title {
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.contactmodal-emergency-subtitle {
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.contactmodal-emergency-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contactmodal-emergency-item {
+  color: #374151;
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.contactmodal-emergency-label {
+  font-weight: 600;
+}
