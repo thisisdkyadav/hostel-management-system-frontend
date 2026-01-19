@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
-import { FaFilter, FaPlus, FaList, FaTh, FaCalendarAlt } from "react-icons/fa"
+import { Filter, Plus, List, LayoutGrid } from "lucide-react"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCreate, title = "Leave Management", isAdmin = false, viewSelfOnly, setViewSelfOnly }) => {
@@ -9,8 +9,8 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
   const canCreate = ["Admin", "Hostel Supervisor", "Maintenance Staff"].includes(user?.role)
 
   const viewModeOptions = [
-    { value: "list", label: "List", icon: <FaList /> },
-    { value: "cards", label: "Grid", icon: <FaTh /> },
+    { value: "list", label: "List", icon: <List size={14} /> },
+    { value: "cards", label: "Grid", icon: <LayoutGrid size={14} /> },
   ]
 
   const selfViewOptions = [
@@ -23,7 +23,7 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
       <Button onClick={() => setShowFilters(!showFilters)}
         variant={showFilters ? "primary" : "white"}
         size="medium"
-        icon={<FaFilter />}
+        icon={<Filter size={14} />}
       >
         Filters
       </Button>
@@ -50,7 +50,7 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
       />
 
       {canCreate && (
-        <Button onClick={onCreate} variant="primary" size="medium" icon={<FaPlus />}>
+        <Button onClick={onCreate} variant="primary" size="medium" icon={<Plus size={14} />}>
           Create Leave
         </Button>
       )}

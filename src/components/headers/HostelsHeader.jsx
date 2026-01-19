@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
-import { FaPlus, FaArchive } from "react-icons/fa"
+import { Plus, Archive } from "lucide-react"
 
 const HostelsHeader = ({ onAddHostel, onArchiveToggle, fetchArchive }) => {
   return (
     <PageHeader title="Hostel Management">
-      <Button variant="secondary" onClick={onArchiveToggle} icon={<FaArchive />}
+      <Button variant="secondary" onClick={onArchiveToggle} icon={<Archive size={18} />}
       >
         {fetchArchive ? "Show All" : "Show Archived"}
       </Button>
-      <Button variant="primary" onClick={onAddHostel} icon={<FaPlus />}
+      <Button variant="primary" onClick={onAddHostel} icon={<Plus size={18} />}
       >
         Add Hostel
       </Button>

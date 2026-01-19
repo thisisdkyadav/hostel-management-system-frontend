@@ -1,6 +1,6 @@
 import PageHeader from "../common/PageHeader"
 import { Button } from "@/components/ui"
-import { HiPlus } from "react-icons/hi"
+import { Plus } from "lucide-react"
 
 const FeedbackHeader = ({ userRole, onAddFeedback }) => {
   const isStudent = userRole === "Student"
@@ -9,7 +9,7 @@ const FeedbackHeader = ({ userRole, onAddFeedback }) => {
   return (
     <PageHeader title={title}>
       {isStudent && (
-        <Button variant="primary" size="medium" onClick={onAddFeedback} icon={<HiPlus />}>
+        <Button variant="primary" size="medium" onClick={onAddFeedback} icon={<Plus size={18} />}>
           Add Feedback
         </Button>
       )}

@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
-import { FaPlus } from "react-icons/fa"
+import { Plus } from "lucide-react"
 
 const EventsHeader = ({ onAddEvent, userRole }) => {
   return (
     <PageHeader title="Events">
       {["Admin"].includes(userRole) && (
-        <Button variant="primary" onClick={onAddEvent} icon={<FaPlus />}>
+        <Button variant="primary" onClick={onAddEvent} icon={<Plus size={18} />}>
           Add Event
         </Button>
       )}

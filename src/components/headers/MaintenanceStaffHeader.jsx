@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui"
 import PageHeader from "../common/PageHeader"
-import { FaPlus } from "react-icons/fa"
+import { Plus } from "lucide-react"
 
 const MaintenanceStaffHeader = ({ onAddStaff }) => {
   return (
     <PageHeader title="Maintenance Staff Management">
-      <Button variant="primary" onClick={onAddStaff} icon={<FaPlus />}>
+      <Button variant="primary" onClick={onAddStaff} icon={<Plus size={18} />}>
         Add Staff
       </Button>
     </PageHeader>
