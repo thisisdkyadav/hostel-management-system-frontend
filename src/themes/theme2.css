@@ -1,0 +1,771 @@
+/* ============================================
+   HOSTEL MANAGEMENT SYSTEM - FUTURE GLASS THEME
+   "Holographic Cyber" - LIGHT MODE DEFAULT
+   Clean whites, cyan accents, glass effects.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ============================================
+     COLOR PALETTE - PRIMARY (Electric Cyan)
+     ============================================ */
+  --color-primary: #0097A7;              /* Teal Cyan */
+  --color-primary-hover: #00838F;        /* Darker Cyan */
+  --color-primary-active: #006978;       
+  --color-primary-dark: #005662;
+  --color-primary-darker: #003D47;
+  
+  --color-primary-light: #26C6DA;
+  --color-primary-lighter: #80DEEA;
+  --color-primary-muted: #B2EBF2;
+  --color-primary-pale: #E0F7FA;
+  --color-primary-bg: #E0F7FA;
+  --color-primary-bg-hover: #B2EBF2;
+  --color-primary-bg-light: #F0FCFF;
+
+  /* ============================================
+     COLOR PALETTE - NEUTRAL (Light & Clean)
+     ============================================ */
+  --color-black: #1A1A2E;
+  --color-white: #FFFFFF;
+  
+  --color-text-primary: #1A1A2E;         /* Dark Ink */
+  --color-text-secondary: #37474F;       
+  --color-text-body: #546E7A;            
+  --color-text-tertiary: #78909C;        
+  --color-text-muted: #90A4AE;           
+  --color-text-placeholder: #B0BEC5;     
+  --color-text-light: #CFD8DC;           
+  --color-text-disabled: #ECEFF1;        
+
+  /* Backgrounds - Clean & Bright */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #FAFCFD;
+  --color-bg-tertiary: #F4F8F9;
+  --color-bg-page: #EDF2F4;              /* Soft Cool Gray */
+  --color-bg-hover: #E0F7FA;
+  --color-bg-muted: #ECEFF1;
+  --color-bg-disabled: #F5F5F5;
+  --color-bg-modal-overlay: rgba(26, 26, 46, 0.5);
+
+  /* BORDERS */
+  --color-border-light: #ECEFF1;
+  --color-border-primary: #CFD8DC;
+  --color-border-secondary: #B0BEC5;
+  --color-border-focus: #0097A7;
+  --color-border-hover: #26C6DA;
+  --color-border-input: #CFD8DC;
+  --color-border-gray: #E0E0E0;
+  --color-border-dark: #90A4AE;
+
+  /* ============================================
+     COLOR PALETTE - SEMANTIC
+     ============================================ */
+  
+  --color-success: #00897B;              /* Teal Green */
+  --color-success-hover: #00796B;
+  --color-success-active: #00695C;
+  --color-success-light: #80CBC4;
+  --color-success-bg: #E0F2F1;
+  --color-success-bg-light: #F0FAF9;
+  --color-success-text: #00695C;
+
+  --color-danger: #E53935;               /* Vibrant Red */
+  --color-danger-hover: #D32F2F;
+  --color-danger-active: #C62828;
+  --color-danger-light: #FFCDD2;
+  --color-danger-bg: #FFEBEE;
+  --color-danger-bg-light: #FFF5F5;
+  --color-danger-text: #B71C1C;
+  --color-danger-border: #EF9A9A;
+
+  --color-warning: #FB8C00;              /* Vibrant Orange */
+  --color-warning-hover: #F57C00;
+  --color-warning-active: #EF6C00;
+  --color-warning-light: #FFE0B2;
+  --color-warning-bg: #FFF3E0;
+  --color-warning-bg-light: #FFF8F0;
+  --color-warning-text: #E65100;
+
+  --color-info: #1E88E5;                 /* Bright Blue */
+  --color-info-hover: #1976D2;
+  --color-info-active: #1565C0;
+  --color-info-light: #90CAF9;
+  --color-info-bg: #E3F2FD;
+  --color-info-bg-light: #F0F8FF;
+  --color-info-text: #0D47A1;
+
+  /* ============================================
+     GENDER COLORS
+     ============================================ */
+  
+  --color-boys-bg: #E3F2FD;
+  --color-boys-text: #1976D2;
+  --color-boys-hover-bg: #1976D2;
+  --color-boys-hover-text: #FFFFFF;
+
+  --color-girls-bg: #FCE4EC;
+  --color-girls-text: #C2185B;
+  --color-girls-hover-bg: #C2185B;
+  --color-girls-hover-text: #FFFFFF;
+
+  --color-coed-bg: #F3E5F5;
+  --color-coed-text: #7B1FA2;
+  --color-coed-hover-bg: #7B1FA2;
+  --color-coed-hover-text: #FFFFFF;
+
+  /* ============================================
+     ADDITIONAL COLORS
+     ============================================ */
+  --color-purple-bg: #EDE7F6;
+  --color-purple-text: #7B1FA2;
+  --color-purple-light-bg: #F3E5F5;
+
+  --color-orange-bg: #FFF3E0;
+  --color-orange-text: #E65100;
+
+  --color-teal-bg: #E0F2F1;
+  --color-teal-text: #00796B;
+
+  /* ============================================
+     SHADOWS - Clean & Modern
+     ============================================ */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+  
+  --shadow-card: 0 2px 8px rgba(0, 151, 167, 0.08);
+  --shadow-card-hover: 0 8px 24px rgba(0, 151, 167, 0.15);
+  
+  --shadow-button: 0 2px 6px rgba(0, 151, 167, 0.15);
+  --shadow-button-hover: 0 4px 12px rgba(0, 151, 167, 0.25);
+  --shadow-button-primary: 0 4px 12px rgba(0, 151, 167, 0.3);
+  --shadow-button-primary-hover: 0 6px 18px rgba(0, 151, 167, 0.4);
+  --shadow-button-active: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  --shadow-focus: 0 0 0 3px rgba(0, 151, 167, 0.2);
+  --shadow-focus-primary: 0 0 0 3px rgba(0, 151, 167, 0.15);
+  --shadow-focus-danger: 0 0 0 3px rgba(229, 57, 53, 0.15);
+  --shadow-focus-success: 0 0 0 3px rgba(0, 137, 123, 0.15);
+
+  --shadow-glow: 0 0 20px rgba(0, 151, 167, 0.3);
+  --shadow-glow-primary: 0 0 25px rgba(0, 151, 167, 0.25);
+  --shadow-glow-success: 0 0 20px rgba(0, 137, 123, 0.25);
+  --shadow-glow-danger: 0 0 20px rgba(229, 57, 53, 0.25);
+
+  --shadow-modal: 0 20px 60px rgba(26, 26, 46, 0.2);
+  --shadow-dropdown: 0 8px 30px rgba(0, 0, 0, 0.12);
+
+  /* ============================================
+     BORDER RADIUS - Techy but softened
+     ============================================ */
+  --radius-none: 0;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;           
+  --radius-2xl: 14px;
+  --radius-3xl: 16px;
+  --radius-4xl: 20px;
+  --radius-full: 9999px;
+
+  --radius-button-sm: 6px;           
+  --radius-button-md: 8px;          
+  --radius-button-lg: 10px;          
+  --radius-button-pill: 9999px;      
+  --radius-card: 12px;               
+  --radius-card-sm: 8px;            
+  --radius-card-lg: 16px;            
+  --radius-modal: 16px;              
+  --radius-input: 6px;              
+  --radius-badge: 4px;               
+  --radius-badge-pill: 9999px;       
+  --radius-icon: 8px;               
+  --radius-avatar: 9999px;           
+  --radius-chip: 6px;                
+  --radius-tab: 6px;                 
+  --radius-tooltip: 6px;             
+  --radius-dropdown: 10px;           
+
+  /* ============================================
+     SPACING
+     ============================================ */
+  --spacing-0: 0;
+  --spacing-px: 1px;
+  --spacing-0-5: 0.125rem;  
+  --spacing-1: 0.25rem;     
+  --spacing-1-5: 0.375rem;  
+  --spacing-2: 0.5rem;      
+  --spacing-2-5: 0.625rem;  
+  --spacing-3: 0.75rem;     
+  --spacing-3-5: 0.875rem;  
+  --spacing-4: 1rem;        
+  --spacing-5: 1.25rem;     
+  --spacing-6: 1.5rem;      
+  --spacing-7: 1.75rem;     
+  --spacing-8: 2rem;        
+  --spacing-9: 2.25rem;     
+  --spacing-10: 2.5rem;     
+  --spacing-12: 3rem;       
+  --spacing-14: 3.5rem;     
+  --spacing-16: 4rem;       
+  --spacing-20: 5rem;       
+  --spacing-24: 6rem;       
+
+  /* ============================================
+     TYPOGRAPHY - Modern & Clean
+     ============================================ */
+  --font-family-primary: "Rajdhani", "Exo 2", sans-serif;
+  
+  --font-size-2xs: 0.625rem;  
+  --font-size-xs: 0.75rem;    
+  --font-size-sm: 0.8125rem;  
+  --font-size-base: 0.875rem; 
+  --font-size-md: 0.9375rem;  
+  --font-size-lg: 1rem;       
+  --font-size-xl: 1.125rem;   
+  --font-size-2xl: 1.25rem;   
+  --font-size-3xl: 1.5rem;    
+  --font-size-4xl: 1.875rem;  
+  --font-size-5xl: 2rem;      
+  --font-size-6xl: 2.5rem;    
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* ============================================
+     TRANSITIONS
+     ============================================ */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+  --transition-slower: 500ms ease;
+  
+  --ease-default: ease;
+  --ease-in-out: ease-in-out;
+  --ease-out: ease-out;
+  --ease-in: ease-in;
+  --ease-linear: linear;
+  
+  --transition-all: all 0.3s ease;
+  --transition-colors: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  --transition-transform: transform 0.2s ease;
+  --transition-shadow: box-shadow 0.2s ease;
+  --transition-opacity: opacity 0.2s ease;
+
+  /* ============================================
+     Z-INDEX LAYERS
+     ============================================ */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-tooltip: 60;
+  --z-toast: 70;
+
+  /* ============================================
+     COMPONENT SPECIFIC VARIABLES
+     ============================================ */
+
+  /* Sidebar */
+  --sidebar-width-expanded: 260px;
+  --sidebar-width-collapsed: 80px;
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: #E0E0E0;
+  --sidebar-item-radius: 8px;
+  --sidebar-active-bg: #0097A7;
+  --sidebar-active-shadow: 0 4px 12px rgba(0, 151, 167, 0.3);
+
+  /* Header */
+  --header-height: 64px;
+  --header-bg: #FFFFFF;
+  --header-border: #E0E0E0;
+
+  /* Cards */
+  --card-bg: #FFFFFF;
+  --card-border: #E0F7FA;
+  --card-border-hover: #80DEEA;
+  --card-shadow: var(--shadow-card);
+  --card-shadow-hover: var(--shadow-card-hover);
+  --card-radius: var(--radius-card);
+  --card-padding: 1.5rem;
+
+  /* Inputs */
+  --input-bg: #FFFFFF;
+  --input-border: #CFD8DC;
+  --input-border-focus: #0097A7;
+  --input-radius: var(--radius-input);
+  --input-padding: 0.75rem;
+  --input-focus-ring: 0 0 0 2px rgba(0, 151, 167, 0.1);
+
+  /* Buttons */
+  --button-radius: var(--radius-button-md);
+  --button-padding-sm: 0.5rem 1rem;
+  --button-padding-md: 0.625rem 1.25rem;
+  --button-padding-lg: 0.75rem 1.5rem;
+  --button-primary-bg: #0097A7;
+  --button-primary-hover: #00838F;
+  --button-primary-active: #006978;
+
+  /* Modals */
+  --modal-bg: #FFFFFF;
+  --modal-radius: var(--radius-modal);
+  --modal-shadow: var(--shadow-modal);
+  --modal-backdrop: var(--color-bg-modal-overlay);
+  --modal-title-color: #0097A7;
+  --modal-width-sm: 500px;
+  --modal-width-md: 600px;
+  --modal-width-lg: 800px;
+
+  /* Scrollbar */
+  --scrollbar-width: 6px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: #B2EBF2;
+  --scrollbar-thumb-hover: #80DEEA;
+  --scrollbar-thumb-active: #0097A7;
+
+  /* Occupancy Ring */
+  --occupancy-ring-bg: #E0F7FA;
+  --occupancy-ring-fill: #0097A7;
+
+  /* Status Badge Colors */
+  --status-active-bg: #00897B;
+  --status-active-text: #FFFFFF;
+  --status-inactive-bg: #E53935;
+  --status-inactive-text: #FFFFFF;
+  --status-pending-bg: #FB8C00;
+  --status-pending-text: #FFFFFF;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #0097A7, #26C6DA);
+  --gradient-primary-hover: linear-gradient(135deg, #00838F, #0097A7);
+
+  /* Ripple Effect */
+  --ripple-color: rgba(255, 255, 255, 0.7);
+
+  /* Ring/Focus Ring */
+  --ring-primary: 0 0 0 2px rgba(0, 151, 167, 0.1);
+  --ring-blue: 0 0 0 2px rgba(30, 136, 229, 0.5);
+
+  /* ICON SIZES */
+  --icon-2xs: 10px;
+  --icon-xs: 12px;
+  --icon-sm: 14px;
+  --icon-md: 16px;
+  --icon-lg: 20px;
+  --icon-xl: 24px;
+  --icon-2xl: 32px;
+  --icon-3xl: 40px;
+  --icon-4xl: 48px;
+
+  /* CONTAINER/LAYOUT WIDTHS */
+  --container-xs: 480px;
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+  --container-full: 100%;
+
+  /* AVATAR SIZES */
+  --avatar-2xs: 20px;
+  --avatar-xs: 24px;
+  --avatar-sm: 32px;
+  --avatar-md: 40px;
+  --avatar-lg: 48px;
+  --avatar-xl: 64px;
+  --avatar-2xl: 80px;
+  --avatar-3xl: 96px;
+  --avatar-4xl: 128px;
+
+  /* OPACITY LEVELS */
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-25: 0.25;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-75: 0.75;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-100: 1;
+  --opacity-disabled: 0.5;
+  --opacity-hover: 0.8;
+  --opacity-overlay: 0.7;
+
+  /* BACKDROP BLUR */
+  --blur-none: 0;
+  --blur-xs: 2px;
+  --blur-sm: 4px;
+  --blur-md: 8px;
+  --blur-lg: 12px;
+  --blur-xl: 16px;
+  --blur-2xl: 24px;
+  --blur-3xl: 40px;
+
+  /* ANIMATION DURATIONS */
+  --duration-instant: 0ms;
+  --duration-fastest: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --duration-slowest: 1000ms;
+
+  /* BADGE/TAG SIZES */
+  --badge-padding-xs: 0.125rem 0.375rem;
+  --badge-padding-sm: 0.25rem 0.5rem;
+  --badge-padding-md: 0.375rem 0.75rem;
+  --badge-padding-lg: 0.5rem 1rem;
+  --badge-font-xs: 0.625rem;
+  --badge-font-sm: 0.6875rem;
+  --badge-font-md: 0.75rem;
+  --badge-font-lg: 0.875rem;
+
+  /* BREAKPOINTS */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* BORDER WIDTHS */
+  --border-0: 0;
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-3: 3px;
+  --border-4: 4px;
+  --border-8: 8px;
+
+  /* FOCUS RING STYLES */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: rgba(0, 151, 167, 0.5);
+  --focus-ring-color-danger: rgba(229, 57, 53, 0.5);
+  --focus-ring-color-success: rgba(0, 137, 123, 0.5);
+
+  /* INPUT SPECIFIC SIZES */
+  --input-height-xs: 28px;
+  --input-height-sm: 32px;
+  --input-height-md: 40px;
+  --input-height-lg: 48px;
+  --input-height-xl: 56px;
+  --input-icon-size: 16px;
+  --input-icon-spacing: 12px;
+
+  /* TABLE STYLING */
+  --table-header-bg: #F4F8F9;
+  --table-row-hover: #E0F7FA;
+  --table-border: #CFD8DC;
+  --table-cell-padding-sm: 0.5rem 0.75rem;
+  --table-cell-padding-md: 0.75rem 1rem;
+  --table-cell-padding-lg: 1rem 1.5rem;
+  --table-stripe-bg: #FAFCFD;
+  --table-header-text: #546E7A;
+
+  /* SKELETON/LOADING */
+  --skeleton-base: #ECEFF1;
+  --skeleton-highlight: #FFFFFF;
+  --skeleton-animation-duration: 1.5s;
+  --skeleton-radius: var(--radius-md);
+
+  /* TOAST/NOTIFICATION */
+  --toast-max-width: 360px;
+  --toast-min-width: 280px;
+  --toast-padding: 1rem;
+  --toast-radius: var(--radius-lg);
+  --toast-shadow: var(--shadow-lg);
+  --toast-gap: 0.75rem;
+
+  /* TEXT SIZE TOKENS */
+  --text-heading-1: 2rem;           
+  --text-heading-2: 1.5rem;         
+  --text-heading-3: 1.25rem;        
+  --text-heading-4: 1.125rem;       
+  --text-heading-5: 1rem;           
+  --text-heading-6: 0.875rem;       
+
+  --text-body-lg: 1rem;             
+  --text-body-md: 0.875rem;         
+  --text-body-sm: 0.8125rem;        
+  --text-body-xs: 0.75rem;          
+
+  --text-button: 0.875rem;          
+  --text-label: 0.875rem;           
+  --text-caption: 0.75rem;           
+  --text-overline: 0.625rem;        
+  --text-badge: 0.6875rem;          
+
+  --text-stat-value: 1.5rem;        
+  --text-stat-value-lg: 2rem;       
+  --text-nav-item: 0.875rem;        
+  --text-tooltip: 0.75rem;          
+  --text-placeholder: 0.875rem;     
+
+  /* ASPECT RATIOS */
+  --aspect-square: 1 / 1;
+  --aspect-video: 16 / 9;
+  --aspect-photo: 4 / 3;
+  --aspect-portrait: 3 / 4;
+  --aspect-wide: 21 / 9;
+
+  /* GRID GAPS */
+  --gap-xs: 0.25rem;    
+  --gap-sm: 0.5rem;     
+  --gap-md: 1rem;       
+  --gap-lg: 1.5rem;     
+  --gap-xl: 2rem;       
+  --gap-2xl: 3rem;      
+
+  /* DIVIDER STYLES */
+  --divider-color: #CFD8DC;
+  --divider-thickness: 1px;
+  --divider-spacing: 1rem;
+}
+
+/* ============================================
+   DARK MODE - "Cyber Void"
+   ============================================ */
+[data-theme="dark"], .dark {
+  --color-primary: #00E5FF;
+  --color-primary-hover: #00D4EA;
+  --color-primary-active: #00B8D4;
+  --color-primary-dark: #0097A7;
+  --color-primary-darker: #006064;
+  
+  --color-primary-light: #84FFFF;
+  --color-primary-lighter: #A7FFEB;
+  --color-primary-muted: #1A3C42;
+  --color-primary-pale: #0F2528;
+  --color-primary-bg: #0A1A1D;
+  --color-primary-bg-hover: #152830;
+  --color-primary-bg-light: #0D1F22;
+
+  --color-black: #FFFFFF;
+  --color-white: #0A0A14;
+  
+  --color-text-primary: #E0F7FA;
+  --color-text-secondary: #B2DFDB;
+  --color-text-body: #80CBC4;
+  --color-text-tertiary: #4DB6AC;
+  --color-text-muted: #26A69A;
+  --color-text-placeholder: #00897B;
+  --color-text-light: #00695C;
+  --color-text-disabled: #004D40;
+
+  --color-bg-primary: #0D1418;
+  --color-bg-secondary: #0A0F12;
+  --color-bg-tertiary: #121A1E;
+  --color-bg-page: #060A0D;
+  --color-bg-hover: rgba(0, 229, 255, 0.1);
+  --color-bg-muted: #1A2428;
+  --color-bg-disabled: #0A0F12;
+  --color-bg-modal-overlay: rgba(0, 5, 10, 0.85);
+
+  --color-border-light: #1A2428;
+  --color-border-primary: #263238;
+  --color-border-secondary: #37474F;
+  --color-border-focus: #00E5FF;
+  --color-border-hover: #00E5FF;
+  --color-border-input: #37474F;
+  --color-border-gray: #263238;
+  --color-border-dark: #455A64;
+
+  --color-success: #00E676;
+  --color-success-bg: rgba(0, 230, 118, 0.1);
+  --color-success-bg-light: rgba(0, 230, 118, 0.05);
+  --color-success-text: #00E676;
+
+  --color-danger: #FF5252;
+  --color-danger-bg: rgba(255, 82, 82, 0.1);
+  --color-danger-bg-light: rgba(255, 82, 82, 0.05);
+  --color-danger-text: #FF5252;
+  --color-danger-border: #FF5252;
+
+  --color-warning: #FFD740;
+  --color-warning-bg: rgba(255, 215, 64, 0.1);
+  --color-warning-bg-light: rgba(255, 215, 64, 0.05);
+  --color-warning-text: #FFD740;
+
+  --color-info: #40C4FF;
+  --color-info-bg: rgba(64, 196, 255, 0.1);
+  --color-info-bg-light: rgba(64, 196, 255, 0.05);
+  --color-info-text: #40C4FF;
+
+  --color-boys-bg: rgba(64, 196, 255, 0.15);
+  --color-boys-text: #40C4FF;
+  --color-girls-bg: rgba(255, 64, 129, 0.15);
+  --color-girls-text: #FF4081;
+  --color-coed-bg: rgba(234, 128, 252, 0.15);
+  --color-coed-text: #EA80FC;
+
+  --shadow-xs: 0 0 5px rgba(0, 229, 255, 0.1);
+  --shadow-sm: 0 0 10px rgba(0, 229, 255, 0.15);
+  --shadow-md: 0 0 15px rgba(0, 229, 255, 0.2);
+  --shadow-lg: 0 0 25px rgba(0, 229, 255, 0.25);
+  --shadow-xl: 0 0 40px rgba(0, 229, 255, 0.3);
+  
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 229, 255, 0.1);
+  --shadow-card-hover: 0 0 25px rgba(0, 229, 255, 0.3), inset 0 0 0 1px rgba(0, 229, 255, 0.4);
+  
+  --shadow-button-primary: 0 0 15px rgba(0, 229, 255, 0.3);
+  --shadow-button-primary-hover: 0 0 25px rgba(0, 229, 255, 0.5);
+
+  --shadow-glow: 0 0 20px #00E5FF;
+  --shadow-modal: 0 0 80px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 229, 255, 0.2);
+
+  --sidebar-bg: #0D1418;
+  --sidebar-border: #1A2428;
+  --sidebar-active-bg: rgba(0, 229, 255, 0.15);
+  --sidebar-active-shadow: inset 3px 0 0 #00E5FF;
+
+  --header-bg: rgba(13, 20, 24, 0.9);
+  --header-border: #1A2428;
+
+  --card-bg: rgba(18, 26, 30, 0.6);
+  --card-border: rgba(0, 229, 255, 0.1);
+  --card-border-hover: rgba(0, 229, 255, 0.4);
+
+  --input-bg: rgba(0, 0, 0, 0.3);
+  --input-border: #37474F;
+  --input-focus-ring: 0 0 0 2px rgba(0, 229, 255, 0.2);
+
+  --button-primary-bg: rgba(0, 229, 255, 0.1);
+  --button-primary-hover: rgba(0, 229, 255, 0.25);
+  --button-primary-active: rgba(0, 229, 255, 0.4);
+
+  --modal-bg: #0D1418;
+  --modal-title-color: #00E5FF;
+
+  --scrollbar-track: rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb: rgba(0, 229, 255, 0.3);
+  --scrollbar-thumb-hover: #00E5FF;
+
+  --occupancy-ring-bg: rgba(255, 255, 255, 0.05);
+  --occupancy-ring-fill: #00E5FF;
+
+  --status-active-bg: rgba(0, 230, 118, 0.2);
+  --status-active-text: #00E676;
+  --status-inactive-bg: rgba(255, 82, 82, 0.2);
+  --status-inactive-text: #FF5252;
+  --status-pending-bg: rgba(255, 215, 64, 0.2);
+  --status-pending-text: #FFD740;
+
+  --gradient-primary: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(0, 150, 200, 0.2));
+  --gradient-primary-hover: linear-gradient(135deg, rgba(0, 229, 255, 0.4), rgba(0, 150, 200, 0.4));
+
+  --table-header-bg: rgba(0, 229, 255, 0.05);
+  --table-row-hover: rgba(0, 229, 255, 0.02);
+  --table-border: rgba(0, 229, 255, 0.1);
+  --table-stripe-bg: rgba(255, 255, 255, 0.01);
+  --table-header-text: #00E5FF;
+
+  --skeleton-base: rgba(0, 229, 255, 0.05);
+  --skeleton-highlight: rgba(0, 229, 255, 0.15);
+
+  --divider-color: rgba(0, 229, 255, 0.1);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.bg-theme-primary { background-color: var(--color-bg-primary); }
+.bg-theme-secondary { background-color: var(--color-bg-secondary); }
+.bg-theme-tertiary { background-color: var(--color-bg-tertiary); }
+.bg-theme-page { background-color: var(--color-bg-page); }
+.bg-theme-hover { background-color: var(--color-bg-hover); }
+.bg-theme-brand { background-color: var(--color-primary); }
+.bg-theme-brand-hover { background-color: var(--color-primary-hover); }
+
+.text-theme-primary { color: var(--color-text-primary); }
+.text-theme-secondary { color: var(--color-text-secondary); }
+.text-theme-tertiary { color: var(--color-text-tertiary); }
+.text-theme-muted { color: var(--color-text-muted); }
+.text-theme-brand { color: var(--color-primary); }
+
+.border-theme-primary { border-color: var(--color-border-primary); }
+.border-theme-secondary { border-color: var(--color-border-secondary); }
+.border-theme-hover { border-color: var(--color-border-hover); }
+.border-theme-focus { border-color: var(--color-border-focus); }
+
+.shadow-theme-xs { box-shadow: var(--shadow-xs); }
+.shadow-theme-sm { box-shadow: var(--shadow-sm); }
+.shadow-theme-md { box-shadow: var(--shadow-md); }
+.shadow-theme-lg { box-shadow: var(--shadow-lg); }
+.shadow-theme-card { box-shadow: var(--shadow-card); }
+.shadow-theme-card-hover { box-shadow: var(--shadow-card-hover); }
+
+.rounded-theme-sm { border-radius: var(--radius-sm); }
+.rounded-theme-md { border-radius: var(--radius-md); }
+.rounded-theme-lg { border-radius: var(--radius-lg); }
+.rounded-theme-xl { border-radius: var(--radius-xl); }
+.rounded-theme-card { border-radius: var(--radius-card); }
+.rounded-theme-button { border-radius: var(--radius-button-md); }
+.rounded-theme-input { border-radius: var(--radius-input); }
+
+.transition-theme { transition: var(--transition-all); }
+.transition-theme-colors { transition: var(--transition-colors); }
+.transition-theme-transform { transition: var(--transition-transform); }
+.transition-theme-shadow { transition: var(--transition-shadow); }
+
+/* Layout */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-bg-page);
+}
+
+@media (min-width: 768px) {
+  .layout-container {
+    flex-direction: row;
+  }
+}
+
+.layout-container.pwa-container { }
+
+.layout-content {
+  flex: 1;
+  overflow: auto;
+  height: 100vh;
+  padding-top: 4rem;
+}
+
+@media (min-width: 768px) {
+  .layout-content {
+    padding-top: 0;
+  }
+}
+
+.layout-content.pwa-bottom-padding {
+  padding-top: 0;
+  padding-bottom: 4rem;
+}

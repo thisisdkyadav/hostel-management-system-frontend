@@ -1,0 +1,587 @@
+/* ============================================
+   HOSTEL MANAGEMENT SYSTEM - ORGANIC ZEN THEME
+   "Forest & Earth"
+   Calming, natural, sophisticated, and warm.
+   Uses serif typography and nature-inspired colors.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  /* ============================================
+     COLOR PALETTE - PRIMARY (Deep Forest Green)
+     ============================================ */
+  --color-primary: #2D5A27;              /* Deep Forest Green */
+  --color-primary-hover: #1E3F1A;        /* Darker Moss */
+  --color-primary-active: #142B11;       /* Deepest Green */
+  --color-primary-dark: #1A3617;
+  --color-primary-darker: #0D1C0B;
+  
+  --color-primary-light: #528F4A;
+  --color-primary-lighter: #85BD7E;
+  --color-primary-muted: #B3D6AF;
+  --color-primary-pale: #E1EDE0;
+  --color-primary-bg: #F0F7EF;
+  --color-primary-bg-hover: #E3F0E1;
+  --color-primary-bg-light: #F7FAF6;
+
+  /* ============================================
+     COLOR PALETTE - NEUTRAL (Warm Sand & Stone)
+     ============================================ */
+  --color-black: #1C1C1B;                /* Soft Black */
+  --color-white: #FFFFFF;
+  
+  --color-text-primary: #2C2C2A;         /* Dark Stone */
+  --color-text-secondary: #4A4A45;       /* Medium Stone */
+  --color-text-body: #5C5C56;            /* Natural Gray */
+  --color-text-tertiary: #787870;        
+  --color-text-muted: #94948B;           
+  --color-text-placeholder: #B0B0A6;     
+  --color-text-light: #CCCBC4;           
+  --color-text-disabled: #E6E5DF;        
+
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #FDFCF8;         /* Warm Paper White */
+  --color-bg-tertiary: #F7F6F0;          /* Light Beige */
+  --color-bg-page: #F2F0E9;              /* Warm Sand Background */
+  --color-bg-hover: #F0EFE9;
+  --color-bg-muted: #E6E3DB;
+  --color-bg-disabled: #F5F5F1;
+  --color-bg-modal-overlay: rgba(45, 90, 39, 0.2); /* Tinted Green Overlay */
+
+  /* BORDER COLORS - Soft & Earthy */
+  --color-border-light: #F2F0E9;
+  --color-border-primary: #E6E3DB;       /* Sand Border */
+  --color-border-secondary: #D9D6CC;
+  --color-border-focus: #2D5A27;
+  --color-border-hover: #85BD7E;
+  --color-border-input: #CDCAC0;
+  --color-border-gray: #E6E3DB;
+  --color-border-dark: #A6A399;
+
+  /* ============================================
+     COLOR PALETTE - SEMANTIC (Natural Tones)
+     ============================================ */
+  
+  --color-success: #4A7A45;              /* Herbal Green */
+  --color-success-hover: #3A6136;
+  --color-success-active: #2B4728;
+  --color-success-light: #9AC496;
+  --color-success-bg: #EBF5EA;
+  --color-success-bg-light: #F4FAF3;
+  --color-success-text: #2B4728;
+
+  --color-danger: #BF4C41;               /* Terracotta Red */
+  --color-danger-hover: #9E3C33;
+  --color-danger-active: #7D2D26;
+  --color-danger-light: #E6ADA8;
+  --color-danger-bg: #FAF0EF;
+  --color-danger-bg-light: #FCF7F7;
+  --color-danger-text: #7D2D26;
+  --color-danger-border: #E6ADA8;
+
+  --color-warning: #D98E32;              /* Mustard/Ochre */
+  --color-warning-hover: #B57526;
+  --color-warning-active: #915D1C;
+  --color-warning-light: #F2D1A7;
+  --color-warning-bg: #FCF6EC;
+  --color-warning-bg-light: #FEFBF7;
+  --color-warning-text: #784C15;
+
+  --color-info: #4F708A;                 /* Slate Blue */
+  --color-info-hover: #3E5A6F;
+  --color-info-active: #2F4454;
+  --color-info-light: #A7BDCC;
+  --color-info-bg: #EFF4F7;
+  --color-info-bg-light: #F5F9FB;
+  --color-info-text: #2F4454;
+
+  /* ============================================
+     COLOR PALETTE - GENDER (Muted)
+     ============================================ */
+  
+  --color-boys-bg: #E1ECF5;
+  --color-boys-text: #4F708A;
+  --color-boys-hover-bg: #4F708A;
+  --color-boys-hover-text: #FFFFFF;
+
+  --color-girls-bg: #F5E1E3;
+  --color-girls-text: #BF4C41;
+  --color-girls-hover-bg: #BF4C41;
+  --color-girls-hover-text: #FFFFFF;
+
+  --color-coed-bg: #E8E1F5;
+  --color-coed-text: #7D6B99;
+  --color-coed-hover-bg: #7D6B99;
+  --color-coed-hover-text: #FFFFFF;
+
+  /* ============================================
+     SHADOWS - Soft, Ambient, Diffused
+     ============================================ */
+  --shadow-none: none;
+  --shadow-xs: 0 1px 2px rgba(44, 44, 42, 0.04);
+  --shadow-sm: 0 2px 4px rgba(44, 44, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(44, 44, 42, 0.08);
+  --shadow-lg: 0 12px 24px rgba(44, 44, 42, 0.1);
+  --shadow-xl: 0 20px 40px rgba(44, 44, 42, 0.12);
+  
+  --shadow-card: 0 2px 8px rgba(44, 44, 42, 0.04);
+  --shadow-card-hover: 0 8px 24px rgba(44, 44, 42, 0.08);
+  
+  --shadow-button: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-button-hover: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-button-primary: 0 4px 12px rgba(45, 90, 39, 0.2);
+  --shadow-button-primary-hover: 0 6px 16px rgba(45, 90, 39, 0.3);
+  --shadow-button-active: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  --shadow-focus: 0 0 0 3px rgba(45, 90, 39, 0.2);
+  --shadow-focus-primary: 0 0 0 3px rgba(45, 90, 39, 0.15);
+  --shadow-focus-danger: 0 0 0 3px rgba(191, 76, 65, 0.15);
+  --shadow-focus-success: 0 0 0 3px rgba(74, 122, 69, 0.15);
+
+  --shadow-glow: 0 0 20px rgba(45, 90, 39, 0.3);
+  --shadow-glow-primary: 0 0 20px rgba(45, 90, 39, 0.2);
+  --shadow-glow-success: 0 0 20px rgba(74, 122, 69, 0.2);
+  --shadow-glow-danger: 0 0 20px rgba(191, 76, 65, 0.2);
+
+  --shadow-modal: 0 20px 60px rgba(28, 28, 27, 0.2);
+  --shadow-dropdown: 0 10px 30px rgba(28, 28, 27, 0.1);
+
+  /* ============================================
+     BORDER RADIUS - Organic curves (slightly squircle)
+     ============================================ */
+  --radius-none: 0;
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;           
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+  --radius-full: 9999px;       
+
+  --radius-button-sm: 6px;           
+  --radius-button-md: 8px;          
+  --radius-button-lg: 10px;          
+  --radius-button-pill: 9999px;      
+  --radius-card: 16px;               
+  --radius-card-sm: 12px;            
+  --radius-card-lg: 20px;            
+  --radius-modal: 20px;              
+  --radius-input: 6px;              
+  --radius-badge: 4px;               
+  --radius-badge-pill: 9999px;       
+  --radius-icon: 8px;               
+  --radius-avatar: 9999px;           
+  --radius-chip: 6px;                
+  --radius-tab: 6px;                 
+  --radius-tooltip: 4px;             
+  --radius-dropdown: 12px;           
+
+  /* ============================================
+     SPACING - Generous & Breathable
+     ============================================ */
+  --spacing-0: 0;
+  --spacing-px: 1px;
+  --spacing-0-5: 0.125rem;  
+  --spacing-1: 0.25rem;     
+  --spacing-1-5: 0.375rem;  
+  --spacing-2: 0.5rem;      
+  --spacing-2-5: 0.625rem;  
+  --spacing-3: 0.75rem;     
+  --spacing-3-5: 0.875rem;  
+  --spacing-4: 1rem;        
+  --spacing-5: 1.25rem;     
+  --spacing-6: 1.5rem;      
+  --spacing-7: 1.75rem;     
+  --spacing-8: 2rem;        
+  --spacing-9: 2.25rem;     
+  --spacing-10: 2.5rem;     
+  --spacing-12: 3rem;       
+  --spacing-14: 3.5rem;     
+  --spacing-16: 4rem;       
+  --spacing-20: 5rem;       
+  --spacing-24: 6rem;       
+
+  /* ============================================
+     TYPOGRAPHY - Serif Heading, Sans Body
+     ============================================ */
+  --font-family-primary: "Inter", sans-serif; /* Body font */
+  
+  /* NOTE: Headings should apply 'font-family: "DM Serif Display", serif;' manually via CSS class override if needed, 
+     or we can cheat and make the primary font stack variable smart, but usually theme.css just sets variables. 
+     For this global variable, we sticking to reliable Sans, but see below for heading overrides. */
+  
+  --font-size-2xs: 0.625rem;  
+  --font-size-xs: 0.75rem;    
+  --font-size-sm: 0.875rem;  
+  --font-size-base: 1rem; 
+  --font-size-md: 1.0625rem;  
+  --font-size-lg: 1.125rem;       
+  --font-size-xl: 1.35rem;   
+  --font-size-2xl: 1.75rem;   
+  --font-size-3xl: 2.25rem;    
+  --font-size-4xl: 3rem;  
+  --font-size-5xl: 3.75rem;      
+  --font-size-6xl: 4.5rem;    
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 600; /* Softer bold */
+
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.4;
+  --line-height-normal: 1.6; /* More readable */
+  --line-height-relaxed: 1.8;
+  --line-height-loose: 2.0;
+
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* ============================================
+     TRANSITIONS - Slow & Gentle
+     ============================================ */
+  --transition-fast: 200ms ease-out;
+  --transition-normal: 300ms ease-out;
+  --transition-slow: 500ms ease-in-out;
+  --transition-slower: 800ms ease-in-out;
+  
+  --ease-default: ease-out;
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  
+  --transition-all: all 0.3s ease-out;
+  --transition-colors: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  --transition-transform: transform 0.4s ease-out;
+  --transition-shadow: box-shadow 0.4s ease;
+
+  /* ============================================
+     Z-INDEX LAYERS
+     ============================================ */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-tooltip: 600;
+  --z-toast: 700;
+
+  /* ============================================
+     COMPONENT SPECIFIC VARIABLES
+     ============================================ */
+
+  /* Sidebar */
+  --sidebar-width-expanded: 270px;
+  --sidebar-width-collapsed: 84px;
+  --sidebar-bg: #FFFFFF;
+  --sidebar-border: rgba(0,0,0,0); /* Minimal border */
+  --sidebar-item-radius: 8px;
+  --sidebar-active-bg: var(--color-primary-bg);
+  --sidebar-active-shadow: none;
+
+  /* Header */
+  --header-height: 72px;
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --header-border: transparent; /* Clean header */
+
+  /* Cards */
+  --card-bg: #FFFFFF;
+  --card-border: 1px solid var(--color-border-primary);
+  --card-border-hover: 1px solid var(--color-border-hover);
+  --card-shadow: var(--shadow-card);
+  --card-shadow-hover: var(--shadow-card-hover);
+  --card-radius: var(--radius-card);
+  --card-padding: 2rem;
+
+  /* Inputs */
+  --input-bg: #FFFFFF;
+  --input-border: 1px solid #D1D1D1;
+  --input-border-focus: var(--color-primary);
+  --input-radius: var(--radius-input);
+  --input-padding: 0.75rem;
+  --input-focus-ring: 0 0 0 3px rgba(45, 90, 39, 0.1);
+
+  /* Buttons */
+  --button-radius: 4px; /* Classic slight roundness */
+  --button-padding-sm: 0.5rem 1.25rem;
+  --button-padding-md: 0.75rem 1.5rem;
+  --button-padding-lg: 1rem 2rem;
+  --button-primary-bg: #2D5A27;
+  --button-primary-hover: #22451E;
+  --button-primary-active: #1A3617;
+
+  /* Modals */
+  --modal-bg: #FFFFFF;
+  --modal-radius: var(--radius-modal);
+  --modal-shadow: var(--shadow-modal);
+  --modal-backdrop: var(--color-bg-modal-overlay);
+  --modal-title-color: #2D5A27;
+  --modal-width-sm: 480px;
+  --modal-width-md: 600px;
+  --modal-width-lg: 800px;
+
+  /* Scrollbar - Thin & Elegant */
+  --scrollbar-width: 6px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: #D1D6D2;
+  --scrollbar-thumb-hover: #A3A8A4;
+  --scrollbar-thumb-active: #2D5A27;
+
+  /* Occupancy Ring (Hostel Card) */
+  --occupancy-ring-bg: #EAEFEC;
+  --occupancy-ring-fill: #2D5A27;
+
+  /* Status Badge Colors */
+  --status-active-bg: #EBF5EA;
+  --status-active-text: #2B4728;
+  --status-inactive-bg: #FAF0EF;
+  --status-inactive-text: #7D2D26;
+  --status-pending-bg: #FCF6EC;
+  --status-pending-text: #784C15;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(180deg, #2D5A27, #22451E);
+  --gradient-primary-hover: linear-gradient(180deg, #1E3F1A, #142B11);
+
+  /* Ripple Effect */
+  --ripple-color: rgba(45, 90, 39, 0.1);
+
+  /* Ring/Focus Ring */
+  --ring-primary: 0 0 0 3px rgba(45, 90, 39, 0.15);
+  --ring-blue: 0 0 0 3px rgba(79, 112, 138, 0.15);
+
+  /* ICON SIZES */
+  --icon-2xs: 12px;
+  --icon-xs: 14px;
+  --icon-sm: 16px;
+  --icon-md: 18px;
+  --icon-lg: 20px;
+  --icon-xl: 24px;
+  --icon-2xl: 32px;
+  --icon-3xl: 40px;
+  --icon-4xl: 48px;
+
+  /* CONTAINER/LAYOUT WIDTHS */
+  --container-xs: 480px;
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1200px; /* Tighter container for reading */
+  --container-2xl: 1400px;
+  --container-full: 100%;
+
+  /* AVATAR SIZES */
+  --avatar-2xs: 20px;
+  --avatar-xs: 24px;
+  --avatar-sm: 32px;
+  --avatar-md: 40px;
+  --avatar-lg: 48px;
+  --avatar-xl: 64px;
+  --avatar-2xl: 80px;
+  --avatar-3xl: 96px;
+  --avatar-4xl: 128px;
+
+  /* OPACITY LEVELS */
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-25: 0.25;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-75: 0.75;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-100: 1;
+  --opacity-disabled: 0.6;
+  --opacity-hover: 0.9;
+  --opacity-overlay: 0.4;
+
+  /* BACKDROP BLUR */
+  --blur-none: 0;
+  --blur-xs: 4px;
+  --blur-sm: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-xl: 24px;
+  --blur-2xl: 40px;
+  --blur-3xl: 60px;
+
+  /* ANIMATION DURATIONS */
+  --duration-instant: 0ms;
+  --duration-fastest: 150ms;
+  --duration-fast: 250ms;
+  --duration-normal: 400ms;
+  --duration-slow: 600ms;
+  --duration-slower: 900ms;
+  --duration-slowest: 1500ms;
+
+  /* BADGE/TAG SIZES */
+  --badge-padding-xs: 0.15rem 0.5rem;
+  --badge-padding-sm: 0.25rem 0.65rem;
+  --badge-padding-md: 0.35rem 0.75rem;
+  --badge-padding-lg: 0.5rem 1rem;
+  --badge-font-xs: 0.7rem;
+  --badge-font-sm: 0.75rem;
+  --badge-font-md: 0.8rem;
+  --badge-font-lg: 0.9rem;
+
+  /* BREAKPOINTS */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* BORDER WIDTHS */
+  --border-0: 0;
+  --border-1: 1px;
+  --border-2: 2px;
+  --border-3: 3px;
+  --border-4: 4px;
+  --border-8: 8px;
+
+  /* FOCUS RING STYLES */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+  --focus-ring-color: rgba(45, 90, 39, 0.4);
+  --focus-ring-color-danger: rgba(191, 76, 65, 0.4);
+  --focus-ring-color-success: rgba(74, 122, 69, 0.4);
+
+  /* INPUT SPECIFIC SIZES */
+  --input-height-xs: 32px;
+  --input-height-sm: 36px;
+  --input-height-md: 44px;
+  --input-height-lg: 52px;
+  --input-height-xl: 60px;
+  --input-icon-size: 18px;
+  --input-icon-spacing: 12px;
+
+  /* TABLE STYLING */
+  --table-header-bg: #F7F6F0;
+  --table-row-hover: #F0EFE9;
+  --table-border: #E6E3DB;
+  --table-cell-padding-sm: 0.75rem 1rem;
+  --table-cell-padding-md: 1rem 1.25rem;
+  --table-cell-padding-lg: 1.25rem 1.75rem;
+  --table-stripe-bg: #FCFCFA;
+  --table-header-text: #5C5C56;
+
+  /* SKELETON/LOADING */
+  --skeleton-base: #E6E3DB;
+  --skeleton-highlight: #F5F5F1;
+  --skeleton-animation-duration: 2s;
+  --skeleton-radius: var(--radius-md);
+
+  /* TOAST/NOTIFICATION */
+  --toast-max-width: 360px;
+  --toast-min-width: 280px;
+  --toast-padding: 1rem 1.5rem;
+  --toast-radius: var(--radius-lg);
+  --toast-shadow: var(--shadow-lg);
+  --toast-gap: 0.75rem;
+
+  /* TEXT SIZE TOKENS */
+  --text-heading-1: 3rem;           
+  --text-heading-2: 2.25rem;         
+  --text-heading-3: 1.75rem;        
+  --text-heading-4: 1.5rem;       
+  --text-heading-5: 1.25rem;           
+  --text-heading-6: 1.125rem;       
+
+  --text-body-lg: 1.125rem;             
+  --text-body-md: 1rem;         
+  --text-body-sm: 0.875rem;        
+  --text-body-xs: 0.75rem;          
+
+  --text-button: 0.9375rem;          
+  --text-label: 0.875rem;           
+  --text-caption: 0.75rem;           
+  --text-overline: 0.75rem;        
+  --text-badge: 0.75rem;          
+
+  --text-stat-value: 2rem;        
+  --text-stat-value-lg: 3rem;       
+  --text-nav-item: 0.9375rem;        
+  --text-tooltip: 0.75rem;          
+  --text-placeholder: 1rem;     
+
+  /* ASPECT RATIOS */
+  --aspect-square: 1 / 1;
+  --aspect-video: 16 / 9;
+  --aspect-photo: 4 / 3;
+  --aspect-portrait: 3 / 4;
+  --aspect-wide: 21 / 9;
+
+  /* GRID GAPS */
+  --gap-xs: 0.25rem;    
+  --gap-sm: 0.5rem;     
+  --gap-md: 1.25rem;       
+  --gap-lg: 2rem;     
+  --gap-xl: 3rem;     
+  --gap-2xl: 5rem;      
+
+  /* DIVIDER STYLES */
+  --divider-color: #E6E3DB;
+  --divider-thickness: 1px;
+  --divider-spacing: 2rem;
+}
+
+/* ============================================
+   DARK MODE - "Nocturnal Forest"
+   Really deep greens and charcoal
+   ============================================ */
+[data-theme="dark"], .dark {
+  --color-primary: #528F4A;              /* Lighter Moss */
+  --color-primary-hover: #6BAA63;
+  
+  --color-black: #E6E5DF;
+  --color-white: #0F1210;
+  
+  --color-text-primary: #E6E5DF;         
+  --color-text-secondary: #B0B0A6;       
+  --color-text-body: #94948B;
+  
+  --color-bg-primary: #141715;           /* Deep Charcoal Green */
+  --color-bg-secondary: #0F1210;         
+  --color-bg-page: #0A0D0B;              /* Black Forest */
+  --color-bg-hover: #222623;
+  
+  --color-border-primary: #2C302D;       
+  --color-border-secondary: #222623;
+  
+  --color-success: #6BAA63;
+  --color-danger: #D6726A;
+  --color-warning: #E0AB60;
+  --color-info: #7899B3;
+
+  --sidebar-bg: #141715;
+  --card-bg: #141715;
+  --input-bg: #1A1D1B;
+  
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  
+  --occupancy-ring-bg: #222623;
+  --occupancy-ring-fill: #528F4A;
+}
+
+/* ============================================
+   TYPOGRAPHY OVERRIDES
+   Injecting Serif fonts for titles
+   ============================================ */
+h1, h2, h3, h4, .font-heading {
+  font-family: 'DM Serif Display', serif !important;
+  font-weight: 400 !important; /* Serifs often look better with normal weight */
+}
