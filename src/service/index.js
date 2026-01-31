@@ -47,7 +47,6 @@ export { statsApi } from "./modules/stats.api"
 export { dashboardApi } from "./modules/dashboard.api"
 export { uploadApi } from "./modules/upload.api"
 export { notificationApi } from "./modules/notification.api"
-export { alertApi } from "./modules/alert.api"
 export { userApi } from "./modules/user.api"
 export { accessControlApi } from "./modules/accessControl.api"
 export { certificateApi } from "./modules/certificate.api"
@@ -84,7 +83,6 @@ import { statsApi } from "./modules/stats.api"
 import { dashboardApi } from "./modules/dashboard.api"
 import { uploadApi } from "./modules/upload.api"
 import { notificationApi } from "./modules/notification.api"
-import { alertApi } from "./modules/alert.api"
 import { userApi } from "./modules/user.api"
 import { accessControlApi } from "./modules/accessControl.api"
 import { certificateApi } from "./modules/certificate.api"
@@ -123,7 +121,6 @@ const api = {
   dashboard: dashboardApi,
   upload: uploadApi,
   notification: notificationApi,
-  alert: alertApi,
   user: userApi,
   accessControl: accessControlApi,
   certificate: certificateApi,
