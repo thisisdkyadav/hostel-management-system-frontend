@@ -49,6 +49,25 @@ export const complaintApi = {
   giveFeedback: (complaintId, feedbackData) => {
     return apiClient.post(`/complaint/${complaintId}/feedback`, feedbackData)
   },
+
+  // ========== Public Token-Based Methods ==========
+
+  /**
+   * Get complaint by feedback token (public, no auth)
+   * @param {string} token - Feedback token
+   */
+  getComplaintByFeedbackToken: (token) => {
+    return apiClient.get(`/complaint/feedback/${token}`)
+  },
+
+  /**
+   * Submit feedback using token (public, no auth)
+   * @param {string} token - Feedback token
+   * @param {Object} feedbackData - Feedback data
+   */
+  submitFeedbackByToken: (token, feedbackData) => {
+    return apiClient.post(`/complaint/feedback/${token}`, feedbackData)
+  },
 }
 
 export default complaintApi

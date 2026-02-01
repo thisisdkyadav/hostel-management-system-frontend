@@ -12,6 +12,7 @@ import LoadingPage from "../pages/LoadingPage"
 const SSOLoginPage = lazy(() => import("../pages/auth/SSOLoginPage"))
 const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"))
 const ResetPasswordPage = lazy(() => import("../pages/auth/ResetPasswordPage"))
+const ComplaintFeedbackPage = lazy(() => import("../pages/public/ComplaintFeedbackPage"))
 
 // Role-based routes - Lazy loaded (loads all pages for a role when user visits that role's routes)
 const SuperAdminRoutes = lazy(() => import("./SuperAdminRoutes"))
@@ -47,6 +48,13 @@ const AppRoutes = () => {
       <Route path="/reset-password" element={
         <Suspense fallback={<LoadingPage message="Loading..." />}>
           <ResetPasswordPage />
+        </Suspense>
+      } />
+
+      {/* Public Complaint Feedback Route */}
+      <Route path="/complaint-feedback/:token" element={
+        <Suspense fallback={<LoadingPage message="Loading Feedback Form..." />}>
+          <ComplaintFeedbackPage />
         </Suspense>
       } />
 
