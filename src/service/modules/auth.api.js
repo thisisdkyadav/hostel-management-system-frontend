@@ -76,6 +76,33 @@ export const authApi = {
       params: { redirectTo: "https://wellness.iitb.ac.in" },
     })
   },
+
+  // ========== Password Reset ==========
+
+  /**
+   * Request password reset email
+   * @param {string} email - User email
+   */
+  forgotPassword: (email) => {
+    return apiClient.post("/auth/forgot-password", { email })
+  },
+
+  /**
+   * Verify password reset token
+   * @param {string} token - Reset token
+   */
+  verifyResetToken: (token) => {
+    return apiClient.get(`/auth/reset-password/${token}`)
+  },
+
+  /**
+   * Reset password with token
+   * @param {string} token - Reset token
+   * @param {string} password - New password
+   */
+  resetPassword: (token, password) => {
+    return apiClient.post("/auth/reset-password", { token, password })
+  },
 }
 
 export default authApi

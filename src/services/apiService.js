@@ -132,6 +132,51 @@ export const authApi = {
 
     return response.json()
   },
+
+  // Password Reset
+  forgotPassword: async (email) => {
+    const response = await fetch(`${baseUrl}/auth/forgot-password`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ email }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to request password reset")
+    }
+
+    return response.json()
+  },
+
+  verifyResetToken: async (token) => {
+    const response = await fetch(`${baseUrl}/auth/reset-password/${token}`, {
+      method: "GET",
+      ...fetchOptions,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Invalid or expired reset token")
+    }
+
+    return response.json()
+  },
+
+  resetPassword: async (token, password) => {
+    const response = await fetch(`${baseUrl}/auth/reset-password`, {
+      method: "POST",
+      ...fetchOptions,
+      body: JSON.stringify({ token, password }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || "Failed to reset password")
+    }
+
+    return response.json()
+  },
 }
 
 export const studentApi = {

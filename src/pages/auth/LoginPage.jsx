@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import LoginWithGoogle from "../../components/LoginWithGoogle"
 import { ArrowRight } from "lucide-react"
@@ -9,7 +9,6 @@ import "../../styles/login.css"
 const LoginPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showForgotPasswordMsg, setShowForgotPasswordMsg] = useState(false)
   const { user, login, loading, error, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
 
@@ -39,10 +38,6 @@ const LoginPage = () => {
     } catch (err) {
       console.error("Google login failed:", err)
     }
-  }
-
-  const handleForgotPassword = () => {
-    setShowForgotPasswordMsg(true)
   }
 
   const calculateHomeRoute = (user) => {
@@ -187,39 +182,15 @@ const LoginPage = () => {
               <LoginWithGoogle callback={handleGoogleCallback} />
             </div>
 
-            <button type="button" className="login-forgot-password" onClick={handleForgotPassword}>
+            <Link to="/forgot-password" className="login-forgot-password">
               Forgot your password?
-            </button>
+            </Link>
           </div>
         </div>
       </div>
-
-      {showForgotPasswordMsg && (
-        <div className="login-modal-overlay">
-          <div className="login-modal">
-            <div className="login-modal-header">
-              <h3 className="login-modal-title">Forgot Password</h3>
-              <button onClick={() => setShowForgotPasswordMsg(false)} className="login-modal-close">
-                <svg xmlns="http://www.w3.org/2000/svg" className="login-modal-close-icon" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
-            <p className="login-modal-text">Please contact the administrator to reset your password.</p>
-            <div className="login-modal-footer">
-              <button
-                onClick={() => setShowForgotPasswordMsg(false)}
-                className="login-modal-close-button"
-              >
-                <span className="login-modal-button-shimmer"></span>
-                <span className="login-modal-button-text">Close</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
 export default LoginPage
+

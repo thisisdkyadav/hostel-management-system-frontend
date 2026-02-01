@@ -981,3 +981,171 @@
 .login-hidden {
   display: none;
 }
+
+/* ============================================
+   PASSWORD RESET PAGE STYLES
+   ============================================ */
+
+.login-form-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-form-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .login-form-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.login-form-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+@media (min-width: 640px) {
+  .login-form-subtitle {
+    font-size: 1rem;
+  }
+}
+
+.login-back-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-back-link:hover {
+  color: #2563eb;
+}
+
+/* Success Message */
+.login-success-message {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.login-success-icon {
+  color: #10b981;
+  margin: 0 auto 1rem;
+}
+
+.login-success-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .login-success-title {
+    font-size: 1.25rem;
+  }
+}
+
+.login-success-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.login-success-note {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 1rem;
+}
+
+/* Error State */
+.login-error-state {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.login-error-icon {
+  color: #ef4444;
+  margin: 0 auto 1rem;
+}
+
+.login-error-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.login-error-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.login-error-help {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.5;
+}
+
+/* Loading State */
+.login-loading-state {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.login-spinner-large {
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #2563eb;
+}
+
+.login-loading-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Password Toggle Button */
+.login-input-with-icon {
+  padding-right: 2.75rem;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.login-password-toggle:hover {
+  color: #2563eb;
+}
+
+.login-password-toggle:focus {
+  outline: none;
+  color: #2563eb;
+}
+
