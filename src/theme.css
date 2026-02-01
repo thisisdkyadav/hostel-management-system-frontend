@@ -393,8 +393,7 @@
   --gradient-primary: linear-gradient(135deg, #1360AB, #2E7BC4);
   --gradient-primary-hover: linear-gradient(135deg, #0F4C81, #1360AB);
 
-  /* Ripple Effect */
-  --ripple-color: rgba(255, 255, 255, 0.7);
+
 
   /* Ring/Focus Ring */
   --ring-primary: 0 0 0 2px rgba(19, 96, 171, 0.1);
@@ -823,9 +822,6 @@
   --gradient-primary: linear-gradient(135deg, #5B9FE8, #7BB4F0);
   --gradient-primary-hover: linear-gradient(135deg, #4A8FD8, #5B9FE8);
 
-  /* Ripple */
-  --ripple-color: rgba(255, 255, 255, 0.15);
-
   /* Ring/Focus Ring */
   --ring-primary: 0 0 0 2px rgba(91, 159, 232, 0.15);
   --ring-blue: 0 0 0 2px rgba(96, 165, 250, 0.25);
@@ -904,10 +900,7 @@
   }
 }
 
-/* PWA container variant */
-.layout-container.pwa-container {
-  /* PWA-specific styles if needed */
-}
+
 
 /* Main content area */
 .layout-content {

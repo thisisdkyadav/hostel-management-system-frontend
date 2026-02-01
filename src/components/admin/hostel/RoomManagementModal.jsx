@@ -135,7 +135,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
           )}
 
           <HStack justify="end" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', width: '100%' }}>
-            <Button onClick={onClose} variant="outline" animation="ripple">
+            <Button onClick={onClose} variant="outline">
               Close
             </Button>
           </HStack>

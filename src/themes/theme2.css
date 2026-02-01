@@ -363,8 +363,7 @@
   --gradient-primary: linear-gradient(135deg, #0097A7, #26C6DA);
   --gradient-primary-hover: linear-gradient(135deg, #00838F, #0097A7);
 
-  /* Ripple Effect */
-  --ripple-color: rgba(255, 255, 255, 0.7);
+
 
   /* Ring/Focus Ring */
   --ring-primary: 0 0 0 2px rgba(0, 151, 167, 0.1);
@@ -750,7 +749,7 @@
   }
 }
 
-.layout-container.pwa-container { }
+
 
 .layout-content {
   flex: 1;

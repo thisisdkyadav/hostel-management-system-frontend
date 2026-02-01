@@ -351,8 +351,7 @@
   --gradient-primary: linear-gradient(180deg, #2D5A27, #22451E);
   --gradient-primary-hover: linear-gradient(180deg, #1E3F1A, #142B11);
 
-  /* Ripple Effect */
-  --ripple-color: rgba(45, 90, 39, 0.1);
+
 
   /* Ring/Focus Ring */
   --ring-primary: 0 0 0 3px rgba(45, 90, 39, 0.15);

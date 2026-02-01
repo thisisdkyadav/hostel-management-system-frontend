@@ -46,40 +46,9 @@ const Button = forwardRef(({
     fullWidth && "w-full",
     animation === "pulse" && "hover:animate-pulse",
     animation === "glow" && "hover:shadow-[0_0_15px_rgba(19,96,171,0.7)]",
-    animation === "ripple" && "relative overflow-hidden",
     "active:scale-[0.98]",
     className,
   ].filter(Boolean).join(" ")
-
-  // Handle ripple effect
-  const handleClick = useCallback((e) => {
-    if (animation === "ripple" && !disabled && !isLoading) {
-      const button = e.currentTarget
-      const circle = document.createElement("span")
-      const diameter = Math.max(button.clientWidth, button.clientHeight)
-      const radius = diameter / 2
-      const rect = button.getBoundingClientRect()
-
-      circle.style.width = circle.style.height = `${diameter}px`
-      circle.style.left = `${e.clientX - rect.left - radius}px`
-      circle.style.top = `${e.clientY - rect.top - radius}px`
-      circle.style.position = "absolute"
-      circle.style.borderRadius = "50%"
-      circle.style.transform = "scale(0)"
-      circle.style.animation = "ripple-animation 600ms linear"
-      circle.style.backgroundColor = "rgba(255, 255, 255, 0.7)"
-      circle.style.pointerEvents = "none"
-      circle.classList.add("ripple")
-
-      const existingRipple = button.getElementsByClassName("ripple")[0]
-      if (existingRipple) existingRipple.remove()
-
-      button.appendChild(circle)
-      setTimeout(() => circle.remove(), 600)
-    }
-
-    if (onClick) onClick(e)
-  }, [animation, disabled, isLoading, onClick])
 
   return (
     <CZeroButton
@@ -89,7 +58,7 @@ const Button = forwardRef(({
       size={sizeMap[size] || "md"}
       loading={isLoading}
       disabled={disabled}
-      onClick={handleClick}
+      onClick={onClick}
       className={customClasses}
       style={style}
       {...rest}
@@ -113,7 +82,7 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   disabled: PropTypes.bool,
   fullWidth: PropTypes.bool,
-  animation: PropTypes.oneOf(["none", "pulse", "bounce", "glow", "ripple"]),
+  animation: PropTypes.oneOf(["none", "pulse", "bounce", "glow"]),
   gradient: PropTypes.bool,
   rounded: PropTypes.bool,
   keepTextOnMobile: PropTypes.bool,
