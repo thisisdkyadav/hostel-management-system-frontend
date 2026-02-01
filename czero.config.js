@@ -158,20 +158,21 @@ export default {
   components: {
     // Button component
     button: {
-      height: { 
-        sm: "32px",                // --input-height-sm
-        md: "40px",                // --input-height-md
-        lg: "48px"                 // --input-height-lg
+      // Use padding-based sizing (like old button) instead of fixed heights
+      paddingY: { 
+        sm: "0.5rem",              // py-2
+        md: "0.625rem",            // py-2.5
+        lg: "0.75rem"              // py-3
       },
       paddingX: { 
-        sm: "1rem",                // --button-padding-sm
-        md: "1.25rem",             // --button-padding-md
-        lg: "1.5rem"               // --button-padding-lg
+        sm: "1rem",                // px-4
+        md: "1.25rem",             // px-5
+        lg: "1.5rem"               // px-6
       },
       fontSize: { 
-        sm: "$font-size-xs", 
-        md: "$font-size-sm", 
-        lg: "$font-size-md" 
+        sm: "$font-size-xs",       // 0.75rem
+        md: "$font-size-sm",       // 0.875rem (original)
+        lg: "$font-size-md"        // 1rem (original)
       },
       fontWeight: "$font-weight-medium",
       borderRadius: "12px",        // --radius-button-md (default)
@@ -190,24 +191,50 @@ export default {
       // Custom variants matching your theme
       variants: {
         primary: {
-          bg: "hsl(var(--cz-color-primary))",
-          color: "hsl(var(--cz-color-primaryFg))",
-          hover: { opacity: "0.9" },
+          bg: "#1360AB",
+          color: "white",
+          hover: { bg: "#0F4C81" },
         },
         secondary: {
-          bg: "hsl(var(--cz-color-secondary))",
-          color: "hsl(var(--cz-color-secondaryFg))",
-          hover: { opacity: "0.9" },
+          bg: "#E8F1FE",
+          color: "#1360AB",
+          hover: { bg: "#D2E3FC" },
+        },
+        danger: {
+          bg: "#EF4444",
+          color: "white",
+          hover: { bg: "#DC2626" },
         },
         success: {
-          bg: "hsl(var(--cz-color-success))",
-          color: "hsl(var(--cz-color-successFg))",
-          hover: { opacity: "0.9" },
+          bg: "#22C55E",
+          color: "white",
+          hover: { bg: "#16A34A" },
         },
-        warning: {
-          bg: "hsl(var(--cz-color-warning))",
-          color: "hsl(var(--cz-color-warningFg))",
-          hover: { opacity: "0.9" },
+        outline: {
+          bg: "white",
+          color: "#1360AB",
+          border: "2px solid #1360AB",
+          hover: { bg: "#E8F1FE" },
+        },
+        white: {
+          bg: "white",
+          color: "#334155",
+          border: "1px solid #E2E8F0",
+          hover: { bg: "#F8FAFC", color: "#1E293B" },
+        },
+        ghost: {
+          bg: "transparent",
+          color: "#64748B",
+          hover: { bg: "#F8FAFC", color: "#1360AB" },
+        },
+        gradient: {
+          bg: "linear-gradient(135deg, #1360AB, #2E7BC4)",
+          color: "white",
+          shadow: "0 4px 15px rgba(19, 96, 171, 0.25)",
+          hover: { 
+            bg: "linear-gradient(135deg, #0F4C81, #1360AB)",
+            shadow: "0 4px 15px rgba(19, 96, 171, 0.35)" 
+          },
         },
       },
     },

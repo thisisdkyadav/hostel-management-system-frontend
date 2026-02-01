@@ -24,6 +24,7 @@ const HostelSupervisorRoutes = lazy(() => import("./HostelSupervisorRoutes"))
 const SecurityRoutes = lazy(() => import("./SecurityRoutes"))
 const HostelGateRoutes = lazy(() => import("./HostelGateRoutes"))
 const AdminRoutes = lazy(() => import("./AdminRoutes"))
+const UIExamplesPage = lazy(() => import("../pages/dev/UIExamplesPage"))
 
 const AppRoutes = () => {
   return (
@@ -102,6 +103,13 @@ const AppRoutes = () => {
       <Route path="/admin/*" element={
         <Suspense fallback={<LoadingPage message="Loading Admin Portal..." />}>
           <AdminRoutes />
+        </Suspense>
+      } />
+
+      {/* Dev/Debug Routes */}
+      <Route path="/ui-examples" element={
+        <Suspense fallback={<LoadingPage message="Loading UI Examples..." />}>
+          <UIExamplesPage />
         </Suspense>
       } />
 
