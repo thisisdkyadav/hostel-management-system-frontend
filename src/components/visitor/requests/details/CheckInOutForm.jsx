@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
-import { Button, Input, Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Input, Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onCheckIn, onCheckOut, onUpdateTimes, onCancel }) => {
   const today = new Date()
@@ -150,28 +151,28 @@ const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onC
       </VStack>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-2)", }} >
-        <Button type="button" onClick={onCancel} variant="secondary" size="medium">
+        <Button type="button" onClick={onCancel} variant="secondary" size="md">
           Cancel
         </Button>
 
         {/* Show appropriate action button based on the current state */}
         {!isCheckedIn ? (
           // Case 1: Initial check-in (not checked in yet)
-          <Button type="button" onClick={handleCheckIn} variant="primary" size="medium">
+          <Button type="button" onClick={handleCheckIn} variant="primary" size="md">
             Check-in Visitor
           </Button>
         ) : isCheckedOut ? (
           // Case 2: Already checked out, only edit allowed
-          <Button type="button" onClick={handleUpdateTimes} variant="primary" size="medium">
+          <Button type="button" onClick={handleUpdateTimes} variant="primary" size="md">
             Update Times
           </Button>
         ) : (
           // Case 3: Checked in but not checked out, show both options
           <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
-            <Button type="button" onClick={handleUpdateTimes} variant="primary" size="medium">
+            <Button type="button" onClick={handleUpdateTimes} variant="primary" size="md">
               Update Check-in
             </Button>
-            <Button type="button" onClick={handleCheckOut} variant="success" size="medium">
+            <Button type="button" onClick={handleCheckOut} variant="success" size="md">
               Check-out Visitor
             </Button>
           </div>

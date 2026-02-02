@@ -4,7 +4,8 @@ import { FiTag } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi, accessControlApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Modal, Button, Input, Checkbox, VStack, HStack, Label, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Tabs, TabList, Tab, Spinner } from "@/components/ui"
+import { Modal, Input, Checkbox, VStack, HStack, Label, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Tabs, TabList, Tab, Spinner } from "@/components/ui"
+import { Button } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
@@ -293,7 +294,8 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   <FaShieldAlt style={{ marginRight: 'var(--spacing-2)' }} />
                   <h4 style={{ fontWeight: 'var(--font-weight-medium)' }}>Manage Permissions</h4>
                 </div>
-                <Button type="button" onClick={handleResetPermissions} variant="ghost" size="small" icon={<FaRedo />}>
+                <Button type="button" onClick={handleResetPermissions} variant="ghost" size="sm">
+                  <FaRedo />
                   Reset to Default
                 </Button>
               </HStack>
@@ -349,11 +351,13 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         )}
 
         <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={isLoading} disabled={isLoading}>
+          <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={isLoading} disabled={isLoading}>
+            <FaTrash />
             Delete {staffTitle}
           </Button>
 
-          <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={isLoading} disabled={isLoading}>
+          <Button type="submit" variant="primary" size="md" loading={isLoading} disabled={isLoading}>
+            <FaSave />
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </HStack>

@@ -2,9 +2,10 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import importPlugin from 'eslint-plugin-import'
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'node_modules', 'dev-dist', 'docs', 'android', 'scripts', '**/*.min.js'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -19,6 +20,25 @@ export default [
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'import': importPlugin,
+    },
+    settings: {
+      'import/resolver': {
+        alias: {
+          map: [
+            ['@', './src'],
+            ['czero/react', './czero.config.js'],
+          ],
+          extensions: ['.js', '.jsx'],
+        },
+        node: {
+          extensions: ['.js', '.jsx'],
+        },
+      },
+      'import/cache': {
+        lifetime: Infinity,
+      },
+      'import/ignore': ['node_modules'],
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -28,6 +48,12 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      // Import detection rules
+      'import/no-unresolved': 'error',        // Detect missing/broken imports
+      'import/named': 'error',                 // Detect invalid named exports
+      'import/default': 'error',               // Detect invalid default exports
+      'import/namespace': 'error',             // Detect invalid namespace imports
+      'import/no-duplicates': 'warn',          // Warn on duplicate imports
     },
   },
 ]

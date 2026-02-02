@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { Modal, Button, Input, VStack, HStack, Label } from "@/components/ui"
+import { Modal, Input, VStack, HStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
@@ -93,10 +94,10 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
           </div>
 
           <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-            <Button type="button" onClick={onClose} variant="secondary" size="medium">
+            <Button type="button" onClick={onClose} variant="secondary" size="md">
               Cancel
             </Button>
-            <Button type="submit" variant="primary" size="medium">
+            <Button type="submit" variant="primary" size="md">
               Add {staffTitle}
             </Button>
           </HStack>

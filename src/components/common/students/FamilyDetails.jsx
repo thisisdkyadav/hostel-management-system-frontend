@@ -3,7 +3,7 @@ import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const FamilyDetails = ({ userId }) => {
   const { canAccess } = useAuth()
@@ -229,7 +229,8 @@ const FamilyDetails = ({ userId }) => {
       <div style={styles.header}>
         <h3 style={styles.title}>Family Information</h3>
         {canAccess("students_info", "create") && (
-          <Button variant="primary" size="small" icon={<Plus size={16} />} onClick={handleAddClick}>
+          <Button variant="primary" size="sm" onClick={handleAddClick}>
+            <Plus size={16} />
             Add Family Member
           </Button>
         )}
@@ -251,7 +252,7 @@ const FamilyDetails = ({ userId }) => {
                   <span style={styles.badge}>{member.relationship}</span>
                 </div>
                 {canAccess("students_info", "edit") && (
-                  <Button onClick={() => handleEditClick(member)} variant="secondary" size="small">
+                  <Button onClick={() => handleEditClick(member)} variant="secondary" size="sm">
                     Edit
                   </Button>
                 )}
@@ -293,7 +294,7 @@ const FamilyDetails = ({ userId }) => {
         <div style={styles.emptyState}>
           <p style={styles.emptyText}>No family members added yet.</p>
           <div style={styles.emptyAddButton}>
-            <Button variant="secondary" size="small" onClick={handleAddClick}>
+            <Button variant="secondary" size="sm" onClick={handleAddClick}>
               Add Family Member
             </Button>
           </div>

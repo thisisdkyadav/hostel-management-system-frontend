@@ -1,6 +1,6 @@
 import React from "react"
 import { FiAlertCircle } from "react-icons/fi"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const ErrorState = ({ message, onRetry, title = "Something went wrong", buttonText = "Try Again" }) => {
   return (
@@ -11,7 +11,7 @@ const ErrorState = ({ message, onRetry, title = "Something went wrong", buttonTe
       <h3 className="text-lg font-medium text-[var(--color-text-body)]">{title}</h3>
       <p className="text-[var(--color-text-muted)] mt-1 max-w-md mx-auto">{message}</p>
       {onRetry && (
-        <Button onClick={onRetry} variant="primary" size="medium" className="mt-4">
+        <Button onClick={onRetry} variant="primary" size="md" className="mt-4">
           {buttonText}
         </Button>
       )}

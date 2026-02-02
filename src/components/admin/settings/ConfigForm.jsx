@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiInformationCircle } from "react-icons/hi"
-import { Button, Input, Checkbox, Alert, VStack, Label } from "@/components/ui"
+import { Input, Checkbox, Alert, VStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ConfigForm = ({ config, onUpdate, isLoading }) => {
   const [formData, setFormData] = useState({})
@@ -259,8 +260,8 @@ const ConfigForm = ({ config, onUpdate, isLoading }) => {
       </div>
 
       <div style={styles.buttonContainer}>
-        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} variant="primary" size="medium" icon={<HiSave />} isLoading={isLoading}>
-          Save Changes
+        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges()} variant="primary" size="md" loading={isLoading}>
+          <HiSave /> Save Changes
         </Button>
       </div>
 

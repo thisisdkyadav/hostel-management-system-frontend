@@ -1,5 +1,6 @@
 import React from "react"
-import { Modal, Button, VStack, HStack } from "@/components/ui"
+import { Modal, VStack, HStack } from "@/components/ui"
+import { Button } from "czero/react"
 import { TriangleAlert } from "lucide-react"
 
 const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }) => {
@@ -25,7 +26,7 @@ const DeleteAllAllocationsModal = ({ onClose, onConfirm, hostelName, isLoading }
           <Button onClick={onClose} variant="outline" disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} variant="danger" disabled={isLoading} isLoading={isLoading}>
+          <Button onClick={onConfirm} variant="danger" disabled={isLoading} loading={isLoading}>
             Delete All Allocations
           </Button>
         </HStack>

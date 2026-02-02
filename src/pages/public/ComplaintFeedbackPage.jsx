@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { FaStar, FaInfoCircle, FaClipboardList, FaCheck, FaExclamationTriangle, FaArrowRight } from "react-icons/fa"
-import { Button, Card, Alert, Spinner } from "@/components/ui"
+import { Card, Alert, Spinner } from "@/components/ui"
+import { Button } from "czero/react"
 import { complaintApi } from "@/service"
 
 const ComplaintFeedbackPage = () => {
@@ -128,8 +129,8 @@ const ComplaintFeedbackPage = () => {
                         {error}
                     </p>
                     <Link to="/login">
-                        <Button variant="primary" icon={<FaArrowRight />}>
-                            Go to Login
+                        <Button variant="primary">
+                            <FaArrowRight /> Go to Login
                         </Button>
                     </Link>
                 </Card>
@@ -177,8 +178,8 @@ const ComplaintFeedbackPage = () => {
                         Your feedback helps us improve our services and resolve issues more effectively.
                     </p>
                     <Link to="/login">
-                        <Button variant="primary" icon={<FaArrowRight />}>
-                            Go to Login
+                        <Button variant="primary">
+                            <FaArrowRight /> Go to Login
                         </Button>
                     </Link>
                 </Card>
@@ -383,7 +384,7 @@ const ComplaintFeedbackPage = () => {
                                     type="button"
                                     onClick={() => setSatisfactionStatus("Satisfied")}
                                     variant={satisfactionStatus === "Satisfied" ? "success" : "secondary"}
-                                    size="small"
+                                    size="sm"
                                 >
                                     Satisfied
                                 </Button>
@@ -391,7 +392,7 @@ const ComplaintFeedbackPage = () => {
                                     type="button"
                                     onClick={() => setSatisfactionStatus("Unsatisfied")}
                                     variant={satisfactionStatus === "Unsatisfied" ? "danger" : "secondary"}
-                                    size="small"
+                                    size="sm"
                                 >
                                     Unsatisfied
                                 </Button>
@@ -399,7 +400,7 @@ const ComplaintFeedbackPage = () => {
                                     type="button"
                                     onClick={() => setSatisfactionStatus("False Resolution")}
                                     variant={satisfactionStatus === "False Resolution" ? "warning" : "secondary"}
-                                    size="small"
+                                    size="sm"
                                 >
                                     False Fix
                                 </Button>
@@ -452,13 +453,12 @@ const ComplaintFeedbackPage = () => {
                         <Button
                             type="submit"
                             variant="primary"
-                            size="large"
+                            size="lg"
                             fullWidth
-                            isLoading={isSubmitting}
+                            loading={isSubmitting}
                             disabled={isSubmitting || feedbackRating === 0}
-                            icon={<FaStar />}
                         >
-                            {isSubmitting ? "Submitting..." : "Submit Feedback"}
+                            <FaStar /> {isSubmitting ? "Submitting..." : "Submit Feedback"}
                         </Button>
                     </form>
                 </Card>

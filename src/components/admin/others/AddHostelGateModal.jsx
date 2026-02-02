@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaEnvelope, FaKey } from "react-icons/fa"
-import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 import { hostelGateApi } from "../../../service"
 
 const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
@@ -135,10 +136,10 @@ const AddHostelGateModal = ({ show, onClose, onSuccess, hostels }) => {
             </div>
 
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-              <Button type="button" onClick={onClose} variant="secondary" size="medium">
+              <Button type="button" onClick={onClose} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading || !formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0}>
+              <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading || !formData.hostelId || !formData.password || !formData.confirmPassword || availableHostels.length === 0}>
                 Create Gate Login
               </Button>
             </HStack>

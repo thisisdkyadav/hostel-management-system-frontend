@@ -1,7 +1,7 @@
 import React, { useState, useCallback, use } from "react"
 import Cropper from "react-easy-crop"
 import Modal from "./Modal"
-import Button from "./Button"
+import { Button } from "czero/react"
 import FileInput from "./ui/FileInput"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi } from "../../service"
@@ -158,11 +158,11 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-end pt-4 space-y-3 sm:space-y-0 sm:space-x-3">
-                    <Button type="button" onClick={handleReset} variant="secondary" size="medium" icon={<HiX />} className="order-last sm:order-first">
-                      Reset
+                    <Button type="button" onClick={handleReset} variant="secondary" size="md" className="order-last sm:order-first">
+                      <HiX /> Reset
                     </Button>
-                    <Button type="button" onClick={uploadImage} variant="primary" size="medium" icon={<HiUpload />} isLoading={uploading} disabled={uploading}>
-                      {uploading ? "Uploading..." : "Upload Image"}
+                    <Button type="button" onClick={uploadImage} variant="primary" size="md" loading={uploading} disabled={uploading}>
+                      <HiUpload /> {uploading ? "Uploading..." : "Upload Image"}
                     </Button>
                   </div>
                 </div>

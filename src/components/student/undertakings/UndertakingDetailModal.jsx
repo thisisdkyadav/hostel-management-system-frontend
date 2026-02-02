@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaFileSignature, FaCalendarAlt, FaCheck, FaTimes } from "react-icons/fa"
-import { Button, Modal, Checkbox } from "@/components/ui"
+import { Modal, Checkbox } from "@/components/ui"
+import { Button } from "czero/react"
 
 const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
   const [isAccepting, setIsAccepting] = useState(false)
@@ -83,11 +84,11 @@ const UndertakingDetailModal = ({ show, undertaking, onClose, onAccept }) => {
 
         {/* Action buttons */}
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <Button type="button" onClick={handleClose} variant="secondary" size="medium" icon={<FaTimes />}>
-            Close
+          <Button type="button" onClick={handleClose} variant="secondary" size="md">
+            <FaTimes /> Close
           </Button>
-          <Button type="button" onClick={handleAccept} disabled={isAccepting || !hasConfirmed} variant="success" size="medium" icon={isAccepting ? null : <FaCheck />} isLoading={isAccepting}>
-            I Accept
+          <Button type="button" onClick={handleAccept} disabled={isAccepting || !hasConfirmed} variant="success" size="md" loading={isAccepting}>
+            {!isAccepting && <FaCheck />} I Accept
           </Button>
         </div>
       </div>

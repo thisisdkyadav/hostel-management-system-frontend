@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { FaExclamationTriangle, FaFileSignature, FaTimes } from "react-icons/fa"
 import { undertakingApi } from "../../service"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const UndertakingsBanner = () => {
   const [pendingCount, setPendingCount] = useState(0)
@@ -52,7 +52,9 @@ const UndertakingsBanner = () => {
             <FaFileSignature style={{ marginRight: 'var(--spacing-2)', fontSize: 'var(--icon-sm)' }} />
             View Undertakings
           </Link>
-          <Button onClick={() => setDismissed(true)} variant="ghost" size="small" icon={<FaTimes />} aria-label="Dismiss" />
+          <Button onClick={() => setDismissed(true)} variant="ghost" size="sm" aria-label="Dismiss">
+            <FaTimes />
+          </Button>
         </div>
       </div>
     </div>

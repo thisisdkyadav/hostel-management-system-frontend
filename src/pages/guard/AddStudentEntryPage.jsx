@@ -6,7 +6,8 @@ import NewEntryForm from "../../components/guard/NewEntryForm"
 import QRScanner from "../../components/guard/QRScanner"
 import ScannerStatusIndicator from "../../components/guard/ScannerStatusIndicator"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Button, ToggleButtonGroup } from "@/components/ui"
+import { ToggleButtonGroup } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AddStudentEntryPage = () => {
   const { user } = useAuth()
@@ -154,7 +155,7 @@ const AddStudentEntryPage = () => {
             value={activeTab}
             onChange={setActiveTab}
             shape="rounded"
-            size="medium"
+            size="md"
             variant="muted"
             fullWidth
             hideLabelsOnMobile={false}

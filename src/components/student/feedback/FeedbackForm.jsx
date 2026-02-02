@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { Button, Input, Textarea, VStack, Label } from "@/components/ui"
+import { Input, Textarea, VStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const FeedbackForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -83,7 +84,7 @@ const FeedbackForm = ({ onSubmit }) => {
       </VStack>
 
       <div style={{ paddingTop: "var(--spacing-4)" }}>
-        <Button type="submit" disabled={isSubmitting} variant="primary" size="large" fullWidth isLoading={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} variant="primary" size="lg" fullWidth loading={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit Feedback"}
         </Button>
       </div>

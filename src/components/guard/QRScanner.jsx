@@ -4,7 +4,7 @@ import { FaQrcode, FaTimes } from "react-icons/fa"
 import { securityApi } from "../../service"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
 import ScannedStudentInfo from "./ScannedStudentInfo"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const QRScanner = ({ onRefresh }) => {
   const { fetchScannerEntries } = useQRScanner()
@@ -186,16 +186,16 @@ const QRScanner = ({ onRefresh }) => {
       )}
 
       {!scanning && !scannedStudent && !loading && (
-        <Button onClick={startScanner} variant="primary" size="medium" icon={<FaQrcode />} fullWidth>
-          Start QR Scanner
+        <Button onClick={startScanner} variant="primary" size="md" fullWidth>
+          <FaQrcode /> Start QR Scanner
         </Button>
       )}
 
       <div style={{ marginBottom: 'var(--spacing-4)' }}>
         <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <Button onClick={stopScanner} variant="danger" size="medium" icon={<FaTimes />} fullWidth>
-            Stop Scanner
+          <Button onClick={stopScanner} variant="danger" size="md" fullWidth>
+            <FaTimes /> Stop Scanner
           </Button>
         )}
       </div>

@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()
@@ -94,12 +95,12 @@ const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
           </div>
 
           <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-5)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
-              Delete Account
+            <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={loading} disabled={loading}>
+              <FaTrash /> Delete Account
             </Button>
 
-            <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
-              Save Changes
+            <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
+              <FaSave /> Save Changes
             </Button>
           </HStack>
         </VStack>

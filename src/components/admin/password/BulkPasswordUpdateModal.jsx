@@ -1,7 +1,8 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Modal, Button, VStack, HStack, Alert, FileInput } from "@/components/ui"
+import { Modal, VStack, HStack, Alert, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 
 const styles = {
   spaceY5: {
@@ -422,8 +423,8 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
             <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </div>
           <div style={styles.centerColumn}>
-            <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
-              Download CSV Template
+            <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
+              <FaFileDownload /> Download CSV Template
             </Button>
 
             <div style={styles.infoBox}>
@@ -449,10 +450,11 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
                 setCsvFile(null)
               }}
                 variant="ghost"
-                size="small"
-                icon={<FaTimes />}
+                size="sm"
                 aria-label="Remove file"
-              />
+              >
+                <FaTimes />
+              </Button>
             </div>
           )}
           {error && <div style={styles.errorBox}>{error}</div>}
@@ -501,18 +503,18 @@ const BulkPasswordUpdateModal = ({ isOpen, onClose, onUpdate }) => {
 
       <div style={styles.footer}>
         {step === 1 ? (
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
         ) : (
-          <Button onClick={resetForm} variant="secondary" size="medium">
+          <Button onClick={resetForm} variant="secondary" size="md">
             Back
           </Button>
         )}
 
         {step === 2 && (
-          <Button onClick={handleUpdate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
-            {isUpdating ? "Updating Passwords..." : "Confirm Update"}
+          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
+            <FaCheck /> {isUpdating ? "Updating Passwords..." : "Confirm Update"}
           </Button>
         )}
       </div>

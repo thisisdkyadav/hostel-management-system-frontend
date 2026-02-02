@@ -1,6 +1,7 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
-import { Button, Select, Card, VStack, Label } from "@/components/ui"
+import { Select, Card, VStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
   return (
@@ -9,8 +10,8 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
         <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', fontSize: 'var(--font-size-lg)' }}>
           Filters
         </h3>
-        <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
-          Reset
+        <Button onClick={resetFilters} variant="ghost" size="sm">
+          <RotateCcw size={14} /> Reset
         </Button>
       </div>
 

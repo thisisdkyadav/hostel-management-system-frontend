@@ -1,5 +1,5 @@
 import React from "react"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const Pagination = ({ currentPage, totalPages, paginate }) => {
   return (
@@ -9,7 +9,7 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
       </div>
 
       <nav className="flex flex-wrap justify-center gap-2">
-        <Button onClick={() => paginate(Math.max(1, currentPage - 1))} disabled={currentPage === 1} variant="secondary" size="small">
+        <Button onClick={() => paginate(Math.max(1, currentPage - 1))} disabled={currentPage === 1} variant="secondary" size="sm">
           Previous
         </Button>
 
@@ -29,14 +29,14 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
           return (
             <Button key={pageNum} onClick={() => paginate(pageNum)}
               variant={currentPage === pageNum ? "primary" : "secondary"}
-              size="small"
+              size="sm"
             >
               {pageNum}
             </Button>
           )
         })}
 
-        <Button onClick={() => paginate(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} variant="secondary" size="small">
+        <Button onClick={() => paginate(Math.min(totalPages, currentPage + 1))} disabled={currentPage === totalPages} variant="secondary" size="sm">
           Next
         </Button>
       </nav>

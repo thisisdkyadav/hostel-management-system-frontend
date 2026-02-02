@@ -3,7 +3,8 @@ import { FaBuilding, FaEdit, FaEnvelope, FaShieldAlt, FaIdCard, FaCircle, FaEye 
 import EditSecurityForm from "./EditSecurityForm"
 import SecurityStaffDetailsModal from "./SecurityStaffDetailsModal"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Button } from "czero/react"
 
 const SecurityCard = ({ security, onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()
@@ -65,11 +66,11 @@ const SecurityCard = ({ security, onUpdate, onDelete }) => {
         </CardBody>
 
         <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', gap: 'var(--spacing-2)' }}>
-          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="small" icon={<FaEye />} fullWidth>
-            View Details
+          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="sm" fullWidth>
+            <FaEye /> View Details
           </Button>
-          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="small" icon={<FaEdit />} fullWidth>
-            Edit
+          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="sm" fullWidth>
+            <FaEdit /> Edit
           </Button>
         </CardFooter>
       </Card>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
-import { SearchInput, DataTable, Modal, Button, Input } from "@/components/ui"
+import { SearchInput, DataTable, Modal, Input } from "@/components/ui"
+import { Button } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
 
@@ -129,8 +130,8 @@ const AdminManagementPage = () => {
       align: "right",
       render: (admin) => (
         <div className="flex justify-end space-x-2">
-          <Button onClick={() => setEditAdmin(admin)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit admin" />
-          <Button onClick={() => handleDeleteAdmin(admin.id)} variant="danger" size="small" icon={<FaTrash />} aria-label="Delete admin" />
+          <Button onClick={() => setEditAdmin(admin)} variant="ghost" size="sm" aria-label="Edit admin"><FaEdit /></Button>
+          <Button onClick={() => handleDeleteAdmin(admin.id)} variant="danger" size="sm" aria-label="Delete admin"><FaTrash /></Button>
         </div>
       ),
     },
@@ -140,8 +141,8 @@ const AdminManagementPage = () => {
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Admin Management</h1>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
-          Add Admin
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+          <FaPlus /> Add Admin
         </Button>
       </header>
 
@@ -291,10 +292,10 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting} variant="primary" size="medium" isLoading={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} variant="primary" size="md" loading={isSubmitting}>
             {isSubmitting ? "Processing..." : admin ? "Update" : "Add"}
           </Button>
         </div>

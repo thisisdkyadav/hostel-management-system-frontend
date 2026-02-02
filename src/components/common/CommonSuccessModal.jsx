@@ -1,6 +1,7 @@
 import React from "react"
 import { HiCheckCircle } from "react-icons/hi"
-import { Modal, Button } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Operation completed successfully.", buttonText = "Done", infoText = "", infoIcon = null, width = 500 }) => {
   if (!show) return null
@@ -26,7 +27,7 @@ const CommonSuccessModal = ({ show, onClose, title = "Success", message = "Opera
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-8)', maxWidth: '28rem', margin: '0 auto var(--spacing-8)' }}>{message}</p>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={onClose} variant="primary" size="medium">
+          <Button onClick={onClose} variant="primary" size="md">
             {buttonText}
           </Button>
         </div>

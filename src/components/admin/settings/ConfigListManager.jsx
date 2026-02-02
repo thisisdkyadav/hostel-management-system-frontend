@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiPlus, HiX, HiPencil, HiTrash } from "react-icons/hi"
-import { Modal, Button, Input, VStack, HStack, Label, ConfirmDialog } from "@/components/ui"
+import { Modal, Input, VStack, HStack, Label, ConfirmDialog } from "@/components/ui"
+import { Button } from "czero/react"
 
 const styles = {
   form: {
@@ -300,7 +301,9 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               placeholder={placeholder || `Enter ${itemLabel}`}
               disabled={isLoading}
             />
-            <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="medium" icon={<HiPlus />} />
+            <Button type="button" onClick={handleAddItem} disabled={isLoading} variant="primary" size="md">
+              <HiPlus />
+            </Button>
           </div>
           {error && <p style={styles.errorText}>{error}</p>}
         </div>
@@ -321,8 +324,8 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
         </div>
 
         <div style={styles.submitContainer}>
-          <Button type="submit" variant="primary" size="large" fullWidth isLoading={isLoading} disabled={isLoading || !hasUnsavedChanges} icon={!isLoading ? <HiSave size={20} /> : null}>
-            {isLoading ? "Updating..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
+          <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading || !hasUnsavedChanges}>
+            {!isLoading && <HiSave size={20} />} {isLoading ? "Updating..." : hasUnsavedChanges ? "Save Changes" : "No Changes to Save"}
           </Button>
         </div>
       </form>
@@ -342,14 +345,14 @@ const ConfigListManager = ({ items = [], onUpdate, isLoading, title, description
               {error && <p style={styles.errorText}>{error}</p>}
             </div>
             <HStack gap="small" justify="end">
-              <Button type="button" onClick={() => setShowItemModal(false)} variant="secondary" size="medium" disabled={renameLoading}>
+              <Button type="button" onClick={() => setShowItemModal(false)} variant="secondary" size="md" disabled={renameLoading}>
                 Cancel
               </Button>
-              <Button type="button" onClick={handleDeleteRequest} variant="danger" size="medium" icon={<HiTrash />} disabled={renameLoading}>
-                Delete
+              <Button type="button" onClick={handleDeleteRequest} variant="danger" size="md" disabled={renameLoading}>
+                <HiTrash /> Delete
               </Button>
-              <Button type="button" onClick={handleRename} variant="primary" size="medium" icon={<HiPencil />} isLoading={renameLoading} disabled={renameLoading}>
-                {renameLoading ? "Renaming..." : "Rename"}
+              <Button type="button" onClick={handleRename} variant="primary" size="md" loading={renameLoading} disabled={renameLoading}>
+                <HiPencil /> {renameLoading ? "Renaming..." : "Rename"}
               </Button>
             </HStack>
           </VStack>

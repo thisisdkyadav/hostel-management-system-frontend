@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { uploadApi } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Button, Input, Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Input, Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
   const [formData, setFormData] = useState({
@@ -210,7 +211,7 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
                     <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-light)' }}>Click to view or change</p>
                   </div>
                 </div>
-                <Button type="button" onClick={removeScreenshot} variant="ghost" size="small">
+                <Button type="button" onClick={removeScreenshot} variant="ghost" size="sm">
                   Remove
                 </Button>
               </div>
@@ -235,10 +236,10 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
 
         {/* Action Buttons */}
         <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
-          <Button type="button" onClick={onCancel} variant="secondary" size="medium">
+          <Button type="button" onClick={onCancel} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" disabled={uploading} variant="primary" size="medium" isLoading={uploading}>
+          <Button type="submit" disabled={uploading} variant="primary" size="md" loading={uploading}>
             {uploading ? "Processing..." : "Submit Payment Info"}
           </Button>
         </HStack>

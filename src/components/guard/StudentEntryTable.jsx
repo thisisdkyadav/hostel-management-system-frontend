@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import { StatusBadge, Button } from "@/components/ui"
+import { StatusBadge } from "@/components/ui"
+import { Button } from "czero/react"
 import EditStudentEntryModal from "./EditStudentEntryModal"
 import { securityApi } from "../../service"
 
@@ -109,7 +110,9 @@ const StudentEntryTable = ({ entries, refresh }) => {
                       <StatusBadge status={entry.status} />
                     </td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                      <Button onClick={() => handleEditClick(entry)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit entry" />
+                      <Button onClick={() => handleEditClick(entry)} variant="ghost" size="sm" aria-label="Edit entry">
+                        <FaEdit />
+                      </Button>
                     </td>
                   </tr>
                 )

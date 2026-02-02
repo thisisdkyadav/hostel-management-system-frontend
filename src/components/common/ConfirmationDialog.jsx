@@ -1,7 +1,7 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
 import Modal from "./Modal"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Action", message = "Are you sure you want to proceed?", confirmText = "Confirm", cancelText = "Cancel", isDestructive = false }) => {
   const handleConfirm = () => {
@@ -12,10 +12,10 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title = "Confirm Actio
   const renderFooter = () => {
     return (
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-        <Button type="button" onClick={onClose} variant="secondary" size="medium">
+        <Button type="button" onClick={onClose} variant="secondary" size="md">
           {cancelText}
         </Button>
-        <Button type="button" onClick={handleConfirm} variant={isDestructive ? "danger" : "primary"} size="medium">
+        <Button type="button" onClick={handleConfirm} variant={isDestructive ? "danger" : "primary"} size="md">
           {confirmText}
         </Button>
       </div>

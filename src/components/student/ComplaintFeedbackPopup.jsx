@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../service"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {
   const [feedback, setFeedback] = useState("")
@@ -41,11 +42,11 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
 
   const footerContent = (
     <div className="flex justify-end" style={{ gap: 'var(--spacing-3)' }}>
-      <Button type="button" onClick={onClose} disabled={isSubmitting} variant="secondary" size="medium">
+      <Button type="button" onClick={onClose} disabled={isSubmitting} variant="secondary" size="md">
         Skip for Now
       </Button>
-      <Button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} variant="primary" size="medium" icon={<FaStar />} isLoading={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Submit Feedback"}
+      <Button type="button" onClick={handleSubmit} disabled={isSubmitting || feedbackRating === 0} variant="primary" size="md" loading={isSubmitting}>
+        <FaStar /> {isSubmitting ? "Submitting..." : "Submit Feedback"}
       </Button>
     </div>
   )
@@ -104,9 +105,8 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
             {[1, 2, 3, 4, 5].map((rating) => (
               <Button key={rating} type="button" onClick={() => setFeedbackRating(rating)} onMouseEnter={() => setHoveredRating(rating)} onMouseLeave={() => setHoveredRating(0)}
                 variant="ghost"
-                size="small"
-                icon={<FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} />}
-              />
+                size="sm"
+              ><FaStar size={32} style={{ color: rating <= (hoveredRating || feedbackRating) ? 'var(--color-warning)' : 'var(--color-bg-muted)', transition: 'var(--transition-colors)' }} /></Button>
             ))}
             {feedbackRating > 0 && (
               <span style={{ marginLeft: 'var(--spacing-2)', color: 'var(--color-text-body)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>
@@ -128,19 +128,19 @@ const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => 
           <div className="grid grid-cols-3" style={{ gap: 'var(--spacing-2)' }}>
             <Button type="button" onClick={() => setSatisfactionStatus("Satisfied")}
               variant={satisfactionStatus === "Satisfied" ? "success" : "secondary"}
-              size="small"
+              size="sm"
             >
               Satisfied
             </Button>
             <Button type="button" onClick={() => setSatisfactionStatus("Unsatisfied")}
               variant={satisfactionStatus === "Unsatisfied" ? "danger" : "secondary"}
-              size="small"
+              size="sm"
             >
               Unsatisfied
             </Button>
             <Button type="button" onClick={() => setSatisfactionStatus("False Resolution")}
               variant={satisfactionStatus === "False Resolution" ? "warning" : "secondary"}
-              size="small"
+              size="sm"
             >
               False Fix
             </Button>

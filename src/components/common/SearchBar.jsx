@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import Button from "./Button"
+import { Button } from "czero/react"
 import Input from "./ui/Input"
 
 const SearchBar = ({ value, onChange, placeholder = "Search...", className }) => {
@@ -19,11 +19,10 @@ const SearchBar = ({ value, onChange, placeholder = "Search...", className }) =>
       {value && (
         <Button onClick={handleClear}
           variant="ghost"
-          size="small"
-          icon={<FaTimes size={14} />}
+          size="sm"
           aria-label="Clear search"
           style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)' }}
-        />
+        ><FaTimes size={14} /></Button>
       )}
     </div>
   )

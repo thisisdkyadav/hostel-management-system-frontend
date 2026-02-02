@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Modal, Button } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { HiPaperAirplane } from "react-icons/hi"
 import { FaComment, FaReply } from "react-icons/fa"
 
@@ -59,11 +60,11 @@ const FeedbackReplyModal = ({ isOpen, onClose, feedback, onReply }) => {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-end pt-5 mt-6 border-t border-[var(--color-border-light)] space-y-3 sm:space-y-0 sm:space-x-3">
-          <Button type="button" onClick={onClose} variant="secondary" size="medium" className="order-last sm:order-first">
+          <Button type="button" onClick={onClose} variant="secondary" size="md" className="order-last sm:order-first">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting} variant="primary" size="medium" icon={<HiPaperAirplane className="transform rotate-90" />} isLoading={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Reply"}
+          <Button onClick={handleSubmit} disabled={isSubmitting} variant="primary" size="md" loading={isSubmitting}>
+            <HiPaperAirplane className="transform rotate-90" /> {isSubmitting ? "Submitting..." : "Submit Reply"}
           </Button>
         </div>
       </div>

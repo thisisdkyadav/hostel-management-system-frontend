@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { FaBuilding, FaClipboardList, FaExclamationTriangle } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { complaintApi } from "../../service"
-import { Modal, Button, Input, Select } from "@/components/ui"
+import { Modal, Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ComplaintForm = ({ isOpen, setIsOpen }) => {
   const { user } = useAuth()
@@ -101,10 +102,10 @@ const ComplaintForm = ({ isOpen, setIsOpen }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>
-          <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="medium">
+          <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+          <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
             {loading ? "Submitting..." : "Submit Complaint"}
           </Button>
         </div>

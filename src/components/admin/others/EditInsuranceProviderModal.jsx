@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTrash, FaSave, FaCalendarAlt } from "react-icons/fa"
-import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 import { insuranceProviderApi } from "../../../service"
 
 const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
@@ -99,16 +100,16 @@ const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {
             </div>
 
             <HStack gap="small" justify="between" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-              <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} isLoading={loading} disabled={loading}>
-                Delete Provider
+              <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={loading} disabled={loading}>
+                <FaTrash /> Delete Provider
               </Button>
 
               <HStack gap="small">
-                <Button type="button" onClick={onClose} variant="secondary" size="medium">
+                <Button type="button" onClick={onClose} variant="secondary" size="md">
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" size="medium" icon={<FaSave />} isLoading={loading} disabled={loading}>
-                  Save Changes
+                <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
+                  <FaSave /> Save Changes
                 </Button>
               </HStack>
             </HStack>

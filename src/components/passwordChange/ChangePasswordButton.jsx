@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaKey } from "react-icons/fa"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import ChangePasswordModal from "./ChangePasswordModal"
 
 const ChangePasswordButton = ({ email }) => {
@@ -8,8 +8,8 @@ const ChangePasswordButton = ({ email }) => {
 
   return (
     <>
-      <Button onClick={() => setShowModal(true)} variant="primary" size="medium" icon={<FaKey />}>
-        Change Password
+      <Button onClick={() => setShowModal(true)} variant="primary" size="md">
+        <FaKey /> Change Password
       </Button>
 
       {showModal && <ChangePasswordModal onClose={() => setShowModal(false)} email={email} />}

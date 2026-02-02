@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaUser, FaIdCard, FaEnvelope, FaPhone, FaVenusMars, FaBuilding, FaCalendarAlt, FaClock, FaSignInAlt, FaSignOutAlt, FaTimes, FaExclamationTriangle } from "react-icons/fa"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, recordingEntry, getNextStatus }) => {
   const [crossHostelReason, setCrossHostelReason] = useState("")
@@ -167,17 +167,16 @@ const ScannedStudentInfo = ({ student, lastCheckInOut, onReset, onRecordEntry, r
 
             {/* Action Buttons */}
             <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', gap: 'var(--spacing-4)' }}>
-              <Button onClick={onReset} variant="secondary" size="medium" icon={<FaTimes />} fullWidth>
-                Reset
+              <Button onClick={onReset} variant="secondary" size="md" fullWidth>
+                <FaTimes /> Reset
               </Button>
 
               <Button onClick={() => onRecordEntry(student.isSameHostel === false ? crossHostelReason.trim() : null)}
                 disabled={recordingEntry || (student.isSameHostel === false && !crossHostelReason.trim())}
-                variant="primary" size="medium"
-                icon={getNextStatus() === "Checked In" ? <FaSignInAlt /> : <FaSignOutAlt />}
+                variant="primary" size="md"
                 fullWidth
               >
-                {getNextStatus() === "Checked In" ? "Check In" : "Check Out"}
+                {getNextStatus() === "Checked In" ? <FaSignInAlt /> : <FaSignOutAlt />} {getNextStatus() === "Checked In" ? "Check In" : "Check Out"}
               </Button>
             </div>
           </div>

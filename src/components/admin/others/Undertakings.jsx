@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaFileSignature, FaPlus } from "react-icons/fa"
-import { SearchInput, Button } from "@/components/ui"
+import { SearchInput } from "@/components/ui"
+import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import UndertakingCard from "./UndertakingCard"
 import AddUndertakingModal from "./AddUndertakingModal"
@@ -52,8 +53,8 @@ const Undertakings = () => {
     <div>
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Undertakings</h2>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
-          Add Undertaking
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+          <FaPlus /> Add Undertaking
         </Button>
       </header>
 

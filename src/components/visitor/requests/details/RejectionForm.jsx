@@ -1,5 +1,5 @@
 import React from "react"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) => {
   return (
@@ -33,10 +33,10 @@ const RejectionForm = ({ rejectionReason, onReasonChange, onCancel, onSubmit }) 
         ></textarea>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-        <Button onClick={onCancel} variant="secondary" size="medium">
+        <Button onClick={onCancel} variant="secondary" size="md">
           Cancel
         </Button>
-        <Button onClick={onSubmit} variant="danger" size="medium">
+        <Button onClick={onSubmit} variant="danger" size="md">
           Confirm Rejection
         </Button>
       </div>

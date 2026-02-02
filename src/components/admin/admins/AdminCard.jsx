@@ -3,7 +3,8 @@ import { FaEdit, FaEnvelope, FaPhone, FaUserShield, FaTrash } from "react-icons/
 import { BsCalendarCheck } from "react-icons/bs"
 import EditAdminForm from "./EditAdminForm"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardHeader, CardBody, CardFooter, Button, Badge } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AdminCard = ({ admin, onUpdate, onDelete }) => {
   const [showEditForm, setShowEditForm] = useState(false)
@@ -105,10 +106,11 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
             <Button
               onClick={() => setShowEditForm(true)}
               variant="secondary"
-              size="small"
-              icon={<FaEdit />}
+              size="sm"
               aria-label="Edit administrator"
-            />
+            >
+              <FaEdit />
+            </Button>
           </div>
         </CardFooter>
       </Card>

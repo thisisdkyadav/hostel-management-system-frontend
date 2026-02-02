@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import ProfileAvatar from "./ProfileAvatar"
 import ChangePasswordButton from "../passwordChange/ChangePasswordButton"
 import ManageSessionsButton from "../sessions/ManageSessionsButton"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import { MdOutlineViewSidebar, MdOutlineMenu } from "react-icons/md"
 
@@ -63,8 +63,8 @@ const ProfileHeader = ({ user, role, subtitle }) => {
           {/* {role === "Student" && <RoomChangeForm student={user} />} */}
 
           {showLayoutToggle && (
-            <Button onClick={toggleLayout} variant="outline" size="small" icon={layoutPreference === "sidebar" ? <MdOutlineMenu /> : <MdOutlineViewSidebar />}>
-              {layoutPreference === "sidebar" ? "Switch to Bottom Bar" : "Switch to Sidebar"}
+            <Button onClick={toggleLayout} variant="outline" size="sm">
+              {layoutPreference === "sidebar" ? <MdOutlineMenu /> : <MdOutlineViewSidebar />} {layoutPreference === "sidebar" ? "Switch to Bottom Bar" : "Switch to Sidebar"}
             </Button>
           )}
         </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"
 import { HiDesktopComputer, HiDeviceMobile, HiGlobeAlt, HiOutlineLogout } from "react-icons/hi"
@@ -150,10 +151,12 @@ const ManageSessionsModal = ({ onClose, email }) => {
                   {!device.isCurrent && (
                     <Button onClick={() => handleLogout(device.sessionId, device.deviceName)}
                       disabled={loggingOut === device.sessionId}
-                      variant="danger" size="small" icon={<HiOutlineLogout />}
-                      isLoading={loggingOut === device.sessionId}
+                      variant="danger" size="sm"
+                      loading={loggingOut === device.sessionId}
                       aria-label="Logout from this device"
-                    />
+                    >
+                      <HiOutlineLogout />
+                    </Button>
                   )}
                 </div>
               </div>
@@ -162,7 +165,7 @@ const ManageSessionsModal = ({ onClose, email }) => {
         )}
 
         <div style={{ paddingTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', }} >
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
         </div>

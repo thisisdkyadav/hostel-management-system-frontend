@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaCheckCircle, FaExclamationCircle, FaTimes } from "react-icons/fa"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const NotificationToast = ({ message, type = "info", duration = 3000, onClose }) => {
   const [visible, setVisible] = useState(true)
@@ -64,11 +64,10 @@ const NotificationToast = ({ message, type = "info", duration = 3000, onClose })
             setTimeout(() => onClose && onClose(), 300)
           }}
             variant="ghost"
-            size="small"
-            icon={<FaTimes size={14} />}
+            size="sm"
             aria-label="Close notification"
             style={{ flexShrink: 0, marginLeft: '0.75rem' }}
-          />
+          ><FaTimes size={14} /></Button>
         </div>
       </div>
     </div>

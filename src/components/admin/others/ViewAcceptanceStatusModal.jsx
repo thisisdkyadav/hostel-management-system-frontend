@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaClipboardCheck, FaSearch, FaFileDownload } from "react-icons/fa"
-import { Modal, Button, Input, VStack, HStack, Alert, SearchInput } from "@/components/ui"
+import { Modal, Input, VStack, HStack, Alert, SearchInput } from "@/components/ui"
+import { Button } from "czero/react"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 
@@ -114,23 +115,24 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         {/* Filters and search */}
         <HStack gap="medium" justify="between" align="center">
           <HStack gap="xsmall">
-            <Button onClick={() => setStatusFilter("all")} variant={statusFilter === "all" ? "primary" : "ghost"} size="small">
+            <Button onClick={() => setStatusFilter("all")} variant={statusFilter === "all" ? "primary" : "ghost"} size="sm">
               All
             </Button>
-            <Button onClick={() => setStatusFilter("accepted")} variant={statusFilter === "accepted" ? "success" : "ghost"} size="small">
+            <Button onClick={() => setStatusFilter("accepted")} variant={statusFilter === "accepted" ? "success" : "ghost"} size="sm">
               Accepted
             </Button>
-            <Button onClick={() => setStatusFilter("pending")} variant={statusFilter === "pending" ? "warning" : "ghost"} size="small">
+            <Button onClick={() => setStatusFilter("pending")} variant={statusFilter === "pending" ? "warning" : "ghost"} size="sm">
               Pending
             </Button>
-            <Button onClick={() => setStatusFilter("not_viewed")} variant={statusFilter === "not_viewed" ? "secondary" : "ghost"} size="small">
+            <Button onClick={() => setStatusFilter("not_viewed")} variant={statusFilter === "not_viewed" ? "secondary" : "ghost"} size="sm">
               Not Viewed
             </Button>
           </HStack>
 
           <HStack gap="small" align="center">
             <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
-            <Button onClick={exportToCSV} variant="primary" size="medium" icon={<FaFileDownload />} title="Export to CSV">
+            <Button onClick={exportToCSV} variant="primary" size="md" title="Export to CSV">
+              <FaFileDownload />
               Export
             </Button>
           </HStack>
@@ -189,7 +191,7 @@ const ViewAcceptanceStatusModal = ({ show, undertakingId, undertakingTitle, onCl
         )}
 
         <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
         </HStack>

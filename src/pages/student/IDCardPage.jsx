@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { idCardApi } from "../../service"
 import { HiCamera, HiInformationCircle } from "react-icons/hi"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import IDCardUploadModal from "../../components/IDCardUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -210,11 +210,12 @@ const IDCardPage = () => {
               <img src={getMediaUrl(imageUrl)} alt={`ID Card ${title}`} style={styles.image} />
               <Button onClick={() => handleUploadClick(side)}
                 variant="primary"
-                size="small"
-                icon={<HiCamera style={styles.cameraIcon} />}
+                size="sm"
                 style={styles.cameraButton}
                 aria-label="Change image"
-              />
+              >
+                <HiCamera style={styles.cameraIcon} />
+              </Button>
             </div>
           ) : (
             <div style={styles.placeholder}>

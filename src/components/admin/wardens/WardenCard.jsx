@@ -4,7 +4,8 @@ import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Button } from "czero/react"
 
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()
@@ -120,7 +121,7 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               : "N/A"}
           </div>
 
-          <Button onClick={() => setShowEditForm(true)} variant="ghost" size="small" icon={<FaEdit />} aria-label={`Edit ${staffTitle.toLowerCase()}`} />
+          <Button onClick={() => setShowEditForm(true)} variant="ghost" size="sm" aria-label={`Edit ${staffTitle.toLowerCase()}`}><FaEdit /></Button>
         </CardFooter>
       </Card>
 

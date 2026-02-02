@@ -1,5 +1,6 @@
 import React from "react"
-import { Button, Input, Select, VStack, Label } from "@/components/ui"
+import { Input, Select, VStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, currentView }) => {
   // Floor numbers for dropdown
@@ -26,7 +27,7 @@ const UnitFilterSection = ({ filters, setFilters, resetFilters, hostels, current
         <h2 style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-xl)" }}>
           Filter {currentView === "units" ? "Units" : "Rooms"}
         </h2>
-        <Button onClick={resetFilters} variant="ghost" size="small">
+        <Button onClick={resetFilters} variant="ghost" size="sm">
           Reset Filters
         </Button>
       </div>

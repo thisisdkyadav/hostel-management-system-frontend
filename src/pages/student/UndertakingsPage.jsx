@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { LoadingState, ErrorState, EmptyState, Button, UnderlineTabs } from "@/components/ui"
+import { LoadingState, ErrorState, EmptyState, UnderlineTabs } from "@/components/ui"
+import { Button } from "czero/react"
 
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
@@ -114,7 +115,7 @@ const UndertakingsPage = () => {
             ]}
             value={activeTab}
             onChange={setActiveTab}
-            size="medium"
+            size="md"
           />
         </div>
       </div>
@@ -156,7 +157,7 @@ const UndertakingsPage = () => {
                       )}
                     </div>
 
-                    <Button onClick={() => handleViewUndertaking(undertaking.id)} variant="ghost" size="small">
+                    <Button onClick={() => handleViewUndertaking(undertaking.id)} variant="ghost" size="sm">
                       View Details
                     </Button>
                   </div>

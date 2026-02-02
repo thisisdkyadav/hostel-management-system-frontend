@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
   const [formData, setFormData] = useState({
@@ -165,15 +166,15 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
 
           <div style={styles.footerContainer}>
             {isEditing && onDelete && (
-              <Button type="button" variant="danger" size="small" icon={<FaTrash />} onClick={confirmDelete}>
-                Delete
+              <Button type="button" variant="danger" size="sm" onClick={confirmDelete}>
+                <FaTrash /> Delete
               </Button>
             )}
             <div style={styles.actionButtonsRight}>
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" isLoading={isSubmitting}>
+              <Button type="submit" variant="primary" loading={isSubmitting}>
                 {isEditing ? "Update" : "Add"} Disciplinary Action
               </Button>
             </div>

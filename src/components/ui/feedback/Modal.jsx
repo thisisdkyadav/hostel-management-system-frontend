@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
 import UnderlineTabs from "../navigation/UnderlineTabs"
-import Button from "../button/Button"
+import { Button } from "czero/react"
 
 /**
  * Modal Component - Matches existing design language
@@ -87,7 +87,7 @@ const Modal = ({
         <Button
           onClick={onClose}
           variant="primary"
-          size="small"
+          size="sm"
           style={{ flexShrink: 0 }}
         >
           Close
@@ -168,7 +168,7 @@ const Modal = ({
                       }))}
                       value={activeTab}
                       onChange={(tabValue) => onTabChange && onTabChange(tabValue)}
-                      size="medium"
+                      size="md"
                       showBorder={false}
                     />
                   </div>

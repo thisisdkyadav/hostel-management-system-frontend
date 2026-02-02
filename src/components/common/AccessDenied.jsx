@@ -1,6 +1,6 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const AccessDenied = ({ title = "Access Denied", message = "You do not have permission to access this page.", icon, suggestion, buttonText = "Return to Home", to = "/" }) => {
   const navigate = useNavigate()
@@ -38,7 +38,7 @@ const AccessDenied = ({ title = "Access Denied", message = "You do not have perm
         {!suggestion && <div style={{ marginBottom: 'var(--spacing-3)' }}></div>}
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={handleNavigate} variant="primary" size="medium">
+          <Button onClick={handleNavigate} variant="primary" size="md">
             {buttonText}
           </Button>
         </div>

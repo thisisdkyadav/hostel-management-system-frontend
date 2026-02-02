@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -86,10 +87,10 @@ const EditVisitorProfileModal = ({ isOpen, onClose, profile, onSubmit }) => {
         </VStack>
 
         <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium" disabled={loading} isLoading={loading}>
+          <Button type="submit" variant="primary" size="md" disabled={loading} loading={loading}>
             {loading ? "Saving..." : "Update Profile"}
           </Button>
         </HStack>

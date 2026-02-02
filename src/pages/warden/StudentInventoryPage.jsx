@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
-import { Button, UnderlineTabs } from "@/components/ui"
+import { UnderlineTabs } from "@/components/ui"
+import { Button } from "czero/react"
 
 const StudentInventoryPage = () => {
   const [activeTab, setActiveTab] = useState("available")
@@ -70,7 +71,7 @@ const StudentInventoryPage = () => {
           ]}
           value={activeTab}
           onChange={setActiveTab}
-          size="medium"
+          size="md"
         />
       </div>
 

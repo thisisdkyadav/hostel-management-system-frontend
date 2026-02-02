@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { FaQrcode, FaTimes, FaUser } from "react-icons/fa"
 import { securityApi } from "../../service"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AttendanceQRScanner = ({ onRefresh }) => {
   const [scanning, setScanning] = useState(false)
@@ -173,16 +173,16 @@ const AttendanceQRScanner = ({ onRefresh }) => {
       )}
 
       {!scanning && !scannedPerson && !loading && (
-        <Button onClick={startScanner} variant="primary" size="medium" icon={<FaQrcode />} fullWidth>
-          Start QR Scanner
+        <Button onClick={startScanner} variant="primary" size="md" fullWidth>
+          <FaQrcode /> Start QR Scanner
         </Button>
       )}
 
       <div style={{ marginBottom: 'var(--spacing-4)' }}>
         <div id="qr-reader" style={{ width: '100%', maxWidth: 'var(--container-sm)', margin: '0 auto', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}></div>
         {scanning && (
-          <Button onClick={stopScanner} variant="danger" size="medium" icon={<FaTimes />} fullWidth>
-            Stop Scanner
+          <Button onClick={stopScanner} variant="danger" size="md" fullWidth>
+            <FaTimes /> Stop Scanner
           </Button>
         )}
       </div>
@@ -203,10 +203,10 @@ const AttendanceQRScanner = ({ onRefresh }) => {
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--spacing-2)', marginTop: 'var(--spacing-4)' }}>
-            <Button onClick={recordAttendance} disabled={recordingAttendance} variant="success" size="medium" icon={<FaUser />} isLoading={recordingAttendance} fullWidth>
-              Record Attendance
+            <Button onClick={recordAttendance} disabled={recordingAttendance} variant="success" size="md" loading={recordingAttendance} fullWidth>
+              <FaUser /> Record Attendance
             </Button>
-            <Button onClick={handleReset} variant="secondary" size="medium">
+            <Button onClick={handleReset} variant="secondary" size="md">
               Cancel
             </Button>
           </div>

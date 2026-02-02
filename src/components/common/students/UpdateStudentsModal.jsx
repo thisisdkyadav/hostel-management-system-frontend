@@ -8,7 +8,8 @@ import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import toast from "react-hot-toast"
-import { Button, Modal, Input, Select, Checkbox, FileInput } from "@/components/ui"
+import { Modal, Input, Select, Checkbox, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 
 // Reusable styles using theme CSS variables
 const styles = {
@@ -651,7 +652,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="flex justify-between mb-3">
                     <h5 className="font-medium text-gray-700">Family Member {index + 1}</h5>
                     {familyMembers.length > 1 && (
-                      <Button onClick={() => removeFamilyMember(index)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Remove family member" />
+                      <Button onClick={() => removeFamilyMember(index)} variant="ghost" size="sm" aria-label="Remove family member"><FaTrash /></Button>
                     )}
                   </div>
 
@@ -685,11 +686,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               ))}
 
               <div style={styles.flexRow}>
-                <Button onClick={addFamilyMember} variant="outline" size="medium" icon={<FaPlus />}>
+                <Button onClick={addFamilyMember} variant="outline" size="md">
+                  <FaPlus />
                   Add Another Family Member
                 </Button>
 
-                <Button onClick={handleManualUpdate} variant="primary" size="medium" icon={<FaCheck />}>
+                <Button onClick={handleManualUpdate} variant="primary" size="md">
+                  <FaCheck />
                   Save Family Members
                 </Button>
               </div>
@@ -930,7 +933,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               value={dayScholarMode}
               onChange={setDayScholarMode}
               shape="rounded"
-              size="small"
+              size="sm"
               variant="muted"
               hideLabelsOnMobile={false}
             />
@@ -958,7 +961,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <div className="flex justify-between mb-3">
                     <h5 className="font-medium text-gray-700">Student {index + 1}</h5>
                     {dayScholarStudents.length > 1 && (
-                      <Button onClick={() => removeDayScholarStudent(index)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Remove student" />
+                      <Button onClick={() => removeDayScholarStudent(index)} variant="ghost" size="sm" aria-label="Remove student"><FaTrash /></Button>
                     )}
                   </div>
 
@@ -993,11 +996,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               ))}
 
               <div style={styles.flexRow}>
-                <Button onClick={addDayScholarStudent} variant="outline" size="medium" icon={<FaPlus />}>
+                <Button onClick={addDayScholarStudent} variant="outline" size="md">
+                  <FaPlus />
                   Add Another Student
                 </Button>
 
-                <Button onClick={handleManualUpdate} variant="primary" size="medium" icon={<FaCheck />}>
+                <Button onClick={handleManualUpdate} variant="primary" size="md">
+                  <FaCheck />
                   Save Students
                 </Button>
               </div>
@@ -1073,7 +1078,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <FileInput ref={fileInputRef} hidden accept=".csv" onChange={handleFileUpload} />
               </div>
               <div className="flex flex-col items-center">
-                <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
+                <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
+                  <FaFileDownload />
                   Download CSV Template
                 </Button>
 
@@ -1155,7 +1161,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   <Button onClick={(e) => {
                     e.stopPropagation()
                     setCsvFile(null)
-                  }} variant="ghost" size="small" icon={<FaTimes />} aria-label="Remove file" />
+                  }} variant="ghost" size="sm" aria-label="Remove file"><FaTimes /></Button>
                 </div>
               )}
               {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
@@ -1199,21 +1205,22 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
       <div style={styles.footer}>
         {activeTab === "basic" && step === 1 ? (
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
         ) : activeTab === "basic" ? (
-          <Button onClick={resetForm} variant="secondary" size="medium">
+          <Button onClick={resetForm} variant="secondary" size="md">
             Back
           </Button>
         ) : (
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <Button onClick={handleUpdate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isUpdating} disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
+          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
+            <FaCheck />
             {isUpdating ? "Updating Students..." : "Confirm Update"}
           </Button>
         )}

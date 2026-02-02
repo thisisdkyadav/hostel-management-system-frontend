@@ -1,6 +1,6 @@
 import React from "react"
 import { useAuth } from "../../../../contexts/AuthProvider"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ActionButtons = ({
   userRole,
@@ -97,10 +97,10 @@ const ActionButtons = ({
       {/* Student actions */}
       {userRole === "Student" && isPending && (
         <>
-          <Button onClick={onCancelRequest} variant="danger" size="medium">
+          <Button onClick={onCancelRequest} variant="danger" size="md">
             Cancel Request
           </Button>
-          <Button onClick={onEditRequest} variant="secondary" size="medium">
+          <Button onClick={onEditRequest} variant="secondary" size="md">
             Edit Request
           </Button>
         </>
@@ -109,13 +109,13 @@ const ActionButtons = ({
       {/* Admin actions for pending requests */}
       {userRole === "Admin" && isPending && (
         <>
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
-          <Button onClick={onShowRejectForm} variant="danger" size="medium">
+          <Button onClick={onShowRejectForm} variant="danger" size="md">
             {showRejectForm ? "Cancel" : "Reject"}
           </Button>
-          <Button onClick={onShowApproveForm} variant="primary" size="medium">
+          <Button onClick={onShowApproveForm} variant="primary" size="md">
             {showApproveForm ? "Cancel" : "Approve"}
           </Button>
         </>
@@ -124,11 +124,11 @@ const ActionButtons = ({
       {/* Warden actions for approved requests */}
       {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && isApproved && (
         <>
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
           {!hasAllocatedRooms && (
-            <Button onClick={onShowAllocationForm} variant="primary" size="medium">
+            <Button onClick={onShowAllocationForm} variant="primary" size="md">
               Allocate Rooms
             </Button>
           )}
@@ -138,26 +138,26 @@ const ActionButtons = ({
       {/* Security/Guard actions for approved requests */}
       {["Security", "Hostel Gate"].includes(userRole) && isApproved && (
         <>
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
 
           {hasAllocatedRooms && (
             <>
               {isCheckTimes && (
-                <Button onClick={onShowCheckInForm} variant="warning" size="medium">
+                <Button onClick={onShowCheckInForm} variant="warning" size="md">
                   Edit Check Times
                 </Button>
               )}
 
               {isCheckInForm && (
-                <Button onClick={onShowCheckInForm} variant="primary" size="medium">
+                <Button onClick={onShowCheckInForm} variant="primary" size="md">
                   {showCheckInForm ? "Cancel" : "Check In"}
                 </Button>
               )}
 
               {isCheckOutForm && (
-                <Button onClick={onShowCheckInForm} variant="success" size="medium">
+                <Button onClick={onShowCheckInForm} variant="success" size="md">
                   {showCheckInForm ? "Cancel" : "Check Out"}
                 </Button>
               )}
@@ -171,7 +171,7 @@ const ActionButtons = ({
         (userRole === "Admin" && !isPending) ||
         (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
         (["Security", "Hostel Gate"].includes(userRole) && !isApproved)) && (
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
         )}

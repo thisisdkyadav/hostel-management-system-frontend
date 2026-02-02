@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaHistory, FaFilter, FaSignInAlt, FaSignOutAlt, FaCalendarAlt, FaClock } from "react-icons/fa"
-import { Tabs, Pagination, Button, Input, Select } from "@/components/ui"
+import { Tabs, Pagination, Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 import NoResults from "./common/NoResults"
 import { securityApi } from "../service"
 import { useAuth } from "../contexts/AuthProvider"
@@ -150,11 +151,10 @@ const AccessHistory = ({ cachedData }) => {
           <Button
             onClick={() => setShowFilters(!showFilters)}
             variant={showFilters ? "primary" : "white"}
-            size="medium"
-            icon={<FaFilter />}
+            size="md"
             disabled={!isOnline && !cachedData}
           >
-            Filters
+            <FaFilter /> Filters
           </Button>
         </div>
 
@@ -188,7 +188,7 @@ const AccessHistory = ({ cachedData }) => {
                 <Button
                   onClick={handleClearDateFilter}
                   variant="secondary"
-                  size="medium"
+                  size="md"
                 >
                   Clear Date Filter
                 </Button>

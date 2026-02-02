@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Button, Input, Select, Textarea, Label, Alert, VStack } from "@/components/ui"
+import { Input, Select, Textarea, Label, Alert, VStack } from "@/components/ui"
+import { Button } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
 
@@ -215,7 +216,8 @@ const AddRoomForm = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         </div>
 
         <div style={{ paddingTop: 'var(--spacing-4)' }}>
-          <Button type="submit" variant="primary" size="medium" icon={<PlusCircle size={16} />}>
+          <Button type="submit" variant="primary" size="md">
+            <PlusCircle size={16} />
             Add Room(s)
           </Button>
         </div>

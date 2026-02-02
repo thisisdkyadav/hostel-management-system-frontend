@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaKey, FaPlus, FaTrash, FaCopy, FaCheckCircle } from "react-icons/fa"
-import { SearchInput, Tabs, DataTable, Modal, Button, Input } from "@/components/ui"
+import { SearchInput, Tabs, DataTable, Modal, Input } from "@/components/ui"
+import { Button } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
 
@@ -162,7 +163,7 @@ const ApiKeyManagementPage = () => {
               : "************"}
           </div>
           {apiKey.apiKey && (
-            <Button onClick={() => copyToClipboard(apiKey.apiKey, apiKey._id)} variant="ghost" size="small" icon={copiedId === apiKey._id ? <FaCheckCircle className="text-green-500" /> : <FaCopy />} aria-label="Copy API key" />
+            <Button onClick={() => copyToClipboard(apiKey.apiKey, apiKey._id)} variant="ghost" size="sm" aria-label="Copy API key">{copiedId === apiKey._id ? <FaCheckCircle className="text-green-500" /> : <FaCopy />}</Button>
           )}
         </div>
       ),
@@ -185,11 +186,11 @@ const ApiKeyManagementPage = () => {
         <div className="flex justify-end space-x-2">
           <Button onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
             variant={apiKey.isActive ? "danger" : "success"}
-            size="small"
+            size="sm"
           >
             {apiKey.isActive ? "Deactivate" : "Activate"}
           </Button>
-          <Button onClick={() => handleDeleteApiKey(apiKey._id)} variant="danger" size="small" icon={<FaTrash />} aria-label="Delete API key" />
+          <Button onClick={() => handleDeleteApiKey(apiKey._id)} variant="danger" size="sm" aria-label="Delete API key"><FaTrash /></Button>
         </div>
       ),
     },
@@ -199,8 +200,8 @@ const ApiKeyManagementPage = () => {
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">API Key Management</h1>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
-          Generate API Key
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+          <FaPlus /> Generate API Key
         </Button>
       </header>
 
@@ -305,10 +306,10 @@ const ApiKeyModal = ({ onClose, onSubmit }) => {
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting} variant="primary" size="medium" isLoading={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} variant="primary" size="md" loading={isSubmitting}>
             {isSubmitting ? "Processing..." : "Generate"}
           </Button>
         </div>

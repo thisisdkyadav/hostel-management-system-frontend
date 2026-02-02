@@ -1,6 +1,6 @@
 import React from "react"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import { FaEye } from "react-icons/fa"
 
 const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
@@ -101,7 +101,8 @@ const PaymentInfoViewer = ({ paymentInfo, onViewScreenshot }) => {
               </svg>
               <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Payment Screenshot</span>
             </div>
-            <Button onClick={onViewScreenshot} variant="primary" size="small" icon={<FaEye />}>
+            <Button onClick={onViewScreenshot} variant="primary" size="sm">
+              <FaEye />
               View Screenshot
             </Button>
           </div>

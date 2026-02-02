@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
 import { superAdminApi } from "../../../service"
-import { Modal, Button, Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AddAdminModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -173,7 +174,7 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               type="button"
               onClick={onClose}
               variant="secondary"
-              size="medium"
+              size="md"
               disabled={isSubmitting}
             >
               Cancel
@@ -181,8 +182,8 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
             <Button
               type="submit"
               variant="primary"
-              size="medium"
-              isLoading={isSubmitting}
+              size="md"
+              loading={isSubmitting}
               disabled={isSubmitting}
             >
               {isSubmitting ? "Adding..." : "Add Administrator"}

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
 import { Filter, Plus, List, LayoutGrid } from "lucide-react"
@@ -22,10 +22,9 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
     <PageHeader title={title}>
       <Button onClick={() => setShowFilters(!showFilters)}
         variant={showFilters ? "primary" : "white"}
-        size="medium"
-        icon={<Filter size={14} />}
+        size="md"
       >
-        Filters
+        <Filter size={14} /> Filters
       </Button>
 
       {isAdmin && (
@@ -34,7 +33,7 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
           value={viewSelfOnly}
           onChange={setViewSelfOnly}
           shape="pill"
-          size="medium"
+          size="md"
           variant="muted"
           hideLabelsOnMobile={false}
         />
@@ -45,13 +44,13 @@ const LeavesHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, onCr
         value={viewMode}
         onChange={setViewMode}
         shape="pill"
-        size="medium"
+        size="md"
         variant="muted"
       />
 
       {canCreate && (
-        <Button onClick={onCreate} variant="primary" size="medium" icon={<Plus size={14} />}>
-          Create Leave
+        <Button onClick={onCreate} variant="primary" size="md">
+          <Plus size={14} /> Create Leave
         </Button>
       )}
     </PageHeader>

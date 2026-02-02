@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons/fa"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
-import { Button, Modal, Input } from "@/components/ui"
+import { Modal, Input } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState("")
@@ -39,7 +40,9 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
           {/* Search Bar */}
           <div style={{ position: "relative" }}>
             <Input type="text" placeholder="Search profiles by name, relation, email, or phone" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} icon={<FaSearch />} />
-            {searchQuery && <Button onClick={() => setSearchQuery("")} variant="ghost" size="small" icon={<FaTimesCircle />} style={{ position: "absolute", top: "0", bottom: "0", right: "var(--spacing-3)", display: "flex", alignItems: "center" }} />}
+            {searchQuery && <Button onClick={() => setSearchQuery("")} variant="ghost" size="sm" style={{ position: "absolute", top: "0", bottom: "0", right: "var(--spacing-3)", display: "flex", alignItems: "center" }}>
+              <FaTimesCircle />
+            </Button>}
           </div>
 
           {filteredProfiles.length === 0 ? (
@@ -109,8 +112,12 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
                         <div style={{ padding: "var(--spacing-4) var(--spacing-6)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Can't edit a used Visitor.</div>
                       ) : (
                         <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", textAlign: "right", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)" }}>
-                          <Button onClick={() => handleEditProfile(profile)} variant="ghost" size="small" icon={<FaEdit />} aria-label="Edit profile" />
-                          <Button onClick={() => handleDeleteProfile(profile._id)} variant="ghost" size="small" icon={<FaTrash />} aria-label="Delete profile" />
+                          <Button onClick={() => handleEditProfile(profile)} variant="ghost" size="sm" aria-label="Edit profile">
+                            <FaEdit />
+                          </Button>
+                          <Button onClick={() => handleDeleteProfile(profile._id)} variant="ghost" size="sm" aria-label="Delete profile">
+                            <FaTrash />
+                          </Button>
                         </td>
                       )}
                     </tr>
@@ -121,7 +128,7 @@ const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefres
           )}
 
           <div style={{ display: "flex", justifyContent: "flex-end", paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-            <Button onClick={onClose} variant="secondary" size="medium">
+            <Button onClick={onClose} variant="secondary" size="md">
               Close
             </Button>
           </div>

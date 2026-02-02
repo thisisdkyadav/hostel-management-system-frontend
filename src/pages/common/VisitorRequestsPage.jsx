@@ -6,7 +6,8 @@ import VisitorRequestTable from "../../components/visitor/requests/VisitorReques
 import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
-import { LoadingState, ErrorState, EmptyState, Button } from "@/components/ui"
+import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
 
 const VisitorRequestsPage = () => {
@@ -115,12 +116,12 @@ const VisitorRequestsPage = () => {
                 <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                   {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
                     ? ["all", "approved"].map((status) => (
-                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="small">
+                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="sm">
                           {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
                         </Button>
                       ))
                     : ["all", "pending", "approved", "rejected"].map((status) => (
-                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="small">
+                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="sm">
                           {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
                         </Button>
                       ))}
@@ -132,7 +133,7 @@ const VisitorRequestsPage = () => {
                   <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Allocation:</h3>
                   <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                     {["all", "allocated", "unallocated"].map((status) => (
-                      <Button key={status} onClick={() => setAllocationFilter(status)} variant={allocationFilter === status ? "primary" : "ghost"} size="small">
+                      <Button key={status} onClick={() => setAllocationFilter(status)} variant={allocationFilter === status ? "primary" : "ghost"} size="sm">
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </Button>
                     ))}

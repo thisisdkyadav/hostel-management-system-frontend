@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa"
-import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Modal, Input, Textarea, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ItemTypes = () => {
   const [itemTypes, setItemTypes] = useState([])
@@ -149,11 +150,12 @@ const ItemTypes = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)', flex: 1, maxWidth: '500px' }}>
           <Input type="text" placeholder="Search item types..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} icon={<FaSearch />} />
-          <Button onClick={handleSearch} variant="ghost" size="small">
+          <Button onClick={handleSearch} variant="ghost" size="sm">
             Search
           </Button>
         </div>
-        <Button onClick={openNewItemModal} variant="primary" size="medium" icon={<FaPlus />}>
+        <Button onClick={openNewItemModal} variant="primary" size="md">
+          <FaPlus />
           Add New Item
         </Button>
       </div>
@@ -170,7 +172,8 @@ const ItemTypes = () => {
           <div style={{ textAlign: 'center', padding: 'var(--spacing-12) 0' }}>
             <FaBoxOpen style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
             <p style={{ color: 'var(--color-text-muted)' }}>No inventory item types found</p>
-            <Button onClick={openNewItemModal} variant="primary" size="small" icon={<FaPlus />}>
+            <Button onClick={openNewItemModal} variant="primary" size="sm">
+              <FaPlus />
               Add your first item
             </Button>
           </div>
@@ -191,14 +194,14 @@ const ItemTypes = () => {
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>{item.name}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', color: 'var(--color-text-tertiary)' }}>{item.description}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
-                      <Button onClick={() => handleUpdateCount(item._id, item.totalCount)} variant="ghost" size="small">
+                      <Button onClick={() => handleUpdateCount(item._id, item.totalCount)} variant="ghost" size="sm">
                         {item.totalCount}
                       </Button>
                     </td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                        <Button onClick={() => handleEdit(item)} variant="secondary" size="small" icon={<FaEdit />} />
-                        <Button onClick={() => handleDelete(item._id)} variant="danger" size="small" icon={<FaTrash />} />
+                        <Button onClick={() => handleEdit(item)} variant="secondary" size="sm"><FaEdit /></Button>
+                        <Button onClick={() => handleDelete(item._id)} variant="danger" size="sm"><FaTrash /></Button>
                       </div>
                     </td>
                   </tr>
@@ -230,10 +233,10 @@ const ItemTypes = () => {
                 <Input type="number" id="totalCount" name="totalCount" value={currentItemType.totalCount} onChange={handleInputChange} min="0" required />
               </div>
               <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
-                <Button type="button" onClick={closeModal} variant="secondary" size="medium">
+                <Button type="button" onClick={closeModal} variant="secondary" size="md">
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+                <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
                   {isEditMode ? "Update" : "Create"}
                 </Button>
               </HStack>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { Button, Input, Select, Textarea, ConfirmDialog } from "@/components/ui"
+import { Input, Select, Textarea, ConfirmDialog } from "@/components/ui"
+import { Button } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
   const [loading, setLoading] = useState(true)
@@ -181,11 +182,11 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-              <Button type="button" onClick={cancelEdit} variant="secondary" size="small" icon={<FiX />}>
-                Cancel
+              <Button type="button" onClick={cancelEdit} variant="secondary" size="sm">
+                <FiX /> Cancel
               </Button>
-              <Button type="submit" variant="primary" size="small" icon={<FiSave />}>
-                Save
+              <Button type="submit" variant="primary" size="sm">
+                <FiSave /> Save
               </Button>
             </div>
           </form>
@@ -199,8 +200,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
           <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{member.name}</h3>
           {editable && (
             <div style={{ display: "flex", gap: "var(--spacing-1)" }}>
-              <Button onClick={() => startEdit(member)} variant="ghost" size="small" icon={<FiEdit />} aria-label="Edit" />
-              <Button onClick={() => confirmDelete(member)} variant="danger" size="small" icon={<FiTrash2 />} aria-label="Delete" />
+              <Button onClick={() => startEdit(member)} variant="ghost" size="sm" aria-label="Edit">
+                <FiEdit />
+              </Button>
+              <Button onClick={() => confirmDelete(member)} variant="danger" size="sm" aria-label="Delete">
+                <FiTrash2 />
+              </Button>
             </div>
           )}
         </div>
@@ -283,13 +288,12 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
                 resetForm()
               }}
               variant="secondary"
-              size="small"
-              icon={<FiX />}
+              size="sm"
             >
-              Cancel
+              <FiX /> Cancel
             </Button>
-            <Button type="submit" variant="primary" size="small" icon={<FiSave />}>
-              Add Member
+            <Button type="submit" variant="primary" size="sm">
+              <FiSave /> Add Member
             </Button>
           </div>
         </form>
@@ -314,7 +318,8 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
       <div style={{ marginBottom: "var(--spacing-4)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>Family Members</h2>
         {editable && !showAddForm && (
-          <Button onClick={() => setShowAddForm(true)} variant="primary" size="small" icon={<FiPlus />}>
+          <Button onClick={() => setShowAddForm(true)} variant="primary" size="sm">
+            <FiPlus />
             Add Family Member
           </Button>
         )}
@@ -332,8 +337,8 @@ const StudentFamilyDetails = ({ userId, editable = true }) => {
             <div style={{ textAlign: "center", padding: "var(--spacing-6) 0", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-lg)" }}>
               <p style={{ color: "var(--color-text-muted)" }}>No family members added yet.</p>
               {editable && (
-                <Button onClick={() => setShowAddForm(true)} variant="outline" size="small" icon={<FiPlus />}>
-                  Add Family Member
+                <Button onClick={() => setShowAddForm(true)} variant="outline" size="sm">
+                  <FiPlus /> Add Family Member
                 </Button>
               )}
             </div>

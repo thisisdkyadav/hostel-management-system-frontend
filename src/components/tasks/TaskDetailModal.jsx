@@ -3,7 +3,8 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 
 const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedStatusUpdates = TASK_STATUSES, isUserView = false }) => {
@@ -151,16 +152,16 @@ const TaskDetailModal = ({ selectedTask, setShowDetailModal, onUpdate, allowedSt
         <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
           {canEditTask && !isUserView && (
             <>
-              <Button onClick={handleEditTask} variant="primary" size="medium" icon={<FaEdit />}>
-                Edit Task
+              <Button onClick={handleEditTask} variant="primary" size="md">
+                <FaEdit /> Edit Task
               </Button>
-              <Button onClick={handleDeleteTask} disabled={loading} variant="danger" size="medium" icon={<FaTrash />}>
-                Delete
+              <Button onClick={handleDeleteTask} disabled={loading} variant="danger" size="md">
+                <FaTrash /> Delete
               </Button>
             </>
           )}
 
-          <Button onClick={() => setShowDetailModal(false)} variant="secondary" size="medium">
+          <Button onClick={() => setShowDetailModal(false)} variant="secondary" size="md">
             Close
           </Button>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { FaChevronDown, FaTimes } from "react-icons/fa"
-import Button from "./Button"
+import { Button } from "czero/react"
 import Checkbox from "./ui/Checkbox"
 
 const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, placeholder = "Select options...", label, disabled = false, className = "" }) => {
@@ -51,7 +51,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
                   <span key={value} className="inline-flex items-center px-2 py-1 text-xs font-medium bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-md">
                     {value}
                     {!disabled && (
-                      <Button type="button" onClick={(e) => handleRemoveOption(value, e)} variant="ghost" size="small" icon={<FaTimes className="w-2 h-2" />} aria-label="Remove option" />
+                      <Button type="button" onClick={(e) => handleRemoveOption(value, e)} variant="ghost" size="sm" aria-label="Remove option"><FaTimes className="w-2 h-2" /></Button>
                     )}
                   </span>
                 ))
@@ -60,7 +60,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
 
             <div className="flex items-center gap-2 ml-2">
               {selectedValues.length > 0 && !disabled && (
-                <Button type="button" onClick={handleClearAll} variant="ghost" size="small" icon={<FaTimes className="w-3 h-3" />} aria-label="Clear all" />
+                <Button type="button" onClick={handleClearAll} variant="ghost" size="sm" aria-label="Clear all"><FaTimes className="w-3 h-3" /></Button>
               )}
               <FaChevronDown className={`w-4 h-4 text-[var(--color-text-disabled)] transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </div>
@@ -74,7 +74,7 @@ const MultiSelectDropdown = ({ options = [], selectedValues = [], onChange, plac
             ) : (
               <>
                 <div className="px-3 py-2 border-b border-[var(--color-border-light)]">
-                  <Button type="button" onClick={handleClearAll} variant="ghost" size="small">
+                  <Button type="button" onClick={handleClearAll} variant="ghost" size="sm">
                     Clear All
                   </Button>
                 </div>

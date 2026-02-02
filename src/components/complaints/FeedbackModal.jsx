@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaStar } from "react-icons/fa"
-import { Modal, Button, Select } from "@/components/ui"
+import { Modal, Select } from "@/components/ui"
+import { Button } from "czero/react"
 import { complaintApi } from "../../service"
 
 const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
@@ -73,9 +74,9 @@ const FeedbackModal = ({ complaint, onClose, onFeedback }) => {
           <Button type="button" onClick={onClose} variant="outline" >
             Cancel
           </Button>
-          <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting} icon={!isSubmitting && <FaStar />}
+          <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+            {!isSubmitting && <FaStar />} {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
           </Button>
         </div>
       </form>

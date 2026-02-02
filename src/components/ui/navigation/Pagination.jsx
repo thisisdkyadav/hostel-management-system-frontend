@@ -1,5 +1,5 @@
 import React from "react"
-import Button from "@/components/ui/button/Button"
+import { Button } from "czero/react"
 
 /**
  * Pagination Component - Matches existing design language
@@ -32,7 +32,7 @@ const Pagination = ({ currentPage, totalPages, paginate, compact = false, showPa
           onClick={() => paginate(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
           variant="secondary"
-          size="small"
+          size="sm"
         >
           Previous
         </Button>
@@ -54,7 +54,7 @@ const Pagination = ({ currentPage, totalPages, paginate, compact = false, showPa
               key={pageNum}
               onClick={() => paginate(pageNum)}
               variant={currentPage === pageNum ? "primary" : "secondary"}
-              size="small"
+              size="sm"
             >
               {pageNum}
             </Button>
@@ -65,7 +65,7 @@ const Pagination = ({ currentPage, totalPages, paginate, compact = false, showPa
           onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
           variant="secondary"
-          size="small"
+          size="sm"
         >
           Next
         </Button>

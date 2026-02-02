@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle } from "react-icons/fa"
-import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 import { visitorApi } from "../../../service"
 
 const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
@@ -132,10 +133,10 @@ const EditVisitorRequestModal = ({ isOpen, onClose, request, onRefresh }) => {
 
         {/* Submit Section */}
         <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium" disabled={loading} isLoading={loading}>
+          <Button type="submit" variant="primary" size="md" disabled={loading} loading={loading}>
             {loading ? "Saving..." : "Update Request"}
           </Button>
         </HStack>

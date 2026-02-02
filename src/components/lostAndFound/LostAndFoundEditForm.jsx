@@ -4,7 +4,8 @@ import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
 import { uploadApi } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
-import { Button, Input, Select, FileInput, Textarea } from "@/components/ui"
+import { Input, Select, FileInput, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 
 const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
   const [formData, setFormData] = useState({
@@ -153,8 +154,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
                       type="button"
                       onClick={() => removeImage(index)}
                       variant="danger"
-                      size="small"
-                      icon={<FaTimes size={10} />}
+                      size="sm"
                       aria-label="Remove image"
                       className="group-hover:opacity-100"
                       style={{
@@ -164,7 +164,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
                         opacity: 0,
                         padding: "var(--spacing-1)",
                       }}
-                    />
+                    ><FaTimes size={10} /></Button>
                   </div>
                 ))}
               </div>
@@ -173,16 +173,16 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
         </div>
 
         <div style={{ marginTop: "var(--spacing-5)", paddingTop: "var(--spacing-3)", borderTop: `var(--border-1) solid var(--color-border-light)`, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: "var(--gap-sm)", flexWrap: "wrap" }}>
-          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<MdDelete />}>
-            Delete
+          <Button type="button" onClick={handleDelete} variant="danger" size="md">
+            <MdDelete /> Delete
           </Button>
 
           <div style={{ display: "flex", gap: "var(--gap-sm)" }}>
-            <Button type="button" onClick={onCancel} variant="secondary" size="medium" icon={<MdCancel />}>
-              Cancel
+            <Button type="button" onClick={onCancel} variant="secondary" size="md">
+              <MdCancel /> Cancel
             </Button>
-            <Button type="submit" variant="primary" size="medium" icon={<MdSave />}>
-              Save
+            <Button type="submit" variant="primary" size="md">
+              <MdSave /> Save
             </Button>
           </div>
         </div>

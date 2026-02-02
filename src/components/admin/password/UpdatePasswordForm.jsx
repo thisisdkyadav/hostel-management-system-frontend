@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HiMail, HiLockClosed, HiExclamationCircle, HiExclamation } from "react-icons/hi"
-import { Button, Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const styles = {
   form: {
@@ -235,7 +236,7 @@ const UpdatePasswordForm = ({ onSubmit }) => {
             </p>
           </div>
 
-          <Button type="submit" variant="primary" size="large" fullWidth isLoading={isSubmitting} disabled={isSubmitting}>
+          <Button type="submit" variant="primary" size="lg" fullWidth loading={isSubmitting} disabled={isSubmitting}>
             {isSubmitting ? "Processing..." : "Update Password"}
           </Button>
         </VStack>

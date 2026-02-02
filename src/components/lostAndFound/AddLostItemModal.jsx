@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi } from "../../service"
-import { Modal, Button, Input, Select, FileInput } from "@/components/ui"
+import { Modal, Input, Select, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
 
 const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
@@ -122,8 +123,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                     <img src={preview} alt={`Preview ${index + 1}`} style={{ width: '100%', height: '6rem', objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: `var(--border-1) solid var(--color-border-gray)` }} />
                     <Button type="button" onClick={() => removeImage(index)}
                       variant="danger"
-                      size="small"
-                      icon={<FaTimes size={12} />}
+                      size="sm"
                       aria-label="Remove image"
                       className="group-hover:opacity-100"
                       style={{
@@ -133,7 +133,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
                         opacity: 0,
                         padding: 'var(--spacing-1)'
                       }}
-                    />
+                    ><FaTimes size={12} /></Button>
                   </div>
                 ))}
               </div>
@@ -157,11 +157,11 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-sm)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium" icon={<FaPlus />}>
-            Add Item
+          <Button type="submit" variant="primary" size="md">
+            <FaPlus /> Add Item
           </Button>
         </div>
       </form>

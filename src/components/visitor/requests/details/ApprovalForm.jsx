@@ -1,5 +1,6 @@
 import React from "react"
-import { Button, Select, Textarea } from "@/components/ui"
+import { Select, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onApprovalInformationChange, onCancel, onSubmit, hostelList }) => {
   const containerStyle = {
@@ -87,10 +88,10 @@ const ApprovalForm = ({ selectedHostel, onHostelChange, approvalInformation, onA
 
       {/* Action Buttons */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-        <Button onClick={onCancel} variant="secondary" size="medium">
+        <Button onClick={onCancel} variant="secondary" size="md">
           Cancel
         </Button>
-        <Button onClick={onSubmit} variant="success" size="medium">
+        <Button onClick={onSubmit} variant="success" size="md">
           Confirm Approval
         </Button>
       </div>

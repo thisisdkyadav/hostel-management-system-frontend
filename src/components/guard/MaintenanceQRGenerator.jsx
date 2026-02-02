@@ -3,7 +3,7 @@ import { QRCodeSVG } from "qrcode.react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { FaQrcode, FaSyncAlt, FaInfoCircle } from "react-icons/fa"
 import forge from "node-forge"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const MaintenanceQRGenerator = () => {
   const { user } = useAuth()
@@ -97,8 +97,8 @@ const MaintenanceQRGenerator = () => {
       </div>
 
       {!showQR ? (
-        <Button onClick={generateQR} isLoading={loading} variant="primary" fullWidth icon={<FaQrcode />}>
-          Generate QR Code
+        <Button onClick={generateQR} loading={loading} variant="primary" fullWidth>
+          <FaQrcode /> Generate QR Code
         </Button>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -117,8 +117,8 @@ const MaintenanceQRGenerator = () => {
           )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--spacing-3)', width: '100%', marginTop: 'var(--spacing-4)' }}>
-            <Button onClick={generateQR} variant="secondary" icon={<FaSyncAlt />}>
-              Refresh
+            <Button onClick={generateQR} variant="secondary">
+              <FaSyncAlt /> Refresh
             </Button>
           </div>
         </div>

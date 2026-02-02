@@ -3,7 +3,8 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { FaEye, FaMoneyBillWave } from "react-icons/fa"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 // Import smaller components
 import StatusBadge from "./details/StatusBadge"
@@ -345,7 +346,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Guest Room Booking Form</p>
                 </div>
               </div>
-              <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="small" icon={<FaEye />}>
+              <Button onClick={() => setShowH2FormModal(true)} variant="primary" size="sm">
+                <FaEye />
                 View H2 Form
               </Button>
             </div>
@@ -406,7 +408,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
                   <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)" }}>Submit your payment details for verification</p>
                 </div>
               </div>
-              <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="small" icon={<FaMoneyBillWave />}>
+              <Button onClick={() => setShowPaymentForm(true)} variant="primary" size="sm">
+                <FaMoneyBillWave />
                 Submit Payment Info
               </Button>
             </div>

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import PageHeader from "../common/PageHeader"
 import { Filter, Plus } from "lucide-react"
 
@@ -7,11 +7,11 @@ const NotificationCenterHeader = ({ showFilters, onToggleFilters, onCreateNotifi
     <PageHeader title="Notification Center">
       {["Admin"].includes(userRole) && (
         <>
-          <Button variant="white" onClick={onToggleFilters} icon={<Filter size={18} />}>
-            {showFilters ? "Hide Filters" : "Show Filters"}
+          <Button variant="white" onClick={onToggleFilters}>
+            <Filter size={18} /> {showFilters ? "Hide Filters" : "Show Filters"}
           </Button>
-          <Button variant="primary" onClick={onCreateNotification} icon={<Plus size={18} />}>
-            Create Notification
+          <Button variant="primary" onClick={onCreateNotification}>
+            <Plus size={18} /> Create Notification
           </Button>
         </>
       )}

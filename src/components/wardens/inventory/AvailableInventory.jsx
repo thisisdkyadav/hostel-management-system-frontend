@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaFilter, FaSearch } from "react-icons/fa"
-import { Pagination, Button, Input } from "@/components/ui"
+import { Pagination, Input } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AvailableInventory = () => {
   const [hostelInventory, setHostelInventory] = useState([])
@@ -85,11 +86,11 @@ const AvailableInventory = () => {
             <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by item name..." icon={<FaSearch />} />
           </div>
           <div className="flex" style={{ gap: 'var(--gap-sm)' }}>
-            <Button onClick={resetFilters} variant="secondary" size="medium">
+            <Button onClick={resetFilters} variant="secondary" size="md">
               Reset
             </Button>
-            <Button onClick={() => fetchHostelInventory(1)} variant="primary" size="medium" icon={<FaFilter />}>
-              Filter
+            <Button onClick={() => fetchHostelInventory(1)} variant="primary" size="md">
+              <FaFilter /> Filter
             </Button>
           </div>
         </div>

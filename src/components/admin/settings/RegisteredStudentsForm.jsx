@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiPlus, HiSave } from "react-icons/hi"
-import { Button, Input, VStack, HStack, Label } from "@/components/ui"
+import { Input, VStack, HStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const styles = {
   container: {
@@ -290,8 +291,8 @@ const RegisteredStudentsForm = ({ degrees, registeredStudents, onUpdate, isLoadi
       </div>
 
       <div style={styles.buttonContainer}>
-        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges() || hasValidationErrors()} variant="primary" size="medium" icon={<HiSave />} isLoading={isLoading}>
-          Save Changes
+        <Button onClick={handleSubmit} disabled={isLoading || !hasChanges() || hasValidationErrors()} variant="primary" size="md" loading={isLoading}>
+          <HiSave /> Save Changes
         </Button>
       </div>
 

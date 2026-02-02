@@ -4,7 +4,8 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../service"
-import { Button, Modal, FileInput, Input, Select, Textarea } from "@/components/ui"
+import { Modal, FileInput, Input, Select, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 
 // Extracted to avoid remounting on each parent render which caused input focus loss
 const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {
@@ -509,7 +510,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
+                <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
+                  <FaFileDownload />
                   Download CSV Template
                 </Button>
 
@@ -562,7 +564,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                   <Button onClick={(e) => {
                     e.stopPropagation()
                     setCsvFile(null)
-                  }} variant="ghost" size="small" icon={<FaTimes />} title="Remove file" />
+                  }} variant="ghost" size="sm" title="Remove file"><FaTimes /></Button>
                 </div>
               )}
 
@@ -602,17 +604,18 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         {activeTab === "csv" && (
           <>
             {step === 1 ? (
-              <Button onClick={onClose} variant="secondary" size="medium">
+              <Button onClick={onClose} variant="secondary" size="md">
                 Cancel
               </Button>
             ) : (
-              <Button onClick={resetForm} variant="secondary" size="medium">
+              <Button onClick={resetForm} variant="secondary" size="md">
                 Back
               </Button>
             )}
 
             {step === 2 && (
-              <Button onClick={handleImport} variant="primary" size="medium" icon={!isImporting ? <FaCheck /> : null} isLoading={isImporting} disabled={parsedData.length === 0 || isLoading || isImporting}>
+              <Button onClick={handleImport} variant="primary" size="md" loading={isImporting} disabled={parsedData.length === 0 || isLoading || isImporting}>
+                {!isImporting && <FaCheck />}
                 {isImporting ? "Importing Students..." : "Confirm Import"}
               </Button>
             )}
@@ -622,11 +625,12 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
         {/* Manual Tab Buttons */}
         {activeTab === "manual" && (
           <>
-            <Button onClick={onClose} variant="secondary" size="medium">
+            <Button onClick={onClose} variant="secondary" size="md">
               Cancel
             </Button>
 
-            <Button onClick={handleManualImport} variant="primary" size="medium" icon={!isImporting ? <FaCheck /> : null} isLoading={isImporting} disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}>
+            <Button onClick={handleManualImport} variant="primary" size="md" loading={isImporting} disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}>
+              {!isImporting && <FaCheck />}
               {isImporting ? "Adding Student..." : "Add Student"}
             </Button>
           </>

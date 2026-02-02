@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { StatusBadge, Button, Card, Switch, HStack, VStack, Badge } from "@/components/ui"
+import { StatusBadge, Card, Switch, HStack, VStack, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const FaceScannerEntriesPage = () => {
@@ -182,11 +183,10 @@ const FaceScannerEntriesPage = () => {
                             onClick={() => handleUpdateReason(entry)}
                             disabled={!currentReason.trim() || isUpdating}
                             variant="warning"
-                            size="small"
-                            isLoading={isUpdating}
-                            icon={isUpdating ? null : <Check size={16} />}
+                            size="sm"
+                            loading={isUpdating}
                         >
-                            {isUpdating ? "Updating..." : "Add Check-In Reason"}
+                            {isUpdating ? null : <Check size={16} />} {isUpdating ? "Updating..." : "Add Check-In Reason"}
                         </Button>
                     </div>
                 </div>
@@ -322,11 +322,10 @@ const FaceScannerEntriesPage = () => {
                             onClick={refresh}
                             disabled={loading}
                             variant="primary"
-                            size="small"
-                            isLoading={loading}
-                            icon={loading ? null : <RefreshCw size={16} />}
+                            size="sm"
+                            loading={loading}
                         >
-                            {loading ? "Loading..." : "Refresh"}
+                            {loading ? null : <RefreshCw size={16} />} {loading ? "Loading..." : "Refresh"}
                         </Button>
                     </div>
 

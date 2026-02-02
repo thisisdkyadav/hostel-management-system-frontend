@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Button, Checkbox, Alert, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
+import { Modal, Checkbox, Alert, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
+import { Button } from "czero/react"
 import CsvUploader from "../../../common/CsvUploader"
 import { TriangleAlert, Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -166,7 +167,8 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
                 <Button variant="secondary" onClick={onClose}>
                   Cancel
                 </Button>
-                <Button variant="primary" onClick={handleBulkUpdate} icon={<Upload size={16} />} disabled={!confirmed || parsedCsvData.length === 0}>
+                <Button variant="primary" onClick={handleBulkUpdate} disabled={!confirmed || parsedCsvData.length === 0}>
+                  <Upload size={16} />
                   Update {parsedCsvData.length} Room(s)
                 </Button>
               </HStack>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash, FaUpload } from "react-icons/fa"
 import { uploadApi, certificateApi } from "../../../service"
-import { Button, Modal, FileInput } from "@/components/ui"
+import { Modal, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 
 const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null, studentId }) => {
   const [formData, setFormData] = useState({
@@ -293,15 +294,15 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
 
           <div style={styles.footerContainer}>
             {isEditing && onDelete && (
-              <Button type="button" variant="danger" size="small" icon={<FaTrash />} onClick={confirmDelete}>
-                Delete
+              <Button type="button" variant="danger" size="sm" onClick={confirmDelete}>
+                <FaTrash /> Delete
               </Button>
             )}
             <div style={styles.actionButtonsRight}>
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isUploading}>
+              <Button type="submit" variant="primary" loading={isSubmitting} disabled={isUploading}>
                 {isEditing ? "Update" : "Add"} Certificate
               </Button>
             </div>

@@ -1,6 +1,7 @@
 import React from "react"
 import { FaSearch, FaTimes } from "react-icons/fa"
-import { Button, Input, Select } from "@/components/ui"
+import { Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 
 const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
   const handleChange = (e) => {
@@ -12,8 +13,8 @@ const NotificationFilterSection = ({ filters, updateFilter, resetFilters }) => {
     <div style={{ backgroundColor: 'var(--color-bg-primary)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)', border: `var(--border-1) solid var(--color-border-light)` }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
         <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>Filter Notifications</h3>
-        <Button onClick={resetFilters} variant="ghost" size="small" icon={<FaTimes />}>
-          Reset Filters
+        <Button onClick={resetFilters} variant="ghost" size="sm">
+          <FaTimes /> Reset Filters
         </Button>
       </div>
 

@@ -1,6 +1,6 @@
 import React from "react"
 import { FaTimes } from "react-icons/fa"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const SelectedUsersList = ({ users, onRemove, title = "Selected Users", disabled = false }) => {
   const getRoleColor = (role) => {
@@ -51,7 +51,7 @@ const SelectedUsersList = ({ users, onRemove, title = "Selected Users", disabled
                 </div>
               </div>
               {!disabled && (
-                <Button type="button" onClick={() => onRemove(user._id)} variant="ghost" size="small" icon={<FaTimes className="h-5 w-5" />} aria-label="Remove user" />
+                <Button type="button" onClick={() => onRemove(user._id)} variant="ghost" size="sm" aria-label="Remove user"><FaTimes className="h-5 w-5" /></Button>
               )}
             </div>
           </li>

@@ -4,7 +4,8 @@ import EditUndertakingModal from "./EditUndertakingModal"
 import ManageStudentsModal from "./ManageStudentsModal"
 import ViewAcceptanceStatusModal from "./ViewAcceptanceStatusModal"
 import { adminApi } from "../../../service"
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Button } from "czero/react"
 
 const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -51,8 +52,8 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
             </div>
             {!isReadOnly && (
               <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-                <Button onClick={() => setShowEditModal(true)} variant="ghost" size="small" icon={<FaEdit />} title="Edit undertaking" />
-                <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete undertaking" />
+                <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit undertaking"><FaEdit /></Button>
+                <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete undertaking"><FaTrash /></Button>
               </div>
             )}
           </div>
@@ -89,11 +90,13 @@ const UndertakingCard = ({ undertaking, onUpdate, onDelete, isReadOnly = false }
 
         <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'grid', gridTemplateColumns: isReadOnly ? '1fr' : 'repeat(2, 1fr)', gap: 'var(--spacing-3)' }}>
           {!isReadOnly && (
-            <Button onClick={() => setShowManageStudentsModal(true)} variant="secondary" size="small" icon={<FaUsers />}>
+            <Button onClick={() => setShowManageStudentsModal(true)} variant="secondary" size="sm">
+              <FaUsers />
               Manage Students
             </Button>
           )}
-          <Button onClick={() => setShowStatusModal(true)} variant="success" size="small" icon={<FaClipboardCheck />}>
+          <Button onClick={() => setShowStatusModal(true)} variant="success" size="sm">
+            <FaClipboardCheck />
             View Status
           </Button>
         </CardFooter>

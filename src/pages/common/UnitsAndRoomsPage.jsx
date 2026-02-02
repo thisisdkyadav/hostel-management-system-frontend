@@ -15,7 +15,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
-import { Input, Checkbox, Button, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Input, Checkbox, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 import { MdMeetingRoom } from "react-icons/md"
 
 const UnitsAndRoomsPage = () => {
@@ -356,15 +357,14 @@ const UnitsAndRoomsPage = () => {
               <Button
                 onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
                 variant="secondary"
-                size="small"
-                icon={<SlidersHorizontal size={16} />}
+                size="sm"
               >
-                {isFiltersExpanded ? "Less" : "More"}
+                <SlidersHorizontal size={16} /> {isFiltersExpanded ? "Less" : "More"}
                 {isFiltersExpanded ? <ChevronUp size={14} style={{ marginLeft: 'var(--spacing-1)' }} /> : <ChevronDown size={14} style={{ marginLeft: 'var(--spacing-1)' }} />}
               </Button>
             )}
-            <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
-              Reset
+            <Button onClick={resetFilters} variant="ghost" size="sm">
+              <RotateCcw size={14} /> Reset
             </Button>
           </HStack>
 

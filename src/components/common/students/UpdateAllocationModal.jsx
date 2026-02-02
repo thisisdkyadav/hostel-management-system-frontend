@@ -4,7 +4,8 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Modal, Button, Select, FileInput } from "@/components/ui"
+import { Modal, Select, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
@@ -238,7 +239,8 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
+                <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
+                  <FaFileDownload />
                   Download CSV Template
                 </Button>
 
@@ -275,7 +277,7 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
               <Button onClick={(e) => {
                 e.stopPropagation()
                 setCsvFile(null)
-              }} variant="ghost" size="small" icon={<FaTimes />} aria-label="Remove file" />
+              }} variant="ghost" size="sm" aria-label="Remove file"><FaTimes /></Button>
             </div>
           )}
 
@@ -307,17 +309,18 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
 
       <div style={{ marginTop: "var(--spacing-6)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: "1px solid var(--color-border-light)" }}>
         {step === 1 ? (
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
         ) : (
-          <Button onClick={resetForm} variant="secondary" size="medium">
+          <Button onClick={resetForm} variant="secondary" size="md">
             Back
           </Button>
         )}
 
         {step === 2 && (
-          <Button onClick={handleAllocate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isAllocating} disabled={parsedData.length === 0 || isLoading || isAllocating}>
+          <Button onClick={handleAllocate} variant="primary" size="md" loading={isAllocating} disabled={parsedData.length === 0 || isLoading || isAllocating}>
+            <FaCheck />
             {isAllocating ? "Updating Allocations..." : "Confirm Allocations"}
           </Button>
         )}

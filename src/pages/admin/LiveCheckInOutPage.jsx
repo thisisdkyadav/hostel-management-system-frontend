@@ -2,7 +2,8 @@ import { useState } from "react"
 import { Search, RefreshCw, Download, ChevronDown, ChevronUp, SlidersHorizontal, RotateCcw, LogIn, LogOut, ArrowRightLeft, Home, ChevronLeft, ChevronRight, Activity } from "lucide-react"
 import { useLiveCheckInOut } from "../../hooks/useLiveCheckInOut"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { Input, Select, Card, HStack, VStack, Button, Badge, Divider, DatePicker, Label } from "@/components/ui"
+import { Input, Select, Card, HStack, VStack, Badge, Divider, DatePicker, Label } from "@/components/ui"
+import { Button } from "czero/react"
 
 const formatDateTime = (value) => {
   if (!value) return "-"
@@ -246,11 +247,11 @@ const LiveCheckInOutPage = () => {
           </div>
 
           <HStack gap="small">
-            <Button onClick={refresh} disabled={loading} variant="primary" size="small" isLoading={loading} icon={<RefreshCw size={16} />}>
-              Refresh
+            <Button onClick={refresh} disabled={loading} variant="primary" size="sm" loading={loading}>
+              <RefreshCw size={16} /> Refresh
             </Button>
-            <Button onClick={exportToCSV} variant="secondary" size="small" icon={<Download size={16} />}>
-              Export
+            <Button onClick={exportToCSV} variant="secondary" size="sm">
+              <Download size={16} /> Export
             </Button>
           </HStack>
         </HStack>
@@ -303,8 +304,8 @@ const LiveCheckInOutPage = () => {
                 icon={<Search size={16} />}
               />
             </div>
-            <Button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} variant="secondary" size="small" icon={<SlidersHorizontal size={16} />}>
-              {isFiltersExpanded ? "Less" : "More"}
+            <Button onClick={() => setIsFiltersExpanded(!isFiltersExpanded)} variant="secondary" size="sm">
+              <SlidersHorizontal size={16} /> {isFiltersExpanded ? "Less" : "More"}
               {activeFilterCount > 0 && !isFiltersExpanded && (
                 <Badge variant="primary" size="small" style={{ marginLeft: "var(--spacing-1-5)" }}>
                   {activeFilterCount}
@@ -312,8 +313,8 @@ const LiveCheckInOutPage = () => {
               )}
               {isFiltersExpanded ? <ChevronUp size={14} style={{ marginLeft: "var(--spacing-1)" }} /> : <ChevronDown size={14} style={{ marginLeft: "var(--spacing-1)" }} />}
             </Button>
-            <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
-              Reset
+            <Button onClick={resetFilters} variant="ghost" size="sm">
+              <RotateCcw size={14} /> Reset
             </Button>
           </HStack>
 

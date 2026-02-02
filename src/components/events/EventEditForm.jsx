@@ -4,7 +4,8 @@ import { MdCancel, MdDelete } from "react-icons/md"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { formatDateTimeForInput, toISOString } from "../../utils/dateUtils"
-import { Button, Input, Select } from "@/components/ui"
+import { Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 
 const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
   const { hostelList } = useGlobal()
@@ -95,16 +96,16 @@ const EventEditForm = ({ event, onCancel, onSave, onDelete }) => {
         </div>
 
         <div style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-          <Button type="button" onClick={handleDelete} variant="danger" size="medium" icon={<MdDelete />}>
-            Delete
+          <Button type="button" onClick={handleDelete} variant="danger" size="md">
+            <MdDelete /> Delete
           </Button>
 
           <div style={{ display: 'flex', flexDirection: 'row', gap: 'var(--spacing-3)' }}>
-            <Button type="button" onClick={onCancel} variant="secondary" size="medium" icon={<MdCancel />}>
-              Cancel
+            <Button type="button" onClick={onCancel} variant="secondary" size="md">
+              <MdCancel /> Cancel
             </Button>
-            <Button type="submit" variant="primary" size="medium" icon={<FaSave />}>
-              Save
+            <Button type="submit" variant="primary" size="md">
+              <FaSave /> Save
             </Button>
           </div>
         </div>

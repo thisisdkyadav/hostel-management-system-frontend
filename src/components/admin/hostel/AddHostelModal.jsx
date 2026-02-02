@@ -2,7 +2,8 @@ import React, { useState } from "react"
 import UnitBasedForm from "../forms/UnitBasedForm"
 import RoomOnlyForm from "../forms/RoomOnlyForm"
 import { adminApi } from "../../../service"
-import { Modal, Button, Input, Select, Label, VStack, HStack } from "@/components/ui"
+import { Modal, Input, Select, Label, VStack, HStack } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AddHostelModal = ({ show, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -81,14 +82,14 @@ const AddHostelModal = ({ show, onClose, onAdd }) => {
               type="button"
               onClick={onClose}
               variant="secondary"
-              size="medium"
+              size="md"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               variant="primary"
-              size="medium"
+              size="md"
             >
               Add Hostel
             </Button>

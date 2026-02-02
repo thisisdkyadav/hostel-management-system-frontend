@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa"
-import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 import { insuranceProviderApi } from "../../../service"
 
 const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
@@ -93,10 +94,10 @@ const AddInsuranceProviderModal = ({ show, onClose, onSuccess }) => {
             </div>
 
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-              <Button type="button" onClick={onClose} variant="secondary" size="medium">
+              <Button type="button" onClick={onClose} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+              <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
                 Add Provider
               </Button>
             </HStack>

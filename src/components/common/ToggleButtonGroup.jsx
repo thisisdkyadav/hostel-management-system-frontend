@@ -59,6 +59,13 @@ const ToggleButtonGroup = ({
             gap: "var(--spacing-1)",
             containerPadding: "var(--spacing-0-5)",
         },
+        sm: {
+            padding: "var(--spacing-1) var(--spacing-2)",
+            fontSize: "var(--font-size-xs)",
+            iconSize: "var(--font-size-xs)",
+            gap: "var(--spacing-1)",
+            containerPadding: "var(--spacing-0-5)",
+        },
         medium: {
             padding: "var(--spacing-1-5) var(--spacing-3)",
             fontSize: "var(--font-size-base)",     // 14px
@@ -66,9 +73,23 @@ const ToggleButtonGroup = ({
             gap: "var(--spacing-2)",
             containerPadding: "var(--spacing-1)",
         },
+        md: {
+            padding: "var(--spacing-1-5) var(--spacing-3)",
+            fontSize: "var(--font-size-base)",
+            iconSize: "var(--font-size-base)",
+            gap: "var(--spacing-2)",
+            containerPadding: "var(--spacing-1)",
+        },
         large: {
             padding: "var(--spacing-2) var(--spacing-4)",
             fontSize: "var(--font-size-lg)",       // 16px
+            iconSize: "var(--font-size-lg)",
+            gap: "var(--spacing-2)",
+            containerPadding: "var(--spacing-1-5)",
+        },
+        lg: {
+            padding: "var(--spacing-2) var(--spacing-4)",
+            fontSize: "var(--font-size-lg)",
             iconSize: "var(--font-size-lg)",
             gap: "var(--spacing-2)",
             containerPadding: "var(--spacing-1-5)",

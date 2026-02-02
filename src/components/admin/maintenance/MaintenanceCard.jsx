@@ -3,7 +3,8 @@ import { FaTools, FaEdit, FaEnvelope, FaWrench, FaBolt, FaBuilding, FaBroom, FaW
 import EditMaintenanceForm from "./EditMaintenanceForm"
 import MaintenanceStaffDetailsModal from "./MaintenanceStaffDetailsModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardHeader, CardBody, CardFooter, Button, Badge } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 
 const CATEGORY_DISPLAY_LABELS = {
   Plumbing: "Plumber",
@@ -107,10 +108,12 @@ const MaintenanceCard = ({ staff, onUpdate, onDelete }) => {
 
 
         <CardFooter className="pt-4 border-t flex gap-2" style={{ borderColor: "var(--color-border-light)" }}>
-          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="medium" icon={<FaEye />} fullWidth>
+          <Button onClick={() => setShowDetailsModal(true)} variant="secondary" size="md" fullWidth>
+            <FaEye />
             View Details
           </Button>
-          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="medium" icon={<FaEdit />} fullWidth>
+          <Button onClick={() => setShowEditForm(true)} variant="secondary" size="md" fullWidth>
+            <FaEdit />
             Edit
           </Button>
         </CardFooter>

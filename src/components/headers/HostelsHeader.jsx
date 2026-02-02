@@ -1,17 +1,17 @@
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import PageHeader from "../common/PageHeader"
 import { Plus, Archive } from "lucide-react"
 
 const HostelsHeader = ({ onAddHostel, onArchiveToggle, fetchArchive }) => {
   return (
     <PageHeader title="Hostel Management">
-      <Button variant="secondary" onClick={onArchiveToggle} icon={<Archive size={18} />}
+      <Button variant="secondary" onClick={onArchiveToggle}
       >
-        {fetchArchive ? "Show All" : "Show Archived"}
+        <Archive size={18} /> {fetchArchive ? "Show All" : "Show Archived"}
       </Button>
-      <Button variant="primary" onClick={onAddHostel} icon={<Plus size={18} />}
+      <Button variant="primary" onClick={onAddHostel}
       >
-        Add Hostel
+        <Plus size={18} /> Add Hostel
       </Button>
     </PageHeader>
   )

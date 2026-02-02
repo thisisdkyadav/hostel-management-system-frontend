@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Modal, Button } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
@@ -107,18 +108,19 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.9)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={closeImageViewer} >
           <Button onClick={closeImageViewer}
             variant="ghost"
-            size="small"
-            icon={<FaTimes size={30} />}
+            size="sm"
             aria-label="Close image viewer"
             style={{ position: 'absolute', top: 'var(--spacing-4)', right: 'var(--spacing-4)', color: 'var(--color-white)', zIndex: 10 }}
-          />
+          >
+            <FaTimes size={30} />
+          </Button>
 
           <Button onClick={(e) => {
             e.stopPropagation()
             prevImage()
           }}
             variant="ghost"
-            size="large"
+            size="lg"
             aria-label="Previous image"
             style={{ position: 'absolute', left: 'var(--spacing-4)', color: 'var(--color-white)', fontSize: 'var(--font-size-6xl)' }}
           >
@@ -137,7 +139,7 @@ const LostAndFoundDetailModal = ({ selectedItem, setShowDetailModal }) => {
             nextImage()
           }}
             variant="ghost"
-            size="large"
+            size="lg"
             aria-label="Next image"
             style={{ position: 'absolute', right: 'var(--spacing-4)', color: 'var(--color-white)', fontSize: 'var(--font-size-6xl)' }}
           >

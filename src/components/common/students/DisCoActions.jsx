@@ -3,7 +3,7 @@ import { discoApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const DisCoActions = ({ userId }) => {
   const { canAccess } = useAuth()
@@ -195,7 +195,8 @@ const DisCoActions = ({ userId }) => {
       <div style={styles.header}>
         <h3 style={styles.title}>Disciplinary Actions</h3>
         {canAccess("students_info", "create") && (
-          <Button variant="primary" size="small" icon={<Plus size={16} />} onClick={handleAddClick}>
+          <Button variant="primary" size="sm" onClick={handleAddClick}>
+            <Plus size={16} />
             Add DisCo Action
           </Button>
         )}
@@ -206,7 +207,7 @@ const DisCoActions = ({ userId }) => {
           <p style={styles.emptyText}>No disciplinary actions found.</p>
           {canAccess("students_info", "create") && (
             <div style={styles.emptyAddButton}>
-              <Button variant="secondary" size="small" onClick={handleAddClick}>
+              <Button variant="secondary" size="sm" onClick={handleAddClick}>
                 Add DisCo Action
               </Button>
             </div>
@@ -228,7 +229,7 @@ const DisCoActions = ({ userId }) => {
                   <span style={styles.dateBadge}>{new Date(action.date).toLocaleDateString()}</span>
                 </div>
                 {canAccess("students_info", "edit") && (
-                  <Button onClick={() => handleEditClick(action)} variant="secondary" size="small">
+                  <Button onClick={() => handleEditClick(action)} variant="secondary" size="sm">
                     Edit
                   </Button>
                 )}

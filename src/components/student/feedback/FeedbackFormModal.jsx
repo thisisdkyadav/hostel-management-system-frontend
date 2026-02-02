@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { Button, Modal, Input, Textarea } from "@/components/ui"
+import { Modal, Input, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 
 const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false }) => {
   const [formData, setFormData] = useState({
@@ -97,10 +98,10 @@ const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-6)", borderTop: `var(--border-1) solid var(--color-border-light)`, gap: "var(--spacing-3)" }}>
             <div style={{ display: "flex", flexDirection: "row", gap: "var(--spacing-3)", justifyContent: "flex-end" }}>
-              <Button type="button" onClick={onClose} variant="secondary" size="medium">
+              <Button type="button" onClick={onClose} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting} variant="primary" size="medium" isLoading={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} variant="primary" size="md" loading={isSubmitting}>
                 {isSubmitting ? (isEditing ? "Updating..." : "Submitting...") : isEditing ? "Update Feedback" : "Submit Feedback"}
               </Button>
             </div>

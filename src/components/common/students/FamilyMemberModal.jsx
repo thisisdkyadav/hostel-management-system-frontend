@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
   const [formData, setFormData] = useState({
@@ -145,7 +146,8 @@ const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
 
         <div style={styles.footerContainer}>
           {isEditing && onDelete && (
-            <Button type="button" variant="danger" size="small" icon={<FaTrash />} onClick={handleDelete}>
+            <Button type="button" variant="danger" size="sm" onClick={handleDelete}>
+              <FaTrash />
               Delete
             </Button>
           )}
@@ -153,7 +155,7 @@ const FamilyMemberModal = ({ isOpen, onClose, onSubmit, initialData = null, isEd
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" variant="primary" isLoading={isSubmitting}>
+            <Button type="submit" variant="primary" loading={isSubmitting}>
               {isEditing ? "Update" : "Add"} Family Member
             </Button>
           </div>

@@ -1,6 +1,7 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
-import { DataTable, Button } from "@/components/ui"
+import { DataTable } from "@/components/ui"
+import { Button } from "czero/react"
 
 const UnitListView = ({ units, onUnitClick }) => {
   const columns = [
@@ -69,7 +70,7 @@ const UnitListView = ({ units, onUnitClick }) => {
       key: "actions",
       align: "right",
       render: (unit) => (
-        <Button onClick={(e) => { e.stopPropagation(); onUnitClick(unit); }} variant="ghost" size="small" icon={<FaEye />} aria-label="View unit" />
+        <Button onClick={(e) => { e.stopPropagation(); onUnitClick(unit); }} variant="ghost" size="sm" aria-label="View unit"><FaEye /></Button>
       ),
     },
   ]

@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Modal, Button, Input } from "@/components/ui"
+import { Modal, Input } from "@/components/ui"
+import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
 const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
@@ -52,10 +53,10 @@ const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--gap-sm)' }}>
-          <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="medium">
+          <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+          <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
             {loading ? "Submitting..." : "Submit"}
           </Button>
         </div>

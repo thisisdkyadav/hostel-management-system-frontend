@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Button, Input } from "@/components/ui"
+import { Input } from "@/components/ui"
+import { Button } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 
 const NewEntryForm = ({ onAddEntry }) => {
@@ -73,7 +74,7 @@ const NewEntryForm = ({ onAddEntry }) => {
           value={formData.status}
           onChange={handleStatusChange}
           shape="rounded"
-          size="small"
+          size="sm"
           variant="primary"
           hideLabelsOnMobile={false}
         />
@@ -123,8 +124,8 @@ const NewEntryForm = ({ onAddEntry }) => {
 
         <div style={{ gridColumn: 'span 2' }}>
           <label style={{ fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)' }}>&nbsp;</label>
-          <Button type="submit" variant="primary" size="small" icon={<FaPlus />} fullWidth>
-            Add
+          <Button type="submit" variant="primary" size="sm" fullWidth>
+            <FaPlus /> Add
           </Button>
         </div>
       </form>

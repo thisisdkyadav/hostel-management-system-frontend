@@ -2,7 +2,8 @@ import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaEdit, FaTrash } from "react-icons/fa"
 import EditHostelGateModal from "./EditHostelGateModal"
 import { hostelGateApi } from "../../../service"
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Button } from "czero/react"
 
 const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -43,8 +44,8 @@ const HostelGateCard = ({ gate, onUpdate, onDelete }) => {
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{gate.userId?.name || "Unknown Hostel"}</h3>
             </div>
             <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="small" icon={<FaEdit />} title="Edit hostel gate login" />
-              <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete hostel gate login" />
+              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit hostel gate login"><FaEdit /></Button>
+              <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete hostel gate login"><FaTrash /></Button>
             </div>
           </div>
         </CardHeader>

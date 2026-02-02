@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboard, FaArrowDown, FaArrowRight, FaInfoCircle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { StatusBadge, Button } from "@/components/ui"
+import { StatusBadge } from "@/components/ui"
+import { Button } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ScannerEntriesPage = () => {
@@ -47,8 +48,8 @@ const ScannerEntriesPage = () => {
               <label htmlFor={`reason-${entry._id}`} style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-warning-text)", marginBottom: "var(--spacing-1)" }}>Reason for Cross-Hostel Check-In <span style={{ color: "var(--color-danger)" }}>*</span></label>
               <textarea id={`reason-${entry._id}`} value={currentReason} onChange={(e) => handleReasonChange(entry._id, e.target.value)} placeholder="Enter reason..." style={{ width: "100%", padding: "var(--spacing-2) var(--spacing-3)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", fontSize: "var(--font-size-sm)" }} rows="3" disabled={isUpdating} data-no-scanner="true" />
             </div>
-            <Button onClick={() => handleUpdateReason(entry)} disabled={!currentReason.trim() || isUpdating} variant="warning" size="small" isLoading={isUpdating} icon={isUpdating ? null : <FaCheck />}>
-              {isUpdating ? "Updating..." : "Add Check-In Reason"}
+            <Button onClick={() => handleUpdateReason(entry)} disabled={!currentReason.trim() || isUpdating} variant="warning" size="sm" loading={isUpdating}>
+              {isUpdating ? null : <FaCheck />} {isUpdating ? "Updating..." : "Add Check-In Reason"}
             </Button>
           </div>
         </div>
@@ -88,8 +89,8 @@ const ScannerEntriesPage = () => {
               <div style={{ padding: "var(--spacing-2-5)", marginRight: "var(--spacing-3)", borderRadius: "var(--radius-xl)", backgroundColor: "var(--color-info-bg)", color: "var(--color-primary)" }}><FaHistory size={20} /></div>
               <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-secondary)" }}>Recent Scanner Entries</h2>
             </div>
-            <Button onClick={fetchScannerEntries} disabled={loading} variant="primary" size="small" isLoading={loading} icon={loading ? null : <FaHistory />}>
-              {loading ? "Loading..." : "Refresh"}
+            <Button onClick={fetchScannerEntries} disabled={loading} variant="primary" size="sm" loading={loading}>
+              {loading ? null : <FaHistory />} {loading ? "Loading..." : "Refresh"}
             </Button>
           </div>
           {loading && scannerEntries.length === 0 ? (

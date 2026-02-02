@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { ChevronDown, ChevronUp, RotateCcw, Search, SlidersHorizontal } from "lucide-react"
 import MultiSelectDropdown from "../MultiSelectDropdown"
-import { Button, Input, Select, DatePicker, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Input, Select, DatePicker, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 import { studentApi } from "../../../service"
 
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, setPageSize, missingOptions = [] }) => {
@@ -92,9 +93,9 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
         <Button
           onClick={() => setIsExpanded(!isExpanded)}
           variant="secondary"
-          size="small"
-          icon={<SlidersHorizontal size={16} />}
+          size="sm"
         >
+          <SlidersHorizontal size={16} />
           {isExpanded ? "Less" : "More"}
           {activeFilterCount > 0 && !isExpanded && (
             <Badge variant="primary" size="small" style={{ marginLeft: 'var(--spacing-1-5)' }}>
@@ -103,7 +104,8 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
           )}
           {isExpanded ? <ChevronUp size={14} style={{ marginLeft: 'var(--spacing-1)' }} /> : <ChevronDown size={14} style={{ marginLeft: 'var(--spacing-1)' }} />}
         </Button>
-        <Button onClick={resetFilters} variant="ghost" size="small" icon={<RotateCcw size={14} />}>
+        <Button onClick={resetFilters} variant="ghost" size="sm">
+          <RotateCcw size={14} />
           Reset
         </Button>
       </HStack>
@@ -151,7 +153,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
               {error && (
                 <HStack gap="small" align="center">
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{error}</span>
-                  <Button onClick={fetchDepartments} variant="ghost" size="small" disabled={loading}>
+                  <Button onClick={fetchDepartments} variant="ghost" size="sm" disabled={loading}>
                     Retry
                   </Button>
                 </HStack>
@@ -170,7 +172,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
               {degreesError && (
                 <HStack gap="small" align="center">
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{degreesError}</span>
-                  <Button onClick={fetchDegrees} variant="ghost" size="small" disabled={degreesLoading}>
+                  <Button onClick={fetchDegrees} variant="ghost" size="sm" disabled={degreesLoading}>
                     Retry
                   </Button>
                 </HStack>

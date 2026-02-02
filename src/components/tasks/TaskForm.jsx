@@ -3,7 +3,8 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_CATEGORIES, TASK_PRIORITIES, TASK_STATUSES } from "../../constants/taskConstants"
 import UserSelector from "../common/UserSelector"
-import { Button, Modal, Input, Select, Textarea } from "@/components/ui"
+import { Modal, Input, Select, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 
 const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
   const { user } = useAuth()
@@ -126,10 +127,10 @@ const TaskForm = ({ isOpen, setIsOpen, onSuccess, initialTask = null }) => {
 
   const renderFooter = () => (
     <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
-      <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="medium">
+      <Button type="button" onClick={() => setIsOpen(false)} variant="secondary" size="md">
         Cancel
       </Button>
-      <Button type="submit" form="task-form" disabled={loading} variant="primary" size="medium" isLoading={loading}>
+      <Button type="submit" form="task-form" disabled={loading} variant="primary" size="md" loading={loading}>
         {initialTask ? "Update Task" : "Create Task"}
       </Button>
     </div>

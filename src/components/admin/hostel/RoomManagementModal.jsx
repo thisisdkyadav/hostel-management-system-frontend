@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Button, VStack, HStack, Tabs, TabList, Tab } from "@/components/ui"
+import { Modal, VStack, HStack, Tabs, TabList, Tab } from "@/components/ui"
+import { Button } from "czero/react"
 import { Table, Pencil, Trash2, X, TriangleAlert } from "lucide-react"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
@@ -43,9 +44,10 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
               <Button
                 onClick={() => setShowDeleteConfirmation(false)}
                 variant="ghost"
-                size="small"
-                icon={<X size={16} />}
-              />
+                size="sm"
+              >
+                <X size={16} />
+              </Button>
             </HStack>
           </div>
 
@@ -70,7 +72,7 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                 <Button onClick={() => setShowDeleteConfirmation(false)} variant="outline" disabled={isLoading}>
                   Cancel
                 </Button>
-                <Button onClick={handleDeleteAllAllocations} variant="danger" disabled={isLoading} isLoading={isLoading}>
+                <Button onClick={handleDeleteAllAllocations} variant="danger" disabled={isLoading} loading={isLoading}>
                   Delete All Allocations
                 </Button>
               </HStack>
@@ -95,8 +97,8 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
             </Tabs>
 
             {activeTab === "view" && (
-              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} animation="pulse" size="small" icon={<Trash2 size={14} />}>
-                Delete All Allocations
+              <Button onClick={() => setShowDeleteConfirmation(true)} variant="danger" disabled={isLoading} animation="pulse" size="sm">
+                <Trash2 size={14} /> Delete All Allocations
               </Button>
             )}
           </HStack>
@@ -110,22 +112,20 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
                   <Button
                     type="button"
                     variant={inputMethod === "form" ? "primary" : "white"}
-                    size="medium"
-                    icon={<Pencil size={14} />}
+                    size="md"
                     onClick={() => setInputMethod("form")}
                     style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
                   >
-                    Form Input
+                    <Pencil size={14} /> Form Input
                   </Button>
                   <Button
                     type="button"
                     variant={inputMethod === "csv" ? "primary" : "white"}
-                    size="medium"
-                    icon={<Table size={14} />}
+                    size="md"
                     onClick={() => setInputMethod("csv")}
                     style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                   >
-                    CSV Import
+                    <Table size={14} /> CSV Import
                   </Button>
                 </div>
               </HStack>

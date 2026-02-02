@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FaUserAlt, FaTrash, FaUserPlus, FaToggleOn, FaToggleOff, FaBed, FaBuilding } from "react-icons/fa"
 import { hostelApi } from "../../service"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import StudentDetailModal from "../common/students/StudentDetailModal"
@@ -121,8 +122,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
 
           {["Admin"].includes(user.role) && (
             <div style={{ marginTop: 'var(--spacing-4)' }}>
-              <Button onClick={handleToggleStatus} disabled={loading} variant={room.status === "Inactive" ? "success" : "danger"} size="medium" icon={room.status === "Inactive" ? <FaToggleOff /> : <FaToggleOn />}>
-                {room.status === "Inactive" ? "Activate Room" : "Mark as Inactive"}
+              <Button onClick={handleToggleStatus} disabled={loading} variant={room.status === "Inactive" ? "success" : "danger"} size="md">
+                {room.status === "Inactive" ? <FaToggleOff /> : <FaToggleOn />} {room.status === "Inactive" ? "Activate Room" : "Mark as Inactive"}
               </Button>
             </div>
           )}
@@ -133,8 +134,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaUserAlt style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)', fontSize: 'var(--icon-md)' }} /> Allocated Students
               </h3>
               {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-                <Button onClick={onAllocate} variant="success" size="small" icon={<FaUserPlus />}>
-                  Allocate Student
+                <Button onClick={onAllocate} variant="success" size="sm">
+                  <FaUserPlus /> Allocate Student
                 </Button>
               )}
             </div>
@@ -188,7 +189,7 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                           <td className="hidden md:table-cell" style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>{student.department}</td>
                           <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', textAlign: 'right' }}>
                             {["Admin"].includes(user.role) && (
-                              <Button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} variant="ghost" size="small" icon={<FaTrash />} aria-label="Remove from Room" />
+                              <Button onClick={() => handleRemoveStudent(student.allocationId)} disabled={loading} variant="ghost" size="sm" aria-label="Remove from Room"><FaTrash /></Button>
                             )}
                           </td>
                         </tr>
@@ -202,8 +203,8 @@ const RoomDetailModal = ({ room, onClose, onUpdate, onAllocate }) => {
                 <FaUserAlt style={{ margin: '0 auto', color: 'var(--color-border-primary)', fontSize: 'var(--icon-4xl)', marginBottom: 'var(--spacing-3)' }} />
                 <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-base)' }}>No students allocated to this room</p>
                 {room.capacity > 0 && (
-                  <Button onClick={onAllocate} variant="primary" size="medium" icon={<FaUserPlus />}>
-                    Allocate Student
+                  <Button onClick={onAllocate} variant="primary" size="md">
+                    <FaUserPlus /> Allocate Student
                   </Button>
                 )}
               </div>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaBoxes, FaUserGraduate, FaPlus } from "react-icons/fa"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Button, Modal, Input, Select, Textarea } from "@/components/ui"
+import { Modal, Input, Select, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 
 const InventoryManagement = () => {
   const { user } = useAuth()
@@ -162,7 +163,9 @@ const InventoryManagement = () => {
                 <p style={{ fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{student.rollNumber}</p>
               </div>
               <div className="ml-auto">
-                <Button onClick={() => handleSelectStudent(student)} variant="ghost" size="small" icon={<FaPlus />} aria-label="Assign inventory" />
+                <Button onClick={() => handleSelectStudent(student)} variant="ghost" size="sm" aria-label="Assign inventory">
+                  <FaPlus />
+                </Button>
               </div>
             </div>
           ))}
@@ -205,10 +208,10 @@ const InventoryManagement = () => {
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-2)' }}>
-              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
+              <Button type="button" onClick={closeModal} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading || !assignFormData.hostelInventoryId} variant="primary" size="medium" isLoading={loading}>
+              <Button type="submit" disabled={loading || !assignFormData.hostelInventoryId} variant="primary" size="md" loading={loading}>
                 {loading ? "Assigning..." : "Assign Item"}
               </Button>
             </div>

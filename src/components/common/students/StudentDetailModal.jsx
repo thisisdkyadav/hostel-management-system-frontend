@@ -37,7 +37,8 @@ import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Button, Modal, Input, Select } from "@/components/ui"
+import { Modal, Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()
@@ -659,7 +660,8 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)" }}>Student Inventory</h3>
               {user && canAccess("student_inventory", "create") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
-                <Button onClick={handleOpenAssignInventory} variant="primary" size="small" icon={<Plus size={14} />}>
+                <Button onClick={handleOpenAssignInventory} variant="primary" size="sm">
+                  <Plus size={14} />
                   Assign Item
                 </Button>
               )}
@@ -736,10 +738,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                   setShowInventoryModal(true)
                                 }}
                                 variant="ghost"
-                                size="small"
-                                icon={<Edit size={16} />}
+                                size="sm"
                                 title="View/Edit Item"
-                              />
+                              >
+                                <Edit size={16} />
+                              </Button>
                               {item.status === "Issued" && (
                                 <Button
                                   onClick={() => {
@@ -757,10 +760,11 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                                     setShowInventoryModal(true)
                                   }}
                                   variant="success"
-                                  size="small"
-                                  icon={<Undo size={16} />}
+                                  size="sm"
                                   title="Return Item"
-                                />
+                                >
+                                  <Undo size={16} />
+                                </Button>
                               )}
                             </div>
                           </td>
@@ -987,13 +991,13 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
               Email Student
             </a>
             {canAccess("students_info", "edit") && (
-              <Button onClick={() => setShowEditModal(true)} variant="primary" size="medium">
+              <Button onClick={() => setShowEditModal(true)} variant="primary" size="md">
                 Edit Student
               </Button>
             )}
           </>
         )}
-        <Button onClick={() => setShowStudentDetail(false)} variant="secondary" size="medium">
+        <Button onClick={() => setShowStudentDetail(false)} variant="secondary" size="md">
           Close
         </Button>
       </div>
@@ -1037,20 +1041,20 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           onClose={closeInventoryModal}
           footer={
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
-              <Button type="button" onClick={closeInventoryModal} variant="secondary" size="medium">
+              <Button type="button" onClick={closeInventoryModal} variant="secondary" size="md">
                 Cancel
               </Button>
 
               {/* Return button - only for return mode */}
               {inventoryModalType === "return" && (
-                <Button type="button" onClick={handleReturnInventory} variant="success" size="medium" isLoading={loading}>
+                <Button type="button" onClick={handleReturnInventory} variant="success" size="md" loading={loading}>
                   Return Item
                 </Button>
               )}
 
               {/* Submit button - only for assign and edit modes */}
               {(inventoryModalType === "assign" || inventoryModalType === "edit") && (
-                <Button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} variant="primary" size="medium" isLoading={loading}>
+                <Button type="submit" form="inventory-form" disabled={loading || (inventoryModalType === "assign" && !inventoryFormData.hostelInventoryId)} variant="primary" size="md" loading={loading}>
                   {inventoryModalType === "assign" ? "Assign Item" : "Update Item"}
                 </Button>
               )}

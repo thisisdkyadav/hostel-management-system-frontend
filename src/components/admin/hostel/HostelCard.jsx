@@ -3,7 +3,8 @@ import { Building, Pencil, DoorClosed, Users, DoorOpen, Wrench, ClipboardList } 
 import EditHostelModal from "./EditHostelModal"
 import { Link } from "react-router-dom"
 import HostelDetailsModal from "./HostelDetailsModal"
-import { Card, CardHeader, CardBody, CardFooter, Button, VStack, HStack } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter, VStack, HStack } from "@/components/ui"
+import { Button } from "czero/react"
 
 const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -109,31 +110,28 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
             <Button
               onClick={() => setShowEditModal(true)}
               variant="secondary"
-              size="medium"
-              icon={<Pencil size={16} />}
+              size="md"
               fullWidth
             >
-              Edit Details
+              <Pencil size={16} /> Edit Details
             </Button>
             <Link to={`/admin/hostels/${hostel.name}`} style={{ flex: 1, textDecoration: 'none' }}>
               <Button
                 variant="secondary"
-                size="medium"
-                icon={<DoorOpen size={16} />}
+                size="md"
                 fullWidth
               >
-                View {hostel.type === "room-only" ? "Rooms" : "Units"}
+                <DoorOpen size={16} /> View {hostel.type === "room-only" ? "Rooms" : "Units"}
               </Button>
             </Link>
           </div>
           <Button
             onClick={() => setShowDetailsModal(true)}
             variant="secondary"
-            size="medium"
-            icon={<ClipboardList size={16} />}
+            size="md"
             fullWidth
           >
-            View Details
+            <ClipboardList size={16} /> View Details
           </Button>
         </CardFooter>
       </Card>

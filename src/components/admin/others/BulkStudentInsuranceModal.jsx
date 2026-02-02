@@ -1,7 +1,8 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Modal, Button, VStack, HStack, Alert, FileInput } from "@/components/ui"
+import { Modal, VStack, HStack, Alert, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 
 const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, providerName }) => {
   const [csvFile, setCsvFile] = useState(null)
@@ -147,8 +148,8 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
             <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
-              Download CSV Template
+            <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
+              <FaFileDownload /> Download CSV Template
             </Button>
 
             <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-hover)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
@@ -173,10 +174,11 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
                 setCsvFile(null)
               }}
                 variant="ghost"
-                size="small"
-                icon={<FaTimes />}
+                size="sm"
                 aria-label="Remove file"
-              />
+              >
+                <FaTimes />
+              </Button>
             </div>
           )}
           {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)' }}>{error}</div>}
@@ -225,18 +227,18 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
 
       <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
         {step === 1 ? (
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
         ) : (
-          <Button onClick={resetForm} variant="secondary" size="medium">
+          <Button onClick={resetForm} variant="secondary" size="md">
             Back
           </Button>
         )}
 
         {step === 2 && (
-          <Button onClick={handleUpdate} variant="primary" size="medium" icon={<FaCheck />} isLoading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
-            {isUpdating ? "Updating Insurance..." : "Confirm Update"}
+          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={parsedData.length === 0 || isLoading || isUpdating}>
+            <FaCheck /> {isUpdating ? "Updating Insurance..." : "Confirm Update"}
           </Button>
         )}
       </div>

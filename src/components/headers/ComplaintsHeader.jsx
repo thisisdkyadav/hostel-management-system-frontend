@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
 import { Filter, Plus, List, LayoutGrid } from "lucide-react"
@@ -21,29 +21,27 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
         value={viewMode}
         onChange={setViewMode}
         shape="rounded"
-        size="medium"
+        size="md"
         variant="muted"
       />
 
       {/* Filter Button */}
       <Button onClick={() => setShowFilters(!showFilters)}
         variant={showFilters ? "primary" : "white"}
-        size="medium"
-        icon={<Filter size={14} />}
+        size="md"
       >
-        <span className="hidden sm:inline">Filters</span>
+        <Filter size={14} /> <span className="hidden sm:inline">Filters</span>
       </Button>
 
       {/* Create Button */}
       {canAccess("complaints", "create") && WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
         <Button onClick={() => setShowCraftComplaint(true)}
           variant="primary"
-          size="medium"
-          icon={<Plus size={14} />}
+          size="md"
           animation="slideIn"
         // keepTextOnMobile
         >
-          New Complaint
+          <Plus size={14} /> New Complaint
         </Button>
       )}
     </PageHeader>

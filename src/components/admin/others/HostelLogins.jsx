@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { FaBuilding, FaPlus } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { SearchInput, Button } from "@/components/ui"
+import { SearchInput } from "@/components/ui"
+import { Button } from "czero/react"
 import NoResults from "../../common/NoResults"
 import HostelGateCard from "./HostelGateCard"
 import AddHostelGateModal from "./AddHostelGateModal"
@@ -53,7 +54,8 @@ const HostelLogins = () => {
     <div>
       <header style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 'var(--spacing-6)' }}>
         <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-body)' }}>Hostel Gate Logins</h2>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
+        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+          <FaPlus />
           Add Hostel Gate Login
         </Button>
       </header>

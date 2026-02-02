@@ -3,7 +3,8 @@ import { FiMail, FiPhone, FiHome, FiBook, FiBookmark, FiUser, FiHash, FiMapPin, 
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
-import { ErrorState, LoadingState, EmptyState, Button } from "@/components/ui"
+import { ErrorState, LoadingState, EmptyState } from "@/components/ui"
+import { Button } from "czero/react"
 import { studentApi, studentProfileApi } from "../../service"
 import StudentEditProfileModal from "./StudentEditProfileModal"
 import StudentFamilyDetails from "./StudentFamilyDetails"
@@ -71,8 +72,8 @@ const StudentProfile = ({ user }) => {
       <div className="flex justify-between items-start">
         <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree}`} />
 
-        <Button onClick={() => setIsEditModalOpen(true)} variant="primary" size="medium" icon={<FiEdit2 />}>
-          Edit Profile
+        <Button onClick={() => setIsEditModalOpen(true)} variant="primary" size="md">
+          <FiEdit2 /> Edit Profile
         </Button>
       </div>
 

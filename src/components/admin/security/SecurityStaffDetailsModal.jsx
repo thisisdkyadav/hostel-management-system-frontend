@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes } from "react-icons/fa"
-import { Modal, Button, VStack, HStack, Label, Spinner, Pagination, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, EmptyState, Badge } from "@/components/ui"
+import { Modal, VStack, HStack, Label, Spinner, Pagination, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, EmptyState, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -90,8 +91,8 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
               />
             </div>
             <div>
-              <Button onClick={clearFilters} variant="secondary" size="small" icon={<FaTimes />}>
-                Clear
+              <Button onClick={clearFilters} variant="secondary" size="sm">
+                <FaTimes /> Clear
               </Button>
             </div>
           </HStack>

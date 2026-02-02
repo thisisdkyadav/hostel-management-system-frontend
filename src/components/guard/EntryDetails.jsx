@@ -1,6 +1,6 @@
 import React from "react"
 import { FaTimes, FaUserCircle, FaDoorOpen, FaClock, FaCalendarAlt } from "react-icons/fa"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const EntryDetails = ({ entry, onClose }) => {
   if (!entry) return null
@@ -10,7 +10,7 @@ const EntryDetails = ({ entry, onClose }) => {
       <div style={{ backgroundColor: 'var(--modal-bg)', borderRadius: 'var(--modal-radius)', boxShadow: 'var(--modal-shadow)', width: '100%', maxWidth: 'var(--container-md)', margin: '0 var(--spacing-4)', padding: 'var(--spacing-6)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
           <h2 style={{ fontSize: 'var(--font-size-xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--modal-title-color)' }}>Entry Details</h2>
-          <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes />} aria-label="Close" />
+          <Button onClick={onClose} variant="ghost" size="sm" aria-label="Close"><FaTimes /></Button>
         </div>
 
         <div style={{ backgroundColor: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-4)' }}>
@@ -57,7 +57,7 @@ const EntryDetails = ({ entry, onClose }) => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Close
           </Button>
         </div>

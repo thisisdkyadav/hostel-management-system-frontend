@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { Modal, Button, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
+import { Modal, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
+import { Button } from "czero/react"
 import { Building, User, DoorOpen, Archive } from "lucide-react"
 import RoomManagementModal from "./RoomManagementModal"
 import { hostelApi } from "../../../service"
@@ -111,12 +112,12 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
               <Select name="gender" value={formData.gender} onChange={handleChange} icon={<User size={16} />} placeholder="Select Gender" options={[{ value: "Boys", label: "Boys" }, { value: "Girls", label: "Girls" }, { value: "Co-ed", label: "Co-ed" }]} error={errors.gender} />
             </div>
 
-            <Button type="button" onClick={handleArchiveToggle} variant="secondary" icon={<Archive size={16} />} fullWidth>
-              {isArchived ? "Unarchive Hostel" : "Archive Hostel"}
+            <Button type="button" onClick={handleArchiveToggle} variant="secondary" fullWidth>
+              <Archive size={16} /> {isArchived ? "Unarchive Hostel" : "Archive Hostel"}
             </Button>
 
-            <Button type="button" onClick={() => setShowRoomManagementModal(true)} variant="secondary" icon={<DoorOpen size={16} />} fullWidth>
-              Manage Hostel Rooms
+            <Button type="button" onClick={() => setShowRoomManagementModal(true)} variant="secondary" fullWidth>
+              <DoorOpen size={16} /> Manage Hostel Rooms
             </Button>
 
             <HStack justify="between" gap="small" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
@@ -124,7 +125,7 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
                 type="button"
                 onClick={onClose}
                 variant="secondary"
-                size="medium"
+                size="md"
               >
                 Cancel
               </Button>
@@ -132,8 +133,8 @@ const EditHostelModal = ({ hostel, onClose, onSave, refreshHostels }) => {
               <Button
                 type="submit"
                 variant="primary"
-                size="medium"
-                isLoading={isSubmitting}
+                size="md"
+                loading={isSubmitting}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Saving Changes..." : "Save Changes"}

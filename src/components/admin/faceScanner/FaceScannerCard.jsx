@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaCamera, FaEdit, FaTrash, FaKey, FaArrowRight, FaArrowLeft, FaBuilding, FaPowerOff } from "react-icons/fa"
-import { Card, CardHeader, CardBody, CardFooter, Button, Badge } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 import { faceScannerApi } from "../../../service"
 
 const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
@@ -149,7 +150,7 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
                     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-tertiary)" }}>Password:</span>
-                            <Button variant="secondary" size="small" onClick={() => copyToClipboard(newCredentials.password)}>
+                            <Button variant="secondary" size="sm" onClick={() => copyToClipboard(newCredentials.password)}>
                                 Copy Password
                             </Button>
                         </div>
@@ -160,14 +161,17 @@ const FaceScannerCard = ({ scanner, onUpdate, onDelete }) => {
             {/* Action Buttons */}
             <CardFooter style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: 0 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
-                    <Button onClick={handleRegeneratePassword} variant="secondary" size="medium" icon={<FaKey />} fullWidth disabled={loading}>
+                    <Button onClick={handleRegeneratePassword} variant="secondary" size="md" fullWidth disabled={loading}>
+                        <FaKey />
                         New Password
                     </Button>
-                    <Button onClick={handleToggleActive} variant="secondary" size="medium" icon={<FaPowerOff />} fullWidth disabled={loading}>
+                    <Button onClick={handleToggleActive} variant="secondary" size="md" fullWidth disabled={loading}>
+                        <FaPowerOff />
                         {scanner.isActive ? "Deactivate" : "Activate"}
                     </Button>
                 </div>
-                <Button onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />} fullWidth disabled={loading}>
+                <Button onClick={handleDelete} variant="danger" size="md" fullWidth disabled={loading}>
+                    <FaTrash />
                     Delete Scanner
                 </Button>
             </CardFooter>

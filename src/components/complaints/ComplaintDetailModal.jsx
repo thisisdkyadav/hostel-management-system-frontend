@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { MapPin, User, ClipboardList, FileText, Pencil, Star, CheckCircle, CalendarDays, MessageSquare } from "lucide-react"
 import { getStatusColor } from "../../utils/adminUtils"
-import { Modal, Button, Badge, HStack, VStack, Divider } from "@/components/ui"
+import { Modal, Badge, HStack, VStack, Divider } from "@/components/ui"
+import { Button } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { useAuth } from "../../contexts/AuthProvider"
 import UpdateComplaintModal from "./UpdateComplaintModal"
@@ -300,12 +301,14 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
             {/* Right - Action Buttons */}
             <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
               {canUpdateComplaint && (
-                <Button onClick={() => setShowUpdateModal(true)} variant="outline" size="small" icon={<Pencil size={14} />}>
+                <Button onClick={() => setShowUpdateModal(true)} variant="outline" size="sm">
+                  <Pencil size={14} />
                   Update
                 </Button>
               )}
               {user?.role === "Student" && user._id === complaintData.reportedBy.id && complaintData.status === "Resolved" && !complaintData.feedbackRating && (
-                <Button onClick={() => setShowFeedbackModal(true)} variant="success" size="small" icon={<Star size={14} />}>
+                <Button onClick={() => setShowFeedbackModal(true)} variant="success" size="sm">
+                  <Star size={14} />
                   Feedback
                 </Button>
               )}

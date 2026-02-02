@@ -3,7 +3,8 @@ import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaTrash, FaCal
 import EditInsuranceProviderModal from "./EditInsuranceProviderModal"
 import BulkStudentInsuranceModal from "./BulkStudentInsuranceModal"
 import { insuranceProviderApi } from "../../../service"
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
+import { Button } from "czero/react"
 
 const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
   const [showEditModal, setShowEditModal] = useState(false)
@@ -57,8 +58,8 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
               <h3 style={{ fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{provider.name}</h3>
             </div>
             <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="small" icon={<FaEdit />} title="Edit provider" />
-              <Button onClick={handleDelete} variant="ghost" size="small" icon={<FaTrash />} isLoading={isDeleting} disabled={isDeleting} title="Delete provider" />
+              <Button onClick={() => setShowEditModal(true)} variant="ghost" size="sm" title="Edit provider"><FaEdit /></Button>
+              <Button onClick={handleDelete} variant="ghost" size="sm" loading={isDeleting} disabled={isDeleting} title="Delete provider"><FaTrash /></Button>
             </div>
           </div>
         </CardHeader>
@@ -87,7 +88,8 @@ const InsuranceProviderCard = ({ provider, onUpdate, onDelete }) => {
         </CardBody>
 
         <CardFooter style={{ marginTop: 'var(--spacing-6)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-          <Button onClick={() => setShowBulkUpdateModal(true)} variant="secondary" size="medium" icon={<FaUsers />} fullWidth>
+          <Button onClick={() => setShowBulkUpdateModal(true)} variant="secondary" size="md" fullWidth>
+            <FaUsers />
             Update Student Insurance Details
           </Button>
         </CardFooter>

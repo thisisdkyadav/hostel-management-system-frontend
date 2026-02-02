@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaExclamationTriangle, FaBell, FaArrowRight, FaArrowLeft, FaTimes } from "react-icons/fa"
-import { Button, Modal, Input, Select, Checkbox, Textarea } from "@/components/ui"
+import { Modal, Input, Select, Checkbox, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 import { notificationApi, studentApi } from "../../service"
 import { useGlobal } from "../../contexts/GlobalProvider"
 
@@ -276,13 +277,12 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
                   handleReset()
                 }}
                 variant="secondary"
-                size="medium"
-                icon={<FaTimes />}
+                size="md"
               >
-                Cancel
+                <FaTimes /> Cancel
               </Button>
-              <Button type="button" onClick={moveToStep2} variant="primary" size="medium" icon={<FaArrowRight />}>
-                Continue
+              <Button type="button" onClick={moveToStep2} variant="primary" size="md">
+                <FaArrowRight /> Continue
               </Button>
             </div>
           </div>
@@ -357,11 +357,11 @@ const CreateNotificationModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div style={{ paddingTop: "var(--spacing-4)", borderTop: `var(--border-1) solid var(--color-border-light)` }}>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-4)" }}>
-              <Button type="button" onClick={() => setStep(1)} variant="secondary" size="medium" icon={<FaArrowLeft />}>
-                Back
+              <Button type="button" onClick={() => setStep(1)} variant="secondary" size="md">
+                <FaArrowLeft /> Back
               </Button>
-              <Button type="button" onClick={handleSubmit} variant="primary" size="medium" icon={<FaBell />} isLoading={loading} disabled={loading}>
-                {loading ? "Sending..." : "Send Notification"}
+              <Button type="button" onClick={handleSubmit} variant="primary" size="md" loading={loading} disabled={loading}>
+                <FaBell /> {loading ? "Sending..." : "Send Notification"}
               </Button>
             </div>
           </div>

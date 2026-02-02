@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaPrint } from "react-icons/fa"
-import { Modal, Button, Checkbox } from "@/components/ui"
+import { Modal, Checkbox } from "@/components/ui"
+import { Button } from "czero/react"
 
 const PrintComplaints = ({ complaints }) => {
   const [showPrintModal, setShowPrintModal] = useState(false)
@@ -98,8 +99,8 @@ const PrintComplaints = ({ complaints }) => {
   return (
     <>
       {/* Print Button */}
-      <Button variant="primary" size="small" onClick={handlePrint} icon={<FaPrint />} className="no-print">
-        <span style={{ display: 'none' }}>Print</span>
+      <Button variant="primary" size="sm" onClick={handlePrint} className="no-print">
+        <FaPrint /><span style={{ display: 'none' }}>Print</span>
       </Button>
 
       {/* Print Modal */}
@@ -115,11 +116,11 @@ const PrintComplaints = ({ complaints }) => {
             </div>
 
             <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', flexDirection: 'row', gap: 'var(--gap-sm)', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-              <Button variant="secondary" size="medium" onClick={() => setShowPrintModal(false)}>
+              <Button variant="secondary" size="md" onClick={() => setShowPrintModal(false)}>
                 Cancel
               </Button>
-              <Button variant="primary" size="medium" icon={<FaPrint />} onClick={confirmPrint}>
-                Print
+              <Button variant="primary" size="md" onClick={confirmPrint}>
+                <FaPrint /> Print
               </Button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUsers, FaSearch, FaFileCsv, FaUserMinus } from "react-icons/fa"
-import { Modal, Button, Input, VStack, HStack, Alert, SearchInput } from "@/components/ui"
+import { Modal, Input, VStack, HStack, Alert, SearchInput } from "@/components/ui"
+import { Button } from "czero/react"
 import { adminApi } from "../../../service"
 import NoResults from "../../common/NoResults"
 import BulkStudentUndertakingModal from "./BulkStudentUndertakingModal"
@@ -71,7 +72,8 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
             <div style={{ position: 'relative', width: '100%', maxWidth: '20rem' }}>
               <Input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search students..." icon={<FaSearch />} />
             </div>
-            <Button onClick={() => setShowBulkUpload(true)} variant="success" size="medium" icon={<FaFileCsv />}>
+            <Button onClick={() => setShowBulkUpload(true)} variant="success" size="md">
+              <FaFileCsv />
               Add Students (CSV)
             </Button>
           </HStack>
@@ -120,7 +122,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
                         </span>
                       </td>
                       <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', textAlign: 'right', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)' }}>
-                        <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="small" icon={<FaUserMinus />} title="Remove student" />
+                        <Button onClick={() => handleRemoveStudent(student.id)} variant="ghost" size="sm" title="Remove student"><FaUserMinus /></Button>
                       </td>
                     </tr>
                   ))}
@@ -130,7 +132,7 @@ const ManageStudentsModal = ({ show, undertakingId, undertakingTitle, onClose, o
           )}
 
           <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-2)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-            <Button type="button" onClick={onClose} variant="secondary" size="medium">
+            <Button type="button" onClick={onClose} variant="secondary" size="md">
               Close
             </Button>
           </HStack>

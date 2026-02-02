@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -282,7 +283,8 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
             </div>
           </div>
           <div style={styles.headerActions}>
-            <Button onClick={handleDownload} variant="success" size="small" icon={<FaDownload />}>
+            <Button onClick={handleDownload} variant="success" size="sm">
+              <FaDownload />
               Download
             </Button>
             <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.openButton}>
@@ -327,7 +329,8 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
                   <h3 style={styles.fallbackTitle}>Cannot display PDF in browser</h3>
                   <p style={styles.fallbackText}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
                   <div style={styles.fallbackActions}>
-                    <Button onClick={handleDownload} variant="success" size="medium" icon={<FaDownload />}>
+                    <Button onClick={handleDownload} variant="success" size="md">
+                      <FaDownload />
                       Download PDF
                     </Button>
                     <a href={fullUrl} target="_blank" rel="noopener noreferrer" style={styles.fallbackOpenButton}>
@@ -347,7 +350,8 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
             <div style={styles.errorBox}>
               <p style={styles.errorTitle}>Unable to load document</p>
               <p style={styles.errorText}>There was an error loading the document. Please try downloading it instead.</p>
-              <Button onClick={handleDownload} variant="danger" size="medium" icon={<FaDownload />}>
+              <Button onClick={handleDownload} variant="danger" size="md">
+                <FaDownload />
                 Download Document
               </Button>
             </div>

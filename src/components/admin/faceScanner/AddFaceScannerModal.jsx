@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 import { faceScannerApi, adminApi } from "../../../service"
 import { useEffect } from "react"
 
@@ -101,7 +102,7 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                         <Label>Username</Label>
                         <HStack gap="small">
                             <Input type="text" value={credentials.username} readOnly />
-                            <Button variant="secondary" size="medium" onClick={() => copyToClipboard(credentials.username)}>
+                            <Button variant="secondary" size="md" onClick={() => copyToClipboard(credentials.username)}>
                                 Copy
                             </Button>
                         </HStack>
@@ -111,14 +112,14 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                         <Label>Password</Label>
                         <HStack gap="small">
                             <Input type="text" value={credentials.password} readOnly />
-                            <Button variant="secondary" size="medium" onClick={() => copyToClipboard(credentials.password)}>
+                            <Button variant="secondary" size="md" onClick={() => copyToClipboard(credentials.password)}>
                                 Copy
                             </Button>
                         </HStack>
                     </div>
 
                     <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-                        <Button variant="primary" size="medium" onClick={handleClose}>
+                        <Button variant="primary" size="md" onClick={handleClose}>
                             Done
                         </Button>
                     </HStack>
@@ -149,10 +150,10 @@ const AddFaceScannerModal = ({ show, onClose, onAdd }) => {
                         </div>
 
                         <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-                            <Button type="button" onClick={handleClose} variant="secondary" size="medium">
+                            <Button type="button" onClick={handleClose} variant="secondary" size="md">
                                 Cancel
                             </Button>
-                            <Button type="submit" variant="primary" size="medium" disabled={loading}>
+                            <Button type="submit" variant="primary" size="md" disabled={loading}>
                                 {loading ? "Creating..." : "Create Scanner"}
                             </Button>
                         </HStack>

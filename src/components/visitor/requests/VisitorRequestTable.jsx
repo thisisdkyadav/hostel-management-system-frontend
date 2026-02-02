@@ -3,7 +3,8 @@ import { FaEye, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/f
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { DataTable, Button } from "@/components/ui"
+import { DataTable } from "@/components/ui"
+import { Button } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const StatusBadge = ({ status }) => {
   const statusMap = {
@@ -112,17 +113,21 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       align: "right",
       render: (request) => (
         <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-          <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaEye />} aria-label="View details" />
+          <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="View details">
+            <FaEye />
+          </Button>
 
           {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
-            <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaHome />} aria-label="Allocate rooms" />
+            <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Allocate rooms">
+              <FaHome />
+            </Button>
           )}
 
           {["Security", "Hostel Gate"].includes(user.role) && request.status === "Approved" && request.isAllocated && (
             <>
-              {!request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaSignInAlt />} aria-label="Check in visitor" />}
-              {request.checkInTime && !request.checkOutTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaSignOutAlt />} aria-label="Check out visitor" />}
-              {request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="small" icon={<FaClock />} aria-label="Edit check times" />}
+              {!request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Check in visitor"><FaSignInAlt /></Button>}
+              {request.checkInTime && !request.checkOutTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Check out visitor"><FaSignOutAlt /></Button>}
+              {request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Edit check times"><FaClock /></Button>}
             </>
           )}
         </div>

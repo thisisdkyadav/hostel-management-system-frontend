@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { FaTimes } from "react-icons/fa"
 import { createPortal } from "react-dom"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, tabs = null, activeTab = null, onTabChange = null, hideTitle = false, fullHeight = false }) => {
   const modalRef = useRef(null)
@@ -55,7 +55,7 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
               {!hideTitle && title && (
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" rounded />
+                  <Button onClick={onClose} variant="ghost" size="sm" aria-label="Close modal" className="!rounded-full"><FaTimes className="text-lg" /></Button>
                 </div>
               )}
               <div className="flex justify-between items-center">
@@ -79,23 +79,22 @@ const Modal = ({ title, children, onClose, width, autoWidth, minHeight, footer, 
                   {tabs.map((tab) => (
                     <Button key={tab.id} onClick={() => onTabChange && onTabChange(tab.id)}
                       variant={activeTab === tab.id ? "primary" : "ghost"}
-                      size="small"
-                      icon={tab.icon}
+                      size="sm"
                       style={{ borderBottom: activeTab === tab.id ? '2px solid var(--color-primary)' : '2px solid transparent' }}
                     >
-                      {tab.name}
+                      {tab.icon} {tab.name}
                     </Button>
                   ))}
                 </nav>
                 {hideTitle && (
-                  <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" rounded />
+                  <Button onClick={onClose} variant="ghost" size="sm" aria-label="Close modal" className="!rounded-full"><FaTimes className="text-lg" /></Button>
                 )}
               </div>
             </div>
           ) : (
             <div className="flex justify-between items-center">
               <h3 className="text-xl md:text-2xl font-bold text-[var(--color-primary)]">{title}</h3>
-              <Button onClick={onClose} variant="ghost" size="small" icon={<FaTimes className="text-lg" />} aria-label="Close modal" rounded />
+              <Button onClick={onClose} variant="ghost" size="sm" aria-label="Close modal" className="!rounded-full"><FaTimes className="text-lg" /></Button>
             </div>
           )}
         </div>

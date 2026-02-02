@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Button, Modal, Input } from "@/components/ui"
+import { Modal, Input } from "@/components/ui"
+import { Button } from "czero/react"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"
@@ -105,11 +106,11 @@ const ChangePasswordModal = ({ onClose, email }) => {
         </div>
 
         <div style={{ paddingTop: "var(--spacing-4)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
 
-          <Button type="submit" disabled={isSubmitting} variant="primary" size="medium" isLoading={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} variant="primary" size="md" loading={isSubmitting}>
             {isSubmitting ? "Updating Password..." : "Update Password"}
           </Button>
         </div>

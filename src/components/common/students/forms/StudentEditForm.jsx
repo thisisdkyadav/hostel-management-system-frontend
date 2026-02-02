@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import PersonalInfoSection from "./sections/PersonalInfoSection"
 import AcademicInfoSection from "./sections/AcademicInfoSection"
 import GuardianInfoSection from "./sections/GuardianInfoSection"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
   const [formData, setFormData] = useState(initialData)
@@ -117,7 +117,7 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
         {tabs.map((tab) => (
           <Button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
             variant={activeTab === tab.id ? "primary" : "ghost"}
-            size="small"
+            size="sm"
           >
             {tab.label}
           </Button>
@@ -131,10 +131,10 @@ const StudentEditForm = ({ initialData, onSubmit, onCancel, loading }) => {
       </div>
 
       <div style={styles.buttonContainer}>
-        <Button type="button" onClick={onCancel} disabled={loading} variant="secondary" size="medium">
+        <Button type="button" onClick={onCancel} disabled={loading} variant="secondary" size="md">
           Cancel
         </Button>
-        <Button type="submit" disabled={loading} variant="primary" size="medium" isLoading={loading}>
+        <Button type="submit" disabled={loading} variant="primary" size="md" loading={loading}>
           {loading ? "Saving..." : "Save Changes"}
         </Button>
       </div>

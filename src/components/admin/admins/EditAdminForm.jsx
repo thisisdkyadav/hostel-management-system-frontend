@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaPhone, FaUserShield } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { superAdminApi } from "../../../service"
-import { Modal, Button, Input, VStack, HStack, Label } from "@/components/ui"
+import { Modal, Input, VStack, HStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
@@ -178,22 +179,20 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
               type="button"
               onClick={handleDelete}
               variant="danger"
-              size="medium"
-              icon={<FaTrash />}
+              size="md"
               disabled={isLoading}
             >
-              Delete Administrator
+              <FaTrash /> Delete Administrator
             </Button>
 
             <Button
               type="submit"
               variant="primary"
-              size="medium"
-              icon={<FaSave />}
-              isLoading={isLoading}
+              size="md"
+              loading={isLoading}
               disabled={isLoading}
             >
-              {isLoading ? "Saving..." : "Save Changes"}
+              <FaSave /> {isLoading ? "Saving..." : "Save Changes"}
             </Button>
           </HStack>
         </VStack>

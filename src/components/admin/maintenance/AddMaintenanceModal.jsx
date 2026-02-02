@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiTool, FiPhone } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { Modal, Button, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const MAINTENANCE_CATEGORIES = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Attendant", "Other"]
 
@@ -104,11 +105,11 @@ const AddMaintenanceModal = ({ show, onClose, onSuccess }) => {
 
 
           <HStack gap="small" justify="end" style={{ paddingTop: "var(--spacing-4)", marginTop: "var(--spacing-5)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
-            <Button type="button" onClick={onClose} variant="secondary" size="medium">
+            <Button type="button" onClick={onClose} variant="secondary" size="md">
               Cancel
             </Button>
 
-            <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+            <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
               {loading ? "Adding..." : "Add Staff"}
             </Button>
           </HStack>

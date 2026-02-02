@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGraduate } from "react-icons/fa"
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
-import { Button, Modal, Input } from "@/components/ui"
+import { Modal, Input } from "@/components/ui"
+import { Button } from "czero/react"
 
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -273,11 +274,11 @@ const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row" style={{ justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', marginTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)` }}>
-          <Button onClick={onClose} variant="secondary" size="medium">
+          <Button onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button onClick={handleAllocateStudent} disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity} variant="primary" size="medium" isLoading={allocating} icon={allocating ? null : <FaUserPlus />}>
-            {allocating ? "Allocating..." : "Allocate Student"}
+          <Button onClick={handleAllocateStudent} disabled={!selectedStudent || !selectedBed || allocating || room.occupiedCount >= room.capacity} variant="primary" size="md" loading={allocating}>
+            {!allocating && <FaUserPlus />} {allocating ? "Allocating..." : "Allocate Student"}
           </Button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { IoCloseOutline } from "react-icons/io5"
 import { IoLogoApple, IoLogoAndroid } from "react-icons/io"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const PWAInstallPrompt = () => {
   // Temporarily disabled due to issues
@@ -145,12 +145,12 @@ const PWAInstallPrompt = () => {
                 </span>
               </div>
             ) : (
-              <Button onClick={handleInstallClick} variant="primary" size="medium" icon={<IoLogoAndroid size={18} />}>
-                Install App
+              <Button onClick={handleInstallClick} variant="primary" size="md">
+                <IoLogoAndroid size={18} /> Install App
               </Button>
             )}
           </div>
-          <Button onClick={dismissPrompt} variant="ghost" size="small" icon={<IoCloseOutline size={24} />} aria-label="Dismiss" />
+          <Button onClick={dismissPrompt} variant="ghost" size="sm" aria-label="Dismiss"><IoCloseOutline size={24} /></Button>
         </div>
       </div>
     )

@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { eventsApi } from "../../service"
-import { Modal, Button, Input, Select } from "@/components/ui"
+import { Modal, Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 import { FaCalendarAlt, FaClipboardList, FaBuilding, FaUserFriends } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
 import { useGlobal } from "../../contexts/GlobalProvider"
@@ -95,10 +96,10 @@ const AddEventModal = ({ show, onClose, onEventAdded }) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-light)`, gap: 'var(--spacing-3)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+          <Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium">
+          <Button type="submit" variant="primary" size="md">
             Add Event
           </Button>
         </div>

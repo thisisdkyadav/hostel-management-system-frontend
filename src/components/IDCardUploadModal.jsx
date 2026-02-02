@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react"
 import Cropper from "react-cropper"
 import "cropperjs/dist/cropper.css"
-import { Modal, Button, FileInput } from "@/components/ui"
+import { Modal, FileInput } from "@/components/ui"
+import { Button } from "czero/react"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
 import { uploadApi, idCardApi } from "../service"
 
@@ -133,11 +134,11 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-end pt-4 space-y-3 sm:space-y-0 sm:space-x-3">
-                  <Button type="button" onClick={handleReset} variant="secondary" size="medium" icon={<HiX />} className="order-last sm:order-first">
-                    Reset
+                  <Button type="button" onClick={handleReset} variant="secondary" size="md" className="order-last sm:order-first">
+                    <HiX /> Reset
                   </Button>
-                  <Button type="button" onClick={uploadImage} disabled={uploading} variant="primary" size="medium" icon={<HiUpload />} isLoading={uploading}>
-                    {uploading ? "Uploading..." : "Upload Image"}
+                  <Button type="button" onClick={uploadImage} disabled={uploading} variant="primary" size="md" loading={uploading}>
+                    <HiUpload /> {uploading ? "Uploading..." : "Upload Image"}
                   </Button>
                 </div>
               </>

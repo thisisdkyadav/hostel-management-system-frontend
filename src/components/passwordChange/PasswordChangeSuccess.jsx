@@ -1,5 +1,6 @@
 import React from "react"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { FaCheck } from "react-icons/fa"
 
 const PasswordChangeSuccess = ({ email, onClose }) => {
@@ -48,8 +49,8 @@ const PasswordChangeSuccess = ({ email, onClose }) => {
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={onClose} variant="primary" size="medium" icon={<FaCheck />}>
-            Done
+          <Button onClick={onClose} variant="primary" size="md">
+            <FaCheck /> Done
           </Button>
         </div>
       </div>

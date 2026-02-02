@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import CsvUploader from "../../common/CsvUploader"
 import RoomStatsSummary from "./RoomStatsSummary"
-import { Button, Input, VStack, HStack, Label } from "@/components/ui"
+import { Input, VStack, HStack, Label } from "@/components/ui"
+import { Button } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
 
 const UnitBasedForm = ({ formData, setFormData }) => {
@@ -166,21 +167,21 @@ const UnitBasedForm = ({ formData, setFormData }) => {
           <Button
             type="button"
             variant={inputMethod === "form" ? "primary" : "white"}
-            size="medium"
-            icon={<FaEdit />}
+            size="md"
             onClick={() => setInputMethod("form")}
             style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
           >
+            <FaEdit />
             Form Input
           </Button>
           <Button
             type="button"
             variant={inputMethod === "csv" ? "primary" : "white"}
-            size="medium"
-            icon={<FaTable />}
+            size="md"
             onClick={() => setInputMethod("csv")}
             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
           >
+            <FaTable />
             CSV Import
           </Button>
         </div>
@@ -231,7 +232,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
                   type="button"
                   onClick={() => removeException(index)}
                   variant="danger"
-                  size="small"
+                  size="sm"
                   className="col-span-2"
                 >
                   Remove Exception
@@ -242,7 +243,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
               type="button"
               onClick={addException}
               variant="success"
-              size="small"
+              size="sm"
             >
               Add Exception
             </Button>

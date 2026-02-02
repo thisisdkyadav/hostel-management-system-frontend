@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { Plus, Heart, Hospital, Pill, Eye, Edit, CalendarCheck, Settings } from "lucide-react"
 import { healthApi } from "../../../service"
 import { Link } from "react-router-dom"
-import { Button, Input, Select } from "@/components/ui"
+import { Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 import { useAuth } from "../../../contexts/AuthProvider"
@@ -205,8 +206,8 @@ const HealthTab = ({ userId }) => {
               </Link>
             )}
             {canAccess("students_info", "edit") && !editHealthData && (
-              <Button onClick={() => setEditHealthData(true)} variant="primary" size="small" icon={<Edit size={16} />}>
-                Edit
+              <Button onClick={() => setEditHealthData(true)} variant="primary" size="sm">
+                <Edit size={16} /> Edit
               </Button>
             )}
           </div>
@@ -259,10 +260,10 @@ const HealthTab = ({ userId }) => {
             </div>
 
             <div style={{ marginTop: 'var(--spacing-4)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-2)' }}>
-              <Button type="button" onClick={() => setEditHealthData(false)} variant="secondary" size="small">
+              <Button type="button" onClick={() => setEditHealthData(false)} variant="secondary" size="sm">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="small">
+              <Button type="submit" variant="primary" size="sm">
                 Save Changes
               </Button>
             </div>
@@ -313,8 +314,8 @@ const HealthTab = ({ userId }) => {
             Insurance Claims
           </h3>
           {canAccess("students_info", "edit") && (
-            <Button onClick={handleAddClaim} variant="primary" size="small" icon={<Plus size={16} />}>
-              Add Claim
+            <Button onClick={handleAddClaim} variant="primary" size="sm">
+              <Plus size={16} /> Add Claim
             </Button>
           )}
         </div>
@@ -348,8 +349,8 @@ const HealthTab = ({ userId }) => {
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{claim.hospitalName}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{new Intl.NumberFormat("en-US", { style: "currency", currency: "INR" }).format(claim.amount)}</td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>
-                      <Button onClick={() => handleViewClaim(claim)} variant="ghost" size="small" icon={<Eye size={16} />}>
-                        View
+                      <Button onClick={() => handleViewClaim(claim)} variant="ghost" size="sm">
+                        <Eye size={16} /> View
                       </Button>
                     </td>
                   </tr>

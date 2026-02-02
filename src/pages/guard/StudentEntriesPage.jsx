@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { FaUserGraduate, FaFilter } from "react-icons/fa"
-import { SearchInput, Tabs, Pagination, Button, Input, Select } from "@/components/ui"
+import { SearchInput, Tabs, Pagination, Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import StudentEntryTable from "../../components/guard/StudentEntryTable"
 import { securityApi } from "../../service"
@@ -218,8 +219,8 @@ const StudentEntriesPage = () => {
       <header style={styles.header}>
         <h1 style={styles.title}>Student Entry Management</h1>
         <div style={styles.headerActions}>
-          <Button onClick={() => setShowFilters(!showFilters)} variant={showFilters ? "primary" : "secondary"} size="medium" icon={<FaFilter />}>
-            Filters
+          <Button onClick={() => setShowFilters(!showFilters)} variant={showFilters ? "primary" : "secondary"} size="md">
+            <FaFilter /> Filters
           </Button>
         </div>
       </header>
@@ -247,7 +248,7 @@ const StudentEntriesPage = () => {
                 ]} />
               </div>
               <div style={{ display: "flex", alignItems: "flex-end" }}>
-                <Button onClick={handleClearDateFilter} variant="secondary" size="medium">
+                <Button onClick={handleClearDateFilter} variant="secondary" size="md">
                   Clear Date Filter
                 </Button>
               </div>

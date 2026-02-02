@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { Pagination, Button, Modal, Input, Select, Textarea } from "@/components/ui"
+import { Pagination, Modal, Input, Select, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const StudentAssignments = () => {
@@ -185,11 +186,11 @@ const StudentAssignments = () => {
             <Input type="text" name="rollNumber" value={filters.rollNumber} onChange={handleFilterChange} placeholder="Enter roll number..." />
           </div>
           <div className="flex self-end" style={{ gap: 'var(--gap-sm)' }}>
-            <Button onClick={resetFilters} variant="secondary" size="medium">
+            <Button onClick={resetFilters} variant="secondary" size="md">
               Reset
             </Button>
-            <Button onClick={() => fetchStudentInventory(1)} variant="primary" size="medium" icon={<FaFilter />}>
-              Filter
+            <Button onClick={() => fetchStudentInventory(1)} variant="primary" size="md">
+              <FaFilter /> Filter
             </Button>
           </div>
         </div>
@@ -253,9 +254,13 @@ const StudentAssignments = () => {
                     <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
                       {canAccess("student_inventory", "edit") && (
                         <div className="flex items-center" style={{ gap: 'var(--gap-sm)' }}>
-                          <Button onClick={() => handleViewEditItem(item)} variant="ghost" size="small" icon={<FaEdit />} aria-label="View/Edit Details" />
+                          <Button onClick={() => handleViewEditItem(item)} variant="ghost" size="sm" aria-label="View/Edit Details">
+                            <FaEdit />
+                          </Button>
                           {item.status === "Issued" && (
-                            <Button onClick={() => handleReturnItem(item)} variant="ghost" size="small" icon={<FaUndo />} aria-label="Return Item" />
+                            <Button onClick={() => handleReturnItem(item)} variant="ghost" size="sm" aria-label="Return Item">
+                              <FaUndo />
+                            </Button>
                           )}
                         </div>
                       )}
@@ -343,10 +348,10 @@ const StudentAssignments = () => {
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
-              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
+              <Button type="button" onClick={closeModal} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading} variant="primary" size="medium" isLoading={loading}>
+              <Button type="submit" disabled={loading} variant="primary" size="md" loading={loading}>
                 {loading ? "Updating..." : "Update Item"}
               </Button>
             </div>
@@ -390,10 +395,10 @@ const StudentAssignments = () => {
             </div>
 
             <div className="flex justify-end" style={{ gap: 'var(--gap-sm)' }}>
-              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
+              <Button type="button" onClick={closeModal} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading} variant="success" size="medium" isLoading={loading}>
+              <Button type="submit" disabled={loading} variant="success" size="md" loading={loading}>
                 {loading ? "Returning..." : "Return Item"}
               </Button>
             </div>

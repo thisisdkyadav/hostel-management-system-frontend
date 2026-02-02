@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Button, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
+import { Modal, Input, Select, Label, Alert, VStack, HStack } from "@/components/ui"
+import { Button } from "czero/react"
 import { DoorOpen, Users, Trash2 } from "lucide-react"
 
 const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
@@ -75,10 +76,10 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
           <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>Confirm Deletion</h3>
           <p style={{ color: 'var(--color-text-tertiary)' }}>Are you sure you want to delete this room? This action cannot be undone.</p>
           <HStack justify="end" gap="small">
-            <Button onClick={() => setConfirmDelete(false)} variant="outline" size="small">
+            <Button onClick={() => setConfirmDelete(false)} variant="outline" size="sm">
               Cancel
             </Button>
-            <Button onClick={handleDeleteRoom} variant="danger" size="small">
+            <Button onClick={handleDeleteRoom} variant="danger" size="sm">
               Delete Room
             </Button>
           </HStack>
@@ -115,10 +116,10 @@ const EditRoomModal = ({ room, isUnitBased, onSave, onDelete, onClose }) => {
             </div>
 
             <HStack gap="small" style={{ paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-              <Button onClick={onClose} type="button" variant="outline" size="medium">
+              <Button onClick={onClose} type="button" variant="outline" size="md">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="medium" isLoading={isSubmitting}>
+              <Button type="submit" variant="primary" size="md" loading={isSubmitting}>
                 {isSubmitting ? "Saving..." : "Save Changes"}
               </Button>
             </HStack>

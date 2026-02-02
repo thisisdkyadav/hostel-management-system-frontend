@@ -11,7 +11,8 @@ import LostFoundSummary from "../../components/student/LostFoundSummary"
 import EventsCalendar from "../../components/student/EventsCalendar"
 import DashboardStats from "../../components/student/DashboardStats"
 import QRCodeGenerator from "../../components/QRCodeGenerator"
-import { Modal, Button } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import usePwaMobile from "../../hooks/usePwaMobile"
 import UndertakingsBanner from "../../components/student/UndertakingsBanner"
 import ComplaintFeedbackPopup from "../../components/student/ComplaintFeedbackPopup"
@@ -495,7 +496,7 @@ const DashboardPage = () => {
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Unable to Load Dashboard</h2>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>{error}</p>
-          <Button onClick={fetchDashboardData} variant="primary" size="medium">
+          <Button onClick={fetchDashboardData} variant="primary" size="md">
             Try Again
           </Button>
         </div>
@@ -558,7 +559,7 @@ const DashboardPage = () => {
         <Modal title="Campus Access QR" onClose={() => setShowQRModal(false)} width={480}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' }}>
             <QRCodeGenerator />
-            <Button onClick={() => setShowQRModal(false)} fullWidth variant="secondary" size="medium">
+            <Button onClick={() => setShowQRModal(false)} fullWidth variant="secondary" size="md">
               Close
             </Button>
           </div>

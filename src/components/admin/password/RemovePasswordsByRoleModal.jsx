@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
-import { Modal, Button, Select, Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Select, Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
 
@@ -297,10 +298,10 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           )}
 
           <div style={styles.footer}>
-            <Button onClick={handleClose} variant="secondary" size="medium">
+            <Button onClick={handleClose} variant="secondary" size="md">
               Cancel
             </Button>
-            <Button onClick={handleProceed} variant="primary" size="medium" disabled={!selectedRole}>
+            <Button onClick={handleProceed} variant="primary" size="md" disabled={!selectedRole}>
               Proceed
             </Button>
           </div>
@@ -344,10 +345,10 @@ const RemovePasswordsByRoleModal = ({ isOpen, onClose, onRemove }) => {
           )}
 
           <div style={styles.footer}>
-            <Button onClick={handleBack} variant="secondary" size="medium" disabled={isProcessing}>
+            <Button onClick={handleBack} variant="secondary" size="md" disabled={isProcessing}>
               Back
             </Button>
-            <Button onClick={handleConfirmRemove} variant="danger" size="medium" isLoading={isProcessing} disabled={isProcessing || confirmText !== selectedRole}>
+            <Button onClick={handleConfirmRemove} variant="danger" size="md" loading={isProcessing} disabled={isProcessing || confirmText !== selectedRole}>
               {isProcessing ? "Processing..." : "Remove Passwords"}
             </Button>
           </div>

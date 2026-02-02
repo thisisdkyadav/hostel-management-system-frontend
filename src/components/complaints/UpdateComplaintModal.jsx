@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaEdit } from "react-icons/fa"
-import { Modal, Button, Select } from "@/components/ui"
+import { Modal, Select } from "@/components/ui"
+import { Button } from "czero/react"
 import { complaintApi } from "../../service"
 
 const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
@@ -93,9 +94,9 @@ const UpdateComplaintModal = ({ complaint, onClose, onUpdate }) => {
           <Button type="button" onClick={onClose} variant="outline" >
             Cancel
           </Button>
-          <Button type="submit" variant="primary" isLoading={isSubmitting} disabled={isSubmitting} icon={!isSubmitting && <FaEdit />}
+          <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}
           >
-            {isSubmitting ? 'Updating...' : 'Update Complaint'}
+            {!isSubmitting && <FaEdit />} {isSubmitting ? 'Updating...' : 'Update Complaint'}
           </Button>
         </div>
       </form>

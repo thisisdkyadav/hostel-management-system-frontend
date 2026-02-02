@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Pencil, Trash2, Search, Filter, FileUp } from "lucide-react"
-import { Button, Input, Select, IconButton, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
+import { Input, Select, IconButton, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
+import { Button } from "czero/react"
 import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
 import { adminApi } from "../../../../service"
@@ -116,7 +117,8 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
           </div>
         </HStack>
 
-        <Button variant="secondary" size="small" onClick={() => setShowBulkUpdateModal(true)} icon={<FileUp size={16} />}>
+        <Button variant="secondary" size="sm" onClick={() => setShowBulkUpdateModal(true)}>
+          <FileUp size={16} />
           Bulk Update via CSV
         </Button>
       </HStack>
@@ -149,7 +151,7 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
                   <IconButton
                     onClick={() => handleEditRoom(room)}
                     variant="ghost"
-                    size="small"
+                    size="sm"
                     icon={<Pencil size={16} />}
                     ariaLabel="Edit room"
                   />

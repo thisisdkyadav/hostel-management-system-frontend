@@ -1,6 +1,7 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Button, Select, Input } from "@/components/ui"
+import { Select, Input } from "@/components/ui"
+import { Button } from "czero/react"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
   return (
@@ -9,8 +10,8 @@ const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => 
         <h3 style={{ fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', marginBottom: 0 }}>
           <FaFilter style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Advanced Filters
         </h3>
-        <Button onClick={resetFilters} variant="outline" size="small" icon={<MdClearAll />}>
-          Reset Filters
+        <Button onClick={resetFilters} variant="outline" size="sm">
+          <MdClearAll /> Reset Filters
         </Button>
       </div>
 

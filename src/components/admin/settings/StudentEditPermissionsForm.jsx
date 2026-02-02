@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiLockClosed, HiPencil } from "react-icons/hi"
-import { Button, VStack, HStack, Badge } from "@/components/ui"
+import { VStack, HStack, Badge } from "@/components/ui"
+import { Button } from "czero/react"
 
 const getFieldDescription = (field) => {
   const descriptions = {
@@ -253,7 +254,8 @@ const StudentEditPermissionsForm = ({ permissions, onUpdate, isLoading }) => {
       </div>
 
       <div style={styles.submitContainer}>
-        <Button type="submit" variant="primary" size="large" fullWidth isLoading={isLoading} disabled={isLoading} icon={!isLoading ? <HiSave size={20} /> : null}>
+        <Button type="submit" variant="primary" size="lg" fullWidth loading={isLoading} disabled={isLoading}>
+          {!isLoading && <HiSave size={20} />}
           {isLoading ? "Updating..." : "Update Permissions"}
         </Button>
       </div>

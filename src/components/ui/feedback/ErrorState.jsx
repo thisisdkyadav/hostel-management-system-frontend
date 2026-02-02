@@ -1,6 +1,6 @@
 import React from "react"
 import { FiAlertCircle } from "react-icons/fi"
-import Button from "@/components/ui/button/Button"
+import { Button } from "czero/react"
 
 /**
  * ErrorState Component - Matches existing design language
@@ -24,7 +24,7 @@ const ErrorState = ({
       <h3 className="text-lg font-medium text-[var(--color-text-body)]">{title}</h3>
       <p className="text-[var(--color-text-muted)] mt-1 max-w-md mx-auto">{message}</p>
       {onRetry && (
-        <Button onClick={onRetry} variant="primary" size="medium" className="mt-4">
+        <Button onClick={onRetry} variant="primary" size="md" className="mt-4">
           {buttonText}
         </Button>
       )}

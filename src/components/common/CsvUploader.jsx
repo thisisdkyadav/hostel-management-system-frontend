@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 import { FaFileUpload, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import Button from "./Button"
+import { Button } from "czero/react"
 import FileInput from "./ui/FileInput"
 
 const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateHeaders, maxRecords = 500, instructionText }) => {
@@ -111,9 +111,7 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
       </div>
 
       <div className="flex flex-col items-center">
-        <Button onClick={generateCsvTemplate} variant="ghost" size="small" icon={<FaFileDownload />}>
-          Download CSV Template
-        </Button>
+        <Button onClick={generateCsvTemplate} variant="ghost" size="sm"><FaFileDownload /> Download CSV Template</Button>
 
         {instructionText && <div className="text-xs text-[var(--color-text-muted)] mt-2 bg-[var(--color-bg-tertiary)] p-3 rounded-lg w-full">{instructionText}</div>}
       </div>
@@ -126,7 +124,7 @@ const CsvUploader = ({ onDataParsed, requiredFields, templateFileName, templateH
           <Button onClick={(e) => {
             e.stopPropagation()
             resetFile()
-          }} variant="ghost" size="small" icon={<FaTimes />} title="Remove file" />
+          }} variant="ghost" size="sm" title="Remove file"><FaTimes /></Button>
         </div>
       )}
 

@@ -1,6 +1,7 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
-import { Button, Input } from "@/components/ui"
+import { Input } from "@/components/ui"
+import { Button } from "czero/react"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (
@@ -39,10 +40,10 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
 
             <div className="flex items-end space-x-1 pb-0.5">
               {index === allocatedRooms.length - 1 && (
-                <Button type="button" onClick={onAddRoom} variant="outline" size="small" icon={<FaPlus size={14} />} aria-label="Add another room" />
+                <Button type="button" onClick={onAddRoom} variant="outline" size="sm" aria-label="Add another room"><FaPlus size={14} /></Button>
               )}
               {allocatedRooms.length > 1 && (
-                <Button type="button" onClick={() => onRemoveRoom(index)} variant="danger" size="small" icon={<FaTrash size={14} />} aria-label="Remove room" />
+                <Button type="button" onClick={() => onRemoveRoom(index)} variant="danger" size="sm" aria-label="Remove room"><FaTrash size={14} /></Button>
               )}
             </div>
           </div>
@@ -50,10 +51,10 @@ const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRo
       </div>
 
       <div className="flex justify-end space-x-2 mt-4" style={{ gap: 'var(--spacing-3)' }}>
-        <Button onClick={onCancel} variant="secondary" size="medium">
+        <Button onClick={onCancel} variant="secondary" size="md">
           Cancel
         </Button>
-        <Button onClick={onSubmit} variant="primary" size="medium">
+        <Button onClick={onSubmit} variant="primary" size="md">
           Allocate Rooms
         </Button>
       </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaExclamationTriangle } from 'react-icons/fa'
-import { Button } from '@/components/ui'
+import { Button } from 'czero/react'
 
 const NotFoundPage = () => {
   return (
@@ -84,8 +84,8 @@ const NotFoundPage = () => {
         </p>
 
         <Link to="/">
-          <Button variant="primary" size="large" icon={<FaHome />}>
-            Go to Homepage
+          <Button variant="primary" size="lg">
+            <FaHome /> Go to Homepage
           </Button>
         </Link>
       </div>

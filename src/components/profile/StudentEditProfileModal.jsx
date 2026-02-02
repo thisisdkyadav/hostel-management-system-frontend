@@ -3,7 +3,8 @@ import { FiSave, FiUser, FiCalendar, FiMap, FiPhone, FiUsers, FiCamera } from "r
 import { HiPhone, HiUser, HiHome, HiCalendar, HiCamera, HiUsers, HiMail } from "react-icons/hi"
 import { FaUserShield } from "react-icons/fa"
 import { GiDroplets } from "react-icons/gi"
-import { Button, Modal, Input, Select, Textarea } from "@/components/ui"
+import { Modal, Input, Select, Textarea } from "@/components/ui"
+import { Button } from "czero/react"
 import { studentProfileApi } from "../../service"
 import ImageUploadModal from "../common/ImageUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
@@ -156,8 +157,8 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
               <img src={editableData.profileImage ? getMediaUrl(editableData.profileImage) : "https://via.placeholder.com/100"} alt="Profile" style={{ height: "var(--avatar-2xl)", width: "var(--avatar-2xl)", objectFit: "cover" }} />
             </div>
             <div>
-              <Button type="button" onClick={() => setIsImageModalOpen(true)} variant="outline" size="small" icon={<FiCamera />}>
-                Change Photo
+              <Button type="button" onClick={() => setIsImageModalOpen(true)} variant="outline" size="sm">
+                <FiCamera /> Change Photo
               </Button>
               <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>Maximum file size: 500KB</p>
             </div>
@@ -251,12 +252,12 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   const renderFooter = () => {
     return (
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
-        <Button type="button" onClick={onClose} variant="secondary" size="medium" disabled={saving}>
+        <Button type="button" onClick={onClose} variant="secondary" size="md" disabled={saving}>
           Cancel
         </Button>
         {activeTab === "profile" && (
-          <Button type="submit" form="edit-profile-form" variant="primary" size="medium" icon={<FiSave />} isLoading={saving} disabled={saving}>
-            {saving ? "Saving..." : "Save Changes"}
+          <Button type="submit" form="edit-profile-form" variant="primary" size="md" loading={saving} disabled={saving}>
+            <FiSave /> {saving ? "Saving..." : "Save Changes"}
           </Button>
         )}
       </div>

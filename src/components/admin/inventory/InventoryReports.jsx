@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaFilter, FaChartPie, FaBuilding, FaUserGraduate, FaListAlt, FaBox, FaBoxes } from "react-icons/fa"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Button, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 
 const InventoryReports = () => {
   const { hostelList } = useGlobal()
@@ -106,13 +107,16 @@ const InventoryReports = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="flex space-x-8">
-          <Button onClick={() => setActiveTab("hostel")} variant={activeTab === "hostel" ? "primary" : "ghost"} size="medium" icon={<FaBuilding />}>
+          <Button onClick={() => setActiveTab("hostel")} variant={activeTab === "hostel" ? "primary" : "ghost"} size="md">
+            <FaBuilding />
             By Hostel
           </Button>
-          <Button onClick={() => setActiveTab("student")} variant={activeTab === "student" ? "primary" : "ghost"} size="medium" icon={<FaUserGraduate />}>
+          <Button onClick={() => setActiveTab("student")} variant={activeTab === "student" ? "primary" : "ghost"} size="md">
+            <FaUserGraduate />
             By Student
           </Button>
-          <Button onClick={() => setActiveTab("itemType")} variant={activeTab === "itemType" ? "primary" : "ghost"} size="medium" icon={<FaListAlt />}>
+          <Button onClick={() => setActiveTab("itemType")} variant={activeTab === "itemType" ? "primary" : "ghost"} size="md">
+            <FaListAlt />
             By Item Type
           </Button>
         </nav>

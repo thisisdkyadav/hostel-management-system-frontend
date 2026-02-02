@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { StatCards, Button, ToggleButtonGroup } from "@/components/ui"
+import { StatCards, ToggleButtonGroup } from "@/components/ui"
+import { Button } from "czero/react"
 import { BiError, BiCalendarEvent, BiBuildings } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
 import { MdChangeCircle, MdDashboard } from "react-icons/md"
@@ -144,7 +145,7 @@ const DashboardPage = () => {
               value={normalizedView}
               onChange={setNormalizedView}
               shape="pill"
-              size="small"
+              size="sm"
               variant="muted"
               hideLabelsOnMobile={false}
             />

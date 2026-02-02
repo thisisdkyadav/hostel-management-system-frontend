@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 
@@ -233,7 +233,8 @@ const Certificates = ({ userId }) => {
       <div style={styles.header}>
         <h3 style={styles.title}>Certificates Issued</h3>
         {canAccess("students_info", "create") && (
-          <Button variant="primary" size="small" icon={<Plus size={16} />} onClick={handleAddClick}>
+          <Button variant="primary" size="sm" onClick={handleAddClick}>
+            <Plus size={16} />
             Add Certificate
           </Button>
         )}
@@ -244,7 +245,7 @@ const Certificates = ({ userId }) => {
           <p style={styles.emptyText}>No certificates found.</p>
           {canAccess("students_info", "create") && (
             <div style={styles.emptyAddButton}>
-              <Button variant="secondary" size="small" onClick={handleAddClick}>
+              <Button variant="secondary" size="sm" onClick={handleAddClick}>
                 Add Certificate
               </Button>
             </div>
@@ -276,11 +277,11 @@ const Certificates = ({ userId }) => {
                   </div>
                 </div>
                 <div style={styles.cardActions}>
-                  <Button onClick={() => handleViewClick(certificate.certificateUrl)} variant="success" size="small">
+                  <Button onClick={() => handleViewClick(certificate.certificateUrl)} variant="success" size="sm">
                     View
                   </Button>
                   {canAccess("students_info", "edit") && (
-                    <Button onClick={() => handleEditClick(certificate)} variant="secondary" size="small">
+                    <Button onClick={() => handleEditClick(certificate)} variant="secondary" size="sm">
                       Edit
                     </Button>
                   )}

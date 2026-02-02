@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import Button from "./Button"
+import { Button } from "czero/react"
 
 const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
   const [visible, setVisible] = useState(true)
@@ -21,7 +21,7 @@ const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
         <Button onClick={() => {
           if (onAction) onAction()
           setVisible(false)
-        }} variant="primary" size="small">
+        }} variant="primary" size="sm">
           {action}
         </Button>
       )}
@@ -29,7 +29,7 @@ const Toast = ({ message, action, onAction, onClose, duration = 0 }) => {
         <Button onClick={() => {
           setVisible(false)
           onClose()
-        }} variant="ghost" size="small" aria-label="Close">
+        }} variant="ghost" size="sm" aria-label="Close">
           ×
         </Button>
       )}

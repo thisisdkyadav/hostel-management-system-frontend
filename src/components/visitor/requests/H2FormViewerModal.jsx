@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Button, Modal } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 
 const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -51,8 +52,8 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-            <Button onClick={handleDownload} variant="success" size="small" icon={<FaDownload />}>
-              Download
+            <Button onClick={handleDownload} variant="success" size="sm">
+              <FaDownload /> Download
             </Button>
             <a href={h2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
@@ -98,8 +99,8 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                   <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-2)' }}>Cannot display PDF in browser</h3>
                   <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>Your browser doesn't support embedded PDFs. Please download the file or open it in a new tab.</p>
                   <div style={{ display: 'flex', gap: 'var(--spacing-3)' }}>
-                    <Button onClick={handleDownload} variant="success" size="medium" icon={<FaDownload />}>
-                      Download PDF
+                    <Button onClick={handleDownload} variant="success" size="md">
+                      <FaDownload /> Download PDF
                     </Button>
                     <a href={h2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
@@ -120,8 +121,8 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             <div style={{ backgroundColor: 'var(--color-danger-bg-light)', border: `var(--border-1) solid var(--color-danger-border)`, borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)' }}>
               <p style={{ color: 'var(--color-danger-text)', fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-2)' }}>Unable to load document</p>
               <p style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--spacing-4)' }}>There was an error loading the document. Please try downloading it instead.</p>
-              <Button onClick={handleDownload} variant="danger" size="medium" icon={<FaDownload />}>
-                Download Document
+              <Button onClick={handleDownload} variant="danger" size="md">
+                <FaDownload /> Download Document
               </Button>
             </div>
           </div>

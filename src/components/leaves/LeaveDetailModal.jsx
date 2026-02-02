@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Modal, Button } from "@/components/ui"
+import { Modal } from "@/components/ui"
+import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
 const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) => {
@@ -221,22 +222,22 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
 
           {/* Action Buttons */}
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
-            <Button onClick={onClose} variant="secondary" size="medium">
+            <Button onClick={onClose} variant="secondary" size="md">
               Close
             </Button>
 
             {canJoinLeave && (
-              <Button onClick={() => setShowJoinModal(true)} variant="info" size="medium" disabled={loading}>
+              <Button onClick={() => setShowJoinModal(true)} variant="info" size="md" disabled={loading}>
                 Join Leave
               </Button>
             )}
 
             {canModifyStatus && (
               <>
-                <Button onClick={() => openDecisionModal("reject")} variant="danger" size="medium" disabled={loading}>
+                <Button onClick={() => openDecisionModal("reject")} variant="danger" size="md" disabled={loading}>
                   Reject
                 </Button>
-                <Button onClick={() => openDecisionModal("approve")} variant="success" size="medium" disabled={loading}>
+                <Button onClick={() => openDecisionModal("approve")} variant="success" size="md" disabled={loading}>
                   Approve
                 </Button>
               </>
@@ -319,10 +320,10 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
-              <Button type="button" onClick={() => setShowDecisionModal(false)} variant="secondary" size="medium">
+              <Button type="button" onClick={() => setShowDecisionModal(false)} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="button" onClick={submitDecision} variant={decisionType === "approve" ? "success" : "danger"} size="medium" disabled={decisionLoading} loading={decisionLoading}>
+              <Button type="button" onClick={submitDecision} variant={decisionType === "approve" ? "success" : "danger"} size="md" disabled={decisionLoading} loading={decisionLoading}>
                 {decisionType === "approve" ? "Confirm Approval" : "Confirm Rejection"}
               </Button>
             </div>
@@ -393,10 +394,10 @@ const LeaveDetailModal = ({ leave, onClose, onUpdated, isAdmin, isSelfView }) =>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: 'var(--gap-sm)', paddingTop: 'var(--spacing-6)', borderTop: `var(--border-1) solid var(--color-border-primary)`, flexWrap: 'wrap' }}>
-              <Button type="button" onClick={() => setShowJoinModal(false)} variant="secondary" size="medium">
+              <Button type="button" onClick={() => setShowJoinModal(false)} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="button" onClick={submitJoinLeave} variant="info" size="medium" disabled={joinLoading} loading={joinLoading}>
+              <Button type="button" onClick={submitJoinLeave} variant="info" size="md" disabled={joinLoading} loading={joinLoading}>
                 Confirm Join
               </Button>
             </div>

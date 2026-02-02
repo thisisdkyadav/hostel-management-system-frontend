@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
-import { Modal, Button, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Modal, Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button } from "czero/react"
 import { uploadApi } from "../../../service"
 
 const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {
@@ -178,7 +179,8 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-3)' }}>
             <h3 style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Select Visitors</h3>
-            <Button type="button" onClick={handleAddProfile} variant="ghost" size="small" icon={<FaPlus size={12} />}>
+            <Button type="button" onClick={handleAddProfile} variant="ghost" size="sm">
+              <FaPlus size={12} />
               Add New Profile
             </Button>
           </div>
@@ -279,10 +281,11 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                       </div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--spacing-3)' }}>
-                      <Button type="button" onClick={removeH2Form} variant="secondary" size="small">
+                      <Button type="button" onClick={removeH2Form} variant="secondary" size="sm">
                         Remove
                       </Button>
-                      <Button type="button" onClick={uploadH2Form} disabled={h2FormUploading} variant="primary" size="small" icon={h2FormUploading ? null : <FaUpload size={12} />} isLoading={h2FormUploading}>
+                      <Button type="button" onClick={uploadH2Form} disabled={h2FormUploading} variant="primary" size="sm" loading={h2FormUploading}>
+                        {h2FormUploading ? null : <FaUpload size={12} />}
                         {h2FormUploading ? "Uploading..." : "Upload"}
                       </Button>
                     </div>
@@ -311,7 +314,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
                   <p style={{ color: 'var(--color-success-text)', fontWeight: 'var(--font-weight-medium)', fontSize: 'var(--font-size-sm)' }}>H2 Form Uploaded Successfully</p>
                   <p style={{ color: 'var(--color-success)', fontSize: 'var(--font-size-xs)' }}>Ready to submit visitor request</p>
                 </div>
-                <Button type="button" onClick={removeH2Form} variant="ghost" size="small">
+                <Button type="button" onClick={removeH2Form} variant="ghost" size="sm">
                   Change
                 </Button>
               </div>
@@ -321,10 +324,10 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
 
         {/* Submit Section */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', gap: 'var(--spacing-3)' }}>
-          <Button type="button" onClick={onClose} variant="secondary" size="medium">
+<Button type="button" onClick={onClose} variant="secondary" size="md">
             Cancel
           </Button>
-          <Button type="submit" variant="primary" size="medium" disabled={loading || visitorProfiles.length === 0 || !h2FormUploaded} isLoading={loading}>
+          <Button type="submit" variant="primary" size="md" disabled={loading || visitorProfiles.length === 0 || !h2FormUploaded} loading={loading}>
             {loading ? "Submitting..." : "Submit Request"}
           </Button>
         </div>

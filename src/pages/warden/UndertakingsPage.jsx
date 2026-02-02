@@ -6,7 +6,7 @@ import UndertakingCard from "../../components/admin/others/UndertakingCard"
 import AddUndertakingModal from "../../components/admin/others/AddUndertakingModal"
 import { adminApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Button } from "@/components/ui"
+import { Button } from "czero/react"
 
 const filterUndertakings = (undertakings, filterStatus, searchTerm) => {
   return undertakings
@@ -71,8 +71,8 @@ const UndertakingsPage = () => {
       <header style={styles.header} className="header-responsive">
         <h1 style={styles.title}>Undertakings Management</h1>
         {isAdmin && (
-          <Button onClick={() => setShowAddModal(true)} variant="primary" size="medium" icon={<FaPlus />}>
-            Add Undertaking
+          <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+            <FaPlus /> Add Undertaking
           </Button>
         )}
       </header>

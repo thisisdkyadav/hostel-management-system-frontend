@@ -1,5 +1,5 @@
 import React from "react"
-import Button from "@/components/ui/button/Button"
+import { Button } from "czero/react"
 import OldButton from "@/components/old-ui/OldButton"
 import { FaPlus, FaDownload, FaEnvelope } from "react-icons/fa"
 
@@ -8,7 +8,7 @@ import { FaPlus, FaDownload, FaEnvelope } from "react-icons/fa"
  */
 const UIExamplesPage = () => {
     const variants = ["primary", "secondary", "danger", "success", "outline", "white", "ghost"]
-    const sizes = ["small", "medium", "large"]
+    const sizes = ["sm", "md", "lg"]
 
     return (
         <div className="min-h-screen bg-[var(--color-bg-page)] p-8">
@@ -122,7 +122,7 @@ const UIExamplesPage = () => {
                                         <OldButton isLoading>Loading</OldButton>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <Button isLoading>Loading</Button>
+                                        <Button loading>Loading</Button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -140,7 +140,7 @@ const UIExamplesPage = () => {
                                         <OldButton rounded>Rounded</OldButton>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <Button rounded>Rounded</Button>
+                                        <Button className="!rounded-full">Rounded</Button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -169,7 +169,7 @@ const UIExamplesPage = () => {
                                         <OldButton icon={<FaPlus />}>Add Item</OldButton>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <Button icon={<FaPlus />}>Add Item</Button>
+                                        <Button><FaPlus /> Add Item</Button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -178,7 +178,7 @@ const UIExamplesPage = () => {
                                         <OldButton variant="secondary" icon={<FaDownload />}>Download</OldButton>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <Button variant="secondary" icon={<FaDownload />}>Download</Button>
+                                        <Button variant="secondary"><FaDownload /> Download</Button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -187,7 +187,7 @@ const UIExamplesPage = () => {
                                         <OldButton variant="outline" icon={<FaEnvelope />}>Send Email</OldButton>
                                     </td>
                                     <td className="px-4 py-4">
-                                        <Button variant="outline" icon={<FaEnvelope />}>Send Email</Button>
+                                        <Button variant="outline"><FaEnvelope /> Send Email</Button>
                                     </td>
                                 </tr>
                             </tbody>

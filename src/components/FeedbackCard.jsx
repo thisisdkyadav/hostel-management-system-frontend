@@ -5,7 +5,8 @@ import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
-import { Card, Button } from "@/components/ui"
+import { Card } from "@/components/ui"
+import { Button } from "czero/react"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
   const { canAccess } = useAuth()
@@ -189,33 +190,33 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
       <Card.Footer className="mt-4 pt-3 border-t border-[var(--color-border-light)] flex justify-end space-x-3">
         {!isStudentView && canAccess("feedback", "react") && status === "Pending" && !feedback.reply && (
           <>
-            <Button onClick={() => setIsReplyModalOpen(true)} variant="primary" size="small" icon={<HiReply />}>
-              Reply
+            <Button onClick={() => setIsReplyModalOpen(true)} variant="primary" size="sm">
+              <HiReply /> Reply
             </Button>
-            <Button onClick={handleToggleSeen} disabled={isUpdating} variant="outline" size="small" icon={<HiEye />} isLoading={isUpdating}>
-              {isUpdating ? "Updating..." : "Mark as Seen"}
+            <Button onClick={handleToggleSeen} disabled={isUpdating} variant="outline" size="sm" loading={isUpdating}>
+              <HiEye /> {isUpdating ? "Updating..." : "Mark as Seen"}
             </Button>
           </>
         )}
 
         {!isStudentView && canAccess("feedback", "react") && status === "Seen" && (
           <>
-            <Button onClick={() => setIsReplyModalOpen(true)} variant="outline" size="small" icon={<HiReply />}>
-              {feedback.reply ? "Edit Reply" : "Add Reply"}
+            <Button onClick={() => setIsReplyModalOpen(true)} variant="outline" size="sm">
+              <HiReply /> {feedback.reply ? "Edit Reply" : "Add Reply"}
             </Button>
-            <Button onClick={handleToggleSeen} disabled={isUpdating} variant="outline" size="small" icon={<HiEye />} isLoading={isUpdating}>
-              {isUpdating ? "Updating..." : "Mark as Pending"}
+            <Button onClick={handleToggleSeen} disabled={isUpdating} variant="outline" size="sm" loading={isUpdating}>
+              <HiEye /> {isUpdating ? "Updating..." : "Mark as Pending"}
             </Button>
           </>
         )}
 
         {isStudentView && canAccess("feedback", "react") && isPending && (
           <>
-            <Button onClick={() => setIsEditModalOpen(true)} variant="outline" size="small" icon={<HiPencilAlt />}>
-              Edit
+            <Button onClick={() => setIsEditModalOpen(true)} variant="outline" size="sm">
+              <HiPencilAlt /> Edit
             </Button>
-            <Button onClick={handleDelete} disabled={isUpdating} variant="danger" size="small" icon={<HiTrash />} isLoading={isUpdating}>
-              {isUpdating ? "Deleting..." : "Delete"}
+            <Button onClick={handleDelete} disabled={isUpdating} variant="danger" size="sm" loading={isUpdating}>
+              <HiTrash /> {isUpdating ? "Deleting..." : "Delete"}
             </Button>
           </>
         )}

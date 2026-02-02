@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Modal, Button, Input, Select, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Modal, Input, Select, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Button } from "czero/react"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 
 const HostelAllocation = () => {
@@ -204,9 +205,9 @@ const HostelAllocation = () => {
         <Button
           onClick={openNewAllocationModal}
           variant="primary"
-          size="medium"
-          icon={<FaPlus />}
+          size="md"
         >
+          <FaPlus />
           Allocate Items
         </Button>
       </div>
@@ -244,10 +245,11 @@ const HostelAllocation = () => {
             />
           </VStack>
           <div className="flex gap-2">
-            <Button onClick={resetFilters} variant="secondary" size="medium">
+            <Button onClick={resetFilters} variant="secondary" size="md">
               Reset
             </Button>
-            <Button onClick={() => fetchHostelInventory(1)} variant="primary" size="medium" icon={<FaFilter />}>
+            <Button onClick={() => fetchHostelInventory(1)} variant="primary" size="md">
+              <FaFilter />
               Filter
             </Button>
           </div>
@@ -269,10 +271,10 @@ const HostelAllocation = () => {
             <Button
               onClick={openNewAllocationModal}
               variant="primary"
-              size="small"
-              icon={<FaPlus />}
+              size="sm"
               style={{ marginTop: 'var(--spacing-4)' }}
             >
+              <FaPlus />
               Allocate your first item
             </Button>
           </div>
@@ -316,8 +318,8 @@ const HostelAllocation = () => {
                     </td>
                     <td style={{ padding: 'var(--spacing-4) var(--spacing-6)', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-                        <Button onClick={() => handleEdit(allocation)} variant="secondary" size="small" icon={<FaEdit />} />
-                        <Button onClick={() => handleDelete(allocation._id)} variant="danger" size="small" icon={<FaTrash />} />
+                        <Button onClick={() => handleEdit(allocation)} variant="secondary" size="sm"><FaEdit /></Button>
+                        <Button onClick={() => handleDelete(allocation._id)} variant="danger" size="sm"><FaTrash /></Button>
                       </div>
                     </td>
                   </tr>
@@ -350,10 +352,10 @@ const HostelAllocation = () => {
               <Input id="allocatedCount" type="number" name="allocatedCount" value={currentAllocation.allocatedCount} onChange={handleInputChange} min={1} max={calculateAvailableToAllocate() + (isEditMode ? currentAllocation.allocatedCount : 0)} required />
             </VStack>
             <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-4)' }}>
-              <Button type="button" onClick={closeModal} variant="secondary" size="medium">
+              <Button type="button" onClick={closeModal} variant="secondary" size="md">
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="medium" isLoading={loading} disabled={loading}>
+              <Button type="submit" variant="primary" size="md" loading={loading} disabled={loading}>
                 {isEditMode ? "Update" : "Allocate"}
               </Button>
             </HStack>

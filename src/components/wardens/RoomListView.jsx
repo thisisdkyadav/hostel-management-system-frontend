@@ -1,6 +1,7 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
-import { DataTable, Button } from "@/components/ui"
+import { DataTable } from "@/components/ui"
+import { Button } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
@@ -96,9 +97,9 @@ const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {
       align: "right",
       render: (room) => (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--gap-sm)" }}>
-          <Button onClick={(e) => { e.stopPropagation(); onRoomClick(room); }} variant="ghost" size="small" icon={<FaEye />} aria-label="View details" />
+          <Button onClick={(e) => { e.stopPropagation(); onRoomClick(room); }} variant="ghost" size="sm" aria-label="View details"><FaEye /></Button>
           {["Admin"].includes(user.role) && room.status !== "Inactive" && room.currentOccupancy < room.capacity && (
-            <Button onClick={(e) => { e.stopPropagation(); onAllocateClick(room); }} variant="ghost" size="small" icon={<FaUserPlus />} aria-label="Allocate student" />
+            <Button onClick={(e) => { e.stopPropagation(); onAllocateClick(room); }} variant="ghost" size="sm" aria-label="Allocate student"><FaUserPlus /></Button>
           )}
         </div>
       ),

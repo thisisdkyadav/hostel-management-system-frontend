@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
-import { Modal, Button, Input, Select } from "@/components/ui"
+import { Modal, Input, Select } from "@/components/ui"
+import { Button } from "czero/react"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
@@ -162,16 +163,16 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-6)' }}>
         {canAccess("students_info", "edit") && (
-          <Button onClick={() => setIsEditing(true)} variant="primary" size="medium" icon={<FaEdit />}>
-            Edit Claim
+          <Button onClick={() => setIsEditing(true)} variant="primary" size="md">
+            <FaEdit /> Edit Claim
           </Button>
         )}
         {canAccess("students_info", "edit") && (
-          <Button onClick={handleDelete} variant="danger" size="medium" icon={<FaTrash />}>
-            Delete Claim
+          <Button onClick={handleDelete} variant="danger" size="md">
+            <FaTrash /> Delete Claim
           </Button>
         )}
-        <Button onClick={onClose} variant="secondary" size="medium">
+        <Button onClick={onClose} variant="secondary" size="md">
           Close
         </Button>
       </div>
@@ -216,8 +217,8 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)' }}>
-        <Button type="submit" variant="primary" size="medium" icon={<FaSave />}>
-          {isNew ? "Add Claim" : "Save Changes"}
+        <Button type="submit" variant="primary" size="md">
+          <FaSave /> {isNew ? "Add Claim" : "Save Changes"}
         </Button>
         <Button type="button" onClick={() => {
           if (isNew) {
@@ -225,7 +226,7 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
           } else {
             setIsEditing(false)
           }
-        }} variant="secondary" size="medium">
+        }} variant="secondary" size="md">
           Cancel
         </Button>
       </div>

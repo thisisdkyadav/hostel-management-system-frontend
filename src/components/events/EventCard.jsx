@@ -6,7 +6,8 @@ import EventDetailModal from "./EventDetailModal"
 import { eventsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
-import { Card, Button } from "@/components/ui"
+import { Card } from "@/components/ui"
+import { Button } from "czero/react"
 
 const EventCard = ({ event, refresh }) => {
   const { user } = useAuth()
@@ -109,8 +110,8 @@ const EventCard = ({ event, refresh }) => {
 
         <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', justifyContent: 'flex-end' }}>
           {["Admin"].includes(user.role) && (
-            <Button onClick={handleEditClick} variant="outline" size="small" icon={<FaEdit />}>
-              Edit
+            <Button onClick={handleEditClick} variant="outline" size="sm">
+              <FaEdit /> Edit
             </Button>
           )}
         </Card.Footer>

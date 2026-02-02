@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Filter, Calendar, UserCog, Users, Search, UserCheck, Check, X } from "lucide-react"
-import { Modal, Button, Select, Label, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, Badge, Spinner, Pagination } from "@/components/ui"
+import { Modal, Select, Label, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, Badge, Spinner, Pagination } from "@/components/ui"
+import { Button } from "czero/react"
 import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -221,9 +222,9 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
               <Button
                 onClick={clearFilters}
                 variant="secondary"
-                size="small"
-                icon={<X size={14} />}
+                size="sm"
               >
+                <X size={14} />
                 Clear
               </Button>
             </div>

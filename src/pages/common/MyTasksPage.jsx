@@ -3,7 +3,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Pagination, Button, Input } from "@/components/ui"
+import { Pagination, Input } from "@/components/ui"
+import { Button } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
 const MyTasksPage = () => {
@@ -316,7 +317,7 @@ const MyTasksPage = () => {
                             <Button
                               onClick={(e) => handleQuickUpdateStatus(e, task._id, "In Progress")}
                               variant="ghost"
-                              size="small"
+                              size="sm"
                             >
                               Start
                             </Button>
@@ -325,7 +326,7 @@ const MyTasksPage = () => {
                             <Button
                               onClick={(e) => handleQuickUpdateStatus(e, task._id, "Completed")}
                               variant="success"
-                              size="small"
+                              size="sm"
                             >
                               Complete
                             </Button>
@@ -333,7 +334,7 @@ const MyTasksPage = () => {
                           <Button
                             onClick={() => viewTaskDetails(task)}
                             variant="secondary"
-                            size="small"
+                            size="sm"
                           >
                             Details
                           </Button>
