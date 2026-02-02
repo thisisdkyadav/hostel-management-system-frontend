@@ -27,7 +27,6 @@ export default [
         alias: {
           map: [
             ['@', './src'],
-            ['czero/react', './czero.config.js'],
           ],
           extensions: ['.js', '.jsx'],
         },
@@ -38,7 +37,7 @@ export default [
       'import/cache': {
         lifetime: Infinity,
       },
-      'import/ignore': ['node_modules'],
+      'import/ignore': ['node_modules', '^czero(/.*)?$'],
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -49,11 +48,20 @@ export default [
         { allowConstantExport: true },
       ],
       // Import detection rules
-      'import/no-unresolved': 'error',        // Detect missing/broken imports
+      'import/no-unresolved': ['error', { ignore: ['^czero(/.*)?$'] }],  // Detect missing/broken imports (ignore czero library)
       'import/named': 'error',                 // Detect invalid named exports
-      'import/default': 'error',               // Detect invalid default exports
+      'import/default': 'error',               // Detect invalid default exports  
       'import/namespace': 'error',             // Detect invalid namespace imports
       'import/no-duplicates': 'warn',          // Warn on duplicate imports
+    },
+  },
+  // Node.js config files (vite, etc.)
+  {
+    files: ['vite.config.js', '*.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
 ]
