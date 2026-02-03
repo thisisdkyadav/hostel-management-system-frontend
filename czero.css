@@ -267,6 +267,11 @@
 .cz-btn-icon.cz-btn-md { width: var(--cz-btn-icon-size-md); height: var(--cz-btn-icon-size-md); }
 .cz-btn-icon.cz-btn-lg { width: var(--cz-btn-icon-size-lg); height: var(--cz-btn-icon-size-lg); }
 
+/* Full Width Button */
+.cz-btn-full {
+  width: 100%;
+}
+
 /* Button Loading State */
 .cz-btn-loading { position: relative; }
 .cz-btn-spinner {
