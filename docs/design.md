@@ -202,18 +202,34 @@ style={{ color: "#1360AB", borderRadius: "12px" }}
 
 ## Component Patterns
 
-### Button Sizes
+### Button (CZero)
+
+Buttons use the CZero UI library. Import from `czero/react`:
 
 ```jsx
-// Small: 32px height, 10px radius
-{ height: "32px", padding: "var(--spacing-2) var(--spacing-3)", borderRadius: "var(--radius-button-sm)" }
+import { Button } from 'czero/react'
 
-// Medium (default): 40px height, 12px radius
-{ height: "40px", padding: "var(--spacing-2-5) var(--spacing-4)", borderRadius: "var(--radius-button-md)" }
+// Size props: "sm", "md" (default), "lg"
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
 
-// Large: 48px height, 14px radius
-{ height: "48px", padding: "var(--spacing-3) var(--spacing-5)", borderRadius: "var(--radius-button-lg)" }
+// Loading state (use `loading`, not `isLoading`)
+<Button loading={isSubmitting}>Submit</Button>
+
+// Icons as children (not as icon prop)
+<Button><FaPlus /> Add Item</Button>
+
+// Variants: "primary", "secondary", "danger", "success", "outline", "ghost"
+<Button variant="danger">Delete</Button>
 ```
+
+**Size Dimensions:**
+| Size | Height | Radius |
+|------|--------|--------|
+| `sm` | 32px | 10px |
+| `md` | 40px | 12px |
+| `lg` | 48px | 14px |
 
 ### Input Sizes
 
@@ -292,8 +308,11 @@ style={{ color: "#1360AB", borderRadius: "12px" }}
 // Theme variables
 import '@/theme.css'
 
-// UI Components
-import { Button, Input, Card, Modal } from '@/components/ui'
+// Button (from CZero UI library)
+import { Button } from 'czero/react'
+
+// Other UI Components
+import { Input, Card, Modal } from '@/components/ui'
 
 // Legacy support (if needed)
 import '@/styles/legacy-theme.css'

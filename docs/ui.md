@@ -7,41 +7,72 @@
 ## Quick Import
 
 ```jsx
-// All components
-import { Button, Input, Card, Modal, ... } from '@/components/ui'
+// Button from CZero (not from @/components/ui)
+import { Button } from 'czero/react'
+
+// Other UI components
+import { Input, Card, Modal, ... } from '@/components/ui'
 
 // By category
-import { Button, IconButton } from '@/components/ui/button'
+import { IconButton } from '@/components/ui/button'
 import { Input, Select, Checkbox } from '@/components/ui/form'
 import { Card, Stack, Divider } from '@/components/ui/layout'
 import { Modal, Toast, Alert } from '@/components/ui/feedback'
 ```
 
+> **Note:** The `Button` component is now provided by the CZero UI library. Always import it from `czero/react`.
+
 ---
 
 ## Button Components
 
-**Location:** `@/components/ui/button`
+### Button (CZero)
 
-### Button
+**Location:** `czero/react` (NOT from `@/components/ui`)
+
+```jsx
+import { Button } from 'czero/react'
+```
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Button content |
+| `children` | `React.ReactNode` | - | Button content (including icons) |
 | `onClick` | `function` | - | Click handler |
 | `type` | `string` | `"button"` | `"button"`, `"submit"`, `"reset"` |
 | `variant` | `string` | `"primary"` | `"primary"`, `"secondary"`, `"danger"`, `"success"`, `"outline"`, `"ghost"`, `"white"` |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `icon` | `React.ReactNode` | - | Optional icon element |
-| `isLoading` | `boolean` | `false` | Show loading spinner |
+| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` |
+| `loading` | `boolean` | `false` | Show loading spinner |
 | `disabled` | `boolean` | `false` | Disable button |
 | `fullWidth` | `boolean` | `false` | Full width button |
-| `gradient` | `boolean` | `false` | Use gradient background (primary only) |
-| `rounded` | `boolean` | `false` | Pill-shaped button |
-| `keepTextOnMobile` | `boolean` | `false` | If true, keeps text visible on mobile (prevents icon-only mode) |
-| `animation` | `string` | `"none"` | `"none"`, `"pulse"`, `"bounce"`, `"glow"`, `"ripple"` |
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
+
+**Usage Examples:**
+
+```jsx
+// Basic usage
+<Button variant="primary" size="md">Save</Button>
+
+// With icon (pass as children, not as prop)
+<Button><FaPlus /> Add Item</Button>
+
+// Loading state
+<Button loading={isSubmitting} disabled={isSubmitting}>Submit</Button>
+
+// All sizes
+<Button size="sm">Small</Button>   // 32px height
+<Button size="md">Medium</Button>  // 40px height (default)
+<Button size="lg">Large</Button>   // 48px height
+```
+
+> **Migration Note:** Previous props `isLoading`, `icon`, `rounded`, and `gradient` are no longer supported.
+> - Use `loading` instead of `isLoading`
+> - Pass icons as children: `<Button><Icon /> Text</Button>`
+> - Use `className="!rounded-full"` for pill buttons
+
+---
+
+**Location:** `@/components/ui/button`
 
 ### IconButton
 
@@ -873,7 +904,7 @@ Most components accept: `"small"`, `"medium"`, `"large"` (some use `"sm"`, `"md"
 
 ### State Props
 - `disabled` - `boolean` - Disable interaction
-- `isLoading` - `boolean` - Show loading state
+- `loading` - `boolean` - Show loading state (Button only, use `loading` not `isLoading`)
 - `error` - `boolean|string` - Error message/state
 - `selected` - `boolean` - Selection state
 
@@ -888,7 +919,8 @@ Most components accept: `"small"`, `"medium"`, `"large"` (some use `"sm"`, `"md"
 ### Form with Validation
 
 ```jsx
-import { Input, Select, Button, Label } from '@/components/ui'
+import { Button } from 'czero/react'
+import { Input, Select, Label } from '@/components/ui'
 
 <form>
   <Label htmlFor="name" required>Name</Label>
@@ -900,7 +932,7 @@ import { Input, Select, Button, Label } from '@/components/ui'
     options={[{ value: "admin", label: "Admin" }]} 
   />
   
-  <Button type="submit" isLoading={submitting}>Submit</Button>
+  <Button type="submit" loading={submitting}>Submit</Button>
 </form>
 ```
 
@@ -1049,7 +1081,8 @@ These domain-specific components remain in `/components/common/`:
 ### Form with Validation
 
 ```jsx
-import { Input, Select, Button, Label } from '@/components/ui'
+import { Button } from 'czero/react'
+import { Input, Select, Label } from '@/components/ui'
 
 <form>
   <Label htmlFor="name" required>Name</Label>
@@ -1061,14 +1094,15 @@ import { Input, Select, Button, Label } from '@/components/ui'
     options={[{ value: "admin", label: "Admin" }]} 
   />
   
-  <Button type="submit" isLoading={submitting}>Submit</Button>
+  <Button type="submit" loading={submitting}>Submit</Button>
 </form>
 ```
 
 ### Card with Actions
 
 ```jsx
-import { Card, CardHeader, CardTitle, CardContent, CardFooter, Button } from '@/components/ui'
+import { Button } from 'czero/react'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui'
 
 <Card>
   <CardHeader>
@@ -1085,7 +1119,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter, Button } from '@/
 ### Modal with Form
 
 ```jsx
-import { Modal, Input, Button } from '@/components/ui'
+import { Button } from 'czero/react'
+import { Modal, Input } from '@/components/ui'
 
 <Modal 
   isOpen={isOpen} 
@@ -1123,7 +1158,8 @@ import { DataTable } from '@/components/ui'
 ### Toast Notifications
 
 ```jsx
-import { ToastProvider, useToast, Button } from '@/components/ui'
+import { Button } from 'czero/react'
+import { ToastProvider, useToast } from '@/components/ui'
 
 // Wrap app
 <ToastProvider position="top-right">
