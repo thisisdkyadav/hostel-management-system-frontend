@@ -37,6 +37,9 @@ import {
 // Warden pages (shared)
 import { FeedbacksPage } from "../pages/warden"
 
+// Gymkhana Events (Admin calendar management)
+import GymkhanaEventsPage from "../pages/admin/GymkhanaEventsPage"
+
 // Utility pages
 import NotFoundPage from "../pages/NotFoundPage"
 
@@ -66,6 +69,7 @@ const AdminRoutes = () => (
                 <Route path="visitors" element={<VisitorRequestsPage />} />
                 <Route path="lost-and-found" element={<LostAndFoundPage />} />
                 <Route path="events" element={<EventsPage />} />
+                <Route path="gymkhana-events" element={<GymkhanaEventsPage />} />
                 <Route path="update-password" element={<UpdatePasswordPage />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="profile" element={<ProfilePage />} />

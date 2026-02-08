@@ -2,6 +2,7 @@ import BaseLayout from "./BaseLayout"
 import { getAdminNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import GlobalProvider from "../contexts/GlobalProvider"
+import { ToastProvider } from "../components/ui/feedback"
 
 const AdminLayout = () => {
   const handleLogout = useLogout()
@@ -9,9 +10,12 @@ const AdminLayout = () => {
 
   return (
     <GlobalProvider>
-      <BaseLayout navItems={navItems} />
+      <ToastProvider>
+        <BaseLayout navItems={navItems} />
+      </ToastProvider>
     </GlobalProvider>
   )
 }
 
 export default AdminLayout
+

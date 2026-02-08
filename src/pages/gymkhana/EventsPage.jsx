@@ -1,0 +1,1994 @@
+/**
+ * Gymkhana Events Page
+ * Calendar view with year selector, event list, and role-based actions:
+ * - GS Gymkhana: Add/Edit events, Submit for Approval
+ * - President Gymkhana: Edit + Approve/Reject pending calendars
+ */
+
+import { useState, useEffect, useMemo, useRef } from "react"
+import { Button } from "czero/react"
+import PageHeader from "@/components/common/PageHeader"
+import { Card, CardContent } from "@/components/ui/layout"
+import { Select, Input, Textarea, Checkbox } from "@/components/ui/form"
+import { Modal, LoadingState, ErrorState, EmptyState, Alert } from "@/components/ui/feedback"
+import { Badge } from "@/components/ui/data-display"
+import { ToggleButtonGroup } from "@/components/ui"
+import { Table, TableHead, TableBody, TableHeader, TableRow, TableCell } from "@/components/ui/table"
+import {
+  CalendarDays,
+  Plus,
+  Edit2,
+  Lock,
+  Unlock,
+  Send,
+  X,
+  FileText,
+  Check,
+  History,
+  List,
+  ChevronLeft,
+  ChevronRight,
+  AlertTriangle,
+  Bell,
+} from "lucide-react"
+import { useAuth } from "@/contexts/AuthProvider"
+import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import { useToast } from "@/components/ui/feedback"
+import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
+
+const CATEGORY_OPTIONS = [
+  { value: "academic", label: "Academic" },
+  { value: "cultural", label: "Cultural" },
+  { value: "sports", label: "Sports" },
+  { value: "technical", label: "Technical" },
+]
+
+const CATEGORY_LABELS = {
+  academic: "Academic",
+  cultural: "Cultural",
+  sports: "Sports",
+  technical: "Technical",
+}
+
+const CATEGORY_COLORS = {
+  academic: "var(--color-info)",
+  cultural: "var(--color-primary)",
+  sports: "var(--color-success)",
+  technical: "var(--color-warning)",
+}
+
+const CATEGORY_ORDER = ["academic", "cultural", "sports", "technical"]
+const VALID_OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
+
+const toDate = (value) => {
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+const startOfDay = (dateValue) => {
+  const date = new Date(dateValue)
+  if (Number.isNaN(date.getTime())) return null
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+const normalizeEvent = (event) => ({
+  ...event,
+  startDate: event.startDate || event.tentativeDate || null,
+  endDate: event.endDate || event.tentativeDate || null,
+})
+
+const rangesOverlap = (aStart, aEnd, bStart, bEnd) => {
+  const startA = toDate(aStart)
+  const endA = toDate(aEnd)
+  const startB = toDate(bStart)
+  const endB = toDate(bEnd)
+  if (!startA || !endA || !startB || !endB) return false
+  return startA <= endB && startB <= endA
+}
+
+const formatDateRange = (startDate, endDate) => {
+  if (!startDate || !endDate) return "TBD"
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  const sameDay = start.toDateString() === end.toDateString()
+
+  if (sameDay) {
+    return start.toLocaleDateString()
+  }
+
+  return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`
+}
+
+const getBudgetSummary = (events = []) => {
+  const byCategory = CATEGORY_ORDER.reduce((acc, category) => {
+    acc[category] = 0
+    return acc
+  }, {})
+
+  let total = 0
+  for (const event of events) {
+    const budget = Number(event.estimatedBudget || 0)
+    total += budget
+    if (byCategory[event.category] !== undefined) {
+      byCategory[event.category] += budget
+    }
+  }
+
+  return { total, byCategory }
+}
+
+const getDateConflicts = (events = []) => {
+  const normalized = events.map(normalizeEvent)
+  const conflicts = []
+
+  for (let i = 0; i < normalized.length; i += 1) {
+    for (let j = i + 1; j < normalized.length; j += 1) {
+      if (
+        rangesOverlap(
+          normalized[i].startDate,
+          normalized[i].endDate,
+          normalized[j].startDate,
+          normalized[j].endDate
+        )
+      ) {
+        conflicts.push({
+          eventA: normalized[i],
+          eventB: normalized[j],
+        })
+      }
+    }
+  }
+
+  return conflicts
+}
+
+const normalizeEventId = (eventId) => {
+  if (!eventId) return null
+  if (typeof eventId === "string") {
+    return VALID_OBJECT_ID_REGEX.test(eventId) ? eventId : null
+  }
+  if (typeof eventId === "object" && typeof eventId._id === "string") {
+    return VALID_OBJECT_ID_REGEX.test(eventId._id) ? eventId._id : null
+  }
+  if (typeof eventId?.toString === "function") {
+    const stringified = eventId.toString()
+    if (
+      stringified &&
+      stringified !== "[object Object]" &&
+      VALID_OBJECT_ID_REGEX.test(stringified)
+    ) {
+      return stringified
+    }
+  }
+  return null
+}
+
+const createDefaultOverlapState = () => ({
+  status: "idle",
+  hasOverlap: false,
+  overlaps: [],
+  checkedKey: null,
+  checkingKey: null,
+  errorMessage: "",
+})
+
+const createDefaultProposalForm = () => ({
+  proposalText: "",
+  externalGuestsDetails: "",
+  accommodationRequired: false,
+  hasRegistrationFee: false,
+  registrationFeeAmount: 0,
+  totalExpectedIncome: 0,
+  totalExpenditure: 0,
+})
+
+const toProposalForm = (proposal) => ({
+  proposalText: proposal?.proposalText || "",
+  externalGuestsDetails: proposal?.externalGuestsDetails || "",
+  accommodationRequired: Boolean(proposal?.accommodationRequired),
+  hasRegistrationFee: Boolean(proposal?.hasRegistrationFee),
+  registrationFeeAmount: Number(proposal?.registrationFeeAmount || 0),
+  totalExpectedIncome: Number(proposal?.totalExpectedIncome || 0),
+  totalExpenditure: Number(proposal?.totalExpenditure || 0),
+})
+
+const buildProposalPayload = (proposalForm) => ({
+  proposalText: proposalForm.proposalText?.trim(),
+  externalGuestsDetails: proposalForm.externalGuestsDetails?.trim() || "",
+  accommodationRequired: Boolean(proposalForm.accommodationRequired),
+  hasRegistrationFee: Boolean(proposalForm.hasRegistrationFee),
+  registrationFeeAmount: proposalForm.hasRegistrationFee
+    ? Number(proposalForm.registrationFeeAmount || 0)
+    : 0,
+  totalExpectedIncome: Number(proposalForm.totalExpectedIncome || 0),
+  totalExpenditure: Number(proposalForm.totalExpenditure || 0),
+})
+
+const isProposalWindowOpen = (event) => {
+  if (event?.proposalSubmitted) return false
+  const dueDate = getProposalDueDate(event)
+  if (!dueDate) return false
+  const dueDateStart = startOfDay(dueDate)
+  const todayStart = startOfDay(new Date())
+  if (!dueDateStart || !todayStart) return false
+  return dueDateStart <= todayStart
+}
+
+const getProposalDueDate = (event) => {
+  const candidateDueDate = event?.proposalDueDate || event?.eventId?.proposalDueDate
+  if (candidateDueDate) {
+    const parsed = new Date(candidateDueDate)
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed
+    }
+  }
+
+  const startDateCandidate =
+    event?.startDate ||
+    event?.scheduledStartDate ||
+    event?.eventId?.scheduledStartDate
+  const startDate = new Date(startDateCandidate)
+  if (Number.isNaN(startDate.getTime())) {
+    return null
+  }
+
+  const fallbackDueDate = new Date(startDate)
+  fallbackDueDate.setDate(fallbackDueDate.getDate() - 21)
+  return fallbackDueDate
+}
+
+const mergeCalendarEventsWithGymkhanaEvents = (calendarEvents = [], gymkhanaEvents = []) => {
+  const normalizeKeyDate = (value) => {
+    const parsed = new Date(value)
+    return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10)
+  }
+
+  const buckets = new Map()
+
+  for (const event of gymkhanaEvents) {
+    const key = [
+      event.title || "",
+      event.category || "",
+      normalizeKeyDate(event.scheduledStartDate),
+      normalizeKeyDate(event.scheduledEndDate),
+    ].join("|")
+
+    if (!buckets.has(key)) {
+      buckets.set(key, [])
+    }
+    buckets.get(key).push(event)
+  }
+
+  return calendarEvents.map((calendarEvent) => {
+    const key = [
+      calendarEvent.title || "",
+      calendarEvent.category || "",
+      normalizeKeyDate(calendarEvent.startDate),
+      normalizeKeyDate(calendarEvent.endDate),
+    ].join("|")
+    const matchBucket = buckets.get(key) || []
+    const linkedEvent = matchBucket.length > 0 ? matchBucket.shift() : null
+
+    return {
+      ...calendarEvent,
+      gymkhanaEventId: linkedEvent?._id || null,
+      proposalSubmitted: Boolean(linkedEvent?.proposalSubmitted),
+      proposalId: linkedEvent?.proposalId || null,
+      proposalDueDate: getProposalDueDate(linkedEvent || calendarEvent),
+      eventStatus: linkedEvent?.status || null,
+    }
+  })
+}
+
+const toGymkhanaDisplayEvent = (event) => ({
+  ...event,
+  startDate: event.scheduledStartDate || null,
+  endDate: event.scheduledEndDate || null,
+  gymkhanaEventId: event._id || null,
+  proposalSubmitted: Boolean(event.proposalSubmitted),
+  proposalId: event.proposalId || null,
+  proposalDueDate: getProposalDueDate(event),
+  eventStatus: event.status || null,
+})
+
+const EventsPage = () => {
+  const { user } = useAuth()
+  const { toast } = useToast()
+
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [years, setYears] = useState([])
+  const [selectedYear, setSelectedYear] = useState(null)
+  const [calendar, setCalendar] = useState(null)
+  const [events, setEvents] = useState([])
+  const [viewMode, setViewMode] = useState("list")
+  const [calendarMonth, setCalendarMonth] = useState(new Date())
+
+  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [showEventModal, setShowEventModal] = useState(false)
+  const [showAddEventModal, setShowAddEventModal] = useState(false)
+  const [showAmendmentModal, setShowAmendmentModal] = useState(false)
+  const [showHistoryModal, setShowHistoryModal] = useState(false)
+  const [showApprovalModal, setShowApprovalModal] = useState(false)
+  const [showOverlapConfirmModal, setShowOverlapConfirmModal] = useState(false)
+  const [showProposalModal, setShowProposalModal] = useState(false)
+
+  const [eventForm, setEventForm] = useState({
+    title: "",
+    category: "academic",
+    startDate: "",
+    endDate: "",
+    estimatedBudget: 0,
+    description: "",
+  })
+  const [amendmentReason, setAmendmentReason] = useState("")
+  const [approvalComments, setApprovalComments] = useState("")
+  const [submitting, setSubmitting] = useState(false)
+  const [dateOverlapInfo, setDateOverlapInfo] = useState(createDefaultOverlapState)
+  const [submitOverlapInfo, setSubmitOverlapInfo] = useState(null)
+  const [proposalEvent, setProposalEvent] = useState(null)
+  const [proposalData, setProposalData] = useState(null)
+  const [proposalForm, setProposalForm] = useState(createDefaultProposalForm)
+  const [proposalActionComments, setProposalActionComments] = useState("")
+  const [proposalLoading, setProposalLoading] = useState(false)
+  const [proposalHistoryRefreshKey, setProposalHistoryRefreshKey] = useState(0)
+  const overlapCheckRequestRef = useRef(0)
+
+  const isGS = user?.subRole === "GS Gymkhana"
+  const isPresident = user?.subRole === "President Gymkhana"
+  const canEditGS = calendar && !calendar.isLocked && isGS && (calendar.status === "draft" || calendar.status === "rejected")
+  const canEditPresident = calendar && !calendar.isLocked && isPresident && calendar.status === "pending_president"
+  const canEdit = canEditGS || canEditPresident
+  const canApprove = isPresident && calendar?.status === "pending_president"
+
+  const VIEW_OPTIONS = [
+    { value: "list", label: "List", icon: <List size={14} /> },
+    { value: "calendar", label: "Calendar", icon: <CalendarDays size={14} /> },
+  ]
+
+  const budgetSummary = useMemo(() => getBudgetSummary(events), [events])
+  const dateConflicts = useMemo(() => getDateConflicts(events), [events])
+  const pendingProposalReminders = useMemo(
+    () => events.filter((event) => event.gymkhanaEventId && isProposalWindowOpen(event)),
+    [events]
+  )
+  const isProposalEditableByCurrentUser = useMemo(() => {
+    if (!proposalData) return false
+    if (isGS) return proposalData.status === "revision_requested"
+    if (isPresident) return proposalData.status === "pending_president"
+    return false
+  }, [proposalData, isGS, isPresident])
+  const canCreateProposalForSelectedEvent = useMemo(() => {
+    if (!proposalEvent) return false
+    return isGS && isProposalWindowOpen(proposalEvent) && !proposalData && proposalEvent.gymkhanaEventId
+  }, [proposalEvent, isGS, proposalData])
+  const canPresidentReviewProposal = useMemo(
+    () => isPresident && proposalData?.status === "pending_president",
+    [isPresident, proposalData]
+  )
+  const proposalDeflection = useMemo(() => {
+    if (!proposalEvent) return 0
+    return Number(proposalForm.totalExpenditure || 0) - Number(proposalEvent.estimatedBudget || 0)
+  }, [proposalForm.totalExpenditure, proposalEvent])
+  const isDateRangeOrdered = useMemo(() => {
+    if (!eventForm.startDate || !eventForm.endDate) return true
+    return new Date(eventForm.endDate) >= new Date(eventForm.startDate)
+  }, [eventForm.startDate, eventForm.endDate])
+
+  const overlapCheckKey = useMemo(() => {
+    if (!calendar?._id || !eventForm.startDate || !eventForm.endDate || !isDateRangeOrdered) {
+      return null
+    }
+    return `${calendar._id}:${selectedEvent?._id || "new"}:${eventForm.startDate}:${eventForm.endDate}`
+  }, [calendar?._id, eventForm.startDate, eventForm.endDate, isDateRangeOrdered, selectedEvent?._id])
+
+  const overlapCheckCompletedForCurrentDates = Boolean(
+    overlapCheckKey && dateOverlapInfo.status === "checked" && dateOverlapInfo.checkedKey === overlapCheckKey
+  )
+
+  const overlapCheckInProgressForCurrentDates = Boolean(
+    overlapCheckKey && dateOverlapInfo.status === "pending" && dateOverlapInfo.checkingKey === overlapCheckKey
+  )
+
+  const isBaseEventFormValid = Boolean(
+    eventForm.title?.trim() &&
+      eventForm.category &&
+      eventForm.startDate &&
+      eventForm.endDate &&
+      isDateRangeOrdered
+  )
+
+  const canSaveEventInModal = isBaseEventFormValid && overlapCheckCompletedForCurrentDates && !submitting
+  const canSubmitAmendmentInModal = canSaveEventInModal && amendmentReason.length >= 10
+  const isProposalFormValid = Boolean(
+    proposalForm.proposalText?.trim() &&
+      Number(proposalForm.totalExpectedIncome || 0) >= 0 &&
+      Number(proposalForm.totalExpenditure || 0) >= 0 &&
+      (!proposalForm.hasRegistrationFee || Number(proposalForm.registrationFeeAmount || 0) >= 0)
+  )
+
+  useEffect(() => {
+    fetchYears()
+  }, [])
+
+  useEffect(() => {
+    if (selectedYear) {
+      fetchCalendar(selectedYear)
+    }
+  }, [selectedYear])
+
+  const fetchYears = async () => {
+    try {
+      setLoading(true)
+      const res = await gymkhanaEventsApi.getAcademicYears()
+      const yearsList = res.data?.years || res.years || []
+      setYears(yearsList)
+      if (yearsList.length > 0) {
+        setSelectedYear(yearsList[0].academicYear)
+      }
+    } catch (err) {
+      setError(err.message || "Failed to load academic years")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchCalendar = async (year) => {
+    try {
+      setLoading(true)
+      setError(null)
+      const res = await gymkhanaEventsApi.getCalendarByYear(year)
+      const calendarData = res.data?.calendar || res.calendar || null
+
+      if (!calendarData) {
+        setCalendar(null)
+        setEvents([])
+        return
+      }
+
+      const normalizedEvents = (calendarData.events || []).map(normalizeEvent)
+      let mergedEvents = normalizedEvents
+
+      try {
+        const firstPageRes = await gymkhanaEventsApi.getEvents({
+          calendarId: calendarData._id,
+          limit: 100,
+          page: 1,
+        })
+        const firstPageData = firstPageRes.data || firstPageRes || {}
+        const firstPageEvents = firstPageData.events || []
+        const totalPages = firstPageData.pagination?.pages || 1
+
+        let gymkhanaEvents = [...firstPageEvents]
+        if (totalPages > 1) {
+          const remainingPageRequests = []
+          for (let page = 2; page <= totalPages; page += 1) {
+            remainingPageRequests.push(
+              gymkhanaEventsApi.getEvents({
+                calendarId: calendarData._id,
+                limit: 100,
+                page,
+              })
+            )
+          }
+
+          const remainingResponses = await Promise.all(remainingPageRequests)
+          for (const response of remainingResponses) {
+            const responseData = response.data || response || {}
+            gymkhanaEvents = gymkhanaEvents.concat(responseData.events || [])
+          }
+        }
+
+        if (calendarData.status === "approved" && gymkhanaEvents.length > 0) {
+          mergedEvents = gymkhanaEvents.map(toGymkhanaDisplayEvent)
+        } else {
+          mergedEvents = mergeCalendarEventsWithGymkhanaEvents(normalizedEvents, gymkhanaEvents)
+        }
+      } catch (_err) {
+        mergedEvents = normalizedEvents
+      }
+
+      setCalendar({ ...calendarData, events: mergedEvents })
+      setEvents(mergedEvents)
+    } catch (err) {
+      if (err.status === 404) {
+        setCalendar(null)
+        setEvents([])
+      } else {
+        setError(err.message || "Failed to load calendar")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(year, month + 1, 0)
+    const daysInMonth = lastDay.getDate()
+    const startingDayOfWeek = firstDay.getDay()
+
+    const days = []
+    for (let i = 0; i < startingDayOfWeek; i += 1) {
+      days.push(null)
+    }
+    for (let i = 1; i <= daysInMonth; i += 1) {
+      days.push(new Date(year, month, i))
+    }
+    return days
+  }
+
+  const getEventsForDate = (date) => {
+    if (!date || !events) return []
+    const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)
+
+    return events.filter((event) => {
+      const start = toDate(event.startDate)
+      const end = toDate(event.endDate)
+      if (!start || !end) return false
+      return start <= dayEnd && end >= dayStart
+    })
+  }
+
+  const toFormModel = (event) => {
+    const normalized = normalizeEvent(event)
+    return {
+      title: normalized.title || "",
+      category: normalized.category || "academic",
+      startDate: normalized.startDate ? String(normalized.startDate).split("T")[0] : "",
+      endDate: normalized.endDate ? String(normalized.endDate).split("T")[0] : "",
+      estimatedBudget: normalized.estimatedBudget || 0,
+      description: normalized.description || "",
+    }
+  }
+
+const buildEventPayload = (formData) => ({
+  title: formData.title?.trim(),
+  category: formData.category,
+  startDate: formData.startDate,
+  endDate: formData.endDate,
+  estimatedBudget: Number(formData.estimatedBudget || 0),
+  description: formData.description?.trim(),
+})
+
+const toCalendarEventPayload = (event) => {
+  const normalized = normalizeEvent(event)
+  return {
+    title: normalized.title?.trim(),
+    category: normalized.category,
+    startDate: normalized.startDate,
+    endDate: normalized.endDate,
+    estimatedBudget: Number(normalized.estimatedBudget || 0),
+    description: normalized.description?.trim(),
+  }
+}
+
+  const resetDateOverlapInfo = () => {
+    overlapCheckRequestRef.current += 1
+    setDateOverlapInfo(createDefaultOverlapState())
+  }
+
+  const checkDateOverlap = async (candidateForm, eventId = null) => {
+    if (!calendar?._id || !candidateForm.startDate || !candidateForm.endDate) {
+      resetDateOverlapInfo()
+      return
+    }
+
+    if (new Date(candidateForm.endDate) < new Date(candidateForm.startDate)) {
+      resetDateOverlapInfo()
+      return
+    }
+
+    const normalizedEventId = normalizeEventId(eventId)
+    const checkKey = `${calendar._id}:${normalizedEventId || "new"}:${candidateForm.startDate}:${candidateForm.endDate}`
+    const requestId = overlapCheckRequestRef.current + 1
+    overlapCheckRequestRef.current = requestId
+
+    setDateOverlapInfo((prev) => ({
+      ...prev,
+      status: "pending",
+      checkingKey: checkKey,
+      errorMessage: "",
+    }))
+
+    try {
+      const overlapRequestPayload = {
+        startDate: candidateForm.startDate,
+        endDate: candidateForm.endDate,
+        ...(normalizedEventId ? { eventId: normalizedEventId } : {}),
+      }
+      const res = await gymkhanaEventsApi.checkDateOverlap(calendar._id, overlapRequestPayload)
+      if (requestId !== overlapCheckRequestRef.current) return
+      const data = res.data || res || {}
+      setDateOverlapInfo({
+        status: "checked",
+        hasOverlap: Boolean(data.hasOverlap),
+        overlaps: data.overlaps || [],
+        checkedKey: checkKey,
+        checkingKey: null,
+        errorMessage: "",
+      })
+    } catch (_err) {
+      if (requestId !== overlapCheckRequestRef.current) return
+      setDateOverlapInfo({
+        status: "error",
+        hasOverlap: false,
+        overlaps: [],
+        checkedKey: null,
+        checkingKey: null,
+        errorMessage: "Could not verify date overlap. Please retry.",
+      })
+    }
+  }
+
+  const retryDateOverlapCheck = () => {
+    checkDateOverlap(eventForm, selectedEvent?._id)
+  }
+
+  const handleEventFormChange = (field, value) => {
+    setEventForm((prev) => {
+      const next = { ...prev, [field]: value }
+      if (field === "startDate" || field === "endDate") {
+        checkDateOverlap(next, selectedEvent?._id)
+      }
+      return next
+    })
+  }
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event)
+    setShowEventModal(true)
+  }
+
+  const fetchProposalForEvent = async (event) => {
+    if (!event?.gymkhanaEventId) {
+      setProposalData(null)
+      setProposalForm(createDefaultProposalForm())
+      return
+    }
+
+    try {
+      setProposalLoading(true)
+      const res = await gymkhanaEventsApi.getProposalByEvent(event.gymkhanaEventId)
+      const proposal = res.data?.proposal || res.proposal || null
+      setProposalData(proposal)
+      setProposalForm(proposal ? toProposalForm(proposal) : createDefaultProposalForm())
+    } catch (err) {
+      if (err.status === 404) {
+        setProposalData(null)
+        setProposalForm(createDefaultProposalForm())
+      } else {
+        toast.error(err.message || "Failed to load proposal")
+      }
+    } finally {
+      setProposalLoading(false)
+    }
+  }
+
+  const openProposalModal = async (event) => {
+    setProposalEvent(event)
+    setProposalActionComments("")
+    setProposalHistoryRefreshKey((prev) => prev + 1)
+    setShowProposalModal(true)
+    await fetchProposalForEvent(event)
+  }
+
+  const handleProposalFormChange = (field, value) => {
+    setProposalForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const handleCreateOrUpdateProposal = async () => {
+    if (!proposalEvent?.gymkhanaEventId) {
+      toast.error("Linked event record not found")
+      return
+    }
+
+    if (!isProposalFormValid) {
+      toast.error("Please complete all required proposal fields")
+      return
+    }
+
+    const payload = buildProposalPayload(proposalForm)
+
+    try {
+      setSubmitting(true)
+
+      if (proposalData?._id) {
+        await gymkhanaEventsApi.updateProposal(proposalData._id, payload)
+        toast.success("Proposal updated successfully")
+      } else {
+        await gymkhanaEventsApi.createProposal(proposalEvent.gymkhanaEventId, payload)
+        toast.success("Proposal submitted successfully")
+      }
+
+      await fetchProposalForEvent(proposalEvent)
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to save proposal")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleApproveProposal = async () => {
+    if (!proposalData?._id) return
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.approveProposal(proposalData._id, proposalActionComments)
+      toast.success("Proposal approved")
+      setProposalActionComments("")
+      await fetchProposalForEvent(proposalEvent)
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to approve proposal")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleRejectProposal = async () => {
+    if (!proposalData?._id) return
+    if (!proposalActionComments || proposalActionComments.length < 10) {
+      toast.error("Please provide a rejection reason (min 10 characters)")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.rejectProposal(proposalData._id, proposalActionComments)
+      toast.success("Proposal rejected")
+      setProposalActionComments("")
+      await fetchProposalForEvent(proposalEvent)
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to reject proposal")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleRequestProposalRevision = async () => {
+    if (!proposalData?._id) return
+    if (!proposalActionComments || proposalActionComments.length < 10) {
+      toast.error("Please provide revision notes (min 10 characters)")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.requestRevision(proposalData._id, proposalActionComments)
+      toast.success("Revision requested")
+      setProposalActionComments("")
+      await fetchProposalForEvent(proposalEvent)
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to request revision")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleAddEvent = () => {
+    setSelectedEvent(null)
+    resetDateOverlapInfo()
+    setEventForm({
+      title: "",
+      category: "academic",
+      startDate: "",
+      endDate: "",
+      estimatedBudget: 0,
+      description: "",
+    })
+    setShowAddEventModal(true)
+  }
+
+  const handleEditEvent = (event) => {
+    setSelectedEvent(event)
+    resetDateOverlapInfo()
+    const formModel = toFormModel(event)
+    setEventForm(formModel)
+    setShowAddEventModal(true)
+    if (formModel.startDate && formModel.endDate) {
+      checkDateOverlap(formModel, event?._id)
+    }
+  }
+
+  const openAmendmentModal = (event = null) => {
+    setSelectedEvent(event)
+    setAmendmentReason("")
+    resetDateOverlapInfo()
+
+    if (event) {
+      const formModel = toFormModel(event)
+      setEventForm(formModel)
+      if (formModel.startDate && formModel.endDate) {
+        checkDateOverlap(formModel, event?._id)
+      }
+    } else {
+      setEventForm({
+        title: "",
+        category: "academic",
+        startDate: "",
+        endDate: "",
+        estimatedBudget: 0,
+        description: "",
+      })
+    }
+
+    setShowAmendmentModal(true)
+  }
+
+  const handleSaveEvent = async () => {
+    const payload = buildEventPayload(eventForm)
+
+    if (!payload.title || !payload.startDate || !payload.endDate || !payload.category) {
+      toast.error("Title, category, start date and end date are required")
+      return
+    }
+
+    if (new Date(payload.endDate) < new Date(payload.startDate)) {
+      toast.error("End date cannot be before start date")
+      return
+    }
+
+    if (!overlapCheckCompletedForCurrentDates) {
+      toast.error("Please wait for date overlap check result before saving the event")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+
+      let updatedEvents = []
+      if (selectedEvent && events.find((event) => event._id === selectedEvent._id)) {
+        updatedEvents = events.map((event) =>
+          event._id === selectedEvent._id ? { ...event, ...payload } : event
+        )
+      } else {
+        updatedEvents = [...events, { ...payload, _id: `temp-${Date.now()}` }]
+      }
+
+      await gymkhanaEventsApi.updateCalendar(calendar._id, {
+        events: updatedEvents.map(toCalendarEventPayload),
+      })
+      toast.success("Event saved successfully")
+      setShowAddEventModal(false)
+      setSelectedEvent(null)
+      resetDateOverlapInfo()
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to save event")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleSubmitAmendment = async () => {
+    const payload = buildEventPayload(eventForm)
+
+    if (!payload.title || !payload.startDate || !payload.endDate || !payload.category) {
+      toast.error("Title, category, start date and end date are required")
+      return
+    }
+
+    if (new Date(payload.endDate) < new Date(payload.startDate)) {
+      toast.error("End date cannot be before start date")
+      return
+    }
+
+    if (!overlapCheckCompletedForCurrentDates) {
+      toast.error("Please wait for date overlap check result before submitting")
+      return
+    }
+
+    if (!amendmentReason || amendmentReason.length < 10) {
+      toast.error("Please provide a detailed reason (min 10 characters)")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.createAmendment({
+        calendarId: calendar._id,
+        type: selectedEvent ? "edit" : "new_event",
+        eventId: selectedEvent?._id,
+        proposedChanges: payload,
+        reason: amendmentReason,
+      })
+      toast.success("Amendment request submitted")
+      setShowAmendmentModal(false)
+      setSelectedEvent(null)
+      resetDateOverlapInfo()
+    } catch (err) {
+      toast.error(err.message || "Failed to submit amendment")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleSubmitCalendar = async () => {
+    try {
+      setSubmitting(true)
+      const response = await gymkhanaEventsApi.submitCalendar(calendar._id, false)
+      const data = response.data || response || {}
+
+      if (data.requiresOverlapConfirmation) {
+        setSubmitOverlapInfo(data)
+        setShowOverlapConfirmModal(true)
+        setSubmitting(false)
+        return
+      }
+
+      toast.success("Calendar submitted for approval")
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to submit calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleConfirmSubmitWithOverlap = async () => {
+    if (!calendar?._id) return
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.submitCalendar(calendar._id, true)
+      toast.success("Calendar submitted with overlap warning")
+      setShowOverlapConfirmModal(false)
+      setSubmitOverlapInfo(null)
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to submit calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleApprove = async () => {
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.approveCalendar(calendar._id, approvalComments)
+      toast.success("Calendar approved successfully")
+      setShowApprovalModal(false)
+      setApprovalComments("")
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to approve calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleReject = async () => {
+    if (!approvalComments || approvalComments.length < 10) {
+      toast.error("Please provide a rejection reason (min 10 characters)")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.rejectCalendar(calendar._id, approvalComments)
+      toast.success("Calendar rejected")
+      setShowApprovalModal(false)
+      setApprovalComments("")
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to reject calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (loading && !calendar) {
+    return <LoadingState message="Loading events..." />
+  }
+
+  if (error) {
+    return <ErrorState message={error} onRetry={fetchYears} />
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
+      <PageHeader title="Events Calendar">
+        <ToggleButtonGroup
+          options={VIEW_OPTIONS}
+          value={viewMode}
+          onChange={setViewMode}
+          size="small"
+          variant="muted"
+        />
+        <Select
+          value={selectedYear || ""}
+          onChange={(event) => setSelectedYear(event.target.value)}
+          options={years.map((year) => ({ value: year.academicYear, label: year.academicYear }))}
+          placeholder="Select Year"
+          style={{ minWidth: "120px" }}
+        />
+        {calendar && (
+          <Button size="sm" variant="ghost" onClick={() => setShowHistoryModal(true)}>
+            <History size={16} /> History
+          </Button>
+        )}
+      </PageHeader>
+
+      <div style={{ flex: 1, overflow: "auto", padding: "var(--spacing-6)" }}>
+        {calendar && (
+          <Card style={{ marginBottom: "var(--spacing-4)" }}>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "var(--spacing-3)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                  <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                    {calendar.academicYear} Calendar
+                  </span>
+                  <Badge variant={calendar.isLocked ? "warning" : "success"}>
+                    {calendar.isLocked ? <><Lock size={12} /> Locked</> : <><Unlock size={12} /> Editable</>}
+                  </Badge>
+                  <Badge variant={
+                    calendar.status === "approved"
+                      ? "success"
+                      : calendar.status === "rejected"
+                        ? "danger"
+                        : calendar.status === "draft"
+                          ? "default"
+                          : "info"
+                  }>
+                    {calendar.status?.replace(/_/g, " ")}
+                  </Badge>
+                </div>
+
+                <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                  {canEdit && (
+                    <Button size="sm" variant="secondary" onClick={handleAddEvent}>
+                      <Plus size={14} /> Add Event
+                    </Button>
+                  )}
+
+                  {canEditGS && events.length > 0 && calendar.status === "draft" && (
+                    <Button size="sm" onClick={handleSubmitCalendar} loading={submitting}>
+                      <Send size={14} /> Submit for Approval
+                    </Button>
+                  )}
+
+                  {calendar.isLocked && isGS && (
+                    <Button size="sm" variant="secondary" onClick={() => openAmendmentModal(null)}>
+                      <FileText size={14} /> Request New Event
+                    </Button>
+                  )}
+
+                  {canApprove && (
+                    <>
+                      <Button size="sm" variant="success" onClick={() => { setApprovalComments(""); setShowApprovalModal(true) }}>
+                        <Check size={14} /> Approve
+                      </Button>
+                      <Button size="sm" variant="danger" onClick={() => { setApprovalComments(""); setShowApprovalModal(true) }}>
+                        <X size={14} /> Reject
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {calendar && (
+          <Card style={{ marginBottom: "var(--spacing-4)" }}>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <h3 style={{ marginBottom: "var(--spacing-3)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)" }}>
+                Category-wise Budget Summary
+              </h3>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--spacing-3)" }}>
+                {CATEGORY_ORDER.map((category) => (
+                  <div key={category} style={{
+                    border: "var(--border-1) solid var(--color-border-primary)",
+                    borderRadius: "var(--radius-card-sm)",
+                    padding: "var(--spacing-3)",
+                    backgroundColor: "var(--color-bg-secondary)",
+                  }}>
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                      {CATEGORY_LABELS[category]}
+                    </p>
+                    <p style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                      ₹{(budgetSummary.byCategory[category] || 0).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+                <div style={{
+                  border: "var(--border-1) solid var(--color-border-primary)",
+                  borderRadius: "var(--radius-card-sm)",
+                  padding: "var(--spacing-3)",
+                  backgroundColor: "var(--color-primary-bg)",
+                }}>
+                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Total Budget</p>
+                  <p style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>
+                    ₹{budgetSummary.total.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {calendar && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
+          <Card style={{ marginBottom: "var(--spacing-4)" }}>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <Alert type="warning">
+                <Bell size={16} style={{ marginRight: "var(--spacing-1)" }} />
+                {pendingProposalReminders.length} event(s) are in proposal submission window (21 days before event).
+              </Alert>
+              <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                {pendingProposalReminders.slice(0, 5).map((event) => (
+                  <div
+                    key={`proposal-reminder-${event._id || event.title}`}
+                    style={{
+                      border: "var(--border-1) solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-card-sm)",
+                      padding: "var(--spacing-3)",
+                      backgroundColor: "var(--color-bg-secondary)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "var(--spacing-2)",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div>
+                      <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                        {event.title}
+                      </p>
+                      <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                        {formatDateRange(event.startDate, event.endDate)} | Budget ₹{Number(event.estimatedBudget || 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <Button size="sm" variant="secondary" onClick={() => openProposalModal(event)}>
+                      <FileText size={14} /> Proposal
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {calendar && dateConflicts.length > 0 && (
+          <Card style={{ marginBottom: "var(--spacing-4)" }}>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <Alert type="warning">
+                <strong>{dateConflicts.length}</strong> date overlap(s) found in this calendar.
+              </Alert>
+              <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                {dateConflicts.slice(0, 5).map((conflict, index) => (
+                  <div
+                    key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}
+                    style={{
+                      padding: "var(--spacing-3)",
+                      border: "var(--border-1) solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-card-sm)",
+                      backgroundColor: "var(--color-bg-secondary)",
+                    }}
+                  >
+                    <p style={{ margin: 0, color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                      <strong>{conflict.eventA.title}</strong> ({formatDateRange(conflict.eventA.startDate, conflict.eventA.endDate)})
+                    </p>
+                    <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>overlaps with</p>
+                    <p style={{ margin: 0, color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                      <strong>{conflict.eventB.title}</strong> ({formatDateRange(conflict.eventB.startDate, conflict.eventB.endDate)})
+                    </p>
+                  </div>
+                ))}
+                {dateConflicts.length > 5 && (
+                  <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    +{dateConflicts.length - 5} more overlap(s)
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {!calendar && (
+          <EmptyState
+            icon={CalendarDays}
+            title="No Calendar Found"
+            message={`No activity calendar exists for ${selectedYear || "this year"}. Contact Admin to create one.`}
+          />
+        )}
+
+        {calendar && viewMode === "list" && (
+          <>
+            {events.length === 0 ? (
+              <EmptyState
+                icon={CalendarDays}
+                title="No Events Yet"
+                message={canEdit ? "Add events to the calendar to get started." : "No events have been added to this calendar yet."}
+              />
+            ) : (
+              <Card>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Event</TableHeader>
+                      <TableHeader>Category</TableHeader>
+                      <TableHeader>Date Range</TableHeader>
+                      <TableHeader>Budget</TableHeader>
+                      <TableHeader align="right">Actions</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {events.map((event, index) => (
+                      <TableRow key={event._id || index} onClick={() => handleEventClick(event)} style={{ cursor: "pointer" }}>
+                        <TableCell>
+                          <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge style={{ backgroundColor: CATEGORY_COLORS[event.category] }}>
+                            {CATEGORY_LABELS[event.category] || event.category}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{formatDateRange(event.startDate, event.endDate)}</TableCell>
+                        <TableCell>₹{Number(event.estimatedBudget || 0).toLocaleString()}</TableCell>
+                        <TableCell align="right">
+                          {canEdit && (
+                            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); handleEditEvent(event) }}>
+                              <Edit2 size={14} />
+                            </Button>
+                          )}
+                          {calendar.isLocked && isGS && (
+                            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); openAmendmentModal(event) }}>
+                              <FileText size={14} />
+                            </Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            )}
+          </>
+        )}
+
+        {calendar && viewMode === "calendar" && (
+          <Card>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "var(--spacing-4)",
+              }}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
+                >
+                  <ChevronLeft size={16} />
+                </Button>
+                <span style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
+                  {calendarMonth.toLocaleString("default", { month: "long", year: "numeric" })}
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
+                >
+                  <ChevronRight size={16} />
+                </Button>
+              </div>
+
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(7, 1fr)",
+                gap: "var(--spacing-1)",
+              }}>
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                  <div key={day} style={{
+                    padding: "var(--spacing-2)",
+                    textAlign: "center",
+                    fontWeight: "var(--font-weight-semibold)",
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--color-text-muted)",
+                  }}>
+                    {day}
+                  </div>
+                ))}
+
+                {getDaysInMonth(calendarMonth).map((date, index) => {
+                  const dayEvents = date ? getEventsForDate(date) : []
+                  const isToday = date?.toDateString() === new Date().toDateString()
+
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        minHeight: "88px",
+                        padding: "var(--spacing-1)",
+                        backgroundColor: date ? "var(--color-bg-primary)" : "transparent",
+                        border: isToday
+                          ? "var(--border-2) solid var(--color-primary)"
+                          : "var(--border-1) solid var(--color-border-primary)",
+                        borderRadius: "var(--radius-sm)",
+                      }}
+                    >
+                      {date && (
+                        <>
+                          <div style={{
+                            fontSize: "var(--font-size-xs)",
+                            fontWeight: isToday ? "var(--font-weight-bold)" : "var(--font-weight-normal)",
+                            color: isToday ? "var(--color-primary)" : "var(--color-text-body)",
+                            marginBottom: "var(--spacing-1)",
+                          }}>
+                            {date.getDate()}
+                          </div>
+                          {dayEvents.slice(0, 2).map((event, i) => (
+                            <div
+                              key={i}
+                              onClick={() => handleEventClick(event)}
+                              style={{
+                                fontSize: "var(--font-size-xs)",
+                                padding: "var(--spacing-0-5) var(--spacing-1)",
+                                marginBottom: "var(--spacing-0-5)",
+                                backgroundColor: CATEGORY_COLORS[event.category],
+                                color: "white",
+                                borderRadius: "var(--radius-xs)",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {event.title}
+                            </div>
+                          ))}
+                          {dayEvents.length > 2 && (
+                            <div style={{
+                              fontSize: "var(--font-size-xs)",
+                              color: "var(--color-text-muted)",
+                            }}>
+                              +{dayEvents.length - 2} more
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      <Modal
+        isOpen={showEventModal}
+        title={selectedEvent?.title || "Event Details"}
+        width={640}
+        onClose={() => { setShowEventModal(false); setSelectedEvent(null) }}
+        footer={<Button variant="secondary" onClick={() => setShowEventModal(false)}>Close</Button>}
+      >
+        {selectedEvent && showEventModal && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <div>
+              <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Category</label>
+              <Badge style={{ backgroundColor: CATEGORY_COLORS[selectedEvent.category], marginLeft: "var(--spacing-2)" }}>
+                {CATEGORY_LABELS[selectedEvent.category] || selectedEvent.category}
+              </Badge>
+            </div>
+            <div>
+              <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Date Range</label>
+              <p>{formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}</p>
+            </div>
+            <div>
+              <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Estimated Budget</label>
+              <p>₹{Number(selectedEvent.estimatedBudget || 0).toLocaleString()}</p>
+            </div>
+            {selectedEvent.description && (
+              <div>
+                <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Description</label>
+                <p>{selectedEvent.description}</p>
+              </div>
+            )}
+            {(isGS || isPresident) && (
+              <div style={{ borderTop: "var(--border-1) solid var(--color-border-primary)", paddingTop: "var(--spacing-3)" }}>
+                <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  Proposal
+                </label>
+                <p style={{ margin: "var(--spacing-1) 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                  {(() => {
+                    const proposalDueDate = getProposalDueDate(selectedEvent)
+                    const dueDateText = proposalDueDate ? proposalDueDate.toLocaleDateString() : null
+
+                    if (!selectedEvent.gymkhanaEventId) {
+                      return "Proposal option will be available once this calendar is approved and event records are generated."
+                    }
+
+                    if (selectedEvent.proposalSubmitted) {
+                      return "Proposal submitted for this event."
+                    }
+
+                    if (dueDateText) {
+                      return `Proposal due on ${dueDateText}.`
+                    }
+
+                    return "Proposal due date is not available."
+                  })()}
+                </p>
+                {selectedEvent.gymkhanaEventId && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => openProposalModal(selectedEvent)}
+                  >
+                    <FileText size={14} /> {selectedEvent.proposalSubmitted ? "View Proposal" : "Submit Proposal"}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={showProposalModal}
+        title={`Event Proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`}
+        width={760}
+        onClose={() => {
+          setShowProposalModal(false)
+          setProposalEvent(null)
+          setProposalData(null)
+          setProposalForm(createDefaultProposalForm())
+          setProposalActionComments("")
+        }}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => setShowProposalModal(false)}>
+              Close
+            </Button>
+            {(canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser) && (
+              <Button
+                onClick={handleCreateOrUpdateProposal}
+                loading={submitting}
+                disabled={!isProposalFormValid}
+              >
+                {proposalData?._id ? "Save Proposal" : "Submit Proposal"}
+              </Button>
+            )}
+          </div>
+        }
+      >
+        {proposalLoading ? (
+          <LoadingState message="Loading proposal..." />
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            {proposalEvent && (
+              <Alert type="info">
+                Event budget: ₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}
+                {(() => {
+                  const proposalDueDate = getProposalDueDate(proposalEvent)
+                  return proposalDueDate ? ` | Proposal due: ${proposalDueDate.toLocaleDateString()}` : ""
+                })()}
+              </Alert>
+            )}
+
+            {proposalData && (
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                <Badge variant={proposalData.status === "approved" ? "success" : proposalData.status === "rejected" ? "danger" : "info"}>
+                  {proposalData.status?.replace(/_/g, " ")}
+                </Badge>
+                {proposalData.currentApprovalStage && (
+                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    Current stage: {proposalData.currentApprovalStage}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {!proposalData && !canCreateProposalForSelectedEvent && (
+              <Alert type="warning">
+                Proposal submission is available to GS only after the proposal window opens (21 days before event).
+              </Alert>
+            )}
+
+            <Textarea
+              name="proposalText"
+              placeholder="Proposal details"
+              value={proposalForm.proposalText}
+              onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
+              rows={5}
+              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              required
+            />
+
+            <Textarea
+              name="externalGuestsDetails"
+              placeholder="External guests details"
+              value={proposalForm.externalGuestsDetails}
+              onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
+              rows={3}
+              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+            />
+
+            <Checkbox
+              name="accommodationRequired"
+              label="Accommodation required"
+              checked={proposalForm.accommodationRequired}
+              onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
+              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+            />
+
+            <Checkbox
+              name="hasRegistrationFee"
+              label="Registration fee applicable"
+              checked={proposalForm.hasRegistrationFee}
+              onChange={(event) => handleProposalFormChange("hasRegistrationFee", event.target.checked)}
+              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+            />
+
+            {proposalForm.hasRegistrationFee && (
+              <Input
+                name="registrationFeeAmount"
+                type="number"
+                placeholder="Registration fee amount (₹)"
+                value={proposalForm.registrationFeeAmount}
+                onChange={(event) =>
+                  handleProposalFormChange("registrationFeeAmount", Number(event.target.value || 0))
+                }
+                disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              />
+            )}
+
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+              <Input
+                name="totalExpectedIncome"
+                type="number"
+                placeholder="Total expected income (₹)"
+                value={proposalForm.totalExpectedIncome}
+                onChange={(event) =>
+                  handleProposalFormChange("totalExpectedIncome", Number(event.target.value || 0))
+                }
+                disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              />
+              <Input
+                name="totalExpenditure"
+                type="number"
+                placeholder="Total expenditure (₹)"
+                value={proposalForm.totalExpenditure}
+                onChange={(event) =>
+                  handleProposalFormChange("totalExpenditure", Number(event.target.value || 0))
+                }
+                disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              />
+            </div>
+
+            <div
+              style={{
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                padding: "var(--spacing-3)",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                Budget deflection (Auto)
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "var(--font-size-lg)",
+                  fontWeight: "var(--font-weight-semibold)",
+                  color: proposalDeflection > 0 ? "var(--color-danger)" : "var(--color-success)",
+                }}
+              >
+                ₹{proposalDeflection.toLocaleString()}
+              </p>
+            </div>
+
+            {canPresidentReviewProposal && proposalData && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <Textarea
+                  name="proposalActionComments"
+                  placeholder="Approval comments (required for reject/revision)"
+                  value={proposalActionComments}
+                  onChange={(event) => setProposalActionComments(event.target.value)}
+                  rows={3}
+                />
+                <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                  <Button variant="warning" onClick={handleRequestProposalRevision} loading={submitting}>
+                    Request Revision
+                  </Button>
+                  <Button variant="danger" onClick={handleRejectProposal} loading={submitting}>
+                    Reject
+                  </Button>
+                  <Button variant="success" onClick={handleApproveProposal} loading={submitting}>
+                    Approve
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {proposalData?._id && (
+              <div>
+                <p style={{ marginBottom: "var(--spacing-2)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                  Activity Log
+                </p>
+                <ApprovalHistory key={proposalHistoryRefreshKey} proposalId={proposalData._id} />
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={showAddEventModal}
+        title={selectedEvent ? "Edit Event" : "Add Event"}
+        width={760}
+        onClose={() => { setShowAddEventModal(false); setSelectedEvent(null); resetDateOverlapInfo() }}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => setShowAddEventModal(false)}>Cancel</Button>
+            <Button onClick={handleSaveEvent} loading={submitting} disabled={!canSaveEventInModal}>Save Event</Button>
+          </div>
+        }
+      >
+        {showAddEventModal && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <Input
+              name="title"
+              placeholder="Event Title"
+              value={eventForm.title}
+              onChange={(event) => handleEventFormChange("title", event.target.value)}
+              required
+            />
+            <Select
+              name="category"
+              value={eventForm.category}
+              onChange={(event) => handleEventFormChange("category", event.target.value)}
+              options={CATEGORY_OPTIONS}
+            />
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+              <Input
+                name="startDate"
+                type="date"
+                value={eventForm.startDate}
+                onChange={(event) => handleEventFormChange("startDate", event.target.value)}
+                required
+              />
+              <Input
+                name="endDate"
+                type="date"
+                value={eventForm.endDate}
+                onChange={(event) => handleEventFormChange("endDate", event.target.value)}
+                required
+              />
+            </div>
+            {eventForm.startDate && eventForm.endDate && !isDateRangeOrdered && (
+              <Alert type="error">
+                End date cannot be before start date.
+              </Alert>
+            )}
+            {overlapCheckInProgressForCurrentDates && (
+              <Alert type="info">
+                Checking overlap for selected date range...
+              </Alert>
+            )}
+            {dateOverlapInfo.status === "error" && overlapCheckKey && (
+              <Alert type="error">
+                {dateOverlapInfo.errorMessage}{" "}
+                <button
+                  type="button"
+                  onClick={retryDateOverlapCheck}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--color-danger)",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    padding: 0,
+                  }}
+                >
+                  Retry
+                </button>
+              </Alert>
+            )}
+            {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
+              <Alert type="warning">
+                <strong>Date overlap warning:</strong> this range overlaps with {dateOverlapInfo.overlaps.length} existing event(s).
+              </Alert>
+            )}
+            {overlapCheckCompletedForCurrentDates && !dateOverlapInfo.hasOverlap && (
+              <Alert type="success">
+                Date overlap check completed: no overlaps found for the selected range.
+              </Alert>
+            )}
+            {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--spacing-2)",
+                padding: "var(--spacing-3)",
+                borderRadius: "var(--radius-card-sm)",
+                backgroundColor: "var(--color-bg-secondary)",
+                border: "var(--border-1) solid var(--color-border-primary)",
+              }}>
+                {dateOverlapInfo.overlaps.slice(0, 3).map((overlap, index) => {
+                  const conflicting = overlap.eventB || overlap.eventA
+                  return (
+                    <p key={`${conflicting?.eventId || conflicting?.title}-${index}`} style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                      {conflicting?.title || "Existing event"} ({formatDateRange(conflicting?.startDate, conflicting?.endDate)})
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+            <Input
+              name="estimatedBudget"
+              type="number"
+              placeholder="Estimated Budget (₹)"
+              value={eventForm.estimatedBudget}
+              onChange={(event) => handleEventFormChange("estimatedBudget", parseFloat(event.target.value) || 0)}
+            />
+            <Textarea
+              name="description"
+              placeholder="Description"
+              value={eventForm.description}
+              onChange={(event) => handleEventFormChange("description", event.target.value)}
+              rows={4}
+            />
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={showAmendmentModal}
+        title="Request Amendment"
+        width={760}
+        onClose={() => { setShowAmendmentModal(false); setSelectedEvent(null); resetDateOverlapInfo() }}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => setShowAmendmentModal(false)}>Cancel</Button>
+            <Button onClick={handleSubmitAmendment} loading={submitting} disabled={!canSubmitAmendmentInModal}>Submit Request</Button>
+          </div>
+        }
+      >
+        {showAmendmentModal && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <Alert type="info">
+              The calendar is locked. Your amendment request will be reviewed by Admin.
+            </Alert>
+            <Input
+              name="title"
+              placeholder="Event Title"
+              value={eventForm.title}
+              onChange={(event) => handleEventFormChange("title", event.target.value)}
+              required
+            />
+            <Select
+              name="category"
+              value={eventForm.category}
+              onChange={(event) => handleEventFormChange("category", event.target.value)}
+              options={CATEGORY_OPTIONS}
+            />
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+              <Input
+                name="startDate"
+                type="date"
+                value={eventForm.startDate}
+                onChange={(event) => handleEventFormChange("startDate", event.target.value)}
+                required
+              />
+              <Input
+                name="endDate"
+                type="date"
+                value={eventForm.endDate}
+                onChange={(event) => handleEventFormChange("endDate", event.target.value)}
+                required
+              />
+            </div>
+            {eventForm.startDate && eventForm.endDate && !isDateRangeOrdered && (
+              <Alert type="error">
+                End date cannot be before start date.
+              </Alert>
+            )}
+            {overlapCheckInProgressForCurrentDates && (
+              <Alert type="info">
+                Checking overlap for selected date range...
+              </Alert>
+            )}
+            {dateOverlapInfo.status === "error" && overlapCheckKey && (
+              <Alert type="error">
+                {dateOverlapInfo.errorMessage}{" "}
+                <button
+                  type="button"
+                  onClick={retryDateOverlapCheck}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "var(--color-danger)",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    padding: 0,
+                  }}
+                >
+                  Retry
+                </button>
+              </Alert>
+            )}
+            {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
+              <Alert type="warning">
+                <strong>Date overlap warning:</strong> this range overlaps with {dateOverlapInfo.overlaps.length} existing event(s).
+              </Alert>
+            )}
+            {overlapCheckCompletedForCurrentDates && !dateOverlapInfo.hasOverlap && (
+              <Alert type="success">
+                Date overlap check completed: no overlaps found for the selected range.
+              </Alert>
+            )}
+            {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--spacing-2)",
+                padding: "var(--spacing-3)",
+                borderRadius: "var(--radius-card-sm)",
+                backgroundColor: "var(--color-bg-secondary)",
+                border: "var(--border-1) solid var(--color-border-primary)",
+              }}>
+                {dateOverlapInfo.overlaps.slice(0, 3).map((overlap, index) => {
+                  const conflicting = overlap.eventB || overlap.eventA
+                  return (
+                    <p key={`${conflicting?.eventId || conflicting?.title}-${index}`} style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                      {conflicting?.title || "Existing event"} ({formatDateRange(conflicting?.startDate, conflicting?.endDate)})
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+            <Input
+              name="estimatedBudget"
+              type="number"
+              placeholder="Estimated Budget (₹)"
+              value={eventForm.estimatedBudget}
+              onChange={(event) => handleEventFormChange("estimatedBudget", parseFloat(event.target.value) || 0)}
+            />
+            <Textarea
+              name="description"
+              placeholder="Description"
+              value={eventForm.description}
+              onChange={(event) => handleEventFormChange("description", event.target.value)}
+              rows={3}
+            />
+            <Textarea
+              name="reason"
+              placeholder="Reason for amendment (min 10 characters)"
+              value={amendmentReason}
+              onChange={(event) => setAmendmentReason(event.target.value)}
+              rows={4}
+              required
+            />
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={showHistoryModal}
+        title="Approval History"
+        width={700}
+        onClose={() => setShowHistoryModal(false)}
+        footer={<Button variant="secondary" onClick={() => setShowHistoryModal(false)}>Close</Button>}
+      >
+        {calendar && <ApprovalHistory calendarId={calendar._id} />}
+      </Modal>
+
+      <Modal
+        isOpen={showApprovalModal}
+        title="Review Calendar"
+        width={720}
+        onClose={() => setShowApprovalModal(false)}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => setShowApprovalModal(false)}>Cancel</Button>
+            <Button variant="danger" onClick={handleReject} loading={submitting}>
+              <X size={14} /> Reject
+            </Button>
+            <Button variant="success" onClick={handleApprove} loading={submitting}>
+              <Check size={14} /> Approve
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <Alert type="info">
+            You are reviewing the {calendar?.academicYear} calendar with {events.length} events.
+          </Alert>
+
+          <div style={{
+            border: "var(--border-1) solid var(--color-border-primary)",
+            borderRadius: "var(--radius-card-sm)",
+            padding: "var(--spacing-3)",
+            backgroundColor: "var(--color-bg-secondary)",
+          }}>
+            <p style={{ margin: 0, marginBottom: "var(--spacing-2)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+              Budget Summary
+            </p>
+            {CATEGORY_ORDER.map((category) => (
+              <p key={category} style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                {CATEGORY_LABELS[category]}: ₹{(budgetSummary.byCategory[category] || 0).toLocaleString()}
+              </p>
+            ))}
+            <p style={{ margin: 0, marginTop: "var(--spacing-2)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>
+              Total: ₹{budgetSummary.total.toLocaleString()}
+            </p>
+          </div>
+
+          {dateConflicts.length > 0 && (
+            <Alert type="warning">
+              <AlertTriangle size={16} style={{ marginRight: "var(--spacing-1)" }} />
+              {dateConflicts.length} date overlap(s) detected in this calendar.
+            </Alert>
+          )}
+
+          <Textarea
+            name="comments"
+            placeholder="Comments (required for rejection, optional for approval)"
+            value={approvalComments}
+            onChange={(event) => setApprovalComments(event.target.value)}
+            rows={4}
+          />
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showOverlapConfirmModal}
+        title="Date Overlap Confirmation"
+        width={760}
+        onClose={() => { setShowOverlapConfirmModal(false); setSubmitOverlapInfo(null) }}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => { setShowOverlapConfirmModal(false); setSubmitOverlapInfo(null) }}>
+              Cancel
+            </Button>
+            <Button variant="warning" onClick={handleConfirmSubmitWithOverlap} loading={submitting}>
+              Submit Anyway
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <Alert type="warning">
+            {submitOverlapInfo?.message || "Some events have overlapping date ranges."}
+          </Alert>
+
+          {(submitOverlapInfo?.overlaps || []).slice(0, 8).map((overlap, index) => (
+            <div
+              key={`${overlap.eventA?.eventId || overlap.eventA?.title}-${overlap.eventB?.eventId || overlap.eventB?.title}-${index}`}
+              style={{
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                padding: "var(--spacing-3)",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{overlap.eventA?.title}</strong> ({formatDateRange(overlap.eventA?.startDate, overlap.eventA?.endDate)})
+              </p>
+              <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>overlaps with</p>
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{overlap.eventB?.title}</strong> ({formatDateRange(overlap.eventB?.startDate, overlap.eventB?.endDate)})
+              </p>
+            </div>
+          ))}
+        </div>
+      </Modal>
+    </div>
+  )
+}
+
+export default EventsPage

@@ -60,6 +60,8 @@ const LoginPage = () => {
         return "/associate-warden"
       case "Hostel Supervisor":
         return "/hostel-supervisor"
+      case "Gymkhana":
+        return "/gymkhana"
       default:
         return "/login"
     }

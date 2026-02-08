@@ -78,6 +78,7 @@ export const getAdminNavItems = (handleLogout) => [
   { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
   { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
   { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
+  { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events" },
   { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints" },
   { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found" },
@@ -242,6 +243,17 @@ export const getStudentNavItems = (handleLogout, notificationsCount = 0) => [
   { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
   createProfileItem("/student"),
+  createLogoutItem(handleLogout),
+]
+
+// ============================================
+// GYMKHANA NAVIGATION
+// ============================================
+
+export const getGymkhanaNavItems = (handleLogout) => [
+  { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/gymkhana" },
+  { name: "Events", icon: CalendarDays, section: "main", path: "/gymkhana/events" },
+  createProfileItem("/gymkhana"),
   createLogoutItem(handleLogout),
 ]
 
