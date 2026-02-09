@@ -234,6 +234,13 @@ export const gymkhanaEventsApi = {
     return apiClient.put(`${BASE_PATH}/expenses/${id}`, data)
   },
 
+  /**
+   * Approve expense (Admin only)
+   */
+  approveExpense: (id, comments = "") => {
+    return apiClient.post(`${BASE_PATH}/expenses/${id}/approve`, { comments })
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // AMENDMENT OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════

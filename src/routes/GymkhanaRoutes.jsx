@@ -3,8 +3,7 @@ import GymkhanaLayout from "../layouts/GymkhanaLayout"
 
 // Gymkhana pages
 import DashboardPage from "../pages/gymkhana/DashboardPage"
-import EventsPage from "../pages/gymkhana/EventsPage"
-import ProfilePage from "../pages/common/ProfilePage"
+import { GymkhanaEventsPage, ProfilePage } from "../pages/common"
 
 // Utility pages
 import NotFoundPage from "../pages/NotFoundPage"
@@ -16,7 +15,7 @@ const GymkhanaRoutes = () => (
         <Routes>
             <Route element={<GymkhanaLayout />}>
                 <Route index element={<DashboardPage />} />
-                <Route path="events" element={<EventsPage />} />
+                <Route path="events" element={<GymkhanaEventsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Route>

@@ -30,15 +30,13 @@ import {
     VisitorRequestsPage,
     LostAndFoundPage,
     EventsPage,
+    GymkhanaEventsPage,
     ProfilePage,
     NotificationCenterPage
 } from "../pages/common"
 
 // Warden pages (shared)
 import { FeedbacksPage } from "../pages/warden"
-
-// Gymkhana Events (Admin calendar management)
-import GymkhanaEventsPage from "../pages/admin/GymkhanaEventsPage"
 
 // Utility pages
 import NotFoundPage from "../pages/NotFoundPage"

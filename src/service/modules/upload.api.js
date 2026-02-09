@@ -33,11 +33,42 @@ export const uploadApi = {
   },
 
   /**
+   * Upload event proposal PDF
+   * @param {FormData} fileData - Form data
+   */
+  uploadEventProposalPDF: (fileData) => {
+    return apiClient.upload("/upload/event-proposal-pdf", fileData)
+  },
+
+  /**
+   * Upload event chief guest PDF
+   * @param {FormData} fileData - Form data
+   */
+  uploadEventChiefGuestPDF: (fileData) => {
+    return apiClient.upload("/upload/event-chief-guest-pdf", fileData)
+  },
+
+  /**
+   * Upload event bill PDF
+   * @param {FormData} fileData - Form data
+   */
+  uploadEventBillPDF: (fileData) => {
+    return apiClient.upload("/upload/event-bill-pdf", fileData)
+  },
+
+  /**
+   * Upload event report PDF
+   * @param {FormData} fileData - Form data
+   */
+  uploadEventReportPDF: (fileData) => {
+    return apiClient.upload("/upload/event-report-pdf", fileData)
+  },
+
+  /**
    * Upload payment screenshot
    * @param {FormData} imageData - Image form data
-   * @param {string} userId - User ID (optional, not used in endpoint)
    */
-  uploadPaymentScreenshot: (imageData, userId) => {
+  uploadPaymentScreenshot: (imageData) => {
     return apiClient.upload("/upload/payment-screenshot", imageData)
   },
 

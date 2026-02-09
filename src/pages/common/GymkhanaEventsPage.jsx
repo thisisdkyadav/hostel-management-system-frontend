@@ -10,7 +10,14 @@ import { Button } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Select, Input, Textarea, Checkbox } from "@/components/ui/form"
-import { Modal, LoadingState, ErrorState, EmptyState, Alert } from "@/components/ui/feedback"
+import {
+  Modal,
+  LoadingState,
+  ErrorState,
+  EmptyState,
+  Alert,
+  useToast,
+} from "@/components/ui/feedback"
 import { Badge } from "@/components/ui/data-display"
 import { ToggleButtonGroup } from "@/components/ui"
 import { Table, TableHead, TableBody, TableHeader, TableRow, TableCell } from "@/components/ui/table"
@@ -25,7 +32,10 @@ import {
   FileText,
   Check,
   History,
+  Settings,
   List,
+  Receipt,
+  Trash2,
   ChevronLeft,
   ChevronRight,
   AlertTriangle,
@@ -33,8 +43,9 @@ import {
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import { useToast } from "@/components/ui/feedback"
+import uploadApi from "@/service/modules/upload.api"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
+import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 
 const CATEGORY_OPTIONS = [
   { value: "academic", label: "Academic" },
@@ -59,6 +70,68 @@ const CATEGORY_COLORS = {
 
 const CATEGORY_ORDER = ["academic", "cultural", "sports", "technical"]
 const VALID_OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
+const CALENDAR_STATUS_TO_APPROVER = {
+  pending_president: "President Gymkhana",
+  pending_student_affairs: "Student Affairs",
+  pending_joint_registrar: "Joint Registrar SA",
+  pending_associate_dean: "Associate Dean SA",
+  pending_dean: "Dean SA",
+}
+const PROPOSAL_STATUS_TO_APPROVER = {
+  pending_president: "President Gymkhana",
+  pending_student_affairs: "Student Affairs",
+  pending_joint_registrar: "Joint Registrar SA",
+  pending_associate_dean: "Associate Dean SA",
+  pending_dean: "Dean SA",
+}
+
+const footerTabStyles = {
+  tabsBar: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "var(--color-bg-tertiary)",
+    borderTop: "var(--border-1) solid var(--color-border-primary)",
+    padding: 0,
+    flexShrink: 0,
+    minHeight: "42px",
+    overflowX: "auto",
+    overflowY: "hidden",
+  },
+  tabsList: {
+    display: "flex",
+    alignItems: "stretch",
+    height: "100%",
+    gap: 0,
+  },
+  tab: {
+    display: "flex",
+    alignItems: "center",
+    padding: "0 var(--spacing-4)",
+    minHeight: "42px",
+    fontSize: "var(--font-size-sm)",
+    fontWeight: "var(--font-weight-medium)",
+    color: "var(--color-text-muted)",
+    backgroundColor: "transparent",
+    border: "none",
+    borderRight: "var(--border-1) solid var(--color-border-primary)",
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+    transition: "var(--transition-colors)",
+    minWidth: "100px",
+    justifyContent: "center",
+    gap: "var(--spacing-2)",
+  },
+  tabActive: {
+    backgroundColor: "var(--color-bg-primary)",
+    color: "var(--color-primary)",
+    borderBottom: "var(--border-2) solid var(--color-primary)",
+    fontWeight: "var(--font-weight-semibold)",
+  },
+  addTab: {
+    backgroundColor: "var(--color-primary-bg)",
+    color: "var(--color-primary)",
+  },
+}
 
 const toDate = (value) => {
   const date = new Date(value)
@@ -175,7 +248,9 @@ const createDefaultOverlapState = () => ({
 
 const createDefaultProposalForm = () => ({
   proposalText: "",
+  proposalDocumentUrl: "",
   externalGuestsDetails: "",
+  chiefGuestDocumentUrl: "",
   accommodationRequired: false,
   hasRegistrationFee: false,
   registrationFeeAmount: 0,
@@ -183,9 +258,28 @@ const createDefaultProposalForm = () => ({
   totalExpenditure: 0,
 })
 
+const createEmptyBill = () => ({
+  localId: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  description: "",
+  amount: 0,
+  billNumber: "",
+  billDate: "",
+  vendor: "",
+  documentUrl: "",
+  documentName: "",
+})
+
+const createDefaultExpenseForm = () => ({
+  bills: [createEmptyBill()],
+  eventReportDocumentUrl: "",
+  notes: "",
+})
+
 const toProposalForm = (proposal) => ({
   proposalText: proposal?.proposalText || "",
+  proposalDocumentUrl: proposal?.proposalDocumentUrl || "",
   externalGuestsDetails: proposal?.externalGuestsDetails || "",
+  chiefGuestDocumentUrl: proposal?.chiefGuestDocumentUrl || "",
   accommodationRequired: Boolean(proposal?.accommodationRequired),
   hasRegistrationFee: Boolean(proposal?.hasRegistrationFee),
   registrationFeeAmount: Number(proposal?.registrationFeeAmount || 0),
@@ -195,7 +289,9 @@ const toProposalForm = (proposal) => ({
 
 const buildProposalPayload = (proposalForm) => ({
   proposalText: proposalForm.proposalText?.trim(),
+  proposalDocumentUrl: proposalForm.proposalDocumentUrl?.trim() || "",
   externalGuestsDetails: proposalForm.externalGuestsDetails?.trim() || "",
+  chiefGuestDocumentUrl: proposalForm.chiefGuestDocumentUrl?.trim() || "",
   accommodationRequired: Boolean(proposalForm.accommodationRequired),
   hasRegistrationFee: Boolean(proposalForm.hasRegistrationFee),
   registrationFeeAmount: proposalForm.hasRegistrationFee
@@ -203,6 +299,60 @@ const buildProposalPayload = (proposalForm) => ({
     : 0,
   totalExpectedIncome: Number(proposalForm.totalExpectedIncome || 0),
   totalExpenditure: Number(proposalForm.totalExpenditure || 0),
+})
+
+const toDateInputValue = (value) => {
+  if (!value) return ""
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return ""
+  return parsed.toISOString().split("T")[0]
+}
+
+const getFilenameFromUrl = (url = "") => {
+  if (!url || typeof url !== "string") return "bill.pdf"
+  const cleanedUrl = url.split("?")[0]
+  const parts = cleanedUrl.split("/")
+  const candidate = parts[parts.length - 1]
+  return candidate || "bill.pdf"
+}
+
+const toExpenseForm = (expense) => ({
+  bills:
+    Array.isArray(expense?.bills) && expense.bills.length > 0
+      ? expense.bills.map((bill) => ({
+          localId: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          description: bill?.description || "",
+          amount: Number(bill?.amount || 0),
+          billNumber: bill?.billNumber || "",
+          billDate: toDateInputValue(bill?.billDate),
+          vendor: bill?.vendor || "",
+          documentUrl: bill?.attachments?.[0]?.url || "",
+          documentName: bill?.attachments?.[0]?.filename || "",
+        }))
+      : [createEmptyBill()],
+  eventReportDocumentUrl: expense?.eventReportDocumentUrl || "",
+  notes: expense?.notes || "",
+})
+
+const buildExpensePayload = (expenseForm) => ({
+  bills: (expenseForm.bills || []).map((bill, index) => {
+    const filename = bill.documentName?.trim() || getFilenameFromUrl(bill.documentUrl)
+    return {
+      description: bill.description?.trim() || `Bill ${index + 1}`,
+      amount: Number(bill.amount || 0),
+      billNumber: bill.billNumber?.trim() || "",
+      billDate: bill.billDate || undefined,
+      vendor: bill.vendor?.trim() || "",
+      attachments: [
+        {
+          filename,
+          url: bill.documentUrl?.trim() || "",
+        },
+      ],
+    }
+  }),
+  eventReportDocumentUrl: expenseForm.eventReportDocumentUrl?.trim() || "",
+  notes: expenseForm.notes?.trim() || "",
 })
 
 const isProposalWindowOpen = (event) => {
@@ -302,6 +452,8 @@ const EventsPage = () => {
   const [selectedYear, setSelectedYear] = useState(null)
   const [calendar, setCalendar] = useState(null)
   const [events, setEvents] = useState([])
+  const [proposalsForApproval, setProposalsForApproval] = useState([])
+  const [pendingExpenseApprovals, setPendingExpenseApprovals] = useState([])
   const [viewMode, setViewMode] = useState("list")
   const [calendarMonth, setCalendarMonth] = useState(new Date())
 
@@ -313,6 +465,9 @@ const EventsPage = () => {
   const [showApprovalModal, setShowApprovalModal] = useState(false)
   const [showOverlapConfirmModal, setShowOverlapConfirmModal] = useState(false)
   const [showProposalModal, setShowProposalModal] = useState(false)
+  const [showExpenseModal, setShowExpenseModal] = useState(false)
+  const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false)
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
 
   const [eventForm, setEventForm] = useState({
     title: "",
@@ -323,6 +478,7 @@ const EventsPage = () => {
     description: "",
   })
   const [amendmentReason, setAmendmentReason] = useState("")
+  const [newAcademicYear, setNewAcademicYear] = useState("")
   const [approvalComments, setApprovalComments] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [dateOverlapInfo, setDateOverlapInfo] = useState(createDefaultOverlapState)
@@ -333,14 +489,27 @@ const EventsPage = () => {
   const [proposalActionComments, setProposalActionComments] = useState("")
   const [proposalLoading, setProposalLoading] = useState(false)
   const [proposalHistoryRefreshKey, setProposalHistoryRefreshKey] = useState(0)
+  const [expenseEvent, setExpenseEvent] = useState(null)
+  const [expenseData, setExpenseData] = useState(null)
+  const [expenseForm, setExpenseForm] = useState(createDefaultExpenseForm)
+  const [expenseLoading, setExpenseLoading] = useState(false)
+  const [expenseApprovalComments, setExpenseApprovalComments] = useState("")
   const overlapCheckRequestRef = useRef(0)
 
+  const isGymkhanaRole = user?.role === "Gymkhana"
+  const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
   const isGS = user?.subRole === "GS Gymkhana"
   const isPresident = user?.subRole === "President Gymkhana"
   const canEditGS = calendar && !calendar.isLocked && isGS && (calendar.status === "draft" || calendar.status === "rejected")
   const canEditPresident = calendar && !calendar.isLocked && isPresident && calendar.status === "pending_president"
   const canEdit = canEditGS || canEditPresident
-  const canApprove = isPresident && calendar?.status === "pending_president"
+  const canApprove = Boolean(
+    calendar?.status &&
+      user?.subRole &&
+      CALENDAR_STATUS_TO_APPROVER[calendar.status] === user.subRole
+  )
+  const canManageCalendarLock = isAdminLevel && Boolean(calendar?._id)
+  const canCreateCalendar = isAdminLevel
 
   const VIEW_OPTIONS = [
     { value: "list", label: "List", icon: <List size={14} /> },
@@ -353,9 +522,34 @@ const EventsPage = () => {
     () => events.filter((event) => event.gymkhanaEventId && isProposalWindowOpen(event)),
     [events]
   )
+  const availableYearsForCreation = useMemo(() => {
+    const existingYears = new Set(years.map((year) => year.academicYear))
+    let latestYear = new Date().getFullYear()
+    if (years.length > 0) {
+      const parsedYears = years
+        .map((year) => parseInt(year.academicYear?.split("-")[0], 10))
+        .filter((year) => Number.isFinite(year))
+      if (parsedYears.length > 0) {
+        latestYear = Math.max(...parsedYears)
+      }
+    }
+
+    const options = []
+    for (let i = 0; i <= 2; i += 1) {
+      const startYear = latestYear + i
+      const endYear = (startYear + 1) % 100
+      const formatted = `${startYear}-${String(endYear).padStart(2, "0")}`
+      if (!existingYears.has(formatted)) {
+        options.push({ value: formatted, label: formatted })
+      }
+    }
+    return options
+  }, [years])
   const isProposalEditableByCurrentUser = useMemo(() => {
     if (!proposalData) return false
-    if (isGS) return proposalData.status === "revision_requested"
+    if (isGS) {
+      return proposalData.status === "revision_requested" || proposalData.status === "rejected"
+    }
     if (isPresident) return proposalData.status === "pending_president"
     return false
   }, [proposalData, isGS, isPresident])
@@ -363,14 +557,62 @@ const EventsPage = () => {
     if (!proposalEvent) return false
     return isGS && isProposalWindowOpen(proposalEvent) && !proposalData && proposalEvent.gymkhanaEventId
   }, [proposalEvent, isGS, proposalData])
-  const canPresidentReviewProposal = useMemo(
-    () => isPresident && proposalData?.status === "pending_president",
-    [isPresident, proposalData]
-  )
+  const canCurrentUserReviewProposal = useMemo(() => {
+    if (!proposalData?.status || !user?.subRole) return false
+    return PROPOSAL_STATUS_TO_APPROVER[proposalData.status] === user.subRole
+  }, [proposalData?.status, user?.subRole])
   const proposalDeflection = useMemo(() => {
     if (!proposalEvent) return 0
     return Number(proposalForm.totalExpenditure || 0) - Number(proposalEvent.estimatedBudget || 0)
   }, [proposalForm.totalExpenditure, proposalEvent])
+  const assignedExpenseBudget = useMemo(
+    () => Number(expenseData?.estimatedBudget || expenseEvent?.estimatedBudget || 0),
+    [expenseData?.estimatedBudget, expenseEvent?.estimatedBudget]
+  )
+  const expenseTotal = useMemo(
+    () =>
+      (expenseForm.bills || []).reduce(
+        (total, bill) => total + Number(bill?.amount || 0),
+        0
+      ),
+    [expenseForm.bills]
+  )
+  const expenseVariance = useMemo(
+    () => expenseTotal - assignedExpenseBudget,
+    [expenseTotal, assignedExpenseBudget]
+  )
+  const isExpenseFormValid = useMemo(() => {
+    if (!Array.isArray(expenseForm.bills) || expenseForm.bills.length === 0) {
+      return false
+    }
+
+    const areBillsValid = expenseForm.bills.every(
+      (bill) =>
+        bill.description?.trim() &&
+        Number(bill.amount || 0) >= 0 &&
+        Boolean(bill.documentUrl?.trim())
+    )
+
+    return areBillsValid && Boolean(expenseForm.eventReportDocumentUrl?.trim())
+  }, [expenseForm.bills, expenseForm.eventReportDocumentUrl])
+  const isExpenseSubmissionAllowedForSelectedEvent = useMemo(() => {
+    if (!expenseEvent?.gymkhanaEventId) return false
+    return expenseEvent.eventStatus === "proposal_approved"
+  }, [expenseEvent])
+  const canEditExpenseForm = useMemo(
+    () =>
+      isGS &&
+      isExpenseSubmissionAllowedForSelectedEvent &&
+      expenseData?.approvalStatus !== "approved",
+    [isGS, isExpenseSubmissionAllowedForSelectedEvent, expenseData?.approvalStatus]
+  )
+  const canApproveExpense = useMemo(
+    () =>
+      isAdminLevel &&
+      Boolean(expenseData?._id) &&
+      expenseData?.approvalStatus !== "approved",
+    [isAdminLevel, expenseData?._id, expenseData?.approvalStatus]
+  )
   const isDateRangeOrdered = useMemo(() => {
     if (!eventForm.startDate || !eventForm.endDate) return true
     return new Date(eventForm.endDate) >= new Date(eventForm.startDate)
@@ -407,10 +649,11 @@ const EventsPage = () => {
       Number(proposalForm.totalExpenditure || 0) >= 0 &&
       (!proposalForm.hasRegistrationFee || Number(proposalForm.registrationFeeAmount || 0) >= 0)
   )
+  const canEditProposalForm = canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser
 
   useEffect(() => {
     fetchYears()
-  }, [])
+  }, [user?.role, user?.subRole])
 
   useEffect(() => {
     if (selectedYear) {
@@ -418,14 +661,69 @@ const EventsPage = () => {
     }
   }, [selectedYear])
 
+  const getPendingExpenseApprovals = async () => {
+    if (!isAdminLevel) return []
+
+    try {
+      const firstPageResponse = await gymkhanaEventsApi.getAllExpenses({
+        page: 1,
+        limit: 100,
+      })
+      const firstPageData = firstPageResponse.data || firstPageResponse || {}
+      const firstPageExpenses = firstPageData.expenses || []
+      const totalPages = firstPageData.pagination?.pages || 1
+
+      let expenses = [...firstPageExpenses]
+      if (totalPages > 1) {
+        const remainingPageRequests = []
+        for (let page = 2; page <= totalPages; page += 1) {
+          remainingPageRequests.push(
+            gymkhanaEventsApi.getAllExpenses({
+              page,
+              limit: 100,
+            })
+          )
+        }
+
+        const remainingResponses = await Promise.all(remainingPageRequests)
+        for (const response of remainingResponses) {
+          const responseData = response.data || response || {}
+          expenses = expenses.concat(responseData.expenses || [])
+        }
+      }
+
+      return expenses.filter((expense) => expense?.approvalStatus !== "approved")
+    } catch {
+      return []
+    }
+  }
+
   const fetchYears = async () => {
     try {
       setLoading(true)
-      const res = await gymkhanaEventsApi.getAcademicYears()
-      const yearsList = res.data?.years || res.years || []
+      const [yearsResponse, proposalsResponse, pendingExpenses] = await Promise.all([
+        gymkhanaEventsApi.getAcademicYears(),
+        user?.subRole
+          ? gymkhanaEventsApi.getProposalsForApproval().catch(() => ({ data: { proposals: [] } }))
+          : Promise.resolve({ data: { proposals: [] } }),
+        isAdminLevel ? getPendingExpenseApprovals() : Promise.resolve([]),
+      ])
+      const yearsList = yearsResponse.data?.years || yearsResponse.years || []
+      const approvals = proposalsResponse.data?.proposals || proposalsResponse.proposals || []
+
       setYears(yearsList)
-      if (yearsList.length > 0) {
-        setSelectedYear(yearsList[0].academicYear)
+      setProposalsForApproval(approvals)
+      setPendingExpenseApprovals(pendingExpenses || [])
+      setSelectedYear((previousYear) => {
+        if (previousYear && yearsList.some((year) => year.academicYear === previousYear)) {
+          return previousYear
+        }
+        return yearsList[0]?.academicYear || null
+      })
+
+      if (yearsList.length === 0) {
+        setCalendar(null)
+        setEvents([])
       }
     } catch (err) {
       setError(err.message || "Failed to load academic years")
@@ -485,7 +783,7 @@ const EventsPage = () => {
         } else {
           mergedEvents = mergeCalendarEventsWithGymkhanaEvents(normalizedEvents, gymkhanaEvents)
         }
-      } catch (_err) {
+      } catch {
         mergedEvents = normalizedEvents
       }
 
@@ -612,7 +910,7 @@ const toCalendarEventPayload = (event) => {
         checkingKey: null,
         errorMessage: "",
       })
-    } catch (_err) {
+    } catch {
       if (requestId !== overlapCheckRequestRef.current) return
       setDateOverlapInfo({
         status: "error",
@@ -684,6 +982,18 @@ const toCalendarEventPayload = (event) => {
     }))
   }
 
+  const uploadProposalDocument = async (file) => {
+    const formData = new FormData()
+    formData.append("proposalPdf", file)
+    return uploadApi.uploadEventProposalPDF(formData)
+  }
+
+  const uploadChiefGuestDocument = async (file) => {
+    const formData = new FormData()
+    formData.append("chiefGuestPdf", file)
+    return uploadApi.uploadEventChiefGuestPDF(formData)
+  }
+
   const handleCreateOrUpdateProposal = async () => {
     if (!proposalEvent?.gymkhanaEventId) {
       toast.error("Linked event record not found")
@@ -717,6 +1027,23 @@ const toCalendarEventPayload = (event) => {
     }
   }
 
+  const openPendingExpenseReview = async (expense) => {
+    const eventEntity = expense?.eventId
+    if (!eventEntity?._id) {
+      toast.error("Linked event not found for this expense")
+      return
+    }
+
+    await openExpenseModal({
+      title: eventEntity.title || "Event Bills",
+      gymkhanaEventId: eventEntity._id,
+      estimatedBudget: Number(expense?.estimatedBudget || 0),
+      startDate: eventEntity?.scheduledStartDate || null,
+      endDate: eventEntity?.scheduledEndDate || null,
+      eventStatus: "proposal_approved",
+    })
+  }
+
   const handleApproveProposal = async () => {
     if (!proposalData?._id) return
     try {
@@ -726,6 +1053,7 @@ const toCalendarEventPayload = (event) => {
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
       await fetchCalendar(selectedYear)
+      await fetchYears()
     } catch (err) {
       toast.error(err.message || "Failed to approve proposal")
     } finally {
@@ -747,6 +1075,7 @@ const toCalendarEventPayload = (event) => {
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
       await fetchCalendar(selectedYear)
+      await fetchYears()
     } catch (err) {
       toast.error(err.message || "Failed to reject proposal")
     } finally {
@@ -768,8 +1097,141 @@ const toCalendarEventPayload = (event) => {
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
       await fetchCalendar(selectedYear)
+      await fetchYears()
     } catch (err) {
       toast.error(err.message || "Failed to request revision")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const fetchExpenseForEvent = async (event) => {
+    if (!event?.gymkhanaEventId) {
+      setExpenseData(null)
+      setExpenseForm(createDefaultExpenseForm())
+      return
+    }
+
+    try {
+      setExpenseLoading(true)
+      const res = await gymkhanaEventsApi.getExpenseByEvent(event.gymkhanaEventId)
+      const expense = res.data?.expense || res.expense || null
+      setExpenseData(expense)
+      setExpenseForm(expense ? toExpenseForm(expense) : createDefaultExpenseForm())
+    } catch (err) {
+      if (err.status === 404) {
+        setExpenseData(null)
+        setExpenseForm(createDefaultExpenseForm())
+      } else {
+        toast.error(err.message || "Failed to load bills")
+      }
+    } finally {
+      setExpenseLoading(false)
+    }
+  }
+
+  const openExpenseModal = async (event) => {
+    setExpenseEvent(event)
+    setExpenseApprovalComments("")
+    setShowExpenseModal(true)
+    await fetchExpenseForEvent(event)
+  }
+
+  const handleExpenseFormChange = (field, value) => {
+    setExpenseForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const handleBillFieldChange = (localId, field, value) => {
+    setExpenseForm((prev) => ({
+      ...prev,
+      bills: (prev.bills || []).map((bill) =>
+        bill.localId === localId ? { ...bill, [field]: value } : bill
+      ),
+    }))
+  }
+
+  const handleAddBillRow = () => {
+    setExpenseForm((prev) => ({
+      ...prev,
+      bills: [...(prev.bills || []), createEmptyBill()],
+    }))
+  }
+
+  const handleRemoveBillRow = (localId) => {
+    setExpenseForm((prev) => {
+      const nextBills = (prev.bills || []).filter((bill) => bill.localId !== localId)
+      return {
+        ...prev,
+        bills: nextBills.length > 0 ? nextBills : [createEmptyBill()],
+      }
+    })
+  }
+
+  const uploadBillDocument = async (file) => {
+    const formData = new FormData()
+    formData.append("billPdf", file)
+    return uploadApi.uploadEventBillPDF(formData)
+  }
+
+  const uploadEventReportDocument = async (file) => {
+    const formData = new FormData()
+    formData.append("eventReportPdf", file)
+    return uploadApi.uploadEventReportPDF(formData)
+  }
+
+  const handleCreateOrUpdateExpense = async () => {
+    if (!expenseEvent?.gymkhanaEventId) {
+      toast.error("Linked event record not found")
+      return
+    }
+
+    if (!isExpenseSubmissionAllowedForSelectedEvent) {
+      toast.error("Bills can be submitted only after proposal approval")
+      return
+    }
+
+    if (!isExpenseFormValid) {
+      toast.error("Each bill needs description, amount, and PDF, and event report PDF is required")
+      return
+    }
+
+    const payload = buildExpensePayload(expenseForm)
+    try {
+      setSubmitting(true)
+      if (expenseData?._id) {
+        await gymkhanaEventsApi.updateExpense(expenseData._id, payload)
+        toast.success("Bills updated successfully")
+      } else {
+        await gymkhanaEventsApi.submitExpense(expenseEvent.gymkhanaEventId, payload)
+        toast.success("Bills submitted successfully")
+      }
+
+      await fetchExpenseForEvent(expenseEvent)
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to save bills")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleApproveExpense = async () => {
+    if (!expenseData?._id) return
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.approveExpense(expenseData._id, expenseApprovalComments)
+      toast.success("Bills approved")
+      setExpenseApprovalComments("")
+      await fetchExpenseForEvent(expenseEvent)
+      await fetchCalendar(selectedYear)
+      const pendingExpenses = await getPendingExpenseApprovals()
+      setPendingExpenseApprovals(pendingExpenses)
+    } catch (err) {
+      toast.error(err.message || "Failed to approve bills")
     } finally {
       setSubmitting(false)
     }
@@ -960,6 +1422,7 @@ const toCalendarEventPayload = (event) => {
       setShowApprovalModal(false)
       setApprovalComments("")
       await fetchCalendar(selectedYear)
+      await fetchYears()
     } catch (err) {
       toast.error(err.message || "Failed to approve calendar")
     } finally {
@@ -980,11 +1443,79 @@ const toCalendarEventPayload = (event) => {
       setShowApprovalModal(false)
       setApprovalComments("")
       await fetchCalendar(selectedYear)
+      await fetchYears()
     } catch (err) {
       toast.error(err.message || "Failed to reject calendar")
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const handleCreateCalendar = async () => {
+    if (!newAcademicYear) {
+      toast.error("Please select an academic year")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.createCalendar({ academicYear: newAcademicYear })
+      toast.success("Calendar created successfully")
+      setShowCreateCalendarModal(false)
+      setNewAcademicYear("")
+      await fetchYears()
+      setSelectedYear(newAcademicYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to create calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleLockCalendar = async () => {
+    if (!calendar?._id) return
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.lockCalendar(calendar._id)
+      toast.success("Calendar locked")
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to lock calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleUnlockCalendar = async () => {
+    if (!calendar?._id) return
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.unlockCalendar(calendar._id)
+      toast.success("Calendar unlocked")
+      await fetchCalendar(selectedYear)
+    } catch (err) {
+      toast.error(err.message || "Failed to unlock calendar")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const openPendingProposalReview = async (proposal) => {
+    const eventEntity = proposal?.eventId
+    if (!eventEntity?._id) {
+      toast.error("Linked event not found for this proposal")
+      return
+    }
+
+    await openProposalModal({
+      title: eventEntity.title || "Proposal",
+      gymkhanaEventId: eventEntity._id,
+      estimatedBudget:
+        Number(proposal?.eventBudgetAtSubmission || 0) || Number(eventEntity?.estimatedBudget || 0),
+      startDate: eventEntity?.scheduledStartDate || null,
+      endDate: eventEntity?.scheduledEndDate || null,
+      proposalSubmitted: true,
+    })
   }
 
   if (loading && !calendar) {
@@ -1005,16 +1536,19 @@ const toCalendarEventPayload = (event) => {
           size="small"
           variant="muted"
         />
-        <Select
-          value={selectedYear || ""}
-          onChange={(event) => setSelectedYear(event.target.value)}
-          options={years.map((year) => ({ value: year.academicYear, label: year.academicYear }))}
-          placeholder="Select Year"
-          style={{ minWidth: "120px" }}
-        />
+        {canCreateCalendar && (
+          <Button size="sm" variant="secondary" onClick={() => setShowCreateCalendarModal(true)}>
+            <Plus size={14} /> New Calendar
+          </Button>
+        )}
         {calendar && (
           <Button size="sm" variant="ghost" onClick={() => setShowHistoryModal(true)}>
             <History size={16} /> History
+          </Button>
+        )}
+        {calendar && canManageCalendarLock && (
+          <Button size="sm" variant="ghost" onClick={() => setShowSettingsModal(true)}>
+            <Settings size={16} /> Settings
           </Button>
         )}
       </PageHeader>
@@ -1072,6 +1606,18 @@ const toCalendarEventPayload = (event) => {
                         <X size={14} /> Reject
                       </Button>
                     </>
+                  )}
+
+                  {canManageCalendarLock && (
+                    calendar.isLocked ? (
+                      <Button size="sm" variant="success" onClick={handleUnlockCalendar} loading={submitting}>
+                        <Unlock size={14} /> Unlock
+                      </Button>
+                    ) : (
+                      <Button size="sm" variant="warning" onClick={handleLockCalendar} loading={submitting}>
+                        <Lock size={14} /> Lock
+                      </Button>
+                    )
                   )}
                 </div>
               </div>
@@ -1158,6 +1704,152 @@ const toCalendarEventPayload = (event) => {
           </Card>
         )}
 
+        {proposalsForApproval.length > 0 && (
+          <Card style={{ marginBottom: "var(--spacing-4)" }}>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <h3
+                style={{
+                  marginBottom: "var(--spacing-3)",
+                  fontSize: "var(--font-size-base)",
+                  fontWeight: "var(--font-weight-semibold)",
+                }}
+              >
+                Pending Proposal Approvals ({proposalsForApproval.length})
+              </h3>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableHeader>Event</TableHeader>
+                    <TableHeader>Date</TableHeader>
+                    <TableHeader>Expected Income</TableHeader>
+                    <TableHeader>Total Expenditure</TableHeader>
+                    <TableHeader>Deflection</TableHeader>
+                    <TableHeader align="right">Action</TableHeader>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {proposalsForApproval.map((proposal) => (
+                    <TableRow key={proposal._id}>
+                      <TableCell>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+                          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                            {proposal.eventId?.title || "Unknown event"}
+                          </span>
+                          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            By {proposal.submittedBy?.name || "Unknown"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {formatDateRange(
+                          proposal.eventId?.scheduledStartDate,
+                          proposal.eventId?.scheduledEndDate
+                        )}
+                      </TableCell>
+                      <TableCell>₹{Number(proposal.totalExpectedIncome || 0).toLocaleString()}</TableCell>
+                      <TableCell>₹{Number(proposal.totalExpenditure || 0).toLocaleString()}</TableCell>
+                      <TableCell
+                        style={{
+                          color:
+                            Number(proposal.budgetDeflection || 0) > 0
+                              ? "var(--color-danger)"
+                              : "var(--color-success)",
+                        }}
+                      >
+                        ₹{Number(proposal.budgetDeflection || 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => openPendingProposalReview(proposal)}
+                        >
+                          Review
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {isAdminLevel && (
+          <Card style={{ marginBottom: "var(--spacing-4)" }}>
+            <CardContent style={{ padding: "var(--spacing-4)" }}>
+              <h3
+                style={{
+                  marginBottom: "var(--spacing-3)",
+                  fontSize: "var(--font-size-base)",
+                  fontWeight: "var(--font-weight-semibold)",
+                }}
+              >
+                Pending Bill Approvals ({pendingExpenseApprovals.length})
+              </h3>
+
+              {pendingExpenseApprovals.length === 0 ? (
+                <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  No pending bill approvals.
+                </p>
+              ) : (
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Event</TableHeader>
+                      <TableHeader>Date</TableHeader>
+                      <TableHeader>Submitted By</TableHeader>
+                      <TableHeader>Total Bills</TableHeader>
+                      <TableHeader>Assigned Budget</TableHeader>
+                      <TableHeader>Variance</TableHeader>
+                      <TableHeader align="right">Action</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {pendingExpenseApprovals.map((expense) => (
+                      <TableRow key={expense._id}>
+                        <TableCell>
+                          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                            {expense.eventId?.title || "Unknown event"}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          {formatDateRange(
+                            expense.eventId?.scheduledStartDate,
+                            expense.eventId?.scheduledEndDate
+                          )}
+                        </TableCell>
+                        <TableCell>{expense.submittedBy?.name || "Unknown"}</TableCell>
+                        <TableCell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</TableCell>
+                        <TableCell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</TableCell>
+                        <TableCell
+                          style={{
+                            color:
+                              Number(expense.budgetVariance || 0) > 0
+                                ? "var(--color-danger)"
+                                : "var(--color-success)",
+                          }}
+                        >
+                          ₹{Number(expense.budgetVariance || 0).toLocaleString()}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => openPendingExpenseReview(expense)}
+                          >
+                            Review
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {calendar && dateConflicts.length > 0 && (
           <Card style={{ marginBottom: "var(--spacing-4)" }}>
             <CardContent style={{ padding: "var(--spacing-4)" }}>
@@ -1198,7 +1890,11 @@ const toCalendarEventPayload = (event) => {
           <EmptyState
             icon={CalendarDays}
             title="No Calendar Found"
-            message={`No activity calendar exists for ${selectedYear || "this year"}. Contact Admin to create one.`}
+            message={
+              canCreateCalendar
+                ? "No activity calendar exists yet. Create one using the New Calendar action."
+                : `No activity calendar exists for ${selectedYear || "this year"}. Contact Admin to create one.`
+            }
           />
         )}
 
@@ -1367,6 +2063,80 @@ const toCalendarEventPayload = (event) => {
         )}
       </div>
 
+      <div style={footerTabStyles.tabsBar}>
+        <div style={footerTabStyles.tabsList}>
+          {years.map((year) => (
+            <button
+              key={year._id || year.academicYear}
+              onClick={() => setSelectedYear(year.academicYear)}
+              style={{
+                ...footerTabStyles.tab,
+                ...(selectedYear === year.academicYear ? footerTabStyles.tabActive : {}),
+              }}
+              onMouseEnter={(event) => {
+                if (selectedYear !== year.academicYear) {
+                  event.currentTarget.style.backgroundColor = "var(--color-bg-hover)"
+                }
+              }}
+              onMouseLeave={(event) => {
+                if (selectedYear !== year.academicYear) {
+                  event.currentTarget.style.backgroundColor = "transparent"
+                }
+              }}
+            >
+              {year.academicYear}
+            </button>
+          ))}
+          {canCreateCalendar && (
+            <button
+              onClick={() => setShowCreateCalendarModal(true)}
+              style={{ ...footerTabStyles.tab, ...footerTabStyles.addTab }}
+            >
+              <Plus size={12} />
+              New
+            </button>
+          )}
+        </div>
+      </div>
+
+      <Modal
+        isOpen={showCreateCalendarModal}
+        title="Create New Calendar"
+        width={460}
+        onClose={() => {
+          setShowCreateCalendarModal(false)
+          setNewAcademicYear("")
+        }}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowCreateCalendarModal(false)
+                setNewAcademicYear("")
+              }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleCreateCalendar} loading={submitting} disabled={!newAcademicYear}>
+              Create Calendar
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+            Select the academic year for the new activity calendar.
+          </p>
+          <Select
+            value={newAcademicYear}
+            onChange={(event) => setNewAcademicYear(event.target.value)}
+            options={availableYearsForCreation}
+            placeholder="Select academic year"
+          />
+        </div>
+      </Modal>
+
       <Modal
         isOpen={showEventModal}
         title={selectedEvent?.title || "Event Details"}
@@ -1396,40 +2166,76 @@ const toCalendarEventPayload = (event) => {
                 <p>{selectedEvent.description}</p>
               </div>
             )}
-            {(isGS || isPresident) && (
-              <div style={{ borderTop: "var(--border-1) solid var(--color-border-primary)", paddingTop: "var(--spacing-3)" }}>
-                <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  Proposal
-                </label>
-                <p style={{ margin: "var(--spacing-1) 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                  {(() => {
-                    const proposalDueDate = getProposalDueDate(selectedEvent)
-                    const dueDateText = proposalDueDate ? proposalDueDate.toLocaleDateString() : null
+            {(isGymkhanaRole || isAdminLevel) && (
+              <div style={{ borderTop: "var(--border-1) solid var(--color-border-primary)", paddingTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+                <div>
+                  <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    Proposal
+                  </label>
+                  <p style={{ margin: "var(--spacing-1) 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                    {(() => {
+                      const proposalDueDate = getProposalDueDate(selectedEvent)
+                      const dueDateText = proposalDueDate ? proposalDueDate.toLocaleDateString() : null
 
-                    if (!selectedEvent.gymkhanaEventId) {
-                      return "Proposal option will be available once this calendar is approved and event records are generated."
-                    }
+                      if (!selectedEvent.gymkhanaEventId) {
+                        return "Proposal option will be available once this calendar is approved and event records are generated."
+                      }
 
-                    if (selectedEvent.proposalSubmitted) {
-                      return "Proposal submitted for this event."
-                    }
+                      if (selectedEvent.proposalSubmitted) {
+                        return "Proposal submitted for this event."
+                      }
 
-                    if (dueDateText) {
-                      return `Proposal due on ${dueDateText}.`
-                    }
+                      if (dueDateText) {
+                        return `Proposal due on ${dueDateText}.`
+                      }
 
-                    return "Proposal due date is not available."
-                  })()}
-                </p>
-                {selectedEvent.gymkhanaEventId && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => openProposalModal(selectedEvent)}
-                  >
-                    <FileText size={14} /> {selectedEvent.proposalSubmitted ? "View Proposal" : "Submit Proposal"}
-                  </Button>
-                )}
+                      return "Proposal due date is not available."
+                    })()}
+                  </p>
+                  {selectedEvent.gymkhanaEventId && (selectedEvent.proposalSubmitted || isGS || isPresident) && (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => openProposalModal(selectedEvent)}
+                    >
+                      <FileText size={14} /> {selectedEvent.proposalSubmitted ? "View Proposal" : "Submit Proposal"}
+                    </Button>
+                  )}
+                </div>
+
+                <div>
+                  <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                    Bills
+                  </label>
+                  <p style={{ margin: "var(--spacing-1) 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                    {(() => {
+                      if (!selectedEvent.gymkhanaEventId) {
+                        return "Bills option will be available once this calendar is approved and event records are generated."
+                      }
+
+                      if (
+                        selectedEvent.eventStatus !== "proposal_approved" &&
+                        selectedEvent.eventStatus !== "completed"
+                      ) {
+                        return "Bills can be submitted only after final proposal approval."
+                      }
+
+                      return "Upload and review bill PDFs for this event."
+                    })()}
+                  </p>
+                  {selectedEvent.gymkhanaEventId &&
+                    (selectedEvent.eventStatus === "proposal_approved" ||
+                      selectedEvent.eventStatus === "completed") &&
+                    (isGS || isAdminLevel) && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => openExpenseModal(selectedEvent)}
+                      >
+                        <Receipt size={14} /> Manage Bills
+                      </Button>
+                    )}
+                </div>
               </div>
             )}
           </div>
@@ -1452,7 +2258,7 @@ const toCalendarEventPayload = (event) => {
             <Button variant="secondary" onClick={() => setShowProposalModal(false)}>
               Close
             </Button>
-            {(canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser) && (
+            {canEditProposalForm && (
               <Button
                 onClick={handleCreateOrUpdateProposal}
                 loading={submitting}
@@ -1503,8 +2309,20 @@ const toCalendarEventPayload = (event) => {
               value={proposalForm.proposalText}
               onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
               rows={5}
-              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              disabled={!canEditProposalForm}
               required
+            />
+
+            <PdfUploadField
+              label="Proposal PDF"
+              value={proposalForm.proposalDocumentUrl}
+              onChange={(url) => handleProposalFormChange("proposalDocumentUrl", url)}
+              onUpload={uploadProposalDocument}
+              disabled={!canEditProposalForm}
+              uploadedText="Proposal document uploaded"
+              viewerTitle="Proposal Document"
+              viewerSubtitle="Event proposal attachment"
+              downloadFileName="proposal-document.pdf"
             />
 
             <Textarea
@@ -1513,7 +2331,19 @@ const toCalendarEventPayload = (event) => {
               value={proposalForm.externalGuestsDetails}
               onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
               rows={3}
-              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              disabled={!canEditProposalForm}
+            />
+
+            <PdfUploadField
+              label="Chief Guest PDF"
+              value={proposalForm.chiefGuestDocumentUrl}
+              onChange={(url) => handleProposalFormChange("chiefGuestDocumentUrl", url)}
+              onUpload={uploadChiefGuestDocument}
+              disabled={!canEditProposalForm}
+              uploadedText="Chief guest document uploaded"
+              viewerTitle="Chief Guest Document"
+              viewerSubtitle="External guest attachment"
+              downloadFileName="chief-guest-document.pdf"
             />
 
             <Checkbox
@@ -1521,7 +2351,7 @@ const toCalendarEventPayload = (event) => {
               label="Accommodation required"
               checked={proposalForm.accommodationRequired}
               onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
-              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              disabled={!canEditProposalForm}
             />
 
             <Checkbox
@@ -1529,7 +2359,7 @@ const toCalendarEventPayload = (event) => {
               label="Registration fee applicable"
               checked={proposalForm.hasRegistrationFee}
               onChange={(event) => handleProposalFormChange("hasRegistrationFee", event.target.checked)}
-              disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+              disabled={!canEditProposalForm}
             />
 
             {proposalForm.hasRegistrationFee && (
@@ -1541,7 +2371,7 @@ const toCalendarEventPayload = (event) => {
                 onChange={(event) =>
                   handleProposalFormChange("registrationFeeAmount", Number(event.target.value || 0))
                 }
-                disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+                disabled={!canEditProposalForm}
               />
             )}
 
@@ -1554,7 +2384,7 @@ const toCalendarEventPayload = (event) => {
                 onChange={(event) =>
                   handleProposalFormChange("totalExpectedIncome", Number(event.target.value || 0))
                 }
-                disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+                disabled={!canEditProposalForm}
               />
               <Input
                 name="totalExpenditure"
@@ -1564,7 +2394,7 @@ const toCalendarEventPayload = (event) => {
                 onChange={(event) =>
                   handleProposalFormChange("totalExpenditure", Number(event.target.value || 0))
                 }
-                disabled={!canCreateProposalForSelectedEvent && !isProposalEditableByCurrentUser}
+                disabled={!canEditProposalForm}
               />
             </div>
 
@@ -1591,7 +2421,7 @@ const toCalendarEventPayload = (event) => {
               </p>
             </div>
 
-            {canPresidentReviewProposal && proposalData && (
+            {canCurrentUserReviewProposal && proposalData && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
                 <Textarea
                   name="proposalActionComments"
@@ -1620,6 +2450,245 @@ const toCalendarEventPayload = (event) => {
                   Activity Log
                 </p>
                 <ApprovalHistory key={proposalHistoryRefreshKey} proposalId={proposalData._id} />
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={showExpenseModal}
+        title={`Event Bills${expenseEvent?.title ? `: ${expenseEvent.title}` : ""}`}
+        width={860}
+        onClose={() => {
+          setShowExpenseModal(false)
+          setExpenseEvent(null)
+          setExpenseData(null)
+          setExpenseForm(createDefaultExpenseForm())
+          setExpenseApprovalComments("")
+        }}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => setShowExpenseModal(false)}>
+              Close
+            </Button>
+            {canEditExpenseForm && (
+              <Button
+                onClick={handleCreateOrUpdateExpense}
+                loading={submitting}
+                disabled={!isExpenseFormValid}
+              >
+                {expenseData?._id ? "Update Bills" : "Submit Bills"}
+              </Button>
+            )}
+          </div>
+        }
+      >
+        {expenseLoading ? (
+          <LoadingState message="Loading bills..." />
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            {expenseEvent && (
+              <Alert type="info">
+                Assigned budget: ₹{assignedExpenseBudget.toLocaleString()}
+                {` | Total bills: ₹${expenseTotal.toLocaleString()}`}
+              </Alert>
+            )}
+
+            {expenseData && (
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                <Badge variant={expenseData.approvalStatus === "approved" ? "success" : "warning"}>
+                  {expenseData.approvalStatus === "approved" ? "Approved" : "Pending Approval"}
+                </Badge>
+                {expenseData.approvedBy?.name && (
+                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    Approved by {expenseData.approvedBy.name}
+                    {expenseData.approvedAt ? ` on ${new Date(expenseData.approvedAt).toLocaleDateString()}` : ""}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {!expenseData && !isExpenseSubmissionAllowedForSelectedEvent && (
+              <Alert type="warning">
+                Bills can be submitted only after final proposal approval.
+              </Alert>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              {(expenseForm.bills || []).map((bill, index) => (
+                <div
+                  key={bill.localId}
+                  style={{
+                    border: "var(--border-1) solid var(--color-border-primary)",
+                    borderRadius: "var(--radius-card-sm)",
+                    padding: "var(--spacing-3)",
+                    backgroundColor: "var(--color-bg-secondary)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "var(--spacing-3)",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-2)" }}>
+                    <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                      Bill #{index + 1}
+                    </p>
+                    {canEditExpenseForm && (expenseForm.bills || []).length > 1 && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleRemoveBillRow(bill.localId)}
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    )}
+                  </div>
+
+                  <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                    <Input
+                      name={`bill-description-${bill.localId}`}
+                      placeholder="Bill description"
+                      value={bill.description}
+                      onChange={(event) =>
+                        handleBillFieldChange(bill.localId, "description", event.target.value)
+                      }
+                      disabled={!canEditExpenseForm}
+                    />
+                    <Input
+                      name={`bill-amount-${bill.localId}`}
+                      type="number"
+                      placeholder="Amount (₹)"
+                      value={bill.amount}
+                      onChange={(event) =>
+                        handleBillFieldChange(
+                          bill.localId,
+                          "amount",
+                          Number(event.target.value || 0)
+                        )
+                      }
+                      disabled={!canEditExpenseForm}
+                    />
+                    <Input
+                      name={`bill-number-${bill.localId}`}
+                      placeholder="Bill number (optional)"
+                      value={bill.billNumber}
+                      onChange={(event) =>
+                        handleBillFieldChange(bill.localId, "billNumber", event.target.value)
+                      }
+                      disabled={!canEditExpenseForm}
+                    />
+                    <Input
+                      name={`bill-date-${bill.localId}`}
+                      type="date"
+                      value={bill.billDate}
+                      onChange={(event) =>
+                        handleBillFieldChange(bill.localId, "billDate", event.target.value)
+                      }
+                      disabled={!canEditExpenseForm}
+                    />
+                  </div>
+
+                  <Input
+                    name={`bill-vendor-${bill.localId}`}
+                    placeholder="Vendor (optional)"
+                    value={bill.vendor}
+                    onChange={(event) =>
+                      handleBillFieldChange(bill.localId, "vendor", event.target.value)
+                    }
+                    disabled={!canEditExpenseForm}
+                  />
+
+                  <PdfUploadField
+                    label="Bill PDF"
+                    value={bill.documentUrl}
+                    onChange={(url) => {
+                      handleBillFieldChange(bill.localId, "documentUrl", url)
+                      handleBillFieldChange(
+                        bill.localId,
+                        "documentName",
+                        getFilenameFromUrl(url)
+                      )
+                    }}
+                    onUpload={uploadBillDocument}
+                    disabled={!canEditExpenseForm}
+                    uploadedText="Bill document uploaded"
+                    viewerTitle={`Bill ${index + 1}`}
+                    viewerSubtitle="Uploaded bill attachment"
+                    downloadFileName={`event-bill-${index + 1}.pdf`}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {canEditExpenseForm && (
+              <Button size="sm" variant="secondary" onClick={handleAddBillRow}>
+                <Plus size={14} /> Add Another Bill
+              </Button>
+            )}
+
+            <PdfUploadField
+              label="Event Report PDF"
+              value={expenseForm.eventReportDocumentUrl}
+              onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
+              onUpload={uploadEventReportDocument}
+              disabled={!canEditExpenseForm}
+              uploadedText="Event report uploaded"
+              viewerTitle="Event Report"
+              viewerSubtitle="Post-event report attachment"
+              downloadFileName="event-report.pdf"
+            />
+
+            <Textarea
+              name="expenseNotes"
+              placeholder="Notes (optional)"
+              value={expenseForm.notes}
+              onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
+              rows={3}
+              disabled={!canEditExpenseForm}
+            />
+
+            <div
+              style={{
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                padding: "var(--spacing-3)",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                Bill Summary (GS)
+              </p>
+              <p style={{ margin: "var(--spacing-1) 0 0 0", color: "var(--color-text-body)" }}>
+                Total Bill Amount: <strong>₹{expenseTotal.toLocaleString()}</strong>
+              </p>
+              <p style={{ margin: "var(--spacing-1) 0 0 0", color: "var(--color-text-body)" }}>
+                Assigned Budget: <strong>₹{assignedExpenseBudget.toLocaleString()}</strong>
+              </p>
+              <p
+                style={{
+                  margin: "var(--spacing-1) 0 0 0",
+                  color: expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)",
+                  fontWeight: "var(--font-weight-semibold)",
+                }}
+              >
+                Variance: ₹{expenseVariance.toLocaleString()}
+              </p>
+            </div>
+
+            {canApproveExpense && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <Textarea
+                  name="expenseApprovalComments"
+                  placeholder="Approval comments (optional)"
+                  value={expenseApprovalComments}
+                  onChange={(event) => setExpenseApprovalComments(event.target.value)}
+                  rows={3}
+                />
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button variant="success" onClick={handleApproveExpense} loading={submitting}>
+                    <Check size={14} /> Approve Bills
+                  </Button>
+                </div>
               </div>
             )}
           </div>
@@ -1888,6 +2957,75 @@ const toCalendarEventPayload = (event) => {
       </Modal>
 
       <Modal
+        isOpen={showSettingsModal}
+        title="Calendar Settings"
+        width={560}
+        onClose={() => setShowSettingsModal(false)}
+        footer={
+          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+            <Button variant="secondary" onClick={() => setShowSettingsModal(false)}>
+              Close
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <Alert type="info">
+            Configure lock state for <strong>{calendar?.academicYear}</strong>.
+          </Alert>
+          <div
+            style={{
+              border: "var(--border-1) solid var(--color-border-primary)",
+              borderRadius: "var(--radius-card-sm)",
+              padding: "var(--spacing-4)",
+              backgroundColor: "var(--color-bg-secondary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-3)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                Calendar Lock
+              </p>
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                {calendar?.isLocked
+                  ? "Calendar is locked. GS cannot edit directly."
+                  : "Calendar is unlocked. GS can edit based on status."}
+              </p>
+            </div>
+            {calendar?.isLocked ? (
+              <Button
+                size="sm"
+                variant="success"
+                onClick={async () => {
+                  await handleUnlockCalendar()
+                  setShowSettingsModal(false)
+                }}
+                loading={submitting}
+              >
+                <Unlock size={14} /> Unlock
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="warning"
+                onClick={async () => {
+                  await handleLockCalendar()
+                  setShowSettingsModal(false)
+                }}
+                loading={submitting}
+              >
+                <Lock size={14} /> Lock
+              </Button>
+            )}
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
         isOpen={showApprovalModal}
         title="Review Calendar"
         width={720}
@@ -1987,6 +3125,7 @@ const toCalendarEventPayload = (event) => {
           ))}
         </div>
       </Modal>
+
     </div>
   )
 }
