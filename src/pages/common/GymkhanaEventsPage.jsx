@@ -18,13 +18,12 @@ import {
   Alert,
   useToast,
 } from "@/components/ui/feedback"
-import { Badge } from "@/components/ui/data-display"
-import { ToggleButtonGroup } from "@/components/ui"
+import { Badge, StatCards } from "@/components/ui/data-display"
+import { ToggleButtonGroup, DataTable, Tabs } from "@/components/ui"
 import { Table, TableHead, TableBody, TableHeader, TableRow, TableCell } from "@/components/ui/table"
 import {
   CalendarDays,
   Plus,
-  Edit2,
   Lock,
   Unlock,
   Send,
@@ -62,15 +61,23 @@ const CATEGORY_LABELS = {
 }
 
 const CATEGORY_COLORS = {
-  academic: "#6f9bbf",
-  cultural: "#8aa7bf",
-  sports: "#6ea892",
-  technical: "#8f9ab8",
+  academic: "#1D4ED8",
+  cultural: "#6D28D9",
+  sports: "#15803D",
+  technical: "#0369A1",
+}
+
+const CATEGORY_BADGE_BACKGROUNDS = {
+  academic: "#DBEAFE",
+  cultural: "#EDE9FE",
+  sports: "#DCFCE7",
+  technical: "#E0F2FE",
 }
 
 const getCategoryBadgeStyle = (category) => ({
-  backgroundColor: CATEGORY_COLORS[category] || "var(--color-bg-tertiary)",
-  color: "var(--color-white)",
+  backgroundColor: CATEGORY_BADGE_BACKGROUNDS[category] || "var(--color-primary-bg)",
+  color: CATEGORY_COLORS[category] || "var(--color-primary)",
+  border: "1px solid transparent",
 })
 
 const CATEGORY_ORDER = ["academic", "cultural", "sports", "technical"]
@@ -191,6 +198,10 @@ const getBudgetSummary = (events = []) => {
     acc[category] = 0
     return acc
   }, {})
+  const counts = CATEGORY_ORDER.reduce((acc, category) => {
+    acc[category] = 0
+    return acc
+  }, {})
 
   let total = 0
   for (const event of events) {
@@ -198,10 +209,11 @@ const getBudgetSummary = (events = []) => {
     total += budget
     if (byCategory[event.category] !== undefined) {
       byCategory[event.category] += budget
+      counts[event.category] += 1
     }
   }
 
-  return { total, byCategory }
+  return { total, byCategory, counts }
 }
 
 const getDateConflicts = (events = []) => {
@@ -477,6 +489,7 @@ const EventsPage = () => {
   const [proposalsForApproval, setProposalsForApproval] = useState([])
   const [pendingExpenseApprovals, setPendingExpenseApprovals] = useState([])
   const [viewMode, setViewMode] = useState("list")
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState("all")
   const [calendarMonth, setCalendarMonth] = useState(new Date())
 
   const [selectedEvent, setSelectedEvent] = useState(null)
@@ -486,6 +499,7 @@ const EventsPage = () => {
   const [showHistoryModal, setShowHistoryModal] = useState(false)
   const [showApprovalModal, setShowApprovalModal] = useState(false)
   const [showOverlapConfirmModal, setShowOverlapConfirmModal] = useState(false)
+  const [showOverlapDetailsModal, setShowOverlapDetailsModal] = useState(false)
   const [showProposalModal, setShowProposalModal] = useState(false)
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false)
@@ -539,6 +553,61 @@ const EventsPage = () => {
   ]
 
   const budgetSummary = useMemo(() => getBudgetSummary(events), [events])
+  const categoryFilterTabs = useMemo(
+    () => [
+      { label: "All", value: "all", count: events.length },
+      ...CATEGORY_OPTIONS.map((category) => ({
+        label: category.label,
+        value: category.value,
+        count: budgetSummary.counts[category.value] || 0,
+      })),
+    ],
+    [events.length, budgetSummary.counts]
+  )
+  const filteredEvents = useMemo(() => {
+    if (activeCategoryFilter === "all") return events
+    return events.filter((event) => event.category === activeCategoryFilter)
+  }, [events, activeCategoryFilter])
+  const budgetStats = useMemo(
+    () => [
+      {
+        title: "Academic Budget",
+        value: `₹${(budgetSummary.byCategory.academic || 0).toLocaleString()}`,
+        subtitle: `${budgetSummary.counts.academic || 0} event(s)`,
+        icon: <CalendarDays size={16} />,
+        color: CATEGORY_COLORS.academic,
+      },
+      {
+        title: "Cultural Budget",
+        value: `₹${(budgetSummary.byCategory.cultural || 0).toLocaleString()}`,
+        subtitle: `${budgetSummary.counts.cultural || 0} event(s)`,
+        icon: <CalendarDays size={16} />,
+        color: CATEGORY_COLORS.cultural,
+      },
+      {
+        title: "Sports Budget",
+        value: `₹${(budgetSummary.byCategory.sports || 0).toLocaleString()}`,
+        subtitle: `${budgetSummary.counts.sports || 0} event(s)`,
+        icon: <CalendarDays size={16} />,
+        color: CATEGORY_COLORS.sports,
+      },
+      {
+        title: "Technical Budget",
+        value: `₹${(budgetSummary.byCategory.technical || 0).toLocaleString()}`,
+        subtitle: `${budgetSummary.counts.technical || 0} event(s)`,
+        icon: <CalendarDays size={16} />,
+        color: CATEGORY_COLORS.technical,
+      },
+      {
+        title: "Total Budget",
+        value: `₹${budgetSummary.total.toLocaleString()}`,
+        subtitle: `${events.length} event(s)`,
+        icon: <FileText size={16} />,
+        color: "var(--color-primary)",
+      },
+    ],
+    [budgetSummary, events.length]
+  )
   const dateConflicts = useMemo(() => getDateConflicts(events), [events])
   const pendingProposalReminders = useMemo(
     () => events.filter((event) => event.gymkhanaEventId && isProposalWindowOpen(event)),
@@ -842,11 +911,11 @@ const EventsPage = () => {
   }
 
   const getEventsForDate = (date) => {
-    if (!date || !events) return []
+    if (!date || !filteredEvents) return []
     const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
     const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)
 
-    return events.filter((event) => {
+    return filteredEvents.filter((event) => {
       const start = toDate(event.startDate)
       const end = toDate(event.endDate)
       if (!start || !end) return false
@@ -965,6 +1034,20 @@ const toCalendarEventPayload = (event) => {
   const handleEventClick = (event) => {
     setSelectedEvent(event)
     setShowEventModal(true)
+  }
+
+  const handleEventRowClick = (event) => {
+    if (canEdit) {
+      handleEditEvent(event)
+      return
+    }
+
+    if (calendar?.isLocked && isGS) {
+      openAmendmentModal(event)
+      return
+    }
+
+    handleEventClick(event)
   }
 
   const fetchProposalForEvent = async (event) => {
@@ -1640,41 +1723,9 @@ const toCalendarEventPayload = (event) => {
 
       <div style={{ flex: 1, overflow: "auto", padding: "var(--spacing-6)" }}>
         {calendar && (
-          <Card style={{ marginBottom: "var(--spacing-4)" }}>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <h3 style={{ marginBottom: "var(--spacing-3)", fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)" }}>
-                Category-wise Budget Summary
-              </h3>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--spacing-3)" }}>
-                {CATEGORY_ORDER.map((category) => (
-                  <div key={category} style={{
-                    border: "var(--border-1) solid var(--color-border-primary)",
-                    borderRadius: "var(--radius-card-sm)",
-                    padding: "var(--spacing-3)",
-                    backgroundColor: "var(--color-bg-secondary)",
-                  }}>
-                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                      {CATEGORY_LABELS[category]}
-                    </p>
-                    <p style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
-                      ₹{(budgetSummary.byCategory[category] || 0).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-                <div style={{
-                  border: "var(--border-1) solid var(--color-border-primary)",
-                  borderRadius: "var(--radius-card-sm)",
-                  padding: "var(--spacing-3)",
-                  backgroundColor: "var(--color-primary-bg)",
-                }}>
-                  <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Total Budget</p>
-                  <p style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>
-                    ₹{budgetSummary.total.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <StatCards stats={budgetStats} columns={5} />
+          </div>
         )}
 
         {calendar && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
@@ -1858,39 +1909,30 @@ const toCalendarEventPayload = (event) => {
         )}
 
         {calendar && calendar.status !== "approved" && dateConflicts.length > 0 && (
-          <Card style={{ marginBottom: "var(--spacing-4)" }}>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <Alert type="warning">
-                <strong>{dateConflicts.length}</strong> date overlap(s) found in this calendar.
-              </Alert>
-              <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                {dateConflicts.slice(0, 5).map((conflict, index) => (
-                  <div
-                    key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}
-                    style={{
-                      padding: "var(--spacing-3)",
-                      border: "var(--border-1) solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-card-sm)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                    }}
-                  >
-                    <p style={{ margin: 0, color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                      <strong>{conflict.eventA.title}</strong> ({formatDateRange(conflict.eventA.startDate, conflict.eventA.endDate)})
-                    </p>
-                    <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>overlaps with</p>
-                    <p style={{ margin: 0, color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                      <strong>{conflict.eventB.title}</strong> ({formatDateRange(conflict.eventB.startDate, conflict.eventB.endDate)})
-                    </p>
-                  </div>
-                ))}
-                {dateConflicts.length > 5 && (
-                  <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                    +{dateConflicts.length - 5} more overlap(s)
-                  </p>
-                )}
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <Alert type="warning">
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "var(--spacing-3)",
+                }}
+              >
+                <span>
+                  <strong>{dateConflicts.length}</strong> date overlap(s) found in this calendar.
+                </span>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setShowOverlapDetailsModal(true)}
+                >
+                  View Overlap Details
+                </Button>
               </div>
-            </CardContent>
-          </Card>
+            </Alert>
+          </div>
         )}
 
         {!calendar && (
@@ -1905,56 +1947,67 @@ const toCalendarEventPayload = (event) => {
           />
         )}
 
+        {calendar && (
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <Tabs
+              tabs={categoryFilterTabs}
+              activeTab={activeCategoryFilter}
+              setActiveTab={setActiveCategoryFilter}
+            />
+          </div>
+        )}
+
         {calendar && viewMode === "list" && (
           <>
-            {events.length === 0 ? (
+            {filteredEvents.length === 0 ? (
               <EmptyState
                 icon={CalendarDays}
-                title="No Events Yet"
-                message={canEdit ? "Add events to the calendar to get started." : "No events have been added to this calendar yet."}
+                title={activeCategoryFilter === "all" ? "No Events Yet" : "No Events In This Category"}
+                message={
+                  activeCategoryFilter === "all"
+                    ? canEdit
+                      ? "Add events to the calendar to get started."
+                      : "No events have been added to this calendar yet."
+                    : "Try another category filter."
+                }
               />
             ) : (
-              <Card>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Event</TableHeader>
-                      <TableHeader>Category</TableHeader>
-                      <TableHeader>Date Range</TableHeader>
-                      <TableHeader>Budget</TableHeader>
-                      <TableHeader align="right">Actions</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {events.map((event, index) => (
-                      <TableRow key={event._id || index} onClick={() => handleEventClick(event)} style={{ cursor: "pointer" }}>
-                        <TableCell>
-                          <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
-                        </TableCell>
-                        <TableCell>
-                          <Badge style={getCategoryBadgeStyle(event.category)}>
-                            {CATEGORY_LABELS[event.category] || event.category}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{formatDateRange(event.startDate, event.endDate)}</TableCell>
-                        <TableCell>₹{Number(event.estimatedBudget || 0).toLocaleString()}</TableCell>
-                        <TableCell align="right">
-                          {canEdit && (
-                            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); handleEditEvent(event) }}>
-                              <Edit2 size={14} />
-                            </Button>
-                          )}
-                          {calendar.isLocked && isGS && (
-                            <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); openAmendmentModal(event) }}>
-                              <FileText size={14} />
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Card>
+              <DataTable
+                data={filteredEvents}
+                columns={[
+                  {
+                    key: "title",
+                    header: "Event",
+                    render: (event) => (
+                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
+                    ),
+                  },
+                  {
+                    key: "category",
+                    header: "Category",
+                    render: (event) => (
+                      <Badge style={getCategoryBadgeStyle(event.category)}>
+                        {CATEGORY_LABELS[event.category] || event.category}
+                      </Badge>
+                    ),
+                  },
+                  {
+                    key: "dateRange",
+                    header: "Date Range",
+                    render: (event) => formatDateRange(event.startDate, event.endDate),
+                  },
+                  {
+                    key: "estimatedBudget",
+                    header: "Budget",
+                    render: (event) => `₹${Number(event.estimatedBudget || 0).toLocaleString()}`,
+                  },
+                ]}
+                onRowClick={handleEventRowClick}
+                getRowId={(event) =>
+                  event?._id ||
+                  `${event?.title || "event"}-${event?.category || "na"}-${event?.startDate || "na"}-${event?.endDate || "na"}`
+                }
+              />
             )}
           </>
         )}
@@ -3118,6 +3171,45 @@ const toCalendarEventPayload = (event) => {
         footer={<Button variant="secondary" onClick={() => setShowHistoryModal(false)}>Close</Button>}
       >
         {calendar && <ApprovalHistory calendarId={calendar._id} />}
+      </Modal>
+
+      <Modal
+        isOpen={showOverlapDetailsModal}
+        title="Date Overlap Details"
+        width={760}
+        onClose={() => setShowOverlapDetailsModal(false)}
+        footer={
+          <Button variant="secondary" onClick={() => setShowOverlapDetailsModal(false)}>
+            Close
+          </Button>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <Alert type="warning">
+            Total overlaps: <strong>{dateConflicts.length}</strong>
+          </Alert>
+          {dateConflicts.map((conflict, index) => (
+            <div
+              key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}
+              style={{
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                padding: "var(--spacing-3)",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{conflict.eventA.title}</strong> ({formatDateRange(conflict.eventA.startDate, conflict.eventA.endDate)})
+              </p>
+              <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                overlaps with
+              </p>
+              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{conflict.eventB.title}</strong> ({formatDateRange(conflict.eventB.startDate, conflict.eventB.endDate)})
+              </p>
+            </div>
+          ))}
+        </div>
       </Modal>
 
       <Modal
