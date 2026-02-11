@@ -1910,28 +1910,53 @@ const toCalendarEventPayload = (event) => {
 
         {calendar && calendar.status !== "approved" && dateConflicts.length > 0 && (
           <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <Alert type="warning">
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "var(--spacing-3)",
+                padding: "var(--spacing-3)",
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                backgroundColor: "var(--color-bg-secondary)",
+              }}
+            >
               <div
                 style={{
-                  width: "100%",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
                   gap: "var(--spacing-3)",
                 }}
               >
-                <span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "var(--color-warning-bg)",
+                    color: "var(--color-warning)",
+                    flexShrink: 0,
+                  }}
+                >
+                  <AlertTriangle size={14} />
+                </span>
+                <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
                   <strong>{dateConflicts.length}</strong> date overlap(s) found in this calendar.
                 </span>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setShowOverlapDetailsModal(true)}
-                >
-                  View Overlap Details
-                </Button>
               </div>
-            </Alert>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowOverlapDetailsModal(true)}
+              >
+                View Overlap Details
+              </Button>
+            </div>
           </div>
         )}
 
