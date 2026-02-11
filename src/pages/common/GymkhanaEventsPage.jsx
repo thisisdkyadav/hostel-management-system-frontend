@@ -133,6 +133,14 @@ const footerTabStyles = {
   },
 }
 
+const formLabelStyles = {
+  display: "block",
+  fontSize: "var(--font-size-sm)",
+  fontWeight: "var(--font-weight-medium)",
+  color: "var(--color-text-secondary)",
+  marginBottom: "var(--spacing-1)",
+}
+
 const toDate = (value) => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
@@ -253,15 +261,15 @@ const createDefaultProposalForm = () => ({
   chiefGuestDocumentUrl: "",
   accommodationRequired: false,
   hasRegistrationFee: false,
-  registrationFeeAmount: 0,
-  totalExpectedIncome: 0,
-  totalExpenditure: 0,
+  registrationFeeAmount: "",
+  totalExpectedIncome: "",
+  totalExpenditure: "",
 })
 
 const createEmptyBill = () => ({
   localId: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
   description: "",
-  amount: 0,
+  amount: "",
   billNumber: "",
   billDate: "",
   vendor: "",
@@ -282,9 +290,18 @@ const toProposalForm = (proposal) => ({
   chiefGuestDocumentUrl: proposal?.chiefGuestDocumentUrl || "",
   accommodationRequired: Boolean(proposal?.accommodationRequired),
   hasRegistrationFee: Boolean(proposal?.hasRegistrationFee),
-  registrationFeeAmount: Number(proposal?.registrationFeeAmount || 0),
-  totalExpectedIncome: Number(proposal?.totalExpectedIncome || 0),
-  totalExpenditure: Number(proposal?.totalExpenditure || 0),
+  registrationFeeAmount:
+    proposal?.registrationFeeAmount === null || proposal?.registrationFeeAmount === undefined
+      ? ""
+      : String(proposal.registrationFeeAmount),
+  totalExpectedIncome:
+    proposal?.totalExpectedIncome === null || proposal?.totalExpectedIncome === undefined
+      ? ""
+      : String(proposal.totalExpectedIncome),
+  totalExpenditure:
+    proposal?.totalExpenditure === null || proposal?.totalExpenditure === undefined
+      ? ""
+      : String(proposal.totalExpenditure),
 })
 
 const buildProposalPayload = (proposalForm) => ({
@@ -322,7 +339,7 @@ const toExpenseForm = (expense) => ({
       ? expense.bills.map((bill) => ({
           localId: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
           description: bill?.description || "",
-          amount: Number(bill?.amount || 0),
+          amount: bill?.amount === null || bill?.amount === undefined ? "" : String(bill.amount),
           billNumber: bill?.billNumber || "",
           billDate: toDateInputValue(bill?.billDate),
           vendor: bill?.vendor || "",
@@ -474,7 +491,7 @@ const EventsPage = () => {
     category: "academic",
     startDate: "",
     endDate: "",
-    estimatedBudget: 0,
+    estimatedBudget: "",
     description: "",
   })
   const [amendmentReason, setAmendmentReason] = useState("")
@@ -839,7 +856,10 @@ const EventsPage = () => {
       category: normalized.category || "academic",
       startDate: normalized.startDate ? String(normalized.startDate).split("T")[0] : "",
       endDate: normalized.endDate ? String(normalized.endDate).split("T")[0] : "",
-      estimatedBudget: normalized.estimatedBudget || 0,
+      estimatedBudget:
+        normalized.estimatedBudget === null || normalized.estimatedBudget === undefined
+          ? ""
+          : String(normalized.estimatedBudget),
       description: normalized.description || "",
     }
   }
@@ -1245,7 +1265,7 @@ const toCalendarEventPayload = (event) => {
       category: "academic",
       startDate: "",
       endDate: "",
-      estimatedBudget: 0,
+      estimatedBudget: "",
       description: "",
     })
     setShowAddEventModal(true)
@@ -1279,7 +1299,7 @@ const toCalendarEventPayload = (event) => {
         category: "academic",
         startDate: "",
         endDate: "",
-        estimatedBudget: 0,
+        estimatedBudget: "",
         description: "",
       })
     }
@@ -1529,102 +1549,91 @@ const toCalendarEventPayload = (event) => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       <PageHeader title="Events Calendar">
+        {calendar && (
+          <>
+            <Badge variant="default">{calendar.academicYear}</Badge>
+            <Badge variant={calendar.isLocked ? "warning" : "success"}>
+              {calendar.isLocked ? <><Lock size={12} /> Locked</> : <><Unlock size={12} /> Editable</>}
+            </Badge>
+            <Badge
+              variant={
+                calendar.status === "approved"
+                  ? "success"
+                  : calendar.status === "rejected"
+                    ? "danger"
+                    : calendar.status === "draft"
+                      ? "default"
+                      : "info"
+              }
+            >
+              {calendar.status?.replace(/_/g, " ")}
+            </Badge>
+          </>
+        )}
         <ToggleButtonGroup
           options={VIEW_OPTIONS}
           value={viewMode}
           onChange={setViewMode}
-          size="small"
+          size="medium"
           variant="muted"
         />
+        {canEdit && (
+          <Button size="md" variant="secondary" onClick={handleAddEvent}>
+            <Plus size={16} /> Add Event
+          </Button>
+        )}
+        {canEditGS && events.length > 0 && calendar?.status === "draft" && (
+          <Button size="md" onClick={handleSubmitCalendar} loading={submitting}>
+            <Send size={16} /> Submit for Approval
+          </Button>
+        )}
+        {calendar?.isLocked && isGS && (
+          <Button size="md" variant="secondary" onClick={() => openAmendmentModal(null)}>
+            <FileText size={16} /> Request New Event
+          </Button>
+        )}
+        {canApprove && (
+          <>
+            <Button
+              size="md"
+              variant="success"
+              onClick={() => {
+                setApprovalComments("")
+                setShowApprovalModal(true)
+              }}
+            >
+              <Check size={16} /> Approve
+            </Button>
+            <Button
+              size="md"
+              variant="danger"
+              onClick={() => {
+                setApprovalComments("")
+                setShowApprovalModal(true)
+              }}
+            >
+              <X size={16} /> Reject
+            </Button>
+          </>
+        )}
         {canCreateCalendar && (
-          <Button size="sm" variant="secondary" onClick={() => setShowCreateCalendarModal(true)}>
-            <Plus size={14} /> New Calendar
+          <Button size="md" variant="secondary" onClick={() => setShowCreateCalendarModal(true)}>
+            <Plus size={16} /> New Calendar
           </Button>
         )}
         {calendar && (
-          <Button size="sm" variant="ghost" onClick={() => setShowHistoryModal(true)}>
+          <Button size="md" variant="ghost" onClick={() => setShowHistoryModal(true)}>
             <History size={16} /> History
           </Button>
         )}
         {calendar && canManageCalendarLock && (
-          <Button size="sm" variant="ghost" onClick={() => setShowSettingsModal(true)}>
+          <Button size="md" variant="ghost" onClick={() => setShowSettingsModal(true)}>
             <Settings size={16} /> Settings
           </Button>
         )}
       </PageHeader>
 
       <div style={{ flex: 1, overflow: "auto", padding: "var(--spacing-6)" }}>
-        {calendar && (
-          <Card style={{ marginBottom: "var(--spacing-4)" }}>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "var(--spacing-3)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
-                  <span style={{ fontWeight: "var(--font-weight-medium)" }}>
-                    {calendar.academicYear} Calendar
-                  </span>
-                  <Badge variant={calendar.isLocked ? "warning" : "success"}>
-                    {calendar.isLocked ? <><Lock size={12} /> Locked</> : <><Unlock size={12} /> Editable</>}
-                  </Badge>
-                  <Badge variant={
-                    calendar.status === "approved"
-                      ? "success"
-                      : calendar.status === "rejected"
-                        ? "danger"
-                        : calendar.status === "draft"
-                          ? "default"
-                          : "info"
-                  }>
-                    {calendar.status?.replace(/_/g, " ")}
-                  </Badge>
-                </div>
-
-                <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                  {canEdit && (
-                    <Button size="sm" variant="secondary" onClick={handleAddEvent}>
-                      <Plus size={14} /> Add Event
-                    </Button>
-                  )}
-
-                  {canEditGS && events.length > 0 && calendar.status === "draft" && (
-                    <Button size="sm" onClick={handleSubmitCalendar} loading={submitting}>
-                      <Send size={14} /> Submit for Approval
-                    </Button>
-                  )}
-
-                  {calendar.isLocked && isGS && (
-                    <Button size="sm" variant="secondary" onClick={() => openAmendmentModal(null)}>
-                      <FileText size={14} /> Request New Event
-                    </Button>
-                  )}
-
-                  {canApprove && (
-                    <>
-                      <Button size="sm" variant="success" onClick={() => { setApprovalComments(""); setShowApprovalModal(true) }}>
-                        <Check size={14} /> Approve
-                      </Button>
-                      <Button size="sm" variant="danger" onClick={() => { setApprovalComments(""); setShowApprovalModal(true) }}>
-                        <X size={14} /> Reject
-                      </Button>
-                    </>
-                  )}
-
-                  {canManageCalendarLock && (
-                    calendar.isLocked ? (
-                      <Button size="sm" variant="success" onClick={handleUnlockCalendar} loading={submitting}>
-                        <Unlock size={14} /> Unlock
-                      </Button>
-                    ) : (
-                      <Button size="sm" variant="warning" onClick={handleLockCalendar} loading={submitting}>
-                        <Lock size={14} /> Lock
-                      </Button>
-                    )
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {calendar && (
           <Card style={{ marginBottom: "var(--spacing-4)" }}>
             <CardContent style={{ padding: "var(--spacing-4)" }}>
@@ -1775,7 +1784,7 @@ const toCalendarEventPayload = (event) => {
           </Card>
         )}
 
-        {isAdminLevel && (
+        {isAdminLevel && pendingExpenseApprovals.length > 0 && (
           <Card style={{ marginBottom: "var(--spacing-4)" }}>
             <CardContent style={{ padding: "var(--spacing-4)" }}>
               <h3
@@ -1787,70 +1796,63 @@ const toCalendarEventPayload = (event) => {
               >
                 Pending Bill Approvals ({pendingExpenseApprovals.length})
               </h3>
-
-              {pendingExpenseApprovals.length === 0 ? (
-                <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  No pending bill approvals.
-                </p>
-              ) : (
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Event</TableHeader>
-                      <TableHeader>Date</TableHeader>
-                      <TableHeader>Submitted By</TableHeader>
-                      <TableHeader>Total Bills</TableHeader>
-                      <TableHeader>Assigned Budget</TableHeader>
-                      <TableHeader>Variance</TableHeader>
-                      <TableHeader align="right">Action</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {pendingExpenseApprovals.map((expense) => (
-                      <TableRow key={expense._id}>
-                        <TableCell>
-                          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
-                            {expense.eventId?.title || "Unknown event"}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          {formatDateRange(
-                            expense.eventId?.scheduledStartDate,
-                            expense.eventId?.scheduledEndDate
-                          )}
-                        </TableCell>
-                        <TableCell>{expense.submittedBy?.name || "Unknown"}</TableCell>
-                        <TableCell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</TableCell>
-                        <TableCell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</TableCell>
-                        <TableCell
-                          style={{
-                            color:
-                              Number(expense.budgetVariance || 0) > 0
-                                ? "var(--color-danger)"
-                                : "var(--color-success)",
-                          }}
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableHeader>Event</TableHeader>
+                    <TableHeader>Date</TableHeader>
+                    <TableHeader>Submitted By</TableHeader>
+                    <TableHeader>Total Bills</TableHeader>
+                    <TableHeader>Assigned Budget</TableHeader>
+                    <TableHeader>Variance</TableHeader>
+                    <TableHeader align="right">Action</TableHeader>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {pendingExpenseApprovals.map((expense) => (
+                    <TableRow key={expense._id}>
+                      <TableCell>
+                        <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                          {expense.eventId?.title || "Unknown event"}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {formatDateRange(
+                          expense.eventId?.scheduledStartDate,
+                          expense.eventId?.scheduledEndDate
+                        )}
+                      </TableCell>
+                      <TableCell>{expense.submittedBy?.name || "Unknown"}</TableCell>
+                      <TableCell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</TableCell>
+                      <TableCell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</TableCell>
+                      <TableCell
+                        style={{
+                          color:
+                            Number(expense.budgetVariance || 0) > 0
+                              ? "var(--color-danger)"
+                              : "var(--color-success)",
+                        }}
+                      >
+                        ₹{Number(expense.budgetVariance || 0).toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => openPendingExpenseReview(expense)}
                         >
-                          ₹{Number(expense.budgetVariance || 0).toLocaleString()}
-                        </TableCell>
-                        <TableCell align="right">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => openPendingExpenseReview(expense)}
-                          >
-                            Review
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
+                          Review
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         )}
 
-        {calendar && dateConflicts.length > 0 && (
+        {calendar && calendar.status !== "approved" && dateConflicts.length > 0 && (
           <Card style={{ marginBottom: "var(--spacing-4)" }}>
             <CardContent style={{ padding: "var(--spacing-4)" }}>
               <Alert type="warning">
@@ -2128,7 +2130,12 @@ const toCalendarEventPayload = (event) => {
           <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
             Select the academic year for the new activity calendar.
           </p>
+          <label style={formLabelStyles} htmlFor="newAcademicYear">
+            Academic Year
+          </label>
           <Select
+            id="newAcademicYear"
+            name="newAcademicYear"
             value={newAcademicYear}
             onChange={(event) => setNewAcademicYear(event.target.value)}
             options={availableYearsForCreation}
@@ -2303,15 +2310,21 @@ const toCalendarEventPayload = (event) => {
               </Alert>
             )}
 
-            <Textarea
-              name="proposalText"
-              placeholder="Proposal details"
-              value={proposalForm.proposalText}
-              onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
-              rows={5}
-              disabled={!canEditProposalForm}
-              required
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="proposalText">
+                Proposal Details
+              </label>
+              <Textarea
+                id="proposalText"
+                name="proposalText"
+                placeholder="Proposal details"
+                value={proposalForm.proposalText}
+                onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
+                rows={5}
+                disabled={!canEditProposalForm}
+                required
+              />
+            </div>
 
             <PdfUploadField
               label="Proposal PDF"
@@ -2325,14 +2338,20 @@ const toCalendarEventPayload = (event) => {
               downloadFileName="proposal-document.pdf"
             />
 
-            <Textarea
-              name="externalGuestsDetails"
-              placeholder="External guests details"
-              value={proposalForm.externalGuestsDetails}
-              onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
-              rows={3}
-              disabled={!canEditProposalForm}
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="externalGuestsDetails">
+                External Guests Details
+              </label>
+              <Textarea
+                id="externalGuestsDetails"
+                name="externalGuestsDetails"
+                placeholder="External guests details"
+                value={proposalForm.externalGuestsDetails}
+                onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
+                rows={3}
+                disabled={!canEditProposalForm}
+              />
+            </div>
 
             <PdfUploadField
               label="Chief Guest PDF"
@@ -2363,39 +2382,57 @@ const toCalendarEventPayload = (event) => {
             />
 
             {proposalForm.hasRegistrationFee && (
-              <Input
-                name="registrationFeeAmount"
-                type="number"
-                placeholder="Registration fee amount (₹)"
-                value={proposalForm.registrationFeeAmount}
-                onChange={(event) =>
-                  handleProposalFormChange("registrationFeeAmount", Number(event.target.value || 0))
-                }
-                disabled={!canEditProposalForm}
-              />
+              <div>
+                <label style={formLabelStyles} htmlFor="registrationFeeAmount">
+                  Registration Fee Amount (₹)
+                </label>
+                <Input
+                  id="registrationFeeAmount"
+                  name="registrationFeeAmount"
+                  type="number"
+                  placeholder="Registration fee amount (₹)"
+                  value={proposalForm.registrationFeeAmount}
+                  onChange={(event) =>
+                    handleProposalFormChange("registrationFeeAmount", event.target.value)
+                  }
+                  disabled={!canEditProposalForm}
+                />
+              </div>
             )}
 
             <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
-              <Input
-                name="totalExpectedIncome"
-                type="number"
-                placeholder="Total expected income (₹)"
-                value={proposalForm.totalExpectedIncome}
-                onChange={(event) =>
-                  handleProposalFormChange("totalExpectedIncome", Number(event.target.value || 0))
-                }
-                disabled={!canEditProposalForm}
-              />
-              <Input
-                name="totalExpenditure"
-                type="number"
-                placeholder="Total expenditure (₹)"
-                value={proposalForm.totalExpenditure}
-                onChange={(event) =>
-                  handleProposalFormChange("totalExpenditure", Number(event.target.value || 0))
-                }
-                disabled={!canEditProposalForm}
-              />
+              <div>
+                <label style={formLabelStyles} htmlFor="totalExpectedIncome">
+                  Total Expected Income (₹)
+                </label>
+                <Input
+                  id="totalExpectedIncome"
+                  name="totalExpectedIncome"
+                  type="number"
+                  placeholder="Total expected income (₹)"
+                  value={proposalForm.totalExpectedIncome}
+                  onChange={(event) =>
+                    handleProposalFormChange("totalExpectedIncome", event.target.value)
+                  }
+                  disabled={!canEditProposalForm}
+                />
+              </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="totalExpenditure">
+                  Total Expenditure (₹)
+                </label>
+                <Input
+                  id="totalExpenditure"
+                  name="totalExpenditure"
+                  type="number"
+                  placeholder="Total expenditure (₹)"
+                  value={proposalForm.totalExpenditure}
+                  onChange={(event) =>
+                    handleProposalFormChange("totalExpenditure", event.target.value)
+                  }
+                  disabled={!canEditProposalForm}
+                />
+              </div>
             </div>
 
             <div
@@ -2423,13 +2460,19 @@ const toCalendarEventPayload = (event) => {
 
             {canCurrentUserReviewProposal && proposalData && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <Textarea
-                  name="proposalActionComments"
-                  placeholder="Approval comments (required for reject/revision)"
-                  value={proposalActionComments}
-                  onChange={(event) => setProposalActionComments(event.target.value)}
-                  rows={3}
-                />
+                <div>
+                  <label style={formLabelStyles} htmlFor="proposalActionComments">
+                    Review Comments
+                  </label>
+                  <Textarea
+                    id="proposalActionComments"
+                    name="proposalActionComments"
+                    placeholder="Approval comments (required for reject/revision)"
+                    value={proposalActionComments}
+                    onChange={(event) => setProposalActionComments(event.target.value)}
+                    rows={3}
+                  />
+                </div>
                 <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
                   <Button variant="warning" onClick={handleRequestProposalRevision} loading={submitting}>
                     Request Revision
@@ -2545,58 +2588,84 @@ const toCalendarEventPayload = (event) => {
                   </div>
 
                   <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                    <div>
+                      <label style={formLabelStyles} htmlFor={`bill-description-${bill.localId}`}>
+                        Bill Description
+                      </label>
+                      <Input
+                        id={`bill-description-${bill.localId}`}
+                        name={`bill-description-${bill.localId}`}
+                        placeholder="Bill description"
+                        value={bill.description}
+                        onChange={(event) =>
+                          handleBillFieldChange(bill.localId, "description", event.target.value)
+                        }
+                        disabled={!canEditExpenseForm}
+                      />
+                    </div>
+                    <div>
+                      <label style={formLabelStyles} htmlFor={`bill-amount-${bill.localId}`}>
+                        Amount (₹)
+                      </label>
+                      <Input
+                        id={`bill-amount-${bill.localId}`}
+                        name={`bill-amount-${bill.localId}`}
+                        type="number"
+                        placeholder="Amount (₹)"
+                        value={bill.amount}
+                        onChange={(event) =>
+                          handleBillFieldChange(bill.localId, "amount", event.target.value)
+                        }
+                        disabled={!canEditExpenseForm}
+                      />
+                    </div>
+                    <div>
+                      <label style={formLabelStyles} htmlFor={`bill-number-${bill.localId}`}>
+                        Bill Number
+                      </label>
+                      <Input
+                        id={`bill-number-${bill.localId}`}
+                        name={`bill-number-${bill.localId}`}
+                        placeholder="Bill number (optional)"
+                        value={bill.billNumber}
+                        onChange={(event) =>
+                          handleBillFieldChange(bill.localId, "billNumber", event.target.value)
+                        }
+                        disabled={!canEditExpenseForm}
+                      />
+                    </div>
+                    <div>
+                      <label style={formLabelStyles} htmlFor={`bill-date-${bill.localId}`}>
+                        Bill Date
+                      </label>
+                      <Input
+                        id={`bill-date-${bill.localId}`}
+                        name={`bill-date-${bill.localId}`}
+                        type="date"
+                        value={bill.billDate}
+                        onChange={(event) =>
+                          handleBillFieldChange(bill.localId, "billDate", event.target.value)
+                        }
+                        disabled={!canEditExpenseForm}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={formLabelStyles} htmlFor={`bill-vendor-${bill.localId}`}>
+                      Vendor
+                    </label>
                     <Input
-                      name={`bill-description-${bill.localId}`}
-                      placeholder="Bill description"
-                      value={bill.description}
+                      id={`bill-vendor-${bill.localId}`}
+                      name={`bill-vendor-${bill.localId}`}
+                      placeholder="Vendor (optional)"
+                      value={bill.vendor}
                       onChange={(event) =>
-                        handleBillFieldChange(bill.localId, "description", event.target.value)
-                      }
-                      disabled={!canEditExpenseForm}
-                    />
-                    <Input
-                      name={`bill-amount-${bill.localId}`}
-                      type="number"
-                      placeholder="Amount (₹)"
-                      value={bill.amount}
-                      onChange={(event) =>
-                        handleBillFieldChange(
-                          bill.localId,
-                          "amount",
-                          Number(event.target.value || 0)
-                        )
-                      }
-                      disabled={!canEditExpenseForm}
-                    />
-                    <Input
-                      name={`bill-number-${bill.localId}`}
-                      placeholder="Bill number (optional)"
-                      value={bill.billNumber}
-                      onChange={(event) =>
-                        handleBillFieldChange(bill.localId, "billNumber", event.target.value)
-                      }
-                      disabled={!canEditExpenseForm}
-                    />
-                    <Input
-                      name={`bill-date-${bill.localId}`}
-                      type="date"
-                      value={bill.billDate}
-                      onChange={(event) =>
-                        handleBillFieldChange(bill.localId, "billDate", event.target.value)
+                        handleBillFieldChange(bill.localId, "vendor", event.target.value)
                       }
                       disabled={!canEditExpenseForm}
                     />
                   </div>
-
-                  <Input
-                    name={`bill-vendor-${bill.localId}`}
-                    placeholder="Vendor (optional)"
-                    value={bill.vendor}
-                    onChange={(event) =>
-                      handleBillFieldChange(bill.localId, "vendor", event.target.value)
-                    }
-                    disabled={!canEditExpenseForm}
-                  />
 
                   <PdfUploadField
                     label="Bill PDF"
@@ -2638,14 +2707,20 @@ const toCalendarEventPayload = (event) => {
               downloadFileName="event-report.pdf"
             />
 
-            <Textarea
-              name="expenseNotes"
-              placeholder="Notes (optional)"
-              value={expenseForm.notes}
-              onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
-              rows={3}
-              disabled={!canEditExpenseForm}
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="expenseNotes">
+                Notes
+              </label>
+              <Textarea
+                id="expenseNotes"
+                name="expenseNotes"
+                placeholder="Notes (optional)"
+                value={expenseForm.notes}
+                onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
+                rows={3}
+                disabled={!canEditExpenseForm}
+              />
+            </div>
 
             <div
               style={{
@@ -2677,13 +2752,19 @@ const toCalendarEventPayload = (event) => {
 
             {canApproveExpense && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                <Textarea
-                  name="expenseApprovalComments"
-                  placeholder="Approval comments (optional)"
-                  value={expenseApprovalComments}
-                  onChange={(event) => setExpenseApprovalComments(event.target.value)}
-                  rows={3}
-                />
+                <div>
+                  <label style={formLabelStyles} htmlFor="expenseApprovalComments">
+                    Approval Comments
+                  </label>
+                  <Textarea
+                    id="expenseApprovalComments"
+                    name="expenseApprovalComments"
+                    placeholder="Approval comments (optional)"
+                    value={expenseApprovalComments}
+                    onChange={(event) => setExpenseApprovalComments(event.target.value)}
+                    rows={3}
+                  />
+                </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <Button variant="success" onClick={handleApproveExpense} loading={submitting}>
                     <Check size={14} /> Approve Bills
@@ -2709,34 +2790,58 @@ const toCalendarEventPayload = (event) => {
       >
         {showAddEventModal && (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <Input
-              name="title"
-              placeholder="Event Title"
-              value={eventForm.title}
-              onChange={(event) => handleEventFormChange("title", event.target.value)}
-              required
-            />
-            <Select
-              name="category"
-              value={eventForm.category}
-              onChange={(event) => handleEventFormChange("category", event.target.value)}
-              options={CATEGORY_OPTIONS}
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="eventTitle">
+                Event Title
+              </label>
+              <Input
+                id="eventTitle"
+                name="title"
+                placeholder="Event Title"
+                value={eventForm.title}
+                onChange={(event) => handleEventFormChange("title", event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label style={formLabelStyles} htmlFor="eventCategory">
+                Category
+              </label>
+              <Select
+                id="eventCategory"
+                name="category"
+                value={eventForm.category}
+                onChange={(event) => handleEventFormChange("category", event.target.value)}
+                options={CATEGORY_OPTIONS}
+              />
+            </div>
             <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
-              <Input
-                name="startDate"
-                type="date"
-                value={eventForm.startDate}
-                onChange={(event) => handleEventFormChange("startDate", event.target.value)}
-                required
-              />
-              <Input
-                name="endDate"
-                type="date"
-                value={eventForm.endDate}
-                onChange={(event) => handleEventFormChange("endDate", event.target.value)}
-                required
-              />
+              <div>
+                <label style={formLabelStyles} htmlFor="eventStartDate">
+                  Start Date
+                </label>
+                <Input
+                  id="eventStartDate"
+                  name="startDate"
+                  type="date"
+                  value={eventForm.startDate}
+                  onChange={(event) => handleEventFormChange("startDate", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="eventEndDate">
+                  End Date
+                </label>
+                <Input
+                  id="eventEndDate"
+                  name="endDate"
+                  type="date"
+                  value={eventForm.endDate}
+                  onChange={(event) => handleEventFormChange("endDate", event.target.value)}
+                  required
+                />
+              </div>
             </div>
             {eventForm.startDate && eventForm.endDate && !isDateRangeOrdered && (
               <Alert type="error">
@@ -2797,20 +2902,32 @@ const toCalendarEventPayload = (event) => {
                 })}
               </div>
             )}
-            <Input
-              name="estimatedBudget"
-              type="number"
-              placeholder="Estimated Budget (₹)"
-              value={eventForm.estimatedBudget}
-              onChange={(event) => handleEventFormChange("estimatedBudget", parseFloat(event.target.value) || 0)}
-            />
-            <Textarea
-              name="description"
-              placeholder="Description"
-              value={eventForm.description}
-              onChange={(event) => handleEventFormChange("description", event.target.value)}
-              rows={4}
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="eventEstimatedBudget">
+                Estimated Budget (₹)
+              </label>
+              <Input
+                id="eventEstimatedBudget"
+                name="estimatedBudget"
+                type="number"
+                placeholder="Estimated Budget (₹)"
+                value={eventForm.estimatedBudget}
+                onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
+              />
+            </div>
+            <div>
+              <label style={formLabelStyles} htmlFor="eventDescription">
+                Description
+              </label>
+              <Textarea
+                id="eventDescription"
+                name="description"
+                placeholder="Description"
+                value={eventForm.description}
+                onChange={(event) => handleEventFormChange("description", event.target.value)}
+                rows={4}
+              />
+            </div>
           </div>
         )}
       </Modal>
@@ -2832,34 +2949,58 @@ const toCalendarEventPayload = (event) => {
             <Alert type="info">
               The calendar is locked. Your amendment request will be reviewed by Admin.
             </Alert>
-            <Input
-              name="title"
-              placeholder="Event Title"
-              value={eventForm.title}
-              onChange={(event) => handleEventFormChange("title", event.target.value)}
-              required
-            />
-            <Select
-              name="category"
-              value={eventForm.category}
-              onChange={(event) => handleEventFormChange("category", event.target.value)}
-              options={CATEGORY_OPTIONS}
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="amendmentEventTitle">
+                Event Title
+              </label>
+              <Input
+                id="amendmentEventTitle"
+                name="title"
+                placeholder="Event Title"
+                value={eventForm.title}
+                onChange={(event) => handleEventFormChange("title", event.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label style={formLabelStyles} htmlFor="amendmentEventCategory">
+                Category
+              </label>
+              <Select
+                id="amendmentEventCategory"
+                name="category"
+                value={eventForm.category}
+                onChange={(event) => handleEventFormChange("category", event.target.value)}
+                options={CATEGORY_OPTIONS}
+              />
+            </div>
             <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
-              <Input
-                name="startDate"
-                type="date"
-                value={eventForm.startDate}
-                onChange={(event) => handleEventFormChange("startDate", event.target.value)}
-                required
-              />
-              <Input
-                name="endDate"
-                type="date"
-                value={eventForm.endDate}
-                onChange={(event) => handleEventFormChange("endDate", event.target.value)}
-                required
-              />
+              <div>
+                <label style={formLabelStyles} htmlFor="amendmentStartDate">
+                  Start Date
+                </label>
+                <Input
+                  id="amendmentStartDate"
+                  name="startDate"
+                  type="date"
+                  value={eventForm.startDate}
+                  onChange={(event) => handleEventFormChange("startDate", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="amendmentEndDate">
+                  End Date
+                </label>
+                <Input
+                  id="amendmentEndDate"
+                  name="endDate"
+                  type="date"
+                  value={eventForm.endDate}
+                  onChange={(event) => handleEventFormChange("endDate", event.target.value)}
+                  required
+                />
+              </div>
             </div>
             {eventForm.startDate && eventForm.endDate && !isDateRangeOrdered && (
               <Alert type="error">
@@ -2920,28 +3061,46 @@ const toCalendarEventPayload = (event) => {
                 })}
               </div>
             )}
-            <Input
-              name="estimatedBudget"
-              type="number"
-              placeholder="Estimated Budget (₹)"
-              value={eventForm.estimatedBudget}
-              onChange={(event) => handleEventFormChange("estimatedBudget", parseFloat(event.target.value) || 0)}
-            />
-            <Textarea
-              name="description"
-              placeholder="Description"
-              value={eventForm.description}
-              onChange={(event) => handleEventFormChange("description", event.target.value)}
-              rows={3}
-            />
-            <Textarea
-              name="reason"
-              placeholder="Reason for amendment (min 10 characters)"
-              value={amendmentReason}
-              onChange={(event) => setAmendmentReason(event.target.value)}
-              rows={4}
-              required
-            />
+            <div>
+              <label style={formLabelStyles} htmlFor="amendmentEstimatedBudget">
+                Estimated Budget (₹)
+              </label>
+              <Input
+                id="amendmentEstimatedBudget"
+                name="estimatedBudget"
+                type="number"
+                placeholder="Estimated Budget (₹)"
+                value={eventForm.estimatedBudget}
+                onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
+              />
+            </div>
+            <div>
+              <label style={formLabelStyles} htmlFor="amendmentDescription">
+                Description
+              </label>
+              <Textarea
+                id="amendmentDescription"
+                name="description"
+                placeholder="Description"
+                value={eventForm.description}
+                onChange={(event) => handleEventFormChange("description", event.target.value)}
+                rows={3}
+              />
+            </div>
+            <div>
+              <label style={formLabelStyles} htmlFor="amendmentReason">
+                Reason for Amendment
+              </label>
+              <Textarea
+                id="amendmentReason"
+                name="reason"
+                placeholder="Reason for amendment (min 10 characters)"
+                value={amendmentReason}
+                onChange={(event) => setAmendmentReason(event.target.value)}
+                rows={4}
+                required
+              />
+            </div>
           </div>
         )}
       </Modal>
@@ -3073,13 +3232,19 @@ const toCalendarEventPayload = (event) => {
             </Alert>
           )}
 
-          <Textarea
-            name="comments"
-            placeholder="Comments (required for rejection, optional for approval)"
-            value={approvalComments}
-            onChange={(event) => setApprovalComments(event.target.value)}
-            rows={4}
-          />
+          <div>
+            <label style={formLabelStyles} htmlFor="calendarReviewComments">
+              Review Comments
+            </label>
+            <Textarea
+              id="calendarReviewComments"
+              name="comments"
+              placeholder="Comments (required for rejection, optional for approval)"
+              value={approvalComments}
+              onChange={(event) => setApprovalComments(event.target.value)}
+              rows={4}
+            />
+          </div>
         </div>
       </Modal>
 
