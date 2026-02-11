@@ -62,11 +62,16 @@ const CATEGORY_LABELS = {
 }
 
 const CATEGORY_COLORS = {
-  academic: "var(--color-info)",
-  cultural: "var(--color-primary)",
-  sports: "var(--color-success)",
-  technical: "var(--color-warning)",
+  academic: "#6f9bbf",
+  cultural: "#8aa7bf",
+  sports: "#6ea892",
+  technical: "#8f9ab8",
 }
+
+const getCategoryBadgeStyle = (category) => ({
+  backgroundColor: CATEGORY_COLORS[category] || "var(--color-bg-tertiary)",
+  color: "var(--color-white)",
+})
 
 const CATEGORY_ORDER = ["academic", "cultural", "sports", "technical"]
 const VALID_OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
@@ -1927,7 +1932,7 @@ const toCalendarEventPayload = (event) => {
                           <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
                         </TableCell>
                         <TableCell>
-                          <Badge style={{ backgroundColor: CATEGORY_COLORS[event.category] }}>
+                          <Badge style={getCategoryBadgeStyle(event.category)}>
                             {CATEGORY_LABELS[event.category] || event.category}
                           </Badge>
                         </TableCell>
@@ -2155,7 +2160,7 @@ const toCalendarEventPayload = (event) => {
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
             <div>
               <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Category</label>
-              <Badge style={{ backgroundColor: CATEGORY_COLORS[selectedEvent.category], marginLeft: "var(--spacing-2)" }}>
+              <Badge style={{ ...getCategoryBadgeStyle(selectedEvent.category), marginLeft: "var(--spacing-2)" }}>
                 {CATEGORY_LABELS[selectedEvent.category] || selectedEvent.category}
               </Badge>
             </div>
