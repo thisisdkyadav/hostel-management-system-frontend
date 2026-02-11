@@ -9,12 +9,21 @@ import PropTypes from "prop-types"
  * - Tablet+: Horizontal layout, fixed 64px height
  * - Desktop: Same as tablet with more padding
  * 
- * @param {string} title - Page title text
+ * @param {string|React.ReactNode} title - Page title text
  * @param {React.ReactNode} children - Action buttons and controls
+ * @param {string|React.ReactNode} subtitle - Optional subtitle text (shown below title)
+ * @param {boolean} showDate - Show current date when subtitle is not provided
  * @param {string} className - Additional CSS classes
  * @param {boolean} hideTitleOnMobile - If true, hides title and date on mobile view (below sm breakpoint)
  */
-const PageHeader = ({ title, children, className = "", hideTitleOnMobile = false }) => {
+const PageHeader = ({
+  title,
+  children,
+  subtitle = null,
+  showDate = true,
+  className = "",
+  hideTitleOnMobile = false,
+}) => {
   const formatDate = () => {
     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" }
     return new Date().toLocaleDateString(undefined, options)
@@ -30,7 +39,11 @@ const PageHeader = ({ title, children, className = "", hideTitleOnMobile = false
           {/* Left Section - Title & Date */}
           <div className={`min-w-0 flex-shrink-0 ${hideTitleOnMobile ? "hidden sm:block" : ""}`}>
             <h1 className="text-lg sm:text-xl font-bold text-[var(--color-primary)] tracking-tight truncate">{title}</h1>
-            <p className="hidden sm:block text-xs text-[var(--color-text-muted)] mt-0.5">{formatDate()}</p>
+            {subtitle ? (
+              <p className="hidden sm:block text-xs text-[var(--color-text-muted)] mt-0.5">{subtitle}</p>
+            ) : (
+              showDate && <p className="hidden sm:block text-xs text-[var(--color-text-muted)] mt-0.5">{formatDate()}</p>
+            )}
           </div>
 
           {/* Right Section - Actions (optional) */}
@@ -46,8 +59,10 @@ const PageHeader = ({ title, children, className = "", hideTitleOnMobile = false
 }
 
 PageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.node.isRequired,
   children: PropTypes.node,
+  subtitle: PropTypes.node,
+  showDate: PropTypes.bool,
   className: PropTypes.string,
   hideTitleOnMobile: PropTypes.bool,
 }

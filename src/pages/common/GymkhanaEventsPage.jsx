@@ -741,6 +741,11 @@ const EventsPage = () => {
       (!proposalForm.hasRegistrationFee || Number(proposalForm.registrationFeeAmount || 0) >= 0)
   )
   const canEditProposalForm = canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser
+  const calendarStatusLabel = calendar?.status ? calendar.status.replace(/_/g, " ") : ""
+  const headerTitle = calendar?.academicYear
+    ? `Activity Calendar ${calendar.academicYear}`
+    : "Events Calendar"
+  const headerSubtitle = calendarStatusLabel ? `Status: ${calendarStatusLabel}` : "No active calendar"
 
   useEffect(() => {
     fetchYears()
@@ -1636,28 +1641,7 @@ const toCalendarEventPayload = (event) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
-      <PageHeader title="Events Calendar">
-        {calendar && (
-          <>
-            <Badge variant="default">{calendar.academicYear}</Badge>
-            <Badge variant={calendar.isLocked ? "warning" : "success"}>
-              {calendar.isLocked ? <><Lock size={12} /> Locked</> : <><Unlock size={12} /> Editable</>}
-            </Badge>
-            <Badge
-              variant={
-                calendar.status === "approved"
-                  ? "success"
-                  : calendar.status === "rejected"
-                    ? "danger"
-                    : calendar.status === "draft"
-                      ? "default"
-                      : "info"
-              }
-            >
-              {calendar.status?.replace(/_/g, " ")}
-            </Badge>
-          </>
-        )}
+      <PageHeader title={headerTitle} subtitle={headerSubtitle} showDate={false}>
         <ToggleButtonGroup
           options={VIEW_OPTIONS}
           value={viewMode}
@@ -1703,11 +1687,6 @@ const toCalendarEventPayload = (event) => {
               <X size={16} /> Reject
             </Button>
           </>
-        )}
-        {canCreateCalendar && (
-          <Button size="md" variant="secondary" onClick={() => setShowCreateCalendarModal(true)}>
-            <Plus size={16} /> New Calendar
-          </Button>
         )}
         {calendar && (
           <Button size="md" variant="ghost" onClick={() => setShowHistoryModal(true)}>
