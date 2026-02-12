@@ -91,14 +91,14 @@ export const studentApi = {
    * Get department list
    */
   getDepartmentList: () => {
-    return apiClient.get("/student/departments/list")
+    return apiClient.get("/students/profiles-admin/departments/list")
   },
 
   /**
    * Get degrees list
    */
   getDegreesList: () => {
-    return apiClient.get("/student/degrees/list")
+    return apiClient.get("/students/profiles-admin/degrees/list")
   },
 }
 

@@ -310,7 +310,7 @@ export const adminApi = {
    * @param {string} newName - New degree name
    */
   renameDegree: (oldName, newName) => {
-    return apiClient.put("/student/degrees/rename", { oldName, newName })
+    return apiClient.put("/students/profiles-admin/degrees/rename", { oldName, newName })
   },
 
   // ==================== Departments Management ====================
@@ -336,7 +336,7 @@ export const adminApi = {
    * @param {string} newName - New department name
    */
   renameDepartment: (oldName, newName) => {
-    return apiClient.put("/student/departments/rename", { oldName, newName })
+    return apiClient.put("/students/profiles-admin/departments/rename", { oldName, newName })
   },
 
   // ==================== Registered Students Management ====================
