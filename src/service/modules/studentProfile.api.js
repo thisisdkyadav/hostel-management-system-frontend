@@ -10,7 +10,7 @@ export const studentProfileApi = {
    * Get editable profile fields
    */
   getEditableProfile: () => {
-    return apiClient.get("/student-profile/editable")
+    return apiClient.get("/students/profile/editable")
   },
 
   /**
@@ -18,14 +18,14 @@ export const studentProfileApi = {
    * @param {Object} data - Profile data to update
    */
   updateProfile: (data) => {
-    return apiClient.put("/student-profile/", data)
+    return apiClient.put("/students/profile/", data)
   },
 
   /**
    * Get family members
    */
   getFamilyMembers: () => {
-    return apiClient.get("/student-profile/family-members")
+    return apiClient.get("/students/profile/family-members")
   },
 
   /**
@@ -33,7 +33,7 @@ export const studentProfileApi = {
    * @param {Object} data - Family member data
    */
   addFamilyMember: (data) => {
-    return apiClient.post("/student-profile/family-members", data)
+    return apiClient.post("/students/profile/family-members", data)
   },
 
   /**
@@ -42,7 +42,7 @@ export const studentProfileApi = {
    * @param {Object} data - Updated family member data
    */
   updateFamilyMember: (id, data) => {
-    return apiClient.put(`/student-profile/family-members/${id}`, data)
+    return apiClient.put(`/students/profile/family-members/${id}`, data)
   },
 
   /**
@@ -50,14 +50,14 @@ export const studentProfileApi = {
    * @param {string} id - Family member ID
    */
   deleteFamilyMember: (id) => {
-    return apiClient.delete(`/student-profile/family-members/${id}`)
+    return apiClient.delete(`/students/profile/family-members/${id}`)
   },
 
   /**
    * Get health details
    */
   getHealthDetails: () => {
-    return apiClient.get("/student-profile/health")
+    return apiClient.get("/students/profile/health")
   },
 }
 

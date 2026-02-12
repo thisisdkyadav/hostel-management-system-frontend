@@ -11,7 +11,7 @@ export const idCardApi = {
    * @param {string} userId - User ID
    */
   getIDcard: (userId) => {
-    return apiClient.get(`/student/${userId}/id-card`)
+    return apiClient.get(`/students/profiles-self/${userId}/id-card`)
   },
 
   /**
@@ -21,7 +21,7 @@ export const idCardApi = {
    * @param {string} back - Back image URL
    */
   updateIDcard: (userId, front, back) => {
-    return apiClient.post(`/student/${userId}/id-card`, { front, back })
+    return apiClient.post(`/students/profiles-self/${userId}/id-card`, { front, back })
   },
 }
 

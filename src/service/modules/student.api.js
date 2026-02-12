@@ -11,7 +11,7 @@ export const studentApi = {
    * @param {Array} students - Array of student data
    */
   importStudents: (students) => {
-    return apiClient.post("/student/profiles", students)
+    return apiClient.post("/students/profiles-admin/profiles", students)
   },
 
   /**
@@ -19,7 +19,7 @@ export const studentApi = {
    * @param {Object} filters - Query filters (page, limit, search, etc.)
    */
   getStudents: (filters = {}) => {
-    return apiClient.get("/student/profiles", { params: filters })
+    return apiClient.get("/students/profiles-admin/profiles", { params: filters })
   },
 
   /**
@@ -27,14 +27,14 @@ export const studentApi = {
    * @param {string} userId - User ID
    */
   getStudentDetails: (userId) => {
-    return apiClient.get(`/student/profile/details/${userId}`)
+    return apiClient.get(`/students/profiles-admin/profile/details/${userId}`)
   },
 
   /**
    * Get current student profile
    */
   getStudent: () => {
-    return apiClient.get("/student/profile")
+    return apiClient.get("/students/profiles-self/profile")
   },
 
   /**
@@ -43,7 +43,7 @@ export const studentApi = {
    * @param {Object} studentData - Updated student data
    */
   updateStudent: (userId, studentData) => {
-    return apiClient.put(`/student/profile/${userId}`, studentData)
+    return apiClient.put(`/students/profiles-admin/profile/${userId}`, studentData)
   },
 
   /**
@@ -51,7 +51,7 @@ export const studentApi = {
    * @param {Array} students - Array of student data to update
    */
   updateStudents: (students) => {
-    return apiClient.put("/student/profiles", students)
+    return apiClient.put("/students/profiles-admin/profiles", students)
   },
 
   /**
@@ -59,14 +59,14 @@ export const studentApi = {
    * @param {Array} userIds - Array of user IDs
    */
   getStudentsByIds: (userIds) => {
-    return apiClient.post("/student/profiles/ids", { userIds })
+    return apiClient.post("/students/profiles-admin/profiles/ids", { userIds })
   },
 
   /**
    * Get student dashboard data
    */
   getStudentDashboard: () => {
-    return apiClient.get("/student/dashboard")
+    return apiClient.get("/students/profiles-self/dashboard")
   },
 
   /**
@@ -84,7 +84,7 @@ export const studentApi = {
    * @param {string} userId - User ID
    */
   getStudentId: (userId) => {
-    return apiClient.get(`/student/id/${userId}`)
+    return apiClient.get(`/students/profiles-admin/id/${userId}`)
   },
 
   /**
