@@ -260,6 +260,13 @@ export const gymkhanaEventsApi = {
     return apiClient.post(`${BASE_PATH}/expenses/${id}/reject`, { reason })
   },
 
+  /**
+   * Get expense approval history
+   */
+  getExpenseHistory: (id) => {
+    return apiClient.get(`${BASE_PATH}/expenses/${id}/history`)
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // AMENDMENT OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════

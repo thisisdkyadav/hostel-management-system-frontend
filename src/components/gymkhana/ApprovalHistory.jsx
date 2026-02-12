@@ -1,9 +1,9 @@
 /**
  * Approval History Component
- * Displays timeline of approval/rejection logs for calendars/proposals
+ * Displays timeline of approval/rejection logs for calendars/proposals/expenses
  */
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Badge } from "@/components/ui/data-display"
 import { Spinner } from "@/components/ui/feedback"
 import { Check, X, Send, Clock, FileText } from "lucide-react"
@@ -23,30 +23,32 @@ const ACTION_COLORS = {
     revision_requested: "warning",
 }
 
-const ApprovalHistory = ({ calendarId = null, proposalId = null }) => {
+const ApprovalHistory = ({ calendarId = null, proposalId = null, expenseId = null }) => {
     const [loading, setLoading] = useState(true)
     const [history, setHistory] = useState([])
     const [error, setError] = useState(null)
 
-    useEffect(() => {
-        if (calendarId || proposalId) {
-            fetchHistory()
-        }
-    }, [calendarId, proposalId])
-
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         try {
             setLoading(true)
             const res = proposalId
                 ? await gymkhanaEventsApi.getProposalHistory(proposalId)
-                : await gymkhanaEventsApi.getCalendarHistory(calendarId)
+                : expenseId
+                    ? await gymkhanaEventsApi.getExpenseHistory(expenseId)
+                    : await gymkhanaEventsApi.getCalendarHistory(calendarId)
             setHistory(res.data?.history || res.history || [])
         } catch (err) {
             setError(err.message || "Failed to load history")
         } finally {
             setLoading(false)
         }
-    }
+    }, [calendarId, proposalId, expenseId])
+
+    useEffect(() => {
+        if (calendarId || proposalId || expenseId) {
+            fetchHistory()
+        }
+    }, [calendarId, proposalId, expenseId, fetchHistory])
 
     if (loading) {
         return (

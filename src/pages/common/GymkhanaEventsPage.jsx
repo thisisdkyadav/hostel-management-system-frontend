@@ -5,7 +5,7 @@
  * - President Gymkhana: Edit all pre-submission events + submit calendar
  */
 
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useMemo, useRef, createElement } from "react"
 import { Button } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
@@ -39,6 +39,9 @@ import {
   ChevronRight,
   AlertTriangle,
   Bell,
+  CircleDollarSign,
+  Clock3,
+  NotebookText,
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
@@ -156,6 +159,86 @@ const formLabelStyles = {
   fontWeight: "var(--font-weight-medium)",
   color: "var(--color-text-secondary)",
   marginBottom: "var(--spacing-1)",
+}
+
+const eventDetailMetaChipStyles = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "var(--spacing-1)",
+  fontSize: "var(--font-size-xs)",
+  color: "var(--color-text-muted)",
+  padding: "var(--spacing-1) var(--spacing-2)",
+  borderRadius: "var(--radius-full)",
+  border: "var(--border-1) solid var(--color-border-primary)",
+  backgroundColor: "var(--color-bg-secondary)",
+}
+
+const EventDetailSectionCard = ({ icon: Icon, title, accentColor = "var(--color-primary)", children, headerAction = null }) => (
+  <div
+    style={{
+      background: "var(--color-bg-tertiary)",
+      borderRadius: "var(--radius-card-sm)",
+      padding: "var(--spacing-3) var(--spacing-4)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+    }}
+  >
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--spacing-2)" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+        <div
+          style={{
+            width: "24px",
+            height: "24px",
+            borderRadius: "var(--radius-sm)",
+            background: "var(--color-bg-secondary)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {createElement(Icon, { size: 13, style: { color: accentColor } })}
+        </div>
+        <h4
+          style={{
+            fontSize: "var(--font-size-xs)",
+            fontWeight: "var(--font-weight-semibold)",
+            color: accentColor,
+            margin: 0,
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}
+        >
+          {title}
+        </h4>
+      </div>
+      {headerAction}
+    </div>
+    {children}
+  </div>
+)
+
+const EventDetailInfoRow = ({ label, value }) => (
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-3)" }}>
+    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{label}</span>
+    <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", textAlign: "right" }}>{value}</span>
+  </div>
+)
+
+const getEventStatusVariant = (status) => {
+  switch (status) {
+    case "proposal_approved":
+    case "completed":
+      return "success"
+    case "proposal_submitted":
+      return "info"
+    case "proposal_pending":
+    case "upcoming":
+      return "warning"
+    case "cancelled":
+    case "rejected":
+      return "danger"
+    default:
+      return "default"
+  }
 }
 
 const toDate = (value) => {
@@ -538,6 +621,7 @@ const EventsPage = () => {
   const [expenseLoading, setExpenseLoading] = useState(false)
   const [expenseApprovalComments, setExpenseApprovalComments] = useState("")
   const [expenseNextApprovalStages, setExpenseNextApprovalStages] = useState([])
+  const [expenseHistoryRefreshKey, setExpenseHistoryRefreshKey] = useState(0)
   const overlapCheckRequestRef = useRef(0)
 
   const isGymkhanaRole = user?.role === "Gymkhana"
@@ -1205,6 +1289,7 @@ const toCalendarEventPayload = (event) => {
       }
 
       await fetchProposalForEvent(proposalEvent)
+      setProposalHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
     } catch (err) {
       toast.error(err.message || "Failed to save proposal")
@@ -1250,6 +1335,7 @@ const toCalendarEventPayload = (event) => {
       toast.success("Proposal approved")
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
+      setProposalHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
       await fetchYears()
     } catch (err) {
@@ -1272,6 +1358,7 @@ const toCalendarEventPayload = (event) => {
       toast.success("Proposal rejected")
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
+      setProposalHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
       await fetchYears()
     } catch (err) {
@@ -1294,6 +1381,7 @@ const toCalendarEventPayload = (event) => {
       toast.success("Revision requested")
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
+      setProposalHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
       await fetchYears()
     } catch (err) {
@@ -1332,6 +1420,7 @@ const toCalendarEventPayload = (event) => {
     setExpenseEvent(event)
     setExpenseApprovalComments("")
     setExpenseNextApprovalStages([])
+    setExpenseHistoryRefreshKey((prev) => prev + 1)
     setShowExpenseModal(true)
     await fetchExpenseForEvent(event)
   }
@@ -1409,6 +1498,7 @@ const toCalendarEventPayload = (event) => {
       }
 
       await fetchExpenseForEvent(expenseEvent)
+      setExpenseHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
     } catch (err) {
       toast.error(err.message || "Failed to save bills")
@@ -1437,6 +1527,7 @@ const toCalendarEventPayload = (event) => {
       toast.success("Bills approved")
       setExpenseApprovalComments("")
       await fetchExpenseForEvent(expenseEvent)
+      setExpenseHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
       const pendingExpenses = await getPendingExpenseApprovals()
       setPendingExpenseApprovals(pendingExpenses)
@@ -1460,6 +1551,7 @@ const toCalendarEventPayload = (event) => {
       toast.success("Bills rejected")
       setExpenseApprovalComments("")
       await fetchExpenseForEvent(expenseEvent)
+      setExpenseHistoryRefreshKey((prev) => prev + 1)
       await fetchCalendar(selectedYear)
       const pendingExpenses = await getPendingExpenseApprovals()
       setPendingExpenseApprovals(pendingExpenses)
@@ -2344,111 +2436,158 @@ const toCalendarEventPayload = (event) => {
         isOpen={showEventModal}
         title={selectedEvent?.title || "Event Details"}
         width={640}
+        closeButtonVariant="button"
         onClose={() => { setShowEventModal(false); setSelectedEvent(null) }}
-        footer={<Button variant="secondary" onClick={() => setShowEventModal(false)}>Close</Button>}
       >
-        {selectedEvent && showEventModal && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div>
-              <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Category</label>
-              <Badge style={{ ...getCategoryBadgeStyle(selectedEvent.category), marginLeft: "var(--spacing-2)" }}>
-                {CATEGORY_LABELS[selectedEvent.category] || selectedEvent.category}
-              </Badge>
-            </div>
-            <div>
-              <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Date Range</label>
-              <p>{formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}</p>
-            </div>
-            <div>
-              <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Estimated Budget</label>
-              <p>₹{Number(selectedEvent.estimatedBudget || 0).toLocaleString()}</p>
-            </div>
-            {selectedEvent.description && (
-              <div>
-                <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Description</label>
-                <p>{selectedEvent.description}</p>
-              </div>
-            )}
-            {(isGymkhanaRole || isAdminLevel) && (
-              <div style={{ borderTop: "var(--border-1) solid var(--color-border-primary)", paddingTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-                <div>
-                  <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                    Proposal
-                  </label>
-                  <p style={{ margin: "var(--spacing-1) 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                    {(() => {
-                      const proposalDueDate = getProposalDueDate(selectedEvent)
-                      const dueDateText = proposalDueDate ? proposalDueDate.toLocaleDateString() : null
+        {selectedEvent && showEventModal && (() => {
+          const proposalDueDate = getProposalDueDate(selectedEvent)
+          const proposalDueText = proposalDueDate ? proposalDueDate.toLocaleDateString() : "Not available"
+          const canOpenProposal =
+            selectedEvent.gymkhanaEventId && (selectedEvent.proposalSubmitted || isGS || isPresident)
+          const canManageBills =
+            selectedEvent.gymkhanaEventId &&
+            (selectedEvent.eventStatus === "proposal_approved" ||
+              selectedEvent.eventStatus === "completed") &&
+            (isGS || isAdminLevel)
 
-                      if (!selectedEvent.gymkhanaEventId) {
-                        return "Proposal option will be available once this calendar is approved and event records are generated."
-                      }
+          const proposalSummary = !selectedEvent.gymkhanaEventId
+            ? "Available after calendar approval and event record generation."
+            : selectedEvent.proposalSubmitted
+              ? "Proposal submitted and under review/approved."
+              : `Proposal due on ${proposalDueText}.`
 
-                      if (selectedEvent.proposalSubmitted) {
-                        return "Proposal submitted for this event."
-                      }
+          const billsSummary = !selectedEvent.gymkhanaEventId
+            ? "Available after calendar approval and event record generation."
+            : selectedEvent.eventStatus !== "proposal_approved" && selectedEvent.eventStatus !== "completed"
+              ? "Bills open after final proposal approval."
+              : "Upload and review bill PDFs for this event."
 
-                      if (dueDateText) {
-                        return `Proposal due on ${dueDateText}.`
-                      }
+          const eventStatusLabel = selectedEvent.eventStatus
+            ? selectedEvent.eventStatus.replace(/_/g, " ")
+            : "calendar event"
 
-                      return "Proposal due date is not available."
-                    })()}
-                  </p>
-                  {selectedEvent.gymkhanaEventId && (selectedEvent.proposalSubmitted || isGS || isPresident) && (
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => openProposalModal(selectedEvent)}
-                    >
-                      <FileText size={14} /> {selectedEvent.proposalSubmitted ? "View Proposal" : "Submit Proposal"}
-                    </Button>
-                  )}
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "var(--spacing-2)",
+                  flexWrap: "wrap",
+                  paddingBottom: "var(--spacing-3)",
+                  borderBottom: "var(--border-1) solid var(--color-border-primary)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                  <Badge style={getCategoryBadgeStyle(selectedEvent.category)}>
+                    {CATEGORY_LABELS[selectedEvent.category] || selectedEvent.category}
+                  </Badge>
+                  <Badge variant={getEventStatusVariant(selectedEvent.eventStatus)}>
+                    {eventStatusLabel}
+                  </Badge>
+                  <span style={eventDetailMetaChipStyles}>
+                    <CalendarDays size={12} />
+                    {formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
+                  </span>
+                  <span style={eventDetailMetaChipStyles}>
+                    <CircleDollarSign size={12} />
+                    ₹{Number(selectedEvent.estimatedBudget || 0).toLocaleString()}
+                  </span>
                 </div>
+              </div>
 
-                <div>
-                  <label style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                    Bills
-                  </label>
-                  <p style={{ margin: "var(--spacing-1) 0", color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                    {(() => {
-                      if (!selectedEvent.gymkhanaEventId) {
-                        return "Bills option will be available once this calendar is approved and event records are generated."
-                      }
+              <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+                <EventDetailSectionCard icon={CalendarDays} title="Schedule" accentColor="var(--color-info)">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                    <EventDetailInfoRow
+                      label="Start"
+                      value={selectedEvent.startDate ? new Date(selectedEvent.startDate).toLocaleDateString() : "TBD"}
+                    />
+                    <EventDetailInfoRow
+                      label="End"
+                      value={selectedEvent.endDate ? new Date(selectedEvent.endDate).toLocaleDateString() : "TBD"}
+                    />
+                    <EventDetailInfoRow label="Proposal Due" value={proposalDueText} />
+                    <EventDetailInfoRow label="Budget" value={`₹${Number(selectedEvent.estimatedBudget || 0).toLocaleString()}`} />
+                  </div>
+                </EventDetailSectionCard>
 
-                      if (
-                        selectedEvent.eventStatus !== "proposal_approved" &&
-                        selectedEvent.eventStatus !== "completed"
-                      ) {
-                        return "Bills can be submitted only after final proposal approval."
-                      }
-
-                      return "Upload and review bill PDFs for this event."
-                    })()}
-                  </p>
-                  {selectedEvent.gymkhanaEventId &&
-                    (selectedEvent.eventStatus === "proposal_approved" ||
-                      selectedEvent.eventStatus === "completed") &&
-                    (isGS || isAdminLevel) && (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => openExpenseModal(selectedEvent)}
+                {(isGymkhanaRole || isAdminLevel) && (
+                  <EventDetailSectionCard icon={Clock3} title="Workflow" accentColor="var(--color-primary)">
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                      <div
+                        style={{
+                          padding: "var(--spacing-2) var(--spacing-3)",
+                          border: "var(--border-1) solid var(--color-border-primary)",
+                          borderRadius: "var(--radius-sm)",
+                          backgroundColor: "var(--color-bg-secondary)",
+                        }}
                       >
-                        <Receipt size={14} /> Manage Bills
-                      </Button>
-                    )}
-                </div>
+                        <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                          Proposal
+                        </p>
+                        <p style={{ margin: "var(--spacing-1) 0 0 0", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                          {proposalSummary}
+                        </p>
+                        {canOpenProposal && (
+                          <div style={{ marginTop: "var(--spacing-2)" }}>
+                            <Button size="sm" variant="secondary" onClick={() => openProposalModal(selectedEvent)}>
+                              <FileText size={14} /> {selectedEvent.proposalSubmitted ? "View Proposal" : "Submit Proposal"}
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+
+                      <div
+                        style={{
+                          padding: "var(--spacing-2) var(--spacing-3)",
+                          border: "var(--border-1) solid var(--color-border-primary)",
+                          borderRadius: "var(--radius-sm)",
+                          backgroundColor: "var(--color-bg-secondary)",
+                        }}
+                      >
+                        <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                          Bills
+                        </p>
+                        <p style={{ margin: "var(--spacing-1) 0 0 0", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                          {billsSummary}
+                        </p>
+                        {canManageBills && (
+                          <div style={{ marginTop: "var(--spacing-2)" }}>
+                            <Button size="sm" variant="secondary" onClick={() => openExpenseModal(selectedEvent)}>
+                              <Receipt size={14} /> Manage Bills
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </EventDetailSectionCard>
+                )}
               </div>
-            )}
-          </div>
-        )}
+
+              <EventDetailSectionCard icon={NotebookText} title="Description" accentColor="var(--color-text-secondary)">
+                <div
+                  style={{
+                    color: "var(--color-text-body)",
+                    fontSize: "var(--font-size-sm)",
+                    lineHeight: "1.6",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {selectedEvent.description || "No description provided."}
+                </div>
+              </EventDetailSectionCard>
+            </div>
+          )
+        })()}
       </Modal>
 
       <Modal
         isOpen={showProposalModal}
         title={`Event Proposal${proposalEvent?.title ? `: ${proposalEvent.title}` : ""}`}
-        width={760}
+        width={1080}
+        closeButtonVariant="button"
         onClose={() => {
           setShowProposalModal(false)
           setProposalEvent(null)
@@ -2458,290 +2597,321 @@ const toCalendarEventPayload = (event) => {
           setProposalNextApprovalStages([])
         }}
         footer={
-          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => setShowProposalModal(false)}>
-              Close
+          canEditProposalForm ? (
+            <Button
+              onClick={handleCreateOrUpdateProposal}
+              loading={submitting}
+              disabled={!isProposalFormValid}
+            >
+              {proposalData?._id ? "Save Proposal" : "Submit Proposal"}
             </Button>
-            {canEditProposalForm && (
-              <Button
-                onClick={handleCreateOrUpdateProposal}
-                loading={submitting}
-                disabled={!isProposalFormValid}
-              >
-                {proposalData?._id ? "Save Proposal" : "Submit Proposal"}
-              </Button>
-            )}
-          </div>
+          ) : null
         }
       >
         {proposalLoading ? (
           <LoadingState message="Loading proposal..." />
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            {proposalEvent && (
-              <Alert type="info">
-                Event budget: ₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}
-                {(() => {
-                  const proposalDueDate = getProposalDueDate(proposalEvent)
-                  return proposalDueDate ? ` | Proposal due: ${proposalDueDate.toLocaleDateString()}` : ""
-                })()}
-              </Alert>
-            )}
+          <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
+            <div className="xl:col-span-2" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <EventDetailSectionCard icon={FileText} title="Proposal Details" accentColor="var(--color-primary)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                  {proposalEvent && (
+                    <Alert type="info">
+                      Event budget: ₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}
+                      {(() => {
+                        const proposalDueDate = getProposalDueDate(proposalEvent)
+                        return proposalDueDate ? ` | Proposal due: ${proposalDueDate.toLocaleDateString()}` : ""
+                      })()}
+                    </Alert>
+                  )}
 
-            {proposalData && (
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                <Badge variant={proposalData.status === "approved" ? "success" : proposalData.status === "rejected" ? "danger" : "info"}>
-                  {proposalData.status?.replace(/_/g, " ")}
-                </Badge>
-                {proposalData.currentApprovalStage && (
-                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                    Current stage: {proposalData.currentApprovalStage}
-                  </span>
-                )}
-              </div>
-            )}
+                  {proposalData && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                      <Badge variant={proposalData.status === "approved" ? "success" : proposalData.status === "rejected" ? "danger" : "info"}>
+                        {proposalData.status?.replace(/_/g, " ")}
+                      </Badge>
+                      {proposalData.currentApprovalStage && (
+                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                          Current stage: {proposalData.currentApprovalStage}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
-            {!proposalData && !canCreateProposalForSelectedEvent && (
-              <Alert type="warning">
-                Proposal submission is available to GS only after the proposal window opens (21 days before event).
-              </Alert>
-            )}
+                  {!proposalData && !canCreateProposalForSelectedEvent && (
+                    <Alert type="warning">
+                      Proposal submission is available to GS only after the proposal window opens (21 days before event).
+                    </Alert>
+                  )}
 
-            <div>
-              <label style={formLabelStyles} htmlFor="proposalText">
-                Proposal Details
-              </label>
-              <Textarea
-                id="proposalText"
-                name="proposalText"
-                placeholder="Proposal details"
-                value={proposalForm.proposalText}
-                onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
-                rows={5}
-                disabled={!canEditProposalForm}
-                required
-              />
-            </div>
-
-            <PdfUploadField
-              label="Proposal PDF"
-              value={proposalForm.proposalDocumentUrl}
-              onChange={(url) => handleProposalFormChange("proposalDocumentUrl", url)}
-              onUpload={uploadProposalDocument}
-              disabled={!canEditProposalForm}
-              uploadedText="Proposal document uploaded"
-              viewerTitle="Proposal Document"
-              viewerSubtitle="Event proposal attachment"
-              downloadFileName="proposal-document.pdf"
-            />
-
-            <div>
-              <label style={formLabelStyles} htmlFor="externalGuestsDetails">
-                External Guests Details
-              </label>
-              <Textarea
-                id="externalGuestsDetails"
-                name="externalGuestsDetails"
-                placeholder="External guests details"
-                value={proposalForm.externalGuestsDetails}
-                onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
-                rows={3}
-                disabled={!canEditProposalForm}
-              />
-            </div>
-
-            <PdfUploadField
-              label="Chief Guest PDF"
-              value={proposalForm.chiefGuestDocumentUrl}
-              onChange={(url) => handleProposalFormChange("chiefGuestDocumentUrl", url)}
-              onUpload={uploadChiefGuestDocument}
-              disabled={!canEditProposalForm}
-              uploadedText="Chief guest document uploaded"
-              viewerTitle="Chief Guest Document"
-              viewerSubtitle="External guest attachment"
-              downloadFileName="chief-guest-document.pdf"
-            />
-
-            <Checkbox
-              name="accommodationRequired"
-              label="Accommodation required"
-              checked={proposalForm.accommodationRequired}
-              onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
-              disabled={!canEditProposalForm}
-            />
-
-            <Checkbox
-              name="hasRegistrationFee"
-              label="Registration fee applicable"
-              checked={proposalForm.hasRegistrationFee}
-              onChange={(event) => handleProposalFormChange("hasRegistrationFee", event.target.checked)}
-              disabled={!canEditProposalForm}
-            />
-
-            {proposalForm.hasRegistrationFee && (
-              <div>
-                <label style={formLabelStyles} htmlFor="registrationFeeAmount">
-                  Registration Fee Amount (₹)
-                </label>
-                <Input
-                  id="registrationFeeAmount"
-                  name="registrationFeeAmount"
-                  type="number"
-                  placeholder="Registration fee amount (₹)"
-                  value={proposalForm.registrationFeeAmount}
-                  onChange={(event) =>
-                    handleProposalFormChange("registrationFeeAmount", event.target.value)
-                  }
-                  disabled={!canEditProposalForm}
-                />
-              </div>
-            )}
-
-            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
-              <div>
-                <label style={formLabelStyles} htmlFor="totalExpectedIncome">
-                  Total Expected Income (₹)
-                </label>
-                <Input
-                  id="totalExpectedIncome"
-                  name="totalExpectedIncome"
-                  type="number"
-                  placeholder="Total expected income (₹)"
-                  value={proposalForm.totalExpectedIncome}
-                  onChange={(event) =>
-                    handleProposalFormChange("totalExpectedIncome", event.target.value)
-                  }
-                  disabled={!canEditProposalForm}
-                />
-              </div>
-              <div>
-                <label style={formLabelStyles} htmlFor="totalExpenditure">
-                  Total Expenditure (₹)
-                </label>
-                <Input
-                  id="totalExpenditure"
-                  name="totalExpenditure"
-                  type="number"
-                  placeholder="Total expenditure (₹)"
-                  value={proposalForm.totalExpenditure}
-                  onChange={(event) =>
-                    handleProposalFormChange("totalExpenditure", event.target.value)
-                  }
-                  disabled={!canEditProposalForm}
-                />
-              </div>
-            </div>
-
-            <div
-              style={{
-                border: "var(--border-1) solid var(--color-border-primary)",
-                borderRadius: "var(--radius-card-sm)",
-                padding: "var(--spacing-3)",
-                backgroundColor: "var(--color-bg-secondary)",
-              }}
-            >
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                Budget deflection (Auto)
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: "var(--font-size-lg)",
-                  fontWeight: "var(--font-weight-semibold)",
-                  color: proposalDeflection > 0 ? "var(--color-danger)" : "var(--color-success)",
-                }}
-              >
-                ₹{proposalDeflection.toLocaleString()}
-              </p>
-            </div>
-
-            {canCurrentUserReviewProposal && proposalData && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                {requiresProposalNextApprovalSelection && (
                   <div>
-                    <label style={formLabelStyles}>
-                      Select Next Approval Order (Post Student Affairs)
+                    <label style={formLabelStyles} htmlFor="proposalText">
+                      Proposal Details
                     </label>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "var(--spacing-2)",
-                        border: "var(--border-1) solid var(--color-border-primary)",
-                        borderRadius: "var(--radius-card-sm)",
-                        padding: "var(--spacing-3)",
-                        backgroundColor: "var(--color-bg-secondary)",
-                      }}
-                    >
-                      {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
-                        <Checkbox
-                          key={`proposal-stage-${stage}`}
-                          label={stage}
-                          checked={proposalNextApprovalStages.includes(stage)}
-                          onChange={() =>
-                            toggleNextApprovalStage(stage, setProposalNextApprovalStages)
-                          }
-                        />
-                      ))}
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
-                        }}
-                      >
-                        Order followed:{" "}
-                        {proposalNextApprovalStages.length > 0
-                          ? proposalNextApprovalStages.join(" -> ")
-                          : "No stage selected"}
-                      </p>
+                    <Textarea
+                      id="proposalText"
+                      name="proposalText"
+                      placeholder="Proposal details"
+                      value={proposalForm.proposalText}
+                      onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
+                      rows={5}
+                      disabled={!canEditProposalForm}
+                      required
+                    />
+                  </div>
+
+                  <PdfUploadField
+                    label="Proposal PDF"
+                    value={proposalForm.proposalDocumentUrl}
+                    onChange={(url) => handleProposalFormChange("proposalDocumentUrl", url)}
+                    onUpload={uploadProposalDocument}
+                    disabled={!canEditProposalForm}
+                    uploadedText="Proposal document uploaded"
+                    viewerTitle="Proposal Document"
+                    viewerSubtitle="Event proposal attachment"
+                    downloadFileName="proposal-document.pdf"
+                  />
+
+                  <div>
+                    <label style={formLabelStyles} htmlFor="externalGuestsDetails">
+                      External Guests Details
+                    </label>
+                    <Textarea
+                      id="externalGuestsDetails"
+                      name="externalGuestsDetails"
+                      placeholder="External guests details"
+                      value={proposalForm.externalGuestsDetails}
+                      onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
+                      rows={3}
+                      disabled={!canEditProposalForm}
+                    />
+                  </div>
+
+                  <PdfUploadField
+                    label="Chief Guest PDF"
+                    value={proposalForm.chiefGuestDocumentUrl}
+                    onChange={(url) => handleProposalFormChange("chiefGuestDocumentUrl", url)}
+                    onUpload={uploadChiefGuestDocument}
+                    disabled={!canEditProposalForm}
+                    uploadedText="Chief guest document uploaded"
+                    viewerTitle="Chief Guest Document"
+                    viewerSubtitle="External guest attachment"
+                    downloadFileName="chief-guest-document.pdf"
+                  />
+
+                  <Checkbox
+                    name="accommodationRequired"
+                    label="Accommodation required"
+                    checked={proposalForm.accommodationRequired}
+                    onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
+                    disabled={!canEditProposalForm}
+                  />
+
+                  <Checkbox
+                    name="hasRegistrationFee"
+                    label="Registration fee applicable"
+                    checked={proposalForm.hasRegistrationFee}
+                    onChange={(event) => handleProposalFormChange("hasRegistrationFee", event.target.checked)}
+                    disabled={!canEditProposalForm}
+                  />
+
+                  {proposalForm.hasRegistrationFee && (
+                    <div>
+                      <label style={formLabelStyles} htmlFor="registrationFeeAmount">
+                        Registration Fee Amount (₹)
+                      </label>
+                      <Input
+                        id="registrationFeeAmount"
+                        name="registrationFeeAmount"
+                        type="number"
+                        placeholder="Registration fee amount (₹)"
+                        value={proposalForm.registrationFeeAmount}
+                        onChange={(event) =>
+                          handleProposalFormChange("registrationFeeAmount", event.target.value)
+                        }
+                        disabled={!canEditProposalForm}
+                      />
+                    </div>
+                  )}
+
+                  <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                    <div>
+                      <label style={formLabelStyles} htmlFor="totalExpectedIncome">
+                        Total Expected Income (₹)
+                      </label>
+                      <Input
+                        id="totalExpectedIncome"
+                        name="totalExpectedIncome"
+                        type="number"
+                        placeholder="Total expected income (₹)"
+                        value={proposalForm.totalExpectedIncome}
+                        onChange={(event) =>
+                          handleProposalFormChange("totalExpectedIncome", event.target.value)
+                        }
+                        disabled={!canEditProposalForm}
+                      />
+                    </div>
+                    <div>
+                      <label style={formLabelStyles} htmlFor="totalExpenditure">
+                        Total Expenditure (₹)
+                      </label>
+                      <Input
+                        id="totalExpenditure"
+                        name="totalExpenditure"
+                        type="number"
+                        placeholder="Total expenditure (₹)"
+                        value={proposalForm.totalExpenditure}
+                        onChange={(event) =>
+                          handleProposalFormChange("totalExpenditure", event.target.value)
+                        }
+                        disabled={!canEditProposalForm}
+                      />
                     </div>
                   </div>
-                )}
+                </div>
+              </EventDetailSectionCard>
 
-                <div>
-                  <label style={formLabelStyles} htmlFor="proposalActionComments">
-                    Review Comments
-                  </label>
-                  <Textarea
-                    id="proposalActionComments"
-                    name="proposalActionComments"
-                    placeholder="Approval comments (required for reject/revision)"
-                    value={proposalActionComments}
-                    onChange={(event) => setProposalActionComments(event.target.value)}
-                    rows={3}
+              <EventDetailSectionCard icon={CircleDollarSign} title="Budget Outlook" accentColor="var(--color-success)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <EventDetailInfoRow
+                    label="Expected Income"
+                    value={`₹${Number(proposalForm.totalExpectedIncome || 0).toLocaleString()}`}
+                  />
+                  <EventDetailInfoRow
+                    label="Planned Expenditure"
+                    value={`₹${Number(proposalForm.totalExpenditure || 0).toLocaleString()}`}
+                  />
+                  <EventDetailInfoRow
+                    label="Deflection"
+                    value={`₹${proposalDeflection.toLocaleString()}`}
                   />
                 </div>
-                <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                  <Button variant="warning" onClick={handleRequestProposalRevision} loading={submitting}>
-                    Request Revision
-                  </Button>
-                  <Button variant="danger" onClick={handleRejectProposal} loading={submitting}>
-                    Reject
-                  </Button>
-                  <Button
-                    variant="success"
-                    onClick={handleApproveProposal}
-                    loading={submitting}
-                    disabled={
-                      requiresProposalNextApprovalSelection &&
-                      proposalNextApprovalStages.length === 0
-                    }
-                  >
-                    Approve
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {proposalData?._id && (
-              <div>
-                <p style={{ marginBottom: "var(--spacing-2)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
-                  Activity Log
+                <p
+                  style={{
+                    margin: "var(--spacing-2) 0 0 0",
+                    fontSize: "var(--font-size-xs)",
+                    color: proposalDeflection > 0 ? "var(--color-danger)" : "var(--color-success)",
+                    fontWeight: "var(--font-weight-medium)",
+                  }}
+                >
+                  Positive deflection means projected overspend against allocated event budget.
                 </p>
-                <ApprovalHistory key={proposalHistoryRefreshKey} proposalId={proposalData._id} />
-              </div>
-            )}
+              </EventDetailSectionCard>
+
+              {canCurrentUserReviewProposal && proposalData && (
+                <EventDetailSectionCard icon={Check} title="Review Actions" accentColor="var(--color-warning)">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                    {requiresProposalNextApprovalSelection && (
+                      <div>
+                        <label style={formLabelStyles}>
+                          Select Next Approval Order (Post Student Affairs)
+                        </label>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "var(--spacing-2)",
+                            border: "var(--border-1) solid var(--color-border-primary)",
+                            borderRadius: "var(--radius-card-sm)",
+                            padding: "var(--spacing-3)",
+                            backgroundColor: "var(--color-bg-secondary)",
+                          }}
+                        >
+                          {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
+                            <Checkbox
+                              key={`proposal-stage-${stage}`}
+                              label={stage}
+                              checked={proposalNextApprovalStages.includes(stage)}
+                              onChange={() =>
+                                toggleNextApprovalStage(stage, setProposalNextApprovalStages)
+                              }
+                            />
+                          ))}
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: "var(--font-size-xs)",
+                              color: "var(--color-text-muted)",
+                            }}
+                          >
+                            Order followed:{" "}
+                            {proposalNextApprovalStages.length > 0
+                              ? proposalNextApprovalStages.join(" -> ")
+                              : "No stage selected"}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div>
+                      <label style={formLabelStyles} htmlFor="proposalActionComments">
+                        Review Comments
+                      </label>
+                      <Textarea
+                        id="proposalActionComments"
+                        name="proposalActionComments"
+                        placeholder="Approval comments (required for reject/revision)"
+                        value={proposalActionComments}
+                        onChange={(event) => setProposalActionComments(event.target.value)}
+                        rows={3}
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                      <Button variant="warning" onClick={handleRequestProposalRevision} loading={submitting}>
+                        Request Revision
+                      </Button>
+                      <Button variant="danger" onClick={handleRejectProposal} loading={submitting}>
+                        Reject
+                      </Button>
+                      <Button
+                        variant="success"
+                        onClick={handleApproveProposal}
+                        loading={submitting}
+                        disabled={
+                          requiresProposalNextApprovalSelection &&
+                          proposalNextApprovalStages.length === 0
+                        }
+                      >
+                        Approve
+                      </Button>
+                    </div>
+                  </div>
+                </EventDetailSectionCard>
+              )}
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <EventDetailSectionCard icon={Clock3} title="Proposal Snapshot" accentColor="var(--color-info)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <EventDetailInfoRow
+                    label="Status"
+                    value={proposalData?.status ? proposalData.status.replace(/_/g, " ") : "Draft"}
+                  />
+                  <EventDetailInfoRow
+                    label="Current Stage"
+                    value={proposalData?.currentApprovalStage || "Not submitted"}
+                  />
+                  <EventDetailInfoRow
+                    label="Due Date"
+                    value={proposalEvent ? (getProposalDueDate(proposalEvent)?.toLocaleDateString() || "Not available") : "Not available"}
+                  />
+                  <EventDetailInfoRow
+                    label="Event Budget"
+                    value={`₹${Number(proposalEvent?.estimatedBudget || 0).toLocaleString()}`}
+                  />
+                </div>
+              </EventDetailSectionCard>
+
+              <EventDetailSectionCard icon={History} title="Activity Log" accentColor="var(--color-text-secondary)">
+                {proposalData?._id ? (
+                  <ApprovalHistory key={proposalHistoryRefreshKey} proposalId={proposalData._id} />
+                ) : (
+                  <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    Activity log appears after proposal submission.
+                  </p>
+                )}
+              </EventDetailSectionCard>
+            </div>
           </div>
         )}
       </Modal>
@@ -2749,7 +2919,8 @@ const toCalendarEventPayload = (event) => {
       <Modal
         isOpen={showExpenseModal}
         title={`Event Bills${expenseEvent?.title ? `: ${expenseEvent.title}` : ""}`}
-        width={860}
+        width={1120}
+        closeButtonVariant="button"
         onClose={() => {
           setShowExpenseModal(false)
           setExpenseEvent(null)
@@ -2759,349 +2930,386 @@ const toCalendarEventPayload = (event) => {
           setExpenseNextApprovalStages([])
         }}
         footer={
-          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => setShowExpenseModal(false)}>
-              Close
+          canEditExpenseForm ? (
+            <Button
+              onClick={handleCreateOrUpdateExpense}
+              loading={submitting}
+              disabled={!isExpenseFormValid}
+            >
+              {expenseData?._id ? "Update Bills" : "Submit Bills"}
             </Button>
-            {canEditExpenseForm && (
-              <Button
-                onClick={handleCreateOrUpdateExpense}
-                loading={submitting}
-                disabled={!isExpenseFormValid}
-              >
-                {expenseData?._id ? "Update Bills" : "Submit Bills"}
-              </Button>
-            )}
-          </div>
+          ) : null
         }
       >
         {expenseLoading ? (
           <LoadingState message="Loading bills..." />
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            {expenseEvent && (
-              <Alert type="info">
-                Assigned budget: ₹{assignedExpenseBudget.toLocaleString()}
-                {` | Total bills: ₹${expenseTotal.toLocaleString()}`}
-              </Alert>
-            )}
+          <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
+            <div className="xl:col-span-2" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <EventDetailSectionCard icon={Receipt} title="Bills & Documents" accentColor="var(--color-primary)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                  {expenseEvent && (
+                    <Alert type="info">
+                      Assigned budget: ₹{assignedExpenseBudget.toLocaleString()}
+                      {` | Total bills: ₹${expenseTotal.toLocaleString()}`}
+                    </Alert>
+                  )}
 
-            {expenseData && (
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                <Badge
-                  variant={
-                    expenseData.approvalStatus === "approved"
-                      ? "success"
-                      : expenseData.approvalStatus === "rejected"
-                        ? "danger"
-                        : "warning"
-                  }
-                >
-                  {expenseData.approvalStatus === "approved"
-                    ? "Approved"
-                    : expenseData.approvalStatus === "rejected"
-                      ? "Rejected"
-                      : "Pending Approval"}
-                </Badge>
-                {expenseData.approvedBy?.name && (
-                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                    Approved by {expenseData.approvedBy.name}
-                    {expenseData.approvedAt ? ` on ${new Date(expenseData.approvedAt).toLocaleDateString()}` : ""}
-                  </span>
-                )}
-                {expenseData.rejectedBy?.name && expenseData.approvalStatus === "rejected" && (
-                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                    Rejected by {expenseData.rejectedBy.name}
-                    {expenseData.rejectedAt ? ` on ${new Date(expenseData.rejectedAt).toLocaleDateString()}` : ""}
-                  </span>
-                )}
-                {expenseData.currentApprovalStage && expenseData.approvalStatus !== "approved" && (
-                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                    Current stage: {expenseData.currentApprovalStage}
-                  </span>
-                )}
-              </div>
-            )}
-
-            {!expenseData && !isExpenseSubmissionAllowedForSelectedEvent && (
-              <Alert type="warning">
-                Bills can be submitted only after final proposal approval.
-              </Alert>
-            )}
-
-            {expenseData?.approvalStatus === "rejected" && expenseData?.rejectionReason && (
-              <Alert type="error">
-                Rejection reason: {expenseData.rejectionReason}
-              </Alert>
-            )}
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-              {(expenseForm.bills || []).map((bill, index) => (
-                <div
-                  key={bill.localId}
-                  style={{
-                    border: "var(--border-1) solid var(--color-border-primary)",
-                    borderRadius: "var(--radius-card-sm)",
-                    padding: "var(--spacing-3)",
-                    backgroundColor: "var(--color-bg-secondary)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "var(--spacing-3)",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-2)" }}>
-                    <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
-                      Bill #{index + 1}
-                    </p>
-                    {canEditExpenseForm && (expenseForm.bills || []).length > 1 && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleRemoveBillRow(bill.localId)}
+                  {expenseData && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                      <Badge
+                        variant={
+                          expenseData.approvalStatus === "approved"
+                            ? "success"
+                            : expenseData.approvalStatus === "rejected"
+                              ? "danger"
+                              : "warning"
+                        }
                       >
-                        <Trash2 size={14} />
-                      </Button>
-                    )}
+                        {expenseData.approvalStatus === "approved"
+                          ? "Approved"
+                          : expenseData.approvalStatus === "rejected"
+                            ? "Rejected"
+                            : "Pending Approval"}
+                      </Badge>
+                      {expenseData.approvedBy?.name && (
+                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                          Approved by {expenseData.approvedBy.name}
+                          {expenseData.approvedAt ? ` on ${new Date(expenseData.approvedAt).toLocaleDateString()}` : ""}
+                        </span>
+                      )}
+                      {expenseData.rejectedBy?.name && expenseData.approvalStatus === "rejected" && (
+                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                          Rejected by {expenseData.rejectedBy.name}
+                          {expenseData.rejectedAt ? ` on ${new Date(expenseData.rejectedAt).toLocaleDateString()}` : ""}
+                        </span>
+                      )}
+                      {expenseData.currentApprovalStage && expenseData.approvalStatus !== "approved" && (
+                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                          Current stage: {expenseData.currentApprovalStage}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {!expenseData && !isExpenseSubmissionAllowedForSelectedEvent && (
+                    <Alert type="warning">
+                      Bills can be submitted only after final proposal approval.
+                    </Alert>
+                  )}
+
+                  {expenseData?.approvalStatus === "rejected" && expenseData?.rejectionReason && (
+                    <Alert type="error">
+                      Rejection reason: {expenseData.rejectionReason}
+                    </Alert>
+                  )}
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                    {(expenseForm.bills || []).map((bill, index) => (
+                      <div
+                        key={bill.localId}
+                        style={{
+                          border: "var(--border-1) solid var(--color-border-primary)",
+                          borderRadius: "var(--radius-card-sm)",
+                          padding: "var(--spacing-3)",
+                          backgroundColor: "var(--color-bg-secondary)",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "var(--spacing-3)",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-2)" }}>
+                          <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                            Bill #{index + 1}
+                          </p>
+                          {canEditExpenseForm && (expenseForm.bills || []).length > 1 && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleRemoveBillRow(bill.localId)}
+                            >
+                              <Trash2 size={14} />
+                            </Button>
+                          )}
+                        </div>
+
+                        <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                          <div>
+                            <label style={formLabelStyles} htmlFor={`bill-description-${bill.localId}`}>
+                              Bill Description
+                            </label>
+                            <Input
+                              id={`bill-description-${bill.localId}`}
+                              name={`bill-description-${bill.localId}`}
+                              placeholder="Bill description"
+                              value={bill.description}
+                              onChange={(event) =>
+                                handleBillFieldChange(bill.localId, "description", event.target.value)
+                              }
+                              disabled={!canEditExpenseForm}
+                            />
+                          </div>
+                          <div>
+                            <label style={formLabelStyles} htmlFor={`bill-amount-${bill.localId}`}>
+                              Amount (₹)
+                            </label>
+                            <Input
+                              id={`bill-amount-${bill.localId}`}
+                              name={`bill-amount-${bill.localId}`}
+                              type="number"
+                              placeholder="Amount (₹)"
+                              value={bill.amount}
+                              onChange={(event) =>
+                                handleBillFieldChange(bill.localId, "amount", event.target.value)
+                              }
+                              disabled={!canEditExpenseForm}
+                            />
+                          </div>
+                          <div>
+                            <label style={formLabelStyles} htmlFor={`bill-number-${bill.localId}`}>
+                              Bill Number
+                            </label>
+                            <Input
+                              id={`bill-number-${bill.localId}`}
+                              name={`bill-number-${bill.localId}`}
+                              placeholder="Bill number (optional)"
+                              value={bill.billNumber}
+                              onChange={(event) =>
+                                handleBillFieldChange(bill.localId, "billNumber", event.target.value)
+                              }
+                              disabled={!canEditExpenseForm}
+                            />
+                          </div>
+                          <div>
+                            <label style={formLabelStyles} htmlFor={`bill-date-${bill.localId}`}>
+                              Bill Date
+                            </label>
+                            <Input
+                              id={`bill-date-${bill.localId}`}
+                              name={`bill-date-${bill.localId}`}
+                              type="date"
+                              value={bill.billDate}
+                              onChange={(event) =>
+                                handleBillFieldChange(bill.localId, "billDate", event.target.value)
+                              }
+                              disabled={!canEditExpenseForm}
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label style={formLabelStyles} htmlFor={`bill-vendor-${bill.localId}`}>
+                            Vendor
+                          </label>
+                          <Input
+                            id={`bill-vendor-${bill.localId}`}
+                            name={`bill-vendor-${bill.localId}`}
+                            placeholder="Vendor (optional)"
+                            value={bill.vendor}
+                            onChange={(event) =>
+                              handleBillFieldChange(bill.localId, "vendor", event.target.value)
+                            }
+                            disabled={!canEditExpenseForm}
+                          />
+                        </div>
+
+                        <PdfUploadField
+                          label="Bill PDF"
+                          value={bill.documentUrl}
+                          onChange={(url) => {
+                            handleBillFieldChange(bill.localId, "documentUrl", url)
+                            handleBillFieldChange(
+                              bill.localId,
+                              "documentName",
+                              getFilenameFromUrl(url)
+                            )
+                          }}
+                          onUpload={uploadBillDocument}
+                          disabled={!canEditExpenseForm}
+                          uploadedText="Bill document uploaded"
+                          viewerTitle={`Bill ${index + 1}`}
+                          viewerSubtitle="Uploaded bill attachment"
+                          downloadFileName={`event-bill-${index + 1}.pdf`}
+                        />
+                      </div>
+                    ))}
                   </div>
 
-                  <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
-                    <div>
-                      <label style={formLabelStyles} htmlFor={`bill-description-${bill.localId}`}>
-                        Bill Description
-                      </label>
-                      <Input
-                        id={`bill-description-${bill.localId}`}
-                        name={`bill-description-${bill.localId}`}
-                        placeholder="Bill description"
-                        value={bill.description}
-                        onChange={(event) =>
-                          handleBillFieldChange(bill.localId, "description", event.target.value)
-                        }
-                        disabled={!canEditExpenseForm}
-                      />
-                    </div>
-                    <div>
-                      <label style={formLabelStyles} htmlFor={`bill-amount-${bill.localId}`}>
-                        Amount (₹)
-                      </label>
-                      <Input
-                        id={`bill-amount-${bill.localId}`}
-                        name={`bill-amount-${bill.localId}`}
-                        type="number"
-                        placeholder="Amount (₹)"
-                        value={bill.amount}
-                        onChange={(event) =>
-                          handleBillFieldChange(bill.localId, "amount", event.target.value)
-                        }
-                        disabled={!canEditExpenseForm}
-                      />
-                    </div>
-                    <div>
-                      <label style={formLabelStyles} htmlFor={`bill-number-${bill.localId}`}>
-                        Bill Number
-                      </label>
-                      <Input
-                        id={`bill-number-${bill.localId}`}
-                        name={`bill-number-${bill.localId}`}
-                        placeholder="Bill number (optional)"
-                        value={bill.billNumber}
-                        onChange={(event) =>
-                          handleBillFieldChange(bill.localId, "billNumber", event.target.value)
-                        }
-                        disabled={!canEditExpenseForm}
-                      />
-                    </div>
-                    <div>
-                      <label style={formLabelStyles} htmlFor={`bill-date-${bill.localId}`}>
-                        Bill Date
-                      </label>
-                      <Input
-                        id={`bill-date-${bill.localId}`}
-                        name={`bill-date-${bill.localId}`}
-                        type="date"
-                        value={bill.billDate}
-                        onChange={(event) =>
-                          handleBillFieldChange(bill.localId, "billDate", event.target.value)
-                        }
-                        disabled={!canEditExpenseForm}
-                      />
-                    </div>
-                  </div>
+                  {canEditExpenseForm && (
+                    <Button size="sm" variant="secondary" onClick={handleAddBillRow}>
+                      <Plus size={14} /> Add Another Bill
+                    </Button>
+                  )}
+
+                  <PdfUploadField
+                    label="Event Report PDF"
+                    value={expenseForm.eventReportDocumentUrl}
+                    onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
+                    onUpload={uploadEventReportDocument}
+                    disabled={!canEditExpenseForm}
+                    uploadedText="Event report uploaded"
+                    viewerTitle="Event Report"
+                    viewerSubtitle="Post-event report attachment"
+                    downloadFileName="event-report.pdf"
+                  />
 
                   <div>
-                    <label style={formLabelStyles} htmlFor={`bill-vendor-${bill.localId}`}>
-                      Vendor
+                    <label style={formLabelStyles} htmlFor="expenseNotes">
+                      Notes
                     </label>
-                    <Input
-                      id={`bill-vendor-${bill.localId}`}
-                      name={`bill-vendor-${bill.localId}`}
-                      placeholder="Vendor (optional)"
-                      value={bill.vendor}
-                      onChange={(event) =>
-                        handleBillFieldChange(bill.localId, "vendor", event.target.value)
-                      }
+                    <Textarea
+                      id="expenseNotes"
+                      name="expenseNotes"
+                      placeholder="Notes (optional)"
+                      value={expenseForm.notes}
+                      onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
+                      rows={3}
                       disabled={!canEditExpenseForm}
                     />
                   </div>
-
-                  <PdfUploadField
-                    label="Bill PDF"
-                    value={bill.documentUrl}
-                    onChange={(url) => {
-                      handleBillFieldChange(bill.localId, "documentUrl", url)
-                      handleBillFieldChange(
-                        bill.localId,
-                        "documentName",
-                        getFilenameFromUrl(url)
-                      )
-                    }}
-                    onUpload={uploadBillDocument}
-                    disabled={!canEditExpenseForm}
-                    uploadedText="Bill document uploaded"
-                    viewerTitle={`Bill ${index + 1}`}
-                    viewerSubtitle="Uploaded bill attachment"
-                    downloadFileName={`event-bill-${index + 1}.pdf`}
-                  />
                 </div>
-              ))}
-            </div>
+              </EventDetailSectionCard>
 
-            {canEditExpenseForm && (
-              <Button size="sm" variant="secondary" onClick={handleAddBillRow}>
-                <Plus size={14} /> Add Another Bill
-              </Button>
-            )}
+              <EventDetailSectionCard icon={CircleDollarSign} title="Bill Summary" accentColor="var(--color-success)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <EventDetailInfoRow label="Total Bill Amount" value={`₹${expenseTotal.toLocaleString()}`} />
+                  <EventDetailInfoRow label="Assigned Budget" value={`₹${assignedExpenseBudget.toLocaleString()}`} />
+                  <EventDetailInfoRow label="Variance" value={`₹${expenseVariance.toLocaleString()}`} />
+                </div>
+                <p
+                  style={{
+                    margin: "var(--spacing-2) 0 0 0",
+                    fontSize: "var(--font-size-xs)",
+                    color: expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)",
+                    fontWeight: "var(--font-weight-medium)",
+                  }}
+                >
+                  Positive variance means bills exceeded assigned budget.
+                </p>
+              </EventDetailSectionCard>
 
-            <PdfUploadField
-              label="Event Report PDF"
-              value={expenseForm.eventReportDocumentUrl}
-              onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
-              onUpload={uploadEventReportDocument}
-              disabled={!canEditExpenseForm}
-              uploadedText="Event report uploaded"
-              viewerTitle="Event Report"
-              viewerSubtitle="Post-event report attachment"
-              downloadFileName="event-report.pdf"
-            />
+              {canApproveExpense && (
+                <EventDetailSectionCard icon={Check} title="Approval Actions" accentColor="var(--color-warning)">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                    {requiresExpenseNextApprovalSelection && (
+                      <div>
+                        <label style={formLabelStyles}>
+                          Select Next Approval Order (Post Student Affairs)
+                        </label>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "var(--spacing-2)",
+                            border: "var(--border-1) solid var(--color-border-primary)",
+                            borderRadius: "var(--radius-card-sm)",
+                            padding: "var(--spacing-3)",
+                            backgroundColor: "var(--color-bg-secondary)",
+                          }}
+                        >
+                          {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
+                            <Checkbox
+                              key={`expense-stage-${stage}`}
+                              label={stage}
+                              checked={expenseNextApprovalStages.includes(stage)}
+                              onChange={() =>
+                                toggleNextApprovalStage(stage, setExpenseNextApprovalStages)
+                              }
+                            />
+                          ))}
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: "var(--font-size-xs)",
+                              color: "var(--color-text-muted)",
+                            }}
+                          >
+                            Order followed:{" "}
+                            {expenseNextApprovalStages.length > 0
+                              ? expenseNextApprovalStages.join(" -> ")
+                              : "No stage selected"}
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
-            <div>
-              <label style={formLabelStyles} htmlFor="expenseNotes">
-                Notes
-              </label>
-              <Textarea
-                id="expenseNotes"
-                name="expenseNotes"
-                placeholder="Notes (optional)"
-                value={expenseForm.notes}
-                onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
-                rows={3}
-                disabled={!canEditExpenseForm}
-              />
-            </div>
-
-            <div
-              style={{
-                border: "var(--border-1) solid var(--color-border-primary)",
-                borderRadius: "var(--radius-card-sm)",
-                padding: "var(--spacing-3)",
-                backgroundColor: "var(--color-bg-secondary)",
-              }}
-            >
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                Bill Summary (GS)
-              </p>
-              <p style={{ margin: "var(--spacing-1) 0 0 0", color: "var(--color-text-body)" }}>
-                Total Bill Amount: <strong>₹{expenseTotal.toLocaleString()}</strong>
-              </p>
-              <p style={{ margin: "var(--spacing-1) 0 0 0", color: "var(--color-text-body)" }}>
-                Assigned Budget: <strong>₹{assignedExpenseBudget.toLocaleString()}</strong>
-              </p>
-              <p
-                style={{
-                  margin: "var(--spacing-1) 0 0 0",
-                  color: expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)",
-                  fontWeight: "var(--font-weight-semibold)",
-                }}
-              >
-                Variance: ₹{expenseVariance.toLocaleString()}
-              </p>
-            </div>
-
-            {canApproveExpense && (
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                {requiresExpenseNextApprovalSelection && (
-                  <div>
-                    <label style={formLabelStyles}>
-                      Select Next Approval Order (Post Student Affairs)
-                    </label>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "var(--spacing-2)",
-                        border: "var(--border-1) solid var(--color-border-primary)",
-                        borderRadius: "var(--radius-card-sm)",
-                        padding: "var(--spacing-3)",
-                        backgroundColor: "var(--color-bg-secondary)",
-                      }}
-                    >
-                      {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
-                        <Checkbox
-                          key={`expense-stage-${stage}`}
-                          label={stage}
-                          checked={expenseNextApprovalStages.includes(stage)}
-                          onChange={() =>
-                            toggleNextApprovalStage(stage, setExpenseNextApprovalStages)
-                          }
-                        />
-                      ))}
-                      <p
-                        style={{
-                          margin: 0,
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
-                        }}
+                    <div>
+                      <label style={formLabelStyles} htmlFor="expenseApprovalComments">
+                        Approval Comments
+                      </label>
+                      <Textarea
+                        id="expenseApprovalComments"
+                        name="expenseApprovalComments"
+                        placeholder="Approval comments (required for rejection)"
+                        value={expenseApprovalComments}
+                        onChange={(event) => setExpenseApprovalComments(event.target.value)}
+                        rows={3}
+                      />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+                      <Button variant="danger" onClick={handleRejectExpense} loading={submitting}>
+                        <X size={14} /> Reject Bills
+                      </Button>
+                      <Button
+                        variant="success"
+                        onClick={handleApproveExpense}
+                        loading={submitting}
+                        disabled={
+                          requiresExpenseNextApprovalSelection &&
+                          expenseNextApprovalStages.length === 0
+                        }
                       >
-                        Order followed:{" "}
-                        {expenseNextApprovalStages.length > 0
-                          ? expenseNextApprovalStages.join(" -> ")
-                          : "No stage selected"}
-                      </p>
+                        <Check size={14} /> Approve Bills
+                      </Button>
                     </div>
                   </div>
-                )}
+                </EventDetailSectionCard>
+              )}
+            </div>
 
-                <div>
-                  <label style={formLabelStyles} htmlFor="expenseApprovalComments">
-                    Approval Comments
-                  </label>
-                  <Textarea
-                    id="expenseApprovalComments"
-                    name="expenseApprovalComments"
-                    placeholder="Approval comments (required for rejection)"
-                    value={expenseApprovalComments}
-                    onChange={(event) => setExpenseApprovalComments(event.target.value)}
-                    rows={3}
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+              <EventDetailSectionCard icon={Clock3} title="Bills Snapshot" accentColor="var(--color-info)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <EventDetailInfoRow
+                    label="Status"
+                    value={
+                      expenseData?.approvalStatus === "approved"
+                        ? "Approved"
+                        : expenseData?.approvalStatus === "rejected"
+                          ? "Rejected"
+                          : expenseData?.approvalStatus
+                            ? "Pending Approval"
+                            : "Draft"
+                    }
+                  />
+                  <EventDetailInfoRow
+                    label="Current Stage"
+                    value={expenseData?.currentApprovalStage || "Not submitted"}
+                  />
+                  <EventDetailInfoRow
+                    label="Bills Count"
+                    value={`${(expenseForm.bills || []).length}`}
+                  />
+                  <EventDetailInfoRow
+                    label="Submitted By"
+                    value={expenseData?.submittedBy?.name || "Not submitted"}
                   />
                 </div>
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-                  <Button variant="danger" onClick={handleRejectExpense} loading={submitting}>
-                    <X size={14} /> Reject Bills
-                  </Button>
-                  <Button
-                    variant="success"
-                    onClick={handleApproveExpense}
-                    loading={submitting}
-                    disabled={
-                      requiresExpenseNextApprovalSelection &&
-                      expenseNextApprovalStages.length === 0
-                    }
-                  >
-                    <Check size={14} /> Approve Bills
-                  </Button>
-                </div>
-              </div>
-            )}
+              </EventDetailSectionCard>
+
+              <EventDetailSectionCard icon={History} title="Activity Log" accentColor="var(--color-text-secondary)">
+                {expenseData?._id ? (
+                  <ApprovalHistory
+                    key={`${expenseData._id}-${expenseHistoryRefreshKey}`}
+                    expenseId={expenseData._id}
+                  />
+                ) : (
+                  <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    Activity log appears after bill submission.
+                  </p>
+                )}
+              </EventDetailSectionCard>
+            </div>
           </div>
         )}
       </Modal>
