@@ -1,8 +1,8 @@
 /**
  * Gymkhana Events Page
  * Calendar view with year selector, event list, and role-based actions:
- * - GS Gymkhana: Add/Edit events, Submit for Approval
- * - President Gymkhana: Edit + Approve/Reject pending calendars
+ * - GS Gymkhana: Add/Edit events
+ * - President Gymkhana: Edit all pre-submission events + submit calendar
  */
 
 import { useState, useEffect, useMemo, useRef } from "react"
@@ -537,8 +537,19 @@ const EventsPage = () => {
   const isGS = user?.subRole === "GS Gymkhana"
   const isPresident = user?.subRole === "President Gymkhana"
   const canEditGS = calendar && !calendar.isLocked && isGS && (calendar.status === "draft" || calendar.status === "rejected")
-  const canEditPresident = calendar && !calendar.isLocked && isPresident && calendar.status === "pending_president"
+  const canEditPresident =
+    calendar &&
+    !calendar.isLocked &&
+    isPresident &&
+    ["draft", "rejected", "pending_president"].includes(calendar.status)
   const canEdit = canEditGS || canEditPresident
+  const canSubmitCalendar = Boolean(
+    calendar &&
+      !calendar.isLocked &&
+      isPresident &&
+      calendar.status === "draft" &&
+      events.length > 0
+  )
   const canApprove = Boolean(
     calendar?.status &&
       user?.subRole &&
@@ -1654,7 +1665,7 @@ const toCalendarEventPayload = (event) => {
             <Plus size={16} /> Add Event
           </Button>
         )}
-        {canEditGS && events.length > 0 && calendar?.status === "draft" && (
+        {canSubmitCalendar && (
           <Button size="md" onClick={handleSubmitCalendar} loading={submitting}>
             <Send size={16} /> Submit for Approval
           </Button>
