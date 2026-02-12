@@ -7,13 +7,6 @@ import apiClient from "../core/apiClient"
 
 export const studentProfileApi = {
   /**
-   * Get student profile
-   */
-  getStudentProfile: () => {
-    return apiClient.get("/student-profile/")
-  },
-
-  /**
    * Get editable profile fields
    */
   getEditableProfile: () => {

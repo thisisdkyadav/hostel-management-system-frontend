@@ -31,14 +31,6 @@ export const studentApi = {
   },
 
   /**
-   * Submit room change request
-   * @param {Object} requestData - Room change request data
-   */
-  submitRoomChangeRequest: (requestData) => {
-    return apiClient.post("/student/room-change", requestData)
-  },
-
-  /**
    * Get current student profile
    */
   getStudent: () => {
@@ -85,23 +77,6 @@ export const studentApi = {
   getStudentComplaints: (userId, queries = {}) => {
     const queryString = new URLSearchParams(queries).toString()
     return apiClient.get(`/complaint/student/complaints/${userId}`, { queryString })
-  },
-
-  /**
-   * Fetch student profile by userId (from studentService)
-   * @param {string} userId - User ID
-   */
-  fetchStudentProfile: (userId) => {
-    return apiClient.get(`/student/profile/${userId}`)
-  },
-
-  /**
-   * Update profile (from studentService)
-   * @param {string} userId - User ID
-   * @param {Object} profileData - Profile data
-   */
-  updateProfile: (userId, profileData) => {
-    return apiClient.put(`/student/profile/update/${userId}`, profileData)
   },
 
   /**
