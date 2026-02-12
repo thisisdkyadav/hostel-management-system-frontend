@@ -588,6 +588,8 @@ const EventsPage = () => {
   const [showApprovalModal, setShowApprovalModal] = useState(false)
   const [showOverlapConfirmModal, setShowOverlapConfirmModal] = useState(false)
   const [showOverlapDetailsModal, setShowOverlapDetailsModal] = useState(false)
+  const [showPendingProposalModal, setShowPendingProposalModal] = useState(false)
+  const [showPendingBillsModal, setShowPendingBillsModal] = useState(false)
   const [showProposalModal, setShowProposalModal] = useState(false)
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false)
@@ -721,6 +723,28 @@ const EventsPage = () => {
   const pendingProposalReminders = useMemo(
     () => events.filter((event) => event.gymkhanaEventId && isProposalWindowOpen(event)),
     [events]
+  )
+  const selectedCalendarEventIds = useMemo(() => {
+    const ids = new Set()
+    for (const event of events) {
+      const linkedEventId = normalizeEventId(event.gymkhanaEventId) || normalizeEventId(event._id)
+      if (linkedEventId) ids.add(linkedEventId)
+    }
+    return ids
+  }, [events])
+  const pendingProposalsForSelectedCalendar = useMemo(
+    () =>
+      proposalsForApproval.filter((proposal) =>
+        selectedCalendarEventIds.has(normalizeEventId(proposal?.eventId?._id))
+      ),
+    [proposalsForApproval, selectedCalendarEventIds]
+  )
+  const pendingExpenseApprovalsForSelectedCalendar = useMemo(
+    () =>
+      pendingExpenseApprovals.filter((expense) =>
+        selectedCalendarEventIds.has(normalizeEventId(expense?.eventId?._id))
+      ),
+    [pendingExpenseApprovals, selectedCalendarEventIds]
   )
   const availableYearsForCreation = useMemo(() => {
     const existingYears = new Set(years.map((year) => year.academicYear))
@@ -1974,143 +1998,90 @@ const toCalendarEventPayload = (event) => {
           </Card>
         )}
 
-        {proposalsForApproval.length > 0 && (
-          <Card style={{ marginBottom: "var(--spacing-4)" }}>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <h3
-                style={{
-                  marginBottom: "var(--spacing-3)",
-                  fontSize: "var(--font-size-base)",
-                  fontWeight: "var(--font-weight-semibold)",
-                }}
-              >
-                Pending Proposal Approvals ({proposalsForApproval.length})
-              </h3>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableHeader>Event</TableHeader>
-                    <TableHeader>Date</TableHeader>
-                    <TableHeader>Expected Income</TableHeader>
-                    <TableHeader>Total Expenditure</TableHeader>
-                    <TableHeader>Deflection</TableHeader>
-                    <TableHeader align="right">Action</TableHeader>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {proposalsForApproval.map((proposal) => (
-                    <TableRow key={proposal._id}>
-                      <TableCell>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
-                          <span style={{ fontWeight: "var(--font-weight-medium)" }}>
-                            {proposal.eventId?.title || "Unknown event"}
-                          </span>
-                          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                            By {proposal.submittedBy?.name || "Unknown"}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {formatDateRange(
-                          proposal.eventId?.scheduledStartDate,
-                          proposal.eventId?.scheduledEndDate
-                        )}
-                      </TableCell>
-                      <TableCell>₹{Number(proposal.totalExpectedIncome || 0).toLocaleString()}</TableCell>
-                      <TableCell>₹{Number(proposal.totalExpenditure || 0).toLocaleString()}</TableCell>
-                      <TableCell
-                        style={{
-                          color:
-                            Number(proposal.budgetDeflection || 0) > 0
-                              ? "var(--color-danger)"
-                              : "var(--color-success)",
-                        }}
-                      >
-                        ₹{Number(proposal.budgetDeflection || 0).toLocaleString()}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => openPendingProposalReview(proposal)}
-                        >
-                          Review
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+        {pendingProposalsForSelectedCalendar.length > 0 && (
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "var(--spacing-3)",
+                padding: "var(--spacing-3)",
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                backgroundColor: "var(--color-bg-secondary)",
+                flexWrap: "wrap",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "var(--color-warning-bg)",
+                    color: "var(--color-warning)",
+                    flexShrink: 0,
+                  }}
+                >
+                  <AlertTriangle size={14} />
+                </span>
+                <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                  <strong>{pendingProposalsForSelectedCalendar.length}</strong> pending proposal approval(s) in this calendar.
+                </span>
+              </div>
+              <Button size="sm" variant="outline" onClick={() => setShowPendingProposalModal(true)}>
+                View Pending Proposals
+              </Button>
+            </div>
+          </div>
         )}
 
-        {isAdminLevel && pendingExpenseApprovals.length > 0 && (
-          <Card style={{ marginBottom: "var(--spacing-4)" }}>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <h3
-                style={{
-                  marginBottom: "var(--spacing-3)",
-                  fontSize: "var(--font-size-base)",
-                  fontWeight: "var(--font-weight-semibold)",
-                }}
-              >
-                Pending Bill Approvals ({pendingExpenseApprovals.length})
-              </h3>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableHeader>Event</TableHeader>
-                    <TableHeader>Date</TableHeader>
-                    <TableHeader>Submitted By</TableHeader>
-                    <TableHeader>Total Bills</TableHeader>
-                    <TableHeader>Assigned Budget</TableHeader>
-                    <TableHeader>Variance</TableHeader>
-                    <TableHeader align="right">Action</TableHeader>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {pendingExpenseApprovals.map((expense) => (
-                    <TableRow key={expense._id}>
-                      <TableCell>
-                        <span style={{ fontWeight: "var(--font-weight-medium)" }}>
-                          {expense.eventId?.title || "Unknown event"}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        {formatDateRange(
-                          expense.eventId?.scheduledStartDate,
-                          expense.eventId?.scheduledEndDate
-                        )}
-                      </TableCell>
-                      <TableCell>{expense.submittedBy?.name || "Unknown"}</TableCell>
-                      <TableCell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</TableCell>
-                      <TableCell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</TableCell>
-                      <TableCell
-                        style={{
-                          color:
-                            Number(expense.budgetVariance || 0) > 0
-                              ? "var(--color-danger)"
-                              : "var(--color-success)",
-                        }}
-                      >
-                        ₹{Number(expense.budgetVariance || 0).toLocaleString()}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => openPendingExpenseReview(expense)}
-                        >
-                          Review
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+        {isAdminLevel && pendingExpenseApprovalsForSelectedCalendar.length > 0 && (
+          <div style={{ marginBottom: "var(--spacing-4)" }}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "var(--spacing-3)",
+                padding: "var(--spacing-3)",
+                border: "var(--border-1) solid var(--color-border-primary)",
+                borderRadius: "var(--radius-card-sm)",
+                backgroundColor: "var(--color-bg-secondary)",
+                flexWrap: "wrap",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "var(--color-warning-bg)",
+                    color: "var(--color-warning)",
+                    flexShrink: 0,
+                  }}
+                >
+                  <AlertTriangle size={14} />
+                </span>
+                <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
+                  <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong> pending bill approval(s) in this calendar.
+                </span>
+              </div>
+              <Button size="sm" variant="outline" onClick={() => setShowPendingBillsModal(true)}>
+                View Pending Bills
+              </Button>
+            </div>
+          </div>
         )}
 
         {calendar && calendar.status !== "approved" && dateConflicts.length > 0 && (
@@ -3651,6 +3622,155 @@ const toCalendarEventPayload = (event) => {
         footer={<Button variant="secondary" onClick={() => setShowHistoryModal(false)}>Close</Button>}
       >
         {calendar && <ApprovalHistory calendarId={calendar._id} />}
+      </Modal>
+
+      <Modal
+        isOpen={showPendingProposalModal}
+        title="Pending Proposal Approvals"
+        width={920}
+        onClose={() => setShowPendingProposalModal(false)}
+        footer={
+          <Button variant="secondary" onClick={() => setShowPendingProposalModal(false)}>
+            Close
+          </Button>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <Alert type="warning">
+            Pending in current calendar: <strong>{pendingProposalsForSelectedCalendar.length}</strong>
+          </Alert>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeader>Event</TableHeader>
+                <TableHeader>Date</TableHeader>
+                <TableHeader>Expected Income</TableHeader>
+                <TableHeader>Total Expenditure</TableHeader>
+                <TableHeader>Deflection</TableHeader>
+                <TableHeader align="right">Action</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {pendingProposalsForSelectedCalendar.map((proposal) => (
+                <TableRow key={proposal._id}>
+                  <TableCell>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                        {proposal.eventId?.title || "Unknown event"}
+                      </span>
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        By {proposal.submittedBy?.name || "Unknown"}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {formatDateRange(
+                      proposal.eventId?.scheduledStartDate,
+                      proposal.eventId?.scheduledEndDate
+                    )}
+                  </TableCell>
+                  <TableCell>₹{Number(proposal.totalExpectedIncome || 0).toLocaleString()}</TableCell>
+                  <TableCell>₹{Number(proposal.totalExpenditure || 0).toLocaleString()}</TableCell>
+                  <TableCell
+                    style={{
+                      color:
+                        Number(proposal.budgetDeflection || 0) > 0
+                          ? "var(--color-danger)"
+                          : "var(--color-success)",
+                    }}
+                  >
+                    ₹{Number(proposal.budgetDeflection || 0).toLocaleString()}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={async () => {
+                        setShowPendingProposalModal(false)
+                        await openPendingProposalReview(proposal)
+                      }}
+                    >
+                      Review
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showPendingBillsModal}
+        title="Pending Bill Approvals"
+        width={940}
+        onClose={() => setShowPendingBillsModal(false)}
+        footer={
+          <Button variant="secondary" onClick={() => setShowPendingBillsModal(false)}>
+            Close
+          </Button>
+        }
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <Alert type="warning">
+            Pending in current calendar: <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong>
+          </Alert>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeader>Event</TableHeader>
+                <TableHeader>Date</TableHeader>
+                <TableHeader>Submitted By</TableHeader>
+                <TableHeader>Total Bills</TableHeader>
+                <TableHeader>Assigned Budget</TableHeader>
+                <TableHeader>Variance</TableHeader>
+                <TableHeader align="right">Action</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {pendingExpenseApprovalsForSelectedCalendar.map((expense) => (
+                <TableRow key={expense._id}>
+                  <TableCell>
+                    <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                      {expense.eventId?.title || "Unknown event"}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    {formatDateRange(
+                      expense.eventId?.scheduledStartDate,
+                      expense.eventId?.scheduledEndDate
+                    )}
+                  </TableCell>
+                  <TableCell>{expense.submittedBy?.name || "Unknown"}</TableCell>
+                  <TableCell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</TableCell>
+                  <TableCell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</TableCell>
+                  <TableCell
+                    style={{
+                      color:
+                        Number(expense.budgetVariance || 0) > 0
+                          ? "var(--color-danger)"
+                          : "var(--color-success)",
+                    }}
+                  >
+                    ₹{Number(expense.budgetVariance || 0).toLocaleString()}
+                  </TableCell>
+                  <TableCell align="right">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={async () => {
+                        setShowPendingBillsModal(false)
+                        await openPendingExpenseReview(expense)
+                      }}
+                    >
+                      Review
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Modal>
 
       <Modal
