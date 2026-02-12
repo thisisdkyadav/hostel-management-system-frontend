@@ -96,6 +96,11 @@ const PROPOSAL_STATUS_TO_APPROVER = {
   pending_associate_dean: "Associate Dean SA",
   pending_dean: "Dean SA",
 }
+const POST_STUDENT_AFFAIRS_STAGE_OPTIONS = [
+  "Joint Registrar SA",
+  "Associate Dean SA",
+  "Dean SA",
+]
 
 const footerTabStyles = {
   tabsBar: {
@@ -516,6 +521,7 @@ const EventsPage = () => {
   const [amendmentReason, setAmendmentReason] = useState("")
   const [newAcademicYear, setNewAcademicYear] = useState("")
   const [approvalComments, setApprovalComments] = useState("")
+  const [calendarNextApprovalStages, setCalendarNextApprovalStages] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [dateOverlapInfo, setDateOverlapInfo] = useState(createDefaultOverlapState)
   const [submitOverlapInfo, setSubmitOverlapInfo] = useState(null)
@@ -523,6 +529,7 @@ const EventsPage = () => {
   const [proposalData, setProposalData] = useState(null)
   const [proposalForm, setProposalForm] = useState(createDefaultProposalForm)
   const [proposalActionComments, setProposalActionComments] = useState("")
+  const [proposalNextApprovalStages, setProposalNextApprovalStages] = useState([])
   const [proposalLoading, setProposalLoading] = useState(false)
   const [proposalHistoryRefreshKey, setProposalHistoryRefreshKey] = useState(0)
   const [expenseEvent, setExpenseEvent] = useState(null)
@@ -530,10 +537,12 @@ const EventsPage = () => {
   const [expenseForm, setExpenseForm] = useState(createDefaultExpenseForm)
   const [expenseLoading, setExpenseLoading] = useState(false)
   const [expenseApprovalComments, setExpenseApprovalComments] = useState("")
+  const [expenseNextApprovalStages, setExpenseNextApprovalStages] = useState([])
   const overlapCheckRequestRef = useRef(0)
 
   const isGymkhanaRole = user?.role === "Gymkhana"
   const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
+  const isSuperAdmin = user?.role === "Super Admin"
   const isGS = user?.subRole === "GS Gymkhana"
   const isPresident = user?.subRole === "President Gymkhana"
   const canEditGS = calendar && !calendar.isLocked && isGS && (calendar.status === "draft" || calendar.status === "rejected")
@@ -554,6 +563,11 @@ const EventsPage = () => {
     calendar?.status &&
       user?.subRole &&
       CALENDAR_STATUS_TO_APPROVER[calendar.status] === user.subRole
+  )
+  const requiresCalendarNextApprovalSelection = Boolean(
+    canApprove &&
+      user?.subRole === "Student Affairs" &&
+      calendar?.status === "pending_student_affairs"
   )
   const canManageCalendarLock = isAdminLevel && Boolean(calendar?._id)
   const canCreateCalendar = isAdminLevel
@@ -663,6 +677,15 @@ const EventsPage = () => {
     if (!proposalData?.status || !user?.subRole) return false
     return PROPOSAL_STATUS_TO_APPROVER[proposalData.status] === user.subRole
   }, [proposalData?.status, user?.subRole])
+  const requiresProposalNextApprovalSelection = useMemo(
+    () =>
+      Boolean(
+        canCurrentUserReviewProposal &&
+          user?.subRole === "Student Affairs" &&
+          proposalData?.status === "pending_student_affairs"
+      ),
+    [canCurrentUserReviewProposal, proposalData?.status, user?.subRole]
+  )
   const proposalDeflection = useMemo(() => {
     if (!proposalEvent) return 0
     return Number(proposalForm.totalExpenditure || 0) - Number(proposalEvent.estimatedBudget || 0)
@@ -709,11 +732,38 @@ const EventsPage = () => {
     [isGS, isExpenseSubmissionAllowedForSelectedEvent, expenseData?.approvalStatus]
   )
   const canApproveExpense = useMemo(
+    () => {
+      if (!isAdminLevel || !expenseData?._id) return false
+      if (!expenseData?.approvalStatus || expenseData.approvalStatus === "approved") return false
+      if (!expenseData.approvalStatus.startsWith("pending")) return false
+      if (isSuperAdmin) return true
+
+      const expenseStatusBySubRole = {
+        "Student Affairs": "pending_student_affairs",
+        "Joint Registrar SA": "pending_joint_registrar",
+        "Associate Dean SA": "pending_associate_dean",
+        "Dean SA": "pending_dean",
+      }
+
+      if (user?.subRole === "Student Affairs") {
+        return (
+          expenseData.approvalStatus === "pending" ||
+          expenseData.approvalStatus === expenseStatusBySubRole[user.subRole]
+        )
+      }
+
+      return expenseStatusBySubRole[user?.subRole] === expenseData.approvalStatus
+    },
+    [isAdminLevel, isSuperAdmin, expenseData?._id, expenseData?.approvalStatus, user?.subRole]
+  )
+  const requiresExpenseNextApprovalSelection = useMemo(
     () =>
-      isAdminLevel &&
-      Boolean(expenseData?._id) &&
-      expenseData?.approvalStatus !== "approved",
-    [isAdminLevel, expenseData?._id, expenseData?.approvalStatus]
+      Boolean(
+        canApproveExpense &&
+          (expenseData?.approvalStatus === "pending_student_affairs" ||
+            expenseData?.approvalStatus === "pending")
+      ),
+    [canApproveExpense, expenseData?.approvalStatus]
   )
   const isDateRangeOrdered = useMemo(() => {
     if (!eventForm.startDate || !eventForm.endDate) return true
@@ -799,7 +849,9 @@ const EventsPage = () => {
         }
       }
 
-      return expenses.filter((expense) => expense?.approvalStatus !== "approved")
+      return expenses.filter((expense) =>
+        String(expense?.approvalStatus || "").startsWith("pending")
+      )
     } catch {
       return []
     }
@@ -906,6 +958,15 @@ const EventsPage = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const toggleNextApprovalStage = (stage, setStages) => {
+    setStages((previousStages) => {
+      if (previousStages.includes(stage)) {
+        return previousStages.filter((existingStage) => existingStage !== stage)
+      }
+      return [...previousStages, stage]
+    })
   }
 
   const getDaysInMonth = (date) => {
@@ -1094,6 +1155,7 @@ const toCalendarEventPayload = (event) => {
   const openProposalModal = async (event) => {
     setProposalEvent(event)
     setProposalActionComments("")
+    setProposalNextApprovalStages([])
     setProposalHistoryRefreshKey((prev) => prev + 1)
     setShowProposalModal(true)
     await fetchProposalForEvent(event)
@@ -1170,9 +1232,21 @@ const toCalendarEventPayload = (event) => {
 
   const handleApproveProposal = async () => {
     if (!proposalData?._id) return
+    if (
+      requiresProposalNextApprovalSelection &&
+      proposalNextApprovalStages.length === 0
+    ) {
+      toast.error("Select at least one next approval stage")
+      return
+    }
+
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.approveProposal(proposalData._id, proposalActionComments)
+      await gymkhanaEventsApi.approveProposal(
+        proposalData._id,
+        proposalActionComments,
+        requiresProposalNextApprovalSelection ? proposalNextApprovalStages : []
+      )
       toast.success("Proposal approved")
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
@@ -1257,6 +1331,7 @@ const toCalendarEventPayload = (event) => {
   const openExpenseModal = async (event) => {
     setExpenseEvent(event)
     setExpenseApprovalComments("")
+    setExpenseNextApprovalStages([])
     setShowExpenseModal(true)
     await fetchExpenseForEvent(event)
   }
@@ -1344,10 +1419,21 @@ const toCalendarEventPayload = (event) => {
 
   const handleApproveExpense = async () => {
     if (!expenseData?._id) return
+    if (
+      requiresExpenseNextApprovalSelection &&
+      expenseNextApprovalStages.length === 0
+    ) {
+      toast.error("Select at least one next approval stage")
+      return
+    }
 
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.approveExpense(expenseData._id, expenseApprovalComments)
+      await gymkhanaEventsApi.approveExpense(
+        expenseData._id,
+        expenseApprovalComments,
+        requiresExpenseNextApprovalSelection ? expenseNextApprovalStages : []
+      )
       toast.success("Bills approved")
       setExpenseApprovalComments("")
       await fetchExpenseForEvent(expenseEvent)
@@ -1356,6 +1442,29 @@ const toCalendarEventPayload = (event) => {
       setPendingExpenseApprovals(pendingExpenses)
     } catch (err) {
       toast.error(err.message || "Failed to approve bills")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleRejectExpense = async () => {
+    if (!expenseData?._id) return
+    if (!expenseApprovalComments || expenseApprovalComments.trim().length < 10) {
+      toast.error("Please provide a rejection reason (min 10 characters)")
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.rejectExpense(expenseData._id, expenseApprovalComments)
+      toast.success("Bills rejected")
+      setExpenseApprovalComments("")
+      await fetchExpenseForEvent(expenseEvent)
+      await fetchCalendar(selectedYear)
+      const pendingExpenses = await getPendingExpenseApprovals()
+      setPendingExpenseApprovals(pendingExpenses)
+    } catch (err) {
+      toast.error(err.message || "Failed to reject bills")
     } finally {
       setSubmitting(false)
     }
@@ -1539,9 +1648,21 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleApprove = async () => {
+    if (
+      requiresCalendarNextApprovalSelection &&
+      calendarNextApprovalStages.length === 0
+    ) {
+      toast.error("Select at least one next approval stage")
+      return
+    }
+
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.approveCalendar(calendar._id, approvalComments)
+      await gymkhanaEventsApi.approveCalendar(
+        calendar._id,
+        approvalComments,
+        requiresCalendarNextApprovalSelection ? calendarNextApprovalStages : []
+      )
       toast.success("Calendar approved successfully")
       setShowApprovalModal(false)
       setApprovalComments("")
@@ -1682,6 +1803,7 @@ const toCalendarEventPayload = (event) => {
               variant="success"
               onClick={() => {
                 setApprovalComments("")
+                setCalendarNextApprovalStages([])
                 setShowApprovalModal(true)
               }}
             >
@@ -1692,6 +1814,7 @@ const toCalendarEventPayload = (event) => {
               variant="danger"
               onClick={() => {
                 setApprovalComments("")
+                setCalendarNextApprovalStages([])
                 setShowApprovalModal(true)
               }}
             >
@@ -2332,6 +2455,7 @@ const toCalendarEventPayload = (event) => {
           setProposalData(null)
           setProposalForm(createDefaultProposalForm())
           setProposalActionComments("")
+          setProposalNextApprovalStages([])
         }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
@@ -2533,6 +2657,48 @@ const toCalendarEventPayload = (event) => {
 
             {canCurrentUserReviewProposal && proposalData && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                {requiresProposalNextApprovalSelection && (
+                  <div>
+                    <label style={formLabelStyles}>
+                      Select Next Approval Order (Post Student Affairs)
+                    </label>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "var(--spacing-2)",
+                        border: "var(--border-1) solid var(--color-border-primary)",
+                        borderRadius: "var(--radius-card-sm)",
+                        padding: "var(--spacing-3)",
+                        backgroundColor: "var(--color-bg-secondary)",
+                      }}
+                    >
+                      {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
+                        <Checkbox
+                          key={`proposal-stage-${stage}`}
+                          label={stage}
+                          checked={proposalNextApprovalStages.includes(stage)}
+                          onChange={() =>
+                            toggleNextApprovalStage(stage, setProposalNextApprovalStages)
+                          }
+                        />
+                      ))}
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "var(--font-size-xs)",
+                          color: "var(--color-text-muted)",
+                        }}
+                      >
+                        Order followed:{" "}
+                        {proposalNextApprovalStages.length > 0
+                          ? proposalNextApprovalStages.join(" -> ")
+                          : "No stage selected"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label style={formLabelStyles} htmlFor="proposalActionComments">
                     Review Comments
@@ -2553,7 +2719,15 @@ const toCalendarEventPayload = (event) => {
                   <Button variant="danger" onClick={handleRejectProposal} loading={submitting}>
                     Reject
                   </Button>
-                  <Button variant="success" onClick={handleApproveProposal} loading={submitting}>
+                  <Button
+                    variant="success"
+                    onClick={handleApproveProposal}
+                    loading={submitting}
+                    disabled={
+                      requiresProposalNextApprovalSelection &&
+                      proposalNextApprovalStages.length === 0
+                    }
+                  >
                     Approve
                   </Button>
                 </div>
@@ -2582,6 +2756,7 @@ const toCalendarEventPayload = (event) => {
           setExpenseData(null)
           setExpenseForm(createDefaultExpenseForm())
           setExpenseApprovalComments("")
+          setExpenseNextApprovalStages([])
         }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
@@ -2613,13 +2788,36 @@ const toCalendarEventPayload = (event) => {
 
             {expenseData && (
               <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                <Badge variant={expenseData.approvalStatus === "approved" ? "success" : "warning"}>
-                  {expenseData.approvalStatus === "approved" ? "Approved" : "Pending Approval"}
+                <Badge
+                  variant={
+                    expenseData.approvalStatus === "approved"
+                      ? "success"
+                      : expenseData.approvalStatus === "rejected"
+                        ? "danger"
+                        : "warning"
+                  }
+                >
+                  {expenseData.approvalStatus === "approved"
+                    ? "Approved"
+                    : expenseData.approvalStatus === "rejected"
+                      ? "Rejected"
+                      : "Pending Approval"}
                 </Badge>
                 {expenseData.approvedBy?.name && (
                   <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                     Approved by {expenseData.approvedBy.name}
                     {expenseData.approvedAt ? ` on ${new Date(expenseData.approvedAt).toLocaleDateString()}` : ""}
+                  </span>
+                )}
+                {expenseData.rejectedBy?.name && expenseData.approvalStatus === "rejected" && (
+                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    Rejected by {expenseData.rejectedBy.name}
+                    {expenseData.rejectedAt ? ` on ${new Date(expenseData.rejectedAt).toLocaleDateString()}` : ""}
+                  </span>
+                )}
+                {expenseData.currentApprovalStage && expenseData.approvalStatus !== "approved" && (
+                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    Current stage: {expenseData.currentApprovalStage}
                   </span>
                 )}
               </div>
@@ -2628,6 +2826,12 @@ const toCalendarEventPayload = (event) => {
             {!expenseData && !isExpenseSubmissionAllowedForSelectedEvent && (
               <Alert type="warning">
                 Bills can be submitted only after final proposal approval.
+              </Alert>
+            )}
+
+            {expenseData?.approvalStatus === "rejected" && expenseData?.rejectionReason && (
+              <Alert type="error">
+                Rejection reason: {expenseData.rejectionReason}
               </Alert>
             )}
 
@@ -2825,6 +3029,48 @@ const toCalendarEventPayload = (event) => {
 
             {canApproveExpense && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                {requiresExpenseNextApprovalSelection && (
+                  <div>
+                    <label style={formLabelStyles}>
+                      Select Next Approval Order (Post Student Affairs)
+                    </label>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "var(--spacing-2)",
+                        border: "var(--border-1) solid var(--color-border-primary)",
+                        borderRadius: "var(--radius-card-sm)",
+                        padding: "var(--spacing-3)",
+                        backgroundColor: "var(--color-bg-secondary)",
+                      }}
+                    >
+                      {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
+                        <Checkbox
+                          key={`expense-stage-${stage}`}
+                          label={stage}
+                          checked={expenseNextApprovalStages.includes(stage)}
+                          onChange={() =>
+                            toggleNextApprovalStage(stage, setExpenseNextApprovalStages)
+                          }
+                        />
+                      ))}
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "var(--font-size-xs)",
+                          color: "var(--color-text-muted)",
+                        }}
+                      >
+                        Order followed:{" "}
+                        {expenseNextApprovalStages.length > 0
+                          ? expenseNextApprovalStages.join(" -> ")
+                          : "No stage selected"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label style={formLabelStyles} htmlFor="expenseApprovalComments">
                     Approval Comments
@@ -2832,14 +3078,25 @@ const toCalendarEventPayload = (event) => {
                   <Textarea
                     id="expenseApprovalComments"
                     name="expenseApprovalComments"
-                    placeholder="Approval comments (optional)"
+                    placeholder="Approval comments (required for rejection)"
                     value={expenseApprovalComments}
                     onChange={(event) => setExpenseApprovalComments(event.target.value)}
                     rows={3}
                   />
                 </div>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button variant="success" onClick={handleApproveExpense} loading={submitting}>
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+                  <Button variant="danger" onClick={handleRejectExpense} loading={submitting}>
+                    <X size={14} /> Reject Bills
+                  </Button>
+                  <Button
+                    variant="success"
+                    onClick={handleApproveExpense}
+                    loading={submitting}
+                    disabled={
+                      requiresExpenseNextApprovalSelection &&
+                      expenseNextApprovalStages.length === 0
+                    }
+                  >
                     <Check size={14} /> Approve Bills
                   </Button>
                 </div>
@@ -3300,14 +3557,25 @@ const toCalendarEventPayload = (event) => {
         isOpen={showApprovalModal}
         title="Review Calendar"
         width={720}
-        onClose={() => setShowApprovalModal(false)}
+        onClose={() => {
+          setShowApprovalModal(false)
+          setCalendarNextApprovalStages([])
+        }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
             <Button variant="secondary" onClick={() => setShowApprovalModal(false)}>Cancel</Button>
             <Button variant="danger" onClick={handleReject} loading={submitting}>
               <X size={14} /> Reject
             </Button>
-            <Button variant="success" onClick={handleApprove} loading={submitting}>
+            <Button
+              variant="success"
+              onClick={handleApprove}
+              loading={submitting}
+              disabled={
+                requiresCalendarNextApprovalSelection &&
+                calendarNextApprovalStages.length === 0
+              }
+            >
               <Check size={14} /> Approve
             </Button>
           </div>
@@ -3342,6 +3610,40 @@ const toCalendarEventPayload = (event) => {
               <AlertTriangle size={16} style={{ marginRight: "var(--spacing-1)" }} />
               {dateConflicts.length} date overlap(s) detected in this calendar.
             </Alert>
+          )}
+
+          {requiresCalendarNextApprovalSelection && (
+            <div>
+              <label style={formLabelStyles}>
+                Select Next Approval Order (Post Student Affairs)
+              </label>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--spacing-2)",
+                  border: "var(--border-1) solid var(--color-border-primary)",
+                  borderRadius: "var(--radius-card-sm)",
+                  padding: "var(--spacing-3)",
+                  backgroundColor: "var(--color-bg-secondary)",
+                }}
+              >
+                {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
+                  <Checkbox
+                    key={`calendar-stage-${stage}`}
+                    label={stage}
+                    checked={calendarNextApprovalStages.includes(stage)}
+                    onChange={() => toggleNextApprovalStage(stage, setCalendarNextApprovalStages)}
+                  />
+                ))}
+                <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  Order followed:{" "}
+                  {calendarNextApprovalStages.length > 0
+                    ? calendarNextApprovalStages.join(" -> ")
+                    : "No stage selected"}
+                </p>
+              </div>
+            </div>
           )}
 
           <div>

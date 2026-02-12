@@ -71,8 +71,12 @@ export const gymkhanaEventsApi = {
   /**
    * Approve calendar
    */
-  approveCalendar: (id, comments = "") => {
-    return apiClient.post(`${BASE_PATH}/calendar/${id}/approve`, { comments })
+  approveCalendar: (id, comments = "", nextApprovalStages = []) => {
+    const payload = { comments }
+    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
+      payload.nextApprovalStages = nextApprovalStages
+    }
+    return apiClient.post(`${BASE_PATH}/calendar/${id}/approve`, payload)
   },
 
   /**
@@ -177,8 +181,12 @@ export const gymkhanaEventsApi = {
   /**
    * Approve proposal
    */
-  approveProposal: (id, comments = "") => {
-    return apiClient.post(`${BASE_PATH}/proposals/${id}/approve`, { comments })
+  approveProposal: (id, comments = "", nextApprovalStages = []) => {
+    const payload = { comments }
+    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
+      payload.nextApprovalStages = nextApprovalStages
+    }
+    return apiClient.post(`${BASE_PATH}/proposals/${id}/approve`, payload)
   },
 
   /**
@@ -237,8 +245,19 @@ export const gymkhanaEventsApi = {
   /**
    * Approve expense (Admin only)
    */
-  approveExpense: (id, comments = "") => {
-    return apiClient.post(`${BASE_PATH}/expenses/${id}/approve`, { comments })
+  approveExpense: (id, comments = "", nextApprovalStages = []) => {
+    const payload = { comments }
+    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
+      payload.nextApprovalStages = nextApprovalStages
+    }
+    return apiClient.post(`${BASE_PATH}/expenses/${id}/approve`, payload)
+  },
+
+  /**
+   * Reject expense (Admin approval stage)
+   */
+  rejectExpense: (id, reason) => {
+    return apiClient.post(`${BASE_PATH}/expenses/${id}/reject`, { reason })
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
