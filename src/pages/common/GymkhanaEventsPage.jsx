@@ -6,12 +6,11 @@
  */
 
 import { useState, useEffect, useMemo, useRef, createElement } from "react"
-import { Button, DataTable, Table } from "czero/react"
+import { Button, DataTable, Modal, Table } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Select, Input, Textarea, Checkbox } from "@/components/ui/form"
 import {
-  Modal,
   LoadingState,
   ErrorState,
   EmptyState,

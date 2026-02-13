@@ -1,7 +1,6 @@
 /**
  * Feedback Components Export
  */
-export { default as Modal } from './Modal'
 export { default as Toast, useToast, ToastProvider } from './Toast'
 export { default as Alert } from './Alert'
 export { default as Spinner } from './Spinner'

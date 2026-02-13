@@ -8,8 +8,8 @@ import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
 import toast from "react-hot-toast"
-import { Modal, Input, Select, Checkbox, FileInput } from "@/components/ui"
-import { Button } from "czero/react"
+import { Input, Select, Checkbox, FileInput } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 
 // Reusable styles using theme CSS variables
 const styles = {

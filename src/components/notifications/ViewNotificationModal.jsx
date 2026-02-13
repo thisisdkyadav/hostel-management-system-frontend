@@ -1,5 +1,5 @@
 import React from "react"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 import { FaRegClock, FaUserAlt, FaBuilding, FaGraduationCap, FaVenusMars } from "react-icons/fa"
 import { format } from "date-fns"

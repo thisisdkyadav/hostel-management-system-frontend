@@ -3,7 +3,7 @@ import { taskApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_STATUSES, WHO_CAN_ASSIGN_TASK } from "../../constants/taskConstants"
 import TaskForm from "./TaskForm"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 import { FaEdit, FaTrash } from "react-icons/fa"
 

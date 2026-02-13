@@ -1,7 +1,7 @@
 import React from "react"
 import { FaCalendarAlt, FaInfoCircle, FaBuilding, FaUserFriends, FaMapMarkerAlt } from "react-icons/fa"
 import { BsClock } from "react-icons/bs"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 
 const EventDetailModal = ({ selectedEvent, setShowDetailModal }) => {

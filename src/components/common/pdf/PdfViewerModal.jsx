@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Modal } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, Modal } from "czero/react"
 
 const PdfViewerModal = ({
   isOpen,

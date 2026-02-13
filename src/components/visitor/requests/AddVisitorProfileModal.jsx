@@ -1,7 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button } from "czero/react"
-
+import { Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 const AddVisitorProfileModal = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: "",

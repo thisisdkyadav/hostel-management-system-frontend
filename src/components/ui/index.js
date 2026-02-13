@@ -5,7 +5,7 @@
  * Import from '@/components/ui' for cleaner imports.
  * 
  * @example
- * import { Button, Input, Select, Card, Modal } from '@/components/ui'
+ * import { Input, Select, Card } from '@/components/ui'
  */
 
 // ==============================================
@@ -44,7 +44,6 @@ export { default as Spacer } from './layout/Spacer'
 // ==============================================
 // FEEDBACK COMPONENTS
 // ==============================================
-export { default as Modal } from './feedback/Modal'
 export { default as Toast, useToast, ToastProvider } from './feedback/Toast'
 export { default as Alert } from './feedback/Alert'
 export { default as Spinner } from './feedback/Spinner'

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } from "react-icons/fa"
-import { Pagination, Modal, Input, Select, Textarea } from "@/components/ui"
-import { Button } from "czero/react"
+import { Pagination, Input, Select, Textarea } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 import { useAuth } from "../../../contexts/AuthProvider"
 
 const StudentAssignments = () => {

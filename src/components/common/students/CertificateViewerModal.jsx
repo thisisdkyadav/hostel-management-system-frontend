@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 
 const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {

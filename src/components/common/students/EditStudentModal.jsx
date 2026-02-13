@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import StudentEditForm from "./forms/StudentEditForm"
 import { studentApi } from "../../../service"
 

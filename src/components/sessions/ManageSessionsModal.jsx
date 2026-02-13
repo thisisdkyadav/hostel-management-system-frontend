@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 import { authApi } from "../../service"
 import CommonSuccessModal from "../common/CommonSuccessModal"

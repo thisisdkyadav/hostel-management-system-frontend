@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaStar } from "react-icons/fa"
-import { Modal, Select } from "@/components/ui"
-import { Button } from "czero/react"
+import { Select } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 import { complaintApi } from "../../service"
 
 const FeedbackModal = ({ complaint, onClose, onFeedback }) => {

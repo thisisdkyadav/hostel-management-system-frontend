@@ -4,8 +4,8 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Modal, Select, FileInput } from "@/components/ui"
-import { Button } from "czero/react"
+import { Select, FileInput } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {

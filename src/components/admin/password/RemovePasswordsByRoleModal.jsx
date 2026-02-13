@@ -1,8 +1,7 @@
 import { useState } from "react"
 import { HiExclamationCircle, HiShieldExclamation } from "react-icons/hi"
-import { Modal, Select, Input, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button } from "czero/react"
-
+import { Select, Input, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 const ROLES = ["Student", "Maintenance Staff", "Warden", "Associate Warden", "Admin", "Security", "Super Admin", "Hostel Supervisor", "Hostel Gate"]
 
 const styles = {

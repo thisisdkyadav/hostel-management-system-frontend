@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { FaCalendarAlt, FaInfoCircle, FaImage, FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 import { formatDate } from "../../utils/formatters"
 import { getMediaUrl } from "../../utils/mediaUtils"

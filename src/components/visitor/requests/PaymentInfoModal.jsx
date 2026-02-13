@@ -1,5 +1,5 @@
 import React from "react"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const PaymentInfoModal = ({ isOpen, onClose, paymentScreenshot }) => {

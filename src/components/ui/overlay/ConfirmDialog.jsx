@@ -1,7 +1,6 @@
 import React from "react"
 import { FiAlertTriangle } from "react-icons/fi"
-import Modal from "@/components/ui/feedback/Modal"
-import { Button } from "czero/react"
+import { Button, Modal } from "czero/react"
 
 /**
  * ConfirmDialog Component - Matches existing design language
@@ -32,14 +31,14 @@ const ConfirmDialog = ({
 
   const renderFooter = () => {
     return (
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)" }}>
+      <>
         <Button type="button" onClick={onClose} variant="secondary" size="md">
           {cancelText}
         </Button>
         <Button type="button" onClick={handleConfirm} variant={isDestructive ? "danger" : "primary"} size="md">
           {confirmText}
         </Button>
-      </div>
+      </>
     )
   }
 

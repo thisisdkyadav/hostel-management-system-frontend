@@ -4,8 +4,8 @@ import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import StudentDetailModal from "./StudentDetailModal"
 import { adminApi } from "../../../service"
-import { Modal, FileInput, Input, Select, Textarea } from "@/components/ui"
-import { Button } from "czero/react"
+import { FileInput, Input, Select, Textarea } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 
 // Extracted to avoid remounting on each parent render which caused input focus loss
 const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {

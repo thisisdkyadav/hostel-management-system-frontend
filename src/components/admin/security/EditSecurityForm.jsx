@@ -2,9 +2,8 @@ import React, { useState } from "react"
 import { FaTrash, FaSave, FaBuilding, FaUser } from "react-icons/fa"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Modal, Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button } from "czero/react"
-
+import { Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 const EditSecurityForm = ({ security, onClose, onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()
   const [loading, setLoading] = useState(false)

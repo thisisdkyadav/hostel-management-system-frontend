@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { FaStar, FaInfoCircle, FaClipboardList } from "react-icons/fa"
 import { complaintApi } from "../../service"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 
 const ComplaintFeedbackPopup = ({ complaint, onClose, onFeedbackSubmitted }) => {

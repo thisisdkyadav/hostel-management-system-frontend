@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 
 const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {

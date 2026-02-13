@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Input } from "@/components/ui"
-import { Button } from "czero/react"
+import { Input } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 import PasswordChangeSuccess from "./PasswordChangeSuccess"
 import PasswordStrengthBar from "./PasswordStrengthBar"
 import { authApi } from "../../service"

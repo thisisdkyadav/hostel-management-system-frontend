@@ -1,9 +1,8 @@
 import { useState, useRef } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
-import { Modal, VStack, HStack, Alert, FileInput } from "@/components/ui"
-import { Button } from "czero/react"
-
+import { VStack, HStack, Alert, FileInput } from "@/components/ui"
+import { Button, Modal } from "czero/react"
 const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, providerName }) => {
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])

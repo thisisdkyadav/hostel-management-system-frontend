@@ -8,19 +8,19 @@
 
 ```jsx
 // Core components from CZero (not from @/components/ui)
-import { Button, Table, DataTable, StatusBadge } from 'czero/react'
+import { Button, Modal, Table, DataTable, StatusBadge } from 'czero/react'
 
 // Other UI components
-import { Input, Card, Modal, ... } from '@/components/ui'
+import { Input, Card, ... } from '@/components/ui'
 
 // By category
 import { IconButton } from '@/components/ui/button'
 import { Input, Select, Checkbox } from '@/components/ui/form'
 import { Card, Stack, Divider } from '@/components/ui/layout'
-import { Modal, Toast, Alert } from '@/components/ui/feedback'
+import { Toast, Alert } from '@/components/ui/feedback'
 ```
 
-> **Note:** `Button`, `Table`, `DataTable`, and `StatusBadge` are provided by the CZero UI library. Import them from `czero/react`.
+> **Note:** `Button`, `Modal`, `Table`, `DataTable`, and `StatusBadge` are provided by the CZero UI library. Import them from `czero/react`.
 
 ---
 
@@ -424,7 +424,9 @@ Material Design 3 inspired date picker with calendar dropdown.
 
 **Location:** `@/components/ui/feedback`
 
-### Modal
+### Modal (CZero)
+
+**Location:** `czero/react`
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
@@ -432,7 +434,7 @@ Material Design 3 inspired date picker with calendar dropdown.
 | `children` | `React.ReactNode` | - | Modal content |
 | `onClose` | `function` | - | Close handler |
 | `width` | `number` | - | Custom width in pixels |
-| `autoWidth` | `boolean` | - | Auto width based on content |
+| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"`, `"xl"`, `"full"` |
 | `minHeight` | `number` | - | Minimum height in pixels |
 | `footer` | `React.ReactNode` | - | Footer content |
 | `tabs` | `Array` | `null` | Array of tab objects: `[{ id, name, icon }]` |
@@ -956,7 +958,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter, Button } from '@/
 ### Modal with Form
 
 ```jsx
-import { Modal, Input, Button } from '@/components/ui'
+import { Button, Modal } from 'czero/react'
+import { Input } from '@/components/ui'
 
 <Modal 
   isOpen={isOpen} 
@@ -1119,8 +1122,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 ### Modal with Form
 
 ```jsx
-import { Button } from 'czero/react'
-import { Modal, Input } from '@/components/ui'
+import { Button, Modal } from 'czero/react'
+import { Input } from '@/components/ui'
 
 <Modal 
   isOpen={isOpen} 

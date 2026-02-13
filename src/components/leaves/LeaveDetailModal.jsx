@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Modal } from "@/components/ui"
+import { Modal } from "czero/react"
 import { Button } from "czero/react"
 import { leaveApi } from "../../service"
 
