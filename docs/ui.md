@@ -1,6 +1,6 @@
 # UI Component Library Reference
 
-> Component inventory for coding agents. Import from `@/components/ui`.
+> Component inventory for coding agents. Import shared app components from `@/components/ui` and C0 base components from `czero/react`.
 
 ---
 
@@ -21,6 +21,15 @@ import { Toast, Alert } from '@/components/ui/feedback'
 ```
 
 > **Note:** `Button`, `Modal`, `Table`, `DataTable`, and `StatusBadge` are provided by the CZero UI library. Import them from `czero/react`.
+
+## C0 Migration Status (Current)
+
+- `Button` -> migrated to C0
+- `Modal` -> migrated to C0
+- `Table` -> migrated to C0
+- `DataTable` -> migrated to C0
+- `StatusBadge` -> migrated to C0
+- Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
 
 ---
 
@@ -422,27 +431,52 @@ Material Design 3 inspired date picker with calendar dropdown.
 
 ## Feedback Components
 
-**Location:** `@/components/ui/feedback`
+**Location:** mixed
+- `Modal` from `czero/react`
+- `Toast`, `Alert`, `Spinner`, `Skeleton`, `Progress`, `LoadingState`, `ErrorState`, `EmptyState` from `@/components/ui/feedback`
 
 ### Modal (CZero)
 
 **Location:** `czero/react`
 
+```jsx
+import { Modal } from 'czero/react'
+```
+
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `title` | `string\|React.ReactNode` | - | Modal title (can be string or JSX for custom styling) |
+| `open` | `boolean` | - | Controlled open state (Radix-compatible API) |
+| `defaultOpen` | `boolean` | auto | Uncontrolled initial state |
+| `onOpenChange` | `function` | - | Called with next open state |
+| `isOpen` | `boolean` | - | Backward-compatible alias for controlled open state |
+| `onClose` | `function` | - | Called when modal closes |
+| `trigger` | `React.ReactNode` | - | Optional trigger element (rendered with `Dialog.Trigger`) |
+| `title` | `React.ReactNode` | - | Modal title (string or JSX) |
+| `description` | `React.ReactNode` | - | Optional description text under title |
 | `children` | `React.ReactNode` | - | Modal content |
-| `onClose` | `function` | - | Close handler |
-| `width` | `number` | - | Custom width in pixels |
-| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"`, `"xl"`, `"full"` |
-| `minHeight` | `number` | - | Minimum height in pixels |
 | `footer` | `React.ReactNode` | - | Footer content |
-| `tabs` | `Array` | `null` | Array of tab objects: `[{ id, name, icon }]` |
-| `activeTab` | `string` | `null` | Active tab id |
-| `onTabChange` | `function` | `null` | Tab change handler |
+| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"`, `"xl"`, `"full"` |
+| `width` | `number\|string` | - | Custom width (e.g. `560`, `"60rem"`) |
+| `minHeight` | `number\|string` | - | Minimum height (e.g. `420`, `"28rem"`) |
+| `fullHeight` | `boolean` | `false` | Use full available viewport height |
+| `tabs` | `Array` | - | Header tabs: `[{ id, name?, label?, icon?, disabled? }]` |
+| `activeTab` | `string` | - | Current active tab id |
+| `onTabChange` | `function` | - | Tab change handler |
 | `hideTitle` | `boolean` | `false` | Hide the title |
-| `fullHeight` | `boolean` | `false` | Take full viewport height |
-| `closeButtonVariant` | `string` | `"icon"` | Close button style: `"icon"` (X icon) or `"button"` (text button) |
+| `showCloseButton` | `boolean` | `true` | Show/hide top-right close control |
+| `closeButtonVariant` | `string` | `"icon"` | `"icon"` (X icon) or `"button"` (small button) |
+| `closeButtonText` | `string` | `"Close"` | Label for close button variant |
+| `closeOnOverlay` | `boolean` | `true` | Close on outside click |
+| `closeOnEsc` | `boolean` | `true` | Close on escape key |
+| `portalContainer` | `HTMLElement` | - | Optional portal mount container |
+| `overlayClassName` | `string` | `""` | Extra class for overlay |
+| `headerClassName` | `string` | `""` | Extra class for header |
+| `bodyClassName` | `string` | `""` | Extra class for body |
+| `footerClassName` | `string` | `""` | Extra class for footer |
+| `className` | `string` | `""` | Extra class for modal content |
+| `style` | `object` | `{}` | Inline styles for modal content |
+
+> **Behavior Note:** Prefer `open` + `onOpenChange` for new code. `isOpen` + `onClose` is kept for compatibility and existing frontend usage.
 
 ### Toast (Standalone)
 
@@ -611,6 +645,12 @@ import { StatusBadge } from 'czero/react'
 | `children` | `React.ReactNode` | - | Optional label override |
 | `tone` | `string` | auto | `"primary"`, `"success"`, `"danger"`, `"warning"` |
 | `showDot` | `boolean` | `true` | Show/hide the status dot |
+
+**Automatic tone mapping (when `tone` is not passed):**
+- `success`: `checked in`, `active`, `present`, `success`
+- `danger`: `checked out`, `inactive`, `absent`, `danger`, `error`
+- `warning`: `maintenance`, `pending`, `warning`
+- fallback: `primary`
 
 ### StatCard
 
@@ -941,7 +981,8 @@ import { Input, Select, Label } from '@/components/ui'
 ### Card with Actions
 
 ```jsx
-import { Card, CardHeader, CardTitle, CardContent, CardFooter, Button } from '@/components/ui'
+import { Button } from 'czero/react'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui'
 
 <Card>
   <CardHeader>
@@ -997,7 +1038,8 @@ import { DataTable, StatusBadge } from 'czero/react'
 ### Toast Notifications
 
 ```jsx
-import { ToastProvider, useToast, Button } from '@/components/ui'
+import { Button } from 'czero/react'
+import { ToastProvider, useToast } from '@/components/ui'
 
 // Wrap app
 <ToastProvider position="top-right">
@@ -1078,116 +1120,3 @@ These domain-specific components remain in `/components/common/`:
 - `UserSearch`, `UserSelector` - User selection
 
 ---
-
-## Usage Examples
-
-### Form with Validation
-
-```jsx
-import { Button } from 'czero/react'
-import { Input, Select, Label } from '@/components/ui'
-
-<form>
-  <Label htmlFor="name" required>Name</Label>
-  <Input id="name" placeholder="Enter name" error={errors.name} />
-  
-  <Label htmlFor="role">Role</Label>
-  <Select 
-    id="role" 
-    options={[{ value: "admin", label: "Admin" }]} 
-  />
-  
-  <Button type="submit" loading={submitting}>Submit</Button>
-</form>
-```
-
-### Card with Actions
-
-```jsx
-import { Button } from 'czero/react'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui'
-
-<Card>
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-  </CardHeader>
-  <CardContent>Content here</CardContent>
-  <CardFooter>
-    <Button variant="ghost">Cancel</Button>
-    <Button>Save</Button>
-  </CardFooter>
-</Card>
-```
-
-### Modal with Form
-
-```jsx
-import { Button, Modal } from 'czero/react'
-import { Input } from '@/components/ui'
-
-<Modal 
-  isOpen={isOpen} 
-  onClose={close} 
-  title="Edit Item"
-  footer={
-    <>
-      <Button variant="ghost" onClick={close}>Cancel</Button>
-      <Button onClick={save}>Save</Button>
-    </>
-  }
->
-  <Input label="Name" value={name} onChange={setName} />
-</Modal>
-```
-
-### Data Table
-
-```jsx
-import { DataTable, StatusBadge } from 'czero/react'
-
-<DataTable
-  data={users}
-  columns={[
-    { key: 'name', header: 'Name', sortable: true },
-    { key: 'email', header: 'Email' },
-    { key: 'status', header: 'Status', render: (_row, val) => <StatusBadge status={val} /> }
-  ]}
-  selectable
-  pagination
-  pageSize={10}
-/>
-```
-
-### Toast Notifications
-
-```jsx
-import { Button } from 'czero/react'
-import { ToastProvider, useToast } from '@/components/ui'
-
-// Wrap app
-<ToastProvider position="top-right">
-  <App />
-</ToastProvider>
-
-// In component
-const { toast } = useToast()
-
-<Button onClick={() => toast.success('Saved!')}>Save</Button>
-<Button onClick={() => toast.error('Failed!')}>Delete</Button>
-```
-
----
-
-## Not Included (Use From /common/)
-
-These domain-specific components remain in `/components/common/`:
-
-- `AccessDenied` - Auth error page
-- `CsvUploader` - CSV import utility
-- `ImageUploadModal` - Image upload modal
-- `MultiSelectDropdown` - Multi-select dropdown
-- `OfflineBanner` - PWA offline indicator
-- `PageHeader` - Page header layout
-- `PWAInstallPrompt` - PWA install prompt
-- `SimpleDatePicker` - Date picker
-- `UserSearch`, `UserSelector` - User selection

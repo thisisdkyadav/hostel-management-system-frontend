@@ -202,6 +202,17 @@ style={{ color: "#1360AB", borderRadius: "12px" }}
 
 ## Component Patterns
 
+### C0 Component Ownership
+
+Use these from `czero/react`:
+- `Button`
+- `Modal`
+- `Table`
+- `DataTable`
+- `StatusBadge`
+
+Keep app-specific composed components in `@/components/ui`.
+
 ### Button (CZero)
 
 Buttons use the CZero UI library. Import from `czero/react`:
@@ -262,9 +273,45 @@ import { Button } from 'czero/react'
   background: "var(--color-bg-primary)",
   borderRadius: "var(--radius-modal)",
   boxShadow: "var(--shadow-modal)",
-  maxWidth: "500px"
+  border: "1px solid var(--color-border-primary)"
 }
 ```
+
+**Modal behavior defaults (C0):**
+- `size="md"` (default width preset)
+- `showCloseButton={true}`
+- `closeButtonVariant="icon"`
+- `closeOnOverlay={true}`
+- `closeOnEsc={true}`
+
+### Table / DataTable (C0)
+
+```jsx
+{
+  borderRadius: "var(--radius-card)",
+  border: "1px solid var(--color-border-primary)",
+  background: "var(--color-bg-primary)"
+}
+```
+
+**DataTable design notes:**
+- Header labels use compact, uppercase metadata styling.
+- Body cells use `var(--font-size-sm)` with consistent row rhythm.
+- Keep cell padding token-driven; avoid hardcoded project-specific spacing.
+
+### StatusBadge (C0)
+
+```jsx
+{
+  borderRadius: "9999px",
+  fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-medium)"
+}
+```
+
+**Tone mapping guidance:**
+- Prefer automatic tone mapping from status text.
+- Pass explicit `tone` only when status labels are custom or ambiguous.
 
 ---
 
@@ -308,11 +355,11 @@ import { Button } from 'czero/react'
 // Theme variables
 import '@/theme.css'
 
-// Button (from CZero UI library)
-import { Button } from 'czero/react'
+// Core reusable components (from C0)
+import { Button, Modal, Table, DataTable, StatusBadge } from 'czero/react'
 
 // Other UI Components
-import { Input, Card, Modal } from '@/components/ui'
+import { Input, Card } from '@/components/ui'
 
 // Legacy support (if needed)
 import '@/styles/legacy-theme.css'
