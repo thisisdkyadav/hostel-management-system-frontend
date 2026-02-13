@@ -7,7 +7,7 @@ import { Button } from "czero/react"
 
 const FamilyDetails = ({ userId }) => {
   const { canAccess } = useAuth()
-  const [familyDetails, setFamilyDetails] = useState(null)
+  const [familyDetails, setFamilyDetails] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -22,7 +22,18 @@ const FamilyDetails = ({ userId }) => {
     try {
       setLoading(true)
       const response = await adminApi.getFamilyDetails(userId)
-      setFamilyDetails(response.data)
+      const members = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : []
+
+      setFamilyDetails(
+        members.map((member) => ({
+          ...member,
+          id: member.id || member._id,
+        }))
+      )
     } catch (error) {
       setError(error)
       console.error("Error fetching family details:", error)
@@ -236,7 +247,7 @@ const FamilyDetails = ({ userId }) => {
         )}
       </div>
 
-      {familyDetails && familyDetails.length > 0 ? (
+      {familyDetails.length > 0 ? (
         <div style={styles.grid}>
           {familyDetails.map((member) => (
             <div key={member.id} style={styles.card} onMouseEnter={(e) => {
