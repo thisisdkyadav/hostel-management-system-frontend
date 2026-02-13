@@ -1,5 +1,6 @@
 // Common pages - shared across multiple roles
 export { default as ComplaintsPage } from './ComplaintsPage'
+export { default as DisciplinaryProcessPage } from './DisciplinaryProcessPage'
 export { default as EventsPage } from './EventsPage'
 export { default as GymkhanaEventsPage } from './GymkhanaEventsPage'
 export { default as LeavesPage } from './LeavesPage'

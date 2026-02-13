@@ -65,6 +65,14 @@ export const uploadApi = {
   },
 
   /**
+   * Upload disciplinary process PDF
+   * @param {FormData} fileData - Form data
+   */
+  uploadDiscoProcessPDF: (fileData) => {
+    return apiClient.upload("/upload/disco-process-pdf", fileData)
+  },
+
+  /**
    * Upload payment screenshot
    * @param {FormData} imageData - Image form data
    */

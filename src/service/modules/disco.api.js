@@ -38,6 +38,91 @@ export const discoApi = {
   deleteDisCoAction: (disCoId) => {
     return apiClient.delete(`/disco/${disCoId}`)
   },
+
+  /**
+   * Submit disciplinary process case (student)
+   * @param {Object} data - { complaintPdfUrl, complaintPdfName }
+   */
+  submitProcessCase: (data) => {
+    return apiClient.post("/disco/process/cases", data)
+  },
+
+  /**
+   * Get student process cases
+   */
+  getMyProcessCases: () => {
+    return apiClient.get("/disco/process/my-cases")
+  },
+
+  /**
+   * Get admin process cases list
+   * @param {Object} params - filters/pagination
+   */
+  getProcessCases: (params = {}) => {
+    return apiClient.get("/disco/process/cases", { params })
+  },
+
+  /**
+   * Get process case by id
+   * @param {string} caseId
+   */
+  getProcessCaseById: (caseId) => {
+    return apiClient.get(`/disco/process/cases/${caseId}`)
+  },
+
+  /**
+   * Initial review action
+   * @param {string} caseId
+   * @param {Object} data - { decision, description }
+   */
+  reviewProcessCase: (caseId, data) => {
+    return apiClient.patch(`/disco/process/cases/${caseId}/review`, data)
+  },
+
+  /**
+   * Add statement
+   * @param {string} caseId
+   * @param {Object} data
+   */
+  addCaseStatement: (caseId, data) => {
+    return apiClient.post(`/disco/process/cases/${caseId}/statements`, data)
+  },
+
+  /**
+   * Remove statement
+   * @param {string} caseId
+   * @param {string} statementId
+   */
+  removeCaseStatement: (caseId, statementId) => {
+    return apiClient.delete(`/disco/process/cases/${caseId}/statements/${statementId}`)
+  },
+
+  /**
+   * Send case email
+   * @param {string} caseId
+   * @param {Object} data
+   */
+  sendCaseEmail: (caseId, data) => {
+    return apiClient.post(`/disco/process/cases/${caseId}/send-email`, data)
+  },
+
+  /**
+   * Upload committee minutes metadata
+   * @param {string} caseId
+   * @param {Object} data - { pdfUrl, pdfName }
+   */
+  uploadCommitteeMinutes: (caseId, data) => {
+    return apiClient.patch(`/disco/process/cases/${caseId}/committee-minutes`, data)
+  },
+
+  /**
+   * Finalize case with rejection or disciplinary action
+   * @param {string} caseId
+   * @param {Object} data
+   */
+  finalizeProcessCase: (caseId, data) => {
+    return apiClient.patch(`/disco/process/cases/${caseId}/finalize`, data)
+  },
 }
 
 export default discoApi

@@ -4,6 +4,7 @@ import { SocketProvider } from "./contexts/SocketProvider"
 import AppRoutes from "./routes/AppRoutes"
 import GlobalProvider from "./contexts/GlobalProvider"
 import PWAInstallPrompt from "./components/common/PWAInstallPrompt"
+import { ToastProvider } from "./components/ui/feedback/Toast"
 
 function App() {
   return (
@@ -11,8 +12,10 @@ function App() {
       <AuthProvider>
         <SocketProvider>
           <GlobalProvider>
-            <AppRoutes />
-            <PWAInstallPrompt />
+            <ToastProvider position="top-right">
+              <AppRoutes />
+              <PWAInstallPrompt />
+            </ToastProvider>
           </GlobalProvider>
         </SocketProvider>
       </AuthProvider>
