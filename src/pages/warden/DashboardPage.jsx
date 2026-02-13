@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react"
 import { statsApi } from "../../service"
 import { dashboardApi } from "../../service"
-import { StatCards, ToggleButtonGroup } from "@/components/ui"
-import { Button } from "czero/react"
-import { BiError, BiCalendarEvent, BiBuildings } from "react-icons/bi"
+import { Card } from "@/components/ui"
+import { BiError, BiCalendarEvent } from "react-icons/bi"
 import { FaUser, FaUsers } from "react-icons/fa"
-import { MdChangeCircle, MdDashboard } from "react-icons/md"
-import { FiSearch } from "react-icons/fi"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { useWarden } from "../../contexts/WardenProvider"
 import { useAuth } from "../../contexts/AuthProvider"
-// (Removed chart.js imports as they were unused)
+import DashboardHeader from "../../components/headers/DashboardHeader"
 
 const DashboardPage = () => {
   const { profile, isAssociateWardenOrSupervisor } = useWarden()
@@ -86,119 +83,195 @@ const DashboardPage = () => {
     )
   }
 
-  // Key statistics data
-  const keyStats = [
-    {
-      title: "Total Students",
-      value: studentStats?.students?.grandTotal || 0,
-      subtitle: `${studentStats?.students?.totalBoys || 0} Boys, ${studentStats?.students?.totalGirls || 0} Girls`,
-      icon: <FaUsers />,
-      color: "var(--color-purple-text)",
-    },
-    {
-      title: "Total Visitors",
-      value: visitorStats?.total || 0,
-      subtitle: `${visitorStats?.today || 0} Today`,
-      icon: <FaUsers />,
-      color: "var(--color-info)",
-    },
-    {
-      title: "Events",
-      value: eventStats?.total || 0,
-      subtitle: `${eventStats?.upcoming || 0} Upcoming`,
-      icon: <BiCalendarEvent />,
-      color: "var(--color-warning)",
-    },
-  ]
+  // Get dashboard title based on role
+  const getDashboardTitle = () => {
+    if (authUser?.role === "Hostel Supervisor") return "Hostel Supervisor Dashboard"
+    if (isAssociateWardenOrSupervisor) return "Associate Warden Dashboard"
+    return "Warden Dashboard"
+  }
 
-  return (
-    <div className="px-10 py-6 flex-1" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
-      <header className="flex justify-between items-center rounded-xl shadow-sm px-6 py-4 mb-6" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-        <div className="flex items-center">
-          <MdDashboard style={{ color: 'var(--color-primary)', fontSize: 'var(--font-size-2xl)', marginRight: 'var(--spacing-3)' }} />
-          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{authUser?.role === "Hostel Supervisor" ? "Hostel Supervisor" : isAssociateWardenOrSupervisor ? "Associate Warden" : "Warden"} Dashboard</h1>
-        </div>
-        <div className="flex items-center space-x-2 px-4 py-2 rounded-lg" style={{ backgroundColor: 'var(--color-boys-light-bg)', color: 'var(--color-boys-text)' }}>
-          <FaUser className="w-4 h-4" />
-          <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{profile.name}</span>
-        </div>
-      </header>
+  // Header stats (3 compact stat cards)
+  const renderHeaderStats = () => {
+    const totalStudents = studentStats?.students?.grandTotal || 0
+    const totalBoys = studentStats?.students?.totalBoys || 0
+    const totalGirls = studentStats?.students?.totalGirls || 0
+    const totalVisitors = visitorStats?.total || 0
+    const todayVisitors = visitorStats?.today || 0
+    const totalEvents = eventStats?.total || 0
+    const upcomingEvents = eventStats?.upcoming || 0
 
-      {/* Key metrics cards */}
-      <div className="mb-6">
-        <StatCards stats={keyStats} columns={3} />
-      </div>
-
-      {/* Student distribution section */}
-      <div className="mb-6 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="flex items-center" style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)' }}>
-            <FaUsers style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-coed-text)' }} /> Student Distribution
-          </h2>
-
-          <div className="flex items-center">
-            <ToggleButtonGroup
-              options={[
-                { value: false, label: "Absolute" },
-                { value: true, label: "Normalized" },
-              ]}
-              value={normalizedView}
-              onChange={setNormalizedView}
-              shape="pill"
-              size="sm"
-              variant="muted"
-              hideLabelsOnMobile={false}
-            />
+    return (
+      <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
+        {/* Students Card */}
+        <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
+          <div className="flex items-center gap-[var(--spacing-2)]">
+            <FaUsers className="text-[var(--color-primary)] text-sm" />
+            <div className="flex items-center gap-[var(--spacing-2)]">
+              <div>
+                <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Students</p>
+                <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{totalStudents}</p>
+              </div>
+              <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+                <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">B {totalBoys}</span>
+                <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">G {totalGirls}</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="h-64">
-          {studentStats ? (
-            <DegreeWiseStudentsTable data={studentStats?.students} normalized={normalizedView} />
-          ) : (
-            <div className="h-full flex items-center justify-center">
-              <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
+        {/* Visitors Card */}
+        <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-info)] transition-[var(--transition-all)]">
+          <div className="flex items-center gap-[var(--spacing-2)]">
+            <FaUser className="text-[var(--color-info)] text-sm" />
+            <div className="flex items-center gap-[var(--spacing-2)]">
+              <div>
+                <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Visitors</p>
+                <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{totalVisitors}</p>
+              </div>
+              <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+                <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-info-bg)] text-[var(--color-info)] rounded-[var(--radius-sm)] text-xs font-medium">Today {todayVisitors}</span>
+              </div>
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Events Card */}
+        <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-warning)] transition-[var(--transition-all)]">
+          <div className="flex items-center gap-[var(--spacing-2)]">
+            <BiCalendarEvent className="text-[var(--color-warning)] text-sm" />
+            <div className="flex items-center gap-[var(--spacing-2)]">
+              <div>
+                <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Events</p>
+                <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{totalEvents}</p>
+              </div>
+              <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
+                <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-warning-bg)] text-[var(--color-warning-text)] rounded-[var(--radius-sm)] text-xs font-medium">Upcoming {upcomingEvents}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    )
+  }
 
-      {/* Hostel Statistics section */}
-      <div className="mb-6 p-5 rounded-xl shadow-sm hover:shadow-md transition-all duration-300" style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="flex items-center" style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-secondary)' }}>
-            <BiBuildings style={{ marginRight: 'var(--spacing-2)', color: 'var(--color-primary)' }} /> Hostel Overview
-          </h2>
-        </div>
+  // Shimmer loader for header stats
+  const renderHeaderShimmer = () => (
+    <div className="flex gap-[var(--spacing-2-5)]">
+      <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-9 w-36"></div>
+      <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-9 w-32"></div>
+      <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-9 w-32"></div>
+    </div>
+  )
 
-        <div className="h-64">
-          {hostelStats ? (
-            <HostelStatisticsTable data={hostelStats} />
-          ) : (
-            <div className="h-full flex items-center justify-center">
-              <AiOutlineLoading3Quarters style={{ fontSize: 'var(--font-size-4xl)', color: 'var(--color-primary)', animation: 'spin 1s linear infinite' }} />
-            </div>
-          )}
+  return (
+    <div className="flex flex-col h-full">
+      <DashboardHeader title={getDashboardTitle()}>
+        {loading ? renderHeaderShimmer() : error ? (
+          <div className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[var(--font-size-xs)]">Error loading data</div>
+        ) : renderHeaderStats()}
+      </DashboardHeader>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto px-[var(--spacing-6)] py-[var(--spacing-6)]">
+        {/* Main grid - 80/20 split */}
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-[var(--spacing-6)]">
+          {/* Student Distribution - 80% width (4 cols) */}
+          <Card className="xl:col-span-4 h-[32rem]" padding="p-2.5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <div className="flex justify-between items-center mb-[var(--spacing-4)]">
+                  <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-5 w-48"></div>
+                  <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-full)] h-7 w-32"></div>
+                </div>
+                <div className="flex-1 space-y-2">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-sm)] h-8 w-full"></div>
+                  ))}
+                </div>
+              </div>
+            ) : error ? (
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col overflow-auto">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-[var(--spacing-2)]">
+                  <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)]">
+                    <span className="w-1 h-4 bg-[var(--color-primary)] rounded-[var(--radius-full)]"></span>
+                    Student Distribution by Department
+                  </h2>
+                  <div className="flex items-center gap-[var(--spacing-1-5)]">
+                    {/* Absolute/Normalized Toggle */}
+                    <div className="flex items-center bg-[var(--color-bg-muted)] rounded-[var(--radius-full)] p-[var(--spacing-0-5)] text-[0.7rem]" role="tablist">
+                      <button onClick={() => setNormalizedView(false)}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${!normalizedView ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                      >
+                        Absolute
+                      </button>
+                      <button onClick={() => setNormalizedView(true)}
+                        className={`px-[var(--spacing-2-5)] py-[var(--spacing-1)] rounded-[var(--radius-full)] transition-all duration-150 font-medium ${normalizedView ? "bg-[var(--color-primary)] text-[var(--color-white)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)]"}`}
+                      >
+                        %
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex flex-col min-h-0">
+                  <div className="h-full">
+                    {studentStats ? (
+                      <DegreeWiseStudentsTable data={studentStats?.students} normalized={normalizedView} />
+                    ) : (
+                      <div className="h-full flex items-center justify-center">
+                        <AiOutlineLoading3Quarters className="text-4xl text-[var(--color-primary)] animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </Card>
+
+          {/* Room Status - 20% width (1 col) */}
+          <Card className="xl:col-span-1 h-[32rem]" padding="p-2.5">
+            {loading ? (
+              <div className="h-full flex flex-col">
+                <div className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-md)] h-5 w-32 mb-4"></div>
+                <div className="flex-1 space-y-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="animate-pulse bg-gradient-to-r from-[var(--color-bg-muted)] via-[var(--color-bg-hover)] to-[var(--color-bg-muted)] rounded-[var(--radius-lg)] h-16 w-full"></div>
+                  ))}
+                </div>
+              </div>
+            ) : error ? (
+              <p className="text-[var(--color-danger)] bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)] rounded-[var(--radius-lg)] p-[var(--spacing-3)]">{error}</p>
+            ) : (
+              <div className="h-full flex flex-col overflow-auto">
+                {/* Header */}
+                <h2 className="text-[0.8125rem] font-bold text-[var(--color-text-secondary)] flex items-center gap-[var(--spacing-1-5)] mb-[var(--spacing-3)]">
+                  <span className="w-1 h-4 bg-[var(--color-success)] rounded-[var(--radius-full)]"></span>
+                  Room Status
+                </h2>
+
+                {hostelStats ? (
+                  <RoomStatusPanel data={hostelStats} />
+                ) : (
+                  <div className="flex-1 flex items-center justify-center">
+                    <AiOutlineLoading3Quarters className="text-4xl text-[var(--color-primary)] animate-spin" />
+                  </div>
+                )}
+              </div>
+            )}
+          </Card>
         </div>
       </div>
     </div>
   )
 }
 
-// Helper component
-const StatInfo = ({ label, value, color, isBold = false }) => (
-  <div className="flex flex-col items-center">
-    <p style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</p>
-    <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: isBold ? 'var(--font-weight-bold)' : 'var(--font-weight-medium)', color }}>
-      {value}
-    </p>
-  </div>
-)
-
 // Table component for degree-wise student distribution
 const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
   if (!data?.degreeWise?.length) {
-    return <div className="h-full flex items-center justify-center" style={{ color: 'var(--color-text-muted)' }}>No student data available</div>
+    return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
   }
 
   const degreeData =
@@ -210,144 +283,134 @@ const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
     })) || []
 
   return (
-    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
-      <table className="min-w-full" style={{ borderCollapse: 'separate' }}>
-        <thead style={{ backgroundColor: 'var(--color-bg-secondary)', position: 'sticky', top: 0, zIndex: 10 }}>
-          <tr>
-            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'left' }}>Degree</th>
-            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Boys</th>
-            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Girls</th>
-            <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Total</th>
-            {normalized && (
-              <>
-                <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Boys %</th>
-                <th style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-xs)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-muted)', textAlign: 'center' }}>Girls %</th>
-              </>
-            )}
-          </tr>
-        </thead>
-        <tbody style={{ backgroundColor: 'var(--color-bg-primary)' }}>
-          {degreeData.map((item, index) => {
-            const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
-            const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
+    <div className="h-full overflow-hidden flex flex-col rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)]">
+      {/* Fixed Header */}
+      <div className="bg-gradient-to-r from-[var(--color-bg-tertiary)] to-[var(--color-bg-secondary)] border-b border-[var(--color-border-primary)] flex-shrink-0">
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wider w-[35%]">Department</th>
+              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Boys</th>
+              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Girls</th>
+              <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[15%]">Total</th>
+              {normalized && (
+                <>
+                  <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[10%]">Boys %</th>
+                  <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.7rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wider w-[10%]">Girls %</th>
+                </>
+              )}
+            </tr>
+          </thead>
+        </table>
+      </div>
 
-            return (
-              <tr key={index} style={{ borderTop: '1px solid var(--color-border-light)', transition: 'var(--transition-colors)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>{item.degree}</td>
-                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{item.boys}</td>
-                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{item.girls}</td>
-                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-coed-text)', textAlign: 'center', fontWeight: 'var(--font-weight-semibold)' }}>{item.total}</td>
-                {normalized && (
-                  <>
-                    <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{boysPercent}%</td>
-                    <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center', fontWeight: 'var(--font-weight-medium)' }}>{girlsPercent}%</td>
-                  </>
-                )}
-              </tr>
-            )
-          })}
+      {/* Scrollable Body */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[var(--scrollbar-thumb)] scrollbar-track-[var(--color-bg-tertiary)]">
+        <table className="min-w-full">
+          <tbody className="bg-[var(--color-bg-primary)] divide-y divide-[var(--color-border-light)]">
+            {degreeData.map((item, index) => {
+              const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
+              const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
 
-          {/* Totals row */}
-          <tr style={{ backgroundColor: 'var(--color-bg-secondary)', fontWeight: 'var(--font-weight-medium)' }}>
-            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-primary)' }}>Total</td>
-            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center' }}>{data?.totalBoys || 0}</td>
-            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center' }}>{data?.totalGirls || 0}</td>
-            <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-coed-text)', textAlign: 'center' }}>{data?.grandTotal || 0}</td>
-            {normalized && (
-              <>
-                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-boys-text)', textAlign: 'center' }}>{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
-                <td style={{ padding: 'var(--spacing-2) var(--spacing-4)', fontSize: 'var(--font-size-sm)', color: 'var(--color-girls-text)', textAlign: 'center' }}>{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
-              </>
-            )}
-          </tr>
-        </tbody>
-      </table>
+              return (
+                <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-all duration-150 ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                  <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] font-semibold text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)] w-[35%]">{item.degree}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-boys-text)] text-center font-medium tabular-nums w-[15%]">{item.boys}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[15%]">{item.girls}</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-coed-text)] text-center font-bold tabular-nums w-[15%]">{item.total}</td>
+                  {normalized && (
+                    <>
+                      <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-boys-text)] text-center font-medium tabular-nums w-[10%]">{boysPercent}%</td>
+                      <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium tabular-nums w-[10%]">{girlsPercent}%</td>
+                    </>
+                  )}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Fixed Footer - Totals */}
+      <div className="bg-gradient-to-r from-[var(--color-bg-tertiary)] to-[var(--color-bg-secondary)] border-t border-[var(--color-border-primary)] flex-shrink-0">
+        <table className="min-w-full">
+          <tfoot>
+            <tr>
+              <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] font-bold text-[var(--color-text-primary)] w-[35%]">Total</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-boys-text)] text-center font-bold tabular-nums w-[15%]">{data?.totalBoys || 0}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-bold tabular-nums w-[15%]">{data?.totalGirls || 0}</td>
+              <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-coed-text)] text-center font-bold tabular-nums w-[15%]">{data?.grandTotal || 0}</td>
+              {normalized && (
+                <>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-boys-text)] text-center font-bold tabular-nums w-[10%]">{data?.grandTotal > 0 ? Math.round((data?.totalBoys / data?.grandTotal) * 100) : 0}%</td>
+                  <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-bold tabular-nums w-[10%]">{data?.grandTotal > 0 ? Math.round((data?.totalGirls / data?.grandTotal) * 100) : 0}%</td>
+                </>
+              )}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
   )
 }
 
-// Hostel Statistics Table component
-const HostelStatisticsTable = ({ data }) => {
+// Room Status Panel component for sidebar
+const RoomStatusPanel = ({ data }) => {
   if (!data) {
-    return <div className="h-full flex items-center justify-center" style={{ color: 'var(--color-text-muted)' }}>No hostel data available</div>
+    return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No room data available</div>
   }
 
+  const occupancyRate = data.occupancyRate || 0
+  const occupancyColor = occupancyRate >= 80 ? 'var(--color-success)' : occupancyRate >= 50 ? 'var(--color-warning)' : 'var(--color-danger)'
+
   return (
-    <div className="h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Basic Information */}
-        <div className="space-y-4">
-          <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', borderBottom: '1px solid var(--color-border-light)', paddingBottom: 'var(--spacing-2)' }}>Basic Information</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Name:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Type:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.type}</span>
-            </div>
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Gender:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.gender}</span>
-            </div>
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Maintenance Issues:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>{data.maintenanceIssues}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Room Statistics */}
-        <div className="space-y-4">
-          <h3 style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--color-text-primary)', borderBottom: '1px solid var(--color-border-light)', paddingBottom: 'var(--spacing-2)' }}>Room Statistics</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Total Rooms:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{data.totalRooms}</span>
-            </div>
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Active Rooms:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>{data.totalActiveRooms}</span>
-            </div>
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Occupied Rooms:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-success)' }}>{data.occupiedRooms}</span>
-            </div>
-            <div className="flex justify-between">
-              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Vacant Rooms:</span>
-              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-warning)' }}>{data.vacantRooms}</span>
-            </div>
-          </div>
-        </div>
+    <div className="flex-1 flex flex-col gap-[var(--spacing-2)]">
+      {/* Occupancy Rate - Compact Display */}
+      <div className="bg-gradient-to-br from-[var(--color-success-bg-light)] to-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-lg)] p-[var(--spacing-2-5)] text-center">
+        <p className="text-[0.6875rem] text-[var(--color-success-text)] font-medium uppercase tracking-wide mb-0.5">Occupancy Rate</p>
+        <p className="text-2xl font-bold leading-none" style={{ color: occupancyColor }}>{occupancyRate.toFixed(1)}%</p>
       </div>
 
-      {/* Capacity and Occupancy Statistics */}
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div style={{ backgroundColor: 'var(--color-boys-light-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-boys-border)' }}>
-          <div className="text-center">
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-boys-text)', marginBottom: 'var(--spacing-1)' }}>Total Capacity</p>
-            <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-boys-text)' }}>{data.capacity}</p>
-          </div>
-        </div>
-
-        <div style={{ backgroundColor: 'var(--color-success-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-success-border)' }}>
-          <div className="text-center">
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-success)', marginBottom: 'var(--spacing-1)' }}>Occupancy Rate</p>
-            <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-success)' }}>{data.occupancyRate?.toFixed(1)}%</p>
-          </div>
-        </div>
-
-        <div style={{ backgroundColor: 'var(--color-coed-light-bg)', padding: 'var(--spacing-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-coed-border)' }}>
-          <div className="text-center">
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-coed-text)', marginBottom: 'var(--spacing-1)' }}>Active Rooms Occupancy</p>
-            <p style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-coed-text)' }}>{data.activeRoomsOccupancy}</p>
-            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-1)' }}>of {data.activeRoomsCapacity}</p>
-          </div>
-        </div>
+      {/* Room Stats Grid */}
+      <div className="space-y-[var(--spacing-1-5)]">
+        <StatRow label="Total Rooms" value={data.totalRooms} color="var(--color-text-primary)" />
+        <StatRow label="Active Rooms" value={data.totalActiveRooms} color="var(--color-primary)" />
+        <StatRow label="Occupied" value={data.occupiedRooms} color="var(--color-success)" />
+        <StatRow label="Vacant" value={data.vacantRooms} color="var(--color-warning)" />
       </div>
+
+      {/* Divider */}
+      <div className="border-t border-[var(--color-border-light)] my-1"></div>
+
+      {/* Capacity Stats */}
+      <div className="space-y-[var(--spacing-1-5)]">
+        <StatRow label="Total Capacity" value={data.capacity} color="var(--color-text-primary)" />
+        <StatRow label="Current Occupancy" value={data.activeRoomsOccupancy} color="var(--color-info)" subtext={`of ${data.activeRoomsCapacity}`} />
+      </div>
+
+      {/* Maintenance */}
+      {data.maintenanceIssues !== undefined && (
+        <>
+          <div className="border-t border-[var(--color-border-light)] my-1"></div>
+          <div className={`rounded-[var(--radius-md)] p-[var(--spacing-2)] text-center ${data.maintenanceIssues > 0 ? 'bg-[var(--color-danger-bg-light)] border border-[var(--color-danger-border)]' : 'bg-[var(--color-success-bg)] border border-[var(--color-success-border)]'}`}>
+            <p className="text-[0.6875rem] font-medium uppercase tracking-wide mb-0.5" style={{ color: data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>Maintenance</p>
+            <p className="text-lg font-bold" style={{ color: data.maintenanceIssues > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>{data.maintenanceIssues}</p>
+          </div>
+        </>
+      )}
     </div>
   )
 }
+
+// Helper component for stat rows in sidebar
+const StatRow = ({ label, value, color, subtext }) => (
+  <div className="flex justify-between items-center px-[var(--spacing-2)] py-[var(--spacing-1-5)] rounded-[var(--radius-md)] hover:bg-[var(--color-bg-hover)] transition-colors">
+    <span className="text-[0.8125rem] text-[var(--color-text-muted)]">{label}</span>
+    <div className="text-right">
+      <span className="text-[0.9375rem] font-bold tabular-nums" style={{ color }}>{value}</span>
+      {subtext && <span className="text-[0.6875rem] text-[var(--color-text-muted)] ml-1">{subtext}</span>}
+    </div>
+  </div>
+)
 
 export default DashboardPage

@@ -3,10 +3,12 @@ import { getAdminNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import GlobalProvider from "../contexts/GlobalProvider"
 import { ToastProvider } from "../components/ui/feedback"
+import { useAuth } from "../contexts/AuthProvider"
 
 const AdminLayout = () => {
   const handleLogout = useLogout()
-  const navItems = getAdminNavItems(handleLogout)
+  const { user } = useAuth()
+  const navItems = getAdminNavItems(handleLogout, user)
 
   return (
     <GlobalProvider>

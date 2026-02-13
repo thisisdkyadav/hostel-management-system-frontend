@@ -5,4 +5,5 @@ export { default as HostelGateAttendancePage } from './HostelGateAttendancePage'
 export { default as ScannerEntriesPage } from './ScannerEntriesPage'
 export { default as FaceScannerEntriesPage } from './FaceScannerEntriesPage'
 export { default as StudentEntriesPage } from './StudentEntriesPage'
+export { default as JRAppointmentsGatePage } from './JRAppointmentsGatePage'
 

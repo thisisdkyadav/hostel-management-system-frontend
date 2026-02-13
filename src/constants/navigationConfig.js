@@ -68,34 +68,48 @@ const createProfileItem = (basePath) => ({
 // ADMIN NAVIGATION
 // ============================================
 
-export const getAdminNavItems = (handleLogout) => [
-  { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin" },
-  { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$" },
-  { name: "Students", icon: Users, section: "main", path: "/admin/students" },
-  { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", isNew: true },
-  { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory" },
-  { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications" },
-  { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
-  { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
-  { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
-  { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events" },
-  { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints" },
-  { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process" },
-  { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
-  { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found" },
-  { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/admin/feedbacks" },
-  { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators" },
-  { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens" },
-  { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens" },
-  { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors" },
-  { name: "Security", icon: Shield, section: "main", path: "/admin/security" },
-  { name: "Maintenance Staff", icon: Wrench, section: "main", path: "/admin/maintenance" },
-  { name: "Others", icon: UserPlus, section: "main", path: "/admin/others" },
-  { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password" },
-  { name: "Settings", icon: Settings, section: "main", path: "/admin/settings" },
-  createProfileItem("/admin"),
-  createLogoutItem(handleLogout),
-]
+export const getAdminNavItems = (handleLogout, user = null) => {
+  const navItems = [
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin" },
+    { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$" },
+    { name: "Students", icon: Users, section: "main", path: "/admin/students" },
+    { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", isNew: true },
+    { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory" },
+    { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications" },
+    { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
+    { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
+    { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events" },
+    { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints" },
+    { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process" },
+    { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found" },
+    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/admin/feedbacks" },
+    { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators" },
+    { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens" },
+    { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens" },
+    { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors" },
+    { name: "Security", icon: Shield, section: "main", path: "/admin/security" },
+    { name: "Maintenance Staff", icon: Wrench, section: "main", path: "/admin/maintenance" },
+    { name: "Others", icon: UserPlus, section: "main", path: "/admin/others" },
+    { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password" },
+    { name: "Settings", icon: Settings, section: "main", path: "/admin/settings" },
+  ]
+
+  if (user?.subRole === "Joint Registrar SA") {
+    navItems.splice(10, 0, {
+      name: "JR Appointments",
+      icon: UserRoundCheck,
+      section: "main",
+      path: "/admin/jr-appointments",
+    })
+  }
+
+  navItems.push(createProfileItem("/admin"))
+  navItems.push(createLogoutItem(handleLogout))
+
+  return navItems
+}
 
 // ============================================
 // SUPER ADMIN NAVIGATION
@@ -182,6 +196,7 @@ export const getHostelGateNavItems = (handleLogout) => [
   { name: "Student Entries", icon: Clock, section: "main", path: "/hostel-gate/entries" },
   { name: "Scanner Entries", icon: Keyboard, section: "main", path: "/hostel-gate/scanner-entries" },
   { name: "Face Scanner", icon: Scan, section: "main", path: "/hostel-gate/face-scanner-entries" },
+  { name: "JR Appointments", icon: UserRoundCheck, section: "main", path: "/hostel-gate/jr-appointments" },
   { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
   { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },

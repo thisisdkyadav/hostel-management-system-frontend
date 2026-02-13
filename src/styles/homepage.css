@@ -877,6 +877,11 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
   padding: 0.75rem 1rem;
   color: #4b5563;
   text-decoration: none;
@@ -1238,6 +1243,11 @@
 
 .modern-header-mobile-submenu-item {
   display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
   color: #4b5563;
