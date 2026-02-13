@@ -60,7 +60,6 @@ export { default as EmptyState } from './feedback/EmptyState'
 export { default as Badge } from './data-display/Badge'
 export { default as Avatar, AvatarGroup } from './data-display/Avatar'
 export { default as Tag } from './data-display/Tag'
-export { default as StatusBadge } from './data-display/StatusBadge'
 export { default as StatCards, StatCard } from './data-display/StatCard'
 
 // ==============================================

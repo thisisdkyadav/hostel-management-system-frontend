@@ -1,5 +1,5 @@
 import React from "react"
-import { StatusBadge } from "@/components/ui"
+import { StatusBadge } from "czero/react"
 
 const RoomStatusBadge = ({ status }) => {
   const getStatusType = () => {

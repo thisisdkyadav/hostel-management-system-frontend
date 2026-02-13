@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import { FaQrcode, FaExclamationTriangle, FaCheck, FaTimes, FaHistory, FaKeyboard, FaArrowDown, FaArrowRight, FaInfoCircle } from "react-icons/fa"
 import { useQRScanner } from "../../contexts/QRScannerProvider"
-import { StatusBadge } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, StatusBadge } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ScannerEntriesPage = () => {

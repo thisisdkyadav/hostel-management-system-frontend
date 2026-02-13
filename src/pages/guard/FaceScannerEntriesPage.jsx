@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import { Scan, AlertTriangle, Check, RefreshCw, Wifi, WifiOff, User } from "lucide-react"
 import { useFaceScannerEntries } from "../../hooks/useFaceScannerEntries"
-import { StatusBadge, Card, Switch, HStack, VStack, Badge } from "@/components/ui"
-import { Button } from "czero/react"
+import { Card, Switch, HStack, VStack, Badge } from "@/components/ui"
+import { Button, StatusBadge } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const FaceScannerEntriesPage = () => {

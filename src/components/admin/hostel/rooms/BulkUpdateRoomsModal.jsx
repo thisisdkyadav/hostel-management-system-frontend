@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Checkbox, Alert, VStack, HStack, StatusBadge } from "@/components/ui"
-import { Button, Table } from "czero/react"
+import { Modal, Checkbox, Alert, VStack, HStack } from "@/components/ui"
+import { Button, StatusBadge, Table } from "czero/react"
 import CsvUploader from "../../../common/CsvUploader"
 import { TriangleAlert, Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"

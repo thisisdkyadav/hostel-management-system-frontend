@@ -8,7 +8,7 @@
 
 ```jsx
 // Core components from CZero (not from @/components/ui)
-import { Button, Table, DataTable } from 'czero/react'
+import { Button, Table, DataTable, StatusBadge } from 'czero/react'
 
 // Other UI components
 import { Input, Card, Modal, ... } from '@/components/ui'
@@ -20,7 +20,7 @@ import { Card, Stack, Divider } from '@/components/ui/layout'
 import { Modal, Toast, Alert } from '@/components/ui/feedback'
 ```
 
-> **Note:** `Button`, `Table`, and `DataTable` are provided by the CZero UI library. Import them from `czero/react`.
+> **Note:** `Button`, `Table`, `DataTable`, and `StatusBadge` are provided by the CZero UI library. Import them from `czero/react`.
 
 ---
 
@@ -597,9 +597,18 @@ Material Design 3 inspired date picker with calendar dropdown.
 
 ### StatusBadge
 
+**Location:** `czero/react` (NOT from `@/components/ui`)
+
+```jsx
+import { StatusBadge } from 'czero/react'
+```
+
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `status` | `string` | - | Status text to display (e.g., `"Checked In"`, `"Checked Out"`) |
+| `status` | `React.ReactNode` | - | Status text/value used for automatic tone mapping |
+| `children` | `React.ReactNode` | - | Optional label override |
+| `tone` | `string` | auto | `"primary"`, `"success"`, `"danger"`, `"warning"` |
+| `showDot` | `boolean` | `true` | Show/hide the status dot |
 
 ### StatCard
 
@@ -967,7 +976,7 @@ import { Modal, Input, Button } from '@/components/ui'
 ### Data Table
 
 ```jsx
-import { DataTable } from 'czero/react'
+import { DataTable, StatusBadge } from 'czero/react'
 
 <DataTable
   data={users}
@@ -1131,7 +1140,7 @@ import { Modal, Input } from '@/components/ui'
 ### Data Table
 
 ```jsx
-import { DataTable } from 'czero/react'
+import { DataTable, StatusBadge } from 'czero/react'
 
 <DataTable
   data={users}
