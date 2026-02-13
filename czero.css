@@ -1275,18 +1275,22 @@
 /* ===== TABLE ===== */
 
 :root {
-  --cz-table-border-color: hsl(var(--cz-color-border));
-  --cz-table-header-bg: hsl(var(--cz-color-muted));
-  --cz-table-header-font-weight: var(--cz-font-weight-medium);
+  --cz-table-border-radius: var(--radius-card);
+  --cz-table-border-width: var(--border-1, 1px);
+  --cz-table-border-color: var(--table-border);
+  --cz-table-header-bg: var(--table-header-bg);
+  --cz-table-header-font-weight: var(--font-weight-medium);
+  --cz-table-cell-padding: var(--table-cell-padding-md, 0.75rem 1rem);
   --cz-table-cell-padding-x: 0.75rem;
   --cz-table-cell-padding-y: 0.5rem;
-  --cz-table-row-hover-bg: hsl(var(--cz-color-muted) / 0.5);
-  --cz-table-striped-bg: hsl(var(--cz-color-muted) / 0.3);
+  --cz-table-row-hover-bg: var(--table-row-hover);
+  --cz-table-striped-bg: var(--table-stripe-bg);
 }
 
 .cz-table-wrapper {
   width: 100%;
-  overflow: auto;
+  overflow-x: auto;
+  border-radius: var(--cz-table-border-radius);
 }
 
 .cz-table {
@@ -1300,11 +1304,11 @@
 }
 
 .cz-table-head {
-  padding: var(--cz-table-cell-padding-y) var(--cz-table-cell-padding-x);
+  padding: var(--cz-table-cell-padding, var(--cz-table-cell-padding-y) var(--cz-table-cell-padding-x));
   text-align: left;
   font-weight: var(--cz-table-header-font-weight);
   color: hsl(var(--cz-color-mutedFg));
-  border-bottom: 1px solid var(--cz-table-border-color);
+  border-bottom: var(--cz-table-border-width) solid var(--cz-table-border-color);
   white-space: nowrap;
 }
 
@@ -1321,8 +1325,8 @@
 }
 
 .cz-table-cell {
-  padding: var(--cz-table-cell-padding-y) var(--cz-table-cell-padding-x);
-  border-bottom: 1px solid var(--cz-table-border-color);
+  padding: var(--cz-table-cell-padding, var(--cz-table-cell-padding-y) var(--cz-table-cell-padding-x));
+  border-bottom: var(--cz-table-border-width) solid var(--cz-table-border-color);
 }
 
 .cz-table-footer {
@@ -1332,7 +1336,7 @@
 
 .cz-table-footer .cz-table-cell {
   border-bottom: none;
-  border-top: 1px solid var(--cz-table-border-color);
+  border-top: var(--cz-table-border-width) solid var(--cz-table-border-color);
 }
 
 /* Table Striped */

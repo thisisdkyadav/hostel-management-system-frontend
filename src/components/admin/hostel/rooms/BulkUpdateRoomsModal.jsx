@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { Modal, Checkbox, Alert, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
-import { Button } from "czero/react"
+import { Modal, Checkbox, Alert, VStack, HStack, StatusBadge } from "@/components/ui"
+import { Button, Table } from "czero/react"
 import CsvUploader from "../../../common/CsvUploader"
 import { TriangleAlert, Upload } from "lucide-react"
 import { hostelApi } from "../../../../service"
@@ -130,28 +130,28 @@ const BulkUpdateRoomsModal = ({ show, onClose, hostel, onRoomsUpdated, setIsLoad
             </div>
 
             <Table>
-              <TableHead>
-                <TableRow>
-                  <TableHeader>ID</TableHeader>
-                  {isUnitBased && <TableHeader>Unit</TableHeader>}
-                  <TableHeader>Room</TableHeader>
-                  <TableHeader>Capacity</TableHeader>
-                  <TableHeader>Status</TableHeader>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>ID</Table.Head>
+                  {isUnitBased && <Table.Head>Unit</Table.Head>}
+                  <Table.Head>Room</Table.Head>
+                  <Table.Head>Capacity</Table.Head>
+                  <Table.Head>Status</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {parsedCsvData.slice(0, 5).map((room, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{room.id}</TableCell>
-                    {isUnitBased && <TableCell>{room.unitNumber}</TableCell>}
-                    <TableCell>{room.roomNumber}</TableCell>
-                    <TableCell>{room.capacity}</TableCell>
-                    <TableCell>
+                  <Table.Row key={index}>
+                    <Table.Cell>{room.id}</Table.Cell>
+                    {isUnitBased && <Table.Cell>{room.unitNumber}</Table.Cell>}
+                    <Table.Cell>{room.roomNumber}</Table.Cell>
+                    <Table.Cell>{room.capacity}</Table.Cell>
+                    <Table.Cell>
                       <StatusBadge status={room.status} />
-                    </TableCell>
-                  </TableRow>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </TableBody>
+              </Table.Body>
             </Table>
             {parsedCsvData.length > 5 && <div style={{ padding: 'var(--spacing-3) var(--spacing-6)', backgroundColor: 'var(--table-header-bg)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Showing 5 of {parsedCsvData.length} rooms</div>}
 

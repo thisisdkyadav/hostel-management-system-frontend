@@ -1,6 +1,6 @@
 import { getStatusColor, getTimeSince } from "../../utils/adminUtils"
 import { useAuth } from "../../contexts/AuthProvider"
-import { DataTable } from "@/components/ui"
+import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 
 const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {

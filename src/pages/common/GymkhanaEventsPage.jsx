@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect, useMemo, useRef, createElement } from "react"
-import { Button } from "czero/react"
+import { Button, DataTable, Table } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
 import { Select, Input, Textarea, Checkbox } from "@/components/ui/form"
@@ -19,8 +19,7 @@ import {
   useToast,
 } from "@/components/ui/feedback"
 import { Badge, StatCards } from "@/components/ui/data-display"
-import { ToggleButtonGroup, DataTable, Tabs } from "@/components/ui"
-import { Table, TableHead, TableBody, TableHeader, TableRow, TableCell } from "@/components/ui/table"
+import { ToggleButtonGroup, Tabs } from "@/components/ui"
 import {
   CalendarDays,
   Plus,
@@ -3640,20 +3639,20 @@ const toCalendarEventPayload = (event) => {
             Pending in current calendar: <strong>{pendingProposalsForSelectedCalendar.length}</strong>
           </Alert>
           <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeader>Event</TableHeader>
-                <TableHeader>Date</TableHeader>
-                <TableHeader>Expected Income</TableHeader>
-                <TableHeader>Total Expenditure</TableHeader>
-                <TableHeader>Deflection</TableHeader>
-                <TableHeader align="right">Action</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Event</Table.Head>
+                <Table.Head>Date</Table.Head>
+                <Table.Head>Expected Income</Table.Head>
+                <Table.Head>Total Expenditure</Table.Head>
+                <Table.Head>Deflection</Table.Head>
+                <Table.Head align="right">Action</Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {pendingProposalsForSelectedCalendar.map((proposal) => (
-                <TableRow key={proposal._id}>
-                  <TableCell>
+                <Table.Row key={proposal._id}>
+                  <Table.Cell>
                     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
                       <span style={{ fontWeight: "var(--font-weight-medium)" }}>
                         {proposal.eventId?.title || "Unknown event"}
@@ -3662,16 +3661,16 @@ const toCalendarEventPayload = (event) => {
                         By {proposal.submittedBy?.name || "Unknown"}
                       </span>
                     </div>
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     {formatDateRange(
                       proposal.eventId?.scheduledStartDate,
                       proposal.eventId?.scheduledEndDate
                     )}
-                  </TableCell>
-                  <TableCell>₹{Number(proposal.totalExpectedIncome || 0).toLocaleString()}</TableCell>
-                  <TableCell>₹{Number(proposal.totalExpenditure || 0).toLocaleString()}</TableCell>
-                  <TableCell
+                  </Table.Cell>
+                  <Table.Cell>₹{Number(proposal.totalExpectedIncome || 0).toLocaleString()}</Table.Cell>
+                  <Table.Cell>₹{Number(proposal.totalExpenditure || 0).toLocaleString()}</Table.Cell>
+                  <Table.Cell
                     style={{
                       color:
                         Number(proposal.budgetDeflection || 0) > 0
@@ -3680,8 +3679,8 @@ const toCalendarEventPayload = (event) => {
                     }}
                   >
                     ₹{Number(proposal.budgetDeflection || 0).toLocaleString()}
-                  </TableCell>
-                  <TableCell align="right">
+                  </Table.Cell>
+                  <Table.Cell align="right">
                     <Button
                       size="sm"
                       variant="ghost"
@@ -3692,10 +3691,10 @@ const toCalendarEventPayload = (event) => {
                     >
                       Review
                     </Button>
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ))}
-            </TableBody>
+            </Table.Body>
           </Table>
         </div>
       </Modal>
@@ -3716,35 +3715,35 @@ const toCalendarEventPayload = (event) => {
             Pending in current calendar: <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong>
           </Alert>
           <Table>
-            <TableHead>
-              <TableRow>
-                <TableHeader>Event</TableHeader>
-                <TableHeader>Date</TableHeader>
-                <TableHeader>Submitted By</TableHeader>
-                <TableHeader>Total Bills</TableHeader>
-                <TableHeader>Assigned Budget</TableHeader>
-                <TableHeader>Variance</TableHeader>
-                <TableHeader align="right">Action</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+            <Table.Header>
+              <Table.Row>
+                <Table.Head>Event</Table.Head>
+                <Table.Head>Date</Table.Head>
+                <Table.Head>Submitted By</Table.Head>
+                <Table.Head>Total Bills</Table.Head>
+                <Table.Head>Assigned Budget</Table.Head>
+                <Table.Head>Variance</Table.Head>
+                <Table.Head align="right">Action</Table.Head>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
               {pendingExpenseApprovalsForSelectedCalendar.map((expense) => (
-                <TableRow key={expense._id}>
-                  <TableCell>
+                <Table.Row key={expense._id}>
+                  <Table.Cell>
                     <span style={{ fontWeight: "var(--font-weight-medium)" }}>
                       {expense.eventId?.title || "Unknown event"}
                     </span>
-                  </TableCell>
-                  <TableCell>
+                  </Table.Cell>
+                  <Table.Cell>
                     {formatDateRange(
                       expense.eventId?.scheduledStartDate,
                       expense.eventId?.scheduledEndDate
                     )}
-                  </TableCell>
-                  <TableCell>{expense.submittedBy?.name || "Unknown"}</TableCell>
-                  <TableCell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</TableCell>
-                  <TableCell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</TableCell>
-                  <TableCell
+                  </Table.Cell>
+                  <Table.Cell>{expense.submittedBy?.name || "Unknown"}</Table.Cell>
+                  <Table.Cell>₹{Number(expense.totalExpenditure || 0).toLocaleString()}</Table.Cell>
+                  <Table.Cell>₹{Number(expense.estimatedBudget || 0).toLocaleString()}</Table.Cell>
+                  <Table.Cell
                     style={{
                       color:
                         Number(expense.budgetVariance || 0) > 0
@@ -3753,8 +3752,8 @@ const toCalendarEventPayload = (event) => {
                     }}
                   >
                     ₹{Number(expense.budgetVariance || 0).toLocaleString()}
-                  </TableCell>
-                  <TableCell align="right">
+                  </Table.Cell>
+                  <Table.Cell align="right">
                     <Button
                       size="sm"
                       variant="ghost"
@@ -3765,10 +3764,10 @@ const toCalendarEventPayload = (event) => {
                     >
                       Review
                     </Button>
-                  </TableCell>
-                </TableRow>
+                  </Table.Cell>
+                </Table.Row>
               ))}
-            </TableBody>
+            </Table.Body>
           </Table>
         </div>
       </Modal>

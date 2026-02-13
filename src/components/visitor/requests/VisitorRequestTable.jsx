@@ -3,8 +3,7 @@ import { FaEye, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/f
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
 import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { DataTable } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const StatusBadge = ({ status }) => {
   const statusMap = {

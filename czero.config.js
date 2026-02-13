@@ -268,8 +268,14 @@ export default {
 
     // Table component
     table: {
-      borderRadius: "12px",        // --radius-dropdown
-      cellPadding: "0.75rem 1rem", // --table-cell-padding-md
+      borderRadius: "var(--radius-card)",             // Keep table clipping in sync with card shell
+      borderWidth: "var(--border-1, 1px)",
+      borderColor: "var(--table-border)",
+      headerBg: "var(--table-header-bg)",
+      headerFontWeight: "var(--font-weight-medium)",
+      cellPadding: "var(--table-cell-padding-md, 0.75rem 1rem)",
+      rowHoverBg: "var(--table-row-hover)",
+      stripedBg: "var(--table-stripe-bg)",
     },
   },
 };

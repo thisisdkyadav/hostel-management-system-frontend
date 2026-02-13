@@ -1,7 +1,6 @@
 import React from "react"
 import { FaDoorOpen, FaUserPlus, FaEye } from "react-icons/fa"
-import { DataTable } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, DataTable } from "czero/react"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const RoomListView = ({ rooms, onRoomClick, onAllocateClick }) => {

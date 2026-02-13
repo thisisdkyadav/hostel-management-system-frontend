@@ -7,8 +7,8 @@
 ## Quick Import
 
 ```jsx
-// Button from CZero (not from @/components/ui)
-import { Button } from 'czero/react'
+// Core components from CZero (not from @/components/ui)
+import { Button, Table, DataTable } from 'czero/react'
 
 // Other UI components
 import { Input, Card, Modal, ... } from '@/components/ui'
@@ -20,7 +20,7 @@ import { Card, Stack, Divider } from '@/components/ui/layout'
 import { Modal, Toast, Alert } from '@/components/ui/feedback'
 ```
 
-> **Note:** The `Button` component is now provided by the CZero UI library. Always import it from `czero/react`.
+> **Note:** `Button`, `Table`, and `DataTable` are provided by the CZero UI library. Import them from `czero/react`.
 
 ---
 
@@ -760,53 +760,41 @@ Simple horizontal tabs with underlined active indicator. Designed for page/secti
 
 ## Table Components
 
-**Location:** `@/components/ui/table`
+**Location:** `czero/react` (NOT from `@/components/ui/table`)
 
-### Table
+### Table (CZero Compound API)
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
 | `children` | `React.ReactNode` | - | Table content |
-| `variant` | `string` | `"default"` | `"default"`, `"striped"`, `"bordered"` |
-| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` |
-| `hoverable` | `boolean` | `true` | Highlight row on hover |
-| `stickyHeader` | `boolean` | `false` | Sticky header |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+| `className` | `string` | `""` | Additional CSS classes on `<table>` |
+| `...props` | native table attrs | - | Any native table prop (`aria-*`, etc.) |
 
-### TableHeader
+**Compound sub-components:**
+- `Table.Header` (`<thead>`)
+- `Table.Body` (`<tbody>`)
+- `Table.Row` (`<tr>`)
+- `Table.Head` (`<th>`)
+- `Table.Cell` (`<td>`)
 
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Header content |
-| `align` | `string` | `"left"` | `"left"`, `"center"`, `"right"` |
-| `sortable` | `boolean` | `false` | Enable sorting |
-| `sortDirection` | `string` | - | `"asc"`, `"desc"`, or `null` |
-| `onSort` | `function` | - | Sort handler |
-| `width` | `string` | - | Column width |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
+```jsx
+import { Table } from 'czero/react'
 
-### TableCell
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Cell content |
-| `align` | `string` | `"left"` | `"left"`, `"center"`, `"right"` |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### TableRow
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Row content |
-| `selected` | `boolean` | `false` | Selected state |
-| `onClick` | `function` | - | Click handler |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-**Also exports:** `TableHead`, `TableBody`
+<Table>
+  <Table.Header>
+    <Table.Row>
+      <Table.Head>Name</Table.Head>
+      <Table.Head>Email</Table.Head>
+    </Table.Row>
+  </Table.Header>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Alice</Table.Cell>
+      <Table.Cell>alice@iitk.ac.in</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+```
 
 ### DataTable
 
@@ -825,10 +813,11 @@ Simple horizontal tabs with underlined active indicator. Designed for page/secti
 | `currentPage` | `number` | - | Controlled current page |
 | `onPageChange` | `function` | - | Page change handler |
 | `loading` | `boolean` | `false` | Loading state |
+| `isLoading` | `boolean` | `false` | Alias of `loading` |
 | `emptyState` | `React.ReactNode` | - | Custom empty state |
 | `emptyMessage` | `string` | - | Custom empty message text |
 | `onRowClick` | `function` | - | Row click handler |
-| `getRowId` | `function` | `(row) => row.id` | Function to get unique row id |
+| `getRowId` | `function` | `(row, i) => row.id ?? row._id ?? i` | Function to get unique row id |
 | `variant` | `string` | `"default"` | `"default"`, `"striped"`, `"bordered"` |
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
@@ -845,6 +834,8 @@ Simple horizontal tabs with underlined active indicator. Designed for page/secti
 | `width` | `string` | Column width (e.g., `"100px"`, `"20%"`) |
 | `className` | `string` | CSS classes applied to both header and cells (useful for responsive hiding, e.g., `"hidden md:table-cell"`) |
 | `customHeaderRender` | `function` | Custom header render: `() => ReactNode` |
+
+> **Migration Note:** Legacy imports from `@/components/ui/table` are removed. Use `Table` / `DataTable` from `czero/react`.
 
 ---
 
@@ -976,14 +967,14 @@ import { Modal, Input, Button } from '@/components/ui'
 ### Data Table
 
 ```jsx
-import { DataTable } from '@/components/ui'
+import { DataTable } from 'czero/react'
 
 <DataTable
   data={users}
   columns={[
     { key: 'name', header: 'Name', sortable: true },
     { key: 'email', header: 'Email' },
-    { key: 'status', header: 'Status', render: (val) => <StatusBadge status={val} /> }
+    { key: 'status', header: 'Status', render: (_row, val) => <StatusBadge status={val} /> }
   ]}
   selectable
   pagination
@@ -1140,14 +1131,14 @@ import { Modal, Input } from '@/components/ui'
 ### Data Table
 
 ```jsx
-import { DataTable } from '@/components/ui'
+import { DataTable } from 'czero/react'
 
 <DataTable
   data={users}
   columns={[
     { key: 'name', header: 'Name', sortable: true },
     { key: 'email', header: 'Email' },
-    { key: 'status', header: 'Status', render: (val) => <StatusBadge status={val} /> }
+    { key: 'status', header: 'Status', render: (_row, val) => <StatusBadge status={val} /> }
   ]}
   selectable
   pagination

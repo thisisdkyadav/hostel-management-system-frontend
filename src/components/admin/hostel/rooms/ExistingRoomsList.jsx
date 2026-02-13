@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Pencil, Trash2, Search, Filter, FileUp } from "lucide-react"
-import { Input, Select, IconButton, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, StatusBadge } from "@/components/ui"
-import { Button } from "czero/react"
+import { Input, Select, IconButton, VStack, HStack, StatusBadge } from "@/components/ui"
+import { Button, Table } from "czero/react"
 import EditRoomModal from "./EditRoomModal"
 import BulkUpdateRoomsModal from "./BulkUpdateRoomsModal"
 import { adminApi } from "../../../../service"
@@ -129,25 +129,25 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
         </div>
       ) : (
         <Table>
-          <TableHead>
-            <TableRow>
-              {isUnitBased && <TableHeader>Unit</TableHeader>}
-              <TableHeader>Room</TableHeader>
-              <TableHeader>Capacity</TableHeader>
-              <TableHeader>Status</TableHeader>
-              <TableHeader>Actions</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+          <Table.Header>
+            <Table.Row>
+              {isUnitBased && <Table.Head>Unit</Table.Head>}
+              <Table.Head>Room</Table.Head>
+              <Table.Head>Capacity</Table.Head>
+              <Table.Head>Status</Table.Head>
+              <Table.Head>Actions</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {filteredRooms.map((room) => (
-              <TableRow key={room.id}>
-                {isUnitBased && <TableCell>{room.unitNumber}</TableCell>}
-                <TableCell>{room.roomNumber}</TableCell>
-                <TableCell>{room.capacity}</TableCell>
-                <TableCell>
+              <Table.Row key={room.id}>
+                {isUnitBased && <Table.Cell>{room.unitNumber}</Table.Cell>}
+                <Table.Cell>{room.roomNumber}</Table.Cell>
+                <Table.Cell>{room.capacity}</Table.Cell>
+                <Table.Cell>
                   <StatusBadge status={room.status} />
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   <IconButton
                     onClick={() => handleEditRoom(room)}
                     variant="ghost"
@@ -155,10 +155,10 @@ const ExistingRoomsList = ({ hostel, onRoomsUpdated, setIsLoading }) => {
                     icon={<Pencil size={16} />}
                     ariaLabel="Edit room"
                   />
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </TableBody>
+          </Table.Body>
         </Table>
       )}
 

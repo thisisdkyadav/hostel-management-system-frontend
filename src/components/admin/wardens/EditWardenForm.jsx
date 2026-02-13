@@ -4,8 +4,8 @@ import { FiTag } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi, accessControlApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Modal, Input, Checkbox, VStack, HStack, Label, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Tabs, TabList, Tab, Spinner } from "@/components/ui"
-import { Button } from "czero/react"
+import { Modal, Input, Checkbox, VStack, HStack, Label, Tabs, TabList, Tab, Spinner } from "@/components/ui"
+import { Button, Table } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
@@ -319,30 +319,30 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
               </div>
             ) : permissions ? (
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Resource</TableHead>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Head>Resource</Table.Head>
                     {actions.map((action) => (
-                      <TableHead key={action.id} style={{ textAlign: 'center' }}>
+                      <Table.Head key={action.id} style={{ textAlign: 'center' }}>
                         {action.label}
-                      </TableHead>
+                      </Table.Head>
                     ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
                   {resources.map((resource) => (
-                    <TableRow key={resource.id}>
-                      <TableCell style={{ fontWeight: 'var(--font-weight-medium)' }}>{resource.label}</TableCell>
+                    <Table.Row key={resource.id}>
+                      <Table.Cell style={{ fontWeight: 'var(--font-weight-medium)' }}>{resource.label}</Table.Cell>
                       {actions.map((action) => (
-                        <TableCell key={`${resource.id}-${action.id}`} style={{ textAlign: 'center' }}>
+                        <Table.Cell key={`${resource.id}-${action.id}`} style={{ textAlign: 'center' }}>
                           <Checkbox checked={permissions[resource.id]?.[action.id] || false} onChange={(e) => handlePermissionChange(resource.id, action.id, e.target.checked)}
                             disabled={!currentAllowedChanges[resource.id]?.includes(action.id)}
                           />
-                        </TableCell>
+                        </Table.Cell>
                       ))}
-                    </TableRow>
+                    </Table.Row>
                   ))}
-                </TableBody>
+                </Table.Body>
               </Table>
             ) : (
               <div style={{ textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-danger)' }}>Failed to load permissions. Please try again.</div>

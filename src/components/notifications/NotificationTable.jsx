@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
 import ViewNotificationModal from "./ViewNotificationModal"
-import { DataTable } from "@/components/ui"
+import { DataTable } from "czero/react"
 
 const NotificationTable = ({ notifications, onRefresh }) => {
   const [selectedNotification, setSelectedNotification] = useState(null)

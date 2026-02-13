@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Filter, Calendar, UserCog, Users, Search, UserCheck, Check, X } from "lucide-react"
-import { Modal, Select, Label, VStack, HStack, Table, TableHead, TableBody, TableRow, TableCell, TableHeader, Badge, Spinner, Pagination } from "@/components/ui"
-import { Button } from "czero/react"
+import { Modal, Select, Label, VStack, HStack, Badge, Spinner, Pagination } from "@/components/ui"
+import { Button, Table } from "czero/react"
 import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -99,35 +99,35 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
     return (
       <>
         <Table style={{ marginTop: 'var(--spacing-4)' }}>
-          <TableHead>
-            <TableRow>
-              <TableHeader>Name</TableHeader>
-              <TableHeader>Role</TableHeader>
-              <TableHeader>Time</TableHeader>
-              <TableHeader>Status</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+          <Table.Header>
+            <Table.Row>
+              <Table.Head>Name</Table.Head>
+              <Table.Head>Role</Table.Head>
+              <Table.Head>Time</Table.Head>
+              <Table.Head>Status</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {attendanceRecords.map((record) => (
-              <TableRow key={record._id}>
-                <TableCell>
+              <Table.Row key={record._id}>
+                <Table.Cell>
                   <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{record.userId.name}</div>
                   <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{record.userId.email}</div>
-                </TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>
                   <Badge variant={record.userId.role === "Security" ? "purple" : "primary"}>
                     {record.userId.role}
                   </Badge>
-                </TableCell>
-                <TableCell>{formatDate(record.createdAt)}</TableCell>
-                <TableCell>
+                </Table.Cell>
+                <Table.Cell>{formatDate(record.createdAt)}</Table.Cell>
+                <Table.Cell>
                   <Badge variant={record.type === "checkIn" ? "success" : "danger"}>
                     {record.type === "checkIn" ? "Check In" : "Check Out"}
                   </Badge>
-                </TableCell>
-              </TableRow>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </TableBody>
+          </Table.Body>
         </Table>
 
         {/* Pagination */}
@@ -159,34 +159,34 @@ const HostelDetailsModal = ({ hostel, onClose }) => {
 
     return (
       <Table style={{ marginTop: 'var(--spacing-4)' }}>
-        <TableHead>
-          <TableRow>
-            <TableHeader>Name</TableHeader>
-            <TableHeader>Role</TableHeader>
-            <TableHeader>Email</TableHeader>
-            <TableHeader>Status</TableHeader>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+        <Table.Header>
+          <Table.Row>
+            <Table.Head>Name</Table.Head>
+            <Table.Head>Role</Table.Head>
+            <Table.Head>Email</Table.Head>
+            <Table.Head>Status</Table.Head>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {presentStaff.map((staff) => (
-            <TableRow key={staff._id}>
-              <TableCell>
+            <Table.Row key={staff._id}>
+              <Table.Cell>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-primary)' }}>{staff.name}</div>
-              </TableCell>
-              <TableCell>
+              </Table.Cell>
+              <Table.Cell>
                 <Badge variant={staff.role === "Security" ? "purple" : "primary"}>
                   {staff.role}
                 </Badge>
-              </TableCell>
-              <TableCell>{staff.email}</TableCell>
-              <TableCell>
+              </Table.Cell>
+              <Table.Cell>{staff.email}</Table.Cell>
+              <Table.Cell>
                 <Badge variant="success" icon={<Check size={12} />}>
                   Present
                 </Badge>
-              </TableCell>
-            </TableRow>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </TableBody>
+        </Table.Body>
       </Table>
     )
   }

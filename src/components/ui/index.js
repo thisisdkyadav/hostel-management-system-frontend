@@ -82,8 +82,6 @@ export { default as ConfirmDialog } from './overlay/ConfirmDialog'
 // ==============================================
 // TABLE COMPONENTS
 // ==============================================
-export { default as Table, TableHead, TableBody, TableRow, TableCell, TableHeader } from './table/Table'
-export { default as DataTable } from './table/DataTable'
 
 // ==============================================
 // TYPOGRAPHY COMPONENTS

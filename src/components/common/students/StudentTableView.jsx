@@ -1,6 +1,6 @@
 import React from "react"
 import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa"
-import { DataTable } from "@/components/ui"
+import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails }) => {

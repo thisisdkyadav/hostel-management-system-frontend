@@ -1,7 +1,6 @@
 import React from "react"
 import { FaBuilding, FaDoorOpen, FaEye } from "react-icons/fa"
-import { DataTable } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, DataTable } from "czero/react"
 
 const UnitListView = ({ units, onUnitClick }) => {
   const columns = [

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes } from "react-icons/fa"
-import { Modal, VStack, HStack, Label, Spinner, Pagination, Table, TableHeader, TableBody, TableRow, TableHead, TableCell, EmptyState, Badge } from "@/components/ui"
-import { Button } from "czero/react"
+import { Modal, VStack, HStack, Label, Spinner, Pagination, EmptyState, Badge } from "@/components/ui"
+import { Button, Table } from "czero/react"
 import { securityApi } from "../../../service"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -106,28 +106,28 @@ const SecurityStaffDetailsModal = ({ staff, onClose }) => {
             </div>
           ) : attendanceRecords.length > 0 ? (
             <Table>
-              <TableHead>
-                <TableRow>
-                  <TableHeader>Date</TableHeader>
-                  <TableHeader>Time</TableHeader>
-                  <TableHeader>Type</TableHeader>
-                  <TableHeader>Hostel</TableHeader>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Date</Table.Head>
+                  <Table.Head>Time</Table.Head>
+                  <Table.Head>Type</Table.Head>
+                  <Table.Head>Hostel</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
                 {attendanceRecords.map((record) => (
-                  <TableRow key={record._id}>
-                    <TableCell>{formatDate(record.createdAt).split(" ")[0]}</TableCell>
-                    <TableCell>{formatDate(record.createdAt).split(" ")[1]}</TableCell>
-                    <TableCell>
+                  <Table.Row key={record._id}>
+                    <Table.Cell>{formatDate(record.createdAt).split(" ")[0]}</Table.Cell>
+                    <Table.Cell>{formatDate(record.createdAt).split(" ")[1]}</Table.Cell>
+                    <Table.Cell>
                       <Badge variant={record.type === "checkIn" ? "success" : "danger"}>
                         {record.type === "checkIn" ? "Check In" : "Check Out"}
                       </Badge>
-                    </TableCell>
-                    <TableCell>{record.hostelId?.name || "N/A"}</TableCell>
-                  </TableRow>
+                    </Table.Cell>
+                    <Table.Cell>{record.hostelId?.name || "N/A"}</Table.Cell>
+                  </Table.Row>
                 ))}
-              </TableBody>
+              </Table.Body>
             </Table>
           ) : (
             <EmptyState
