@@ -1,12 +1,19 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Modal } from "czero/react"
-import { Eye } from "lucide-react"
+import { Eye, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
-import { Badge, Input, Select, Textarea, useToast } from "@/components/ui"
+import PageFooter from "../../components/common/PageFooter"
+import { Badge, Input, Pagination, Select, Tabs, Textarea, useToast } from "@/components/ui"
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const APPOINTMENT_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
+const APPOINTMENT_STATUS_TABS = [
+  { label: "All", value: "all" },
+  { label: "Pending", value: "Pending" },
+  { label: "Approved", value: "Approved" },
+  { label: "Rejected", value: "Rejected" },
+]
 
 const cardStyle = {
   border: "var(--border-1) solid var(--color-border-primary)",
@@ -72,10 +79,11 @@ const AppointmentsPage = () => {
 
   const [appointments, setAppointments] = useState([])
   const [loading, setLoading] = useState(false)
-  const [statusFilter, setStatusFilter] = useState("")
+  const [statusFilter, setStatusFilter] = useState("all")
   const [searchValue, setSearchValue] = useState("")
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
 
   const [availabilityLoading, setAvailabilityLoading] = useState(false)
   const [acceptingAppointments, setAcceptingAppointments] = useState(false)
@@ -91,25 +99,18 @@ const AppointmentsPage = () => {
   const [approvedTime, setApprovedTime] = useState("")
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
 
-  const fetchAppointments = async (overrides = {}) => {
-    const targetPage = overrides.page || page
-    const targetStatus = Object.prototype.hasOwnProperty.call(overrides, "status")
-      ? overrides.status
-      : statusFilter
-    const targetSearch = Object.prototype.hasOwnProperty.call(overrides, "search")
-      ? overrides.search
-      : searchValue
-
+  const fetchAppointments = async () => {
     try {
       setLoading(true)
       const response = await appointmentsApi.getAdminAppointments({
-        page: targetPage,
+        page,
         limit: 10,
-        status: targetStatus || undefined,
-        search: targetSearch || undefined,
+        status: statusFilter !== "all" ? statusFilter : undefined,
+        search: searchValue || undefined,
       })
       setAppointments(response.items || [])
       setTotalPages(response.pagination?.totalPages || 1)
+      setTotalCount(response.pagination?.total || 0)
     } catch (error) {
       toast.error(error.message || "Failed to fetch appointments")
     } finally {
@@ -164,13 +165,15 @@ const AppointmentsPage = () => {
   useEffect(() => {
     if (!isAppointmentAdmin) return
     fetchAvailability()
-    fetchAppointments()
-  }, [isAppointmentAdmin, page, statusFilter])
+  }, [isAppointmentAdmin])
 
-  const handleSearch = async () => {
-    setPage(1)
-    await fetchAppointments({ page: 1, search: searchValue, status: statusFilter })
-  }
+  useEffect(() => {
+    if (!isAppointmentAdmin) return
+    const delay = setTimeout(() => {
+      fetchAppointments()
+    }, 350)
+    return () => clearTimeout(delay)
+  }, [isAppointmentAdmin, page, statusFilter, searchValue])
 
   const handleToggleAvailability = async () => {
     const nextValue = !acceptingAppointments
@@ -292,55 +295,49 @@ const AppointmentsPage = () => {
   }
 
   return (
-    <div className="flex-1">
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <PageHeader
         title="Appointments"
         subtitle={`Requests assigned to ${user?.name || ""} (${user?.subRole || "Admin"})`}
       >
         <Button
           variant={acceptingAppointments ? "success" : "outline"}
-          size="sm"
+          size="md"
           loading={availabilityLoading}
           onClick={handleToggleAvailability}
         >
           {acceptingAppointments ? "Accepting: ON" : "Accepting: OFF"}
         </Button>
-
-        <div style={{ width: "220px" }}>
-          <Input
-            placeholder="Search name/mobile/id"
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") handleSearch()
-            }}
-          />
-        </div>
-
-        <Button variant="outline" size="sm" onClick={handleSearch}>
-          Search
-        </Button>
-
-        <div style={{ width: "180px" }}>
-          <Select
-            value={statusFilter}
-            onChange={(event) => {
-              setStatusFilter(event.target.value)
-              setPage(1)
-            }}
-            options={[
-              { value: "", label: "All Status" },
-              { value: "Pending", label: "Pending" },
-              { value: "Approved", label: "Approved" },
-              { value: "Rejected", label: "Rejected" },
-            ]}
-          />
-        </div>
       </PageHeader>
 
-      <div style={{ padding: "var(--spacing-4) var(--spacing-6)" }}>
-        <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-          <h3 style={sectionTitleStyle}>All Requests</h3>
+      <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <Tabs
+              tabs={APPOINTMENT_STATUS_TABS}
+              activeTab={statusFilter}
+              setActiveTab={(value) => {
+                setStatusFilter(value)
+                setPage(1)
+              }}
+            />
+          </div>
+
+          <div className="w-full lg:w-[420px] lg:max-w-[420px]">
+            <Input
+              type="text"
+              icon={<Search size={16} />}
+              placeholder="Search name, mobile, email, or ID..."
+              value={searchValue}
+              onChange={(event) => {
+                setSearchValue(event.target.value)
+                setPage(1)
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginTop: "var(--spacing-4)" }}>
           <DataTable
             columns={columns}
             data={appointments}
@@ -348,36 +345,34 @@ const AppointmentsPage = () => {
             emptyMessage="No appointment requests found"
             onRowClick={handleOpenDetails}
           />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: "var(--spacing-2)",
-            }}
-          >
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-            >
-              Prev
-            </Button>
-            <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-              Page {page} / {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
-            >
-              Next
-            </Button>
-          </div>
         </div>
       </div>
+
+      <PageFooter
+        leftContent={[
+          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            Showing{" "}
+            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+              {loading ? 0 : appointments.length}
+            </span>{" "}
+            of{" "}
+            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+              {loading ? 0 : totalCount}
+            </span>{" "}
+            appointments
+          </span>,
+        ]}
+        rightContent={[
+          <Pagination
+            key="pagination"
+            currentPage={page}
+            totalPages={totalPages}
+            paginate={setPage}
+            compact
+            showPageInfo={false}
+          />,
+        ]}
+      />
 
       <Modal
         title={selectedAppointment ? `Appointment #${selectedAppointment.id?.slice(-6)}` : "Appointment"}
