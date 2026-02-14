@@ -64,6 +64,8 @@ const createProfileItem = (basePath) => ({
   path: `${basePath}/profile`
 })
 
+const APPOINTMENT_ADMIN_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
+
 // ============================================
 // ADMIN NAVIGATION
 // ============================================
@@ -96,12 +98,12 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Settings", icon: Settings, section: "main", path: "/admin/settings" },
   ]
 
-  if (user?.subRole === "Joint Registrar SA") {
+  if (APPOINTMENT_ADMIN_SUBROLES.includes(user?.subRole)) {
     navItems.splice(10, 0, {
-      name: "JR Appointments",
+      name: "Appointments",
       icon: UserRoundCheck,
       section: "main",
-      path: "/admin/jr-appointments",
+      path: "/admin/appointments",
     })
   }
 
@@ -196,7 +198,7 @@ export const getHostelGateNavItems = (handleLogout) => [
   { name: "Student Entries", icon: Clock, section: "main", path: "/hostel-gate/entries" },
   { name: "Scanner Entries", icon: Keyboard, section: "main", path: "/hostel-gate/scanner-entries" },
   { name: "Face Scanner", icon: Scan, section: "main", path: "/hostel-gate/face-scanner-entries" },
-  { name: "JR Appointments", icon: UserRoundCheck, section: "main", path: "/hostel-gate/jr-appointments" },
+  { name: "Appointments", icon: UserRoundCheck, section: "main", path: "/hostel-gate/appointments" },
   { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
   { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },
@@ -215,6 +217,7 @@ export const getSecurityNavItems = (handleLogout, user) => {
       { name: "Add Student Entry", icon: UserPlus, section: "main", path: "/hostel-gate" },
       { name: "Student Entries", icon: Clock, section: "main", path: "/hostel-gate/entries" },
       { name: "Attendance", icon: CheckSquare, section: "main", path: "/hostel-gate/attendance" },
+      { name: "Appointments", icon: UserRoundCheck, section: "main", path: "/hostel-gate/appointments" },
       { name: "Visitors", icon: Users, section: "main", path: "/hostel-gate/visitors" },
       { name: "My Tasks", icon: ListTodo, section: "main", path: "/hostel-gate/my-tasks" },
       { name: "Lost and Found", icon: Search, section: "main", path: "/hostel-gate/lost-and-found" },

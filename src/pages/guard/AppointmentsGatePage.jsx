@@ -3,7 +3,7 @@ import { Button, DataTable, Modal } from "czero/react"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Select, Textarea, useToast } from "@/components/ui"
-import { jrAppointmentsApi } from "../../service"
+import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const cardStyle = {
@@ -40,7 +40,7 @@ const formatDateTime = (value) => {
   return date.toLocaleString()
 }
 
-const JRAppointmentsGatePage = () => {
+const AppointmentsGatePage = () => {
   const { user } = useAuth()
   const { toast } = useToast()
 
@@ -61,7 +61,7 @@ const JRAppointmentsGatePage = () => {
   const fetchAppointments = async () => {
     try {
       setLoading(true)
-      const response = await jrAppointmentsApi.getGateAppointments({
+      const response = await appointmentsApi.getGateAppointments({
         page,
         limit: 20,
         dateFilter,
@@ -71,7 +71,7 @@ const JRAppointmentsGatePage = () => {
       setAppointments(response.items || [])
       setTotalPages(response.pagination?.totalPages || 1)
     } catch (error) {
-      toast.error(error.message || "Failed to fetch gate appointments")
+      toast.error(error.message || "Failed to fetch appointments")
     } finally {
       setLoading(false)
     }
@@ -99,7 +99,7 @@ const JRAppointmentsGatePage = () => {
 
     try {
       setEntrySubmitting(true)
-      const response = await jrAppointmentsApi.markGateEntry(selectedAppointment.id, {
+      const response = await appointmentsApi.markGateEntry(selectedAppointment.id, {
         note: entryNote,
       })
 
@@ -129,6 +129,11 @@ const JRAppointmentsGatePage = () => {
             </div>
           </div>
         ),
+      },
+      {
+        key: "target",
+        header: "Appointment With",
+        render: (item) => `${item.targetOfficial?.name || "-"} (${item.targetSubRole || "-"})`,
       },
       {
         key: "email",
@@ -178,14 +183,14 @@ const JRAppointmentsGatePage = () => {
   if (!isGateUser) {
     return (
       <div className="flex-1">
-        <PageHeader title="JR Appointments" subtitle="Access denied" />
+        <PageHeader title="Appointments" subtitle="Access denied" />
       </div>
     )
   }
 
   return (
     <div className="flex-1">
-      <PageHeader title="JR Appointments" subtitle="Approved visitor appointments for main gate">
+      <PageHeader title="Appointments" subtitle="Approved appointments for main gate">
         <div style={{ width: "170px" }}>
           <Select
             value={dateFilter}
@@ -222,7 +227,7 @@ const JRAppointmentsGatePage = () => {
             columns={columns}
             data={appointments}
             loading={loading}
-            emptyMessage="No approved JR appointments found"
+            emptyMessage="No approved appointments found"
             onRowClick={openDetails}
           />
 
@@ -251,7 +256,7 @@ const JRAppointmentsGatePage = () => {
       </div>
 
       <Modal
-        title={selectedAppointment ? `JR Appointment #${selectedAppointment.id?.slice(-6)}` : "JR Appointment"}
+        title={selectedAppointment ? `Appointment #${selectedAppointment.id?.slice(-6)}` : "Appointment"}
         onClose={closeDetails}
         width={860}
         isOpen={detailsOpen}
@@ -260,7 +265,15 @@ const JRAppointmentsGatePage = () => {
           <div style={{ color: "var(--color-text-muted)" }}>Appointment details unavailable</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
+            <div
+              style={{
+                ...cardStyle,
+                padding: "var(--spacing-3)",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "var(--spacing-3)",
+              }}
+            >
               <div>
                 <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Visitor</div>
                 <div style={{ color: "var(--color-text-body)", fontWeight: "var(--font-weight-semibold)" }}>
@@ -275,9 +288,11 @@ const JRAppointmentsGatePage = () => {
               </div>
 
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Identity</div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  Appointment With
+                </div>
                 <div style={{ color: "var(--color-text-body)" }}>
-                  {selectedAppointment.idType}: {selectedAppointment.idNumber}
+                  {selectedAppointment.targetOfficial?.name || "-"} ({selectedAppointment.targetSubRole || "-"})
                 </div>
                 <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
                   Approved Meeting
@@ -288,7 +303,13 @@ const JRAppointmentsGatePage = () => {
               </div>
 
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Entry Status</div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Identity</div>
+                <div style={{ color: "var(--color-text-body)" }}>
+                  {selectedAppointment.idType}: {selectedAppointment.idNumber}
+                </div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
+                  Entry Status
+                </div>
                 <Badge variant={entryBadge(selectedAppointment.gateEntry?.entered)}>
                   {selectedAppointment.gateEntry?.entered ? "Entered" : "Pending"}
                 </Badge>
@@ -335,4 +356,4 @@ const JRAppointmentsGatePage = () => {
   )
 }
 
-export default JRAppointmentsGatePage
+export default AppointmentsGatePage

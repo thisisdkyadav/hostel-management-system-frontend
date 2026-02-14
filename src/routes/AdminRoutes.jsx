@@ -27,7 +27,7 @@ import {
     StudentsPage,
     ComplaintsPage,
     DisciplinaryProcessPage,
-    JRAppointmentsPage,
+    AppointmentsPage,
     LeavesPage,
     VisitorRequestsPage,
     LostAndFoundPage,
@@ -65,7 +65,8 @@ const AdminRoutes = () => (
                 <Route path="inventory" element={<InventoryPage />} />
                 <Route path="complaints" element={<ComplaintsPage />} />
                 <Route path="disciplinary-process" element={<DisciplinaryProcessPage />} />
-                <Route path="jr-appointments" element={<JRAppointmentsPage />} />
+                <Route path="appointments" element={<AppointmentsPage />} />
+                <Route path="jr-appointments" element={<AppointmentsPage />} />
                 <Route path="leaves" element={<LeavesPage />} />
                 <Route path="security" element={<SecurityLoginsPage />} />
                 <Route path="visitors" element={<VisitorRequestsPage />} />

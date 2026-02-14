@@ -8,7 +8,7 @@ import {
     ScannerEntriesPage,
     FaceScannerEntriesPage,
     HostelGateAttendancePage,
-    JRAppointmentsGatePage
+    AppointmentsGatePage
 } from "../pages/guard"
 
 // Common pages
@@ -30,7 +30,8 @@ const HostelGateRoutes = () => (
                 <Route path="scanner-entries" element={<ScannerEntriesPage />} />
                 <Route path="face-scanner-entries" element={<FaceScannerEntriesPage />} />
                 <Route path="attendance" element={<HostelGateAttendancePage />} />
-                <Route path="jr-appointments" element={<JRAppointmentsGatePage />} />
+                <Route path="appointments" element={<AppointmentsGatePage />} />
+                <Route path="jr-appointments" element={<AppointmentsGatePage />} />
                 <Route path="my-tasks" element={<MyTasksPage />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Route>

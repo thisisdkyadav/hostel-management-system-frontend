@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { Menu, X, ChevronDown, LogOut, User, Home, Phone, Code, ExternalLink, UserCircle, Github, FileText } from "lucide-react"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import ContactModal from "../contact/ContactModal"
-import JRAppointmentFormModal from "./JRAppointmentFormModal"
+import AppointmentFormModal from "./AppointmentFormModal"
 
 const ModernHeader = () => {
   const { user, getHomeRoute, logout } = useAuth()
@@ -12,13 +12,13 @@ const ModernHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
-  const [isJRFormModalOpen, setIsJRFormModalOpen] = useState(false)
+  const [isAppointmentFormModalOpen, setIsAppointmentFormModalOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const dropdownRef = useRef(null)
   const profileRef = useRef(null)
 
-  const openJRFormModal = () => {
-    setIsJRFormModalOpen(true)
+  const openAppointmentFormModal = () => {
+    setIsAppointmentFormModalOpen(true)
     setActiveDropdown(null)
     setIsMenuOpen(false)
   }
@@ -27,7 +27,7 @@ const ModernHeader = () => {
     {
       label: "Forms",
       icon: <FileText className="modern-header-nav-icon" size={18} />,
-      submenu: [{ label: "Appointment with JR", action: openJRFormModal }],
+      submenu: [{ label: "Appointment Request", action: openAppointmentFormModal }],
     },
     { label: "Contact", icon: <Phone className="modern-header-nav-icon" size={18} />, action: () => setIsContactModalOpen(true) },
     { label: "Dev Team", icon: <Code className="modern-header-nav-icon" size={18} />, path: "https://thisisdkyadav.github.io/hms-dev-team/", isExternal: true },
@@ -333,7 +333,7 @@ const ModernHeader = () => {
       </header>
 
       <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
-      <JRAppointmentFormModal isOpen={isJRFormModalOpen} onClose={() => setIsJRFormModalOpen(false)} />
+      <AppointmentFormModal isOpen={isAppointmentFormModalOpen} onClose={() => setIsAppointmentFormModalOpen(false)} />
     </>
   )
 }

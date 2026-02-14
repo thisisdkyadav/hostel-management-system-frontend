@@ -3,8 +3,10 @@ import { Button, DataTable, Modal } from "czero/react"
 import { Eye } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import { Badge, Input, Select, Textarea, useToast } from "@/components/ui"
-import { jrAppointmentsApi } from "../../service"
+import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+
+const APPOINTMENT_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
 
 const cardStyle = {
   border: "var(--border-1) solid var(--color-border-primary)",
@@ -61,11 +63,12 @@ const todayDateInput = () => {
   return new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0]
 }
 
-const JRAppointmentsPage = () => {
+const AppointmentsPage = () => {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const isJRAdmin = user?.role === "Admin" && user?.subRole === "Joint Registrar SA"
+  const isAppointmentAdmin =
+    user?.role === "Admin" && APPOINTMENT_SUBROLES.includes(user?.subRole)
 
   const [appointments, setAppointments] = useState([])
   const [loading, setLoading] = useState(false)
@@ -73,6 +76,9 @@ const JRAppointmentsPage = () => {
   const [searchValue, setSearchValue] = useState("")
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+
+  const [availabilityLoading, setAvailabilityLoading] = useState(false)
+  const [acceptingAppointments, setAcceptingAppointments] = useState(false)
 
   const [selectedId, setSelectedId] = useState(null)
   const [selectedAppointment, setSelectedAppointment] = useState(null)
@@ -96,7 +102,7 @@ const JRAppointmentsPage = () => {
 
     try {
       setLoading(true)
-      const response = await jrAppointmentsApi.getAdminAppointments({
+      const response = await appointmentsApi.getAdminAppointments({
         page: targetPage,
         limit: 10,
         status: targetStatus || undefined,
@@ -111,10 +117,22 @@ const JRAppointmentsPage = () => {
     }
   }
 
+  const fetchAvailability = async () => {
+    try {
+      setAvailabilityLoading(true)
+      const response = await appointmentsApi.getMyAvailability()
+      setAcceptingAppointments(Boolean(response.availability?.acceptingAppointments))
+    } catch (error) {
+      toast.error(error.message || "Failed to fetch availability")
+    } finally {
+      setAvailabilityLoading(false)
+    }
+  }
+
   const fetchAppointmentById = async (appointmentId) => {
     try {
       setDetailsLoading(true)
-      const response = await jrAppointmentsApi.getAdminAppointmentById(appointmentId)
+      const response = await appointmentsApi.getAdminAppointmentById(appointmentId)
       const appointment = response.appointment || null
       setSelectedAppointment(appointment)
 
@@ -144,13 +162,29 @@ const JRAppointmentsPage = () => {
   }
 
   useEffect(() => {
-    if (!isJRAdmin) return
+    if (!isAppointmentAdmin) return
+    fetchAvailability()
     fetchAppointments()
-  }, [isJRAdmin, page, statusFilter])
+  }, [isAppointmentAdmin, page, statusFilter])
 
   const handleSearch = async () => {
     setPage(1)
     await fetchAppointments({ page: 1, search: searchValue, status: statusFilter })
+  }
+
+  const handleToggleAvailability = async () => {
+    const nextValue = !acceptingAppointments
+
+    try {
+      setAvailabilityLoading(true)
+      const response = await appointmentsApi.updateMyAvailability(nextValue)
+      setAcceptingAppointments(Boolean(response.availability?.acceptingAppointments))
+      toast.success(response.message || "Availability updated")
+    } catch (error) {
+      toast.error(error.message || "Failed to update availability")
+    } finally {
+      setAvailabilityLoading(false)
+    }
   }
 
   const handleOpenDetails = async (row) => {
@@ -182,7 +216,7 @@ const JRAppointmentsPage = () => {
 
     try {
       setReviewSubmitting(true)
-      const response = await jrAppointmentsApi.reviewAppointment(selectedAppointment.id, {
+      const response = await appointmentsApi.reviewAppointment(selectedAppointment.id, {
         action: reviewAction,
         description: reviewDescription,
         approvedDate: reviewAction === "approve" ? approvedDate : undefined,
@@ -204,8 +238,12 @@ const JRAppointmentsPage = () => {
         header: "Visitor",
         render: (item) => (
           <div>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{item.visitorName}</div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>{item.mobileNumber}</div>
+            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+              {item.visitorName}
+            </div>
+            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+              {item.mobileNumber}
+            </div>
           </div>
         ),
       },
@@ -245,17 +283,29 @@ const JRAppointmentsPage = () => {
     []
   )
 
-  if (!isJRAdmin) {
+  if (!isAppointmentAdmin) {
     return (
       <div className="flex-1">
-        <PageHeader title="JR Appointments" subtitle="Access denied" />
+        <PageHeader title="Appointments" subtitle="Access denied" />
       </div>
     )
   }
 
   return (
     <div className="flex-1">
-      <PageHeader title="JR Appointments" subtitle="Review requests to meet Joint Registrar">
+      <PageHeader
+        title="Appointments"
+        subtitle={`Requests assigned to ${user?.name || ""} (${user?.subRole || "Admin"})`}
+      >
+        <Button
+          variant={acceptingAppointments ? "success" : "outline"}
+          size="sm"
+          loading={availabilityLoading}
+          onClick={handleToggleAvailability}
+        >
+          {acceptingAppointments ? "Accepting: ON" : "Accepting: OFF"}
+        </Button>
+
         <div style={{ width: "220px" }}>
           <Input
             placeholder="Search name/mobile/id"
@@ -266,9 +316,11 @@ const JRAppointmentsPage = () => {
             }}
           />
         </div>
+
         <Button variant="outline" size="sm" onClick={handleSearch}>
           Search
         </Button>
+
         <div style={{ width: "180px" }}>
           <Select
             value={statusFilter}
@@ -293,10 +345,17 @@ const JRAppointmentsPage = () => {
             columns={columns}
             data={appointments}
             loading={loading}
-            emptyMessage="No JR appointment requests found"
+            emptyMessage="No appointment requests found"
             onRowClick={handleOpenDetails}
           />
-          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "var(--spacing-2)" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              gap: "var(--spacing-2)",
+            }}
+          >
             <Button
               variant="outline"
               size="sm"
@@ -321,7 +380,7 @@ const JRAppointmentsPage = () => {
       </div>
 
       <Modal
-        title={selectedAppointment ? `JR Appointment #${selectedAppointment.id?.slice(-6)}` : "JR Appointment"}
+        title={selectedAppointment ? `Appointment #${selectedAppointment.id?.slice(-6)}` : "Appointment"}
         onClose={handleCloseDetails}
         width={920}
         isOpen={detailsOpen}
@@ -332,9 +391,23 @@ const JRAppointmentsPage = () => {
           <div style={{ color: "var(--color-text-muted)" }}>Appointment details unavailable</div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+            <div
+              style={{
+                ...cardStyle,
+                padding: "var(--spacing-3)",
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "var(--spacing-2)",
+                flexWrap: "wrap",
+              }}
+            >
               <div>
-                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                <div
+                  style={{
+                    fontWeight: "var(--font-weight-semibold)",
+                    color: "var(--color-text-primary)",
+                  }}
+                >
                   {selectedAppointment.visitorName}
                 </div>
                 <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
@@ -344,33 +417,59 @@ const JRAppointmentsPage = () => {
                   {selectedAppointment.mobileNumber}
                 </div>
               </div>
-              <Badge variant={statusVariant(selectedAppointment.status)}>{selectedAppointment.status}</Badge>
+              <Badge variant={statusVariant(selectedAppointment.status)}>
+                {selectedAppointment.status}
+              </Badge>
             </div>
 
-            <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
+            <div
+              style={{
+                ...cardStyle,
+                padding: "var(--spacing-3)",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "var(--spacing-3)",
+              }}
+            >
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Identity</div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  Appointment With
+                </div>
+                <div style={{ color: "var(--color-text-body)" }}>
+                  {selectedAppointment.targetOfficial?.name || "-"} ({selectedAppointment.targetSubRole || "-"})
+                </div>
+              </div>
+              <div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  Identity
+                </div>
                 <div style={{ color: "var(--color-text-body)" }}>
                   {selectedAppointment.idType}: {selectedAppointment.idNumber}
                 </div>
               </div>
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Preferred Meeting</div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  Preferred Meeting
+                </div>
                 <div style={{ color: "var(--color-text-body)" }}>
                   {formatDate(selectedAppointment.preferredDate)} | {selectedAppointment.preferredTime}
                 </div>
               </div>
-              <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Submitted At</div>
-                <div style={{ color: "var(--color-text-body)" }}>{formatDateTime(selectedAppointment.createdAt)}</div>
-              </div>
             </div>
 
             <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>
+              <div
+                style={{
+                  color: "var(--color-text-muted)",
+                  fontSize: "var(--font-size-sm)",
+                  marginBottom: "var(--spacing-1)",
+                }}
+              >
                 Reason for Meeting
               </div>
-              <div style={{ color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>{selectedAppointment.reason}</div>
+              <div style={{ color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
+                {selectedAppointment.reason}
+              </div>
             </div>
 
             {selectedAppointment.status === "Pending" ? (
@@ -388,7 +487,13 @@ const JRAppointmentsPage = () => {
                 </div>
 
                 {reviewAction === "approve" && (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                      gap: "var(--spacing-3)",
+                    }}
+                  >
                     <Input
                       type="date"
                       value={approvedDate}
@@ -411,13 +516,25 @@ const JRAppointmentsPage = () => {
                 />
 
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button variant={reviewAction === "approve" ? "success" : "danger"} loading={reviewSubmitting} onClick={handleReviewSubmit}>
+                  <Button
+                    variant={reviewAction === "approve" ? "success" : "danger"}
+                    loading={reviewSubmitting}
+                    onClick={handleReviewSubmit}
+                  >
                     {reviewAction === "approve" ? "Approve and Notify" : "Reject and Notify"}
                   </Button>
                 </div>
               </div>
             ) : (
-              <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <div
+                style={{
+                  ...cardStyle,
+                  padding: "var(--spacing-3)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--spacing-2)",
+                }}
+              >
                 <h4 style={sectionTitleStyle}>Review Summary</h4>
                 <div style={{ color: "var(--color-text-body)" }}>
                   <strong>Action:</strong> {selectedAppointment.review?.action || "-"}
@@ -445,4 +562,4 @@ const JRAppointmentsPage = () => {
   )
 }
 
-export default JRAppointmentsPage
+export default AppointmentsPage

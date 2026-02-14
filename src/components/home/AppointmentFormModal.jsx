@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { X } from "lucide-react"
 import { useToast } from "@/components/ui"
-import { jrAppointmentsApi } from "../../service"
+import { appointmentsApi } from "../../service"
 
 const initialFormState = {
+  targetAdminUserId: "",
   visitorName: "",
   mobileNumber: "",
   email: "",
@@ -14,8 +15,10 @@ const initialFormState = {
   preferredTime: "",
 }
 
-const JRAppointmentFormModal = ({ isOpen, onClose }) => {
+const AppointmentFormModal = ({ isOpen, onClose }) => {
   const { toast } = useToast()
+  const [loadingTargets, setLoadingTargets] = useState(false)
+  const [targets, setTargets] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState(initialFormState)
 
@@ -28,6 +31,24 @@ const JRAppointmentFormModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
+      setLoadingTargets(true)
+      appointmentsApi
+        .getPublicTargets()
+        .then((response) => {
+          const availableTargets = response.targets || []
+          setTargets(availableTargets)
+          setFormData((prev) => ({
+            ...prev,
+            targetAdminUserId: prev.targetAdminUserId || availableTargets[0]?.id || "",
+          }))
+        })
+        .catch((error) => {
+          toast.error(error.message || "Failed to load appointment targets")
+          setTargets([])
+        })
+        .finally(() => {
+          setLoadingTargets(false)
+        })
     } else {
       document.body.style.overflow = ""
     }
@@ -50,6 +71,7 @@ const JRAppointmentFormModal = ({ isOpen, onClose }) => {
     event.preventDefault()
 
     const requiredFields = [
+      "targetAdminUserId",
       "visitorName",
       "mobileNumber",
       "email",
@@ -78,7 +100,7 @@ const JRAppointmentFormModal = ({ isOpen, onClose }) => {
 
     try {
       setSubmitting(true)
-      const response = await jrAppointmentsApi.submitPublicAppointment(formData)
+      const response = await appointmentsApi.submitPublicAppointment(formData)
       toast.success(response.message || "Appointment request submitted")
       setFormData(initialFormState)
       onClose()
@@ -97,11 +119,33 @@ const JRAppointmentFormModal = ({ isOpen, onClose }) => {
         </button>
 
         <div className="jrapptmodal-header">
-          <h2 className="jrapptmodal-title">Appointment with JR</h2>
-          <p className="jrapptmodal-subtitle">Submit your request to meet Joint Registrar.</p>
+          <h2 className="jrapptmodal-title">Appointment Request</h2>
+          <p className="jrapptmodal-subtitle">Submit your request to meet an available official.</p>
         </div>
 
         <form className="jrapptmodal-grid" onSubmit={handleSubmit}>
+          <label className="jrapptmodal-field jrapptmodal-field-full">
+            <span>Appointment With</span>
+            <select
+              value={formData.targetAdminUserId}
+              onChange={handleFieldChange("targetAdminUserId")}
+              required
+              disabled={loadingTargets || targets.length === 0}
+            >
+              {loadingTargets ? <option value="">Loading options...</option> : null}
+              {!loadingTargets && targets.length === 0 ? (
+                <option value="">No officials available currently</option>
+              ) : null}
+              {!loadingTargets
+                ? targets.map((target) => (
+                    <option key={target.id} value={target.id}>
+                      {target.label}
+                    </option>
+                  ))
+                : null}
+            </select>
+          </label>
+
           <label className="jrapptmodal-field">
             <span>Name</span>
             <input value={formData.visitorName} onChange={handleFieldChange("visitorName")} required />
@@ -160,7 +204,11 @@ const JRAppointmentFormModal = ({ isOpen, onClose }) => {
             <button type="button" className="jrapptmodal-btn jrapptmodal-btn-secondary" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="jrapptmodal-btn jrapptmodal-btn-primary" disabled={submitting}>
+            <button
+              type="submit"
+              className="jrapptmodal-btn jrapptmodal-btn-primary"
+              disabled={submitting || loadingTargets || targets.length === 0}
+            >
               {submitting ? "Submitting..." : "Submit Request"}
             </button>
           </div>
@@ -170,4 +218,4 @@ const JRAppointmentFormModal = ({ isOpen, onClose }) => {
   )
 }
 
-export default JRAppointmentFormModal
+export default AppointmentFormModal
