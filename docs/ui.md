@@ -31,6 +31,7 @@ import { Toast, Alert } from '@/components/ui/feedback'
 - `StatusBadge` -> migrated to C0
 - `Tabs` -> migrated to C0 (import directly from `czero/react`)
 - `UnderlineTabs` wrapper removed. Use `Tabs` with `variant="underline"`.
+- Filter/table-style tabs standardized to C0 `Tabs` with `variant="pills"` for complaints-style parity.
 - Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
 
 ## C0 Config Surfaces (HMS Overrides)
@@ -695,55 +696,37 @@ import { StatusBadge } from 'czero/react'
 
 ## Navigation Components
 
-**Location:** `@/components/ui/navigation`
+### Tabs (CZero)
 
-### Tabs
+**Location:** `czero/react` (NOT from `@/components/ui/navigation`)
+
+```jsx
+import { Tabs } from 'czero/react'
+```
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Tab components |
-| `value` | `string\|number` | - | Current active tab value |
-| `onChange` | `function` | - | Tab change handler |
+| `tabs` / `items` | `Array` | - | Convenience mode: `[{ value, label, icon?, count?, disabled?, content? }]` |
+| `activeTab` / `value` | `string\|number\|boolean` | - | Controlled active tab |
+| `setActiveTab` / `onChange` | `function` | - | Change handler receiving tab value |
+| `children` | `React.ReactNode` | - | Primitive mode (`Tabs.List` / `Tabs.Trigger` / `Tabs.Content`) |
 | `variant` | `string` | `"underline"` | `"underline"`, `"pills"`, `"enclosed"` |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
+| `size` | `string` | `"md"` | `"sm"`, `"md"`, `"lg"` (aliases: `"small"`, `"medium"`, `"large"`) |
 | `fullWidth` | `boolean` | `false` | Tabs take full width |
+| `showBorder` | `boolean` | `true` | Show/hide list border line |
+| `disabled` | `boolean` | `false` | Disable all triggers in convenience mode |
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
 
-### Tab
+**Primitive subcomponents:** `Tabs.List`, `Tabs.Trigger`, `Tabs.Content`
 
 | Prop | Type | Default | Values/Description |
 |------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Tab label |
-| `value` | `string\|number` | - | Tab value (must match for active state) |
+| `value` | `string\|number\|boolean` | - | Trigger/content key |
+| `children` | `React.ReactNode` | - | Label or content |
 | `disabled` | `boolean` | `false` | Disabled state |
 | `icon` | `React.ReactNode` | - | Icon before label |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-### TabPanel
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `children` | `React.ReactNode` | - | Panel content |
-| `value` | `string\|number` | - | Panel value (must match tab value) |
-| `className` | `string` | `""` | Additional CSS classes |
-| `style` | `object` | `{}` | Inline styles |
-
-**Also exports:** `TabList`, `TabPanels`
-
-### UnderlineTabs
-
-Simple horizontal tabs with underlined active indicator. Designed for page/section navigation (not filter chips).
-
-| Prop | Type | Default | Values/Description |
-|------|------|---------|-------------------|
-| `tabs` | `Array` | `[]` | `[{ value, label, icon?, count?, disabled? }]` |
-| `value` | `string\|number` | - | Currently active tab value |
-| `onChange` | `function` | - | Change handler `(value) => void` |
-| `size` | `string` | `"medium"` | `"small"`, `"medium"`, `"large"` |
-| `fullWidth` | `boolean` | `false` | Tabs fill available width |
-| `showBorder` | `boolean` | `true` | Show bottom border line |
+| `count` | `React.ReactNode` | - | Optional count pill for tab trigger |
 | `className` | `string` | `""` | Additional CSS classes |
 | `style` | `object` | `{}` | Inline styles |
 
@@ -1078,19 +1061,27 @@ const { toast } = useToast()
 ### Tabs Example
 
 ```jsx
-import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@/components/ui'
+import { Tabs } from 'czero/react'
 
 const [activeTab, setActiveTab] = useState('tab1')
 
-<Tabs value={activeTab} onChange={setActiveTab} variant="pills">
-  <TabList>
-    <Tab value="tab1">First Tab</Tab>
-    <Tab value="tab2">Second Tab</Tab>
-  </TabList>
-  <TabPanels>
-    <TabPanel value="tab1">First panel content</TabPanel>
-    <TabPanel value="tab2">Second panel content</TabPanel>
-  </TabPanels>
+<Tabs
+  variant="pills"
+  tabs={[
+    { value: 'tab1', label: 'First Tab' },
+    { value: 'tab2', label: 'Second Tab', count: 4 }
+  ]}
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+/>
+
+<Tabs value={activeTab} onChange={setActiveTab} variant="underline">
+  <Tabs.List>
+    <Tabs.Trigger value="tab1">First Tab</Tabs.Trigger>
+    <Tabs.Trigger value="tab2">Second Tab</Tabs.Trigger>
+  </Tabs.List>
+  <Tabs.Content value="tab1">First panel content</Tabs.Content>
+  <Tabs.Content value="tab2">Second panel content</Tabs.Content>
 </Tabs>
 ```
 

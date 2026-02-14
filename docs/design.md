@@ -210,6 +210,7 @@ Use these from `czero/react`:
 - `Table`
 - `DataTable`
 - `StatusBadge`
+- `Tabs`
 
 Keep app-specific composed components in `@/components/ui`.
 
@@ -218,6 +219,7 @@ Keep app-specific composed components in `@/components/ui`.
 For C0-owned components, keep C0 internals generic and apply HMS design via `frontend/czero.config.js`.
 
 Current HMS config-driven surfaces:
+- `components.tabs` (filter/header tab variants, sizing, icon/count treatments)
 - `components.modal` (close icon, modal spacing, tab styles)
 - `components.dataTable` (table wrapper, cells, pagination, empty/loading)
 - `components.statusBadge` (pill and tone system)
@@ -322,6 +324,22 @@ import { Button } from 'czero/react'
 - Prefer automatic tone mapping from status text.
 - Pass explicit `tone` only when status labels are custom or ambiguous.
 
+### Tabs (C0)
+
+```jsx
+{
+  variant: "pills",        // filter/table tabs
+  size: "sm|md|lg",
+  fullWidth: false
+}
+```
+
+**Tabs usage guidance:**
+- Use `variant="pills"` for filter tabs (complaints/events/board-table style).
+- Use `variant="underline"` for header/section navigation tabs.
+- Prefer convenience mode (`tabs` + `activeTab` + `setActiveTab`) for standard filters.
+- Use primitive mode (`Tabs.List`, `Tabs.Trigger`, `Tabs.Content`) for custom layouts.
+
 ---
 
 ## Interaction States
@@ -365,7 +383,7 @@ import { Button } from 'czero/react'
 import '@/theme.css'
 
 // Core reusable components (from C0)
-import { Button, Modal, Table, DataTable, StatusBadge } from 'czero/react'
+import { Button, Modal, Table, DataTable, StatusBadge, Tabs } from 'czero/react'
 
 // Other UI Components
 import { Input, Card } from '@/components/ui'
