@@ -6,10 +6,10 @@
  */
 
 import { useState, useEffect, useMemo, useRef, createElement } from "react"
-import { Tabs, Button, DataTable, Modal, Table } from "czero/react"
+import { Tabs, Button, DataTable, Modal, Table, Input } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
-import { Select, Input, Textarea, Checkbox } from "@/components/ui/form"
+import { Select, Textarea, Checkbox } from "@/components/ui/form"
 import {
   LoadingState, ErrorState, EmptyState, Alert, useToast, } from "@/components/ui/feedback"
 import { Badge, StatCards } from "@/components/ui/data-display"

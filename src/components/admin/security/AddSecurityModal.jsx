@@ -2,8 +2,8 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiLock, FiHome } from "react-icons/fi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Input, Select, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Select, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 const AddSecurityModal = ({ show, onClose, onSuccess }) => {
   const { hostelList } = useGlobal()
   const [loading, setLoading] = useState(false)

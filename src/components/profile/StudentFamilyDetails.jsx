@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { FiPlus, FiEdit, FiTrash2, FiSave, FiX } from "react-icons/fi"
 import { studentProfileApi } from "../../service"
-import { Input, Select, Textarea, ConfirmDialog } from "@/components/ui"
-import { Button } from "czero/react"
+import { Select, Textarea, ConfirmDialog } from "@/components/ui"
+import { Button, Input } from "czero/react"
 
 const StudentFamilyDetails = ({ userId, editable = true }) => {
   const [loading, setLoading] = useState(true)

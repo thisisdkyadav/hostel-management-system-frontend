@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { inventoryApi } from "../../../service"
 import { FaEdit, FaTrash, FaPlus, FaFilter, FaBuilding, FaBox, FaWarehouse } from "react-icons/fa"
-import { Input, Select, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Select, VStack, HStack, Label, Alert, Pagination } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 
 const HostelAllocation = () => {

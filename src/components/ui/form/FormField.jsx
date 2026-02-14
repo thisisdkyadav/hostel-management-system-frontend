@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react"
+import { Input } from "czero/react"
 import Label from "./Label"
-import Input from "./Input"
 import Select from "./Select"
 import Textarea from "./Textarea"
 

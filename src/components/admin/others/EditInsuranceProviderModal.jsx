@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FaBuilding, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTrash, FaSave, FaCalendarAlt } from "react-icons/fa"
-import { Input, Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 import { insuranceProviderApi } from "../../../service"
 
 const EditInsuranceProviderModal = ({ show, provider, onClose, onUpdate }) => {

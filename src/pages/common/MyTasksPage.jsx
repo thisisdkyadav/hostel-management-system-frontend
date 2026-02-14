@@ -3,8 +3,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { taskApi } from "../../service"
 import { TASK_STATUS_COLORS, TASK_PRIORITY_COLORS, TASK_FILTER_TABS, ALLOWED_STATUS_UPDATES } from "../../constants/taskConstants"
 import TaskDetailModal from "../../components/tasks/TaskDetailModal"
-import { Pagination, Input } from "@/components/ui"
-import { Button } from "czero/react"
+import { Pagination } from "@/components/ui"
+import { Button, Input } from "czero/react"
 import MyTasksHeader from "../../components/headers/MyTasksHeader"
 
 const MyTasksPage = () => {

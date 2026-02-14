@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
-import { Tabs, Button, DataTable, Modal } from "czero/react"
+import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
 import { Eye, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PdfViewerModal from "../../components/common/pdf/PdfViewerModal"
-import { Badge, Input, Pagination, Textarea, useToast } from "@/components/ui"
+import { Badge, Pagination, Textarea, useToast } from "@/components/ui"
 import { discoApi, studentApi, uploadApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 

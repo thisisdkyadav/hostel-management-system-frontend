@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { format } from "date-fns"
-import { Input, Textarea, VStack, HStack, Label } from "@/components/ui"
-import { Button } from "czero/react"
+import { Textarea, VStack, HStack, Label } from "@/components/ui"
+import { Button, Input } from "czero/react"
 
 const CheckInOutForm = ({ requestId, visitorInfo, checkInTime, checkOutTime, onCheckIn, onCheckOut, onUpdateTimes, onCancel }) => {
   const today = new Date()

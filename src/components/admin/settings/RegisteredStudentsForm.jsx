@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiPlus, HiSave } from "react-icons/hi"
-import { Input, VStack, HStack, Label } from "@/components/ui"
-import { Button } from "czero/react"
+import { VStack, HStack, Label } from "@/components/ui"
+import { Button, Input } from "czero/react"
 
 const styles = {
   container: {

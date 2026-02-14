@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiPencil, HiDocumentText, HiExclamationCircle } from "react-icons/hi"
-import { Input, Textarea } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Textarea } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 
 const FeedbackFormModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false }) => {
   const [formData, setFormData] = useState({

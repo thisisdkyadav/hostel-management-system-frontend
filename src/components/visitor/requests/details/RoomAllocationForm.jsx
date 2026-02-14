@@ -1,7 +1,6 @@
 import React from "react"
 import { FaBuilding, FaPlus, FaTrash } from "react-icons/fa"
-import { Input } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, Input } from "czero/react"
 
 const RoomAllocationForm = ({ isUnitBased, allocatedRooms, onRoomChange, onAddRoom, onRemoveRoom, onCancel, onSubmit }) => {
   return (

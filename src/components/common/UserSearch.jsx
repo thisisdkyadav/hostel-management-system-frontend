@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
+import { Input } from "czero/react"
 import { userApi } from "../../service"
-import Input from "./ui/Input"
 
 const UserSearch = ({ onSelectUser, selectedUsers = [], roleFilter, placeholder = "Search users...", maxResults = 5, disabled = false }) => {
   const [searchTerm, setSearchTerm] = useState("")

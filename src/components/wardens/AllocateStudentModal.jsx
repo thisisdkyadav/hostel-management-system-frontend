@@ -2,8 +2,7 @@ import { useState, useEffect } from "react"
 import { FaSearch, FaUserPlus, FaExclamationTriangle, FaBed, FaHome, FaUserGraduate } from "react-icons/fa"
 import { hostelApi } from "../../service"
 import { useStudents } from "../../hooks/useStudents"
-import { Input } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Button, Modal, Input } from "czero/react"
 const AllocateStudentModal = ({ room, isOpen, onClose, onSuccess }) => {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [allocating, setAllocating] = useState(false)

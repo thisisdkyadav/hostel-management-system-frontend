@@ -1,7 +1,7 @@
 import { FaFilter } from "react-icons/fa"
 import { MdClearAll } from "react-icons/md"
-import { Select, Input } from "@/components/ui"
-import { Button } from "czero/react"
+import { Select } from "@/components/ui"
+import { Button, Input } from "czero/react"
 
 const LeavesFilterPanel = ({ filters, updateFilter, resetFilters, isAdmin }) => {
   return (

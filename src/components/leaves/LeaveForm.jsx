@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { Input } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Button, Modal, Input } from "czero/react"
 import { leaveApi } from "../../service"
 
 const LeaveForm = ({ isOpen, setIsOpen, onSuccess }) => {

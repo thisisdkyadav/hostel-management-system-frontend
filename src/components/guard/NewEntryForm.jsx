@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import { FaPlus, FaSignInAlt, FaSignOutAlt } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
-import { Input } from "@/components/ui"
-import { Button } from "czero/react"
+import { Button, Input } from "czero/react"
 import ToggleButtonGroup from "../common/ToggleButtonGroup"
 
 const NewEntryForm = ({ onAddEntry }) => {

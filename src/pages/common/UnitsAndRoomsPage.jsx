@@ -15,8 +15,8 @@ import { useAuth } from "../../contexts/AuthProvider"
 import AccessDenied from "../../components/common/AccessDenied"
 import { useWarden } from "../../contexts/WardenProvider"
 import { hostelApi } from "../../service"
-import { Input, Checkbox, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
-import { Button } from "czero/react"
+import { Checkbox, Card, HStack, VStack, Label, Divider, Badge } from "@/components/ui"
+import { Button, Input } from "czero/react"
 import { MdMeetingRoom } from "react-icons/md"
 
 const UnitsAndRoomsPage = () => {

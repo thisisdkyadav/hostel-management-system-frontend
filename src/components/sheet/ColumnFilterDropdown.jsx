@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react"
 import { Check, Search, X } from "lucide-react"
-import { Input } from "@/components/ui"
+import { Input } from "czero/react"
 
 const styles = {
   // Dropdown container

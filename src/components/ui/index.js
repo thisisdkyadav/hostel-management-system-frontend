@@ -5,13 +5,12 @@
  * Import from '@/components/ui' for cleaner imports.
  * 
  * @example
- * import { Input, Select, Card } from '@/components/ui'
+ * import { Select, Card } from '@/components/ui'
  */
 
 // ==============================================
 // FORM COMPONENTS
 // ==============================================
-export { default as Input } from './form/Input'
 export { default as Select } from './form/Select'
 export { default as Textarea } from './form/Textarea'
 export { default as Checkbox } from './form/Checkbox'

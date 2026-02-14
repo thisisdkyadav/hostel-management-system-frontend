@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react"
+import { Input } from "czero/react"
 import {
     useReactTable,
     getCoreRowModel,
@@ -11,7 +12,6 @@ import { sheetApi } from "../../service"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
-import { Input } from "@/components/ui"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
@@ -1102,4 +1102,3 @@ const SheetPage = () => {
 }
 
 export default SheetPage
-

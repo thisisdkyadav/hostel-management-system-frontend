@@ -37,8 +37,8 @@ import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Input, Select } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Select } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user, canAccess } = useAuth()
 

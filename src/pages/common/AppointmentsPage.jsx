@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
-import { Tabs, Button, DataTable, Modal } from "czero/react"
+import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
 import { Eye, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
-import { Badge, Input, Pagination, Select, Textarea, useToast } from "@/components/ui"
+import { Badge, Pagination, Select, Textarea, useToast } from "@/components/ui"
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 

@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { Input, VStack, HStack, Label } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { VStack, HStack, Label } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
   const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
 

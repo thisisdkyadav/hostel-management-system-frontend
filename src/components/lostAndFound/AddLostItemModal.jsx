@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
 import { uploadApi } from "../../service"
-import { Input, Select, FileInput } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Select, FileInput } from "@/components/ui"
+import { Button, Modal, Input } from "czero/react"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
 
 const AddLostItemModal = ({ show, onClose, onItemAdded }) => {

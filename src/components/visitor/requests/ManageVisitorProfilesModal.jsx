@@ -2,8 +2,7 @@ import React, { useState } from "react"
 import { FaTrash, FaEdit, FaUserAlt, FaSearch, FaTimesCircle } from "react-icons/fa"
 import EditVisitorProfileModal from "./EditVisitorProfileModal"
 import { visitorApi } from "../../../service"
-import { Input } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { Button, Modal, Input } from "czero/react"
 
 const ManageVisitorProfilesModal = ({ isOpen, onClose, visitorProfiles, onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState("")

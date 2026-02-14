@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { HiSave, HiInformationCircle } from "react-icons/hi"
-import { Input, Checkbox, Alert, VStack, Label } from "@/components/ui"
-import { Button } from "czero/react"
+import { Checkbox, Alert, VStack, Label } from "@/components/ui"
+import { Button, Input } from "czero/react"
 
 const ConfigForm = ({ config, onUpdate, isLoading }) => {
   const [formData, setFormData] = useState({})

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { Input, Select, Textarea, Label, Alert, VStack } from "@/components/ui"
-import { Button } from "czero/react"
+import { Select, Textarea, Label, Alert, VStack } from "@/components/ui"
+import { Button, Input } from "czero/react"
 import { DoorOpen, Users, PlusCircle } from "lucide-react"
 import { hostelApi } from "../../../../service"
 
