@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useGlobal } from "../../contexts/GlobalProvider"
-import { adminApi } from "../../service"
-import { complaintApi } from "../../service"
+import { adminApi, complaintApi } from "../../service"
 import { COMPLAINT_FILTER_TABS } from "../../constants/adminConstants"
 import ComplaintStats from "../../components/complaints/ComplaintStats"
 import ComplaintDetailModal from "../../components/complaints/ComplaintDetailModal"
@@ -36,10 +35,24 @@ const ComplaintsPage = () => {
   const [showCraftComplaint, setShowCraftComplaint] = useState(false)
   const [complaints, setComplaints] = useState([])
   const [loading, setLoading] = useState(false)
-  const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
   const [statsData, setStatsData] = useState(null)
   const [statsLoading, setStatsLoading] = useState(false)
+
+  const complaintFilterTabs = useMemo(() => {
+    const statusCounts = {
+      all: statsData?.total || 0,
+      Pending: statsData?.pending || 0,
+      "In Progress": statsData?.inProgress || 0,
+      "Forwarded to IDO": statsData?.forwardedToIDO || 0,
+      Resolved: statsData?.resolved || 0,
+    }
+
+    return COMPLAINT_FILTER_TABS.map((tab) => ({
+      ...tab,
+      count: statusCounts[tab.value] ?? 0,
+    }))
+  }, [statsData])
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -87,7 +100,6 @@ const ComplaintsPage = () => {
 
       const response = await adminApi.getAllComplaints(queryParams.toString())
       setComplaints(response.data || [])
-      setTotalItems(response.meta?.total || 0)
       setTotalPages(response.meta?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching complaints:", error)
@@ -139,7 +151,7 @@ const ComplaintsPage = () => {
 
         {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />}
 
-        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={COMPLAINT_FILTER_TABS} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} showFilters={showFilters} />
+        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={complaintFilterTabs} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} showFilters={showFilters} />
       </div>
 
       {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />}
