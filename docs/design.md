@@ -213,6 +213,15 @@ Use these from `czero/react`:
 
 Keep app-specific composed components in `@/components/ui`.
 
+### Config-Driven Customization Rule
+
+For C0-owned components, keep C0 internals generic and apply HMS design via `frontend/czero.config.js`.
+
+Current HMS config-driven surfaces:
+- `components.modal` (close icon, modal spacing, tab styles)
+- `components.dataTable` (table wrapper, cells, pagination, empty/loading)
+- `components.statusBadge` (pill and tone system)
+
 ### Button (CZero)
 
 Buttons use the CZero UI library. Import from `czero/react`:

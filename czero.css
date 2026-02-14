@@ -1198,6 +1198,32 @@
 }
 
 
+/* ===== STATUS BADGE ===== */
+
+:root {
+  --cz-status-badge-padding-x: 0.625rem;
+  --cz-status-badge-padding-y: 0.25rem;
+  --cz-status-badge-font-size: var(--font-size-xs, 0.75rem);
+  --cz-status-badge-font-weight: var(--font-weight-medium, 500);
+  --cz-status-badge-line-height: 1rem;
+  --cz-status-badge-border-radius: 9999px;
+  --cz-status-badge-dot-size: 0.5rem;
+  --cz-status-badge-dot-gap: 0.375rem;
+  --cz-status-badge-success-bg: var(--color-success-bg-light, rgba(34, 197, 94, 0.12));
+  --cz-status-badge-success-text: var(--color-success-dark, #16A34A);
+  --cz-status-badge-success-dot: var(--color-success, #22C55E);
+  --cz-status-badge-danger-bg: var(--color-danger-bg-light, rgba(239, 68, 68, 0.12));
+  --cz-status-badge-danger-text: var(--color-danger-dark, #DC2626);
+  --cz-status-badge-danger-dot: var(--color-danger, #EF4444);
+  --cz-status-badge-warning-bg: var(--color-warning-bg-light, rgba(245, 158, 11, 0.12));
+  --cz-status-badge-warning-text: var(--color-warning-dark, #D97706);
+  --cz-status-badge-warning-dot: var(--color-warning, #F59E0B);
+  --cz-status-badge-primary-bg: var(--color-primary-bg, #E8F1FE);
+  --cz-status-badge-primary-text: var(--color-primary, #1360AB);
+  --cz-status-badge-primary-dot: var(--color-primary, #1360AB);
+}
+
+
 /* ===== AVATAR ===== */
 
 :root {
@@ -1350,6 +1376,67 @@
   font-size: var(--cz-font-size-sm);
   color: hsl(var(--cz-color-mutedFg));
   text-align: center;
+}
+
+
+/* ===== DATA TABLE ===== */
+
+:root {
+  --cz-data-table-container-bg: var(--color-bg-primary, #FFFFFF);
+  --cz-data-table-container-border-radius: var(--radius-card, 16px);
+  --cz-data-table-container-border-color: var(--table-border, #E2E8F0);
+  --cz-data-table-container-shadow: var(--shadow-card, 0 1px 3px rgba(0, 0, 0, 0.05));
+  --cz-data-table-header-cell-padding: var(--table-cell-padding-md, 0.75rem 1rem);
+  --cz-data-table-header-font-size: var(--font-size-xs, 0.75rem);
+  --cz-data-table-header-font-weight: var(--font-weight-medium, 500);
+  --cz-data-table-header-color: var(--table-header-text, #64748B);
+  --cz-data-table-header-text-transform: uppercase;
+  --cz-data-table-header-letter-spacing: 0.02em;
+  --cz-data-table-body-cell-padding: var(--table-cell-padding-md, 0.75rem 1rem);
+  --cz-data-table-body-font-size: var(--font-size-sm, 0.875rem);
+  --cz-data-table-body-color: var(--color-text-body, #334155);
+  --cz-data-table-row-border-color: var(--table-border, #E2E8F0);
+  --cz-data-table-row-hover-bg: var(--table-row-hover, #F8FAFC);
+  --cz-data-table-striped-row-bg: var(--table-stripe-bg, #FAFBFC);
+  --cz-data-table-selected-row-bg: var(--color-primary-bg, #E8F1FE);
+  --cz-data-table-sort-icon-opacity: 0.3;
+  --cz-data-table-sort-active-color: var(--color-primary, #1360AB);
+  --cz-data-table-pagination-padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  --cz-data-table-pagination-gap: var(--spacing-2, 0.5rem);
+  --cz-data-table-pagination-border-color: var(--table-border, #E2E8F0);
+  --cz-data-table-pagination-text-color: var(--color-text-muted, #64748B);
+  --cz-data-table-pagination-text-strong-color: var(--color-text-body, #334155);
+  --cz-data-table-pagination-button-size: 32px;
+  --cz-data-table-pagination-button-radius: var(--radius-md, 8px);
+  --cz-data-table-pagination-button-hover-bg: var(--color-bg-hover, #F1F5F9);
+  --cz-data-table-pagination-button-border-color: transparent;
+  --cz-data-table-pagination-button-color: var(--color-text-body, #334155);
+  --cz-data-table-pagination-button-disabled-color: var(--color-text-muted, #64748B);
+  --cz-data-table-empty-state-color: var(--color-text-muted, #64748B);
+  --cz-data-table-empty-state-title-color: var(--color-text-secondary, #1E293B);
+  --cz-data-table-empty-state-icon-bg: var(--color-bg-secondary, #FAFBFC);
+  --cz-data-table-empty-state-icon-color: var(--color-text-placeholder, #8FA3C4);
+  --cz-data-table-loading-shimmer-base: var(--color-bg-tertiary, #F8FAFC);
+  --cz-data-table-loading-shimmer-highlight: var(--color-bg-hover, #F1F5F9);
+}
+
+.cz-data-table-page-btn {
+  transition: all var(--transition-fast, var(--cz-transition-fast));
+}
+
+.cz-data-table-page-btn:hover:not(:disabled) {
+  background: var(--cz-data-table-pagination-button-hover-bg, transparent);
+  border-color: var(--cz-data-table-pagination-button-border-color, transparent);
+}
+
+.cz-data-table-shimmer {
+  background-size: 200% 100%;
+  animation: cz-data-table-shimmer 1.5s infinite;
+}
+
+@keyframes cz-data-table-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 
@@ -2138,6 +2225,78 @@
 @keyframes cz-dialog-content-show {
   from { opacity: 0; transform: translate(-50%, -48%) scale(0.96); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+
+/* ===== MODAL ===== */
+
+:root {
+  --cz-modal-overlay-bg: var(--color-bg-modal-overlay, rgba(15, 23, 42, 0.55));
+  --cz-modal-content-bg: var(--color-bg-primary, #FFFFFF);
+  --cz-modal-content-border-radius: var(--radius-modal, 16px);
+  --cz-modal-content-border-color: var(--color-border-primary, #E2E8F0);
+  --cz-modal-content-shadow: var(--shadow-modal, 0 10px 25px rgba(0, 0, 0, 0.1));
+  --cz-modal-header-padding: var(--spacing-4, 1rem) var(--spacing-4, 1rem) var(--spacing-3, 0.75rem);
+  --cz-modal-body-padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem) var(--spacing-4, 1rem);
+  --cz-modal-footer-padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  --cz-modal-footer-gap: var(--spacing-3, 0.75rem);
+  --cz-modal-close-icon-size: 2.25rem;
+  --cz-modal-close-icon-padding: 0.625rem;
+  --cz-modal-close-icon-radius: var(--radius-button-sm, 10px);
+  --cz-modal-close-icon-bg: var(--color-bg-tertiary, #F8FAFC);
+  --cz-modal-close-icon-color: var(--color-text-muted, #64748B);
+  --cz-modal-close-icon-hover-bg: var(--color-primary-bg, #E8F1FE);
+  --cz-modal-close-icon-hover-color: var(--color-primary, #1360AB);
+  --cz-modal-close-icon-transition: var(--transition-fast, 150ms ease);
+  --cz-modal-close-icon-focus-ring: var(--shadow-focus, 0 0 0 3px rgba(19, 96, 171, 0.2));
+  --cz-modal-tab-font-size: 13px;
+  --cz-modal-tab-font-weight: var(--font-weight-medium, 500);
+  --cz-modal-tab-color: var(--color-text-muted, #64748B);
+  --cz-modal-tab-active-color: var(--color-primary, #1360AB);
+  --cz-modal-tab-active-border-color: var(--color-primary, #1360AB);
+}
+
+.cz-modal-close-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cz-modal-close-icon-size, 2rem);
+  height: var(--cz-modal-close-icon-size, 2rem);
+  padding: var(--cz-modal-close-icon-padding, 0.5rem);
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--cz-modal-close-icon-radius, var(--cz-radius-md));
+  background: var(--cz-modal-close-icon-bg, transparent);
+  color: var(--cz-modal-close-icon-color, hsl(var(--cz-color-mutedFg)));
+  cursor: pointer;
+  transition: all var(--cz-modal-close-icon-transition, var(--cz-transition-fast));
+}
+
+.cz-modal-close-icon:hover {
+  background: var(--cz-modal-close-icon-hover-bg, hsl(var(--cz-color-muted)));
+  color: var(--cz-modal-close-icon-hover-color, hsl(var(--cz-color-primary)));
+}
+
+.cz-modal-close-icon:focus,
+.cz-modal-close-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--cz-modal-close-icon-focus-ring, none);
+}
+
+.cz-modal-close-btn {
+  flex-shrink: 0;
+}
+
+.cz-modal-tab-btn:focus,
+.cz-modal-tab-btn:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+@supports not (gap: 0.75rem) {
+  .cz-modal-footer > * + * {
+    margin-left: var(--cz-modal-footer-gap, var(--cz-spacing-md, 0.75rem));
+  }
 }
 
 

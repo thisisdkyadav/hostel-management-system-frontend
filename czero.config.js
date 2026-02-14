@@ -266,6 +266,107 @@ export default {
       },
     },
 
+    // StatusBadge component
+    statusBadge: {
+      paddingX: "0.625rem",
+      paddingY: "0.25rem",
+      fontSize: "var(--font-size-xs, 0.75rem)",
+      fontWeight: "var(--font-weight-medium, 500)",
+      lineHeight: "1rem",
+      borderRadius: "9999px",
+      dotSize: "0.5rem",
+      dotGap: "0.375rem",
+
+      successBg: "var(--color-success-bg-light, rgba(34, 197, 94, 0.12))",
+      successText: "var(--color-success-dark, #16A34A)",
+      successDot: "var(--color-success, #22C55E)",
+      dangerBg: "var(--color-danger-bg-light, rgba(239, 68, 68, 0.12))",
+      dangerText: "var(--color-danger-dark, #DC2626)",
+      dangerDot: "var(--color-danger, #EF4444)",
+      warningBg: "var(--color-warning-bg-light, rgba(245, 158, 11, 0.12))",
+      warningText: "var(--color-warning-dark, #D97706)",
+      warningDot: "var(--color-warning, #F59E0B)",
+      primaryBg: "var(--color-primary-bg, #E8F1FE)",
+      primaryText: "var(--color-primary, #1360AB)",
+      primaryDot: "var(--color-primary, #1360AB)",
+    },
+
+    // Modal component
+    modal: {
+      overlayBg: "var(--color-bg-modal-overlay, rgba(15, 23, 42, 0.55))",
+      contentBg: "var(--color-bg-primary, #FFFFFF)",
+      contentBorderRadius: "var(--radius-modal, 16px)",
+      contentBorderColor: "var(--color-border-primary, #E2E8F0)",
+      contentShadow: "var(--shadow-modal, 0 10px 25px rgba(0, 0, 0, 0.1))",
+      headerPadding: "var(--spacing-4, 1rem) var(--spacing-4, 1rem) var(--spacing-3, 0.75rem)",
+      bodyPadding: "var(--spacing-3, 0.75rem) var(--spacing-4, 1rem) var(--spacing-4, 1rem)",
+      footerPadding: "var(--spacing-3, 0.75rem) var(--spacing-4, 1rem)",
+      footerGap: "var(--spacing-3, 0.75rem)",
+
+      // Slightly larger click target + subtle surface to improve top-right close icon usability
+      closeIconSize: "2.25rem",
+      closeIconPadding: "0.625rem",
+      closeIconRadius: "var(--radius-button-sm, 10px)",
+      closeIconBg: "var(--color-bg-tertiary, #F8FAFC)",
+      closeIconColor: "var(--color-text-muted, #64748B)",
+      closeIconHoverBg: "var(--color-primary-bg, #E8F1FE)",
+      closeIconHoverColor: "var(--color-primary, #1360AB)",
+      closeIconTransition: "var(--transition-fast, 150ms ease)",
+      closeIconFocusRing: "var(--shadow-focus, 0 0 0 3px rgba(19, 96, 171, 0.2))",
+
+      tabFontSize: "13px",
+      tabFontWeight: "var(--font-weight-medium, 500)",
+      tabColor: "var(--color-text-muted, #64748B)",
+      tabActiveColor: "var(--color-primary, #1360AB)",
+      tabActiveBorderColor: "var(--color-primary, #1360AB)",
+    },
+
+    // DataTable component
+    dataTable: {
+      containerBg: "var(--color-bg-primary, #FFFFFF)",
+      containerBorderRadius: "var(--radius-card, 16px)",
+      containerBorderColor: "var(--table-border, #E2E8F0)",
+      containerShadow: "var(--shadow-card, 0 1px 3px rgba(0, 0, 0, 0.05))",
+
+      headerCellPadding: "var(--table-cell-padding-md, 0.75rem 1rem)",
+      headerFontSize: "var(--font-size-xs, 0.75rem)",
+      headerFontWeight: "var(--font-weight-medium, 500)",
+      headerColor: "var(--table-header-text, #64748B)",
+      headerTextTransform: "uppercase",
+      headerLetterSpacing: "0.02em",
+
+      bodyCellPadding: "var(--table-cell-padding-md, 0.75rem 1rem)",
+      bodyFontSize: "var(--font-size-sm, 0.875rem)",
+      bodyColor: "var(--color-text-body, #334155)",
+      rowBorderColor: "var(--table-border, #E2E8F0)",
+      rowHoverBg: "var(--table-row-hover, #F8FAFC)",
+      stripedRowBg: "var(--table-stripe-bg, #FAFBFC)",
+      selectedRowBg: "var(--color-primary-bg, #E8F1FE)",
+
+      sortIconOpacity: "0.3",
+      sortActiveColor: "var(--color-primary, #1360AB)",
+
+      paginationPadding: "var(--spacing-3, 0.75rem) var(--spacing-4, 1rem)",
+      paginationGap: "var(--spacing-2, 0.5rem)",
+      paginationBorderColor: "var(--table-border, #E2E8F0)",
+      paginationTextColor: "var(--color-text-muted, #64748B)",
+      paginationTextStrongColor: "var(--color-text-body, #334155)",
+      paginationButtonSize: "32px",
+      paginationButtonRadius: "var(--radius-md, 8px)",
+      paginationButtonHoverBg: "var(--color-bg-hover, #F1F5F9)",
+      paginationButtonBorderColor: "transparent",
+      paginationButtonColor: "var(--color-text-body, #334155)",
+      paginationButtonDisabledColor: "var(--color-text-muted, #64748B)",
+
+      emptyStateColor: "var(--color-text-muted, #64748B)",
+      emptyStateTitleColor: "var(--color-text-secondary, #1E293B)",
+      emptyStateIconBg: "var(--color-bg-secondary, #FAFBFC)",
+      emptyStateIconColor: "var(--color-text-placeholder, #8FA3C4)",
+
+      loadingShimmerBase: "var(--color-bg-tertiary, #F8FAFC)",
+      loadingShimmerHighlight: "var(--color-bg-hover, #F1F5F9)",
+    },
+
     // Table component
     table: {
       borderRadius: "var(--radius-card)",             // Keep table clipping in sync with card shell

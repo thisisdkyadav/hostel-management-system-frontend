@@ -31,6 +31,24 @@ import { Toast, Alert } from '@/components/ui/feedback'
 - `StatusBadge` -> migrated to C0
 - Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
 
+## C0 Config Surfaces (HMS Overrides)
+
+HMS now customizes these via `frontend/czero.config.js`:
+- `components.modal` (close icon size/padding/bg/hover, tab colors, modal paddings)
+- `components.dataTable` (container/header/body/pagination/empty/loading token surface)
+- `components.statusBadge` (pill spacing, dot sizing, semantic tone colors)
+
+```js
+// frontend/czero.config.js
+export default {
+  components: {
+    modal: { /* ... */ },
+    dataTable: { /* ... */ },
+    statusBadge: { /* ... */ }
+  }
+}
+```
+
 ---
 
 ## Button Components
