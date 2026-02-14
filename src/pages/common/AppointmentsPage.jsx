@@ -314,6 +314,7 @@ const AppointmentsPage = () => {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <Tabs
+              variant="pills"
               tabs={APPOINTMENT_STATUS_TABS}
               activeTab={statusFilter}
               setActiveTab={(value) => {

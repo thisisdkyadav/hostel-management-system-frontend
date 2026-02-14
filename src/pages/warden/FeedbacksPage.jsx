@@ -97,7 +97,7 @@ const FeedbacksPage = () => {
 
           <div style={styles.filterSection} className="filter-responsive">
             <div style={styles.tabWrapper}>
-              <Tabs tabs={FEEDBACK_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <Tabs variant="pills" tabs={FEEDBACK_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
             <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search feedbacks..." className="search-responsive" />
           </div>

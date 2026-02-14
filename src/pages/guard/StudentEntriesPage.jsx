@@ -227,7 +227,7 @@ const StudentEntriesPage = () => {
 
       <div style={styles.filterSection}>
         <div style={styles.filterRow}>
-          <Tabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} />
+          <Tabs variant="pills" tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} />
           <SearchInput value={searchTerm} onChange={handleSearchChange} placeholder="Search by unit, room" style={{ width: "50%" }} />
         </div>
 

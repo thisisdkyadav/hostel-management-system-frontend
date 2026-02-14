@@ -10,7 +10,7 @@ const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages,
       {/* Tabs */}
       {!showFilters && COMPLAINT_FILTER_TABS.length > 0 && (
         <div style={{ marginTop: "var(--spacing-6)", marginBottom: "var(--spacing-4)" }}>
-          <Tabs tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+          <Tabs variant="pills" tabs={COMPLAINT_FILTER_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
         </div>
       )}
 

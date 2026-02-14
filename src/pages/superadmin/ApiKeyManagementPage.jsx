@@ -210,7 +210,7 @@ const ApiKeyManagementPage = () => {
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div className="w-full sm:w-auto pb-2">
-            <Tabs tabs={filterTabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+            <Tabs variant="pills" tabs={filterTabs} activeTab={filterStatus} setActiveTab={setFilterStatus} />
           </div>
           <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search API keys by name" className="w-full sm:w-64 md:w-72" />
         </div>

@@ -42,7 +42,7 @@ const MaintenanceStaffPage = () => {
 
         <div className="mt-[var(--spacing-8)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
           <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-            <Tabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filterCategory} setActiveTab={setFilterCategory} />
+            <Tabs variant="pills" tabs={MAINTENANCE_FILTER_TABS} activeTab={filterCategory} setActiveTab={setFilterCategory} />
           </div>
           <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search staff by name or category" className="w-full sm:w-[16rem] md:w-[20rem]" />
         </div>

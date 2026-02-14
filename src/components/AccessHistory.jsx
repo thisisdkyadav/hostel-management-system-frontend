@@ -160,7 +160,7 @@ const AccessHistory = ({ cachedData }) => {
 
         {/* Filter Tabs */}
         <div className="mb-5">
-          <Tabs tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} disabled={!isOnline && !cachedData} />
+          <Tabs variant="pills" tabs={ENTRY_FILTER_TABS} activeTab={filterStatus} setActiveTab={handleFilterStatusChange} disabled={!isOnline && !cachedData} />
         </div>
 
         {/* Additional Filters */}

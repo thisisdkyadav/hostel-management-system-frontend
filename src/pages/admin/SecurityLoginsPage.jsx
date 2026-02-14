@@ -45,7 +45,7 @@ const SecurityLoginsPage = () => {
 
         <div className="mt-[var(--spacing-8)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
           <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-            <Tabs tabs={SECURITY_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+            <Tabs variant="pills" tabs={SECURITY_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
           </div>
           <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search security by name or hostel" className="w-full sm:w-[16rem] md:w-[20rem]" />
         </div>

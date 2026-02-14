@@ -794,6 +794,7 @@ const DisciplinaryProcessPage = () => {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <Tabs
+              variant="pills"
               tabs={isStudent ? studentStatusTabs : adminStatusTabs}
               activeTab={isStudent ? studentStatusFilter : adminStatusFilter}
               setActiveTab={(value) => {

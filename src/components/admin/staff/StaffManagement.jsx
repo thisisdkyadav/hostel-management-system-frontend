@@ -50,7 +50,7 @@ const StaffManagement = ({ staffType = "warden" }) => {
 
         <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
           <div className="w-full sm:w-auto pb-2">
-            <Tabs tabs={WARDEN_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
+            <Tabs variant="pills" tabs={WARDEN_FILTER_TABS} activeTab={filterStatus} setActiveTab={setFilterStatus} />
           </div>
           <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={`Search ${staffTitle.toLowerCase()}s by name or hostel`} className="w-full sm:w-64 md:w-72" />
         </div>

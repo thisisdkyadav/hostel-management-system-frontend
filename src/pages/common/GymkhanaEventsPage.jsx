@@ -2144,6 +2144,7 @@ const toCalendarEventPayload = (event) => {
         {calendar && (
           <div style={{ marginBottom: "var(--spacing-4)" }}>
             <Tabs
+              variant="pills"
               tabs={categoryFilterTabs}
               activeTab={activeCategoryFilter}
               setActiveTab={setActiveCategoryFilter}

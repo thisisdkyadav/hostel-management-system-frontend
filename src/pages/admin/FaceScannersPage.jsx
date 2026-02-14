@@ -73,7 +73,7 @@ const FaceScannersPage = () => {
                     {/* Filters */}
                     <div className="mt-[var(--spacing-4)] flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-[var(--spacing-4)] sm:space-y-[var(--spacing-0)]">
                         <div className="w-full sm:w-auto pb-[var(--spacing-2)]">
-                            <Tabs tabs={SCANNER_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+                            <Tabs variant="pills" tabs={SCANNER_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
                         </div>
                         <SearchInput
                             value={searchTerm}

@@ -144,13 +144,13 @@ const MaintenancePage = () => {
           <div style={styles.filterGroup}>
             <p style={styles.filterLabel}>Filter by Status:</p>
             <div style={styles.tabScrollContainer}>
-              <Tabs tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+              <Tabs variant="pills" tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
             </div>
           </div>
           <div style={styles.filterGroup}>
             <p style={styles.filterLabel}>Filter by Category:</p>
             <div style={styles.tabScrollContainer}>
-              <Tabs tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
+              <Tabs variant="pills" tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
             </div>
           </div>
         </div>

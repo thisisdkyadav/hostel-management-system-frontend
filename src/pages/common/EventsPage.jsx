@@ -87,7 +87,7 @@ const EventsPage = () => {
 
           <div className="mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
             <div className="w-full sm:w-auto pb-2">
-              <Tabs tabs={EVENT_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
+              <Tabs variant="pills" tabs={EVENT_FILTER_TABS} activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
             <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search events..." className="w-full sm:w-64 md:w-72" />
           </div>
