@@ -25,6 +25,8 @@ import { Toast, Alert } from '@/components/ui/feedback'
 ## C0 Migration Status (Current)
 
 - `Button` -> migrated to C0
+- `Input` -> C0-backed via compatibility adapter (`@/components/ui/form/Input`)
+- `SearchInput` -> frontend wrapper over C0 `Input` (`variant="search"`)
 - `Modal` -> migrated to C0
 - `Table` -> migrated to C0
 - `DataTable` -> migrated to C0
@@ -37,6 +39,7 @@ import { Toast, Alert } from '@/components/ui/feedback'
 ## C0 Config Surfaces (HMS Overrides)
 
 HMS now customizes these via `frontend/czero.config.js`:
+- `components.input` (base input + search behavior visuals: icon/clear/focus/disabled/readOnly)
 - `components.tabs` (variants, sizing, icon/count pills, list border/layout tokens)
 - `components.modal` (close icon size/padding/bg/hover, tab colors, modal paddings)
 - `components.dataTable` (container/header/body/pagination/empty/loading token surface)
@@ -46,6 +49,7 @@ HMS now customizes these via `frontend/czero.config.js`:
 // frontend/czero.config.js
 export default {
   components: {
+    input: { /* ... */ },
     tabs: { /* ... */ },
     modal: { /* ... */ },
     dataTable: { /* ... */ },

@@ -206,6 +206,7 @@ style={{ color: "#1360AB", borderRadius: "12px" }}
 
 Use these from `czero/react`:
 - `Button`
+- `Input`
 - `Modal`
 - `Table`
 - `DataTable`
@@ -219,6 +220,7 @@ Keep app-specific composed components in `@/components/ui`.
 For C0-owned components, keep C0 internals generic and apply HMS design via `frontend/czero.config.js`.
 
 Current HMS config-driven surfaces:
+- `components.input` (input/search icon, clear action, focus, disabled/readOnly visuals)
 - `components.tabs` (filter/header tab variants, sizing, icon/count treatments)
 - `components.modal` (close icon, modal spacing, tab styles)
 - `components.dataTable` (table wrapper, cells, pagination, empty/loading)

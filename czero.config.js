@@ -246,8 +246,75 @@ export default {
         md: "40px",                // --input-height-md
         lg: "48px"                 // --input-height-lg
       },
+      paddingX: {
+        sm: "var(--spacing-3, 0.75rem)",
+        md: "var(--spacing-3, 0.75rem)",
+        lg: "var(--spacing-4, 1rem)",
+      },
+      paddingY: {
+        sm: "0",
+        md: "0",
+        lg: "0",
+      },
+      fontSize: {
+        sm: "var(--font-size-sm, 0.875rem)",
+        md: "var(--font-size-base, 0.875rem)",
+        lg: "var(--font-size-lg, 1rem)",
+      },
       borderRadius: "10px",        // --radius-input
       borderColor: "$color-border",
+      bg: "var(--input-bg, #FFFFFF)",
+      color: "var(--color-text-body, #334155)",
+      placeholderColor: "var(--color-text-placeholder, #8FA3C4)",
+      iconSize: {
+        sm: "14px",
+        md: "16px",
+        lg: "18px",
+      },
+      iconSpacing: {
+        sm: "var(--spacing-8, 2rem)",
+        md: "var(--spacing-10, 2.5rem)",
+        lg: "var(--spacing-12, 3rem)",
+      },
+      iconColor: "var(--color-text-placeholder, #8FA3C4)",
+      iconColorFocus: "var(--color-primary, #1360AB)",
+      iconColorError: "var(--color-danger, #EF4444)",
+      clearHoverBg: "var(--color-bg-hover, #F1F5F9)",
+      clearHoverColor: "var(--color-text-muted, #64748B)",
+      clearBorderRadius: "var(--radius-sm, 6px)",
+      clearIconSize: {
+        sm: "14px",
+        md: "16px",
+        lg: "18px",
+      },
+      states: {
+        focus: {
+          borderColor: "var(--input-border-focus, #1360AB)",
+          shadow: "var(--input-focus-ring, 0 0 0 3px rgba(19, 96, 171, 0.2))",
+        },
+        error: {
+          borderColor: "var(--color-danger-border, #EF4444)",
+          focusShadow: "var(--shadow-focus-danger, 0 0 0 3px rgba(239, 68, 68, 0.2))",
+        },
+        disabled: {
+          opacity: "1",
+          cursor: "not-allowed",
+          bg: "var(--color-bg-disabled, #F8FAFC)",
+          color: "var(--color-text-disabled, #94A3B8)",
+        },
+        readOnly: {
+          bg: "var(--color-bg-disabled, #F8FAFC)",
+          color: "var(--color-text-muted, #64748B)",
+          cursor: "default",
+        },
+      },
+      variants: {
+        search: {
+          clearHoverBg: "var(--color-bg-hover, #F1F5F9)",
+          clearHoverColor: "var(--color-danger, #EF4444)",
+          iconColorFocus: "var(--color-primary, #1360AB)",
+        },
+      },
     },
 
     // Card component

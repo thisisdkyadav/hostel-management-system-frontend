@@ -1,233 +1,33 @@
-import React, { useState, forwardRef } from "react"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
+import React, { forwardRef } from "react"
+import { Input as C0Input } from "czero/react"
+
+const normalizeSize = (size = "medium") => {
+  if (size === "small" || size === "sm") return "sm"
+  if (size === "large" || size === "lg") return "lg"
+  return "md"
+}
 
 /**
- * Input Component - Unified input for all text-based input types
- * 
- * @param {string} type - Input type: text, email, password, number, date, time, datetime-local, tel, search
- * @param {string} name - Input name attribute
- * @param {string} value - Controlled input value
- * @param {function} onChange - Change handler
- * @param {string} placeholder - Placeholder text
- * @param {React.ReactNode} icon - Optional left icon
- * @param {boolean|string} error - Error state (boolean or error message string)
- * @param {boolean} disabled - Disabled state
- * @param {boolean} readOnly - ReadOnly state
- * @param {boolean} required - Required field
- * @param {string|number} min - Min value for number/date types
- * @param {string|number} max - Max value for number/date types
- * @param {number} step - Step value for number type
- * @param {string} size - Size variant: small, medium, large
- * @param {string} id - Optional id (defaults to name)
- * @param {string} className - Additional class names
- * @param {object} style - Additional inline styles
+ * Input compatibility wrapper.
+ * Preserves existing frontend props while delegating rendering/styling to C0 Input.
  */
 const Input = forwardRef(({
-  type = "text",
-  name,
-  value,
-  onChange,
-  placeholder,
-  icon,
-  error,
-  disabled = false,
-  readOnly = false,
-  required = false,
-  min,
-  max,
-  step,
   size = "medium",
+  icon,
   id,
-  className = "",
-  style = {},
-  ...rest
+  name,
+  error,
+  ...props
 }, ref) => {
-  const [isFocused, setIsFocused] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-
-  const isPassword = type === "password"
-  const hasError = Boolean(error)
-  const hasIcon = Boolean(icon)
-
-  // Determine the actual input type (for password toggle)
-  const inputType = isPassword && showPassword ? "text" : type
-
-  // Size variants
-  const sizes = {
-    small: {
-      padding: "var(--spacing-2) var(--spacing-3)",
-      paddingLeft: hasIcon ? "var(--spacing-8)" : "var(--spacing-3)",
-      paddingRight: isPassword ? "var(--spacing-8)" : "var(--spacing-3)",
-      fontSize: "var(--font-size-sm)",
-      height: "var(--input-height-sm)",
-    },
-    medium: {
-      padding: "var(--spacing-2-5) var(--spacing-3)",
-      paddingLeft: hasIcon ? "var(--spacing-10)" : "var(--spacing-3)",
-      paddingRight: isPassword ? "var(--spacing-10)" : "var(--spacing-3)",
-      fontSize: "var(--font-size-base)",
-      height: "var(--input-height-md)",
-    },
-    large: {
-      padding: "var(--spacing-3) var(--spacing-4)",
-      paddingLeft: hasIcon ? "var(--spacing-12)" : "var(--spacing-4)",
-      paddingRight: isPassword ? "var(--spacing-12)" : "var(--spacing-4)",
-      fontSize: "var(--font-size-lg)",
-      height: "var(--input-height-lg)",
-    },
-  }
-
-  const currentSize = sizes[size] || sizes.medium
-
-  // Container styles
-  const containerStyles = {
-    position: "relative",
-    width: "100%",
-  }
-
-  // Input styles using theme variables
-  const inputStyles = {
-    width: "100%",
-    height: currentSize.height,
-    padding: currentSize.padding,
-    paddingLeft: currentSize.paddingLeft,
-    paddingRight: currentSize.paddingRight,
-    border: `var(--border-1) solid ${hasError
-      ? "var(--color-danger-border)"
-      : isFocused
-        ? "var(--input-border-focus)"
-        : "var(--input-border)"
-      }`,
-    borderRadius: "var(--radius-input)",
-    backgroundColor: disabled || readOnly
-      ? "var(--color-bg-disabled)"
-      : hasError
-        ? "var(--color-danger-bg-light)"
-        : "var(--input-bg)",
-    color: disabled
-      ? "var(--color-text-disabled)"
-      : readOnly
-        ? "var(--color-text-muted)"
-        : "var(--color-text-body)",
-    fontSize: currentSize.fontSize,
-    outline: "none",
-    transition: "var(--transition-all)",
-    boxShadow: isFocused && !hasError
-      ? "var(--input-focus-ring)"
-      : hasError && isFocused
-        ? "var(--shadow-focus-danger)"
-        : "none",
-    cursor: disabled ? "not-allowed" : readOnly ? "default" : "text",
-    ...style,
-  }
-
-  // Icon styles
-  const iconStyles = {
-    position: "absolute",
-    left: "var(--spacing-3)",
-    top: "50%",
-    transform: "translateY(-50%)",
-    color: hasError
-      ? "var(--color-danger)"
-      : isFocused
-        ? "var(--color-primary)"
-        : "var(--color-text-placeholder)",
-    pointerEvents: "none",
-    transition: "var(--transition-colors)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "var(--icon-md)",
-  }
-
-  // Password toggle button styles
-  const passwordToggleStyles = {
-    position: "absolute",
-    right: "var(--spacing-3)",
-    top: "50%",
-    transform: "translateY(-50%)",
-    background: "transparent",
-    border: "none",
-    padding: "var(--spacing-1)",
-    cursor: "pointer",
-    color: "var(--color-text-placeholder)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    transition: "var(--transition-colors)",
-    borderRadius: "var(--radius-sm)",
-  }
-
-  // Password toggle button hover state
-  const [isPasswordHovered, setIsPasswordHovered] = useState(false)
-  const passwordToggleHoverStyles = {
-    ...passwordToggleStyles,
-    background: isPasswordHovered ? "var(--color-bg-hover)" : "transparent",
-    color: isPasswordHovered ? "var(--color-primary)" : "var(--color-text-placeholder)",
-  }
-
-  const handleFocus = (e) => {
-    setIsFocused(true)
-    rest.onFocus?.(e)
-  }
-
-  const handleBlur = (e) => {
-    setIsFocused(false)
-    rest.onBlur?.(e)
-  }
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
-
   return (
-    <div style={containerStyles}>
-      {/* Left Icon */}
-      {hasIcon && (
-        <span style={iconStyles}>
-          {icon}
-        </span>
-      )}
-
-      {/* Input Element */}
-      <input
-        ref={ref}
-        type={inputType}
-        id={id || name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        readOnly={readOnly}
-        required={required}
-        min={min}
-        max={max}
-        step={step}
-        style={inputStyles}
-        className={className}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        aria-invalid={hasError}
-        aria-describedby={hasError && typeof error === 'string' ? `${id || name}-error` : undefined}
-        {...rest}
-      />
-
-      {/* Password Toggle Button */}
-      {isPassword && !disabled && !readOnly && (
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          style={passwordToggleHoverStyles}
-          tabIndex={-1}
-          aria-label={showPassword ? "Hide password" : "Show password"}
-          onMouseEnter={() => setIsPasswordHovered(true)}
-          onMouseLeave={() => setIsPasswordHovered(false)}
-        >
-          {showPassword ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
-        </button>
-      )}
-    </div>
+    <C0Input
+      ref={ref}
+      id={id || name}
+      size={normalizeSize(size)}
+      leftIcon={icon}
+      error={error}
+      {...props}
+    />
   )
 })
 
