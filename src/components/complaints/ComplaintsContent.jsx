@@ -1,9 +1,9 @@
+import { Tabs } from "czero/react"
 import { FaClipboardList } from "react-icons/fa"
 import NoResults from "../common/NoResults"
 import ComplaintListView from "./ComplaintListView"
 import ComplaintCardView from "./ComplaintCardView"
-import { Pagination, Tabs } from "@/components/ui"
-
+import { Pagination } from "@/components/ui"
 const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages, COMPLAINT_FILTER_TABS, updateFilter, onViewDetails, paginate, showFilters }) => {
   return (
     <>

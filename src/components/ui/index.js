@@ -64,8 +64,6 @@ export { default as StatCards, StatCard } from './data-display/StatCard'
 // ==============================================
 // NAVIGATION COMPONENTS
 // ==============================================
-export { default as Tabs, TabList, Tab, TabPanels, TabPanel } from './navigation/Tabs'
-export { default as UnderlineTabs } from './navigation/UnderlineTabs'
 export { default as Pagination } from './navigation/Pagination'
 export { default as Breadcrumb } from './navigation/Breadcrumb'
 

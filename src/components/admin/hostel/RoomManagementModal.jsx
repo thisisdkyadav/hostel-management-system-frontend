@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { VStack, HStack, Tabs, TabList, Tab } from "@/components/ui"
-import { Button, Modal } from "czero/react"
+import { VStack, HStack } from "@/components/ui"
+import { Tabs, Button, Modal } from "czero/react"
 import { Table, Pencil, Trash2, X, TriangleAlert } from "lucide-react"
 import ExistingRoomsList from "./rooms/ExistingRoomsList"
 import AddRoomForm from "./rooms/AddRoomForm"
@@ -90,10 +90,10 @@ const RoomManagementModal = ({ hostel, onClose, onRoomsUpdated }) => {
         <VStack gap="large">
           <HStack justify="between" align="center" style={{ paddingBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)', width: '100%' }}>
             <Tabs value={activeTab} onChange={setActiveTab} variant="pills" size="small">
-              <TabList>
-                <Tab value="view">View Existing Rooms</Tab>
-                <Tab value="add">Add New Rooms</Tab>
-              </TabList>
+              <Tabs.List>
+                <Tabs.Trigger value="view">View Existing Rooms</Tabs.Trigger>
+                <Tabs.Trigger value="add">Add New Rooms</Tabs.Trigger>
+              </Tabs.List>
             </Tabs>
 
             {activeTab === "view" && (

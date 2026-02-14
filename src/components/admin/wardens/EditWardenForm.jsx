@@ -4,8 +4,8 @@ import { FiTag } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi, accessControlApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Input, Checkbox, VStack, HStack, Label, Tabs, TabList, Tab, Spinner } from "@/components/ui"
-import { Button, Table, Modal } from "czero/react"
+import { Input, Checkbox, VStack, HStack, Label, Spinner } from "@/components/ui"
+import { Tabs, Button, Table, Modal } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
@@ -209,14 +209,14 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={activeTab === "permissions" ? 800 : 500}>
       <div style={{ marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
         <Tabs value={activeTab} onChange={setActiveTab}>
-          <TabList>
-            <Tab value="basic">
+          <Tabs.List>
+            <Tabs.Trigger value="basic">
               Basic Information
-            </Tab>
-            <Tab value="permissions">
+            </Tabs.Trigger>
+            <Tabs.Trigger value="permissions">
               Permissions
-            </Tab>
-          </TabList>
+            </Tabs.Trigger>
+          </Tabs.List>
         </Tabs>
       </div>
 

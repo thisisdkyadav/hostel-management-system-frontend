@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FaHistory, FaCalendarAlt, FaFilter, FaSearch, FaTimes, FaChartBar, FaTasks } from "react-icons/fa"
-import { VStack, HStack, Label, Spinner, Pagination, EmptyState, Badge, Tabs, TabList, Tab, StatCards } from "@/components/ui"
-import { Button, Table, Modal } from "czero/react"
+import { VStack, HStack, Label, Spinner, Pagination, EmptyState, Badge, StatCards } from "@/components/ui"
+import { Tabs, Button, Table, Modal } from "czero/react"
 import { securityApi } from "../../../service"
 import { adminApi } from "../../../service"
 import DatePicker from "react-datepicker"
@@ -121,14 +121,14 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
       <VStack gap="large">
         {/* Tab Navigation */}
         <Tabs value={activeTab} onChange={setActiveTab}>
-          <TabList>
-            <Tab value="attendance" icon={<FaHistory />}>
+          <Tabs.List>
+            <Tabs.Trigger value="attendance" icon={<FaHistory />}>
               Attendance History
-            </Tab>
-            <Tab value="workStats" icon={<FaChartBar />}>
+            </Tabs.Trigger>
+            <Tabs.Trigger value="workStats" icon={<FaChartBar />}>
               Work Statistics
-            </Tab>
-          </TabList>
+            </Tabs.Trigger>
+          </Tabs.List>
         </Tabs>
 
         {activeTab === "attendance" && (

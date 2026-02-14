@@ -1,3 +1,4 @@
+import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import { useGlobal } from "../../contexts/GlobalProvider"
@@ -9,7 +10,6 @@ import ComplaintsHeader from "../../components/headers/ComplaintsHeader"
 import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterPanel"
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import PrintComplaints from "../../components/maintenance/PrintComplaints"
-import { Tabs } from "@/components/ui"
 
 const MAINTENANCE_STATUS_TABS = [
   { label: "All", value: "all", color: "primary" },

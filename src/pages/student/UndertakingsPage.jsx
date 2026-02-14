@@ -2,9 +2,8 @@ import { useState, useEffect } from "react"
 import { FaFileSignature, FaCheck, FaClock, FaExclamationTriangle } from "react-icons/fa"
 import { undertakingApi } from "../../service"
 import UndertakingDetailModal from "../../components/student/undertakings/UndertakingDetailModal"
-import { LoadingState, ErrorState, EmptyState, UnderlineTabs } from "@/components/ui"
-import { Button } from "czero/react"
-
+import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { Tabs, Button } from "czero/react"
 const UndertakingsPage = () => {
   const [pendingUndertakings, setPendingUndertakings] = useState([])
   const [acceptedUndertakings, setAcceptedUndertakings] = useState([])
@@ -108,7 +107,7 @@ const UndertakingsPage = () => {
       {/* Tabs */}
       <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', marginBottom: 'var(--spacing-6)' }}>
         <div style={{ padding: '0 var(--spacing-4)' }}>
-          <UnderlineTabs
+          <Tabs variant="underline"
             tabs={[
               { value: "pending", label: `Pending (${pendingUndertakings.length})` },
               { value: "accepted", label: `Accepted (${acceptedUndertakings.length})` },

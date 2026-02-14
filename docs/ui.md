@@ -8,7 +8,7 @@
 
 ```jsx
 // Core components from CZero (not from @/components/ui)
-import { Button, Modal, Table, DataTable, StatusBadge } from 'czero/react'
+import { Button, Modal, Table, DataTable, StatusBadge, Tabs } from 'czero/react'
 
 // Other UI components
 import { Input, Card, ... } from '@/components/ui'
@@ -20,7 +20,7 @@ import { Card, Stack, Divider } from '@/components/ui/layout'
 import { Toast, Alert } from '@/components/ui/feedback'
 ```
 
-> **Note:** `Button`, `Modal`, `Table`, `DataTable`, and `StatusBadge` are provided by the CZero UI library. Import them from `czero/react`.
+> **Note:** `Button`, `Modal`, `Table`, `DataTable`, `StatusBadge`, and `Tabs` are provided by the CZero UI library. Import them from `czero/react`.
 
 ## C0 Migration Status (Current)
 
@@ -29,7 +29,8 @@ import { Toast, Alert } from '@/components/ui/feedback'
 - `Table` -> migrated to C0
 - `DataTable` -> migrated to C0
 - `StatusBadge` -> migrated to C0
-- `Tabs` / `UnderlineTabs` -> frontend wrappers now use C0 `Tabs` primitives internally (public import path remains `@/components/ui`)
+- `Tabs` -> migrated to C0 (import directly from `czero/react`)
+- `UnderlineTabs` wrapper removed. Use `Tabs` with `variant="underline"`.
 - Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
 
 ## C0 Config Surfaces (HMS Overrides)

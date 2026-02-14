@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import AvailableInventory from "../../components/wardens/inventory/AvailableInventory"
 import StudentAssignments from "../../components/wardens/inventory/StudentAssignments"
-import { UnderlineTabs } from "@/components/ui"
-import { Button } from "czero/react"
-
+import { Tabs, Button } from "czero/react"
 const StudentInventoryPage = () => {
   const [activeTab, setActiveTab] = useState("available")
 
@@ -64,8 +62,8 @@ const StudentInventoryPage = () => {
 
       {/* Tabs */}
       <div style={styles.tabContainer}>
-        <UnderlineTabs
-          tabs={[
+        <Tabs variant="underline"
+            tabs={[
             { value: "available", label: "Available Inventory" },
             { value: "assignments", label: "Student Assignments" },
           ]}

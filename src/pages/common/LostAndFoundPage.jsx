@@ -1,5 +1,6 @@
+import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
-import { Tabs, SearchInput } from "@/components/ui"
+import { SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import LostAndFoundStats from "../../components/lostAndFound/LostAndFoundStats"
 import LostAndFoundCard from "../../components/lostAndFound/LostAndFoundCard"

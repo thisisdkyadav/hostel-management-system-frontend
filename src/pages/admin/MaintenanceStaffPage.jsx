@@ -1,6 +1,7 @@
+import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
 import { FaTools } from "react-icons/fa"
-import { Tabs, SearchInput } from "@/components/ui"
+import { SearchInput } from "@/components/ui"
 import NoResults from "../../components/common/NoResults"
 import MaintenanceCard from "../../components/admin/maintenance/MaintenanceCard"
 import AddMaintenanceModal from "../../components/admin/maintenance/AddMaintenanceModal"

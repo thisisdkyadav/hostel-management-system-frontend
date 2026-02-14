@@ -1,6 +1,7 @@
+import { Tabs } from "czero/react"
 import { useState, useEffect } from "react"
 import { FaUserTie } from "react-icons/fa"
-import { Tabs, SearchInput } from "@/components/ui"
+import { SearchInput } from "@/components/ui"
 import NoResults from "../../common/NoResults"
 import WardenCard from "../wardens/WardenCard"
 import AddWardenModal from "../wardens/AddWardenModal"

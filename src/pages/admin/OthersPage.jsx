@@ -1,6 +1,7 @@
+import { Tabs } from "czero/react"
 import { useState } from "react"
 import { FaBuilding } from "react-icons/fa"
-import { Tabs } from "@/components/ui"
+
 import InsuranceProviders from "../../components/admin/others/InsuranceProviders"
 import HostelLogins from "../../components/admin/others/HostelLogins"
 import Undertakings from "../../components/admin/others/Undertakings"
