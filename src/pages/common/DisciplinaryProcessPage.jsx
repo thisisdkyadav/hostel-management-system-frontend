@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Modal } from "czero/react"
-import { Eye, Plus } from "lucide-react"
+import { Eye, Plus, Search } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
+import PageFooter from "../../components/common/PageFooter"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PdfViewerModal from "../../components/common/pdf/PdfViewerModal"
-import { Badge, Input, Textarea, useToast } from "@/components/ui"
+import { Badge, Input, Pagination, Tabs, Textarea, useToast } from "@/components/ui"
 import { discoApi, studentApi, uploadApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
@@ -84,6 +85,18 @@ const getStageLabel = (stage) => {
   }
 }
 
+const STUDENT_PAGE_SIZE = 10
+
+const getStudentListStatus = (caseData) => {
+  const initialStatus = caseData.initialReview?.status || "pending"
+  const finalStatus = caseData.finalDecision?.status || "pending"
+
+  if (initialStatus === "rejected" || finalStatus === "rejected") return "rejected"
+  if (finalStatus === "action_taken" || finalStatus === "finalized_with_action") return "closed"
+  if (initialStatus === "processed" && finalStatus === "pending") return "in_process"
+  return "pending"
+}
+
 const cardStyle = {
   border: "var(--border-1) solid var(--color-border-primary)",
   borderRadius: "var(--radius-card-sm)",
@@ -115,6 +128,9 @@ const DisciplinaryProcessPage = () => {
   const [submitModalOpen, setSubmitModalOpen] = useState(false)
   const [studentCases, setStudentCases] = useState([])
   const [studentCasesLoading, setStudentCasesLoading] = useState(false)
+  const [studentStatusFilter, setStudentStatusFilter] = useState("all")
+  const [studentSearchTerm, setStudentSearchTerm] = useState("")
+  const [studentPage, setStudentPage] = useState(1)
   const [selectedStudentCase, setSelectedStudentCase] = useState(null)
   const [studentDetailModalOpen, setStudentDetailModalOpen] = useState(false)
   const [submitComplaintPdfUrl, setSubmitComplaintPdfUrl] = useState("")
@@ -123,9 +139,11 @@ const DisciplinaryProcessPage = () => {
 
   const [adminCases, setAdminCases] = useState([])
   const [adminCasesLoading, setAdminCasesLoading] = useState(false)
-  const [adminStatusFilter, setAdminStatusFilter] = useState("")
+  const [adminStatusFilter, setAdminStatusFilter] = useState("all")
+  const [adminSearchTerm, setAdminSearchTerm] = useState("")
   const [adminPage, setAdminPage] = useState(1)
   const [adminTotalPages, setAdminTotalPages] = useState(1)
+  const [adminTotalCount, setAdminTotalCount] = useState(0)
   const [adminModalOpen, setAdminModalOpen] = useState(false)
   const [adminModalLoading, setAdminModalLoading] = useState(false)
   const [selectedAdminCase, setSelectedAdminCase] = useState(null)
@@ -201,10 +219,11 @@ const DisciplinaryProcessPage = () => {
       const response = await discoApi.getProcessCases({
         page: adminPage,
         limit: 10,
-        caseStatus: adminStatusFilter || undefined,
+        caseStatus: adminStatusFilter !== "all" ? adminStatusFilter : undefined,
       })
       setAdminCases(response.items || [])
       setAdminTotalPages(response.pagination?.totalPages || 1)
+      setAdminTotalCount(response.pagination?.total || 0)
     } catch (error) {
       toast.error(error.message || "Failed to fetch disciplinary cases")
     } finally {
@@ -666,6 +685,86 @@ const DisciplinaryProcessPage = () => {
     },
   ]
 
+  const studentStatusTabs = useMemo(() => {
+    const counts = studentCases.reduce(
+      (acc, item) => {
+        const status = getStudentListStatus(item)
+        acc.all += 1
+        acc[status] += 1
+        return acc
+      },
+      { all: 0, pending: 0, in_process: 0, rejected: 0, closed: 0 }
+    )
+
+    return [
+      { label: "All", value: "all", count: counts.all },
+      { label: "Pending", value: "pending", count: counts.pending },
+      { label: "In Process", value: "in_process", count: counts.in_process },
+      { label: "Rejected", value: "rejected", count: counts.rejected },
+      { label: "Closed", value: "closed", count: counts.closed },
+    ]
+  }, [studentCases])
+
+  const adminStatusTabs = useMemo(
+    () => [
+      { label: "All", value: "all" },
+      { label: "Submitted", value: "submitted" },
+      { label: "Under Process", value: "under_process" },
+      { label: "Initial Rejected", value: "initial_rejected" },
+      { label: "Final Rejected", value: "final_rejected" },
+      { label: "Finalized", value: "finalized_with_action" },
+    ],
+    []
+  )
+
+  const filteredStudentCases = useMemo(() => {
+    const searchTerm = studentSearchTerm.trim().toLowerCase()
+    return studentCases.filter((item) => {
+      const matchesStatus =
+        studentStatusFilter === "all" || getStudentListStatus(item) === studentStatusFilter
+      if (!matchesStatus) return false
+
+      if (!searchTerm) return true
+      const caseId = String(item.id || "").toLowerCase()
+      const shortCaseId = String(item.id || "").slice(-6).toLowerCase()
+      return caseId.includes(searchTerm) || shortCaseId.includes(searchTerm)
+    })
+  }, [studentCases, studentStatusFilter, studentSearchTerm])
+
+  const studentTotalPages = useMemo(
+    () => Math.max(1, Math.ceil(filteredStudentCases.length / STUDENT_PAGE_SIZE)),
+    [filteredStudentCases.length]
+  )
+
+  const paginatedStudentCases = useMemo(() => {
+    const startIndex = (studentPage - 1) * STUDENT_PAGE_SIZE
+    return filteredStudentCases.slice(startIndex, startIndex + STUDENT_PAGE_SIZE)
+  }, [filteredStudentCases, studentPage])
+
+  const filteredAdminCases = useMemo(() => {
+    const searchTerm = adminSearchTerm.trim().toLowerCase()
+    if (!searchTerm) return adminCases
+
+    return adminCases.filter((item) => {
+      const caseId = String(item.id || "").toLowerCase()
+      const shortCaseId = String(item.id || "").slice(-6).toLowerCase()
+      const studentName = String(item.submittedBy?.name || "").toLowerCase()
+      const studentEmail = String(item.submittedBy?.email || "").toLowerCase()
+      return (
+        caseId.includes(searchTerm) ||
+        shortCaseId.includes(searchTerm) ||
+        studentName.includes(searchTerm) ||
+        studentEmail.includes(searchTerm)
+      )
+    })
+  }, [adminCases, adminSearchTerm])
+
+  useEffect(() => {
+    if (studentPage > studentTotalPages) {
+      setStudentPage(studentTotalPages)
+    }
+  }, [studentPage, studentTotalPages])
+
   if (!isStudent && !isAdmin) {
     return (
       <div className="flex-1">
@@ -675,7 +774,7 @@ const DisciplinaryProcessPage = () => {
   }
 
   return (
-    <div className="flex-1">
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <PageHeader
         title="Disciplinary Process"
         subtitle={
@@ -685,72 +784,108 @@ const DisciplinaryProcessPage = () => {
         }
       >
         {isStudent ? (
-          <Button variant="primary" size="sm" onClick={() => setSubmitModalOpen(true)}>
+          <Button variant="primary" size="md" onClick={() => setSubmitModalOpen(true)}>
             <Plus size={14} /> Submit Case
           </Button>
         ) : null}
       </PageHeader>
 
-      <div style={{ padding: "var(--spacing-4) var(--spacing-6)" }}>
-        {isStudent ? (
-          <div style={cardStyle}>
-            <h3 style={sectionTitleStyle}>My Cases</h3>
-            <div style={{ marginTop: "var(--spacing-3)" }}>
-              <DataTable
-                columns={studentColumns}
-                data={studentCases}
-                loading={studentCasesLoading}
-                emptyMessage="No disciplinary cases submitted yet"
-                onRowClick={openStudentCaseDetail}
-              />
-            </div>
-          </div>
-        ) : (
-          <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-              <h3 style={sectionTitleStyle}>All Cases</h3>
-              <div style={{ width: "260px" }}>
-                <Input
-                  placeholder="Filter by case status"
-                  value={adminStatusFilter}
-                  onChange={(event) => {
-                    setAdminStatusFilter(event.target.value)
-                    setAdminPage(1)
-                  }}
-                />
-              </div>
-            </div>
-            <DataTable
-              columns={adminColumns}
-              data={adminCases}
-              loading={adminCasesLoading}
-              emptyMessage="No disciplinary cases found"
-              onRowClick={openAdminCase}
+      <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <Tabs
+              tabs={isStudent ? studentStatusTabs : adminStatusTabs}
+              activeTab={isStudent ? studentStatusFilter : adminStatusFilter}
+              setActiveTab={(value) => {
+                if (isStudent) {
+                  setStudentStatusFilter(value)
+                  setStudentPage(1)
+                  return
+                }
+                setAdminStatusFilter(value)
+                setAdminPage(1)
+              }}
             />
-            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "var(--spacing-2)" }}>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={adminPage <= 1}
-                onClick={() => setAdminPage((prev) => Math.max(1, prev - 1))}
-              >
-                Prev
-              </Button>
-              <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                Page {adminPage} / {adminTotalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={adminPage >= adminTotalPages}
-                onClick={() => setAdminPage((prev) => Math.min(adminTotalPages, prev + 1))}
-              >
-                Next
-              </Button>
-            </div>
           </div>
-        )}
+
+          <div className="w-full lg:w-[420px] lg:max-w-[420px]">
+            <Input
+              type="text"
+              icon={<Search size={16} />}
+              value={isStudent ? studentSearchTerm : adminSearchTerm}
+              placeholder={
+                isStudent
+                  ? "Search by case ID..."
+                  : "Search by case ID, student name, or email..."
+              }
+              onChange={(event) => {
+                if (isStudent) {
+                  setStudentSearchTerm(event.target.value)
+                  setStudentPage(1)
+                  return
+                }
+                setAdminSearchTerm(event.target.value)
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginTop: "var(--spacing-4)" }}>
+          <DataTable
+            columns={isStudent ? studentColumns : adminColumns}
+            data={isStudent ? paginatedStudentCases : filteredAdminCases}
+            loading={isStudent ? studentCasesLoading : adminCasesLoading}
+            emptyMessage={
+              isStudent
+                ? "No disciplinary cases match your current filters"
+                : "No disciplinary cases match your current filters"
+            }
+            onRowClick={isStudent ? openStudentCaseDetail : openAdminCase}
+          />
+        </div>
       </div>
+
+      <PageFooter
+        leftContent={[
+          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            {isStudent ? (
+              <>
+                Showing{" "}
+                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                  {studentCasesLoading ? 0 : paginatedStudentCases.length}
+                </span>{" "}
+                of{" "}
+                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                  {studentCasesLoading ? 0 : filteredStudentCases.length}
+                </span>{" "}
+                cases
+              </>
+            ) : (
+              <>
+                Showing{" "}
+                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                  {adminCasesLoading ? 0 : filteredAdminCases.length}
+                </span>{" "}
+                of{" "}
+                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                  {adminCasesLoading ? 0 : adminTotalCount}
+                </span>{" "}
+                cases
+              </>
+            )}
+          </span>,
+        ]}
+        rightContent={[
+          <Pagination
+            key="pagination"
+            currentPage={isStudent ? studentPage : adminPage}
+            totalPages={isStudent ? studentTotalPages : adminTotalPages}
+            paginate={isStudent ? setStudentPage : setAdminPage}
+            compact
+            showPageInfo={false}
+          />,
+        ]}
+      />
 
       <Modal title="Submit Disciplinary Complaint" onClose={() => setSubmitModalOpen(false)} width={700} isOpen={submitModalOpen}>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
