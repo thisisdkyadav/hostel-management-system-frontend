@@ -29,11 +29,13 @@ import { Toast, Alert } from '@/components/ui/feedback'
 - `Table` -> migrated to C0
 - `DataTable` -> migrated to C0
 - `StatusBadge` -> migrated to C0
+- `Tabs` / `UnderlineTabs` -> frontend wrappers now use C0 `Tabs` primitives internally (public import path remains `@/components/ui`)
 - Legacy table wrapper import (`@/components/ui/table`) is removed. Use `Table` / `DataTable` from `czero/react`.
 
 ## C0 Config Surfaces (HMS Overrides)
 
 HMS now customizes these via `frontend/czero.config.js`:
+- `components.tabs` (variants, sizing, icon/count pills, list border/layout tokens)
 - `components.modal` (close icon size/padding/bg/hover, tab colors, modal paddings)
 - `components.dataTable` (container/header/body/pagination/empty/loading token surface)
 - `components.statusBadge` (pill spacing, dot sizing, semantic tone colors)
@@ -42,6 +44,7 @@ HMS now customizes these via `frontend/czero.config.js`:
 // frontend/czero.config.js
 export default {
   components: {
+    tabs: { /* ... */ },
     modal: { /* ... */ },
     dataTable: { /* ... */ },
     statusBadge: { /* ... */ }

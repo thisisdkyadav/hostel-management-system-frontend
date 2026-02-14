@@ -208,12 +208,12 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
   return (
     <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={activeTab === "permissions" ? 800 : 500}>
       <div style={{ marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
-        <Tabs>
+        <Tabs value={activeTab} onChange={setActiveTab}>
           <TabList>
-            <Tab isSelected={activeTab === "basic"} onClick={() => setActiveTab("basic")}>
+            <Tab value="basic">
               Basic Information
             </Tab>
-            <Tab isSelected={activeTab === "permissions"} onClick={() => setActiveTab("permissions")}>
+            <Tab value="permissions">
               Permissions
             </Tab>
           </TabList>

@@ -291,6 +291,75 @@ export default {
       primaryDot: "var(--color-primary, #1360AB)",
     },
 
+    // Tabs component
+    tabs: {
+      listBorderWidth: "1px",
+      listBorderColor: "var(--color-border-primary, #E2E8F0)",
+      listGap: "0",
+
+      triggerPaddingX: "var(--spacing-4, 1rem)",
+      triggerPaddingY: "var(--spacing-2, 0.5rem)",
+      triggerPaddingXSm: "var(--spacing-3, 0.75rem)",
+      triggerPaddingYSm: "var(--spacing-1-5, 0.375rem)",
+      triggerPaddingXLg: "var(--spacing-5, 1.25rem)",
+      triggerPaddingYLg: "var(--spacing-2-5, 0.625rem)",
+
+      triggerFontSize: "var(--font-size-sm, 0.875rem)",
+      triggerFontSizeSm: "var(--font-size-sm, 0.875rem)",
+      triggerFontSizeLg: "var(--font-size-lg, 1.125rem)",
+      triggerFontWeight: "var(--font-weight-medium, 500)",
+
+      triggerColor: "var(--color-text-muted, #64748B)",
+      triggerActiveColor: "var(--color-primary, #1360AB)",
+      triggerActiveBorderColor: "var(--color-primary, #1360AB)",
+      triggerGap: "var(--spacing-2, 0.5rem)",
+      triggerRadius: "var(--radius-button-md, 10px)",
+      triggerBorderWidth: "2px",
+      triggerTransition: "var(--transition-normal, 200ms ease)",
+
+      iconSize: "14px",
+      countPaddingX: "var(--spacing-1-5, 0.375rem)",
+      countMinWidth: "20px",
+      countHeight: "18px",
+      countFontSize: "var(--font-size-xs, 0.75rem)",
+      countFontWeight: "var(--font-weight-semibold, 600)",
+      countRadius: "var(--radius-sm, 6px)",
+      countBg: "var(--color-bg-muted, #F1F5F9)",
+      countColor: "var(--color-text-muted, #64748B)",
+      countActiveBg: "rgba(255, 255, 255, 0.2)",
+      countActiveColor: "white",
+
+      pillsListGap: "var(--spacing-2, 0.5rem)",
+      pillsTriggerBg: "var(--color-bg-primary, #FFFFFF)",
+      pillsTriggerColor: "var(--color-text-muted, #64748B)",
+      pillsTriggerBorderColor: "var(--color-border-light, #E2E8F0)",
+      pillsTriggerHoverBg: "var(--color-primary-bg-hover, #D2E3FC)",
+      pillsTriggerHoverColor: "var(--color-primary, #1360AB)",
+      pillsTriggerActiveBg: "var(--color-primary, #1360AB)",
+      pillsTriggerActiveColor: "white",
+      pillsTriggerActiveBorderColor: "var(--color-primary, #1360AB)",
+      pillsTriggerRadius: "var(--radius-button-md, 10px)",
+
+      enclosedListBg: "var(--color-bg-tertiary, #F8FAFC)",
+      enclosedListPadding: "var(--spacing-1, 0.25rem)",
+      enclosedListRadius: "var(--radius-md, 8px)",
+      enclosedTriggerColor: "var(--color-text-muted, #64748B)",
+      enclosedTriggerActiveBg: "var(--color-bg-primary, #FFFFFF)",
+      enclosedTriggerActiveColor: "var(--color-text-secondary, #1E293B)",
+      enclosedTriggerRadius: "var(--radius-sm, 6px)",
+      enclosedTriggerActiveShadow: "var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05))",
+
+      contentPadding: "var(--spacing-4, 1rem) 0",
+
+      states: {
+        hover: { color: "var(--color-text-primary, #1E293B)" },
+        focus: {
+          ringWidth: "2px",
+          ringColor: "var(--color-ring, #1360AB)",
+        },
+      },
+    },
+
     // Modal component
     modal: {
       overlayBg: "var(--color-bg-modal-overlay, rgba(15, 23, 42, 0.55))",

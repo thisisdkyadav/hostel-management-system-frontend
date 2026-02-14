@@ -120,12 +120,12 @@ const MaintenanceStaffDetailsModal = ({ staff, onClose }) => {
     <Modal isOpen={true} title={`${staff.name} - Details`} onClose={onClose} width={900}>
       <VStack gap="large">
         {/* Tab Navigation */}
-        <Tabs>
+        <Tabs value={activeTab} onChange={setActiveTab}>
           <TabList>
-            <Tab isSelected={activeTab === "attendance"} onClick={() => setActiveTab("attendance")} icon={<FaHistory />}>
+            <Tab value="attendance" icon={<FaHistory />}>
               Attendance History
             </Tab>
-            <Tab isSelected={activeTab === "workStats"} onClick={() => setActiveTab("workStats")} icon={<FaChartBar />}>
+            <Tab value="workStats" icon={<FaChartBar />}>
               Work Statistics
             </Tab>
           </TabList>
