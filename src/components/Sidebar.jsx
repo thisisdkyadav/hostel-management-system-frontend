@@ -18,6 +18,15 @@ import {
 } from "../constants/navigationConfig"
 
 const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
+const ADMIN_SIDEBAR_V2_TOGGLE_KEY = "admin_sidebar_v2_enabled"
+
+/**
+ * Temporary rollout switch for admin categorized sidebar.
+ * Remove this system later by:
+ * 1) Deleting ADMIN_SIDEBAR_V2_TOGGLE_KEY and the isAdminSidebarV2Enabled state/effects.
+ * 2) Replacing useCategorizedAdminNav checks with isAdmin in this file.
+ * 3) Removing the "V2" toggle button from the header.
+ */
 
 const ADMIN_CATEGORY_ACTIVE_STYLES = {
   home: "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]",
@@ -33,12 +42,14 @@ const Sidebar = ({ navItems }) => {
   const [isMobile, setIsMobile] = useState(false)
   const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
   const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
+  const [isAdminSidebarV2Enabled, setIsAdminSidebarV2Enabled] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
   const { isPwaMobile } = usePwaMobile()
   const { layoutPreference } = useLayoutPreference()
   const isAdmin = user?.role === "Admin"
+  const useCategorizedAdminNav = isAdmin && isAdminSidebarV2Enabled
   const adminMainPathsSignature = (navItems || [])
     .filter((item) => item.section === "main" && item.path)
     .map((item) => item.path)
@@ -65,6 +76,22 @@ const Sidebar = ({ navItems }) => {
 
   useEffect(() => {
     if (!isAdmin) {
+      setIsAdminSidebarV2Enabled(false)
+      return
+    }
+
+    if (typeof window === "undefined") return
+    const storedValue = window.localStorage.getItem(ADMIN_SIDEBAR_V2_TOGGLE_KEY)
+    setIsAdminSidebarV2Enabled(storedValue === "true")
+  }, [isAdmin])
+
+  useEffect(() => {
+    if (!isAdmin || typeof window === "undefined") return
+    window.localStorage.setItem(ADMIN_SIDEBAR_V2_TOGGLE_KEY, String(isAdminSidebarV2Enabled))
+  }, [isAdmin, isAdminSidebarV2Enabled])
+
+  useEffect(() => {
+    if (!useCategorizedAdminNav) {
       setActiveAdminCategory(ADMIN_NAV_CATEGORY_HOME)
       setPinnedAdminPaths([])
       return
@@ -80,7 +107,7 @@ const Sidebar = ({ navItems }) => {
 
     setPinnedAdminPaths(hasPersistedPinnedTabs ? sanitizedUserPinnedTabs : safeFallbackPins)
     setActiveAdminCategory(ADMIN_NAV_CATEGORY_HOME)
-  }, [isAdmin, adminMainPathsSignature, user?.pinnedTabs])
+  }, [useCategorizedAdminNav, adminMainPathsSignature, user?.pinnedTabs])
 
   useEffect(() => {
     const handleResize = () => {
@@ -105,7 +132,7 @@ const Sidebar = ({ navItems }) => {
   const mainNavItems = navItems.filter((item) => item.section === "main")
   const bottomNavItems = navItems.filter((item) => item.section === "bottom")
   const adminMainPathSet = new Set(mainNavItems.filter((item) => item.path).map((item) => item.path))
-  const filteredMainNavItems = isAdmin
+  const filteredMainNavItems = useCategorizedAdminNav
     ? activeAdminCategory === ADMIN_NAV_CATEGORY_HOME
       ? mainNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path))
       : mainNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === activeAdminCategory)
@@ -125,7 +152,7 @@ const Sidebar = ({ navItems }) => {
   }
 
   const togglePinnedItem = async (item) => {
-    if (!isAdmin || !item?.path || !adminMainPathSet.has(item.path)) return
+    if (!useCategorizedAdminNav || !item?.path || !adminMainPathSet.has(item.path)) return
 
     const previousPinnedPaths = pinnedAdminPaths
     const nextPinnedPaths = previousPinnedPaths.includes(item.path)
@@ -147,7 +174,7 @@ const Sidebar = ({ navItems }) => {
   }
 
   const getFirstNavItemForCategory = (categoryId) => {
-    if (!isAdmin) return null
+    if (!useCategorizedAdminNav) return null
 
     if (categoryId === ADMIN_NAV_CATEGORY_HOME) {
       return mainNavItems.find((item) => item.path && pinnedAdminPaths.includes(item.path)) || null
@@ -171,7 +198,7 @@ const Sidebar = ({ navItems }) => {
   }
 
   const renderAdminCategorySection = () => {
-    if (!isAdmin) return null
+    if (!useCategorizedAdminNav) return null
 
     return (
       <div className={`border-t border-[var(--color-border-primary)] ${isOpen ? "px-[0.875rem] py-[0.75rem]" : "p-2"}`}>
@@ -204,7 +231,7 @@ const Sidebar = ({ navItems }) => {
     const isLogout = item.name === "Logout"
     const isProfile = item.name === "Profile"
     const isPinnedItem = !!item.path && pinnedAdminPaths.includes(item.path)
-    const showPinControl = isAdmin && isOpen && item.section === "main" && item.path
+    const showPinControl = useCategorizedAdminNav && isOpen && item.section === "main" && item.path
 
     // Don't render profile and logout separately in the bottom section when sidebar is open
     if ((isProfile || isLogout) && isOpen) {
@@ -401,13 +428,32 @@ const Sidebar = ({ navItems }) => {
 
               {/* Toggle Button */}
               {isOpen ? (
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  title="Minimize"
-                  className="w-9 h-9 rounded-[10px] border border-[var(--color-border-secondary)] flex items-center justify-center text-[var(--color-text-tertiary)] bg-[var(--color-bg-primary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)] transition-all duration-200"
-                >
-                  <HiMenuAlt2 className="text-[19px]" />
-                </button>
+                <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <button
+                      onClick={() => setIsAdminSidebarV2Enabled((prev) => !prev)}
+                      title={isAdminSidebarV2Enabled ? "Disable Admin Nav V2" : "Enable Admin Nav V2"}
+                      aria-label={isAdminSidebarV2Enabled ? "Disable Admin Nav V2" : "Enable Admin Nav V2"}
+                      className={`
+                        h-9 min-w-10 px-2 rounded-[10px] border text-[10px] font-semibold tracking-wide
+                        flex items-center justify-center transition-all duration-200
+                        ${isAdminSidebarV2Enabled
+                          ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]"
+                          : "bg-[var(--color-bg-primary)] text-[var(--color-text-tertiary)] border-[var(--color-border-secondary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)]"
+                        }
+                      `}
+                    >
+                      V2
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    title="Minimize"
+                    className="w-9 h-9 rounded-[10px] border border-[var(--color-border-secondary)] flex items-center justify-center text-[var(--color-text-tertiary)] bg-[var(--color-bg-primary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)] transition-all duration-200"
+                  >
+                    <HiMenuAlt2 className="text-[19px]" />
+                  </button>
+                </div>
               ) : (
                 <button
                   onClick={() => setIsOpen(!isOpen)}
@@ -423,7 +469,7 @@ const Sidebar = ({ navItems }) => {
           {/* Main Navigation */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden px-[0.875rem] py-[0.875rem] sidebar-scrollbar">
             <ul className="space-y-0">{filteredMainNavItems.map(renderNavItem)}</ul>
-            {isAdmin && filteredMainNavItems.length === 0 && isOpen && (
+            {useCategorizedAdminNav && filteredMainNavItems.length === 0 && isOpen && (
               <div className="mt-2 px-2 py-2 rounded-lg text-[0.72rem] text-[var(--color-text-muted)] bg-[var(--color-bg-hover)]">
                 {activeAdminCategory === ADMIN_NAV_CATEGORY_DINING ? "Coming Soon" : "No tabs here yet. Pin tabs from other categories to show them in Home."}
               </div>
