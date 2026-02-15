@@ -14,7 +14,8 @@ import {
   ADMIN_NAV_CATEGORIES,
   ADMIN_NAV_CATEGORY_HOME,
   ADMIN_NAV_CATEGORY_HOSTELS,
-  ADMIN_NAV_CATEGORY_DINING
+  ADMIN_NAV_CATEGORY_DINING,
+  isCsoAdminSubRole
 } from "../constants/navigationConfig"
 
 const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
@@ -49,7 +50,8 @@ const Sidebar = ({ navItems }) => {
   const { isPwaMobile } = usePwaMobile()
   const { layoutPreference } = useLayoutPreference()
   const isAdmin = user?.role === "Admin"
-  const useCategorizedAdminNav = isAdmin && isAdminSidebarV2Enabled
+  const isRestrictedCsoAdmin = isAdmin && isCsoAdminSubRole(user)
+  const useCategorizedAdminNav = isAdmin && isAdminSidebarV2Enabled && !isRestrictedCsoAdmin
   const adminMainPathsSignature = (navItems || [])
     .filter((item) => item.section === "main" && item.path)
     .map((item) => item.path)

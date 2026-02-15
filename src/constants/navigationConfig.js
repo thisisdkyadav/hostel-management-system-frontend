@@ -70,6 +70,17 @@ const createProfileItem = (basePath) => ({
 
 const APPOINTMENT_ADMIN_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
 
+const normalizeSubRole = (subRole = "") => String(subRole).trim().toLowerCase().replace(/\s+/g, " ")
+
+export const isCsoAdminSubRole = (userOrSubRole = null) => {
+  const subRole = typeof userOrSubRole === "string" ? userOrSubRole : userOrSubRole?.subRole
+  const normalizedSubRole = normalizeSubRole(subRole)
+
+  if (!normalizedSubRole) return false
+
+  return normalizedSubRole.includes("cso") && normalizedSubRole.includes("admin")
+}
+
 export const ADMIN_NAV_CATEGORY_HOME = "home"
 export const ADMIN_NAV_CATEGORY_HOSTELS = "hostels"
 export const ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS = "student-affairs"
@@ -89,6 +100,15 @@ export const ADMIN_NAV_CATEGORIES = [
 // ============================================
 
 export const getAdminNavItems = (handleLogout, user = null) => {
+  if (isCsoAdminSubRole(user)) {
+    return [
+      { name: "Check-In/Out", icon: CheckSquare, section: "main", path: "/admin/live-checkinout" },
+      { name: "Face Scanner Management", icon: Scan, section: "main", path: "/admin/face-scanners" },
+      createProfileItem("/admin"),
+      createLogoutItem(handleLogout),
+    ]
+  }
+
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
