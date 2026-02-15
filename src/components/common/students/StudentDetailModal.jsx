@@ -24,6 +24,7 @@ import {
   UserCheck,
   UserX,
 } from "lucide-react"
+import { FaBoxes, FaExpand } from "react-icons/fa"
 import { studentApi } from "../../../service"
 import { visitorApi } from "../../../service"
 import { securityApi } from "../../../service"
