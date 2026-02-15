@@ -72,13 +72,48 @@ const APPOINTMENT_ADMIN_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "
 
 const normalizeSubRole = (subRole = "") => String(subRole).trim().toLowerCase().replace(/\s+/g, " ")
 
+const getSubRoleValue = (userOrSubRole = null) => {
+  if (typeof userOrSubRole === "string") return userOrSubRole
+  if (!userOrSubRole || typeof userOrSubRole !== "object") return ""
+
+  return userOrSubRole.subRole || userOrSubRole.subrole || userOrSubRole.sub_role || ""
+}
+
 export const isCsoAdminSubRole = (userOrSubRole = null) => {
-  const subRole = typeof userOrSubRole === "string" ? userOrSubRole : userOrSubRole?.subRole
-  const normalizedSubRole = normalizeSubRole(subRole)
+  const normalizedSubRole = normalizeSubRole(getSubRoleValue(userOrSubRole))
 
   if (!normalizedSubRole) return false
 
-  return normalizedSubRole.includes("cso") && normalizedSubRole.includes("admin")
+  const nonRestrictedAdminSubRoles = new Set([
+    "student affairs",
+    "joint registrar sa",
+    "associate dean sa",
+    "dean sa",
+  ])
+  if (nonRestrictedAdminSubRoles.has(normalizedSubRole)) return false
+
+  const explicitMatches = new Set([
+    "cso",
+    "admin",
+    "cso admin",
+    "admin cso",
+    "cso and admin",
+    "chief security officer",
+    "chief security officer admin",
+  ])
+
+  if (explicitMatches.has(normalizedSubRole)) {
+    return true
+  }
+
+  // Catch spelling/wording variants like:
+  // "CSO & Admin", "CSO - Admin", "Chief Security Officer (Admin)"
+  return (
+    normalizedSubRole.includes("cso") ||
+    normalizedSubRole.includes("chief security officer") ||
+    normalizedSubRole.includes("security") ||
+    normalizedSubRole.includes("admin")
+  )
 }
 
 export const ADMIN_NAV_CATEGORY_HOME = "home"
