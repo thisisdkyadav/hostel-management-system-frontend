@@ -13,7 +13,8 @@ import { authApi } from "../service"
 import {
   ADMIN_NAV_CATEGORIES,
   ADMIN_NAV_CATEGORY_HOME,
-  ADMIN_NAV_CATEGORY_HOSTELS
+  ADMIN_NAV_CATEGORY_HOSTELS,
+  ADMIN_NAV_CATEGORY_DINING
 } from "../constants/navigationConfig"
 
 const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
@@ -142,7 +143,7 @@ const Sidebar = ({ navItems }) => {
 
     return (
       <div className={`border-t border-[var(--color-border-primary)] ${isOpen ? "px-[0.875rem] py-[0.75rem]" : "p-2"}`}>
-        <div className={isOpen ? "grid grid-cols-4 gap-2" : "flex flex-col gap-2"}>
+        <div className={isOpen ? "grid grid-cols-5 gap-2" : "flex flex-col gap-2"}>
           {ADMIN_NAV_CATEGORIES.map((category) => {
             const isActiveCategory = activeAdminCategory === category.id
             return (
@@ -391,7 +392,7 @@ const Sidebar = ({ navItems }) => {
             <ul className="space-y-0">{filteredMainNavItems.map(renderNavItem)}</ul>
             {isAdmin && filteredMainNavItems.length === 0 && isOpen && (
               <div className="mt-2 px-2 py-2 rounded-lg text-[0.72rem] text-[var(--color-text-muted)] bg-[var(--color-bg-hover)]">
-                No tabs here yet. Pin tabs from other categories to show them in Home.
+                {activeAdminCategory === ADMIN_NAV_CATEGORY_DINING ? "Coming Soon" : "No tabs here yet. Pin tabs from other categories to show them in Home."}
               </div>
             )}
           </div>

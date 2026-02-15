@@ -40,7 +40,8 @@ import {
   Scan,
   House,
   GraduationCap,
-  BriefcaseBusiness
+  BriefcaseBusiness,
+  UtensilsCrossed
 } from "lucide-react"
 
 // ============================================
@@ -73,12 +74,14 @@ export const ADMIN_NAV_CATEGORY_HOME = "home"
 export const ADMIN_NAV_CATEGORY_HOSTELS = "hostels"
 export const ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS = "student-affairs"
 export const ADMIN_NAV_CATEGORY_STAFF = "staff"
+export const ADMIN_NAV_CATEGORY_DINING = "dining"
 
 export const ADMIN_NAV_CATEGORIES = [
   { id: ADMIN_NAV_CATEGORY_HOME, name: "Home", icon: House },
-  { id: ADMIN_NAV_CATEGORY_HOSTELS, name: "Hostels", icon: Building2 },
+  { id: ADMIN_NAV_CATEGORY_HOSTELS, name: "HMS", icon: Building2 },
   { id: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS, name: "Student Affairs", icon: GraduationCap },
   { id: ADMIN_NAV_CATEGORY_STAFF, name: "Staff", icon: BriefcaseBusiness },
+  { id: ADMIN_NAV_CATEGORY_DINING, name: "Dining", icon: UtensilsCrossed },
 ]
 
 // ============================================
@@ -89,7 +92,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
-    { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
