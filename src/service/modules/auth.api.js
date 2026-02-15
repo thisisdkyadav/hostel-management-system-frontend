@@ -61,6 +61,14 @@ export const authApi = {
   },
 
   /**
+   * Update pinned sidebar tabs for current user
+   * @param {string[]} pinnedTabs - Array of pinned tab paths
+   */
+  updatePinnedTabs: (pinnedTabs) => {
+    return apiClient.patch("/auth/user/pinned-tabs", { pinnedTabs })
+  },
+
+  /**
    * Logout from a specific device
    * @param {string} sessionId - Session ID to logout from
    */

@@ -37,7 +37,10 @@ import {
   UserRoundCheck,
   FileSignature,
   IdCard,
-  Scan
+  Scan,
+  House,
+  GraduationCap,
+  BriefcaseBusiness
 } from "lucide-react"
 
 // ============================================
@@ -66,36 +69,48 @@ const createProfileItem = (basePath) => ({
 
 const APPOINTMENT_ADMIN_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
 
+export const ADMIN_NAV_CATEGORY_HOME = "home"
+export const ADMIN_NAV_CATEGORY_HOSTELS = "hostels"
+export const ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS = "student-affairs"
+export const ADMIN_NAV_CATEGORY_STAFF = "staff"
+
+export const ADMIN_NAV_CATEGORIES = [
+  { id: ADMIN_NAV_CATEGORY_HOME, name: "Home", icon: House },
+  { id: ADMIN_NAV_CATEGORY_HOSTELS, name: "Hostels", icon: Building2 },
+  { id: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS, name: "Student Affairs", icon: GraduationCap },
+  { id: ADMIN_NAV_CATEGORY_STAFF, name: "Staff", icon: BriefcaseBusiness },
+]
+
 // ============================================
 // ADMIN NAVIGATION
 // ============================================
 
 export const getAdminNavItems = (handleLogout, user = null) => {
   const navItems = [
-    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin" },
-    { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$" },
-    { name: "Students", icon: Users, section: "main", path: "/admin/students" },
-    { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", isNew: true },
-    { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory" },
-    { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications" },
-    { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management" },
-    { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors" },
-    { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events" },
-    { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events" },
-    { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints" },
-    { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process" },
-    { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves" },
-    { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found" },
-    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/admin/feedbacks" },
-    { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators" },
-    { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens" },
-    { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens" },
-    { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors" },
-    { name: "Security", icon: Shield, section: "main", path: "/admin/security" },
-    { name: "Maintenance Staff", icon: Wrench, section: "main", path: "/admin/maintenance" },
-    { name: "Others", icon: UserPlus, section: "main", path: "/admin/others" },
-    { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password" },
-    { name: "Settings", icon: Settings, section: "main", path: "/admin/settings" },
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/admin", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Hostels", icon: Building2, section: "main", path: "/admin/hostels", pathPattern: "^/admin/hostels(/.*)?$", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Students", icon: Users, section: "main", path: "/admin/students", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Sheet View", icon: Table2, section: "main", path: "/admin/sheet", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Inventory", icon: Package, section: "main", path: "/admin/inventory", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Notifications", icon: Bell, section: "main", path: "/admin/notifications", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Lost and Found", icon: Search, section: "main", path: "/admin/lost-and-found", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Feedbacks", icon: MessageCircle, section: "main", path: "/admin/feedbacks", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Security", icon: Shield, section: "main", path: "/admin/security", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Maintenance Staff", icon: Wrench, section: "main", path: "/admin/maintenance", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Others", icon: UserPlus, section: "main", path: "/admin/others", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Settings", icon: Settings, section: "main", path: "/admin/settings", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
   ]
 
   if (APPOINTMENT_ADMIN_SUBROLES.includes(user?.subRole)) {
@@ -104,6 +119,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
       icon: UserRoundCheck,
       section: "main",
       path: "/admin/appointments",
+      adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS,
     })
   }
 

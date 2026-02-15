@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
+import { Pin } from "lucide-react"
 import MobileHeader from "./MobileHeader"
 import { useAuth } from "../contexts/AuthProvider"
 import { FaUserCircle } from "react-icons/fa"
@@ -8,16 +9,31 @@ import { getMediaUrl } from "../utils/mediaUtils"
 import usePwaMobile from "../hooks/usePwaMobile"
 import useLayoutPreference from "../hooks/useLayoutPreference"
 import HostelSwitcher from "./sidebar/HostelSwitcher"
+import { authApi } from "../service"
+import {
+  ADMIN_NAV_CATEGORIES,
+  ADMIN_NAV_CATEGORY_HOME,
+  ADMIN_NAV_CATEGORY_HOSTELS
+} from "../constants/navigationConfig"
+
+const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
 
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+  const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
+  const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
   const { isPwaMobile } = usePwaMobile()
   const { layoutPreference } = useLayoutPreference()
+  const isAdmin = user?.role === "Admin"
+  const adminMainPathsSignature = (navItems || [])
+    .filter((item) => item.section === "main" && item.path)
+    .map((item) => item.path)
+    .join("|")
 
   // Skip sidebar rendering for student PWA in mobile mode with bottombar preference
   if (user?.role === "Student" && isPwaMobile && layoutPreference === "bottombar") {
@@ -37,6 +53,25 @@ const Sidebar = ({ navItems }) => {
       setActive(currentItem.name)
     }
   }, [location.pathname, navItems])
+
+  useEffect(() => {
+    if (!isAdmin) {
+      setActiveAdminCategory(ADMIN_NAV_CATEGORY_HOME)
+      setPinnedAdminPaths([])
+      return
+    }
+
+    const adminMainNavItems = (navItems || []).filter((item) => item.section === "main" && item.path)
+    const validPaths = new Set(adminMainNavItems.map((item) => item.path))
+    const fallbackPins = ADMIN_DEFAULT_PINNED_PATHS.filter((path) => validPaths.has(path))
+    const safeFallbackPins = fallbackPins.length > 0 ? fallbackPins : validPaths.has("/admin") ? ["/admin"] : []
+    const hasPersistedPinnedTabs = Array.isArray(user?.pinnedTabs)
+    const userPinnedTabs = hasPersistedPinnedTabs ? user.pinnedTabs.filter((path) => typeof path === "string" && validPaths.has(path)) : []
+    const sanitizedUserPinnedTabs = [...new Set(userPinnedTabs)]
+
+    setPinnedAdminPaths(hasPersistedPinnedTabs ? sanitizedUserPinnedTabs : safeFallbackPins)
+    setActiveAdminCategory(ADMIN_NAV_CATEGORY_HOME)
+  }, [isAdmin, adminMainPathsSignature, user?.pinnedTabs])
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +95,12 @@ const Sidebar = ({ navItems }) => {
 
   const mainNavItems = navItems.filter((item) => item.section === "main")
   const bottomNavItems = navItems.filter((item) => item.section === "bottom")
+  const adminMainPathSet = new Set(mainNavItems.filter((item) => item.path).map((item) => item.path))
+  const filteredMainNavItems = isAdmin
+    ? activeAdminCategory === ADMIN_NAV_CATEGORY_HOME
+      ? mainNavItems.filter((item) => item.path && pinnedAdminPaths.includes(item.path))
+      : mainNavItems.filter((item) => (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === activeAdminCategory)
+    : mainNavItems
 
   const handleNavigation = (item) => {
     if (item.action) {
@@ -74,10 +115,62 @@ const Sidebar = ({ navItems }) => {
     }
   }
 
+  const togglePinnedItem = async (item) => {
+    if (!isAdmin || !item?.path || !adminMainPathSet.has(item.path)) return
+
+    const previousPinnedPaths = pinnedAdminPaths
+    const nextPinnedPaths = previousPinnedPaths.includes(item.path)
+      ? previousPinnedPaths.filter((path) => path !== item.path)
+      : [...previousPinnedPaths, item.path]
+
+    setPinnedAdminPaths(nextPinnedPaths)
+
+    try {
+      const response = await authApi.updatePinnedTabs(nextPinnedPaths)
+      if (Array.isArray(response?.pinnedTabs)) {
+        const sanitizedPinnedTabs = [...new Set(response.pinnedTabs.filter((path) => typeof path === "string" && adminMainPathSet.has(path)))]
+        setPinnedAdminPaths(sanitizedPinnedTabs)
+      }
+    } catch (error) {
+      console.error("Failed to save pinned tabs:", error)
+      setPinnedAdminPaths(previousPinnedPaths)
+    }
+  }
+
+  const renderAdminCategorySection = () => {
+    if (!isAdmin) return null
+
+    return (
+      <div className={`border-t border-[var(--color-border-primary)] ${isOpen ? "px-[0.875rem] py-[0.75rem]" : "p-2"}`}>
+        <div className={isOpen ? "grid grid-cols-4 gap-2" : "flex flex-col gap-2"}>
+          {ADMIN_NAV_CATEGORIES.map((category) => {
+            const isActiveCategory = activeAdminCategory === category.id
+            return (
+              <button
+                key={category.id}
+                onClick={() => setActiveAdminCategory(category.id)}
+                className={`
+                  h-9 rounded-[10px] border flex items-center justify-center transition-all duration-200
+                  ${isActiveCategory ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]" : "border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)]"}
+                `}
+                title={category.name}
+                aria-label={category.name}
+              >
+                <category.icon size={16} strokeWidth={2.1} />
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
+
   const renderNavItem = (item) => {
     const isActiveItem = active === item.name
     const isLogout = item.name === "Logout"
     const isProfile = item.name === "Profile"
+    const isPinnedItem = !!item.path && pinnedAdminPaths.includes(item.path)
+    const showPinControl = isAdmin && isOpen && item.section === "main" && item.path
 
     // Don't render profile and logout separately in the bottom section when sidebar is open
     if ((isProfile || isLogout) && isOpen) {
@@ -112,7 +205,7 @@ const Sidebar = ({ navItems }) => {
           </div>
 
           {isOpen && (
-            <div className="flex items-center gap-2 flex-1 min-w-0">
+            <div className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-7" : ""}`}>
               <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white font-semibold" : ""}`}>{item.name}</span>
               {item.isNew && (
                 <span
@@ -126,6 +219,30 @@ const Sidebar = ({ navItems }) => {
                 </span>
               )}
             </div>
+          )}
+
+          {showPinControl && (
+            <button
+              onClick={(event) => {
+                event.stopPropagation()
+                togglePinnedItem(item)
+              }}
+              className={`
+                absolute right-[0.65rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-[6px] flex items-center justify-center transition-all duration-200
+                ${isPinnedItem
+                  ? isActiveItem
+                    ? "opacity-100 text-white bg-white/15"
+                    : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary-bg)]"
+                  : isActiveItem
+                    ? "opacity-0 group-hover:opacity-100 text-white/85 hover:bg-white/15"
+                    : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)]"
+                }
+              `}
+              title={isPinnedItem ? "Unpin from Home" : "Pin to Home"}
+              aria-label={isPinnedItem ? `Unpin ${item.name} from Home` : `Pin ${item.name} to Home`}
+            >
+              <Pin size={12} strokeWidth={2.2} className={isPinnedItem ? "fill-current" : ""} />
+            </button>
           )}
           {/* NEW indicator dot when sidebar is collapsed */}
           {!isOpen && item.isNew && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" style={{ boxShadow: "var(--shadow-glow-success)" }} />}
@@ -271,7 +388,12 @@ const Sidebar = ({ navItems }) => {
 
           {/* Main Navigation */}
           <div className="flex-1 overflow-y-auto overflow-x-hidden px-[0.875rem] py-[0.875rem] sidebar-scrollbar">
-            <ul className="space-y-0">{mainNavItems.map(renderNavItem)}</ul>
+            <ul className="space-y-0">{filteredMainNavItems.map(renderNavItem)}</ul>
+            {isAdmin && filteredMainNavItems.length === 0 && isOpen && (
+              <div className="mt-2 px-2 py-2 rounded-lg text-[0.72rem] text-[var(--color-text-muted)] bg-[var(--color-bg-hover)]">
+                No tabs here yet. Pin tabs from other categories to show them in Home.
+              </div>
+            )}
           </div>
 
           {/* Active Hostel Switcher */}
@@ -279,6 +401,9 @@ const Sidebar = ({ navItems }) => {
 
           {/* Profile and Logout */}
           <div className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>{renderProfileSection()}</div>
+
+          {/* Admin category controls */}
+          {renderAdminCategorySection()}
         </div>
       </div>
     </>
