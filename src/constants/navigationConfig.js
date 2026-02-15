@@ -272,7 +272,7 @@ export const getMaintenanceNavItems = (handleLogout) => [
 export const getStudentNavItems = (handleLogout, notificationsCount = 0) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/student" },
   { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/student/complaints" },
-  { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/student/disciplinary-process" },
+  // { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/student/disciplinary-process" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/student/lost-and-found" },
   { name: "Events", icon: CalendarDays, section: "main", path: "/student/events" },
   { name: "Visitors", icon: Users, section: "main", path: "/student/visitors" },
