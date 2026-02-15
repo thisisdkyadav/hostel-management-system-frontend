@@ -19,6 +19,14 @@ import {
 
 const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
 
+const ADMIN_CATEGORY_ACTIVE_STYLES = {
+  home: "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]",
+  hostels: "bg-emerald-600 text-white border-emerald-600 shadow-[var(--shadow-button-active)]",
+  "student-affairs": "bg-amber-500 text-white border-amber-500 shadow-[var(--shadow-button-active)]",
+  staff: "bg-sky-600 text-white border-sky-600 shadow-[var(--shadow-button-active)]",
+  dining: "bg-rose-600 text-white border-rose-600 shadow-[var(--shadow-button-active)]",
+}
+
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
   const [isOpen, setIsOpen] = useState(true)
@@ -138,6 +146,30 @@ const Sidebar = ({ navItems }) => {
     }
   }
 
+  const getFirstNavItemForCategory = (categoryId) => {
+    if (!isAdmin) return null
+
+    if (categoryId === ADMIN_NAV_CATEGORY_HOME) {
+      return mainNavItems.find((item) => item.path && pinnedAdminPaths.includes(item.path)) || null
+    }
+
+    return (
+      mainNavItems.find(
+        (item) => item.path && (item.adminCategory || ADMIN_NAV_CATEGORY_HOSTELS) === categoryId
+      ) || null
+    )
+  }
+
+  const handleCategoryChange = (categoryId) => {
+    setActiveAdminCategory(categoryId)
+
+    const firstItem = getFirstNavItemForCategory(categoryId)
+    if (!firstItem?.path) return
+
+    setActive(firstItem.name)
+    navigate(firstItem.path)
+  }
+
   const renderAdminCategorySection = () => {
     if (!isAdmin) return null
 
@@ -146,13 +178,14 @@ const Sidebar = ({ navItems }) => {
         <div className={isOpen ? "grid grid-cols-5 gap-2" : "flex flex-col gap-2"}>
           {ADMIN_NAV_CATEGORIES.map((category) => {
             const isActiveCategory = activeAdminCategory === category.id
+            const activeCategoryClass = ADMIN_CATEGORY_ACTIVE_STYLES[category.id] || ADMIN_CATEGORY_ACTIVE_STYLES.home
             return (
               <button
                 key={category.id}
-                onClick={() => setActiveAdminCategory(category.id)}
+                onClick={() => handleCategoryChange(category.id)}
                 className={`
                   h-9 rounded-[10px] border flex items-center justify-center transition-all duration-200
-                  ${isActiveCategory ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]" : "border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)]"}
+                  ${isActiveCategory ? activeCategoryClass : "border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)]"}
                 `}
                 title={category.name}
                 aria-label={category.name}
