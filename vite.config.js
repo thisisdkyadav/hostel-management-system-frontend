@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import fs from "fs";
 import path from "path";
+import { generateBuildVersion, readPackageVersion } from "./scripts/version.js";
 
 /* --------------------------------
    Copy meta.json into dist
@@ -18,12 +19,9 @@ const copyMetaJson = () => {
       if (fs.existsSync(publicPath)) {
         fs.copyFileSync(publicPath, distPath);
       } else {
-        const packageJson = JSON.parse(
-          fs.readFileSync("package.json", "utf8")
-        );
-
         const metaContent = {
-          version: packageJson.version || "0.0.0",
+          version: generateBuildVersion(),
+          releaseVersion: readPackageVersion(),
           buildTimestamp: new Date().toISOString(),
         };
 

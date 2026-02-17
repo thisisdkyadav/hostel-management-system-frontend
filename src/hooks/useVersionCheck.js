@@ -7,7 +7,7 @@ const useVersionCheck = ({
 } = {}) => {
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [isPWA] = useState("serviceWorker" in navigator)
-  const currentVersion = import.meta.env.VITE_APP_VERSION || "unknown"
+  const [currentVersion, setCurrentVersion] = useState(() => localStorage.getItem("app_version"))
 
   // Function to handle the reload when user confirms update
   const handleUpdate = useCallback(() => {
@@ -57,8 +57,13 @@ const useVersionCheck = ({
 
           const data = await response.json()
 
-          if (data.version && data.version !== currentVersion) {
+          if (data.version && currentVersion && data.version !== currentVersion) {
             setUpdateAvailable(true)
+          }
+
+          if (data.version) {
+            localStorage.setItem("app_version", data.version)
+            setCurrentVersion(data.version)
           }
         } catch (error) {
           console.warn("Version check failed:", error)

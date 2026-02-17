@@ -1,35 +1,20 @@
 import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
+import { generateBuildVersion, readPackageVersion } from "./version.js"
 
 // Get the directory name of the current module
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Read the version from the environment variable or package.json
-const getVersion = () => {
-  // Try to get version from environment variable first
-  if (process.env.VITE_APP_VERSION) {
-    return process.env.VITE_APP_VERSION
-  }
-
-  // Otherwise read from package.json
-  try {
-    const packageJsonPath = path.resolve(__dirname, "../package.json")
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"))
-    return packageJson.version
-  } catch (error) {
-    console.error("Error reading package.json:", error)
-    return "0.0.0"
-  }
-}
-
 // Generate the meta.json file
 const generateMetaJson = () => {
-  const version = getVersion()
+  const version = generateBuildVersion()
+  const releaseVersion = readPackageVersion()
   const buildTimestamp = new Date().toISOString()
 
   const metaContent = {
     version,
+    releaseVersion,
     buildTimestamp,
   }
 
