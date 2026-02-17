@@ -18,6 +18,12 @@ const ROW_HEIGHT = 28
 const SUMMARY_TAB_ID = "__summary__"
 const ROW_NUMBER_COLUMN_WIDTH = 50
 const DEFAULT_COLUMN_WIDTH = 120
+const DEFAULT_HIDDEN_COLUMN_KEYS = new Set([
+    "unitNumber",
+    "unitFloor",
+    "roomNumber",
+    "bedNumber",
+])
 
 const COMPACT_COLUMN_KEYS = new Set([
     "unitNumber",
@@ -710,7 +716,9 @@ const SheetPage = () => {
             // Hide ID columns by default
             const initialVisibility = {}
             data.columns?.forEach((col) => {
-                if (col.hidden) initialVisibility[col.accessorKey] = false
+                if (col.hidden || DEFAULT_HIDDEN_COLUMN_KEYS.has(col.accessorKey)) {
+                    initialVisibility[col.accessorKey] = false
+                }
             })
             setColumnVisibility(initialVisibility)
             setColumnFilters({})
