@@ -16,6 +16,79 @@ import FilterChips from "../../components/sheet/FilterChips"
 // Row height for virtualization
 const ROW_HEIGHT = 28
 const SUMMARY_TAB_ID = "__summary__"
+const ROW_NUMBER_COLUMN_WIDTH = 50
+const DEFAULT_COLUMN_WIDTH = 120
+
+const COMPACT_COLUMN_KEYS = new Set([
+    "unitNumber",
+    "unitFloor",
+    "roomNumber",
+    "bedNumber",
+    "displayRoom",
+    "roomCapacity",
+    "roomOccupancy",
+    "studentProfileImage",
+    "isAllocated",
+    "isDayScholar",
+    "gender",
+    "degree",
+    "roomStatus",
+    "studentStatus",
+])
+
+const WIDE_COLUMN_KEYS = new Set([
+    "studentName",
+    "studentEmail",
+    "department",
+    "guardian",
+    "studentPhone",
+    "guardianPhone",
+])
+
+const ID_COLUMN_KEYS = new Set([
+    "roomId",
+    "unitId",
+    "allocationId",
+    "studentProfileId",
+    "userId",
+])
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+
+const getDisplayValueForWidth = (accessorKey, value) => {
+    if (accessorKey === "studentProfileImage") return "Avatar"
+    if (value === null || value === undefined || value === "") return "—"
+    if (typeof value === "boolean") return value ? "Yes" : "No"
+
+    if (accessorKey.toLowerCase().includes("date")) {
+        const parsedDate = new Date(value)
+        if (!Number.isNaN(parsedDate.getTime())) {
+            return parsedDate.toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" })
+        }
+    }
+
+    return String(value)
+}
+
+const estimateColumnWidth = (column, rows) => {
+    const accessorKey = column.accessorKey
+    const headerText = String(column.header ?? accessorKey ?? "")
+    const sampleRows = rows.slice(0, 250)
+
+    let maxLength = headerText.length
+    sampleRows.forEach((row) => {
+        const displayValue = getDisplayValueForWidth(accessorKey, row?.[accessorKey])
+        maxLength = Math.max(maxLength, displayValue.length)
+    })
+
+    // Approximate monospace-ish width with cell padding included.
+    const calculatedWidth = Math.ceil(maxLength * 7.2 + 24)
+
+    if (COMPACT_COLUMN_KEYS.has(accessorKey)) return clamp(calculatedWidth, 64, 120)
+    if (WIDE_COLUMN_KEYS.has(accessorKey)) return clamp(calculatedWidth, 130, 280)
+    if (ID_COLUMN_KEYS.has(accessorKey)) return clamp(calculatedWidth, 120, 220)
+    return clamp(calculatedWidth, 80, 220)
+}
 
 // Styles
 const styles = {
@@ -165,10 +238,10 @@ const styles = {
         backgroundColor: "var(--color-primary-bg)",
     },
     rowNumberHeader: {
-        width: "50px",
-        minWidth: "50px",
-        maxWidth: "50px",
-        flex: "0 0 50px",
+        width: `${ROW_NUMBER_COLUMN_WIDTH}px`,
+        minWidth: `${ROW_NUMBER_COLUMN_WIDTH}px`,
+        maxWidth: `${ROW_NUMBER_COLUMN_WIDTH}px`,
+        flex: `0 0 ${ROW_NUMBER_COLUMN_WIDTH}px`,
         textAlign: "center",
         justifyContent: "center",
         backgroundColor: "var(--color-bg-tertiary)",
@@ -212,10 +285,10 @@ const styles = {
         color: "var(--color-text-placeholder)",
     },
     rowNumberCell: {
-        width: "50px",
-        minWidth: "50px",
-        maxWidth: "50px",
-        flex: "0 0 50px",
+        width: `${ROW_NUMBER_COLUMN_WIDTH}px`,
+        minWidth: `${ROW_NUMBER_COLUMN_WIDTH}px`,
+        maxWidth: `${ROW_NUMBER_COLUMN_WIDTH}px`,
+        flex: `0 0 ${ROW_NUMBER_COLUMN_WIDTH}px`,
         textAlign: "center",
         justifyContent: "center",
         backgroundColor: "var(--color-bg-tertiary)",
@@ -711,6 +784,17 @@ const SheetPage = () => {
         return data
     }, [sortedData, globalFilter, columnFilters])
 
+    const columnSizeMap = useMemo(() => {
+        if (!sheetData?.columns?.length) return {}
+
+        return sheetData.columns
+            .filter((col) => columnVisibility[col.accessorKey] !== false)
+            .reduce((acc, col) => {
+                acc[col.accessorKey] = estimateColumnWidth(col, sortedData)
+                return acc
+            }, {})
+    }, [sheetData?.columns, columnVisibility, sortedData])
+
     // Build columns
     const columns = useMemo(() => {
         if (!sheetData?.columns) return []
@@ -738,6 +822,20 @@ const SheetPage = () => {
                 },
             }))
     }, [sheetData?.columns, columnVisibility])
+
+    const totalTableWidth = useMemo(() => {
+        return columns.reduce((sum, col) => sum + (columnSizeMap[col.accessorKey] || DEFAULT_COLUMN_WIDTH), ROW_NUMBER_COLUMN_WIDTH)
+    }, [columns, columnSizeMap])
+
+    const getColumnStyle = useCallback((columnId) => {
+        const width = columnSizeMap[columnId] || DEFAULT_COLUMN_WIDTH
+        return {
+            width: `${width}px`,
+            minWidth: `${width}px`,
+            maxWidth: `${width}px`,
+            flex: `0 0 ${width}px`,
+        }
+    }, [columnSizeMap])
 
     // Table instance
     const table = useReactTable({
@@ -955,14 +1053,23 @@ const SheetPage = () => {
                 <div style={styles.spreadsheetContainer}>
                     <div ref={tableContainerRef} style={styles.tableWrapper}>
                         {/* Header */}
-                        <div style={{ ...styles.headerRow, position: "sticky", top: 0, zIndex: 10 }}>
+                        <div
+                            style={{
+                                ...styles.headerRow,
+                                position: "sticky",
+                                top: 0,
+                                zIndex: 10,
+                                width: `${totalTableWidth}px`,
+                                minWidth: `${totalTableWidth}px`,
+                            }}
+                        >
                             <div style={{ ...styles.headerCell, ...styles.rowNumberHeader }}>#</div>
                             {table.getHeaderGroups()[0]?.headers.map((header) => {
                                 const colId = header.column.id
                                 const hasFilter = columnFilters[colId]?.selectedValues?.length > 0
 
                                 return (
-                                    <div key={header.id} style={styles.headerCell}>
+                                    <div key={header.id} style={{ ...styles.headerCell, ...getColumnStyle(colId) }}>
                                         <div style={styles.headerCellContent}>
                                             <span style={styles.headerText}>
                                                 {flexRender(header.column.columnDef.header, header.getContext())}
@@ -1002,6 +1109,8 @@ const SheetPage = () => {
                             style={{
                                 ...styles.virtualBody,
                                 height: `${rowVirtualizer.getTotalSize()}px`,
+                                width: `${totalTableWidth}px`,
+                                minWidth: `${totalTableWidth}px`,
                             }}
                         >
                             {rowVirtualizer.getVirtualItems().map((virtualRow) => {
@@ -1013,13 +1122,15 @@ const SheetPage = () => {
                                         style={{
                                             ...styles.row,
                                             transform: `translateY(${virtualRow.start}px)`,
+                                            width: `${totalTableWidth}px`,
+                                            minWidth: `${totalTableWidth}px`,
                                         }}
                                     >
                                         <div style={{ ...styles.cell, ...styles.rowNumberCell }}>
                                             {virtualRow.index + 1}
                                         </div>
                                         {row.getVisibleCells().map((cell) => (
-                                            <div key={cell.id} style={styles.cell}>
+                                            <div key={cell.id} style={{ ...styles.cell, ...getColumnStyle(cell.column.id) }}>
                                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                             </div>
                                         ))}
