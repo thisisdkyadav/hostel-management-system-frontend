@@ -1,30 +1,51 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { registerSW } from "virtual:pwa-register"
 
 const useVersionCheck = ({
-  checkInterval = 60 * 1000, // 1 minute by default
+  checkInterval = 30 * 1000, // 30 seconds by default
   metaUrl = "/meta.json",
 } = {}) => {
   const [updateAvailable, setUpdateAvailable] = useState(false)
-  const [isPWA] = useState("serviceWorker" in navigator)
   const [currentVersion, setCurrentVersion] = useState(() => localStorage.getItem("app_version"))
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const isFirstVersionCheck = useRef(true)
 
-  // Function to handle the reload when user confirms update
-  const handleUpdate = useCallback(() => {
-    if (isPWA) {
-      // For PWA, the update function will be provided by the registerSW
-      window.location.reload()
-    } else {
-      // For non-PWA, just reload the page
-      window.location.reload()
+  const performHardRefresh = useCallback(async () => {
+    try {
+      if (typeof window.__updateSW === "function") {
+        await window.__updateSW(true)
+      }
+    } catch (error) {
+      console.warn("Service worker update failed:", error)
     }
-  }, [isPWA])
+
+    try {
+      localStorage.clear()
+
+      if ("caches" in window) {
+        const keys = await caches.keys()
+        await Promise.all(keys.map((k) => caches.delete(k)))
+      }
+    } catch (error) {
+      console.warn("Cache cleanup failed:", error)
+    }
+
+    window.location.reload()
+  }, [])
+
+  const handleUpdate = useCallback(async () => {
+    if (isRefreshing) {
+      return
+    }
+
+    setIsRefreshing(true)
+    await performHardRefresh()
+  }, [isRefreshing, performHardRefresh])
 
   useEffect(() => {
-    let intervalId
+    let intervalId = null
 
-    if (isPWA) {
-      // PWA update handling using vite-plugin-pwa
+    if ("serviceWorker" in navigator) {
       try {
         const updateSW = registerSW({
           onNeedRefresh() {
@@ -36,57 +57,65 @@ const useVersionCheck = ({
           immediate: true,
         })
 
-        // Store the updateSW function for later use
         window.__updateSW = updateSW
       } catch (error) {
         console.error("Failed to register service worker:", error)
       }
-    } else {
-      // Non-PWA version check via meta.json
-      const checkVersion = async () => {
-        try {
-          const response = await fetch(metaUrl, {
-            cache: "no-cache",
-            headers: { "Cache-Control": "no-cache" },
-          })
+    }
 
-          if (!response.ok) {
-            console.warn(`Failed to fetch ${metaUrl}: ${response.status}`)
+    const checkVersion = async () => {
+      try {
+        const response = await fetch(metaUrl, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" },
+        })
+
+        if (!response.ok) {
+          console.warn(`Failed to fetch ${metaUrl}: ${response.status}`)
+          return
+        }
+
+        const data = await response.json()
+        if (!data.version) {
+          isFirstVersionCheck.current = false
+          return
+        }
+
+        const isInitialCheck = isFirstVersionCheck.current
+        isFirstVersionCheck.current = false
+        const storedVersion = localStorage.getItem("app_version")
+        if (storedVersion && storedVersion !== data.version) {
+          if (isInitialCheck) {
+            await performHardRefresh()
             return
           }
 
-          const data = await response.json()
-
-          if (data.version && currentVersion && data.version !== currentVersion) {
-            setUpdateAvailable(true)
-          }
-
-          if (data.version) {
-            localStorage.setItem("app_version", data.version)
-            setCurrentVersion(data.version)
-          }
-        } catch (error) {
-          console.warn("Version check failed:", error)
-          // Silently fail - this is a non-critical feature
+          setUpdateAvailable(true)
+          return
         }
+
+        localStorage.setItem("app_version", data.version)
+        setCurrentVersion(data.version)
+      } catch (error) {
+        console.warn("Version check failed:", error)
       }
-
-      // Check immediately on mount
-      checkVersion()
-
-      // Set up interval for periodic checks
-      intervalId = setInterval(checkVersion, checkInterval)
     }
+
+    checkVersion()
+    intervalId = setInterval(checkVersion, checkInterval)
 
     return () => {
-      if (intervalId) clearInterval(intervalId)
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
     }
-  }, [isPWA, checkInterval, currentVersion, metaUrl])
+  }, [checkInterval, metaUrl, performHardRefresh])
 
   return {
     updateAvailable,
     currentVersion,
     handleUpdate,
+    isRefreshing,
   }
 }
 
