@@ -744,52 +744,60 @@ const formatDate = (dateString) => {
 
 // Chart components
 const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "normal" }) => {
-  if (!data?.degreeWise?.length) return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
+  const degreeWiseData = data?.degreeWise || []
+  const [deselectedDegrees, setDeselectedDegrees] = useState([])
 
-  const degreeData =
-    data?.degreeWise?.map((item) => {
-      // Choose which data to display based on studentDataView toggle
-      let displayBoys, displayGirls, displayTotal
-      if (studentDataView === "registered") {
-        // Show registered students data from settings
-        const registeredData = item.registeredStudents
-        const registered = item?.registered || null
-        if (registered !== null) {
-          displayBoys = registered.boys || 0
-          displayGirls = registered.girls || 0
-          displayTotal = registered.total || 0
-        } else {
-          // If old format or no breakdown available, show total as boys+girls split evenly or 0
-          const total = parseInt(registeredData) || 0
-          displayBoys = Math.floor(total / 2)
-          displayGirls = Math.ceil(total / 2)
-          displayTotal = total
-        }
+  if (!degreeWiseData.length) return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
+
+  const degreeData = degreeWiseData.map((item) => {
+    // Choose which data to display based on studentDataView toggle
+    let displayBoys, displayGirls, displayTotal
+    if (studentDataView === "registered") {
+      // Show registered students data from settings
+      const registeredData = item.registeredStudents
+      const registered = item?.registered || null
+      if (registered !== null) {
+        displayBoys = registered.boys || 0
+        displayGirls = registered.girls || 0
+        displayTotal = registered.total || 0
       } else {
-        // Show normal/actual students data (default)
-        displayBoys = item.boys || 0
-        displayGirls = item.girls || 0
-        displayTotal = displayBoys + displayGirls
+        // If old format or no breakdown available, show total as boys+girls split evenly or 0
+        const total = parseInt(registeredData) || 0
+        displayBoys = Math.floor(total / 2)
+        displayGirls = Math.ceil(total / 2)
+        displayTotal = total
       }
+    } else {
+      // Show normal/actual students data (default)
+      displayBoys = item.boys || 0
+      displayGirls = item.girls || 0
+      displayTotal = displayBoys + displayGirls
+    }
 
-      return {
-        ...item,
-        boys: displayBoys,
-        girls: displayGirls,
-        total: displayTotal,
+    return {
+      ...item,
+      boys: displayBoys,
+      girls: displayGirls,
+      total: displayTotal,
+    }
+  })
+
+  const toggleDegreeSelection = (index) => {
+    setDeselectedDegrees((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index)
       }
-    }) || []
+      return [...prev, index]
+    })
+  }
 
-  // Calculate totals for footer
-  const totalBoys = studentDataView === "registered"
-    ? degreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
-    : data?.totalBoys || 0
-  const totalGirls = studentDataView === "registered"
-    ? degreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
-    : data?.totalGirls || 0
-  const grandTotal = studentDataView === "registered"
-    ? degreeData.reduce((sum, item) => sum + (item.total || 0), 0)
-    : data?.grandTotal || 0
+  const selectedDegreeData = degreeData.filter((_, index) => !deselectedDegrees.includes(index))
+  const allDegreesSelected = degreeData.length > 0 && selectedDegreeData.length === degreeData.length
+
+  // Calculate totals for footer based on selected degrees
+  const totalBoys = selectedDegreeData.reduce((sum, item) => sum + (item.boys || 0), 0)
+  const totalGirls = selectedDegreeData.reduce((sum, item) => sum + (item.girls || 0), 0)
+  const grandTotal = selectedDegreeData.reduce((sum, item) => sum + (item.total || 0), 0)
   const boysPercentTotal = grandTotal > 0 ? Math.round((totalBoys / grandTotal) * 100) : 0
   const girlsPercentTotal = grandTotal > 0 ? Math.round((totalGirls / grandTotal) * 100) : 0
 
@@ -800,7 +808,18 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
         <table className="min-w-full">
           <thead>
             <tr>
-              <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wide w-[30%]">Degree</th>
+              <th className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-left uppercase tracking-wide w-[30%]">
+                <div className="flex items-center gap-[var(--spacing-2)]">
+                  <Checkbox checked={allDegreesSelected} onChange={() => {
+                    if (allDegreesSelected) {
+                      setDeselectedDegrees(degreeData.map((_, index) => index))
+                    } else {
+                      setDeselectedDegrees([])
+                    }
+                  }} />
+                  Degree
+                </div>
+              </th>
               <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Boys</th>
               <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Girls</th>
               <th className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.75rem] font-bold text-[var(--color-text-muted)] text-center uppercase tracking-wide w-[17.5%]">Total</th>
@@ -822,10 +841,16 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
             {degreeData.map((item, index) => {
               const boysPercent = item.total > 0 ? Math.round((item.boys / item.total) * 100) : 0
               const girlsPercent = item.total > 0 ? Math.round((item.girls / item.total) * 100) : 0
+              const isSelected = !deselectedDegrees.includes(index)
 
               return (
-                <tr key={index} className={`hover:bg-[var(--color-primary-bg)] transition-colors ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
-                  <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-text-secondary)] font-medium w-[30%]">{item.degree}</td>
+                <tr key={index} className={`group hover:bg-[var(--color-primary-bg)] transition-colors ${index % 2 === 0 ? 'bg-[var(--color-bg-primary)]' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                  <td className="px-[var(--spacing-3)] py-[var(--spacing-1-5)] w-[30%]">
+                    <div className="flex items-center gap-[var(--spacing-2)]">
+                      <Checkbox checked={isSelected} onChange={() => toggleDegreeSelection(index)} />
+                      <span className={`text-[0.8125rem] font-medium transition-colors ${isSelected ? "text-[var(--color-text-secondary)] group-hover:text-[var(--color-primary)]" : "text-[var(--color-text-muted)]"}`}>{item.degree}</span>
+                    </div>
+                  </td>
                   <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-info)] text-center font-medium w-[17.5%]">{item.boys}</td>
                   <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-medium w-[17.5%]">{item.girls}</td>
                   <td className="px-[var(--spacing-2)] py-[var(--spacing-1-5)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-semibold w-[17.5%]">{item.total}</td>
@@ -847,7 +872,14 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
         <table className="min-w-full">
           <tfoot>
             <tr>
-              <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] font-extrabold uppercase tracking-wide w-[30%]">Total</td>
+              <td className="px-[var(--spacing-3)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-text-primary)] font-extrabold uppercase tracking-wide w-[30%]">
+                <div className="flex items-center gap-[var(--spacing-1-5)]">
+                  <span>Total</span>
+                  {selectedDegreeData.length > 0 && selectedDegreeData.length < degreeData.length && (
+                    <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-primary)] text-[var(--color-white)] text-[0.65rem] rounded-[var(--radius-sm)] font-bold">{selectedDegreeData.length}</span>
+                  )}
+                </div>
+              </td>
               <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-info)] text-center font-extrabold w-[17.5%]">{totalBoys}</td>
               <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-girls-text)] text-center font-extrabold w-[17.5%]">{totalGirls}</td>
               <td className="px-[var(--spacing-2)] py-[var(--spacing-2)] text-[0.8125rem] text-[var(--color-purple-text)] text-center font-extrabold w-[17.5%]">{grandTotal}</td>
