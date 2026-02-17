@@ -280,7 +280,12 @@ const DegreeWiseStudentsTable = ({ data, normalized = false }) => {
       boys: item.boys || 0,
       girls: item.girls || 0,
       total: (item.boys || 0) + (item.girls || 0),
-    })) || []
+    }))
+      .filter((item) => !(item.boys === 0 && item.girls === 0)) || []
+
+  if (!degreeData.length) {
+    return <div className="h-full flex items-center justify-center text-[var(--color-text-muted)]">No student data available</div>
+  }
 
   return (
     <div className="h-full overflow-hidden flex flex-col rounded-[var(--radius-2xl)] border border-[var(--color-border-primary)]">
