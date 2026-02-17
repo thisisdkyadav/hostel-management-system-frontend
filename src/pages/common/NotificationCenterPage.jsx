@@ -1,5 +1,5 @@
 import { Tabs } from "czero/react"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo, useCallback } from "react"
 import { FaBell } from "react-icons/fa"
 import NotificationStats from "../../components/notifications/NotificationStats"
 import NotificationTable from "../../components/notifications/NotificationTable"
@@ -10,6 +10,12 @@ import { Pagination } from "@/components/ui"
 import NotificationCenterHeader from "../../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+
+const NOTIFICATION_FILTER_TABS = [
+  { label: "All", value: "all" },
+  { label: "Active", value: "active" },
+  { label: "Expired", value: "expired" },
+]
 
 const NotificationCenterPage = () => {
   const { user } = useAuth()
@@ -35,17 +41,22 @@ const NotificationCenterPage = () => {
     page: 1,
     limit: 10,
   })
-  const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
 
-  // Status filter tabs configuration
-  const statusTabs = [
-    { label: `All (${stats.total})`, value: "all", color: "primary" },
-    { label: `Active (${stats.active})`, value: "active", color: "success" },
-    { label: `Expired (${stats.expired})`, value: "expired", color: "muted" },
-  ]
+  const statusTabs = useMemo(() => {
+    const statusCounts = {
+      all: stats?.total || 0,
+      active: stats?.active || 0,
+      expired: stats?.expired || 0,
+    }
 
-  const fetchNotifications = async () => {
+    return NOTIFICATION_FILTER_TABS.map((tab) => ({
+      ...tab,
+      count: statusCounts[tab.value] ?? 0,
+    }))
+  }, [stats])
+
+  const fetchNotifications = useCallback(async () => {
     try {
       setLoading(true)
 
@@ -80,7 +91,6 @@ const NotificationCenterPage = () => {
 
       const response = await notificationApi.getNotifications(queryParams.toString())
       setNotifications(response.data || [])
-      setTotalItems(response.meta?.totalCount || 0)
       setTotalPages(response.meta?.totalPages || 1)
 
       const statsResponse = await notificationApi.getNotificationStats()
@@ -98,11 +108,11 @@ const NotificationCenterPage = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters])
 
   useEffect(() => {
     fetchNotifications()
-  }, [filters])
+  }, [fetchNotifications])
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -154,11 +164,13 @@ const NotificationCenterPage = () => {
 
       <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--spacing-6) var(--spacing-8)' }}>
 
-        {stats && <NotificationStats stats={stats} />}
+        {stats && <NotificationStats stats={stats} loading={loading} />}
 
-        <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)' }}>
-          <Tabs variant="pills" tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
-        </div>
+        {!showFilters && statusTabs.length > 0 && (
+          <div style={{ marginTop: 'var(--spacing-6)', marginBottom: 'var(--spacing-4)' }}>
+            <Tabs variant="pills" tabs={statusTabs} activeTab={filters.expiryStatus} setActiveTab={(status) => updateFilter("expiryStatus", status)} />
+          </div>
+        )}
 
         {showFilters && <NotificationFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} />}
 
