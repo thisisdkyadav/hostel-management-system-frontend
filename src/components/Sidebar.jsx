@@ -19,14 +19,15 @@ import {
 } from "../constants/navigationConfig"
 
 const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
-const ADMIN_SIDEBAR_V2_TOGGLE_KEY = "admin_sidebar_v2_enabled"
+const ADMIN_SIDEBAR_V2_TOGGLE_KEY = "admin_sidebar_legacy_enabled"
 
 /**
- * Temporary rollout switch for admin categorized sidebar.
+ * The categorized admin sidebar is now the default.
+ * The "V1" toggle switches back to the old flat nav.
  * Remove this system later by:
- * 1) Deleting ADMIN_SIDEBAR_V2_TOGGLE_KEY and the isAdminSidebarV2Enabled state/effects.
+ * 1) Deleting ADMIN_SIDEBAR_V2_TOGGLE_KEY and the isLegacySidebarEnabled state/effects.
  * 2) Replacing useCategorizedAdminNav checks with isAdmin in this file.
- * 3) Removing the "V2" toggle button from the header.
+ * 3) Removing the "V1" toggle button from the header.
  */
 
 const ADMIN_CATEGORY_ACTIVE_STYLES = {
@@ -37,13 +38,26 @@ const ADMIN_CATEGORY_ACTIVE_STYLES = {
   dining: "bg-rose-600 text-white border-rose-600 shadow-[var(--shadow-button-active)]",
 }
 
+/**
+ * Light background tints for the sidebar bottom sections (profile + category controls).
+ * These give a subtle, ambient "zone" feel for the active category.
+ * Home uses no tint (transparent/default white).
+ */
+const ADMIN_CATEGORY_BG_TINTS = {
+  home: "transparent",
+  hostels: "rgba(5, 150, 105, 0.15)",
+  "student-affairs": "rgba(245, 158, 11, 0.15)",
+  staff: "rgba(2, 132, 199, 0.15)",
+  dining: "rgba(225, 29, 72, 0.15)",
+}
+
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
   const [activeAdminCategory, setActiveAdminCategory] = useState(ADMIN_NAV_CATEGORY_HOME)
   const [pinnedAdminPaths, setPinnedAdminPaths] = useState([])
-  const [isAdminSidebarV2Enabled, setIsAdminSidebarV2Enabled] = useState(false)
+  const [isLegacySidebarEnabled, setIsLegacySidebarEnabled] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const { user } = useAuth()
@@ -51,7 +65,18 @@ const Sidebar = ({ navItems }) => {
   const { layoutPreference } = useLayoutPreference()
   const isAdmin = user?.role === "Admin"
   const isRestrictedCsoAdmin = isAdmin && isCsoAdminSubRole(user)
-  const useCategorizedAdminNav = isAdmin && isAdminSidebarV2Enabled && !isRestrictedCsoAdmin
+  const useCategorizedAdminNav = isAdmin && !isLegacySidebarEnabled && !isRestrictedCsoAdmin
+
+  // Set data-admin-category on <html> so non-sidebar components (e.g. PageHeader) can read it
+  useEffect(() => {
+    if (useCategorizedAdminNav) {
+      document.documentElement.setAttribute("data-admin-category", activeAdminCategory)
+    } else {
+      document.documentElement.removeAttribute("data-admin-category")
+    }
+    return () => document.documentElement.removeAttribute("data-admin-category")
+  }, [activeAdminCategory, useCategorizedAdminNav])
+
   const adminMainPathsSignature = (navItems || [])
     .filter((item) => item.section === "main" && item.path)
     .map((item) => item.path)
@@ -78,19 +103,20 @@ const Sidebar = ({ navItems }) => {
 
   useEffect(() => {
     if (!isAdmin) {
-      setIsAdminSidebarV2Enabled(false)
+      setIsLegacySidebarEnabled(false)
       return
     }
 
     if (typeof window === "undefined") return
     const storedValue = window.localStorage.getItem(ADMIN_SIDEBAR_V2_TOGGLE_KEY)
-    setIsAdminSidebarV2Enabled(storedValue === "true")
+    // Default to categorized nav (V2) — legacy is off unless explicitly set
+    setIsLegacySidebarEnabled(storedValue === "true")
   }, [isAdmin])
 
   useEffect(() => {
     if (!isAdmin || typeof window === "undefined") return
-    window.localStorage.setItem(ADMIN_SIDEBAR_V2_TOGGLE_KEY, String(isAdminSidebarV2Enabled))
-  }, [isAdmin, isAdminSidebarV2Enabled])
+    window.localStorage.setItem(ADMIN_SIDEBAR_V2_TOGGLE_KEY, String(isLegacySidebarEnabled))
+  }, [isAdmin, isLegacySidebarEnabled])
 
   useEffect(() => {
     if (!useCategorizedAdminNav) {
@@ -203,7 +229,12 @@ const Sidebar = ({ navItems }) => {
     if (!useCategorizedAdminNav) return null
 
     return (
-      <div className={`border-t border-[var(--color-border-primary)] ${isOpen ? "px-[0.875rem] py-[0.75rem]" : "p-2"}`}>
+      <div
+        className={`border-t border-[var(--color-border-primary)] transition-colors duration-300 ${isOpen ? "px-[0.875rem] py-[0.75rem]" : "p-2"}`}
+        style={{
+          backgroundColor: ADMIN_CATEGORY_BG_TINTS[activeAdminCategory] || ADMIN_CATEGORY_BG_TINTS.home,
+        }}
+      >
         <div className={isOpen ? "grid grid-cols-5 gap-2" : "flex flex-col gap-2"}>
           {ADMIN_NAV_CATEGORIES.map((category) => {
             const isActiveCategory = activeAdminCategory === category.id
@@ -234,6 +265,7 @@ const Sidebar = ({ navItems }) => {
     const isProfile = item.name === "Profile"
     const isPinnedItem = !!item.path && pinnedAdminPaths.includes(item.path)
     const showPinControl = useCategorizedAdminNav && isOpen && item.section === "main" && item.path
+
 
     // Don't render profile and logout separately in the bottom section when sidebar is open
     if ((isProfile || isLogout) && isOpen) {
@@ -412,14 +444,20 @@ const Sidebar = ({ navItems }) => {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${
-          isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
-        } overflow-hidden`}
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
+          } overflow-hidden`}
         style={{ boxShadow: "var(--shadow-sm)" }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
-          <div className={`border-b border-[var(--color-border-primary)] ${isMobile ? "hidden" : ""} h-16`}>
+          <div
+            className={`border-b border-[var(--color-border-primary)] transition-colors duration-300 ${isMobile ? "hidden" : ""} h-16`}
+            style={{
+              backgroundColor: useCategorizedAdminNav
+                ? (ADMIN_CATEGORY_BG_TINTS[activeAdminCategory] || ADMIN_CATEGORY_BG_TINTS.home)
+                : undefined,
+            }}
+          >
             <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
               {/* HMS Text Logo - only show when expanded */}
               {isOpen && (
@@ -433,19 +471,19 @@ const Sidebar = ({ navItems }) => {
                 <div className="flex items-center gap-2">
                   {isAdmin && (
                     <button
-                      onClick={() => setIsAdminSidebarV2Enabled((prev) => !prev)}
-                      title={isAdminSidebarV2Enabled ? "Disable Admin Nav V2" : "Enable Admin Nav V2"}
-                      aria-label={isAdminSidebarV2Enabled ? "Disable Admin Nav V2" : "Enable Admin Nav V2"}
+                      onClick={() => setIsLegacySidebarEnabled((prev) => !prev)}
+                      title={isLegacySidebarEnabled ? "Switch to categorized nav" : "Switch to legacy flat nav"}
+                      aria-label={isLegacySidebarEnabled ? "Switch to categorized nav" : "Switch to legacy flat nav"}
                       className={`
                         h-9 min-w-10 px-2 rounded-[10px] border text-[10px] font-semibold tracking-wide
                         flex items-center justify-center transition-all duration-200
-                        ${isAdminSidebarV2Enabled
+                        ${isLegacySidebarEnabled
                           ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]"
                           : "bg-[var(--color-bg-primary)] text-[var(--color-text-tertiary)] border-[var(--color-border-secondary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)]"
                         }
                       `}
                     >
-                      V2
+                      V1
                     </button>
                   )}
                   <button
@@ -482,7 +520,16 @@ const Sidebar = ({ navItems }) => {
           <HostelSwitcher isOpen={isOpen} />
 
           {/* Profile and Logout */}
-          <div className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}>{renderProfileSection()}</div>
+          <div
+            className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden transition-colors duration-300 ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}
+            style={{
+              backgroundColor: useCategorizedAdminNav
+                ? (ADMIN_CATEGORY_BG_TINTS[activeAdminCategory] || ADMIN_CATEGORY_BG_TINTS.home)
+                : undefined,
+            }}
+          >
+            {renderProfileSection()}
+          </div>
 
           {/* Admin category controls */}
           {renderAdminCategorySection()}
