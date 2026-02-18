@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
-import { Plus } from "lucide-react"
+import { Check, Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
 import { Button } from "czero/react"
+
+const formatDisplayDate = (value) => {
+  if (!value) return "-"
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return "-"
+  return parsed.toLocaleDateString()
+}
 
 const DisCoActions = ({ userId }) => {
   const { canAccess } = useAuth()
@@ -67,6 +74,16 @@ const DisCoActions = ({ userId }) => {
     } catch (error) {
       console.error("Error saving disciplinary action:", error)
       alert("Failed to save disciplinary action")
+    }
+  }
+
+  const handleMarkReminderDone = async (actionId, reminderItemId) => {
+    try {
+      await discoApi.markDisCoReminderDone(actionId, reminderItemId)
+      fetchDisCoActions()
+    } catch (err) {
+      console.error("Failed to mark reminder done:", err)
+      alert("Failed to mark reminder done")
     }
   }
 
@@ -180,6 +197,48 @@ const DisCoActions = ({ userId }) => {
       fontWeight: "var(--font-weight-semibold)",
       color: "var(--color-text-secondary)",
     },
+    reminderSection: {
+      marginTop: "var(--spacing-3)",
+      borderTop: "var(--border-1) solid var(--color-border-primary)",
+      paddingTop: "var(--spacing-3)",
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-2)",
+    },
+    reminderRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: "var(--spacing-2)",
+      padding: "var(--spacing-2)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      borderRadius: "var(--radius-md)",
+      backgroundColor: "var(--color-bg-secondary)",
+      flexWrap: "wrap",
+    },
+    reminderMeta: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-0-5)",
+    },
+    reminderAction: {
+      color: "var(--color-text-primary)",
+      fontWeight: "var(--font-weight-medium)",
+      fontSize: "var(--font-size-sm)",
+    },
+    reminderDate: {
+      color: "var(--color-text-muted)",
+      fontSize: "var(--font-size-xs)",
+    },
+    doneBadge: {
+      color: "var(--color-success)",
+      backgroundColor: "var(--color-success-bg-light)",
+      border: "var(--border-1) solid var(--color-success)",
+      borderRadius: "var(--radius-full)",
+      padding: "var(--spacing-0-5) var(--spacing-2)",
+      fontSize: "var(--font-size-xs)",
+      fontWeight: "var(--font-weight-semibold)",
+    },
   }
 
   if (loading)
@@ -243,6 +302,39 @@ const DisCoActions = ({ userId }) => {
                   <p style={{ ...styles.cardText, ...styles.cardTextMarginTop }}>
                     <span style={styles.cardLabel}>Remarks:</span> {action.remarks}
                   </p>
+                )}
+
+                {Array.isArray(action.reminderItems) && action.reminderItems.length > 0 && (
+                  <div style={styles.reminderSection}>
+                    <div style={styles.cardLabel}>Reminder Items</div>
+                    {action.reminderItems.map((item) => (
+                      <div key={item._id} style={styles.reminderRow}>
+                        <div style={styles.reminderMeta}>
+                          <div style={styles.reminderAction}>{item.action}</div>
+                          <div style={styles.reminderDate}>
+                            Due: {formatDisplayDate(item.dueDate)}
+                            {item.isDone && item.doneAt
+                              ? ` | Completed: ${formatDisplayDate(item.doneAt)}`
+                              : ""}
+                          </div>
+                        </div>
+                        {item.isDone ? (
+                          <span style={styles.doneBadge}>Done</span>
+                        ) : (
+                          canAccess("students_info", "edit") && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => handleMarkReminderDone(action._id, item._id)}
+                            >
+                              <Check size={14} />
+                              Mark Done
+                            </Button>
+                          )
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>

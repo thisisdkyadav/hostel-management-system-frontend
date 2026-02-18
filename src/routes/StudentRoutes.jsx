@@ -13,7 +13,6 @@ import {
 import {
     VisitorRequestsPage,
     ComplaintsPage,
-    DisciplinaryProcessPage,
     ProfilePage,
     LostAndFoundPage,
     EventsPage,
@@ -34,7 +33,6 @@ const StudentRoutes = () => (
             <Route element={<StudentLayout />}>
                 <Route index element={<StudentDashboard />} />
                 <Route path="complaints" element={<ComplaintsPage />} />
-                <Route path="disciplinary-process" element={<DisciplinaryProcessPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="lost-and-found" element={<LostAndFoundPage />} />
                 <Route path="events" element={<EventsPage />} />

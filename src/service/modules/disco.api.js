@@ -1,46 +1,63 @@
 /**
  * DisCo (Disciplinary Committee) API Module
- * Handles disciplinary action operations
+ * Handles manual disciplinary actions and admin-driven process workflow operations.
  */
 
 import apiClient from "../core/apiClient"
 
 export const discoApi = {
   /**
-   * Add DisCo action
-   * @param {Object} data - DisCo action data
+   * Add manual DisCo action
+   * @param {Object} data
    */
   addDisCoAction: (data) => {
     return apiClient.post("/disco/add", data)
   },
 
   /**
-   * Get DisCo actions by student
-   * @param {string} studentId - Student ID
+   * Get manual DisCo actions by student
+   * @param {string} studentId
    */
   getDisCoActionsByStudent: (studentId) => {
     return apiClient.get(`/disco/${studentId}`)
   },
 
   /**
-   * Update DisCo action
-   * @param {string} disCoId - DisCo action ID
-   * @param {Object} data - Updated data
+   * Update manual DisCo action
+   * @param {string} disCoId
+   * @param {Object} data
    */
   updateDisCoAction: (disCoId, data) => {
     return apiClient.put(`/disco/update/${disCoId}`, data)
   },
 
   /**
-   * Delete DisCo action
-   * @param {string} disCoId - DisCo action ID
+   * Mark reminder item completed for a DisCo action
+   * @param {string} disCoId
+   * @param {string} reminderItemId
+   */
+  markDisCoReminderDone: (disCoId, reminderItemId) => {
+    return apiClient.patch(`/disco/update/${disCoId}/reminders/${reminderItemId}/done`)
+  },
+
+  /**
+   * Delete manual DisCo action
+   * @param {string} disCoId
    */
   deleteDisCoAction: (disCoId) => {
     return apiClient.delete(`/disco/${disCoId}`)
   },
 
   /**
-   * Submit disciplinary process case (student)
+   * Create disciplinary process case (admin)
+   * @param {Object} data - { complaintPdfUrl, complaintPdfName }
+   */
+  createProcessCase: (data) => {
+    return apiClient.post("/disco/process/cases", data)
+  },
+
+  /**
+   * Backward-compatible alias
    * @param {Object} data - { complaintPdfUrl, complaintPdfName }
    */
   submitProcessCase: (data) => {
@@ -48,15 +65,8 @@ export const discoApi = {
   },
 
   /**
-   * Get student process cases
-   */
-  getMyProcessCases: () => {
-    return apiClient.get("/disco/process/my-cases")
-  },
-
-  /**
    * Get admin process cases list
-   * @param {Object} params - filters/pagination
+   * @param {Object} params
    */
   getProcessCases: (params = {}) => {
     return apiClient.get("/disco/process/cases", { params })
@@ -71,34 +81,25 @@ export const discoApi = {
   },
 
   /**
-   * Initial review action
+   * Save stage 2 collection data
    * @param {string} caseId
-   * @param {Object} data - { decision, description }
+   * @param {Object} data
    */
-  reviewProcessCase: (caseId, data) => {
-    return apiClient.patch(`/disco/process/cases/${caseId}/review`, data)
+  saveCaseStageTwo: (caseId, data) => {
+    return apiClient.patch(`/disco/process/cases/${caseId}/stage2`, data)
   },
 
   /**
-   * Add statement
+   * Backward-compatible alias for old stage-2 statement API
    * @param {string} caseId
    * @param {Object} data
    */
   addCaseStatement: (caseId, data) => {
-    return apiClient.post(`/disco/process/cases/${caseId}/statements`, data)
+    return apiClient.patch(`/disco/process/cases/${caseId}/stage2`, data)
   },
 
   /**
-   * Remove statement
-   * @param {string} caseId
-   * @param {string} statementId
-   */
-  removeCaseStatement: (caseId, statementId) => {
-    return apiClient.delete(`/disco/process/cases/${caseId}/statements/${statementId}`)
-  },
-
-  /**
-   * Send case email
+   * Send committee email
    * @param {string} caseId
    * @param {Object} data
    */
@@ -109,14 +110,14 @@ export const discoApi = {
   /**
    * Upload committee minutes metadata
    * @param {string} caseId
-   * @param {Object} data - { pdfUrl, pdfName }
+   * @param {Object} data
    */
   uploadCommitteeMinutes: (caseId, data) => {
     return apiClient.patch(`/disco/process/cases/${caseId}/committee-minutes`, data)
   },
 
   /**
-   * Finalize case with rejection or disciplinary action
+   * Finalize process case
    * @param {string} caseId
    * @param {Object} data
    */

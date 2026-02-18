@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
-import { Modal } from "czero/react"
-import { Button } from "czero/react"
+import { Modal, Button } from "czero/react"
 
 const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
+  const toReminderState = (items = []) =>
+    Array.isArray(items)
+      ? items.map((item) => ({
+        _id: item?._id || undefined,
+        action: item?.action || "",
+        dueDate: item?.dueDate ? String(item.dueDate).split("T")[0] : "",
+        isDone: Boolean(item?.isDone),
+        doneAt: item?.doneAt || null,
+        doneBy: item?.doneBy || null,
+      }))
+      : []
+
   const [formData, setFormData] = useState({
     reason: "",
     actionTaken: "",
     date: "",
     remarks: "",
+    reminderItems: [],
   })
 
   const [errors, setErrors] = useState({})
@@ -23,6 +35,7 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
         actionTaken: initialData.actionTaken || "",
         date: initialData.date ? initialData.date.split("T")[0] : "",
         remarks: initialData.remarks || "",
+        reminderItems: toReminderState(initialData.reminderItems),
       })
     } else {
       setFormData({
@@ -30,6 +43,7 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
         actionTaken: "",
         date: "",
         remarks: "",
+        reminderItems: [],
       })
     }
     // Reset delete confirmation when modal opens/closes
@@ -60,7 +74,51 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       newErrors.date = "Date is required"
     }
 
+    const invalidReminder = formData.reminderItems.find(
+      (item) =>
+        (item.action.trim() && !item.dueDate) ||
+        (!item.action.trim() && item.dueDate)
+    )
+    if (invalidReminder) {
+      newErrors.reminderItems = "Each reminder row needs action text and due date"
+    }
+
     return newErrors
+  }
+
+  const handleReminderChange = (index, field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      reminderItems: prev.reminderItems.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, [field]: value } : item
+      ),
+    }))
+    if (errors.reminderItems) {
+      setErrors((prev) => ({ ...prev, reminderItems: null }))
+    }
+  }
+
+  const handleAddReminder = () => {
+    setFormData((prev) => ({
+      ...prev,
+      reminderItems: [
+        ...prev.reminderItems,
+        {
+          action: "",
+          dueDate: "",
+          isDone: false,
+          doneAt: null,
+          doneBy: null,
+        },
+      ],
+    }))
+  }
+
+  const handleRemoveReminder = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      reminderItems: prev.reminderItems.filter((_, itemIndex) => itemIndex !== index),
+    }))
   }
 
   const handleSubmit = async (e) => {
@@ -75,7 +133,19 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
     setIsSubmitting(true)
 
     try {
-      await onSubmit(formData)
+      await onSubmit({
+        ...formData,
+        reminderItems: formData.reminderItems
+          .filter((item) => item.action.trim() && item.dueDate)
+          .map((item) => ({
+            ...(item._id ? { _id: item._id } : {}),
+            action: item.action.trim(),
+            dueDate: item.dueDate,
+            isDone: Boolean(item.isDone),
+            doneAt: item.doneAt || null,
+            doneBy: item.doneBy?._id || item.doneBy || null,
+          })),
+      })
     } catch (error) {
       console.error("Error in form submission:", error)
     } finally {
@@ -123,6 +193,33 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       flexDirection: "column",
       gap: "var(--spacing-4)",
     },
+    reminderSection: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "var(--spacing-3)",
+      padding: "var(--spacing-3)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      borderRadius: "var(--radius-md)",
+      backgroundColor: "var(--color-bg-secondary)",
+    },
+    reminderRow: {
+      display: "grid",
+      gridTemplateColumns: "1fr 180px auto",
+      gap: "var(--spacing-2)",
+      alignItems: "center",
+    },
+    reminderInput: {
+      width: "100%",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      borderRadius: "var(--radius-md)",
+      padding: "var(--spacing-2)",
+      backgroundColor: "var(--color-bg-primary)",
+      color: "var(--color-text-primary)",
+    },
+    reminderError: {
+      color: "var(--color-danger)",
+      fontSize: "var(--font-size-sm)",
+    },
     footerContainer: {
       display: "flex",
       justifyContent: "space-between",
@@ -163,6 +260,44 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
           <FormField label="Date" name="date" type="date" value={formData.date} onChange={handleChange} required error={errors.date} />
 
           <FormField label="Remarks" name="remarks" type="textarea" value={formData.remarks} onChange={handleChange} error={errors.remarks} placeholder="Enter additional remarks (optional)" rows={3} />
+
+          <div style={styles.reminderSection}>
+            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+              Reminder Items (Optional)
+            </div>
+            {formData.reminderItems.length === 0 ? (
+              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                No reminders added yet
+              </div>
+            ) : (
+              formData.reminderItems.map((item, index) => (
+                <div key={item._id || `reminder-${index}`} style={styles.reminderRow}>
+                  <input
+                    type="text"
+                    value={item.action}
+                    onChange={(event) => handleReminderChange(index, "action", event.target.value)}
+                    placeholder="Reminder action"
+                    style={styles.reminderInput}
+                  />
+                  <input
+                    type="date"
+                    value={item.dueDate}
+                    onChange={(event) => handleReminderChange(index, "dueDate", event.target.value)}
+                    style={styles.reminderInput}
+                  />
+                  <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveReminder(index)}>
+                    <FaTrash />
+                  </Button>
+                </div>
+              ))
+            )}
+            {errors.reminderItems && <div style={styles.reminderError}>{errors.reminderItems}</div>}
+            <div>
+              <Button type="button" variant="secondary" size="sm" onClick={handleAddReminder}>
+                Add Reminder
+              </Button>
+            </div>
+          </div>
 
           <div style={styles.footerContainer}>
             {isEditing && onDelete && (
