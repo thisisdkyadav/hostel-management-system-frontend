@@ -15,18 +15,20 @@ const APPOINTMENT_STATUS_TAB_CONFIG = [
   { label: "Rejected", value: "Rejected" },
 ]
 
-const cardStyle = {
-  border: "var(--border-1) solid var(--color-border-primary)",
-  borderRadius: "var(--radius-card-sm)",
-  backgroundColor: "var(--color-bg-primary)",
-  padding: "var(--spacing-4)",
+const labelStyle = {
+  fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  marginBottom: 2,
+  display: "block",
 }
 
-const sectionTitleStyle = {
-  margin: 0,
-  color: "var(--color-text-primary)",
-  fontSize: "var(--font-size-lg)",
-  fontWeight: "var(--font-weight-semibold)",
+const sectionStyle = {
+  padding: "var(--spacing-3)",
+  borderRadius: "var(--radius-card-sm)",
+  backgroundColor: "var(--color-bg-secondary)",
 }
 
 const statusVariant = (status) => {
@@ -461,179 +463,153 @@ const AppointmentsPage = () => {
       />
 
       <Modal
-        title={selectedAppointment ? `Appointment #${selectedAppointment.id?.slice(-6)}` : "Appointment"}
+        title={selectedAppointment ? `Appointment — #${selectedAppointment.id?.slice(-6).toUpperCase()}` : "Appointment"}
         onClose={handleCloseDetails}
-        width={920}
+        width={620}
         isOpen={detailsOpen}
+        footer={
+          selectedAppointment?.status === "Pending" ? (
+            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+              <Button size="sm" variant="secondary" onClick={handleCloseDetails}>Cancel</Button>
+              <Button
+                size="sm"
+                variant={reviewAction === "approve" ? "success" : "danger"}
+                loading={reviewSubmitting}
+                onClick={handleReviewSubmit}
+              >
+                {reviewAction === "approve" ? "Approve & Notify" : "Reject & Notify"}
+              </Button>
+            </div>
+          ) : (
+            <Button size="sm" variant="secondary" onClick={handleCloseDetails}>Close</Button>
+          )
+        }
       >
         {detailsLoading ? (
-          <div style={{ color: "var(--color-text-muted)" }}>Loading appointment details...</div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Loading...</div>
         ) : !selectedAppointment ? (
-          <div style={{ color: "var(--color-text-muted)" }}>Appointment details unavailable</div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Details unavailable</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div
-              style={{
-                ...cardStyle,
-                padding: "var(--spacing-3)",
-                display: "flex",
-                justifyContent: "space-between",
-                gap: "var(--spacing-2)",
-                flexWrap: "wrap",
-              }}
-            >
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+
+            {/* Visitor header */}
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
               <div>
-                <div
-                  style={{
-                    fontWeight: "var(--font-weight-semibold)",
-                    color: "var(--color-text-primary)",
-                  }}
-                >
+                <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-base)", color: "var(--color-text-heading)" }}>
                   {selectedAppointment.visitorName}
                 </div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  {selectedAppointment.email}
-                </div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  {selectedAppointment.mobileNumber}
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                  {selectedAppointment.email} · {selectedAppointment.mobileNumber}
                 </div>
               </div>
-              <Badge variant={statusVariant(selectedAppointment.status)}>
-                {selectedAppointment.status}
-              </Badge>
+              <Badge variant={statusVariant(selectedAppointment.status)}>{selectedAppointment.status}</Badge>
             </div>
 
-            <div
-              style={{
-                ...cardStyle,
-                padding: "var(--spacing-3)",
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "var(--spacing-3)",
-              }}
-            >
+            {/* Info grid */}
+            <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  Appointment With
+                <span style={labelStyle}>With</span>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {selectedAppointment.targetOfficial?.name || "-"}
                 </div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  {selectedAppointment.targetOfficial?.name || "-"} ({selectedAppointment.targetSubRole || "-"})
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  {selectedAppointment.targetSubRole || "-"}
                 </div>
               </div>
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  Identity
-                </div>
-                <div style={{ color: "var(--color-text-body)" }}>
+                <span style={labelStyle}>Identity</span>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
                   {selectedAppointment.idType}: {selectedAppointment.idNumber}
                 </div>
               </div>
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  Preferred Meeting
+                <span style={labelStyle}>Preferred</span>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {formatDate(selectedAppointment.preferredDate)}
                 </div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  {formatDate(selectedAppointment.preferredDate)} | {selectedAppointment.preferredTime}
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  {selectedAppointment.preferredTime}
                 </div>
               </div>
             </div>
 
-            <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-              <div
-                style={{
-                  color: "var(--color-text-muted)",
-                  fontSize: "var(--font-size-sm)",
-                  marginBottom: "var(--spacing-1)",
-                }}
-              >
-                Reason for Meeting
-              </div>
-              <div style={{ color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
+            {/* Reason */}
+            <div style={sectionStyle}>
+              <span style={labelStyle}>Reason for Meeting</span>
+              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
                 {selectedAppointment.reason}
               </div>
             </div>
 
             {selectedAppointment.status === "Pending" ? (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <h4 style={sectionTitleStyle}>Review Request</h4>
-                <div style={{ maxWidth: "220px" }}>
-                  <Select
-                    value={reviewAction}
-                    onChange={(event) => setReviewAction(event.target.value)}
-                    options={[
-                      { value: "approve", label: "Approve" },
-                      { value: "reject", label: "Reject" },
-                    ]}
-                  />
-                </div>
-
-                {reviewAction === "approve" && (
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                      gap: "var(--spacing-3)",
-                    }}
-                  >
-                    <Input
-                      type="date"
-                      value={approvedDate}
-                      min={todayDateInput()}
-                      onChange={(event) => setApprovedDate(event.target.value)}
-                    />
-                    <Input
-                      type="time"
-                      value={approvedTime}
-                      onChange={(event) => setApprovedTime(event.target.value)}
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
+                <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Review</span>
+                <div style={{ display: "grid", gridTemplateColumns: reviewAction === "approve" ? "160px 1fr 1fr" : "160px 1fr", gap: "var(--spacing-2)", alignItems: "end" }}>
+                  <div>
+                    <span style={labelStyle}>Action</span>
+                    <Select
+                      value={reviewAction}
+                      onChange={(event) => setReviewAction(event.target.value)}
+                      options={[
+                        { value: "approve", label: "Approve" },
+                        { value: "reject", label: "Reject" },
+                      ]}
                     />
                   </div>
-                )}
-
+                  {reviewAction === "approve" && (
+                    <>
+                      <div>
+                        <span style={labelStyle}>Meeting Date</span>
+                        <Input type="date" value={approvedDate} min={todayDateInput()} onChange={(event) => setApprovedDate(event.target.value)} />
+                      </div>
+                      <div>
+                        <span style={labelStyle}>Meeting Time</span>
+                        <Input type="time" value={approvedTime} onChange={(event) => setApprovedTime(event.target.value)} />
+                      </div>
+                    </>
+                  )}
+                </div>
                 <Textarea
-                  rows={4}
+                  rows={2}
                   placeholder={reviewAction === "reject" ? "Reason for rejection (required)" : "Optional remarks"}
                   value={reviewDescription}
                   onChange={(event) => setReviewDescription(event.target.value)}
                 />
-
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button
-                    variant={reviewAction === "approve" ? "success" : "danger"}
-                    loading={reviewSubmitting}
-                    onClick={handleReviewSubmit}
-                  >
-                    {reviewAction === "approve" ? "Approve and Notify" : "Reject and Notify"}
-                  </Button>
-                </div>
               </div>
             ) : (
-              <div
-                style={{
-                  ...cardStyle,
-                  padding: "var(--spacing-3)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "var(--spacing-2)",
-                }}
-              >
-                <h4 style={sectionTitleStyle}>Review Summary</h4>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  <strong>Action:</strong> {selectedAppointment.review?.action || "-"}
+              <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
+                <div>
+                  <span style={labelStyle}>Action</span>
+                  <Badge variant={statusVariant(selectedAppointment.review?.action === "approve" ? "Approved" : "Rejected")}>
+                    {selectedAppointment.review?.action || "-"}
+                  </Badge>
                 </div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  <strong>Reviewed At:</strong> {formatDateTime(selectedAppointment.review?.reviewedAt)}
-                </div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  <strong>Reviewed By:</strong> {selectedAppointment.review?.reviewedBy?.name || "-"}
-                </div>
-                {selectedAppointment.approvedMeeting?.date ? (
-                  <div style={{ color: "var(--color-text-body)" }}>
-                    <strong>Approved Meeting:</strong> {formatDate(selectedAppointment.approvedMeeting.date)} | {selectedAppointment.approvedMeeting.time}
+                {selectedAppointment.approvedMeeting?.date && (
+                  <div>
+                    <span style={labelStyle}>Approved Meeting</span>
+                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                      {formatDate(selectedAppointment.approvedMeeting.date)} · {selectedAppointment.approvedMeeting.time}
+                    </div>
                   </div>
-                ) : null}
-                <div style={{ color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
-                  <strong>Remarks:</strong> {selectedAppointment.review?.description || "-"}
+                )}
+                <div>
+                  <span style={labelStyle}>Reviewed By</span>
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                    {selectedAppointment.review?.reviewedBy?.name || "-"}
+                  </div>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    {formatDateTime(selectedAppointment.review?.reviewedAt)}
+                  </div>
                 </div>
+                {selectedAppointment.review?.description && (
+                  <div style={{ gridColumn: "1 / -1" }}>
+                    <span style={labelStyle}>Remarks</span>
+                    <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
+                      {selectedAppointment.review.description}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

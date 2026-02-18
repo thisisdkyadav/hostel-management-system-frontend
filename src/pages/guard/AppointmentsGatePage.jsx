@@ -6,6 +6,22 @@ import { Badge, Select, Textarea, useToast } from "@/components/ui"
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
+const labelStyle = {
+  fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  marginBottom: 2,
+  display: "block",
+}
+
+const sectionStyle = {
+  padding: "var(--spacing-3)",
+  borderRadius: "var(--radius-card-sm)",
+  backgroundColor: "var(--color-bg-secondary)",
+}
+
 const cardStyle = {
   border: "var(--border-1) solid var(--color-border-primary)",
   borderRadius: "var(--radius-card-sm)",
@@ -16,7 +32,7 @@ const cardStyle = {
 const sectionTitleStyle = {
   margin: 0,
   color: "var(--color-text-primary)",
-  fontSize: "var(--font-size-lg)",
+  fontSize: "var(--font-size-base)",
   fontWeight: "var(--font-weight-semibold)",
 }
 
@@ -256,98 +272,110 @@ const AppointmentsGatePage = () => {
       </div>
 
       <Modal
-        title={selectedAppointment ? `Appointment #${selectedAppointment.id?.slice(-6)}` : "Appointment"}
+        title={selectedAppointment ? `Appointment — #${selectedAppointment.id?.slice(-6).toUpperCase()}` : "Appointment"}
         onClose={closeDetails}
-        width={860}
+        width={620}
         isOpen={detailsOpen}
+        footer={
+          !selectedAppointment?.gateEntry?.entered ? (
+            <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+              <Button size="sm" variant="secondary" onClick={closeDetails}>Cancel</Button>
+              <Button size="sm" variant="success" loading={entrySubmitting} onClick={handleMarkEntered}>
+                Mark as Entered
+              </Button>
+            </div>
+          ) : (
+            <Button size="sm" variant="secondary" onClick={closeDetails}>Close</Button>
+          )
+        }
       >
         {!selectedAppointment ? (
-          <div style={{ color: "var(--color-text-muted)" }}>Appointment details unavailable</div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Appointment details unavailable</div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div
-              style={{
-                ...cardStyle,
-                padding: "var(--spacing-3)",
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "var(--spacing-3)",
-              }}
-            >
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+
+            {/* Visitor header */}
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
               <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Visitor</div>
-                <div style={{ color: "var(--color-text-body)", fontWeight: "var(--font-weight-semibold)" }}>
+                <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-base)", color: "var(--color-text-heading)" }}>
                   {selectedAppointment.visitorName}
                 </div>
-                <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                  {selectedAppointment.mobileNumber}
-                </div>
-                <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                  {selectedAppointment.email}
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                  {selectedAppointment.mobileNumber} · {selectedAppointment.email}
                 </div>
               </div>
-
-              <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  Appointment With
-                </div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  {selectedAppointment.targetOfficial?.name || "-"} ({selectedAppointment.targetSubRole || "-"})
-                </div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
-                  Approved Meeting
-                </div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  {formatDate(selectedAppointment.approvedMeeting?.date)} | {selectedAppointment.approvedMeeting?.time || "-"}
-                </div>
-              </div>
-
-              <div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Identity</div>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  {selectedAppointment.idType}: {selectedAppointment.idNumber}
-                </div>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
-                  Entry Status
-                </div>
-                <Badge variant={entryBadge(selectedAppointment.gateEntry?.entered)}>
-                  {selectedAppointment.gateEntry?.entered ? "Entered" : "Pending"}
-                </Badge>
-                {selectedAppointment.gateEntry?.enteredAt ? (
-                  <div style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)", marginTop: "var(--spacing-2)" }}>
-                    Entered At: {formatDateTime(selectedAppointment.gateEntry.enteredAt)}
-                  </div>
-                ) : null}
-              </div>
+              <Badge variant={entryBadge(selectedAppointment.gateEntry?.entered)}>
+                {selectedAppointment.gateEntry?.entered ? "Entered" : "Not Entered"}
+              </Badge>
             </div>
 
-            <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>
-                Reason for Meeting
+            {/* Info grid */}
+            <div style={{ ...sectionStyle, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-3)" }}>
+              <div>
+                <span style={labelStyle}>Appointment With</span>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {selectedAppointment.targetOfficial?.name || "-"}
+                </div>
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  {selectedAppointment.targetSubRole || "-"}
+                </div>
               </div>
-              <div style={{ color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>{selectedAppointment.reason}</div>
+              <div>
+                <span style={labelStyle}>Approved Meeting</span>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {formatDate(selectedAppointment.approvedMeeting?.date)}
+                </div>
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  {selectedAppointment.approvedMeeting?.time || "-"}
+                </div>
+              </div>
+              <div>
+                <span style={labelStyle}>Identity</span>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {selectedAppointment.idType}: {selectedAppointment.idNumber}
+                </div>
+              </div>
+              {selectedAppointment.gateEntry?.entered && (
+                <div>
+                  <span style={labelStyle}>Entered At</span>
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                    {formatDateTime(selectedAppointment.gateEntry.enteredAt)}
+                  </div>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    by {selectedAppointment.gateEntry?.markedBy?.name || "Hostel Gate"}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Reason */}
+            <div style={sectionStyle}>
+              <span style={labelStyle}>Reason for Meeting</span>
+              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+                {selectedAppointment.reason}
+              </div>
             </div>
 
             {!selectedAppointment.gateEntry?.entered ? (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <h4 style={sectionTitleStyle}>Mark Entry</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                <div style={{ height: 1, backgroundColor: "var(--color-border-primary)" }} />
+                <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Gate Note</span>
                 <Textarea
-                  rows={3}
-                  placeholder="Optional gate note"
+                  rows={2}
+                  placeholder="Optional note (visible in logs)"
                   value={entryNote}
                   onChange={(event) => setEntryNote(event.target.value)}
                 />
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button variant="success" loading={entrySubmitting} onClick={handleMarkEntered}>
-                    Mark as Entered
-                  </Button>
-                </div>
               </div>
             ) : (
-              <div style={{ ...cardStyle, padding: "var(--spacing-3)", color: "var(--color-text-body)" }}>
-                Visitor entry already marked by {selectedAppointment.gateEntry?.markedBy?.name || "Hostel Gate"}.
-                {selectedAppointment.gateEntry?.note ? ` Note: ${selectedAppointment.gateEntry.note}` : ""}
-              </div>
+              selectedAppointment.gateEntry?.note ? (
+                <div style={sectionStyle}>
+                  <span style={labelStyle}>Gate Note</span>
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                    {selectedAppointment.gateEntry.note}
+                  </div>
+                </div>
+              ) : null
             )}
           </div>
         )}
