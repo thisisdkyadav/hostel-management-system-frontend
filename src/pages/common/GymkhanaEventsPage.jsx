@@ -617,48 +617,7 @@ const toGymkhanaDisplayEvent = (event) => ({
   eventStatus: event.status || null,
 })
 
-const StatCardsSkeleton = ({ count = 5 }) => (
-  <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-5">
-    {Array.from({ length: count }).map((_, index) => (
-      <div
-        key={`stats-skeleton-${index}`}
-        style={{
-          border: "var(--border-1) solid var(--color-border-primary)",
-          borderRadius: "var(--radius-card-sm)",
-          backgroundColor: "var(--color-bg-primary)",
-          padding: "var(--spacing-3)",
-        }}
-      >
-        <div
-          style={{
-            width: "55%",
-            height: 10,
-            borderRadius: "var(--radius-xs)",
-            backgroundColor: "var(--color-bg-hover)",
-            marginBottom: "var(--spacing-2)",
-          }}
-        />
-        <div
-          style={{
-            width: "40%",
-            height: 18,
-            borderRadius: "var(--radius-xs)",
-            backgroundColor: "var(--color-bg-hover)",
-            marginBottom: "var(--spacing-1)",
-          }}
-        />
-        <div
-          style={{
-            width: "70%",
-            height: 8,
-            borderRadius: "var(--radius-xs)",
-            backgroundColor: "var(--color-bg-hover)",
-          }}
-        />
-      </div>
-    ))}
-  </div>
-)
+
 
 const EventsPage = () => {
   const { user } = useAuth()
@@ -2167,11 +2126,12 @@ const toCalendarEventPayload = (event) => {
       <div style={{ flex: 1, overflow: "auto", padding: "var(--spacing-6)" }}>
         {(loading || calendar) && (
           <div style={{ marginBottom: "var(--spacing-4)" }}>
-            {loading && !calendar
-              ? <StatCardsSkeleton count={5} />
-              : calendar
-                ? <StatCards stats={budgetStats} columns={5} />
-                : <StatCardsSkeleton count={5} />}
+            <StatCards
+              stats={budgetStats}
+              columns={5}
+              loading={loading || !calendar}
+              loadingCount={5}
+            />
           </div>
         )}
 

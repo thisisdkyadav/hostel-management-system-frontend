@@ -204,49 +204,6 @@ const documentChipStyle = {
   transition: "all 0.15s ease",
 }
 
-const StatCardsSkeleton = ({ count = 4 }) => (
-  <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
-    {Array.from({ length: count }).map((_, index) => (
-      <div
-        key={`disco-stats-skeleton-${index}`}
-        style={{
-          border: "1px solid var(--color-border-primary)",
-          borderRadius: "var(--radius-card-sm)",
-          backgroundColor: "var(--color-bg-primary)",
-          padding: "var(--spacing-3)",
-        }}
-      >
-        <div
-          style={{
-            width: "55%",
-            height: 10,
-            borderRadius: "var(--radius-xs)",
-            backgroundColor: "var(--color-bg-hover)",
-            marginBottom: "var(--spacing-2)",
-          }}
-        />
-        <div
-          style={{
-            width: "40%",
-            height: 18,
-            borderRadius: "var(--radius-xs)",
-            backgroundColor: "var(--color-bg-hover)",
-            marginBottom: "var(--spacing-1)",
-          }}
-        />
-        <div
-          style={{
-            width: "70%",
-            height: 8,
-            borderRadius: "var(--radius-xs)",
-            backgroundColor: "var(--color-bg-hover)",
-          }}
-        />
-      </div>
-    ))}
-  </div>
-)
-
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -1253,7 +1210,12 @@ const DisciplinaryProcessPage = () => {
 
       <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-4) var(--spacing-6)" }}>
         <div style={{ marginBottom: "var(--spacing-4)" }}>
-          {adminCaseCountsLoading ? <StatCardsSkeleton count={4} /> : <StatCards stats={adminCaseStats} columns={4} />}
+          <StatCards
+            stats={adminCaseStats}
+            columns={4}
+            loading={adminCaseCountsLoading}
+            loadingCount={4}
+          />
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
