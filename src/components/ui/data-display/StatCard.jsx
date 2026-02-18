@@ -8,8 +8,9 @@ import React from "react"
  * @param {string} subtitle - Secondary text
  * @param {React.ReactNode} icon - Icon element
  * @param {string} color - Icon/value color (CSS color or variable)
+ * @param {boolean} tintBackground - Whether to tint the card background with the color
  */
-export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)" }) => {
+export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false }) => {
   // Get the actual color value for dynamic opacity backgrounds
   const getColorValue = (cssVar) => {
     if (cssVar.startsWith("var(")) return null
@@ -23,8 +24,13 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
 
   return (
     <div
-      className="bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group"
-      style={{ boxShadow: "var(--shadow-xs)" }}
+      className={`bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group`}
+      style={{
+        boxShadow: "var(--shadow-xs)",
+        ...(tintBackground && {
+          backgroundColor: `${colorValue}14`,
+        }),
+      }}
     >
       <div className="flex justify-between items-start mb-1.5">
         <span className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wide">
@@ -85,6 +91,7 @@ const StatCards = ({ stats, columns = 4 }) => {
           subtitle={stat.subtitle}
           icon={stat.icon}
           color={stat.color}
+          tintBackground={stat.tintBackground}
         />
       ))}
     </div>

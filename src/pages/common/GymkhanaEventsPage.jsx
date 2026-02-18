@@ -15,6 +15,13 @@ import {
 import { Badge, StatCards } from "@/components/ui/data-display"
 import { ToggleButtonGroup } from "@/components/ui"
 import {
+  CompactEventSection,
+  CompactInfoRow,
+  EventMetaChip,
+  CompactInfoGrid,
+  CompactFormField,
+} from "@/components/common/gymkhana"
+import {
   CalendarDays,
   Plus,
   Lock,
@@ -57,17 +64,17 @@ const CATEGORY_LABELS = {
 }
 
 const CATEGORY_COLORS = {
-  academic: "#1D4ED8",
-  cultural: "#6D28D9",
-  sports: "#15803D",
-  technical: "#0369A1",
+  academic: "#475569",   // Slate - professional, scholarly
+  cultural: "#BE185D",   // Rose - creative, vibrant
+  sports: "#0D9488",     // Teal - energetic, balanced
+  technical: "#D97706",  // Amber - innovative, modern
 }
 
 const CATEGORY_BADGE_BACKGROUNDS = {
-  academic: "#DBEAFE",
-  cultural: "#EDE9FE",
-  sports: "#DCFCE7",
-  technical: "#E0F2FE",
+  academic: "#F1F5F9",   // Slate-50
+  cultural: "#FFF1F2",   // Rose-50
+  sports: "#F0FDFA",     // Teal-50
+  technical: "#FFFBEB",  // Amber-50
 }
 
 const getCategoryBadgeStyle = (category) => ({
@@ -148,71 +155,103 @@ const footerTabStyles = {
 
 const formLabelStyles = {
   display: "block",
-  fontSize: "var(--font-size-sm)",
+  fontSize: "var(--font-size-xs)",
   fontWeight: "var(--font-weight-medium)",
-  color: "var(--color-text-secondary)",
+  color: "var(--color-text-muted)",
   marginBottom: "var(--spacing-1)",
+  textTransform: "uppercase",
+  letterSpacing: "0.3px",
 }
 
 const eventDetailMetaChipStyles = {
   display: "inline-flex",
   alignItems: "center",
-  gap: "var(--spacing-1)",
+  gap: 4,
   fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-medium)",
   color: "var(--color-text-muted)",
-  padding: "var(--spacing-1) var(--spacing-2)",
-  borderRadius: "var(--radius-full)",
+  padding: "2px 8px",
+  borderRadius: "var(--radius-badge)",
   border: "var(--border-1) solid var(--color-border-primary)",
   backgroundColor: "var(--color-bg-secondary)",
 }
 
+// Compact event detail section card
 const EventDetailSectionCard = ({ icon: Icon, title, accentColor = "var(--color-primary)", children, headerAction = null }) => (
   <div
     style={{
-      background: "var(--color-bg-tertiary)",
+      background: "var(--color-bg-primary)",
       borderRadius: "var(--radius-card-sm)",
-      padding: "var(--spacing-3) var(--spacing-4)",
       border: "var(--border-1) solid var(--color-border-primary)",
+      overflow: "hidden",
     }}
   >
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--spacing-2)" }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "var(--spacing-2)",
+        padding: "var(--spacing-2) var(--spacing-3)",
+        borderBottom: "var(--border-1) solid var(--color-border-primary)",
+        backgroundColor: "var(--color-bg-secondary)",
+      }}
+    >
       <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
-        <div
+        <span
           style={{
-            width: "24px",
-            height: "24px",
-            borderRadius: "var(--radius-sm)",
-            background: "var(--color-bg-secondary)",
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
+            width: 22,
+            height: 22,
+            borderRadius: "var(--radius-sm)",
+            backgroundColor: `color-mix(in srgb, ${accentColor} 12%, transparent)`,
+            color: accentColor,
           }}
         >
-          {createElement(Icon, { size: 13, style: { color: accentColor } })}
-        </div>
-        <h4
+          {createElement(Icon, { size: 12 })}
+        </span>
+        <span
           style={{
             fontSize: "var(--font-size-xs)",
             fontWeight: "var(--font-weight-semibold)",
-            color: accentColor,
-            margin: 0,
+            color: "var(--color-text-heading)",
             textTransform: "uppercase",
-            letterSpacing: "0.5px",
+            letterSpacing: "0.3px",
           }}
         >
           {title}
-        </h4>
+        </span>
       </div>
       {headerAction}
     </div>
-    {children}
+    <div style={{ padding: "var(--spacing-3)" }}>{children}</div>
   </div>
 )
 
-const EventDetailInfoRow = ({ label, value }) => (
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-3)" }}>
-    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>{label}</span>
-    <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", textAlign: "right" }}>{value}</span>
+// Compact info row for key-value displays
+const EventDetailInfoRow = ({ label, value, valueColor }) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: "var(--spacing-2)",
+      padding: "var(--spacing-1) 0",
+    }}
+  >
+    <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{label}</span>
+    <span
+      style={{
+        fontSize: "var(--font-size-sm)",
+        fontWeight: "var(--font-weight-medium)",
+        color: valueColor || "var(--color-text-body)",
+        textAlign: "right",
+      }}
+    >
+      {value}
+    </span>
   </div>
 )
 
@@ -680,6 +719,7 @@ const EventsPage = () => {
         subtitle: `${budgetSummary.counts.academic || 0} event(s)`,
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.academic,
+        tintBackground: true,
       },
       {
         title: "Cultural Budget",
@@ -687,6 +727,7 @@ const EventsPage = () => {
         subtitle: `${budgetSummary.counts.cultural || 0} event(s)`,
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.cultural,
+        tintBackground: true,
       },
       {
         title: "Sports Budget",
@@ -694,6 +735,7 @@ const EventsPage = () => {
         subtitle: `${budgetSummary.counts.sports || 0} event(s)`,
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.sports,
+        tintBackground: true,
       },
       {
         title: "Technical Budget",
@@ -701,6 +743,7 @@ const EventsPage = () => {
         subtitle: `${budgetSummary.counts.technical || 0} event(s)`,
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.technical,
+        tintBackground: true,
       },
       {
         title: "Total Budget",
@@ -1951,181 +1994,133 @@ const toCalendarEventPayload = (event) => {
         )}
 
         {calendar && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
-          <Card style={{ marginBottom: "var(--spacing-4)" }}>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <Alert type="warning">
-                <Bell size={16} style={{ marginRight: "var(--spacing-1)" }} />
-                {pendingProposalReminders.length} event(s) are in proposal submission window (21 days before event).
-              </Alert>
-              <div style={{ marginTop: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                {pendingProposalReminders.slice(0, 5).map((event) => (
-                  <div
-                    key={`proposal-reminder-${event._id || event.title}`}
-                    style={{
-                      border: "var(--border-1) solid var(--color-border-primary)",
-                      borderRadius: "var(--radius-card-sm)",
-                      padding: "var(--spacing-3)",
-                      backgroundColor: "var(--color-bg-secondary)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "var(--spacing-2)",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div>
-                      <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
-                        {event.title}
-                      </p>
-                      <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                        {formatDateRange(event.startDate, event.endDate)} | Budget ₹{Number(event.estimatedBudget || 0).toLocaleString()}
-                      </p>
-                    </div>
-                    <Button size="sm" variant="secondary" onClick={() => openProposalModal(event)}>
-                      <FileText size={14} /> Proposal
-                    </Button>
-                  </div>
-                ))}
+          <div
+            style={{
+              marginBottom: "var(--spacing-3)",
+              padding: "var(--spacing-3)",
+              backgroundColor: "var(--color-warning-bg)",
+              border: "var(--border-1) solid var(--color-warning)",
+              borderRadius: "var(--radius-card-sm)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap", marginBottom: "var(--spacing-2)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+                <Bell size={14} style={{ color: "var(--color-warning)" }} />
+                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                  {pendingProposalReminders.length} event(s) in proposal window
+                </span>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {pendingProposalsForSelectedCalendar.length > 0 && (
-          <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                padding: "var(--spacing-3)",
-                border: "var(--border-1) solid var(--color-border-primary)",
-                borderRadius: "var(--radius-card-sm)",
-                backgroundColor: "var(--color-bg-secondary)",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
-                <span
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
+              {pendingProposalReminders.slice(0, 5).map((event) => (
+                <div
+                  key={`proposal-reminder-${event._id || event.title}`}
+                  onClick={() => openProposalModal(event)}
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--color-warning-bg)",
-                    color: "var(--color-warning)",
-                    flexShrink: 0,
+                    gap: "var(--spacing-2)",
+                    padding: "var(--spacing-1-5) var(--spacing-2-5)",
+                    borderRadius: "var(--radius-badge)",
+                    backgroundColor: "var(--color-bg-primary)",
+                    border: "var(--border-1) solid var(--color-border-primary)",
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--color-warning)" }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--color-border-primary)" }}
                 >
-                  <AlertTriangle size={14} />
-                </span>
-                <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                  <strong>{pendingProposalsForSelectedCalendar.length}</strong> pending proposal approval(s) in this calendar.
-                </span>
-              </div>
-              <Button size="sm" variant="outline" onClick={() => setShowPendingProposalModal(true)}>
-                View Pending Proposals
-              </Button>
+                  <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                    {event.title}
+                  </span>
+                  <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    {formatDateRange(event.startDate, event.endDate)}
+                  </span>
+                  <FileText size={12} style={{ color: "var(--color-warning)" }} />
+                </div>
+              ))}
             </div>
+          </div>
+        )}
+
+        {pendingProposalsForSelectedCalendar.length > 0 && (
+          <div
+            style={{
+              marginBottom: "var(--spacing-3)",
+              padding: "var(--spacing-2) var(--spacing-3)",
+              border: "var(--border-1) solid var(--color-info)",
+              borderRadius: "var(--radius-card-sm)",
+              backgroundColor: "var(--color-info-bg)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-2)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+              <AlertTriangle size={14} style={{ color: "var(--color-info)" }} />
+              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{pendingProposalsForSelectedCalendar.length}</strong> pending proposal approval(s)
+              </span>
+            </div>
+            <Button size="sm" variant="ghost" onClick={() => setShowPendingProposalModal(true)}>
+              View Proposals
+            </Button>
           </div>
         )}
 
         {isAdminLevel && pendingExpenseApprovalsForSelectedCalendar.length > 0 && (
-          <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                padding: "var(--spacing-3)",
-                border: "var(--border-1) solid var(--color-border-primary)",
-                borderRadius: "var(--radius-card-sm)",
-                backgroundColor: "var(--color-bg-secondary)",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--color-warning-bg)",
-                    color: "var(--color-warning)",
-                    flexShrink: 0,
-                  }}
-                >
-                  <AlertTriangle size={14} />
-                </span>
-                <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                  <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong> pending bill approval(s) in this calendar.
-                </span>
-              </div>
-              <Button size="sm" variant="outline" onClick={() => setShowPendingBillsModal(true)}>
-                View Pending Bills
-              </Button>
+          <div
+            style={{
+              marginBottom: "var(--spacing-3)",
+              padding: "var(--spacing-2) var(--spacing-3)",
+              border: "var(--border-1) solid var(--color-info)",
+              borderRadius: "var(--radius-card-sm)",
+              backgroundColor: "var(--color-info-bg)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-2)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+              <Receipt size={14} style={{ color: "var(--color-info)" }} />
+              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong> pending bill approval(s)
+              </span>
             </div>
+            <Button size="sm" variant="ghost" onClick={() => setShowPendingBillsModal(true)}>
+              View Bills
+            </Button>
           </div>
         )}
 
         {calendar && calendar.status !== "approved" && dateConflicts.length > 0 && (
-          <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "var(--spacing-3)",
-                padding: "var(--spacing-3)",
-                border: "var(--border-1) solid var(--color-border-primary)",
-                borderRadius: "var(--radius-card-sm)",
-                backgroundColor: "var(--color-bg-secondary)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "var(--spacing-3)",
-                }}
-              >
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "var(--radius-full)",
-                    backgroundColor: "var(--color-warning-bg)",
-                    color: "var(--color-warning)",
-                    flexShrink: 0,
-                  }}
-                >
-                  <AlertTriangle size={14} />
-                </span>
-                <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>
-                  <strong>{dateConflicts.length}</strong> date overlap(s) found in this calendar.
-                </span>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setShowOverlapDetailsModal(true)}
-              >
-                View Overlap Details
-              </Button>
+          <div
+            style={{
+              marginBottom: "var(--spacing-3)",
+              padding: "var(--spacing-2) var(--spacing-3)",
+              border: "var(--border-1) solid var(--color-warning)",
+              borderRadius: "var(--radius-card-sm)",
+              backgroundColor: "var(--color-warning-bg)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-2)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+              <AlertTriangle size={14} style={{ color: "var(--color-warning)" }} />
+              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <strong>{dateConflicts.length}</strong> date overlap(s) detected
+              </span>
             </div>
+            <Button size="sm" variant="ghost" onClick={() => setShowOverlapDetailsModal(true)}>
+              View Details
+            </Button>
           </div>
         )}
 
@@ -2480,50 +2475,57 @@ const toCalendarEventPayload = (event) => {
 
                 {(isGymkhanaRole || isAdminLevel) && (
                   <EventDetailSectionCard icon={Clock3} title="Workflow" accentColor="var(--color-primary)">
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                       <div
                         style={{
-                          padding: "var(--spacing-2) var(--spacing-3)",
-                          border: "var(--border-1) solid var(--color-border-primary)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "var(--spacing-2)",
+                          padding: "var(--spacing-2)",
                           borderRadius: "var(--radius-sm)",
                           backgroundColor: "var(--color-bg-secondary)",
+                          flexWrap: "wrap",
                         }}
                       >
-                        <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                          Proposal
-                        </p>
-                        <p style={{ margin: "var(--spacing-1) 0 0 0", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                          {proposalSummary}
-                        </p>
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                            Proposal
+                          </p>
+                          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            {proposalSummary}
+                          </p>
+                        </div>
                         {canOpenProposal && (
-                          <div style={{ marginTop: "var(--spacing-2)" }}>
-                            <Button size="sm" variant="secondary" onClick={() => openProposalModal(selectedEvent)}>
-                              <FileText size={14} /> {selectedEvent.proposalSubmitted ? "View Proposal" : "Submit Proposal"}
-                            </Button>
-                          </div>
+                          <Button size="sm" variant="ghost" onClick={() => openProposalModal(selectedEvent)}>
+                            <FileText size={12} /> {selectedEvent.proposalSubmitted ? "View" : "Submit"}
+                          </Button>
                         )}
                       </div>
-
                       <div
                         style={{
-                          padding: "var(--spacing-2) var(--spacing-3)",
-                          border: "var(--border-1) solid var(--color-border-primary)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "var(--spacing-2)",
+                          padding: "var(--spacing-2)",
                           borderRadius: "var(--radius-sm)",
                           backgroundColor: "var(--color-bg-secondary)",
+                          flexWrap: "wrap",
                         }}
                       >
-                        <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                          Bills
-                        </p>
-                        <p style={{ margin: "var(--spacing-1) 0 0 0", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                          {billsSummary}
-                        </p>
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                            Bills
+                          </p>
+                          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            {billsSummary}
+                          </p>
+                        </div>
                         {canManageBills && (
-                          <div style={{ marginTop: "var(--spacing-2)" }}>
-                            <Button size="sm" variant="secondary" onClick={() => openExpenseModal(selectedEvent)}>
-                              <Receipt size={14} /> Manage Bills
-                            </Button>
-                          </div>
+                          <Button size="sm" variant="ghost" onClick={() => openExpenseModal(selectedEvent)}>
+                            <Receipt size={12} /> Manage
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -2579,25 +2581,28 @@ const toCalendarEventPayload = (event) => {
           <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
             <div className="xl:col-span-2" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
               <EventDetailSectionCard icon={FileText} title="Proposal Details" accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                   {proposalEvent && (
-                    <Alert type="info">
-                      Event budget: ₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)" }}>
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        Budget: <strong style={{ color: "var(--color-text-heading)" }}>₹{Number(proposalEvent.estimatedBudget || 0).toLocaleString()}</strong>
+                      </span>
                       {(() => {
                         const proposalDueDate = getProposalDueDate(proposalEvent)
-                        return proposalDueDate ? ` | Proposal due: ${proposalDueDate.toLocaleDateString()}` : ""
+                        return proposalDueDate ? (
+                          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            Due: <strong style={{ color: "var(--color-text-heading)" }}>{proposalDueDate.toLocaleDateString()}</strong>
+                          </span>
+                        ) : null
                       })()}
-                    </Alert>
-                  )}
-
-                  {proposalData && (
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                      <Badge variant={proposalData.status === "approved" ? "success" : proposalData.status === "rejected" ? "danger" : "info"}>
-                        {proposalData.status?.replace(/_/g, " ")}
-                      </Badge>
-                      {proposalData.currentApprovalStage && (
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                          Current stage: {proposalData.currentApprovalStage}
+                      {proposalData && (
+                        <Badge variant={proposalData.status === "approved" ? "success" : proposalData.status === "rejected" ? "danger" : "info"}>
+                          {proposalData.status?.replace(/_/g, " ")}
+                        </Badge>
+                      )}
+                      {proposalData?.currentApprovalStage && (
+                        <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                          @ {proposalData.currentApprovalStage}
                         </span>
                       )}
                     </div>
@@ -2605,7 +2610,7 @@ const toCalendarEventPayload = (event) => {
 
                   {!proposalData && !canCreateProposalForSelectedEvent && (
                     <Alert type="warning">
-                      Proposal submission is available to GS only after the proposal window opens (21 days before event).
+                      Proposal submission opens 21 days before event.
                     </Alert>
                   )}
 
@@ -2619,7 +2624,7 @@ const toCalendarEventPayload = (event) => {
                       placeholder="Proposal details"
                       value={proposalForm.proposalText}
                       onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
-                      rows={5}
+                      rows={4}
                       disabled={!canEditProposalForm}
                       required
                     />
@@ -2639,7 +2644,7 @@ const toCalendarEventPayload = (event) => {
 
                   <div>
                     <label style={formLabelStyles} htmlFor="externalGuestsDetails">
-                      External Guests Details
+                      External Guests
                     </label>
                     <Textarea
                       id="externalGuestsDetails"
@@ -2647,7 +2652,7 @@ const toCalendarEventPayload = (event) => {
                       placeholder="External guests details"
                       value={proposalForm.externalGuestsDetails}
                       onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
-                      rows={3}
+                      rows={2}
                       disabled={!canEditProposalForm}
                     />
                   </div>
@@ -2664,12 +2669,14 @@ const toCalendarEventPayload = (event) => {
                     downloadFileName="chief-guest-document.pdf"
                   />
 
-                  <Checkbox
-                    name="accommodationRequired"
-                    label="Accommodation required"
-                    checked={proposalForm.accommodationRequired}
-                    onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
-                    disabled={!canEditProposalForm}
+                  <div style={{ display: "flex", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
+                    <Checkbox
+                      name="accommodationRequired"
+                      label="Accommodation required"
+                      checked={proposalForm.accommodationRequired}
+                      onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
+                      disabled={!canEditProposalForm}
+                    />
                   />
 
                   <Checkbox
@@ -2679,17 +2686,18 @@ const toCalendarEventPayload = (event) => {
                     onChange={(event) => handleProposalFormChange("hasRegistrationFee", event.target.checked)}
                     disabled={!canEditProposalForm}
                   />
+                  </div>
 
                   {proposalForm.hasRegistrationFee && (
                     <div>
                       <label style={formLabelStyles} htmlFor="registrationFeeAmount">
-                        Registration Fee Amount (₹)
+                        Registration Fee (₹)
                       </label>
                       <Input
                         id="registrationFeeAmount"
                         name="registrationFeeAmount"
                         type="number"
-                        placeholder="Registration fee amount (₹)"
+                        placeholder="Amount"
                         value={proposalForm.registrationFeeAmount}
                         onChange={(event) =>
                           handleProposalFormChange("registrationFeeAmount", event.target.value)
@@ -2699,16 +2707,16 @@ const toCalendarEventPayload = (event) => {
                     </div>
                   )}
 
-                  <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                  <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "repeat(2, 1fr)" }}>
                     <div>
                       <label style={formLabelStyles} htmlFor="totalExpectedIncome">
-                        Total Expected Income (₹)
+                        Expected Income (₹)
                       </label>
                       <Input
                         id="totalExpectedIncome"
                         name="totalExpectedIncome"
                         type="number"
-                        placeholder="Total expected income (₹)"
+                        placeholder="Income"
                         value={proposalForm.totalExpectedIncome}
                         onChange={(event) =>
                           handleProposalFormChange("totalExpectedIncome", event.target.value)
@@ -2724,7 +2732,7 @@ const toCalendarEventPayload = (event) => {
                         id="totalExpenditure"
                         name="totalExpenditure"
                         type="number"
-                        placeholder="Total expenditure (₹)"
+                        placeholder="Expenditure"
                         value={proposalForm.totalExpenditure}
                         onChange={(event) =>
                           handleProposalFormChange("totalExpenditure", event.target.value)
@@ -2736,52 +2744,33 @@ const toCalendarEventPayload = (event) => {
                 </div>
               </EventDetailSectionCard>
 
-              <EventDetailSectionCard icon={CircleDollarSign} title="Budget Outlook" accentColor="var(--color-success)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <EventDetailSectionCard icon={CircleDollarSign} title="Budget Summary" accentColor="var(--color-success)">
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
                   <EventDetailInfoRow
-                    label="Expected Income"
+                    label="Income"
                     value={`₹${Number(proposalForm.totalExpectedIncome || 0).toLocaleString()}`}
                   />
                   <EventDetailInfoRow
-                    label="Planned Expenditure"
+                    label="Expenditure"
                     value={`₹${Number(proposalForm.totalExpenditure || 0).toLocaleString()}`}
                   />
                   <EventDetailInfoRow
                     label="Deflection"
                     value={`₹${proposalDeflection.toLocaleString()}`}
+                    valueColor={proposalDeflection > 0 ? "var(--color-danger)" : "var(--color-success)"}
                   />
                 </div>
-                <p
-                  style={{
-                    margin: "var(--spacing-2) 0 0 0",
-                    fontSize: "var(--font-size-xs)",
-                    color: proposalDeflection > 0 ? "var(--color-danger)" : "var(--color-success)",
-                    fontWeight: "var(--font-weight-medium)",
-                  }}
-                >
-                  Positive deflection means projected overspend against allocated event budget.
-                </p>
               </EventDetailSectionCard>
 
               {canCurrentUserReviewProposal && proposalData && (
                 <EventDetailSectionCard icon={Check} title="Review Actions" accentColor="var(--color-warning)">
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                     {requiresProposalNextApprovalSelection && (
-                      <div>
-                        <label style={formLabelStyles}>
-                          Select Next Approval Order (Post Student Affairs)
+                      <div style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)" }}>
+                        <label style={{ ...formLabelStyles, marginBottom: "var(--spacing-1)" }}>
+                          Next Approval Order
                         </label>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "var(--spacing-2)",
-                            border: "var(--border-1) solid var(--color-border-primary)",
-                            borderRadius: "var(--radius-card-sm)",
-                            padding: "var(--spacing-3)",
-                            backgroundColor: "var(--color-bg-secondary)",
-                          }}
-                        >
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
                           {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                             <Checkbox
                               key={`proposal-stage-${stage}`}
@@ -2792,43 +2781,37 @@ const toCalendarEventPayload = (event) => {
                               }
                             />
                           ))}
-                          <p
-                            style={{
-                              margin: 0,
-                              fontSize: "var(--font-size-xs)",
-                              color: "var(--color-text-muted)",
-                            }}
-                          >
-                            Order followed:{" "}
-                            {proposalNextApprovalStages.length > 0
-                              ? proposalNextApprovalStages.join(" -> ")
-                              : "No stage selected"}
-                          </p>
                         </div>
+                        {proposalNextApprovalStages.length > 0 && (
+                          <p style={{ margin: "var(--spacing-1) 0 0 0", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            Order: {proposalNextApprovalStages.join(" → ")}
+                          </p>
+                        )}
                       </div>
                     )}
 
                     <div>
                       <label style={formLabelStyles} htmlFor="proposalActionComments">
-                        Review Comments
+                        Comments
                       </label>
                       <Textarea
                         id="proposalActionComments"
                         name="proposalActionComments"
-                        placeholder="Approval comments (required for reject/revision)"
+                        placeholder="Comments (required for reject/revision)"
                         value={proposalActionComments}
                         onChange={(event) => setProposalActionComments(event.target.value)}
-                        rows={3}
+                        rows={2}
                       />
                     </div>
-                    <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                      <Button variant="warning" onClick={handleRequestProposalRevision} loading={submitting}>
+                    <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap", justifyContent: "flex-end" }}>
+                      <Button size="sm" variant="warning" onClick={handleRequestProposalRevision} loading={submitting}>
                         Request Revision
                       </Button>
-                      <Button variant="danger" onClick={handleRejectProposal} loading={submitting}>
+                      <Button size="sm" variant="danger" onClick={handleRejectProposal} loading={submitting}>
                         Reject
                       </Button>
                       <Button
+                        size="sm"
                         variant="success"
                         onClick={handleApproveProposal}
                         loading={submitting}
@@ -2912,46 +2895,31 @@ const toCalendarEventPayload = (event) => {
           <div className="grid grid-cols-1 xl:grid-cols-3" style={{ gap: "var(--spacing-4)", alignItems: "start" }}>
             <div className="xl:col-span-2" style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
               <EventDetailSectionCard icon={Receipt} title="Bills & Documents" accentColor="var(--color-primary)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                   {expenseEvent && (
-                    <Alert type="info">
-                      Assigned budget: ₹{assignedExpenseBudget.toLocaleString()}
-                      {` | Total bills: ₹${expenseTotal.toLocaleString()}`}
-                    </Alert>
-                  )}
-
-                  {expenseData && (
-                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                      <Badge
-                        variant={
-                          expenseData.approvalStatus === "approved"
-                            ? "success"
-                            : expenseData.approvalStatus === "rejected"
-                              ? "danger"
-                              : "warning"
-                        }
-                      >
-                        {expenseData.approvalStatus === "approved"
-                          ? "Approved"
-                          : expenseData.approvalStatus === "rejected"
-                            ? "Rejected"
-                            : "Pending Approval"}
-                      </Badge>
-                      {expenseData.approvedBy?.name && (
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                          Approved by {expenseData.approvedBy.name}
-                          {expenseData.approvedAt ? ` on ${new Date(expenseData.approvedAt).toLocaleDateString()}` : ""}
-                        </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)" }}>
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        Budget: <strong style={{ color: "var(--color-text-heading)" }}>₹{assignedExpenseBudget.toLocaleString()}</strong>
+                      </span>
+                      <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        Total: <strong style={{ color: "var(--color-text-heading)" }}>₹{expenseTotal.toLocaleString()}</strong>
+                      </span>
+                      {expenseData && (
+                        <Badge
+                          variant={
+                            expenseData.approvalStatus === "approved"
+                              ? "success"
+                              : expenseData.approvalStatus === "rejected"
+                                ? "danger"
+                                : "warning"
+                          }
+                        >
+                          {expenseData.approvalStatus === "approved" ? "Approved" : expenseData.approvalStatus === "rejected" ? "Rejected" : "Pending"}
+                        </Badge>
                       )}
-                      {expenseData.rejectedBy?.name && expenseData.approvalStatus === "rejected" && (
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                          Rejected by {expenseData.rejectedBy.name}
-                          {expenseData.rejectedAt ? ` on ${new Date(expenseData.rejectedAt).toLocaleDateString()}` : ""}
-                        </span>
-                      )}
-                      {expenseData.currentApprovalStage && expenseData.approvalStatus !== "approved" && (
-                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                          Current stage: {expenseData.currentApprovalStage}
+                      {expenseData?.currentApprovalStage && expenseData.approvalStatus !== "approved" && (
+                        <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                          @ {expenseData.currentApprovalStage}
                         </span>
                       )}
                     </div>
@@ -2959,54 +2927,54 @@ const toCalendarEventPayload = (event) => {
 
                   {!expenseData && !isExpenseSubmissionAllowedForSelectedEvent && (
                     <Alert type="warning">
-                      Bills can be submitted only after final proposal approval.
+                      Bills submission opens after proposal approval.
                     </Alert>
                   )}
 
                   {expenseData?.approvalStatus === "rejected" && expenseData?.rejectionReason && (
                     <Alert type="error">
-                      Rejection reason: {expenseData.rejectionReason}
+                      Rejection: {expenseData.rejectionReason}
                     </Alert>
                   )}
 
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                     {(expenseForm.bills || []).map((bill, index) => (
                       <div
                         key={bill.localId}
                         style={{
                           border: "var(--border-1) solid var(--color-border-primary)",
                           borderRadius: "var(--radius-card-sm)",
-                          padding: "var(--spacing-3)",
-                          backgroundColor: "var(--color-bg-secondary)",
+                          padding: "var(--spacing-2)",
+                          backgroundColor: "var(--color-bg-primary)",
                           display: "flex",
                           flexDirection: "column",
-                          gap: "var(--spacing-3)",
+                          gap: "var(--spacing-2)",
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "var(--spacing-2)" }}>
-                          <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                          <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
                             Bill #{index + 1}
-                          </p>
+                          </span>
                           {canEditExpenseForm && (expenseForm.bills || []).length > 1 && (
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => handleRemoveBillRow(bill.localId)}
                             >
-                              <Trash2 size={14} />
+                              <Trash2 size={12} />
                             </Button>
                           )}
                         </div>
 
-                        <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                        <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "repeat(4, 1fr)" }}>
                           <div>
                             <label style={formLabelStyles} htmlFor={`bill-description-${bill.localId}`}>
-                              Bill Description
+                              Description
                             </label>
                             <Input
                               id={`bill-description-${bill.localId}`}
                               name={`bill-description-${bill.localId}`}
-                              placeholder="Bill description"
+                              placeholder="Description"
                               value={bill.description}
                               onChange={(event) =>
                                 handleBillFieldChange(bill.localId, "description", event.target.value)
@@ -3022,7 +2990,7 @@ const toCalendarEventPayload = (event) => {
                               id={`bill-amount-${bill.localId}`}
                               name={`bill-amount-${bill.localId}`}
                               type="number"
-                              placeholder="Amount (₹)"
+                              placeholder="₹"
                               value={bill.amount}
                               onChange={(event) =>
                                 handleBillFieldChange(bill.localId, "amount", event.target.value)
@@ -3032,12 +3000,12 @@ const toCalendarEventPayload = (event) => {
                           </div>
                           <div>
                             <label style={formLabelStyles} htmlFor={`bill-number-${bill.localId}`}>
-                              Bill Number
+                              Bill No.
                             </label>
                             <Input
                               id={`bill-number-${bill.localId}`}
                               name={`bill-number-${bill.localId}`}
-                              placeholder="Bill number (optional)"
+                              placeholder="Optional"
                               value={bill.billNumber}
                               onChange={(event) =>
                                 handleBillFieldChange(bill.localId, "billNumber", event.target.value)
@@ -3047,7 +3015,7 @@ const toCalendarEventPayload = (event) => {
                           </div>
                           <div>
                             <label style={formLabelStyles} htmlFor={`bill-date-${bill.localId}`}>
-                              Bill Date
+                              Date
                             </label>
                             <Input
                               id={`bill-date-${bill.localId}`}
@@ -3062,28 +3030,29 @@ const toCalendarEventPayload = (event) => {
                           </div>
                         </div>
 
-                        <div>
-                          <label style={formLabelStyles} htmlFor={`bill-vendor-${bill.localId}`}>
-                            Vendor
-                          </label>
-                          <Input
-                            id={`bill-vendor-${bill.localId}`}
-                            name={`bill-vendor-${bill.localId}`}
-                            placeholder="Vendor (optional)"
-                            value={bill.vendor}
-                            onChange={(event) =>
-                              handleBillFieldChange(bill.localId, "vendor", event.target.value)
-                            }
-                            disabled={!canEditExpenseForm}
-                          />
-                        </div>
+                        <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "1fr 2fr" }}>
+                          <div>
+                            <label style={formLabelStyles} htmlFor={`bill-vendor-${bill.localId}`}>
+                              Vendor
+                            </label>
+                            <Input
+                              id={`bill-vendor-${bill.localId}`}
+                              name={`bill-vendor-${bill.localId}`}
+                              placeholder="Optional"
+                              value={bill.vendor}
+                              onChange={(event) =>
+                                handleBillFieldChange(bill.localId, "vendor", event.target.value)
+                              }
+                              disabled={!canEditExpenseForm}
+                            />
+                          </div>
 
-                        <PdfUploadField
-                          label="Bill PDF"
-                          value={bill.documentUrl}
-                          onChange={(url) => {
-                            handleBillFieldChange(bill.localId, "documentUrl", url)
-                            handleBillFieldChange(
+                          <PdfUploadField
+                            label="Bill PDF"
+                            value={bill.documentUrl}
+                            onChange={(url) => {
+                              handleBillFieldChange(bill.localId, "documentUrl", url)
+                              handleBillFieldChange(
                               bill.localId,
                               "documentName",
                               getFilenameFromUrl(url)
@@ -3091,87 +3060,74 @@ const toCalendarEventPayload = (event) => {
                           }}
                           onUpload={uploadBillDocument}
                           disabled={!canEditExpenseForm}
-                          uploadedText="Bill document uploaded"
+                          uploadedText="Uploaded"
                           viewerTitle={`Bill ${index + 1}`}
-                          viewerSubtitle="Uploaded bill attachment"
+                          viewerSubtitle="Bill attachment"
                           downloadFileName={`event-bill-${index + 1}.pdf`}
                         />
+                        </div>
                       </div>
                     ))}
                   </div>
 
                   {canEditExpenseForm && (
-                    <Button size="sm" variant="secondary" onClick={handleAddBillRow}>
-                      <Plus size={14} /> Add Another Bill
+                    <Button size="sm" variant="ghost" onClick={handleAddBillRow}>
+                      <Plus size={12} /> Add Bill
                     </Button>
                   )}
 
-                  <PdfUploadField
-                    label="Event Report PDF"
-                    value={expenseForm.eventReportDocumentUrl}
-                    onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
-                    onUpload={uploadEventReportDocument}
-                    disabled={!canEditExpenseForm}
-                    uploadedText="Event report uploaded"
-                    viewerTitle="Event Report"
-                    viewerSubtitle="Post-event report attachment"
-                    downloadFileName="event-report.pdf"
-                  />
-
-                  <div>
-                    <label style={formLabelStyles} htmlFor="expenseNotes">
-                      Notes
-                    </label>
-                    <Textarea
-                      id="expenseNotes"
-                      name="expenseNotes"
-                      placeholder="Notes (optional)"
-                      value={expenseForm.notes}
-                      onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
-                      rows={3}
+                  <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "1fr 1fr" }}>
+                    <PdfUploadField
+                      label="Event Report PDF"
+                      value={expenseForm.eventReportDocumentUrl}
+                      onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
+                      onUpload={uploadEventReportDocument}
                       disabled={!canEditExpenseForm}
+                      uploadedText="Uploaded"
+                      viewerTitle="Event Report"
+                      viewerSubtitle="Post-event report"
+                      downloadFileName="event-report.pdf"
                     />
+
+                    <div>
+                      <label style={formLabelStyles} htmlFor="expenseNotes">
+                        Notes
+                      </label>
+                      <Textarea
+                        id="expenseNotes"
+                        name="expenseNotes"
+                        placeholder="Optional"
+                        value={expenseForm.notes}
+                        onChange={(event) => handleExpenseFormChange("notes", event.target.value)}
+                        rows={2}
+                        disabled={!canEditExpenseForm}
+                      />
+                    </div>
                   </div>
                 </div>
               </EventDetailSectionCard>
 
               <EventDetailSectionCard icon={CircleDollarSign} title="Bill Summary" accentColor="var(--color-success)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                  <EventDetailInfoRow label="Total Bill Amount" value={`₹${expenseTotal.toLocaleString()}`} />
-                  <EventDetailInfoRow label="Assigned Budget" value={`₹${assignedExpenseBudget.toLocaleString()}`} />
-                  <EventDetailInfoRow label="Variance" value={`₹${expenseVariance.toLocaleString()}`} />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                  <EventDetailInfoRow label="Bills" value={`₹${expenseTotal.toLocaleString()}`} />
+                  <EventDetailInfoRow label="Budget" value={`₹${assignedExpenseBudget.toLocaleString()}`} />
+                  <EventDetailInfoRow
+                    label="Variance"
+                    value={`₹${expenseVariance.toLocaleString()}`}
+                    valueColor={expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)"}
+                  />
                 </div>
-                <p
-                  style={{
-                    margin: "var(--spacing-2) 0 0 0",
-                    fontSize: "var(--font-size-xs)",
-                    color: expenseVariance > 0 ? "var(--color-danger)" : "var(--color-success)",
-                    fontWeight: "var(--font-weight-medium)",
-                  }}
-                >
-                  Positive variance means bills exceeded assigned budget.
-                </p>
               </EventDetailSectionCard>
 
               {canApproveExpense && (
-                <EventDetailSectionCard icon={Check} title="Approval Actions" accentColor="var(--color-warning)">
+                <EventDetailSectionCard icon={Check} title="Approval" accentColor="var(--color-warning)">
                   <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                     {requiresExpenseNextApprovalSelection && (
-                      <div>
-                        <label style={formLabelStyles}>
-                          Select Next Approval Order (Post Student Affairs)
+                      <div style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-sm)" }}>
+                        <label style={{ ...formLabelStyles, marginBottom: "var(--spacing-1)" }}>
+                          Next Approval Order
                         </label>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "var(--spacing-2)",
-                            border: "var(--border-1) solid var(--color-border-primary)",
-                            borderRadius: "var(--radius-card-sm)",
-                            padding: "var(--spacing-3)",
-                            backgroundColor: "var(--color-bg-secondary)",
-                          }}
-                        >
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
                           {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                             <Checkbox
                               key={`expense-stage-${stage}`}
@@ -3182,40 +3138,34 @@ const toCalendarEventPayload = (event) => {
                               }
                             />
                           ))}
-                          <p
-                            style={{
-                              margin: 0,
-                              fontSize: "var(--font-size-xs)",
-                              color: "var(--color-text-muted)",
-                            }}
-                          >
-                            Order followed:{" "}
-                            {expenseNextApprovalStages.length > 0
-                              ? expenseNextApprovalStages.join(" -> ")
-                              : "No stage selected"}
-                          </p>
                         </div>
+                        {expenseNextApprovalStages.length > 0 && (
+                          <p style={{ margin: "var(--spacing-1) 0 0 0", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                            Order: {expenseNextApprovalStages.join(" → ")}
+                          </p>
+                        )}
                       </div>
                     )}
 
                     <div>
                       <label style={formLabelStyles} htmlFor="expenseApprovalComments">
-                        Approval Comments
+                        Comments
                       </label>
                       <Textarea
                         id="expenseApprovalComments"
                         name="expenseApprovalComments"
-                        placeholder="Approval comments (required for rejection)"
+                        placeholder="Required for rejection"
                         value={expenseApprovalComments}
                         onChange={(event) => setExpenseApprovalComments(event.target.value)}
-                        rows={3}
+                        rows={2}
                       />
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-                      <Button variant="danger" onClick={handleRejectExpense} loading={submitting}>
-                        <X size={14} /> Reject Bills
+                      <Button size="sm" variant="danger" onClick={handleRejectExpense} loading={submitting}>
+                        Reject
                       </Button>
                       <Button
+                        size="sm"
                         variant="success"
                         onClick={handleApproveExpense}
                         loading={submitting}
@@ -3224,7 +3174,7 @@ const toCalendarEventPayload = (event) => {
                           expenseNextApprovalStages.length === 0
                         }
                       >
-                        <Check size={14} /> Approve Bills
+                        Approve
                       </Button>
                     </div>
                   </div>
@@ -3232,9 +3182,9 @@ const toCalendarEventPayload = (event) => {
               )}
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-              <EventDetailSectionCard icon={Clock3} title="Bills Snapshot" accentColor="var(--color-info)">
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <EventDetailSectionCard icon={Clock3} title="Status" accentColor="var(--color-info)">
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
                   <EventDetailInfoRow
                     label="Status"
                     value={
@@ -3282,46 +3232,48 @@ const toCalendarEventPayload = (event) => {
       <Modal
         isOpen={showAddEventModal}
         title={selectedEvent ? "Edit Event" : "Add Event"}
-        width={760}
+        width={640}
         onClose={() => { setShowAddEventModal(false); setSelectedEvent(null); resetDateOverlapInfo() }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => setShowAddEventModal(false)}>Cancel</Button>
-            <Button onClick={handleSaveEvent} loading={submitting} disabled={!canSaveEventInModal}>Save Event</Button>
+            <Button size="sm" variant="secondary" onClick={() => setShowAddEventModal(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleSaveEvent} loading={submitting} disabled={!canSaveEventInModal}>Save</Button>
           </div>
         }
       >
         {showAddEventModal && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div>
-              <label style={formLabelStyles} htmlFor="eventTitle">
-                Event Title
-              </label>
-              <Input
-                id="eventTitle"
-                name="title"
-                placeholder="Event Title"
-                value={eventForm.title}
-                onChange={(event) => handleEventFormChange("title", event.target.value)}
-                required
-              />
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "2fr 1fr" }}>
+              <div>
+                <label style={formLabelStyles} htmlFor="eventTitle">
+                  Title
+                </label>
+                <Input
+                  id="eventTitle"
+                  name="title"
+                  placeholder="Event title"
+                  value={eventForm.title}
+                  onChange={(event) => handleEventFormChange("title", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="eventCategory">
+                  Category
+                </label>
+                <Select
+                  id="eventCategory"
+                  name="category"
+                  value={eventForm.category}
+                  onChange={(event) => handleEventFormChange("category", event.target.value)}
+                  options={CATEGORY_OPTIONS}
+                />
+              </div>
             </div>
-            <div>
-              <label style={formLabelStyles} htmlFor="eventCategory">
-                Category
-              </label>
-              <Select
-                id="eventCategory"
-                name="category"
-                value={eventForm.category}
-                onChange={(event) => handleEventFormChange("category", event.target.value)}
-                options={CATEGORY_OPTIONS}
-              />
-            </div>
-            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(3, 1fr)" }}>
               <div>
                 <label style={formLabelStyles} htmlFor="eventStartDate">
-                  Start Date
+                  Start
                 </label>
                 <Input
                   id="eventStartDate"
@@ -3334,7 +3286,7 @@ const toCalendarEventPayload = (event) => {
               </div>
               <div>
                 <label style={formLabelStyles} htmlFor="eventEndDate">
-                  End Date
+                  End
                 </label>
                 <Input
                   id="eventEndDate"
@@ -3345,6 +3297,19 @@ const toCalendarEventPayload = (event) => {
                   required
                 />
               </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="eventEstimatedBudget">
+                  Budget (₹)
+                </label>
+                <Input
+                  id="eventEstimatedBudget"
+                  name="estimatedBudget"
+                  type="number"
+                  placeholder="₹"
+                  value={eventForm.estimatedBudget}
+                  onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
+                />
+              </div>
             </div>
             {eventForm.startDate && eventForm.endDate && !isDateRangeOrdered && (
               <Alert type="error">
@@ -3352,9 +3317,7 @@ const toCalendarEventPayload = (event) => {
               </Alert>
             )}
             {overlapCheckInProgressForCurrentDates && (
-              <Alert type="info">
-                Checking overlap for selected date range...
-              </Alert>
+              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info)" }}>Checking overlap...</span>
             )}
             {dateOverlapInfo.status === "error" && overlapCheckKey && (
               <Alert type="error">
@@ -3377,47 +3340,30 @@ const toCalendarEventPayload = (event) => {
             )}
             {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
               <Alert type="warning">
-                <strong>Date overlap warning:</strong> this range overlaps with {dateOverlapInfo.overlaps.length} existing event(s).
+                Overlaps with {dateOverlapInfo.overlaps.length} event(s).
               </Alert>
             )}
             {overlapCheckCompletedForCurrentDates && !dateOverlapInfo.hasOverlap && (
-              <Alert type="success">
-                Date overlap check completed: no overlaps found for the selected range.
-              </Alert>
+              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success)" }}>✓ No overlaps</span>
             )}
             {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
               <div style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--spacing-2)",
-                padding: "var(--spacing-3)",
+                fontSize: "var(--font-size-xs)",
+                color: "var(--color-text-muted)",
+                padding: "var(--spacing-2)",
                 borderRadius: "var(--radius-card-sm)",
                 backgroundColor: "var(--color-bg-secondary)",
-                border: "var(--border-1) solid var(--color-border-primary)",
               }}>
                 {dateOverlapInfo.overlaps.slice(0, 3).map((overlap, index) => {
                   const conflicting = overlap.eventB || overlap.eventA
                   return (
-                    <p key={`${conflicting?.eventId || conflicting?.title}-${index}`} style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                      {conflicting?.title || "Existing event"} ({formatDateRange(conflicting?.startDate, conflicting?.endDate)})
-                    </p>
+                    <span key={`${conflicting?.eventId || conflicting?.title}-${index}`} style={{ marginRight: "var(--spacing-2)" }}>
+                      • {conflicting?.title || "Event"} ({formatDateRange(conflicting?.startDate, conflicting?.endDate)})
+                    </span>
                   )
                 })}
               </div>
             )}
-            <div>
-              <label style={formLabelStyles} htmlFor="eventEstimatedBudget">
-                Estimated Budget (₹)
-              </label>
-              <Input
-                id="eventEstimatedBudget"
-                name="estimatedBudget"
-                type="number"
-                placeholder="Estimated Budget (₹)"
-                value={eventForm.estimatedBudget}
-                onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
-              />
-            </div>
             <div>
               <label style={formLabelStyles} htmlFor="eventDescription">
                 Description
@@ -3425,10 +3371,10 @@ const toCalendarEventPayload = (event) => {
               <Textarea
                 id="eventDescription"
                 name="description"
-                placeholder="Description"
+                placeholder="Event description"
                 value={eventForm.description}
                 onChange={(event) => handleEventFormChange("description", event.target.value)}
-                rows={4}
+                rows={2}
               />
             </div>
           </div>
@@ -3438,49 +3384,51 @@ const toCalendarEventPayload = (event) => {
       <Modal
         isOpen={showAmendmentModal}
         title="Request Amendment"
-        width={760}
+        width={640}
         onClose={() => { setShowAmendmentModal(false); setSelectedEvent(null); resetDateOverlapInfo() }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => setShowAmendmentModal(false)}>Cancel</Button>
-            <Button onClick={handleSubmitAmendment} loading={submitting} disabled={!canSubmitAmendmentInModal}>Submit Request</Button>
+            <Button size="sm" variant="secondary" onClick={() => setShowAmendmentModal(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleSubmitAmendment} loading={submitting} disabled={!canSubmitAmendmentInModal}>Submit</Button>
           </div>
         }
       >
         {showAmendmentModal && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <Alert type="info">
-              The calendar is locked. Your amendment request will be reviewed by Admin.
-            </Alert>
-            <div>
-              <label style={formLabelStyles} htmlFor="amendmentEventTitle">
-                Event Title
-              </label>
-              <Input
-                id="amendmentEventTitle"
-                name="title"
-                placeholder="Event Title"
-                value={eventForm.title}
-                onChange={(event) => handleEventFormChange("title", event.target.value)}
-                required
-              />
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)", padding: "var(--spacing-1) var(--spacing-2)", backgroundColor: "var(--color-warning-bg)", borderRadius: "var(--radius-card-sm)", display: "inline-block" }}>
+              Calendar locked. Amendment will be reviewed by Admin.
+            </span>
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "2fr 1fr" }}>
+              <div>
+                <label style={formLabelStyles} htmlFor="amendmentEventTitle">
+                  Title
+                </label>
+                <Input
+                  id="amendmentEventTitle"
+                  name="title"
+                  placeholder="Event title"
+                  value={eventForm.title}
+                  onChange={(event) => handleEventFormChange("title", event.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="amendmentEventCategory">
+                  Category
+                </label>
+                <Select
+                  id="amendmentEventCategory"
+                  name="category"
+                  value={eventForm.category}
+                  onChange={(event) => handleEventFormChange("category", event.target.value)}
+                  options={CATEGORY_OPTIONS}
+                />
+              </div>
             </div>
-            <div>
-              <label style={formLabelStyles} htmlFor="amendmentEventCategory">
-                Category
-              </label>
-              <Select
-                id="amendmentEventCategory"
-                name="category"
-                value={eventForm.category}
-                onChange={(event) => handleEventFormChange("category", event.target.value)}
-                options={CATEGORY_OPTIONS}
-              />
-            </div>
-            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
+            <div style={{ display: "grid", gap: "var(--spacing-3)", gridTemplateColumns: "repeat(3, 1fr)" }}>
               <div>
                 <label style={formLabelStyles} htmlFor="amendmentStartDate">
-                  Start Date
+                  Start
                 </label>
                 <Input
                   id="amendmentStartDate"
@@ -3493,7 +3441,7 @@ const toCalendarEventPayload = (event) => {
               </div>
               <div>
                 <label style={formLabelStyles} htmlFor="amendmentEndDate">
-                  End Date
+                  End
                 </label>
                 <Input
                   id="amendmentEndDate"
@@ -3504,79 +3452,50 @@ const toCalendarEventPayload = (event) => {
                   required
                 />
               </div>
+              <div>
+                <label style={formLabelStyles} htmlFor="amendmentEstimatedBudget">
+                  Budget (₹)
+                </label>
+                <Input
+                  id="amendmentEstimatedBudget"
+                  name="estimatedBudget"
+                  type="number"
+                  placeholder="₹"
+                  value={eventForm.estimatedBudget}
+                  onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
+                />
+              </div>
             </div>
             {eventForm.startDate && eventForm.endDate && !isDateRangeOrdered && (
-              <Alert type="error">
-                End date cannot be before start date.
-              </Alert>
+              <Alert type="error">End date cannot be before start date.</Alert>
             )}
             {overlapCheckInProgressForCurrentDates && (
-              <Alert type="info">
-                Checking overlap for selected date range...
-              </Alert>
+              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info)" }}>Checking overlap...</span>
             )}
             {dateOverlapInfo.status === "error" && overlapCheckKey && (
               <Alert type="error">
                 {dateOverlapInfo.errorMessage}{" "}
-                <button
-                  type="button"
-                  onClick={retryDateOverlapCheck}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    color: "var(--color-danger)",
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    padding: 0,
-                  }}
-                >
-                  Retry
-                </button>
+                <button type="button" onClick={retryDateOverlapCheck} style={{ background: "transparent", border: "none", color: "var(--color-danger)", cursor: "pointer", textDecoration: "underline", padding: 0 }}>Retry</button>
               </Alert>
             )}
             {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
-              <Alert type="warning">
-                <strong>Date overlap warning:</strong> this range overlaps with {dateOverlapInfo.overlaps.length} existing event(s).
-              </Alert>
+              <Alert type="warning">Overlaps with {dateOverlapInfo.overlaps.length} event(s).</Alert>
             )}
             {overlapCheckCompletedForCurrentDates && !dateOverlapInfo.hasOverlap && (
-              <Alert type="success">
-                Date overlap check completed: no overlaps found for the selected range.
-              </Alert>
+              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success)" }}>✓ No overlaps</span>
             )}
             {overlapCheckCompletedForCurrentDates && dateOverlapInfo.hasOverlap && (
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "var(--spacing-2)",
-                padding: "var(--spacing-3)",
-                borderRadius: "var(--radius-card-sm)",
-                backgroundColor: "var(--color-bg-secondary)",
-                border: "var(--border-1) solid var(--color-border-primary)",
-              }}>
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
                 {dateOverlapInfo.overlaps.slice(0, 3).map((overlap, index) => {
                   const conflicting = overlap.eventB || overlap.eventA
                   return (
-                    <p key={`${conflicting?.eventId || conflicting?.title}-${index}`} style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                      {conflicting?.title || "Existing event"} ({formatDateRange(conflicting?.startDate, conflicting?.endDate)})
-                    </p>
+                    <span key={`${conflicting?.eventId || conflicting?.title}-${index}`} style={{ marginRight: "var(--spacing-2)" }}>
+                      • {conflicting?.title || "Event"} ({formatDateRange(conflicting?.startDate, conflicting?.endDate)})
+                    </span>
                   )
                 })}
               </div>
             )}
-            <div>
-              <label style={formLabelStyles} htmlFor="amendmentEstimatedBudget">
-                Estimated Budget (₹)
-              </label>
-              <Input
-                id="amendmentEstimatedBudget"
-                name="estimatedBudget"
-                type="number"
-                placeholder="Estimated Budget (₹)"
-                value={eventForm.estimatedBudget}
-                onChange={(event) => handleEventFormChange("estimatedBudget", event.target.value)}
-              />
-            </div>
             <div>
               <label style={formLabelStyles} htmlFor="amendmentDescription">
                 Description
@@ -3584,23 +3503,23 @@ const toCalendarEventPayload = (event) => {
               <Textarea
                 id="amendmentDescription"
                 name="description"
-                placeholder="Description"
+                placeholder="Event description"
                 value={eventForm.description}
                 onChange={(event) => handleEventFormChange("description", event.target.value)}
-                rows={3}
+                rows={2}
               />
             </div>
             <div>
               <label style={formLabelStyles} htmlFor="amendmentReason">
-                Reason for Amendment
+                Reason for Amendment *
               </label>
               <Textarea
                 id="amendmentReason"
                 name="reason"
-                placeholder="Reason for amendment (min 10 characters)"
+                placeholder="Min 10 characters"
                 value={amendmentReason}
                 onChange={(event) => setAmendmentReason(event.target.value)}
-                rows={4}
+                rows={2}
                 required
               />
             </div>
@@ -3611,28 +3530,24 @@ const toCalendarEventPayload = (event) => {
       <Modal
         isOpen={showHistoryModal}
         title="Approval History"
-        width={700}
+        width={640}
         onClose={() => setShowHistoryModal(false)}
-        footer={<Button variant="secondary" onClick={() => setShowHistoryModal(false)}>Close</Button>}
+        footer={<Button size="sm" variant="secondary" onClick={() => setShowHistoryModal(false)}>Close</Button>}
       >
         {calendar && <ApprovalHistory calendarId={calendar._id} />}
       </Modal>
 
       <Modal
         isOpen={showPendingProposalModal}
-        title="Pending Proposal Approvals"
-        width={920}
+        title="Pending Proposals"
+        width={860}
         onClose={() => setShowPendingProposalModal(false)}
-        footer={
-          <Button variant="secondary" onClick={() => setShowPendingProposalModal(false)}>
-            Close
-          </Button>
-        }
+        footer={<Button size="sm" variant="secondary" onClick={() => setShowPendingProposalModal(false)}>Close</Button>}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-          <Alert type="warning">
-            Pending in current calendar: <strong>{pendingProposalsForSelectedCalendar.length}</strong>
-          </Alert>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)", fontWeight: "var(--font-weight-medium)" }}>
+            {pendingProposalsForSelectedCalendar.length} pending in current calendar
+          </span>
           <Table>
             <Table.Header>
               <Table.Row>
@@ -3696,19 +3611,15 @@ const toCalendarEventPayload = (event) => {
 
       <Modal
         isOpen={showPendingBillsModal}
-        title="Pending Bill Approvals"
-        width={940}
+        title="Pending Bills"
+        width={860}
         onClose={() => setShowPendingBillsModal(false)}
-        footer={
-          <Button variant="secondary" onClick={() => setShowPendingBillsModal(false)}>
-            Close
-          </Button>
-        }
+        footer={<Button size="sm" variant="secondary" onClick={() => setShowPendingBillsModal(false)}>Close</Button>}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-          <Alert type="warning">
-            Pending in current calendar: <strong>{pendingExpenseApprovalsForSelectedCalendar.length}</strong>
-          </Alert>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)", fontWeight: "var(--font-weight-medium)" }}>
+            {pendingExpenseApprovalsForSelectedCalendar.length} pending in current calendar
+          </span>
           <Table>
             <Table.Header>
               <Table.Row>
@@ -3769,38 +3680,28 @@ const toCalendarEventPayload = (event) => {
 
       <Modal
         isOpen={showOverlapDetailsModal}
-        title="Date Overlap Details"
-        width={760}
+        title="Date Overlaps"
+        width={640}
         onClose={() => setShowOverlapDetailsModal(false)}
-        footer={
-          <Button variant="secondary" onClick={() => setShowOverlapDetailsModal(false)}>
-            Close
-          </Button>
-        }
+        footer={<Button size="sm" variant="secondary" onClick={() => setShowOverlapDetailsModal(false)}>Close</Button>}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-          <Alert type="warning">
-            Total overlaps: <strong>{dateConflicts.length}</strong>
-          </Alert>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)", fontWeight: "var(--font-weight-medium)" }}>
+            {dateConflicts.length} overlaps detected
+          </span>
           {dateConflicts.map((conflict, index) => (
             <div
               key={`${conflict.eventA._id || conflict.eventA.title}-${conflict.eventB._id || conflict.eventB.title}-${index}`}
               style={{
-                border: "var(--border-1) solid var(--color-border-primary)",
                 borderRadius: "var(--radius-card-sm)",
-                padding: "var(--spacing-3)",
+                padding: "var(--spacing-2)",
                 backgroundColor: "var(--color-bg-secondary)",
+                fontSize: "var(--font-size-xs)",
               }}
             >
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                <strong>{conflict.eventA.title}</strong> ({formatDateRange(conflict.eventA.startDate, conflict.eventA.endDate)})
-              </p>
-              <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                overlaps with
-              </p>
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                <strong>{conflict.eventB.title}</strong> ({formatDateRange(conflict.eventB.startDate, conflict.eventB.endDate)})
-              </p>
+              <span style={{ fontWeight: "var(--font-weight-medium)" }}>{conflict.eventA.title}</span>
+              <span style={{ color: "var(--color-text-muted)", margin: "0 var(--spacing-1)" }}>↔</span>
+              <span style={{ fontWeight: "var(--font-weight-medium)" }}>{conflict.eventB.title}</span>
             </div>
           ))}
         </div>
@@ -3809,41 +3710,31 @@ const toCalendarEventPayload = (event) => {
       <Modal
         isOpen={showSettingsModal}
         title="Calendar Settings"
-        width={560}
+        width={480}
         onClose={() => setShowSettingsModal(false)}
-        footer={
-          <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => setShowSettingsModal(false)}>
-              Close
-            </Button>
-          </div>
-        }
+        footer={<Button size="sm" variant="secondary" onClick={() => setShowSettingsModal(false)}>Close</Button>}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-          <Alert type="info">
-            Configure lock state for <strong>{calendar?.academicYear}</strong>.
-          </Alert>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            Configure lock state for {calendar?.academicYear}
+          </span>
           <div
             style={{
-              border: "var(--border-1) solid var(--color-border-primary)",
               borderRadius: "var(--radius-card-sm)",
-              padding: "var(--spacing-4)",
+              padding: "var(--spacing-3)",
               backgroundColor: "var(--color-bg-secondary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: "var(--spacing-3)",
-              flexWrap: "wrap",
+              gap: "var(--spacing-2)",
             }}
           >
             <div>
-              <p style={{ margin: 0, fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+              <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-heading)" }}>
                 Calendar Lock
-              </p>
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                {calendar?.isLocked
-                  ? "Calendar is locked. GS cannot edit directly."
-                  : "Calendar is unlocked. GS can edit based on status."}
+              </span>
+              <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                {calendar?.isLocked ? "Locked. GS cannot edit." : "Unlocked. GS can edit."}
               </p>
             </div>
             {calendar?.isLocked ? (
@@ -3878,150 +3769,87 @@ const toCalendarEventPayload = (event) => {
       <Modal
         isOpen={showApprovalModal}
         title="Review Calendar"
-        width={720}
+        width={640}
         onClose={() => {
           setShowApprovalModal(false)
           setCalendarNextApprovalStages([])
         }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => setShowApprovalModal(false)}>Cancel</Button>
-            <Button variant="danger" onClick={handleReject} loading={submitting}>
-              <X size={14} /> Reject
-            </Button>
-            <Button
-              variant="success"
-              onClick={handleApprove}
-              loading={submitting}
-              disabled={
-                requiresCalendarNextApprovalSelection &&
-                calendarNextApprovalStages.length === 0
-              }
-            >
-              <Check size={14} /> Approve
-            </Button>
+            <Button size="sm" variant="secondary" onClick={() => setShowApprovalModal(false)}>Cancel</Button>
+            <Button size="sm" variant="danger" onClick={handleReject} loading={submitting}><X size={14} /> Reject</Button>
+            <Button size="sm" variant="success" onClick={handleApprove} loading={submitting} disabled={requiresCalendarNextApprovalSelection && calendarNextApprovalStages.length === 0}><Check size={14} /> Approve</Button>
           </div>
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-          <Alert type="info">
-            You are reviewing the {calendar?.academicYear} calendar with {events.length} events.
-          </Alert>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            Reviewing {calendar?.academicYear} calendar with {events.length} events
+          </span>
 
-          <div style={{
-            border: "var(--border-1) solid var(--color-border-primary)",
-            borderRadius: "var(--radius-card-sm)",
-            padding: "var(--spacing-3)",
-            backgroundColor: "var(--color-bg-secondary)",
-          }}>
-            <p style={{ margin: 0, marginBottom: "var(--spacing-2)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
-              Budget Summary
-            </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)", fontSize: "var(--font-size-xs)" }}>
             {CATEGORY_ORDER.map((category) => (
-              <p key={category} style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              <span key={category} style={{ padding: "var(--spacing-1) var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-card-sm)" }}>
                 {CATEGORY_LABELS[category]}: ₹{(budgetSummary.byCategory[category] || 0).toLocaleString()}
-              </p>
+              </span>
             ))}
-            <p style={{ margin: 0, marginTop: "var(--spacing-2)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-primary)" }}>
+            <span style={{ padding: "var(--spacing-1) var(--spacing-2)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-card-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-primary)" }}>
               Total: ₹{budgetSummary.total.toLocaleString()}
-            </p>
+            </span>
           </div>
 
           {dateConflicts.length > 0 && (
-            <Alert type="warning">
-              <AlertTriangle size={16} style={{ marginRight: "var(--spacing-1)" }} />
-              {dateConflicts.length} date overlap(s) detected in this calendar.
-            </Alert>
+            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)" }}>
+              <AlertTriangle size={12} style={{ marginRight: "var(--spacing-1)" }} />
+              {dateConflicts.length} overlap(s) detected
+            </span>
           )}
 
           {requiresCalendarNextApprovalSelection && (
             <div>
-              <label style={formLabelStyles}>
-                Select Next Approval Order (Post Student Affairs)
-              </label>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "var(--spacing-2)",
-                  border: "var(--border-1) solid var(--color-border-primary)",
-                  borderRadius: "var(--radius-card-sm)",
-                  padding: "var(--spacing-3)",
-                  backgroundColor: "var(--color-bg-secondary)",
-                }}
-              >
+              <label style={formLabelStyles}>Next Approval Order</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-card-sm)" }}>
                 {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
-                  <Checkbox
-                    key={`calendar-stage-${stage}`}
-                    label={stage}
-                    checked={calendarNextApprovalStages.includes(stage)}
-                    onChange={() => toggleNextApprovalStage(stage, setCalendarNextApprovalStages)}
-                  />
+                  <Checkbox key={`calendar-stage-${stage}`} label={stage} checked={calendarNextApprovalStages.includes(stage)} onChange={() => toggleNextApprovalStage(stage, setCalendarNextApprovalStages)} />
                 ))}
-                <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                  Order followed:{" "}
-                  {calendarNextApprovalStages.length > 0
-                    ? calendarNextApprovalStages.join(" -> ")
-                    : "No stage selected"}
-                </p>
+                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: "var(--spacing-1)" }}>
+                  {calendarNextApprovalStages.length > 0 ? calendarNextApprovalStages.join(" → ") : "No stage selected"}
+                </span>
               </div>
             </div>
           )}
 
           <div>
-            <label style={formLabelStyles} htmlFor="calendarReviewComments">
-              Review Comments
-            </label>
-            <Textarea
-              id="calendarReviewComments"
-              name="comments"
-              placeholder="Comments (required for rejection, optional for approval)"
-              value={approvalComments}
-              onChange={(event) => setApprovalComments(event.target.value)}
-              rows={4}
-            />
+            <label style={formLabelStyles} htmlFor="calendarReviewComments">Comments</label>
+            <Textarea id="calendarReviewComments" name="comments" placeholder="Required for rejection" value={approvalComments} onChange={(event) => setApprovalComments(event.target.value)} rows={2} />
           </div>
         </div>
       </Modal>
 
       <Modal
         isOpen={showOverlapConfirmModal}
-        title="Date Overlap Confirmation"
-        width={760}
+        title="Confirm Overlap"
+        width={560}
         onClose={() => { setShowOverlapConfirmModal(false); setSubmitOverlapInfo(null) }}
         footer={
           <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
-            <Button variant="secondary" onClick={() => { setShowOverlapConfirmModal(false); setSubmitOverlapInfo(null) }}>
-              Cancel
-            </Button>
-            <Button variant="warning" onClick={handleConfirmSubmitWithOverlap} loading={submitting}>
-              Submit Anyway
-            </Button>
+            <Button size="sm" variant="secondary" onClick={() => { setShowOverlapConfirmModal(false); setSubmitOverlapInfo(null) }}>Cancel</Button>
+            <Button size="sm" variant="warning" onClick={handleConfirmSubmitWithOverlap} loading={submitting}>Submit Anyway</Button>
           </div>
         }
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-          <Alert type="warning">
-            {submitOverlapInfo?.message || "Some events have overlapping date ranges."}
-          </Alert>
-
-          {(submitOverlapInfo?.overlaps || []).slice(0, 8).map((overlap, index) => (
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)" }}>
+            {submitOverlapInfo?.message || "Events have overlapping date ranges."}
+          </span>
+          {(submitOverlapInfo?.overlaps || []).slice(0, 5).map((overlap, index) => (
             <div
               key={`${overlap.eventA?.eventId || overlap.eventA?.title}-${overlap.eventB?.eventId || overlap.eventB?.title}-${index}`}
-              style={{
-                border: "var(--border-1) solid var(--color-border-primary)",
-                borderRadius: "var(--radius-card-sm)",
-                padding: "var(--spacing-3)",
-                backgroundColor: "var(--color-bg-secondary)",
-              }}
+              style={{ borderRadius: "var(--radius-card-sm)", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", fontSize: "var(--font-size-xs)" }}
             >
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                <strong>{overlap.eventA?.title}</strong> ({formatDateRange(overlap.eventA?.startDate, overlap.eventA?.endDate)})
-              </p>
-              <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>overlaps with</p>
-              <p style={{ margin: 0, fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-                <strong>{overlap.eventB?.title}</strong> ({formatDateRange(overlap.eventB?.startDate, overlap.eventB?.endDate)})
-              </p>
+              <span style={{ fontWeight: "var(--font-weight-medium)" }}>{overlap.eventA?.title}</span>
+              <span style={{ color: "var(--color-text-muted)", margin: "0 var(--spacing-1)" }}>↔</span>
+              <span style={{ fontWeight: "var(--font-weight-medium)" }}>{overlap.eventB?.title}</span>
             </div>
           ))}
         </div>

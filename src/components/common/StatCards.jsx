@@ -1,6 +1,6 @@
 import React from "react"
 
-export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)" }) => {
+export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false }) => {
   // Get the actual color value for dynamic opacity backgrounds
   const getColorValue = (cssVar) => {
     if (cssVar.startsWith('var(')) return null
@@ -9,8 +9,20 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
 
   const colorValue = getColorValue(color) || getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#1360AB'
 
+  // Background style with optional tint
+  const cardStyle = tintBackground
+    ? {
+        boxShadow: 'var(--shadow-xs)',
+        backgroundColor: `${colorValue}18`, // ~9% opacity tint
+        borderColor: `${colorValue}35`, // ~21% opacity border
+      }
+    : { boxShadow: 'var(--shadow-xs)' }
+
   return (
-    <div className="bg-[var(--color-bg-primary)] rounded-xl p-3 transition-all duration-200 border border-[var(--color-border-primary)] hover:border-[var(--color-border-dark)] hover:scale-[1.02] group" style={{ boxShadow: 'var(--shadow-xs)', }} >
+    <div
+      className={`rounded-xl p-3 transition-all duration-200 border hover:border-[var(--color-border-dark)] hover:scale-[1.02] group ${!tintBackground ? 'bg-[var(--color-bg-primary)] border-[var(--color-border-primary)]' : ''}`}
+      style={cardStyle}
+    >
       <div className="flex justify-between items-start mb-1.5">
         <span className="text-[var(--color-text-muted)] text-xs font-semibold uppercase tracking-wide">{title}</span>
         <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110" style={{ backgroundColor: `${colorValue}15`, }} >
@@ -34,7 +46,7 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
  * A reusable component to display statistics in cards
  *
  * @param {Object} props
- * @param {Array} props.stats - Array of stat objects with title, value, subtitle, icon, and color
+ * @param {Array} props.stats - Array of stat objects with title, value, subtitle, icon, color, and tintBackground
  * @param {number} props.columns - Number of columns for the grid (default: 4)
  */
 const StatCards = ({ stats, columns = 4 }) => {
@@ -60,7 +72,7 @@ const StatCards = ({ stats, columns = 4 }) => {
   return (
     <div className={`grid ${getGridClass()} gap-3 md:gap-5`}>
       {stats.map((stat, index) => (
-        <StatCard key={index} title={stat.title} value={stat.value} subtitle={stat.subtitle} icon={stat.icon} color={stat.color} />
+        <StatCard key={index} title={stat.title} value={stat.value} subtitle={stat.subtitle} icon={stat.icon} color={stat.color} tintBackground={stat.tintBackground} />
       ))}
     </div>
   )
