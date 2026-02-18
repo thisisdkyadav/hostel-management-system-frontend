@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
-import { Eye, Search } from "lucide-react"
+import { Eye, Search, CalendarDays, Clock3, CheckCircle2, XCircle } from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
-import { Badge, Pagination, Select, Textarea, useToast } from "@/components/ui"
+import { Badge, Pagination, Select, Textarea, useToast, StatCards } from "@/components/ui"
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
 const APPOINTMENT_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
-const APPOINTMENT_STATUS_TABS = [
+const APPOINTMENT_STATUS_TAB_CONFIG = [
   { label: "All", value: "all" },
   { label: "Pending", value: "Pending" },
   { label: "Approved", value: "Approved" },
@@ -70,6 +70,49 @@ const todayDateInput = () => {
   return new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split("T")[0]
 }
 
+const StatCardsSkeleton = ({ count = 4 }) => (
+  <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+    {Array.from({ length: count }).map((_, index) => (
+      <div
+        key={`appointments-stats-skeleton-${index}`}
+        style={{
+          border: "1px solid var(--color-border-primary)",
+          borderRadius: "var(--radius-card-sm)",
+          backgroundColor: "var(--color-bg-primary)",
+          padding: "var(--spacing-3)",
+        }}
+      >
+        <div
+          style={{
+            width: "55%",
+            height: 10,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+            marginBottom: "var(--spacing-2)",
+          }}
+        />
+        <div
+          style={{
+            width: "40%",
+            height: 18,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+            marginBottom: "var(--spacing-1)",
+          }}
+        />
+        <div
+          style={{
+            width: "70%",
+            height: 8,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)
+
 const AppointmentsPage = () => {
   const { user } = useAuth()
   const { toast } = useToast()
@@ -84,6 +127,13 @@ const AppointmentsPage = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
+  const [statusCounts, setStatusCounts] = useState({
+    all: 0,
+    Pending: 0,
+    Approved: 0,
+    Rejected: 0,
+  })
+  const [statusCountsLoading, setStatusCountsLoading] = useState(false)
 
   const [availabilityLoading, setAvailabilityLoading] = useState(false)
   const [acceptingAppointments, setAcceptingAppointments] = useState(false)
@@ -130,6 +180,30 @@ const AppointmentsPage = () => {
     }
   }
 
+  const fetchStatusCounts = async () => {
+    try {
+      setStatusCountsLoading(true)
+      const [allRes, pendingRes, approvedRes, rejectedRes] = await Promise.all([
+        appointmentsApi.getAdminAppointments({ page: 1, limit: 1 }),
+        appointmentsApi.getAdminAppointments({ page: 1, limit: 1, status: "Pending" }),
+        appointmentsApi.getAdminAppointments({ page: 1, limit: 1, status: "Approved" }),
+        appointmentsApi.getAdminAppointments({ page: 1, limit: 1, status: "Rejected" }),
+      ])
+
+      const extractTotal = (response) => response?.pagination?.total || response?.items?.length || 0
+      setStatusCounts({
+        all: extractTotal(allRes),
+        Pending: extractTotal(pendingRes),
+        Approved: extractTotal(approvedRes),
+        Rejected: extractTotal(rejectedRes),
+      })
+    } catch {
+      // Keep count failures silent; main table data handles user-facing errors.
+    } finally {
+      setStatusCountsLoading(false)
+    }
+  }
+
   const fetchAppointmentById = async (appointmentId) => {
     try {
       setDetailsLoading(true)
@@ -156,7 +230,7 @@ const AppointmentsPage = () => {
   }
 
   const refreshData = async () => {
-    await fetchAppointments()
+    await Promise.all([fetchAppointments(), fetchStatusCounts()])
     if (selectedId) {
       await fetchAppointmentById(selectedId)
     }
@@ -165,6 +239,7 @@ const AppointmentsPage = () => {
   useEffect(() => {
     if (!isAppointmentAdmin) return
     fetchAvailability()
+    fetchStatusCounts()
   }, [isAppointmentAdmin])
 
   useEffect(() => {
@@ -285,6 +360,50 @@ const AppointmentsPage = () => {
     ],
     []
   )
+  const appointmentStatusTabs = useMemo(
+    () =>
+      APPOINTMENT_STATUS_TAB_CONFIG.map((tab) => ({
+        ...tab,
+        count: statusCounts[tab.value] || 0,
+      })),
+    [statusCounts]
+  )
+  const appointmentStats = useMemo(
+    () => [
+      {
+        title: "Total Requests",
+        value: statusCounts.all,
+        subtitle: "All appointments",
+        icon: <CalendarDays size={16} />,
+        color: "var(--color-primary)",
+      },
+      {
+        title: "Pending",
+        value: statusCounts.Pending,
+        subtitle: "Awaiting review",
+        icon: <Clock3 size={16} />,
+        color: "var(--color-warning)",
+        tintBackground: true,
+      },
+      {
+        title: "Approved",
+        value: statusCounts.Approved,
+        subtitle: "Meeting scheduled",
+        icon: <CheckCircle2 size={16} />,
+        color: "var(--color-success)",
+        tintBackground: true,
+      },
+      {
+        title: "Rejected",
+        value: statusCounts.Rejected,
+        subtitle: "Closed as rejected",
+        icon: <XCircle size={16} />,
+        color: "var(--color-danger)",
+        tintBackground: true,
+      },
+    ],
+    [statusCounts]
+  )
 
   if (!isAppointmentAdmin) {
     return (
@@ -311,11 +430,15 @@ const AppointmentsPage = () => {
       </PageHeader>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
+        <div style={{ marginBottom: "var(--spacing-4)" }}>
+          {statusCountsLoading ? <StatCardsSkeleton count={4} /> : <StatCards stats={appointmentStats} columns={4} />}
+        </div>
+
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <Tabs
               variant="pills"
-              tabs={APPOINTMENT_STATUS_TABS}
+              tabs={appointmentStatusTabs}
               activeTab={statusFilter}
               setActiveTab={(value) => {
                 setStatusFilter(value)

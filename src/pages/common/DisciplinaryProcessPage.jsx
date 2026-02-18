@@ -19,7 +19,7 @@ import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PdfViewerModal from "../../components/common/pdf/PdfViewerModal"
-import { Badge, Pagination, Textarea, useToast, Checkbox, Radio } from "@/components/ui"
+import { Badge, Pagination, Textarea, useToast, Checkbox, Radio, StatCards } from "@/components/ui"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import CompactStudentTag, { StudentTagGroup } from "@/components/ui/data-display/CompactStudentTag"
 import CaseSummaryView from "../../components/common/disco/CaseSummaryView"
@@ -204,6 +204,49 @@ const documentChipStyle = {
   transition: "all 0.15s ease",
 }
 
+const StatCardsSkeleton = ({ count = 4 }) => (
+  <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-4">
+    {Array.from({ length: count }).map((_, index) => (
+      <div
+        key={`disco-stats-skeleton-${index}`}
+        style={{
+          border: "1px solid var(--color-border-primary)",
+          borderRadius: "var(--radius-card-sm)",
+          backgroundColor: "var(--color-bg-primary)",
+          padding: "var(--spacing-3)",
+        }}
+      >
+        <div
+          style={{
+            width: "55%",
+            height: 10,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+            marginBottom: "var(--spacing-2)",
+          }}
+        />
+        <div
+          style={{
+            width: "40%",
+            height: 18,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+            marginBottom: "var(--spacing-1)",
+          }}
+        />
+        <div
+          style={{
+            width: "70%",
+            height: 8,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)
+
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -236,6 +279,13 @@ const DisciplinaryProcessPage = () => {
   const [adminPage, setAdminPage] = useState(1)
   const [adminTotalPages, setAdminTotalPages] = useState(1)
   const [adminTotalCount, setAdminTotalCount] = useState(0)
+  const [adminCaseCounts, setAdminCaseCounts] = useState({
+    all: 0,
+    under_process: 0,
+    final_rejected: 0,
+    finalized_with_action: 0,
+  })
+  const [adminCaseCountsLoading, setAdminCaseCountsLoading] = useState(false)
 
   // Admin Case Detail Modal state
   const [adminModalOpen, setAdminModalOpen] = useState(false)
@@ -352,8 +402,32 @@ const DisciplinaryProcessPage = () => {
     }
   }
 
+  const fetchAdminCaseCounts = async () => {
+    try {
+      setAdminCaseCountsLoading(true)
+      const [allRes, underProcessRes, rejectedRes, finalizedRes] = await Promise.all([
+        discoApi.getProcessCases({ page: 1, limit: 1 }),
+        discoApi.getProcessCases({ page: 1, limit: 1, caseStatus: "under_process" }),
+        discoApi.getProcessCases({ page: 1, limit: 1, caseStatus: "final_rejected" }),
+        discoApi.getProcessCases({ page: 1, limit: 1, caseStatus: "finalized_with_action" }),
+      ])
+
+      const extractTotal = (response) => response?.pagination?.total || response?.items?.length || 0
+      setAdminCaseCounts({
+        all: extractTotal(allRes),
+        under_process: extractTotal(underProcessRes),
+        final_rejected: extractTotal(rejectedRes),
+        finalized_with_action: extractTotal(finalizedRes),
+      })
+    } catch {
+      // Keep counts silent on failure; main table fetch already reports errors.
+    } finally {
+      setAdminCaseCountsLoading(false)
+    }
+  }
+
   const refreshAdminData = async () => {
-    await fetchAdminCases()
+    await Promise.all([fetchAdminCases(), fetchAdminCaseCounts()])
     if (selectedAdminCase?.id) {
       await fetchAdminCaseById(selectedAdminCase.id)
     }
@@ -362,6 +436,10 @@ const DisciplinaryProcessPage = () => {
   useEffect(() => {
     if (isAdmin) fetchAdminCases()
   }, [isAdmin, adminPage, adminStatusFilter])
+
+  useEffect(() => {
+    if (isAdmin) fetchAdminCaseCounts()
+  }, [isAdmin])
 
   useEffect(() => {
     if (!selectedAdminCase?.id) return
@@ -1073,12 +1151,48 @@ const DisciplinaryProcessPage = () => {
 
   const adminStatusTabs = useMemo(
     () => [
-      { label: "All", value: "all" },
-      { label: "Under Process", value: "under_process" },
-      { label: "Rejected", value: "final_rejected" },
-      { label: "Finalized", value: "finalized_with_action" },
+      { label: "All", value: "all", count: adminCaseCounts.all },
+      { label: "Under Process", value: "under_process", count: adminCaseCounts.under_process },
+      { label: "Rejected", value: "final_rejected", count: adminCaseCounts.final_rejected },
+      { label: "Finalized", value: "finalized_with_action", count: adminCaseCounts.finalized_with_action },
     ],
-    []
+    [adminCaseCounts]
+  )
+  const adminCaseStats = useMemo(
+    () => [
+      {
+        title: "Total Cases",
+        value: adminCaseCounts.all,
+        subtitle: "All disciplinary cases",
+        icon: <ClipboardList size={16} />,
+        color: "var(--color-primary)",
+      },
+      {
+        title: "Under Process",
+        value: adminCaseCounts.under_process,
+        subtitle: "In active workflow",
+        icon: <AlertTriangle size={16} />,
+        color: "var(--color-info)",
+        tintBackground: true,
+      },
+      {
+        title: "Finalized",
+        value: adminCaseCounts.finalized_with_action,
+        subtitle: "Action finalized",
+        icon: <Gavel size={16} />,
+        color: "var(--color-success)",
+        tintBackground: true,
+      },
+      {
+        title: "Rejected",
+        value: adminCaseCounts.final_rejected,
+        subtitle: "Closed as rejected",
+        icon: <X size={16} />,
+        color: "var(--color-danger)",
+        tintBackground: true,
+      },
+    ],
+    [adminCaseCounts]
   )
 
   // Step navigation for history viewing
@@ -1138,6 +1252,10 @@ const DisciplinaryProcessPage = () => {
       </PageHeader>
 
       <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-4) var(--spacing-6)" }}>
+        <div style={{ marginBottom: "var(--spacing-4)" }}>
+          {adminCaseCountsLoading ? <StatCardsSkeleton count={4} /> : <StatCards stats={adminCaseStats} columns={4} />}
+        </div>
+
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <Tabs

@@ -617,16 +617,60 @@ const toGymkhanaDisplayEvent = (event) => ({
   eventStatus: event.status || null,
 })
 
+const StatCardsSkeleton = ({ count = 5 }) => (
+  <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-5">
+    {Array.from({ length: count }).map((_, index) => (
+      <div
+        key={`stats-skeleton-${index}`}
+        style={{
+          border: "var(--border-1) solid var(--color-border-primary)",
+          borderRadius: "var(--radius-card-sm)",
+          backgroundColor: "var(--color-bg-primary)",
+          padding: "var(--spacing-3)",
+        }}
+      >
+        <div
+          style={{
+            width: "55%",
+            height: 10,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+            marginBottom: "var(--spacing-2)",
+          }}
+        />
+        <div
+          style={{
+            width: "40%",
+            height: 18,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+            marginBottom: "var(--spacing-1)",
+          }}
+        />
+        <div
+          style={{
+            width: "70%",
+            height: 8,
+            borderRadius: "var(--radius-xs)",
+            backgroundColor: "var(--color-bg-hover)",
+          }}
+        />
+      </div>
+    ))}
+  </div>
+)
+
 const EventsPage = () => {
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [years, setYears] = useState([])
   const [selectedYear, setSelectedYear] = useState(null)
   const [calendar, setCalendar] = useState(null)
   const [events, setEvents] = useState([])
+  const [hasAttemptedCalendarLoad, setHasAttemptedCalendarLoad] = useState(false)
   const [proposalsForApproval, setProposalsForApproval] = useState([])
   const [pendingExpenseApprovals, setPendingExpenseApprovals] = useState([])
   const [viewMode, setViewMode] = useState("list")
@@ -679,6 +723,7 @@ const EventsPage = () => {
   const [expenseNextApprovalStages, setExpenseNextApprovalStages] = useState([])
   const [expenseHistoryRefreshKey, setExpenseHistoryRefreshKey] = useState(0)
   const overlapCheckRequestRef = useRef(0)
+  const calendarRequestRef = useRef(0)
 
   const isGymkhanaRole = user?.role === "Gymkhana"
   const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
@@ -733,6 +778,37 @@ const EventsPage = () => {
     if (activeCategoryFilter === "all") return events
     return events.filter((event) => event.category === activeCategoryFilter)
   }, [events, activeCategoryFilter])
+  const eventTableColumns = useMemo(
+    () => [
+      {
+        key: "title",
+        header: "Event",
+        render: (event) => (
+          <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
+        ),
+      },
+      {
+        key: "category",
+        header: "Category",
+        render: (event) => (
+          <Badge style={getCategoryBadgeStyle(event.category)}>
+            {CATEGORY_LABELS[event.category] || event.category}
+          </Badge>
+        ),
+      },
+      {
+        key: "dateRange",
+        header: "Date Range",
+        render: (event) => formatDateRange(event.startDate, event.endDate),
+      },
+      {
+        key: "estimatedBudget",
+        header: "Budget",
+        render: (event) => `₹${Number(event.estimatedBudget || 0).toLocaleString()}`,
+      },
+    ],
+    []
+  )
   const holidaysByDate = useMemo(() => {
     const map = new Map()
     for (const holiday of calendarHolidays || []) {
@@ -986,8 +1062,16 @@ const EventsPage = () => {
   const calendarStatusLabel = calendar?.status ? calendar.status.replace(/_/g, " ") : ""
   const headerTitle = calendar?.academicYear
     ? `Activity Calendar ${calendar.academicYear}`
+    : selectedYear
+      ? `Activity Calendar ${selectedYear}`
     : "Events Calendar"
-  const headerSubtitle = calendarStatusLabel ? `Status: ${calendarStatusLabel}` : "No active calendar"
+  const headerSubtitle = loading
+    ? "Loading selected academic year..."
+    : calendarStatusLabel
+      ? `Status: ${calendarStatusLabel}`
+      : selectedYear
+        ? `No active calendar for ${selectedYear}`
+        : "No active calendar"
 
   useEffect(() => {
     fetchYears()
@@ -995,7 +1079,7 @@ const EventsPage = () => {
 
   useEffect(() => {
     if (selectedYear) {
-      fetchCalendar(selectedYear)
+      fetchCalendar(selectedYear, { resetData: true })
     }
   }, [selectedYear])
 
@@ -1073,7 +1157,7 @@ const EventsPage = () => {
 
   const fetchYears = async () => {
     try {
-      setLoading(true)
+      setHasAttemptedCalendarLoad(false)
       const [yearsResponse, proposalsResponse, pendingExpenses] = await Promise.all([
         gymkhanaEventsApi.getAcademicYears(),
         user?.subRole
@@ -1097,24 +1181,35 @@ const EventsPage = () => {
       if (yearsList.length === 0) {
         setCalendar(null)
         setEvents([])
+        setHasAttemptedCalendarLoad(true)
       }
     } catch (err) {
       setError(err.message || "Failed to load academic years")
-    } finally {
-      setLoading(false)
+      setHasAttemptedCalendarLoad(true)
     }
   }
 
-  const fetchCalendar = async (year) => {
+  const fetchCalendar = async (year, { resetData = false, showLoader = resetData } = {}) => {
+    const requestId = ++calendarRequestRef.current
     try {
-      setLoading(true)
+      if (showLoader) {
+        setLoading(true)
+      }
       setError(null)
+      setHasAttemptedCalendarLoad(false)
+      if (resetData) {
+        setCalendar(null)
+        setEvents([])
+        setCalendarHolidays([])
+      }
       const res = await gymkhanaEventsApi.getCalendarByYear(year)
+      if (requestId !== calendarRequestRef.current) return
       const calendarData = res.data?.calendar || res.calendar || null
 
       if (!calendarData) {
         setCalendar(null)
         setEvents([])
+        setHasAttemptedCalendarLoad(true)
         return
       }
 
@@ -1127,6 +1222,7 @@ const EventsPage = () => {
           limit: 100,
           page: 1,
         })
+        if (requestId !== calendarRequestRef.current) return
         const firstPageData = firstPageRes.data || firstPageRes || {}
         const firstPageEvents = firstPageData.events || []
         const totalPages = firstPageData.pagination?.pages || 1
@@ -1145,6 +1241,7 @@ const EventsPage = () => {
           }
 
           const remainingResponses = await Promise.all(remainingPageRequests)
+          if (requestId !== calendarRequestRef.current) return
           for (const response of remainingResponses) {
             const responseData = response.data || response || {}
             gymkhanaEvents = gymkhanaEvents.concat(responseData.events || [])
@@ -1162,15 +1259,20 @@ const EventsPage = () => {
 
       setCalendar({ ...calendarData, events: mergedEvents })
       setEvents(mergedEvents)
+      setHasAttemptedCalendarLoad(true)
     } catch (err) {
+      if (requestId !== calendarRequestRef.current) return
       if (err.status === 404) {
         setCalendar(null)
         setEvents([])
+        setHasAttemptedCalendarLoad(true)
       } else {
         setError(err.message || "Failed to load calendar")
       }
     } finally {
-      setLoading(false)
+      if (showLoader && requestId === calendarRequestRef.current) {
+        setLoading(false)
+      }
     }
   }
 
@@ -1995,10 +2097,6 @@ const toCalendarEventPayload = (event) => {
     })
   }
 
-  if (loading && !calendar) {
-    return <LoadingState message="Loading events..." />
-  }
-
   if (error) {
     return <ErrorState message={error} onRetry={fetchYears} />
   }
@@ -2067,13 +2165,17 @@ const toCalendarEventPayload = (event) => {
       </PageHeader>
 
       <div style={{ flex: 1, overflow: "auto", padding: "var(--spacing-6)" }}>
-        {calendar && (
+        {(loading || calendar) && (
           <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <StatCards stats={budgetStats} columns={5} />
+            {loading && !calendar
+              ? <StatCardsSkeleton count={5} />
+              : calendar
+                ? <StatCards stats={budgetStats} columns={5} />
+                : <StatCardsSkeleton count={5} />}
           </div>
         )}
 
-        {calendar && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
+        {!loading && calendar && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
           <div
             style={{
               marginBottom: "var(--spacing-3)",
@@ -2123,7 +2225,7 @@ const toCalendarEventPayload = (event) => {
           </div>
         )}
 
-        {pendingProposalsForSelectedCalendar.length > 0 && (
+        {!loading && calendar && pendingProposalsForSelectedCalendar.length > 0 && (
           <div
             style={{
               marginBottom: "var(--spacing-3)",
@@ -2150,7 +2252,7 @@ const toCalendarEventPayload = (event) => {
           </div>
         )}
 
-        {isAdminLevel && pendingExpenseApprovalsForSelectedCalendar.length > 0 && (
+        {!loading && calendar && isAdminLevel && pendingExpenseApprovalsForSelectedCalendar.length > 0 && (
           <div
             style={{
               marginBottom: "var(--spacing-3)",
@@ -2204,7 +2306,7 @@ const toCalendarEventPayload = (event) => {
           </div>
         )}
 
-        {!calendar && (
+        {!loading && !calendar && hasAttemptedCalendarLoad && (
           <EmptyState
             icon={CalendarDays}
             title="No Calendar Found"
@@ -2216,20 +2318,25 @@ const toCalendarEventPayload = (event) => {
           />
         )}
 
-        {calendar && (
-          <div style={{ marginBottom: "var(--spacing-4)" }}>
-            <Tabs
-              variant="pills"
-              tabs={categoryFilterTabs}
-              activeTab={activeCategoryFilter}
-              setActiveTab={setActiveCategoryFilter}
-            />
-          </div>
-        )}
+        <div style={{ marginBottom: "var(--spacing-4)" }}>
+          <Tabs
+            variant="pills"
+            tabs={categoryFilterTabs}
+            activeTab={activeCategoryFilter}
+            setActiveTab={setActiveCategoryFilter}
+          />
+        </div>
 
-        {calendar && viewMode === "list" && (
+        {viewMode === "list" && (
           <>
-            {filteredEvents.length === 0 ? (
+            {loading ? (
+              <DataTable
+                data={[]}
+                columns={eventTableColumns}
+                loading
+                emptyMessage="No events available"
+              />
+            ) : !calendar ? null : filteredEvents.length === 0 ? (
               <EmptyState
                 icon={CalendarDays}
                 title={activeCategoryFilter === "all" ? "No Events Yet" : "No Events In This Category"}
@@ -2244,34 +2351,7 @@ const toCalendarEventPayload = (event) => {
             ) : (
               <DataTable
                 data={filteredEvents}
-                columns={[
-                  {
-                    key: "title",
-                    header: "Event",
-                    render: (event) => (
-                      <span style={{ fontWeight: "var(--font-weight-medium)" }}>{event.title}</span>
-                    ),
-                  },
-                  {
-                    key: "category",
-                    header: "Category",
-                    render: (event) => (
-                      <Badge style={getCategoryBadgeStyle(event.category)}>
-                        {CATEGORY_LABELS[event.category] || event.category}
-                      </Badge>
-                    ),
-                  },
-                  {
-                    key: "dateRange",
-                    header: "Date Range",
-                    render: (event) => formatDateRange(event.startDate, event.endDate),
-                  },
-                  {
-                    key: "estimatedBudget",
-                    header: "Budget",
-                    render: (event) => `₹${Number(event.estimatedBudget || 0).toLocaleString()}`,
-                  },
-                ]}
+                columns={eventTableColumns}
                 onRowClick={handleEventRowClick}
                 getRowId={(event) =>
                   event?._id ||
@@ -2282,7 +2362,19 @@ const toCalendarEventPayload = (event) => {
           </>
         )}
 
-        {calendar && viewMode === "calendar" && (
+        {viewMode === "calendar" && (
+          loading ? (
+            <div
+              style={{
+                backgroundColor: "var(--color-bg-primary)",
+                borderRadius: "var(--radius-card)",
+                border: "var(--border-1) solid var(--color-border-primary)",
+                padding: "var(--spacing-6)",
+              }}
+            >
+              <LoadingState message={`Loading calendar for ${selectedYear || "selected year"}...`} />
+            </div>
+          ) : !calendar ? null : (
           <div style={{
             backgroundColor: "var(--color-bg-primary)",
             borderRadius: "var(--radius-card)",
@@ -2526,6 +2618,7 @@ const toCalendarEventPayload = (event) => {
               </div>
             </div>
           </div>
+          )
         )}
       </div>
 
