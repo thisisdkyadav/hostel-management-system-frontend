@@ -2283,130 +2283,127 @@ const toCalendarEventPayload = (event) => {
         )}
 
         {calendar && viewMode === "calendar" && (
-          <Card>
-            <CardContent style={{ padding: "var(--spacing-4)" }}>
-              <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "var(--spacing-4)",
-              }}>
-                <Button
-                  size="sm"
-                  variant="ghost"
+          <div style={{
+            backgroundColor: "var(--color-bg-primary)",
+            borderRadius: "var(--radius-card)",
+            border: "var(--border-1) solid var(--color-border-primary)",
+            overflow: "hidden",
+          }}>
+            {/* Calendar Header */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "var(--spacing-3) var(--spacing-4)",
+              backgroundColor: "var(--color-bg-secondary)",
+              borderBottom: "var(--border-1) solid var(--color-border-primary)",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+                <button
                   onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1))}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: 28, height: 28, borderRadius: "var(--radius-sm)",
+                    border: "var(--border-1) solid var(--color-border-primary)",
+                    backgroundColor: "var(--color-bg-primary)", cursor: "pointer",
+                    color: "var(--color-text-muted)",
+                  }}
                 >
-                  <ChevronLeft size={16} />
-                </Button>
-                <span style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
-                  {calendarMonth.toLocaleString("default", { month: "long", year: "numeric" })}
-                </span>
-                <Button
-                  size="sm"
-                  variant="ghost"
+                  <ChevronLeft size={14} />
+                </button>
+                <button
                   onClick={() => setCalendarMonth(new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1))}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: 28, height: 28, borderRadius: "var(--radius-sm)",
+                    border: "var(--border-1) solid var(--color-border-primary)",
+                    backgroundColor: "var(--color-bg-primary)", cursor: "pointer",
+                    color: "var(--color-text-muted)",
+                  }}
                 >
-                  <ChevronRight size={16} />
-                </Button>
+                  <ChevronRight size={14} />
+                </button>
               </div>
 
-              <div
+              <span style={{
+                fontSize: "var(--font-size-base)",
+                fontWeight: "var(--font-weight-semibold)",
+                color: "var(--color-text-heading)",
+                letterSpacing: "-0.01em",
+              }}>
+                {calendarMonth.toLocaleString("default", { month: "long" })}{" "}
+                <span style={{ color: "var(--color-text-muted)", fontWeight: "var(--font-weight-normal)" }}>
+                  {calendarMonth.getFullYear()}
+                </span>
+              </span>
+
+              <button
+                onClick={() => setCalendarMonth(new Date())}
                 style={{
-                  display: "flex",
-                  gap: "var(--spacing-3)",
-                  flexWrap: "wrap",
-                  marginBottom: "var(--spacing-3)",
+                  fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)",
+                  padding: "var(--spacing-1) var(--spacing-2)",
+                  borderRadius: "var(--radius-sm)",
+                  border: "var(--border-1) solid var(--color-border-primary)",
+                  backgroundColor: "var(--color-bg-primary)", cursor: "pointer",
+                  color: "var(--color-text-muted)",
                 }}
               >
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "var(--spacing-1)",
-                    fontSize: "var(--font-size-xs)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "var(--radius-full)",
-                      backgroundColor: CALENDAR_DAY_TINT.holiday,
-                      border: "1px solid var(--color-warning)",
-                    }}
-                  />
-                  Holiday
+                Today
+              </button>
+            </div>
+
+            {/* Legend */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--spacing-4)",
+              padding: "var(--spacing-2) var(--spacing-4)",
+              borderBottom: "var(--border-1) solid var(--color-border-primary)",
+              flexWrap: "wrap",
+              backgroundColor: "var(--color-bg-primary)",
+            }}>
+              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", fontWeight: "var(--font-weight-medium)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Legend</span>
+              {CATEGORY_ORDER.map((cat) => (
+                <span key={cat} style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <span style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: CATEGORY_COLORS[cat], flexShrink: 0 }} />
+                  {CATEGORY_LABELS[cat]}
                 </span>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "var(--spacing-1)",
-                    fontSize: "var(--font-size-xs)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  <span
+              ))}
+              <span style={{ width: 1, height: 12, backgroundColor: "var(--color-border-primary)", flexShrink: 0 }} />
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: "var(--color-warning)", flexShrink: 0 }} />
+                Holiday
+              </span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                <span style={{ width: 8, height: 8, borderRadius: "var(--radius-full)", backgroundColor: "var(--color-primary)", flexShrink: 0 }} />
+                Today
+              </span>
+            </div>
+
+            {/* Calendar Grid */}
+            <div style={{ padding: "var(--spacing-3)" }}>
+              {/* Weekday headers */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1, marginBottom: "var(--spacing-1)" }}>
+                {CALENDAR_WEEKDAY_LABELS.map((day, i) => (
+                  <div
+                    key={day}
                     style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "var(--radius-full)",
-                      backgroundColor: CALENDAR_DAY_TINT.saturday,
-                      border: "1px solid var(--color-primary)",
+                      textAlign: "center",
+                      padding: "var(--spacing-1) 0",
+                      fontSize: "var(--font-size-xs)",
+                      fontWeight: "var(--font-weight-semibold)",
+                      color: i === 5 ? "var(--color-primary)" : i === 6 ? "var(--color-danger)" : "var(--color-text-muted)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
                     }}
-                  />
-                  Saturday
-                </span>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "var(--spacing-1)",
-                    fontSize: "var(--font-size-xs)",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "var(--radius-full)",
-                      backgroundColor: CALENDAR_DAY_TINT.sunday,
-                      border: "1px solid var(--color-danger-light)",
-                    }}
-                  />
-                  Sunday
-                </span>
+                  >
+                    {day}
+                  </div>
+                ))}
               </div>
 
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(7, 1fr)",
-                gap: "var(--spacing-1)",
-              }}>
-                {CALENDAR_WEEKDAY_LABELS.map((day, dayIndex) => {
-                  const isSaturdayHeader = dayIndex === 5
-                  const isSundayHeader = dayIndex === 6
-                  return (
-                    <div key={day} style={{
-                      padding: "var(--spacing-2)",
-                      textAlign: "center",
-                      fontWeight: "var(--font-weight-semibold)",
-                      fontSize: "var(--font-size-xs)",
-                      color: "var(--color-text-muted)",
-                      borderRadius: "var(--radius-xs)",
-                      backgroundColor: isSaturdayHeader
-                        ? CALENDAR_DAY_TINT.saturday
-                        : isSundayHeader
-                          ? CALENDAR_DAY_TINT.sunday
-                          : "transparent",
-                    }}>
-                      {day}
-                    </div>
-                  )
-                })}
-
+              {/* Day cells */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 1 }}>
                 {getDaysInMonth(calendarMonth).map((date, index) => {
                   const dayEvents = date ? getEventsForDate(date) : []
                   const dayHolidays = date ? getHolidaysForDate(date) : []
@@ -2415,16 +2412,6 @@ const toCalendarEventPayload = (event) => {
                   const isSaturday = weekday === 6
                   const isSunday = weekday === 0
                   const isHoliday = dayHolidays.length > 0
-                  const dayBackground = !date
-                    ? "transparent"
-                    : isHoliday
-                      ? CALENDAR_DAY_TINT.holiday
-                      : isSaturday
-                        ? CALENDAR_DAY_TINT.saturday
-                        : isSunday
-                          ? CALENDAR_DAY_TINT.sunday
-                          : "var(--color-bg-primary)"
-
                   const shownEvents = dayEvents.slice(0, isHoliday ? 1 : 2)
                   const remainingEventCount = dayEvents.length - shownEvents.length
 
@@ -2432,79 +2419,104 @@ const toCalendarEventPayload = (event) => {
                     <div
                       key={index}
                       style={{
-                        minHeight: "96px",
+                        minHeight: 88,
                         padding: "var(--spacing-1)",
-                        backgroundColor: dayBackground,
-                        border: isToday
-                          ? "var(--border-2) solid var(--color-primary)"
-                          : isHoliday
-                            ? `var(--border-1) solid ${CALENDAR_DAY_BORDER.holiday}`
+                        backgroundColor: !date
+                          ? "transparent"
+                          : isSunday
+                            ? "rgba(239,68,68,0.07)"
                             : isSaturday
-                              ? `var(--border-1) solid ${CALENDAR_DAY_BORDER.saturday}`
-                              : isSunday
-                                ? `var(--border-1) solid ${CALENDAR_DAY_BORDER.sunday}`
-                                : "var(--border-1) solid var(--color-border-primary)",
+                              ? "rgba(59,130,246,0.07)"
+                              : "var(--color-bg-primary)",
+                        border: "var(--border-1) solid",
+                        borderColor: !date
+                          ? "transparent"
+                          : isToday
+                            ? "var(--color-primary)"
+                            : "var(--color-border-primary)",
                         borderRadius: "var(--radius-sm)",
+                        position: "relative",
                       }}
                     >
                       {date && (
                         <>
+                          {/* Date number */}
                           <div style={{
-                            fontSize: "var(--font-size-xs)",
-                            fontWeight: isToday ? "var(--font-weight-bold)" : "var(--font-weight-normal)",
-                            color: isToday ? "var(--color-primary)" : "var(--color-text-body)",
-                            marginBottom: "var(--spacing-1)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                            marginBottom: "var(--spacing-0-5)",
                           }}>
-                            {date.getDate()}
+                            {isHoliday && (
+                              <span
+                                title={dayHolidays[0].title}
+                                style={{
+                                  flex: 1,
+                                  fontSize: 9,
+                                  fontWeight: "var(--font-weight-medium)",
+                                  color: "#92400e",
+                                  backgroundColor: "#fef3c7",
+                                  padding: "1px var(--spacing-1)",
+                                  borderRadius: "var(--radius-xs)",
+                                  marginRight: "var(--spacing-1)",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {dayHolidays[0].title}
+                              </span>
+                            )}
+                            <span style={{
+                              width: 20, height: 20, borderRadius: "var(--radius-full)",
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              flexShrink: 0,
+                              fontSize: "var(--font-size-xs)",
+                              fontWeight: isToday ? "var(--font-weight-bold)" : "var(--font-weight-normal)",
+                              color: isToday ? "white" : isSunday ? "var(--color-danger)" : isSaturday ? "var(--color-primary)" : "var(--color-text-body)",
+                              backgroundColor: isToday ? "var(--color-primary)" : "transparent",
+                            }}>
+                              {date.getDate()}
+                            </span>
                           </div>
 
-                          {dayHolidays.slice(0, 1).map((holiday) => (
-                            <div
-                              key={`${holiday.date}-${holiday.title}`}
-                              title={holiday.title}
-                              style={{
-                                fontSize: "var(--font-size-xs)",
-                                padding: "var(--spacing-0-5) var(--spacing-1)",
-                                marginBottom: "var(--spacing-0-5)",
-                                backgroundColor: "var(--color-warning)",
-                                color: "var(--color-warningFg, #000)",
-                                borderRadius: "var(--radius-xs)",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              Holiday: {holiday.title}
-                            </div>
-                          ))}
-
+                          {/* Events */}
                           {shownEvents.map((event, i) => (
                             <div
                               key={i}
                               onClick={() => handleEventClick(event)}
+                              title={event.title}
                               style={{
-                                fontSize: "var(--font-size-xs)",
-                                padding: "var(--spacing-0-5) var(--spacing-1)",
-                                marginBottom: "var(--spacing-0-5)",
-                                backgroundColor: CATEGORY_COLORS[event.category],
-                                color: "white",
-                                borderRadius: "var(--radius-xs)",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 4,
+                                fontSize: 10,
+                                padding: "2px var(--spacing-1)",
+                                marginBottom: 2,
+                                backgroundColor: `${CATEGORY_COLORS[event.category]}15`,
+                                borderLeft: `2.5px solid ${CATEGORY_COLORS[event.category]}`,
+                                borderRadius: "0 var(--radius-xs) var(--radius-xs) 0",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
                                 whiteSpace: "nowrap",
                                 cursor: "pointer",
+                                color: "var(--color-text-body)",
+                                fontWeight: "var(--font-weight-medium)",
                               }}
                             >
                               {event.title}
                             </div>
                           ))}
+
                           {remainingEventCount > 0 && (
-                            <div style={{
-                              fontSize: "var(--font-size-xs)",
+                            <span style={{
+                              fontSize: 10,
                               color: "var(--color-text-muted)",
+                              fontWeight: "var(--font-weight-medium)",
+                              paddingLeft: "var(--spacing-1)",
                             }}>
                               +{remainingEventCount} more
-                            </div>
+                            </span>
                           )}
                         </>
                       )}
@@ -2512,8 +2524,8 @@ const toCalendarEventPayload = (event) => {
                   )
                 })}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
 
