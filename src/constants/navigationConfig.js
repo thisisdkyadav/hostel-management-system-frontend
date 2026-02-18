@@ -155,6 +155,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
@@ -347,6 +348,7 @@ export const getStudentNavItems = (handleLogout, notificationsCount = 0) => [
 export const getGymkhanaNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/gymkhana" },
   { name: "Events", icon: CalendarDays, section: "main", path: "/gymkhana/events" },
+  { name: "Mega Events", icon: CalendarDays, section: "main", path: "/gymkhana/mega-events" },
   createProfileItem("/gymkhana"),
   createLogoutItem(handleLogout),
 ]

@@ -133,6 +133,38 @@ export const gymkhanaEventsApi = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // MEGA EVENT SERIES OPERATIONS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Get all mega event series with latest occurrence summary
+   */
+  getMegaSeries: () => {
+    return apiClient.get(`${BASE_PATH}/mega-series`)
+  },
+
+  /**
+   * Create a new mega event series (Admin only)
+   */
+  createMegaSeries: (data) => {
+    return apiClient.post(`${BASE_PATH}/mega-series`, data)
+  },
+
+  /**
+   * Get a mega event series with latest occurrence + history
+   */
+  getMegaSeriesById: (seriesId) => {
+    return apiClient.get(`${BASE_PATH}/mega-series/${seriesId}`)
+  },
+
+  /**
+   * Create a new occurrence inside a mega event series (Admin only)
+   */
+  createMegaOccurrence: (seriesId, data) => {
+    return apiClient.post(`${BASE_PATH}/mega-series/${seriesId}/occurrences`, data)
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // PROPOSAL OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════
 

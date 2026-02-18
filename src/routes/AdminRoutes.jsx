@@ -33,6 +33,7 @@ import {
     LostAndFoundPage,
     EventsPage,
     GymkhanaEventsPage,
+    MegaEventsPage,
     ProfilePage,
     NotificationCenterPage
 } from "../pages/common"
@@ -90,6 +91,7 @@ const AdminRoutes = () => {
                             <Route path="lost-and-found" element={<LostAndFoundPage />} />
                             <Route path="events" element={<EventsPage />} />
                             <Route path="gymkhana-events" element={<GymkhanaEventsPage />} />
+                            <Route path="mega-events" element={<MegaEventsPage />} />
                             <Route path="update-password" element={<UpdatePasswordPage />} />
                             <Route path="settings" element={<AdminSettings />} />
                             <Route path="profile" element={<ProfilePage />} />
