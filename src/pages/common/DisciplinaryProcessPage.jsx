@@ -1,13 +1,34 @@
 import { useEffect, useMemo, useState } from "react"
 import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
-import { Eye, Plus, Search, X } from "lucide-react"
+import {
+  Eye,
+  Plus,
+  Search,
+  X,
+  FileText,
+  Upload,
+  Mail,
+  ClipboardList,
+  Gavel,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  AlertTriangle,
+} from "lucide-react"
 import PageHeader from "../../components/common/PageHeader"
 import PageFooter from "../../components/common/PageFooter"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PdfViewerModal from "../../components/common/pdf/PdfViewerModal"
-import { Badge, Pagination, Textarea, useToast } from "@/components/ui"
+import { Badge, Pagination, Textarea, useToast, Checkbox, Radio } from "@/components/ui"
+import StepIndicator from "@/components/ui/navigation/StepIndicator"
+import CompactStudentTag, { StudentTagGroup } from "@/components/ui/data-display/CompactStudentTag"
+import CaseSummaryView from "../../components/common/disco/CaseSummaryView"
 import { discoApi, studentApi, uploadApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+
+// ============================================================================
+// UTILITY FUNCTIONS (unchanged logic)
+// ============================================================================
 
 const formatStatusLabel = (value = "") =>
   value
@@ -123,36 +144,69 @@ const deriveAdminStage = (caseData) => {
   return "step5_final"
 }
 
-const getStageLabel = (stage) => {
-  switch (stage) {
-    case "step2_collection":
-      return "Step 2 - Student Statements and Documents"
-    case "step3_email":
-      return "Step 3 - Committee Email"
-    case "step4_minutes":
-      return "Step 4 - Committee Minutes"
-    case "step5_final":
-      return "Step 5 - Final Decision"
-    case "closed_final":
-      return "Closed - Final Decision Recorded"
-    default:
-      return "In Progress"
-  }
+const STEP_DEFINITIONS = [
+  { id: "step2_collection", label: "Collection", sublabel: "Students & Docs", icon: ClipboardList },
+  { id: "step3_email", label: "Email", sublabel: "Committee", icon: Mail },
+  { id: "step4_minutes", label: "Minutes", sublabel: "Upload", icon: FileText },
+  { id: "step5_final", label: "Decision", sublabel: "Finalize", icon: Gavel },
+]
+
+const getStepLabel = (stage) => {
+  const step = STEP_DEFINITIONS.find((s) => s.id === stage)
+  if (step) return step.label
+  if (stage === "closed_final") return "Closed"
+  return "In Progress"
 }
+
+const getStepIndex = (stage) => {
+  const index = STEP_DEFINITIONS.findIndex((s) => s.id === stage)
+  return index >= 0 ? index : 0
+}
+
+// ============================================================================
+// STYLES
+// ============================================================================
 
 const cardStyle = {
-  border: "var(--border-1) solid var(--color-border-primary)",
+  border: "1px solid var(--color-border-primary)",
   borderRadius: "var(--radius-card-sm)",
   backgroundColor: "var(--color-bg-primary)",
-  padding: "var(--spacing-4)",
+  padding: "var(--spacing-3)",
 }
 
-const sectionTitleStyle = {
-  margin: 0,
-  color: "var(--color-text-primary)",
-  fontSize: "var(--font-size-lg)",
+const sectionLabelStyle = {
+  fontSize: "var(--font-size-xs)",
   fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
+  marginBottom: "var(--spacing-2)",
 }
+
+const compactInputRowStyle = {
+  display: "grid",
+  gridTemplateColumns: "1fr auto",
+  gap: "var(--spacing-2)",
+  alignItems: "center",
+}
+
+const documentChipStyle = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 4,
+  padding: "4px 8px",
+  backgroundColor: "var(--color-bg-tertiary)",
+  borderRadius: "var(--radius-badge)",
+  fontSize: "var(--font-size-xs)",
+  color: "var(--color-primary)",
+  cursor: "pointer",
+  border: "1px solid var(--color-border-primary)",
+  transition: "all 0.15s ease",
+}
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
 
 const DisciplinaryProcessPage = () => {
   const { user } = useAuth()
@@ -160,6 +214,7 @@ const DisciplinaryProcessPage = () => {
 
   const isAdmin = ["Admin", "Super Admin"].includes(user?.role)
 
+  // PDF Viewer state
   const [pdfViewer, setPdfViewer] = useState({
     open: false,
     url: "",
@@ -167,11 +222,13 @@ const DisciplinaryProcessPage = () => {
     fileName: "document.pdf",
   })
 
+  // Create Case Modal state
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [createComplaintPdfUrl, setCreateComplaintPdfUrl] = useState("")
   const [createComplaintPdfName, setCreateComplaintPdfName] = useState("")
   const [creatingCase, setCreatingCase] = useState(false)
 
+  // Admin Cases List state
   const [adminCases, setAdminCases] = useState([])
   const [adminCasesLoading, setAdminCasesLoading] = useState(false)
   const [adminStatusFilter, setAdminStatusFilter] = useState("all")
@@ -180,14 +237,18 @@ const DisciplinaryProcessPage = () => {
   const [adminTotalPages, setAdminTotalPages] = useState(1)
   const [adminTotalCount, setAdminTotalCount] = useState(0)
 
+  // Admin Case Detail Modal state
   const [adminModalOpen, setAdminModalOpen] = useState(false)
   const [adminModalLoading, setAdminModalLoading] = useState(false)
   const [selectedAdminCase, setSelectedAdminCase] = useState(null)
+  const [viewingHistoryStep, setViewingHistoryStep] = useState(null)
 
+  // Student Search state
   const [studentSearchRoll, setStudentSearchRoll] = useState("")
   const [studentSearchLoading, setStudentSearchLoading] = useState(false)
   const [studentSearchResults, setStudentSearchResults] = useState([])
 
+  // Stage 2 state
   const [stage2AccusingStudents, setStage2AccusingStudents] = useState([])
   const [stage2AccusedStudents, setStage2AccusedStudents] = useState([])
   const [stage2StatementsByStudentId, setStage2StatementsByStudentId] = useState({})
@@ -199,6 +260,7 @@ const DisciplinaryProcessPage = () => {
   const [stage2ExtraDraftName, setStage2ExtraDraftName] = useState("")
   const [stage2Saving, setStage2Saving] = useState(false)
 
+  // Stage 3 state
   const [emailTo, setEmailTo] = useState("")
   const [emailSubject, setEmailSubject] = useState("")
   const [emailBody, setEmailBody] = useState("")
@@ -212,10 +274,12 @@ const DisciplinaryProcessPage = () => {
   const [emailExtraAttachments, setEmailExtraAttachments] = useState([])
   const [emailSubmitting, setEmailSubmitting] = useState(false)
 
+  // Stage 4 state
   const [minutesPdfUrl, setMinutesPdfUrl] = useState("")
   const [minutesPdfName, setMinutesPdfName] = useState("")
   const [minutesSubmitting, setMinutesSubmitting] = useState(false)
 
+  // Stage 5 state
   const [finalDecisionMode, setFinalDecisionMode] = useState("action")
   const [finalDecisionDescription, setFinalDecisionDescription] = useState("")
   const [finalReason, setFinalReason] = useState("")
@@ -227,6 +291,10 @@ const DisciplinaryProcessPage = () => {
   const [finalStudentActionMap, setFinalStudentActionMap] = useState({})
   const [selectedDisciplinedStudents, setSelectedDisciplinedStudents] = useState([])
   const [finalDecisionSubmitting, setFinalDecisionSubmitting] = useState(false)
+
+  // ============================================================================
+  // HELPER FUNCTIONS
+  // ============================================================================
 
   const uploadDiscoProcessPdf = async (file) => {
     const formData = new FormData()
@@ -242,6 +310,10 @@ const DisciplinaryProcessPage = () => {
       fileName,
     })
   }
+
+  // ============================================================================
+  // API FUNCTIONS
+  // ============================================================================
 
   const fetchAdminCases = async () => {
     try {
@@ -293,6 +365,9 @@ const DisciplinaryProcessPage = () => {
 
   useEffect(() => {
     if (!selectedAdminCase?.id) return
+
+    // Reset viewing history when case changes
+    setViewingHistoryStep(null)
 
     const accusingStudents = dedupeStudents(
       (selectedAdminCase.selectedStudents?.accusing || []).map((student) => ({
@@ -383,6 +458,10 @@ const DisciplinaryProcessPage = () => {
     () => dedupeStudents([...stage2AccusedStudents, ...stage2AccusingStudents]),
     [stage2AccusedStudents, stage2AccusingStudents]
   )
+
+  // ============================================================================
+  // EVENT HANDLERS
+  // ============================================================================
 
   const searchStudents = async (roll) => {
     const keyword = roll.trim()
@@ -916,12 +995,16 @@ const DisciplinaryProcessPage = () => {
     }
   }
 
+  // ============================================================================
+  // TABLE COLUMNS
+  // ============================================================================
+
   const adminColumns = [
     {
       key: "id",
       header: "Case ID",
       render: (item) => (
-        <span style={{ fontFamily: "monospace", color: "var(--color-text-secondary)" }}>
+        <span style={{ fontFamily: "monospace", color: "var(--color-text-secondary)", fontSize: "var(--font-size-sm)" }}>
           #{item.id?.slice(-6)}
         </span>
       ),
@@ -931,7 +1014,7 @@ const DisciplinaryProcessPage = () => {
       header: "Started By",
       render: (item) => (
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <span style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
+          <span style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)" }}>
             {item.startedBy?.name || "Unknown"}
           </span>
           <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
@@ -942,7 +1025,7 @@ const DisciplinaryProcessPage = () => {
     },
     {
       key: "caseStatus",
-      header: "Case Status",
+      header: "Status",
       render: (item) => (
         <Badge variant={getStatusVariant(item.caseStatus)}>
           {formatStatusLabel(item.caseStatus)}
@@ -952,12 +1035,20 @@ const DisciplinaryProcessPage = () => {
     {
       key: "currentStep",
       header: "Current Step",
-      render: (item) => getStageLabel(deriveAdminStage(item)),
+      render: (item) => (
+        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+          {getStepLabel(deriveAdminStage(item))}
+        </span>
+      ),
     },
     {
       key: "updatedAt",
       header: "Updated",
-      render: (item) => new Date(item.updatedAt).toLocaleString(),
+      render: (item) => (
+        <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          {new Date(item.updatedAt).toLocaleDateString()}
+        </span>
+      ),
     },
   ]
 
@@ -984,11 +1075,44 @@ const DisciplinaryProcessPage = () => {
     () => [
       { label: "All", value: "all" },
       { label: "Under Process", value: "under_process" },
-      { label: "Final Rejected", value: "final_rejected" },
+      { label: "Rejected", value: "final_rejected" },
       { label: "Finalized", value: "finalized_with_action" },
     ],
     []
   )
+
+  // Step navigation for history viewing
+  const canViewPreviousStep = viewingHistoryStep !== null
+    ? getStepIndex(viewingHistoryStep) > 0
+    : adminCurrentStage !== "closed_final" && getStepIndex(adminCurrentStage) > 0
+
+  const canViewNextStep = viewingHistoryStep !== null
+    ? getStepIndex(viewingHistoryStep) < getStepIndex(adminCurrentStage) - 1
+    : false
+
+  const navigateStep = (direction) => {
+    const currentViewingIndex = viewingHistoryStep !== null
+      ? getStepIndex(viewingHistoryStep)
+      : getStepIndex(adminCurrentStage)
+
+    if (direction === "prev" && currentViewingIndex > 0) {
+      setViewingHistoryStep(STEP_DEFINITIONS[currentViewingIndex - 1].id)
+    } else if (direction === "next") {
+      const nextIndex = currentViewingIndex + 1
+      if (nextIndex >= getStepIndex(adminCurrentStage)) {
+        setViewingHistoryStep(null)
+      } else {
+        setViewingHistoryStep(STEP_DEFINITIONS[nextIndex].id)
+      }
+    }
+  }
+
+  const exitHistoryView = () => {
+    setViewingHistoryStep(null)
+  }
+
+  // Determine which step content to render
+  const displayedStep = viewingHistoryStep || adminCurrentStage
 
   if (!isAdmin) {
     return (
@@ -998,19 +1122,23 @@ const DisciplinaryProcessPage = () => {
     )
   }
 
+  // ============================================================================
+  // RENDER
+  // ============================================================================
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <PageHeader
         title="Disciplinary Process"
-        subtitle="Admin-initiated case workflow with statements, evidence, committee communication, and final action"
+        subtitle="Admin-initiated case workflow"
       >
         <Button variant="primary" size="md" onClick={() => setCreateModalOpen(true)}>
-          <Plus size={14} /> Start New Case
+          <Plus size={14} /> New Case
         </Button>
       </PageHeader>
 
-      <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div style={{ flex: 1, overflowY: "auto", padding: "var(--spacing-4) var(--spacing-6)" }}>
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <Tabs
               variant="pills"
@@ -1023,23 +1151,23 @@ const DisciplinaryProcessPage = () => {
             />
           </div>
 
-          <div className="w-full lg:w-[420px] lg:max-w-[420px]">
+          <div className="w-full lg:w-90 lg:max-w-90">
             <Input
               type="text"
-              icon={<Search size={16} />}
+              icon={<Search size={14} />}
               value={adminSearchTerm}
-              placeholder="Search by case ID, starter name, or email..."
+              placeholder="Search cases..."
               onChange={(event) => setAdminSearchTerm(event.target.value)}
             />
           </div>
         </div>
 
-        <div style={{ marginTop: "var(--spacing-4)" }}>
+        <div style={{ marginTop: "var(--spacing-3)" }}>
           <DataTable
             columns={adminColumns}
             data={filteredAdminCases}
             loading={adminCasesLoading}
-            emptyMessage="No disciplinary cases match your current filters"
+            emptyMessage="No disciplinary cases found"
             onRowClick={openAdminCase}
           />
         </div>
@@ -1048,15 +1176,14 @@ const DisciplinaryProcessPage = () => {
       <PageFooter
         leftContent={[
           <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-            Showing{" "}
             <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
               {adminCasesLoading ? 0 : filteredAdminCases.length}
-            </span>{" "}
-            of{" "}
+            </span>
+            {" / "}
             <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
               {adminCasesLoading ? 0 : adminTotalCount}
-            </span>{" "}
-            cases
+            </span>
+            {" cases"}
           </span>,
         ]}
         rightContent={[
@@ -1071,15 +1198,21 @@ const DisciplinaryProcessPage = () => {
         ]}
       />
 
+      {/* Create Case Modal */}
       <Modal
-        title="Start Disciplinary Case"
+        title="Start New Case"
         onClose={() => setCreateModalOpen(false)}
-        width={700}
+        width={480}
         isOpen={createModalOpen}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <div style={sectionLabelStyle}>
+            <FileText size={12} style={{ display: "inline", marginRight: 4 }} />
+            Complaint Document
+          </div>
+          
           <PdfUploadField
-            label="Complaint PDF"
+            label="Upload Complaint PDF"
             value={createComplaintPdfUrl}
             onChange={setCreateComplaintPdfUrl}
             onUpload={async (file) => {
@@ -1087,235 +1220,238 @@ const DisciplinaryProcessPage = () => {
               return uploadDiscoProcessPdf(file)
             }}
             viewerTitle="Complaint PDF"
-            viewerSubtitle="Case Complaint"
+            viewerSubtitle="Initial Complaint"
             downloadFileName={createComplaintPdfName || "complaint.pdf"}
           />
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-            <Button variant="outline" onClick={() => setCreateModalOpen(false)}>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
+            <Button variant="outline" size="sm" onClick={() => setCreateModalOpen(false)}>
               Cancel
             </Button>
-            <Button variant="primary" loading={creatingCase} onClick={handleCreateCase}>
-              Create Case
+            <Button variant="primary" size="sm" loading={creatingCase} onClick={handleCreateCase}>
+              <Plus size={14} /> Create Case
             </Button>
           </div>
         </div>
       </Modal>
 
+      {/* Case Detail Modal */}
       <Modal
         title={
           selectedAdminCase
-            ? `Case #${selectedAdminCase.id?.slice(-6)} - ${getStageLabel(adminCurrentStage)}`
+            ? `Case #${selectedAdminCase.id?.slice(-6)}`
             : "Case Details"
         }
         onClose={() => setAdminModalOpen(false)}
-        width={1080}
+        width={900}
         isOpen={adminModalOpen}
+        footer={
+          adminCurrentStage !== "closed_final" && selectedAdminCase && !adminModalLoading ? (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {(canViewPreviousStep || viewingHistoryStep) && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={!canViewPreviousStep}
+                      onClick={() => navigateStep("prev")}
+                    >
+                      <ChevronLeft size={14} /> Previous
+                    </Button>
+                    {viewingHistoryStep && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={exitHistoryView}
+                      >
+                        Back to Current
+                      </Button>
+                    )}
+                    {canViewNextStep && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigateStep("next")}
+                      >
+                        Next <ChevronRight size={14} />
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+              <StepIndicator
+                steps={STEP_DEFINITIONS}
+                currentStep={adminCurrentStage}
+                compact
+                onStepClick={(stepId) => setViewingHistoryStep(stepId)}
+              />
+            </div>
+          ) : null
+        }
       >
         {adminModalLoading ? (
-          <div style={{ color: "var(--color-text-muted)" }}>Loading case details...</div>
+          <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
+            Loading case details...
+          </div>
         ) : !selectedAdminCase ? (
-          <div style={{ color: "var(--color-text-muted)" }}>Case details unavailable</div>
+          <div style={{ padding: "var(--spacing-8)", textAlign: "center", color: "var(--color-text-muted)" }}>
+            Case details unavailable
+          </div>
+        ) : adminCurrentStage === "closed_final" ? (
+          <CaseSummaryView caseData={selectedAdminCase} onViewPdf={showPdf} />
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-            <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                <div>
-                  <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-                    Started by {selectedAdminCase.startedBy?.name || "Unknown"}
-                  </div>
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                    {selectedAdminCase.startedBy?.email || ""}
-                  </div>
-                </div>
-                <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                  <Badge variant={getStatusVariant(selectedAdminCase.caseStatus)}>
-                    {formatStatusLabel(selectedAdminCase.caseStatus)}
-                  </Badge>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() =>
-                      showPdf(
-                        selectedAdminCase.complaintPdfUrl,
-                        "Complaint PDF",
-                        selectedAdminCase.complaintPdfName || "complaint.pdf"
-                      )
-                    }
-                  >
-                    <Eye size={14} /> Complaint PDF
-                  </Button>
-                </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+            {/* Case Header - always visible */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "var(--spacing-2) var(--spacing-3)",
+                backgroundColor: "var(--color-bg-secondary)",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--color-border-primary)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  Started by <strong>{selectedAdminCase.startedBy?.name || "Unknown"}</strong>
+                </span>
+                <Badge variant={getStatusVariant(selectedAdminCase.caseStatus)}>
+                  {formatStatusLabel(selectedAdminCase.caseStatus)}
+                </Badge>
               </div>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() =>
+                  showPdf(
+                    selectedAdminCase.complaintPdfUrl,
+                    "Complaint PDF",
+                    selectedAdminCase.complaintPdfName || "complaint.pdf"
+                  )
+                }
+              >
+                <Eye size={12} /> Complaint
+              </Button>
             </div>
 
-            {adminCurrentStage === "step2_collection" && (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
-                <h4 style={sectionTitleStyle}>Step 2: Statement Collection and Document Setup</h4>
+            {/* History Mode Banner */}
+            {viewingHistoryStep && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "var(--spacing-2) var(--spacing-3)",
+                  backgroundColor: "var(--color-info-bg-light)",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid var(--color-info-bg)",
+                }}
+              >
+                <AlertTriangle size={14} style={{ color: "var(--color-info)" }} />
+                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-info-text)" }}>
+                  Viewing history: {getStepLabel(viewingHistoryStep)} (read-only)
+                </span>
+              </div>
+            )}
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "var(--spacing-2)" }}>
+            {/* Step 2: Collection */}
+            {displayedStep === "step2_collection" && (
+              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={sectionLabelStyle}>
+                    <ClipboardList size={12} style={{ display: "inline", marginRight: 4 }} />
+                    Student & Document Collection
+                  </div>
+                </div>
+
+                {/* Student Search */}
+                <div style={compactInputRowStyle}>
                   <Input
-                    placeholder="Search student by roll number"
+                    placeholder="Search by roll number"
                     value={studentSearchRoll}
                     onChange={(event) => setStudentSearchRoll(event.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && searchStudents(studentSearchRoll)}
                   />
                   <Button
                     variant="secondary"
+                    size="sm"
                     loading={studentSearchLoading}
                     onClick={() => searchStudents(studentSearchRoll)}
                   >
-                    Search
+                    <Search size={12} />
                   </Button>
                 </div>
 
+                {/* Search Results */}
                 {studentSearchResults.length > 0 && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
                     {studentSearchResults.map((student) => (
                       <div
                         key={student.userId}
                         style={{
-                          border: "var(--border-1) solid var(--color-border-primary)",
-                          borderRadius: "var(--radius-md)",
-                          padding: "var(--spacing-2)",
                           display: "flex",
-                          justifyContent: "space-between",
                           alignItems: "center",
-                          gap: "var(--spacing-2)",
-                          flexWrap: "wrap",
+                          gap: 6,
+                          padding: "4px 8px",
+                          backgroundColor: "var(--color-bg-primary)",
+                          borderRadius: "var(--radius-badge)",
+                          border: "1px solid var(--color-border-primary)",
+                          fontSize: "var(--font-size-xs)",
                         }}
                       >
-                        <div>
-                          <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
-                            {student.rollNumber} - {student.name}
-                          </div>
-                          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
-                            {student.email || "No email"}
-                          </div>
-                        </div>
-                        <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => addStudentToGroup(student, "accusing")}
-                          >
-                            Add as Accusing
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => addStudentToGroup(student, "accused")}
-                          >
-                            Add as Accused
-                          </Button>
-                        </div>
+                        <User size={12} style={{ color: "var(--color-text-muted)" }} />
+                        <span style={{ fontWeight: "var(--font-weight-medium)" }}>{student.rollNumber}</span>
+                        <span style={{ color: "var(--color-text-muted)" }}>{student.name}</span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          style={{ padding: "2px 4px", fontSize: "var(--font-size-2xs)" }}
+                          onClick={() => addStudentToGroup(student, "accusing")}
+                        >
+                          +Accusing
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          style={{ padding: "2px 4px", fontSize: "var(--font-size-2xs)", color: "var(--color-danger)" }}
+                          onClick={() => addStudentToGroup(student, "accused")}
+                        >
+                          +Accused
+                        </Button>
                       </div>
                     ))}
                   </div>
                 )}
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                    gap: "var(--spacing-3)",
-                  }}
-                >
-                  <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-                    <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-                      Accusing Students (Optional)
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
-                      {stage2AccusingStudents.length === 0 ? (
-                        <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                          No accusing students selected
-                        </div>
-                      ) : (
-                        stage2AccusingStudents.map((student) => (
-                          <div
-                            key={student.userId}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              gap: "var(--spacing-2)",
-                              border: "var(--border-1) solid var(--color-border-primary)",
-                              borderRadius: "var(--radius-md)",
-                              padding: "var(--spacing-2)",
-                            }}
-                          >
-                            <div>
-                              <div style={{ color: "var(--color-text-primary)" }}>{student.name}</div>
-                              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
-                                {student.email || "No email"}
-                              </div>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => removeStudentFromGroup(student.userId, "accusing")}
-                            >
-                              <X size={14} />
-                            </Button>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-
-                  <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-                    <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-                      Accused Students (Required)
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
-                      {stage2AccusedStudents.length === 0 ? (
-                        <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                          No accused students selected
-                        </div>
-                      ) : (
-                        stage2AccusedStudents.map((student) => (
-                          <div
-                            key={student.userId}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              gap: "var(--spacing-2)",
-                              border: "var(--border-1) solid var(--color-border-primary)",
-                              borderRadius: "var(--radius-md)",
-                              padding: "var(--spacing-2)",
-                            }}
-                          >
-                            <div>
-                              <div style={{ color: "var(--color-text-primary)" }}>{student.name}</div>
-                              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
-                                {student.email || "No email"}
-                              </div>
-                            </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => removeStudentFromGroup(student.userId, "accused")}
-                            >
-                              <X size={14} />
-                            </Button>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
+                {/* Selected Students */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+                  <StudentTagGroup
+                    label="Accused (Required)"
+                    students={stage2AccusedStudents}
+                    role="accused"
+                    onRemove={(id) => removeStudentFromGroup(id, "accused")}
+                    emptyText="None selected"
+                  />
+                  <StudentTagGroup
+                    label="Accusing (Optional)"
+                    students={stage2AccusingStudents}
+                    role="accusing"
+                    onRemove={(id) => removeStudentFromGroup(id, "accusing")}
+                    emptyText="None selected"
+                  />
                 </div>
 
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)" }}>
-                  <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)", marginBottom: "var(--spacing-2)" }}>
-                    Student Statements (One PDF per selected student)
-                  </div>
-
-                  {allStage2Students.length === 0 ? (
-                    <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                      Select students first to upload statements
+                {/* Statements Section */}
+                {allStage2Students.length > 0 && (
+                  <div>
+                    <div style={sectionLabelStyle}>
+                      <FileText size={12} style={{ display: "inline", marginRight: 4 }} />
+                      Statements (One PDF per student)
                     </div>
-                  ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                       {allStage2Students.map((student) => {
                         const isAccused = stage2AccusedStudents.some((item) => item.userId === student.userId)
                         const role = isAccused ? "accused" : "accusing"
@@ -1329,238 +1465,207 @@ const DisciplinaryProcessPage = () => {
                           <div
                             key={student.userId}
                             style={{
-                              border: "var(--border-1) solid var(--color-border-primary)",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "var(--spacing-2)",
+                              padding: "var(--spacing-2)",
+                              backgroundColor: "var(--color-bg-secondary)",
                               borderRadius: "var(--radius-md)",
-                              padding: "var(--spacing-3)",
+                              border: `1px solid ${statement.pdfUrl ? "var(--color-success-bg)" : "var(--color-border-primary)"}`,
                             }}
                           >
-                            <div style={{ marginBottom: "var(--spacing-2)" }}>
-                              <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-medium)" }}>
-                                {student.name}
-                              </div>
-                              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-xs)" }}>
-                                {getStatementRoleLabel(role)} student
-                              </div>
-                            </div>
-                            <PdfUploadField
-                              label={`${getStatementRoleLabel(role)} Statement PDF`}
-                              value={statement.pdfUrl}
-                              onChange={(url) =>
-                                setStage2StatementsByStudentId((prev) => ({
-                                  ...prev,
-                                  [student.userId]: {
-                                    ...(prev[student.userId] || {}),
-                                    studentRole: role,
-                                    pdfUrl: url,
-                                    pdfName:
-                                      url === ""
-                                        ? ""
-                                        : prev[student.userId]?.pdfName ||
-                                          getFilenameFromUrl(url, "statement.pdf"),
-                                  },
-                                }))
-                              }
-                              onUpload={async (file) => {
-                                setStage2StatementsByStudentId((prev) => ({
-                                  ...prev,
-                                  [student.userId]: {
-                                    ...(prev[student.userId] || {}),
-                                    studentRole: role,
-                                    pdfName: file.name,
-                                  },
-                                }))
-                                return uploadDiscoProcessPdf(file)
-                              }}
-                              viewerTitle={`${student.name} - Statement`}
-                              viewerSubtitle={getStatementRoleLabel(role)}
-                              downloadFileName={statement.pdfName || "statement.pdf"}
+                            <CompactStudentTag
+                              name={student.name}
+                              rollNumber={student.rollNumber}
+                              role={role}
                             />
+                            <div style={{ flex: 1 }}>
+                              <PdfUploadField
+                                label=""
+                                compact
+                                value={statement.pdfUrl}
+                                onChange={(url) =>
+                                  setStage2StatementsByStudentId((prev) => ({
+                                    ...prev,
+                                    [student.userId]: {
+                                      ...(prev[student.userId] || {}),
+                                      studentRole: role,
+                                      pdfUrl: url,
+                                      pdfName:
+                                        url === ""
+                                          ? ""
+                                          : prev[student.userId]?.pdfName ||
+                                            getFilenameFromUrl(url, "statement.pdf"),
+                                    },
+                                  }))
+                                }
+                                onUpload={async (file) => {
+                                  setStage2StatementsByStudentId((prev) => ({
+                                    ...prev,
+                                    [student.userId]: {
+                                      ...(prev[student.userId] || {}),
+                                      studentRole: role,
+                                      pdfName: file.name,
+                                    },
+                                  }))
+                                  return uploadDiscoProcessPdf(file)
+                                }}
+                                viewerTitle={`${student.name} - Statement`}
+                                viewerSubtitle={getStatementRoleLabel(role)}
+                                downloadFileName={statement.pdfName || "statement.pdf"}
+                              />
+                            </div>
                           </div>
                         )
                       })}
                     </div>
-                  )}
-                </div>
-
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                  <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-                    Evidence Documents
                   </div>
+                )}
 
-                  <PdfUploadField
-                    label="Evidence PDF"
-                    value={stage2EvidenceDraftUrl}
-                    onChange={setStage2EvidenceDraftUrl}
-                    onUpload={async (file) => {
-                      setStage2EvidenceDraftName(file.name)
-                      return uploadDiscoProcessPdf(file)
-                    }}
-                    viewerTitle="Evidence Document"
-                    downloadFileName={stage2EvidenceDraftName || "evidence.pdf"}
-                  />
-
-                  <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                    <Button variant="secondary" size="sm" onClick={handleAddEvidenceDocument}>
-                      Add Evidence
-                    </Button>
-                    {stage2EvidenceDocuments.map((document, index) => (
-                      <div
-                        key={document.id || `${document.pdfUrl}-${index}`}
-                        style={{
-                          border: "var(--border-1) solid var(--color-border-primary)",
-                          borderRadius: "var(--radius-md)",
-                          padding: "var(--spacing-1) var(--spacing-2)",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "var(--spacing-1)",
+                {/* Evidence & Extra Documents */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+                  <div>
+                    <div style={sectionLabelStyle}>Evidence Documents</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <PdfUploadField
+                        label=""
+                        compact
+                        value={stage2EvidenceDraftUrl}
+                        onChange={setStage2EvidenceDraftUrl}
+                        onUpload={async (file) => {
+                          setStage2EvidenceDraftName(file.name)
+                          return uploadDiscoProcessPdf(file)
                         }}
-                      >
-                        <button
-                          type="button"
-                          style={{ color: "var(--color-primary)", background: "transparent", border: "none", cursor: "pointer" }}
-                          onClick={() =>
-                            showPdf(
-                              document.pdfUrl,
-                              "Evidence Document",
-                              document.pdfName || "evidence.pdf"
-                            )
-                          }
-                        >
-                          {document.pdfName || "evidence.pdf"}
-                        </button>
-                        <button
-                          type="button"
-                          style={{ color: "var(--color-danger)", background: "transparent", border: "none", cursor: "pointer" }}
-                          onClick={() =>
-                            setStage2EvidenceDocuments((prev) =>
-                              prev.filter((_, docIndex) => docIndex !== index)
-                            )
-                          }
-                        >
-                          <X size={12} />
-                        </button>
+                      />
+                      <Button variant="outline" size="sm" onClick={handleAddEvidenceDocument}>
+                        <Plus size={12} /> Add
+                      </Button>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                        {stage2EvidenceDocuments.map((doc, index) => (
+                          <button
+                            key={doc.id || index}
+                            type="button"
+                            style={documentChipStyle}
+                            onClick={() => showPdf(doc.pdfUrl, "Evidence", doc.pdfName)}
+                          >
+                            <FileText size={10} />
+                            {doc.pdfName?.slice(0, 20) || "Evidence"}
+                            <X
+                              size={10}
+                              style={{ marginLeft: 4, color: "var(--color-danger)" }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setStage2EvidenceDocuments((prev) =>
+                                  prev.filter((_, i) => i !== index)
+                                )
+                              }}
+                            />
+                          </button>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                  <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
-                    Extra Documents
+                    </div>
                   </div>
 
-                  <PdfUploadField
-                    label="Extra Document PDF"
-                    value={stage2ExtraDraftUrl}
-                    onChange={setStage2ExtraDraftUrl}
-                    onUpload={async (file) => {
-                      setStage2ExtraDraftName(file.name)
-                      return uploadDiscoProcessPdf(file)
-                    }}
-                    viewerTitle="Extra Document"
-                    downloadFileName={stage2ExtraDraftName || "extra-document.pdf"}
-                  />
-
-                  <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                    <Button variant="secondary" size="sm" onClick={handleAddExtraDocument}>
-                      Add Extra Document
-                    </Button>
-                    {stage2ExtraDocuments.map((document, index) => (
-                      <div
-                        key={document.id || `${document.pdfUrl}-${index}`}
-                        style={{
-                          border: "var(--border-1) solid var(--color-border-primary)",
-                          borderRadius: "var(--radius-md)",
-                          padding: "var(--spacing-1) var(--spacing-2)",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "var(--spacing-1)",
+                  <div>
+                    <div style={sectionLabelStyle}>Extra Documents</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <PdfUploadField
+                        label=""
+                        compact
+                        value={stage2ExtraDraftUrl}
+                        onChange={setStage2ExtraDraftUrl}
+                        onUpload={async (file) => {
+                          setStage2ExtraDraftName(file.name)
+                          return uploadDiscoProcessPdf(file)
                         }}
-                      >
-                        <button
-                          type="button"
-                          style={{ color: "var(--color-primary)", background: "transparent", border: "none", cursor: "pointer" }}
-                          onClick={() =>
-                            showPdf(
-                              document.pdfUrl,
-                              "Extra Document",
-                              document.pdfName || "extra-document.pdf"
-                            )
-                          }
-                        >
-                          {document.pdfName || "extra-document.pdf"}
-                        </button>
-                        <button
-                          type="button"
-                          style={{ color: "var(--color-danger)", background: "transparent", border: "none", cursor: "pointer" }}
-                          onClick={() =>
-                            setStage2ExtraDocuments((prev) =>
-                              prev.filter((_, docIndex) => docIndex !== index)
-                            )
-                          }
-                        >
-                          <X size={12} />
-                        </button>
+                      />
+                      <Button variant="outline" size="sm" onClick={handleAddExtraDocument}>
+                        <Plus size={12} /> Add
+                      </Button>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                        {stage2ExtraDocuments.map((doc, index) => (
+                          <button
+                            key={doc.id || index}
+                            type="button"
+                            style={documentChipStyle}
+                            onClick={() => showPdf(doc.pdfUrl, "Extra Document", doc.pdfName)}
+                          >
+                            <FileText size={10} />
+                            {doc.pdfName?.slice(0, 20) || "Document"}
+                            <X
+                              size={10}
+                              style={{ marginLeft: 4, color: "var(--color-danger)" }}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setStage2ExtraDocuments((prev) =>
+                                  prev.filter((_, i) => i !== index)
+                                )
+                              }}
+                            />
+                          </button>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button variant="primary" loading={stage2Saving} onClick={handleSaveStageTwo}>
-                    Save Step 2 and Move Ahead
-                  </Button>
-                </div>
+                {!viewingHistoryStep && (
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button variant="primary" size="sm" loading={stage2Saving} onClick={handleSaveStageTwo}>
+                      Save & Continue <ChevronRight size={14} />
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {adminCurrentStage === "step3_email" && (
+            {/* Step 3: Committee Email */}
+            {displayedStep === "step3_email" && (
               <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <h4 style={sectionTitleStyle}>Step 3: Committee Email</h4>
+                <div style={sectionLabelStyle}>
+                  <Mail size={12} style={{ display: "inline", marginRight: 4 }} />
+                  Committee Email
+                </div>
 
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                  <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                    Quick Select Recipients (from selected students)
-                  </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
-                    {allStage2Students.map((student) => {
-                      const isSelected = Boolean(selectedRecipientStudentIds[student.userId])
-
-                      return (
-                        <button
-                          key={student.userId}
-                          type="button"
-                          onClick={() => toggleRecipientStudent(student)}
-                          style={{
-                            border: isSelected
-                              ? "var(--border-1) solid var(--color-primary)"
-                              : "var(--border-1) solid var(--color-border-primary)",
-                            borderRadius: "var(--radius-md)",
-                            padding: "var(--spacing-2)",
-                            backgroundColor: isSelected
-                              ? "var(--color-primary-bg)"
-                              : "var(--color-bg-secondary)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {student.name}
-                        </button>
-                      )
-                    })}
-                  </div>
+                {/* Quick Recipients */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {allStage2Students.map((student) => (
+                    <button
+                      key={student.userId}
+                      type="button"
+                      onClick={() => toggleRecipientStudent(student)}
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "var(--radius-badge)",
+                        border: selectedRecipientStudentIds[student.userId]
+                          ? "1px solid var(--color-primary)"
+                          : "1px solid var(--color-border-primary)",
+                        backgroundColor: selectedRecipientStudentIds[student.userId]
+                          ? "var(--color-primary-bg)"
+                          : "var(--color-bg-secondary)",
+                        fontSize: "var(--font-size-xs)",
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      {student.name}
+                    </button>
+                  ))}
                 </div>
 
                 <Textarea
-                  placeholder="Recipient email IDs (comma/new-line separated)"
+                  placeholder="Recipients (comma/newline separated)"
                   rows={2}
                   value={emailTo}
                   onChange={(event) => setEmailTo(event.target.value)}
                 />
+
                 <Input
-                  placeholder="Email subject"
+                  placeholder="Subject"
                   value={emailSubject}
                   onChange={(event) => setEmailSubject(event.target.value)}
                 />
+
                 <Textarea
                   placeholder="Email body"
                   rows={4}
@@ -1568,85 +1673,80 @@ const DisciplinaryProcessPage = () => {
                   onChange={(event) => setEmailBody(event.target.value)}
                 />
 
-                <label style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                  <input
-                    type="checkbox"
-                    checked={includeInitialComplaint}
-                    onChange={(event) => setIncludeInitialComplaint(event.target.checked)}
-                  />
-                  Attach initial complaint PDF
-                </label>
-
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                  <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                    Statement Attachments
+                {/* Attachments */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-2)" }}>
+                  <div style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}>
+                    <Checkbox
+                      checked={includeInitialComplaint}
+                      onChange={(e) => setIncludeInitialComplaint(e.target.checked)}
+                      label="Include Complaint PDF"
+                      size="small"
+                    />
                   </div>
+
                   {(selectedAdminCase.statements || []).map((statement) => (
-                    <label key={statement.id} style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                      <input
-                        type="checkbox"
+                    <div
+                      key={statement.id}
+                      style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}
+                    >
+                      <Checkbox
                         checked={Boolean(selectedStatementAttachmentIds[statement.id])}
-                        onChange={(event) =>
+                        onChange={(e) =>
                           setSelectedStatementAttachmentIds((prev) => ({
                             ...prev,
-                            [statement.id]: event.target.checked,
+                            [statement.id]: e.target.checked,
                           }))
                         }
+                        label={`${statement.student?.name || "Student"} (${getStatementRoleLabel(statement.studentRole)})`}
+                        size="small"
                       />
-                      {statement.student?.name || "Unknown"} ({getStatementRoleLabel(statement.studentRole)}) -{" "}
-                      {statement.statementPdfName || "statement.pdf"}
-                    </label>
+                    </div>
                   ))}
-                </div>
 
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                  <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                    Evidence Attachments
-                  </div>
-                  {(selectedAdminCase.evidenceDocuments || []).map((document) => (
-                    <label key={document.id} style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={Boolean(selectedEvidenceAttachmentIds[document.id])}
-                        onChange={(event) =>
+                  {(selectedAdminCase.evidenceDocuments || []).map((doc) => (
+                    <div
+                      key={doc.id}
+                      style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}
+                    >
+                      <Checkbox
+                        checked={Boolean(selectedEvidenceAttachmentIds[doc.id])}
+                        onChange={(e) =>
                           setSelectedEvidenceAttachmentIds((prev) => ({
                             ...prev,
-                            [document.id]: event.target.checked,
+                            [doc.id]: e.target.checked,
                           }))
                         }
+                        label={doc.pdfName || "Evidence"}
+                        size="small"
                       />
-                      {document.pdfName || "evidence.pdf"}
-                    </label>
+                    </div>
                   ))}
-                </div>
 
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                  <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                    Extra Document Attachments
-                  </div>
-                  {(selectedAdminCase.extraDocuments || []).map((document) => (
-                    <label key={document.id} style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={Boolean(selectedExtraDocumentAttachmentIds[document.id])}
-                        onChange={(event) =>
+                  {(selectedAdminCase.extraDocuments || []).map((doc) => (
+                    <div
+                      key={doc.id}
+                      style={{ padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-secondary)", borderRadius: "var(--radius-md)" }}
+                    >
+                      <Checkbox
+                        checked={Boolean(selectedExtraDocumentAttachmentIds[doc.id])}
+                        onChange={(e) =>
                           setSelectedExtraDocumentAttachmentIds((prev) => ({
                             ...prev,
-                            [document.id]: event.target.checked,
+                            [doc.id]: e.target.checked,
                           }))
                         }
+                        label={doc.pdfName || "Extra Document"}
+                        size="small"
                       />
-                      {document.pdfName || "extra-document.pdf"}
-                    </label>
+                    </div>
                   ))}
                 </div>
 
-                <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                  <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                    Add New Attachment (Optional)
-                  </div>
+                {/* Extra Attachment Upload */}
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
                   <PdfUploadField
-                    label="Extra Attachment PDF"
+                    label=""
+                    compact
                     value={emailExtraDraftUrl}
                     onChange={setEmailExtraDraftUrl}
                     onUpload={async (file) => {
@@ -1654,30 +1754,38 @@ const DisciplinaryProcessPage = () => {
                       return uploadDiscoProcessPdf(file)
                     }}
                   />
-                  <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
-                    <Button variant="secondary" size="sm" onClick={handleAddEmailExtraAttachment}>
-                      Add Attachment
-                    </Button>
-                    {emailExtraAttachments.map((item, index) => (
-                      <Badge key={`${item.url}-${index}`} variant="primary">
-                        {item.fileName}
-                      </Badge>
-                    ))}
-                  </div>
+                  <Button variant="outline" size="sm" onClick={handleAddEmailExtraAttachment}>
+                    <Plus size={12} /> Add
+                  </Button>
+                  {emailExtraAttachments.map((item, index) => (
+                    <Badge key={`${item.url}-${index}`} variant="primary">
+                      {item.fileName}
+                    </Badge>
+                  ))}
                 </div>
 
-                <Button variant="primary" loading={emailSubmitting} onClick={handleSendEmail}>
-                  Send Email and Move Ahead
-                </Button>
+                {!viewingHistoryStep && (
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button variant="primary" size="sm" loading={emailSubmitting} onClick={handleSendEmail}>
+                      <Mail size={14} /> Send & Continue
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {adminCurrentStage === "step4_minutes" && (
+            {/* Step 4: Committee Minutes */}
+            {displayedStep === "step4_minutes" && (
               <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <h4 style={sectionTitleStyle}>Step 4: Committee Minutes</h4>
-                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                  Committee email has been sent. Upload committee meeting minutes PDF.
+                <div style={sectionLabelStyle}>
+                  <FileText size={12} style={{ display: "inline", marginRight: 4 }} />
+                  Committee Minutes
                 </div>
+
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  Email sent to committee. Upload the meeting minutes to proceed.
+                </div>
+
                 <PdfUploadField
                   label="Committee Minutes PDF"
                   value={minutesPdfUrl}
@@ -1687,260 +1795,234 @@ const DisciplinaryProcessPage = () => {
                     return uploadDiscoProcessPdf(file)
                   }}
                 />
-                <Button variant="primary" loading={minutesSubmitting} onClick={handleSaveMinutes}>
-                  Save Minutes and Move Ahead
-                </Button>
+
+                {!viewingHistoryStep && (
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button variant="primary" size="sm" loading={minutesSubmitting} onClick={handleSaveMinutes}>
+                      Save & Continue <ChevronRight size={14} />
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
-            {adminCurrentStage === "step5_final" && (
+            {/* Step 5: Final Decision */}
+            {displayedStep === "step5_final" && (
               <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
-                <h4 style={sectionTitleStyle}>Step 5: Final Decision</h4>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={sectionLabelStyle}>
+                    <Gavel size={12} style={{ display: "inline", marginRight: 4 }} />
+                    Final Decision
+                  </div>
+                  {selectedAdminCase.committeeMeetingMinutes?.pdfUrl && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        showPdf(
+                          selectedAdminCase.committeeMeetingMinutes.pdfUrl,
+                          "Committee Minutes",
+                          selectedAdminCase.committeeMeetingMinutes.pdfName
+                        )
+                      }
+                    >
+                      <Eye size={12} /> Minutes
+                    </Button>
+                  )}
+                </div>
 
-                {selectedAdminCase.committeeMeetingMinutes?.pdfUrl ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      showPdf(
-                        selectedAdminCase.committeeMeetingMinutes.pdfUrl,
-                        "Committee Minutes",
-                        selectedAdminCase.committeeMeetingMinutes.pdfName || "committee-minutes.pdf"
-                      )
-                    }
-                  >
-                    <Eye size={14} /> View Committee Minutes
-                  </Button>
-                ) : null}
-
-                <div style={{ display: "flex", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-                  <label style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                    <input
-                      type="radio"
-                      checked={finalDecisionMode === "action"}
-                      onChange={() => setFinalDecisionMode("action")}
-                    />
-                    Action Against Students
-                  </label>
-                  <label style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                    <input
-                      type="radio"
-                      checked={finalDecisionMode === "reject"}
-                      onChange={() => setFinalDecisionMode("reject")}
-                    />
-                    Reject Case
-                  </label>
+                {/* Decision Mode */}
+                <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+                  <Radio
+                    checked={finalDecisionMode === "action"}
+                    onChange={() => setFinalDecisionMode("action")}
+                    label="Take Action"
+                    name="decisionMode"
+                  />
+                  <Radio
+                    checked={finalDecisionMode === "reject"}
+                    onChange={() => setFinalDecisionMode("reject")}
+                    label="Reject Case"
+                    name="decisionMode"
+                  />
                 </div>
 
                 <Textarea
                   placeholder="Final decision description"
-                  rows={3}
+                  rows={2}
                   value={finalDecisionDescription}
                   onChange={(event) => setFinalDecisionDescription(event.target.value)}
                 />
 
                 {finalDecisionMode === "action" && (
                   <>
-                    <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                      Select Disciplined Students (from accused group)
+                    {/* Select Disciplined Students */}
+                    <div>
+                      <div style={sectionLabelStyle}>Select Disciplined Students</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {stage2AccusedStudents.map((student) => {
+                          const selected = selectedDisciplinedStudents.some(
+                            (item) => item.userId === student.userId
+                          )
+                          return (
+                            <button
+                              key={student.userId}
+                              type="button"
+                              onClick={() => toggleDisciplinedStudent(student)}
+                              style={{
+                                padding: "4px 8px",
+                                borderRadius: "var(--radius-badge)",
+                                border: selected
+                                  ? "1px solid var(--color-danger)"
+                                  : "1px solid var(--color-border-primary)",
+                                backgroundColor: selected
+                                  ? "var(--color-danger-bg)"
+                                  : "var(--color-bg-secondary)",
+                                fontSize: "var(--font-size-xs)",
+                                cursor: "pointer",
+                                transition: "all 0.15s ease",
+                              }}
+                            >
+                              {student.name}
+                            </button>
+                          )
+                        })}
+                      </div>
                     </div>
 
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
-                      {stage2AccusedStudents.map((student) => {
-                        const selected = selectedDisciplinedStudents.some(
-                          (item) => item.userId === student.userId
-                        )
-
-                        return (
-                          <button
-                            key={student.userId}
-                            type="button"
-                            onClick={() => toggleDisciplinedStudent(student)}
-                            style={{
-                              border: selected
-                                ? "var(--border-1) solid var(--color-primary)"
-                                : "var(--border-1) solid var(--color-border-primary)",
-                              borderRadius: "var(--radius-md)",
-                              padding: "var(--spacing-2)",
-                              backgroundColor: selected
-                                ? "var(--color-primary-bg)"
-                                : "var(--color-bg-secondary)",
-                              cursor: "pointer",
-                            }}
-                          >
-                            {student.name}
-                          </button>
-                        )
-                      })}
-                    </div>
-
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-1)" }}>
-                      {selectedDisciplinedStudents.map((student) => (
-                        <Badge key={student.userId} variant="primary">
-                          {student.name}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                      Action Entry Mode
-                    </div>
-                    <div style={{ display: "flex", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-                      <label style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                        <input
-                          type="radio"
-                          checked={finalActionEntryMode === "common"}
-                          onChange={() => setFinalActionEntryMode("common")}
-                        />
-                        Common for all selected students
-                      </label>
-                      <label style={{ display: "inline-flex", gap: "var(--spacing-1)", alignItems: "center" }}>
-                        <input
-                          type="radio"
-                          checked={finalActionEntryMode === "per_student"}
-                          onChange={() => setFinalActionEntryMode("per_student")}
-                        />
-                        Fill separately per student
-                      </label>
+                    {/* Action Entry Mode */}
+                    <div style={{ display: "flex", gap: "var(--spacing-3)" }}>
+                      <Radio
+                        checked={finalActionEntryMode === "common"}
+                        onChange={() => setFinalActionEntryMode("common")}
+                        label="Common action for all"
+                        name="actionEntryMode"
+                      />
+                      <Radio
+                        checked={finalActionEntryMode === "per_student"}
+                        onChange={() => setFinalActionEntryMode("per_student")}
+                        label="Per-student action"
+                        name="actionEntryMode"
+                      />
                     </div>
 
                     {finalActionEntryMode === "common" ? (
-                      <>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                         <Input
-                          placeholder="Reason (common for all selected students)"
+                          placeholder="Reason"
                           value={finalReason}
                           onChange={(event) => setFinalReason(event.target.value)}
                         />
                         <Input
-                          placeholder="Action Taken (common for all selected students)"
+                          placeholder="Action Taken"
                           value={finalActionTaken}
                           onChange={(event) => setFinalActionTaken(event.target.value)}
                         />
-                        <Input
-                          type="date"
-                          value={finalDate}
-                          onChange={(event) => setFinalDate(event.target.value)}
-                        />
-                        <Textarea
-                          placeholder="Remarks (optional)"
-                          rows={2}
-                          value={finalRemarks}
-                          onChange={(event) => setFinalRemarks(event.target.value)}
-                        />
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                          <Input
+                            type="date"
+                            value={finalDate}
+                            onChange={(event) => setFinalDate(event.target.value)}
+                          />
+                          <Input
+                            placeholder="Remarks (optional)"
+                            value={finalRemarks}
+                            onChange={(event) => setFinalRemarks(event.target.value)}
+                          />
+                        </div>
 
-                        <div style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                          <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                            Reminder Items (optional)
-                          </div>
-                          {finalReminderItems.length === 0 ? (
-                            <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                              No reminder items added
-                            </div>
-                          ) : (
-                            finalReminderItems.map((item, index) => (
-                              <div
-                                key={`final-reminder-${index}`}
-                                style={{ display: "grid", gridTemplateColumns: "1fr 180px auto", gap: "var(--spacing-2)", alignItems: "center" }}
-                              >
-                                <Input
-                                  placeholder="Reminder action"
-                                  value={item.action}
-                                  onChange={(event) => updateFinalReminderItem(index, "action", event.target.value)}
-                                />
-                                <Input
-                                  type="date"
-                                  value={item.dueDate}
-                                  onChange={(event) => updateFinalReminderItem(index, "dueDate", event.target.value)}
-                                />
-                                <Button size="sm" variant="ghost" onClick={() => removeFinalReminderItem(index)}>
-                                  <X size={14} />
-                                </Button>
-                              </div>
-                            ))
-                          )}
-                          <div>
-                            <Button size="sm" variant="secondary" onClick={addFinalReminderItem}>
-                              Add Reminder Item
+                        {/* Reminder Items */}
+                        <div style={sectionLabelStyle}>Reminder Items (Optional)</div>
+                        {finalReminderItems.map((item, index) => (
+                          <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 140px auto", gap: "var(--spacing-2)", alignItems: "center" }}>
+                            <Input
+                              placeholder="Reminder action"
+                              value={item.action}
+                              onChange={(event) => updateFinalReminderItem(index, "action", event.target.value)}
+                            />
+                            <Input
+                              type="date"
+                              value={item.dueDate}
+                              onChange={(event) => updateFinalReminderItem(index, "dueDate", event.target.value)}
+                            />
+                            <Button size="sm" variant="ghost" onClick={() => removeFinalReminderItem(index)}>
+                              <X size={12} />
                             </Button>
                           </div>
-                        </div>
-                      </>
+                        ))}
+                        <Button size="sm" variant="outline" onClick={addFinalReminderItem}>
+                          <Plus size={12} /> Add Reminder
+                        </Button>
+                      </div>
                     ) : (
                       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
                         {selectedDisciplinedStudents.length === 0 ? (
-                          <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                            Select disciplined students first
+                          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", fontStyle: "italic" }}>
+                            Select students first
                           </div>
                         ) : (
                           selectedDisciplinedStudents.map((student) => {
                             const studentAction = finalStudentActionMap[student.userId] || createStudentActionDraft()
-
                             return (
                               <div
-                                key={`student-action-${student.userId}`}
-                                style={{ ...cardStyle, padding: "var(--spacing-3)", display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}
+                                key={student.userId}
+                                style={{
+                                  padding: "var(--spacing-3)",
+                                  backgroundColor: "var(--color-bg-secondary)",
+                                  borderRadius: "var(--radius-md)",
+                                  border: "1px solid var(--color-border-primary)",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "var(--spacing-2)",
+                                }}
                               >
-                                <div style={{ color: "var(--color-text-primary)", fontWeight: "var(--font-weight-semibold)" }}>
+                                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)", fontSize: "var(--font-size-sm)" }}>
                                   {student.name}
                                 </div>
                                 <Input
-                                  placeholder={`Reason for ${student.name}`}
+                                  placeholder="Reason"
                                   value={studentAction.reason}
                                   onChange={(event) => updateStudentActionField(student.userId, "reason", event.target.value)}
                                 />
                                 <Input
-                                  placeholder={`Action taken for ${student.name}`}
+                                  placeholder="Action Taken"
                                   value={studentAction.actionTaken}
                                   onChange={(event) => updateStudentActionField(student.userId, "actionTaken", event.target.value)}
                                 />
-                                <Input
-                                  type="date"
-                                  value={studentAction.date || ""}
-                                  onChange={(event) => updateStudentActionField(student.userId, "date", event.target.value)}
-                                />
-                                <Textarea
-                                  placeholder="Remarks (optional)"
-                                  rows={2}
-                                  value={studentAction.remarks || ""}
-                                  onChange={(event) => updateStudentActionField(student.userId, "remarks", event.target.value)}
-                                />
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                                  <Input
+                                    type="date"
+                                    value={studentAction.date || ""}
+                                    onChange={(event) => updateStudentActionField(student.userId, "date", event.target.value)}
+                                  />
+                                  <Input
+                                    placeholder="Remarks"
+                                    value={studentAction.remarks || ""}
+                                    onChange={(event) => updateStudentActionField(student.userId, "remarks", event.target.value)}
+                                  />
+                                </div>
 
-                                <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                                  <div style={{ color: "var(--color-text-secondary)", fontWeight: "var(--font-weight-medium)" }}>
-                                    Reminder Items (optional)
-                                  </div>
-                                  {(studentAction.reminderItems || []).length === 0 ? (
-                                    <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                                      No reminder items added
-                                    </div>
-                                  ) : (
-                                    (studentAction.reminderItems || []).map((item, index) => (
-                                      <div
-                                        key={`student-${student.userId}-reminder-${index}`}
-                                        style={{ display: "grid", gridTemplateColumns: "1fr 180px auto", gap: "var(--spacing-2)", alignItems: "center" }}
-                                      >
-                                        <Input
-                                          placeholder="Reminder action"
-                                          value={item.action}
-                                          onChange={(event) => updateStudentReminderItem(student.userId, index, "action", event.target.value)}
-                                        />
-                                        <Input
-                                          type="date"
-                                          value={item.dueDate}
-                                          onChange={(event) => updateStudentReminderItem(student.userId, index, "dueDate", event.target.value)}
-                                        />
-                                        <Button size="sm" variant="ghost" onClick={() => removeStudentReminderItem(student.userId, index)}>
-                                          <X size={14} />
-                                        </Button>
-                                      </div>
-                                    ))
-                                  )}
-                                  <div>
-                                    <Button size="sm" variant="secondary" onClick={() => addStudentReminderItem(student.userId)}>
-                                      Add Reminder Item
+                                {/* Student Reminder Items */}
+                                {(studentAction.reminderItems || []).map((item, index) => (
+                                  <div key={index} style={{ display: "grid", gridTemplateColumns: "1fr 140px auto", gap: "var(--spacing-2)", alignItems: "center" }}>
+                                    <Input
+                                      placeholder="Reminder action"
+                                      value={item.action}
+                                      onChange={(event) => updateStudentReminderItem(student.userId, index, "action", event.target.value)}
+                                    />
+                                    <Input
+                                      type="date"
+                                      value={item.dueDate}
+                                      onChange={(event) => updateStudentReminderItem(student.userId, index, "dueDate", event.target.value)}
+                                    />
+                                    <Button size="sm" variant="ghost" onClick={() => removeStudentReminderItem(student.userId, index)}>
+                                      <X size={12} />
                                     </Button>
                                   </div>
-                                </div>
+                                ))}
+                                <Button size="sm" variant="outline" onClick={() => addStudentReminderItem(student.userId)}>
+                                  <Plus size={12} /> Add Reminder
+                                </Button>
                               </div>
                             )
                           })
@@ -1950,37 +2032,24 @@ const DisciplinaryProcessPage = () => {
                   </>
                 )}
 
-                <Button
-                  variant={finalDecisionMode === "reject" ? "danger" : "success"}
-                  loading={finalDecisionSubmitting}
-                  onClick={handleFinalizeCase}
-                >
-                  {finalDecisionMode === "reject"
-                    ? "Reject Case"
-                    : "Finalize and Create Disciplinary Actions"}
-                </Button>
-              </div>
-            )}
-
-            {adminCurrentStage === "closed_final" && (
-              <div style={{ ...cardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-                <h4 style={sectionTitleStyle}>Case Closed</h4>
-                <Badge
-                  variant={
-                    selectedAdminCase.finalDecision?.status === "action_taken"
-                      ? "success"
-                      : "danger"
-                  }
-                >
-                  Final Status: {formatStatusLabel(selectedAdminCase.finalDecision?.status || "closed")}
-                </Badge>
-                <div style={{ color: "var(--color-text-body)" }}>
-                  {selectedAdminCase.finalDecision?.decisionDescription || "No final description provided"}
-                </div>
-                {selectedAdminCase.finalDecision?.createdDisCoActionIds?.length > 0 && (
-                  <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                    Created DisCo action IDs:{" "}
-                    {selectedAdminCase.finalDecision.createdDisCoActionIds.join(", ")}
+                {!viewingHistoryStep && (
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      variant={finalDecisionMode === "reject" ? "danger" : "success"}
+                      size="sm"
+                      loading={finalDecisionSubmitting}
+                      onClick={handleFinalizeCase}
+                    >
+                      {finalDecisionMode === "reject" ? (
+                        <>
+                          <X size={14} /> Reject Case
+                        </>
+                      ) : (
+                        <>
+                          <Gavel size={14} /> Finalize & Create Actions
+                        </>
+                      )}
+                    </Button>
                   </div>
                 )}
               </div>
@@ -1989,6 +2058,7 @@ const DisciplinaryProcessPage = () => {
         )}
       </Modal>
 
+      {/* PDF Viewer Modal */}
       <PdfViewerModal
         isOpen={pdfViewer.open}
         onClose={() =>

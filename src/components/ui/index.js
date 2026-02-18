@@ -59,12 +59,14 @@ export { default as Badge } from './data-display/Badge'
 export { default as Avatar, AvatarGroup } from './data-display/Avatar'
 export { default as Tag } from './data-display/Tag'
 export { default as StatCards, StatCard } from './data-display/StatCard'
+export { default as CompactStudentTag, StudentTagGroup } from './data-display/CompactStudentTag'
 
 // ==============================================
 // NAVIGATION COMPONENTS
 // ==============================================
 export { default as Pagination } from './navigation/Pagination'
 export { default as Breadcrumb } from './navigation/Breadcrumb'
+export { default as StepIndicator } from './navigation/StepIndicator'
 
 // ==============================================
 // OVERLAY COMPONENTS
