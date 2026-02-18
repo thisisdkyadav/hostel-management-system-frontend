@@ -356,6 +356,24 @@ export const adminApi = {
     return apiClient.put("/config/registeredStudents", { value: registeredStudents })
   },
 
+  // ==================== Academic Holidays Management ====================
+
+  /**
+   * Get academic holidays configuration
+   * Value shape: { "2025": [{ title, date }], "2026": [...] }
+   */
+  getAcademicHolidays: () => {
+    return apiClient.get("/config/academicHolidays")
+  },
+
+  /**
+   * Update academic holidays configuration
+   * @param {Object} academicHolidays - Year-wise holiday map
+   */
+  updateAcademicHolidays: (academicHolidays) => {
+    return apiClient.put("/config/academicHolidays", { value: academicHolidays })
+  },
+
   // ==================== System Settings ====================
 
   /**

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments } from "react-icons/hi"
+import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments, HiCalendar } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
+import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import toast from "react-hot-toast"
@@ -19,6 +20,7 @@ const SettingsPage = () => {
     degrees: false,
     departments: false,
     registeredStudents: false,
+    academicHolidays: false,
     systemSettings: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -26,6 +28,7 @@ const SettingsPage = () => {
   const [degrees, setDegrees] = useState([])
   const [departments, setDepartments] = useState([])
   const [registeredStudents, setRegisteredStudents] = useState({})
+  const [academicHolidays, setAcademicHolidays] = useState({})
   const [systemSettings, setSystemSettings] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
@@ -33,6 +36,7 @@ const SettingsPage = () => {
     degrees: null,
     departments: null,
     registeredStudents: null,
+    academicHolidays: null,
     systemSettings: null,
   })
 
@@ -67,6 +71,8 @@ const SettingsPage = () => {
       if (Object.keys(registeredStudents).length === 0) {
         fetchRegisteredStudents()
       }
+    } else if (activeTab === "academicHolidays" && Object.keys(academicHolidays).length === 0) {
+      fetchAcademicHolidays()
     } else if (activeTab === "systemSettings" && Object.keys(systemSettings).length === 0) {
       fetchSystemSettings()
     }
@@ -164,6 +170,23 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, systemSettings: false }))
+    }
+  }
+
+  const fetchAcademicHolidays = async () => {
+    setLoading((prev) => ({ ...prev, academicHolidays: true }))
+    setError((prev) => ({ ...prev, academicHolidays: null }))
+    try {
+      const response = await adminApi.getAcademicHolidays()
+      setAcademicHolidays(response.value || {})
+    } catch (err) {
+      console.error("Error fetching academic holidays:", err)
+      setError((prev) => ({
+        ...prev,
+        academicHolidays: "Failed to load academic holidays. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, academicHolidays: false }))
     }
   }
 
@@ -301,6 +324,24 @@ const SettingsPage = () => {
     }
   }
 
+  const handleUpdateAcademicHolidays = async (updatedAcademicHolidays) => {
+    const confirmUpdate = window.confirm("Are you sure you want to update academic holidays?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, academicHolidays: true }))
+    try {
+      const response = await adminApi.updateAcademicHolidays(updatedAcademicHolidays)
+      setAcademicHolidays(response.configuration?.value || {})
+      setSuccessMessage(`Academic holidays updated successfully on ${new Date().toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating academic holidays:", err)
+      toast.error("An error occurred while updating academic holidays. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, academicHolidays: false }))
+    }
+  }
+
   if (user?.role !== "Admin") {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg-tertiary)] px-4">
@@ -354,6 +395,12 @@ const SettingsPage = () => {
                 <button onClick={() => setActiveTab("registeredStudents")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "registeredStudents" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiUsers className="mr-2 h-5 w-5" />
                   Registered Students
+                </button>
+              </li>
+              <li className="mr-2">
+                <button onClick={() => setActiveTab("academicHolidays")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "academicHolidays" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                  <HiCalendar className="mr-2 h-5 w-5" />
+                  Academic Holidays
                 </button>
               </li>
               <li className="mr-2">
@@ -459,6 +506,33 @@ const SettingsPage = () => {
                     </div>
                   ) : (
                     <RegisteredStudentsForm degrees={degrees} registeredStudents={registeredStudents} onUpdate={handleUpdateRegisteredStudents} isLoading={loading.registeredStudents} />
+                  )}
+                </>
+              )}
+
+              {/* Academic Holidays Tab */}
+              {activeTab === "academicHolidays" && (
+                <>
+                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
+                    <div className="flex-shrink-0 mt-0.5 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10m-11 9h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm">Manage year-wise academic holidays. Create a year first, then add holiday title and date entries for that year.</p>
+                  </div>
+
+                  {loading.academicHolidays && Object.keys(academicHolidays).length === 0 ? (
+                    <div className="flex justify-center py-6">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
+                    </div>
+                  ) : (
+                    <AcademicHolidaysForm
+                      key={JSON.stringify(academicHolidays)}
+                      academicHolidays={academicHolidays}
+                      onUpdate={handleUpdateAcademicHolidays}
+                      isLoading={loading.academicHolidays}
+                    />
                   )}
                 </>
               )}

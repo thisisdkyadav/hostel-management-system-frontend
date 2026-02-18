@@ -77,6 +77,18 @@ const CATEGORY_BADGE_BACKGROUNDS = {
   technical: "#FFFBEB",  // Amber-50
 }
 
+const CALENDAR_WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+const CALENDAR_DAY_TINT = {
+  holiday: "var(--color-warning-bg)",
+  saturday: "var(--color-primary-bg)",
+  sunday: "var(--color-danger-bg-light)",
+}
+const CALENDAR_DAY_BORDER = {
+  holiday: "var(--color-warning)",
+  saturday: "var(--color-primary)",
+  sunday: "var(--color-danger-light)",
+}
+
 const getCategoryBadgeStyle = (category) => ({
   backgroundColor: CATEGORY_BADGE_BACKGROUNDS[category] || "var(--color-primary-bg)",
   color: CATEGORY_COLORS[category] || "var(--color-primary)",
@@ -276,6 +288,15 @@ const getEventStatusVariant = (status) => {
 const toDate = (value) => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+const formatDateKey = (value) => {
+  const parsed = toDate(value)
+  if (!parsed) return null
+  const year = parsed.getFullYear()
+  const month = String(parsed.getMonth() + 1).padStart(2, "0")
+  const day = String(parsed.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
 }
 
 const startOfDay = (dateValue) => {
@@ -611,6 +632,7 @@ const EventsPage = () => {
   const [viewMode, setViewMode] = useState("list")
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("all")
   const [calendarMonth, setCalendarMonth] = useState(new Date())
+  const [calendarHolidays, setCalendarHolidays] = useState([])
 
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [showEventModal, setShowEventModal] = useState(false)
@@ -711,6 +733,21 @@ const EventsPage = () => {
     if (activeCategoryFilter === "all") return events
     return events.filter((event) => event.category === activeCategoryFilter)
   }, [events, activeCategoryFilter])
+  const holidaysByDate = useMemo(() => {
+    const map = new Map()
+    for (const holiday of calendarHolidays || []) {
+      const dateKey = formatDateKey(holiday?.date)
+      if (!dateKey) continue
+      if (!map.has(dateKey)) {
+        map.set(dateKey, [])
+      }
+      map.get(dateKey).push({
+        title: holiday?.title || "Holiday",
+        date: dateKey,
+      })
+    }
+    return map
+  }, [calendarHolidays])
   const budgetStats = useMemo(
     () => [
       {
@@ -962,6 +999,39 @@ const EventsPage = () => {
     }
   }, [selectedYear])
 
+  useEffect(() => {
+    if (!calendar?._id || viewMode !== "calendar") {
+      setCalendarHolidays([])
+      return
+    }
+
+    const loadCalendarMonthView = async () => {
+      try {
+        const monthStart = new Date(
+          calendarMonth.getFullYear(),
+          calendarMonth.getMonth(),
+          1
+        )
+        const monthEnd = new Date(
+          calendarMonth.getFullYear(),
+          calendarMonth.getMonth() + 1,
+          0
+        )
+
+        const response = await gymkhanaEventsApi.getCalendarView({
+          startDate: formatDateKey(monthStart),
+          endDate: formatDateKey(monthEnd),
+        })
+        const data = response.data || response || {}
+        setCalendarHolidays(Array.isArray(data.holidays) ? data.holidays : [])
+      } catch {
+        setCalendarHolidays([])
+      }
+    }
+
+    loadCalendarMonthView()
+  }, [calendar?._id, calendarMonth, viewMode])
+
   const getPendingExpenseApprovals = async () => {
     if (!isAdminLevel) return []
 
@@ -1119,7 +1189,7 @@ const EventsPage = () => {
     const firstDay = new Date(year, month, 1)
     const lastDay = new Date(year, month + 1, 0)
     const daysInMonth = lastDay.getDate()
-    const startingDayOfWeek = firstDay.getDay()
+    const startingDayOfWeek = (firstDay.getDay() + 6) % 7
 
     const days = []
     for (let i = 0; i < startingDayOfWeek; i += 1) {
@@ -1127,6 +1197,9 @@ const EventsPage = () => {
     }
     for (let i = 1; i <= daysInMonth; i += 1) {
       days.push(new Date(year, month, i))
+    }
+    while (days.length % 7 !== 0) {
+      days.push(null)
     }
     return days
   }
@@ -1142,6 +1215,13 @@ const EventsPage = () => {
       if (!start || !end) return false
       return start <= dayEnd && end >= dayStart
     })
+  }
+
+  const getHolidaysForDate = (date) => {
+    if (!date) return []
+    const dateKey = formatDateKey(date)
+    if (!dateKey) return []
+    return holidaysByDate.get(dateKey) || []
   }
 
   const toFormModel = (event) => {
@@ -2230,37 +2310,140 @@ const toCalendarEventPayload = (event) => {
                 </Button>
               </div>
 
+              <div
+                style={{
+                  display: "flex",
+                  gap: "var(--spacing-3)",
+                  flexWrap: "wrap",
+                  marginBottom: "var(--spacing-3)",
+                }}
+              >
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "var(--spacing-1)",
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--color-text-muted)",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: CALENDAR_DAY_TINT.holiday,
+                      border: "1px solid var(--color-warning)",
+                    }}
+                  />
+                  Holiday
+                </span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "var(--spacing-1)",
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--color-text-muted)",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: CALENDAR_DAY_TINT.saturday,
+                      border: "1px solid var(--color-primary)",
+                    }}
+                  />
+                  Saturday
+                </span>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "var(--spacing-1)",
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--color-text-muted)",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "var(--radius-full)",
+                      backgroundColor: CALENDAR_DAY_TINT.sunday,
+                      border: "1px solid var(--color-danger-light)",
+                    }}
+                  />
+                  Sunday
+                </span>
+              </div>
+
               <div style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(7, 1fr)",
                 gap: "var(--spacing-1)",
               }}>
-                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                  <div key={day} style={{
-                    padding: "var(--spacing-2)",
-                    textAlign: "center",
-                    fontWeight: "var(--font-weight-semibold)",
-                    fontSize: "var(--font-size-xs)",
-                    color: "var(--color-text-muted)",
-                  }}>
-                    {day}
-                  </div>
-                ))}
+                {CALENDAR_WEEKDAY_LABELS.map((day, dayIndex) => {
+                  const isSaturdayHeader = dayIndex === 5
+                  const isSundayHeader = dayIndex === 6
+                  return (
+                    <div key={day} style={{
+                      padding: "var(--spacing-2)",
+                      textAlign: "center",
+                      fontWeight: "var(--font-weight-semibold)",
+                      fontSize: "var(--font-size-xs)",
+                      color: "var(--color-text-muted)",
+                      borderRadius: "var(--radius-xs)",
+                      backgroundColor: isSaturdayHeader
+                        ? CALENDAR_DAY_TINT.saturday
+                        : isSundayHeader
+                          ? CALENDAR_DAY_TINT.sunday
+                          : "transparent",
+                    }}>
+                      {day}
+                    </div>
+                  )
+                })}
 
                 {getDaysInMonth(calendarMonth).map((date, index) => {
                   const dayEvents = date ? getEventsForDate(date) : []
+                  const dayHolidays = date ? getHolidaysForDate(date) : []
                   const isToday = date?.toDateString() === new Date().toDateString()
+                  const weekday = date?.getDay()
+                  const isSaturday = weekday === 6
+                  const isSunday = weekday === 0
+                  const isHoliday = dayHolidays.length > 0
+                  const dayBackground = !date
+                    ? "transparent"
+                    : isHoliday
+                      ? CALENDAR_DAY_TINT.holiday
+                      : isSaturday
+                        ? CALENDAR_DAY_TINT.saturday
+                        : isSunday
+                          ? CALENDAR_DAY_TINT.sunday
+                          : "var(--color-bg-primary)"
+
+                  const shownEvents = dayEvents.slice(0, isHoliday ? 1 : 2)
+                  const remainingEventCount = dayEvents.length - shownEvents.length
 
                   return (
                     <div
                       key={index}
                       style={{
-                        minHeight: "88px",
+                        minHeight: "96px",
                         padding: "var(--spacing-1)",
-                        backgroundColor: date ? "var(--color-bg-primary)" : "transparent",
+                        backgroundColor: dayBackground,
                         border: isToday
                           ? "var(--border-2) solid var(--color-primary)"
-                          : "var(--border-1) solid var(--color-border-primary)",
+                          : isHoliday
+                            ? `var(--border-1) solid ${CALENDAR_DAY_BORDER.holiday}`
+                            : isSaturday
+                              ? `var(--border-1) solid ${CALENDAR_DAY_BORDER.saturday}`
+                              : isSunday
+                                ? `var(--border-1) solid ${CALENDAR_DAY_BORDER.sunday}`
+                                : "var(--border-1) solid var(--color-border-primary)",
                         borderRadius: "var(--radius-sm)",
                       }}
                     >
@@ -2274,7 +2457,28 @@ const toCalendarEventPayload = (event) => {
                           }}>
                             {date.getDate()}
                           </div>
-                          {dayEvents.slice(0, 2).map((event, i) => (
+
+                          {dayHolidays.slice(0, 1).map((holiday) => (
+                            <div
+                              key={`${holiday.date}-${holiday.title}`}
+                              title={holiday.title}
+                              style={{
+                                fontSize: "var(--font-size-xs)",
+                                padding: "var(--spacing-0-5) var(--spacing-1)",
+                                marginBottom: "var(--spacing-0-5)",
+                                backgroundColor: "var(--color-warning)",
+                                color: "var(--color-warningFg, #000)",
+                                borderRadius: "var(--radius-xs)",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              Holiday: {holiday.title}
+                            </div>
+                          ))}
+
+                          {shownEvents.map((event, i) => (
                             <div
                               key={i}
                               onClick={() => handleEventClick(event)}
@@ -2294,12 +2498,12 @@ const toCalendarEventPayload = (event) => {
                               {event.title}
                             </div>
                           ))}
-                          {dayEvents.length > 2 && (
+                          {remainingEventCount > 0 && (
                             <div style={{
                               fontSize: "var(--font-size-xs)",
                               color: "var(--color-text-muted)",
                             }}>
-                              +{dayEvents.length - 2} more
+                              +{remainingEventCount} more
                             </div>
                           )}
                         </>
@@ -2677,7 +2881,6 @@ const toCalendarEventPayload = (event) => {
                       onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
                       disabled={!canEditProposalForm}
                     />
-                  />
 
                   <Checkbox
                     name="hasRegistrationFee"
