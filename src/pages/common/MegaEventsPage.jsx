@@ -597,7 +597,12 @@ const MegaEventsPage = () => {
   const canCreateEventsCapability = true
   const canApproveEventsCapability = true
   const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
-  const parsedApprovalLimit = Number(maxApprovalAmountConstraint)
+  const hasApprovalLimitValue = !(
+    maxApprovalAmountConstraint === null ||
+    maxApprovalAmountConstraint === undefined ||
+    (typeof maxApprovalAmountConstraint === "string" && maxApprovalAmountConstraint.trim() === "")
+  )
+  const parsedApprovalLimit = hasApprovalLimitValue ? Number(maxApprovalAmountConstraint) : null
   const maxApprovalAmount = Number.isFinite(parsedApprovalLimit) && parsedApprovalLimit >= 0
     ? parsedApprovalLimit
     : null
@@ -657,7 +662,7 @@ const MegaEventsPage = () => {
 
   const canReviewProposal = useMemo(() => {
     if (!canApproveEventsCapability) return false
-    if (!proposalData?.status || !isAdminLevel) return false
+    if (!proposalData?.status || !user?.subRole) return false
     if (!canApproveCurrentProposalAmount) return false
     const requiredApprover = getRequiredApproverForProposal(proposalData.status)
     if (!requiredApprover) return false
@@ -667,7 +672,6 @@ const MegaEventsPage = () => {
     proposalData?.status,
     canApproveEventsCapability,
     canApproveCurrentProposalAmount,
-    isAdminLevel,
     user?.role,
     user?.subRole,
   ])
@@ -689,8 +693,16 @@ const MegaEventsPage = () => {
     user?.subRole,
   ])
 
-  const requiresProposalStageSelection =
-    proposalData?.status === "pending_student_affairs" || proposalData?.status === "pending"
+  const requiresProposalStageSelection = useMemo(
+    () =>
+      Boolean(
+        canReviewProposal &&
+          user?.subRole === "Student Affairs" &&
+          (proposalData?.status === "pending_student_affairs" ||
+            proposalData?.status === "pending")
+      ),
+    [canReviewProposal, proposalData?.status, user?.subRole]
+  )
   const requiresExpenseStageSelection =
     expenseData?.approvalStatus === "pending_student_affairs" || expenseData?.approvalStatus === "pending"
 
@@ -793,8 +805,8 @@ const MegaEventsPage = () => {
 
     try {
       const [proposalResponse, expenseResponse] = await Promise.all([
-        gymkhanaEventsApi.getProposalByEvent(occurrence._id).catch(() => null),
-        gymkhanaEventsApi.getExpenseByEvent(occurrence._id).catch(() => null),
+        gymkhanaEventsApi.getMegaOccurrenceProposal(occurrence._id).catch(() => null),
+        gymkhanaEventsApi.getMegaOccurrenceExpense(occurrence._id).catch(() => null),
       ])
 
       const loadedProposal = proposalResponse?.data?.proposal || proposalResponse?.proposal || null
@@ -957,9 +969,9 @@ const MegaEventsPage = () => {
     try {
       setSubmitting(true)
       if (proposalData?._id) {
-        await gymkhanaEventsApi.updateProposal(proposalData._id, payload)
+        await gymkhanaEventsApi.updateMegaOccurrenceProposal(selectedOccurrence._id, payload)
       } else {
-        await gymkhanaEventsApi.createProposal(selectedOccurrence._id, payload)
+        await gymkhanaEventsApi.createMegaOccurrenceProposal(selectedOccurrence._id, payload)
       }
       toast.success("Proposal saved")
       await loadProposalAndExpense(selectedOccurrence)
@@ -988,8 +1000,8 @@ const MegaEventsPage = () => {
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.approveProposal(
-        proposalData._id,
+      await gymkhanaEventsApi.approveMegaOccurrenceProposal(
+        selectedOccurrence._id,
         proposalComments,
         requiresProposalStageSelection ? proposalNextApprovalStages : []
       )
@@ -1017,7 +1029,7 @@ const MegaEventsPage = () => {
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectProposal(proposalData._id, proposalComments.trim())
+      await gymkhanaEventsApi.rejectMegaOccurrenceProposal(selectedOccurrence._id, proposalComments.trim())
       toast.success("Proposal rejected")
       setProposalHistoryRefreshKey((value) => value + 1)
       await loadProposalAndExpense(selectedOccurrence)
@@ -1042,7 +1054,10 @@ const MegaEventsPage = () => {
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.requestRevision(proposalData._id, proposalComments.trim())
+      await gymkhanaEventsApi.requestMegaOccurrenceProposalRevision(
+        selectedOccurrence._id,
+        proposalComments.trim()
+      )
       toast.success("Revision requested")
       setProposalHistoryRefreshKey((value) => value + 1)
       await loadProposalAndExpense(selectedOccurrence)
@@ -1081,9 +1096,9 @@ const MegaEventsPage = () => {
     try {
       setSubmitting(true)
       if (expenseData?._id) {
-        await gymkhanaEventsApi.updateExpense(expenseData._id, payload)
+        await gymkhanaEventsApi.updateMegaOccurrenceExpense(selectedOccurrence._id, payload)
       } else {
-        await gymkhanaEventsApi.submitExpense(selectedOccurrence._id, payload)
+        await gymkhanaEventsApi.submitMegaOccurrenceExpense(selectedOccurrence._id, payload)
       }
       toast.success("Expense saved")
       await loadProposalAndExpense(selectedOccurrence)
@@ -1112,8 +1127,8 @@ const MegaEventsPage = () => {
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.approveExpense(
-        expenseData._id,
+      await gymkhanaEventsApi.approveMegaOccurrenceExpense(
+        selectedOccurrence._id,
         expenseComments,
         requiresExpenseStageSelection ? expenseNextApprovalStages : []
       )
@@ -1141,7 +1156,7 @@ const MegaEventsPage = () => {
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectExpense(expenseData._id, expenseComments.trim())
+      await gymkhanaEventsApi.rejectMegaOccurrenceExpense(selectedOccurrence._id, expenseComments.trim())
       toast.success("Expense rejected")
       setExpenseHistoryRefreshKey((value) => value + 1)
       await loadProposalAndExpense(selectedOccurrence)
@@ -1616,7 +1631,10 @@ const MegaEventsPage = () => {
             <Card>
               <CardContent>
                 <h4 className="mb-2 text-sm font-semibold text-[var(--color-text-secondary)]">Approval History</h4>
-                <ApprovalHistory key={`proposal-${proposalData._id}-${proposalHistoryRefreshKey}`} proposalId={proposalData._id} />
+                <ApprovalHistory
+                  key={`proposal-${selectedOccurrence?._id}-${proposalHistoryRefreshKey}`}
+                  megaProposalOccurrenceId={selectedOccurrence?._id}
+                />
               </CardContent>
             </Card>
           )}
@@ -2282,7 +2300,10 @@ const MegaEventsPage = () => {
             <Card>
               <CardContent>
                 <h4 className="mb-2 text-sm font-semibold text-[var(--color-text-secondary)]">Approval History</h4>
-                <ApprovalHistory key={`expense-${expenseData._id}-${expenseHistoryRefreshKey}`} expenseId={expenseData._id} />
+                <ApprovalHistory
+                  key={`expense-${selectedOccurrence?._id}-${expenseHistoryRefreshKey}`}
+                  megaExpenseOccurrenceId={selectedOccurrence?._id}
+                />
               </CardContent>
             </Card>
           )}

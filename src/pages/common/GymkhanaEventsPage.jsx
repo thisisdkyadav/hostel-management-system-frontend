@@ -3435,7 +3435,7 @@ const toCalendarEventPayload = (event) => {
                         <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "repeat(4, 1fr)" }}>
                           <div>
                             <label style={formLabelStyles} htmlFor={`bill-description-${bill.localId}`}>
-                              Description
+                              Description *
                             </label>
                             <Input
                               id={`bill-description-${bill.localId}`}
@@ -3450,7 +3450,7 @@ const toCalendarEventPayload = (event) => {
                           </div>
                           <div>
                             <label style={formLabelStyles} htmlFor={`bill-amount-${bill.localId}`}>
-                              Amount (₹)
+                              Amount (₹) *
                             </label>
                             <Input
                               id={`bill-amount-${bill.localId}`}
@@ -3525,6 +3525,7 @@ const toCalendarEventPayload = (event) => {
                             )
                           }}
                           onUpload={uploadBillDocument}
+                          required
                           disabled={!canEditExpenseForm}
                           uploadedText="Uploaded"
                           viewerTitle={`Bill ${index + 1}`}
@@ -3548,6 +3549,7 @@ const toCalendarEventPayload = (event) => {
                       value={expenseForm.eventReportDocumentUrl}
                       onChange={(url) => handleExpenseFormChange("eventReportDocumentUrl", url)}
                       onUpload={uploadEventReportDocument}
+                      required
                       disabled={!canEditExpenseForm}
                       uploadedText="Uploaded"
                       viewerTitle="Event Report"

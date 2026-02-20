@@ -178,6 +178,105 @@ export const gymkhanaEventsApi = {
     return apiClient.post(`${BASE_PATH}/mega-series/${seriesId}/occurrences`, data)
   },
 
+  /**
+   * Get proposal for a mega occurrence
+   */
+  getMegaOccurrenceProposal: (occurrenceId) => {
+    return apiClient.get(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal`)
+  },
+
+  /**
+   * Create proposal for a mega occurrence (President Gymkhana)
+   */
+  createMegaOccurrenceProposal: (occurrenceId, data) => {
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal`, data)
+  },
+
+  /**
+   * Update proposal for a mega occurrence (President Gymkhana)
+   */
+  updateMegaOccurrenceProposal: (occurrenceId, data) => {
+    return apiClient.put(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal`, data)
+  },
+
+  /**
+   * Approve proposal for a mega occurrence (Admin chain)
+   */
+  approveMegaOccurrenceProposal: (occurrenceId, comments = "", nextApprovalStages = []) => {
+    const payload = { comments }
+    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
+      payload.nextApprovalStages = nextApprovalStages
+    }
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal/approve`, payload)
+  },
+
+  /**
+   * Reject proposal for a mega occurrence (Admin chain)
+   */
+  rejectMegaOccurrenceProposal: (occurrenceId, reason) => {
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal/reject`, { reason })
+  },
+
+  /**
+   * Request revision on a mega occurrence proposal (Admin chain)
+   */
+  requestMegaOccurrenceProposalRevision: (occurrenceId, comments) => {
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal/revision`, { comments })
+  },
+
+  /**
+   * Get proposal history for a mega occurrence
+   */
+  getMegaOccurrenceProposalHistory: (occurrenceId) => {
+    return apiClient.get(`${BASE_PATH}/mega-occurrences/${occurrenceId}/proposal/history`)
+  },
+
+  /**
+   * Get expense for a mega occurrence
+   */
+  getMegaOccurrenceExpense: (occurrenceId) => {
+    return apiClient.get(`${BASE_PATH}/mega-occurrences/${occurrenceId}/expenses`)
+  },
+
+  /**
+   * Submit expense for a mega occurrence (GS Gymkhana)
+   */
+  submitMegaOccurrenceExpense: (occurrenceId, data) => {
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/expenses`, data)
+  },
+
+  /**
+   * Update expense for a mega occurrence (GS Gymkhana)
+   */
+  updateMegaOccurrenceExpense: (occurrenceId, data) => {
+    return apiClient.put(`${BASE_PATH}/mega-occurrences/${occurrenceId}/expenses`, data)
+  },
+
+  /**
+   * Approve expense for a mega occurrence (Admin chain)
+   */
+  approveMegaOccurrenceExpense: (occurrenceId, comments = "", nextApprovalStages = []) => {
+    const payload = { comments }
+    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
+      payload.nextApprovalStages = nextApprovalStages
+    }
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/expenses/approve`, payload)
+  },
+
+  /**
+   * Reject expense for a mega occurrence (Admin chain)
+   */
+  rejectMegaOccurrenceExpense: (occurrenceId, reason) => {
+    return apiClient.post(`${BASE_PATH}/mega-occurrences/${occurrenceId}/expenses/reject`, { reason })
+  },
+
+  /**
+   * Get expense history for a mega occurrence
+   */
+  getMegaOccurrenceExpenseHistory: (occurrenceId) => {
+    return apiClient.get(`${BASE_PATH}/mega-occurrences/${occurrenceId}/expenses/history`)
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // PROPOSAL OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════

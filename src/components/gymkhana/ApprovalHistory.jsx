@@ -23,7 +23,13 @@ const ACTION_COLORS = {
     revision_requested: "warning",
 }
 
-const ApprovalHistory = ({ calendarId = null, proposalId = null, expenseId = null }) => {
+const ApprovalHistory = ({
+    calendarId = null,
+    proposalId = null,
+    expenseId = null,
+    megaProposalOccurrenceId = null,
+    megaExpenseOccurrenceId = null,
+}) => {
     const [loading, setLoading] = useState(true)
     const [history, setHistory] = useState([])
     const [error, setError] = useState(null)
@@ -31,24 +37,28 @@ const ApprovalHistory = ({ calendarId = null, proposalId = null, expenseId = nul
     const fetchHistory = useCallback(async () => {
         try {
             setLoading(true)
-            const res = proposalId
-                ? await gymkhanaEventsApi.getProposalHistory(proposalId)
-                : expenseId
-                    ? await gymkhanaEventsApi.getExpenseHistory(expenseId)
-                    : await gymkhanaEventsApi.getCalendarHistory(calendarId)
+            const res = megaProposalOccurrenceId
+                ? await gymkhanaEventsApi.getMegaOccurrenceProposalHistory(megaProposalOccurrenceId)
+                : megaExpenseOccurrenceId
+                    ? await gymkhanaEventsApi.getMegaOccurrenceExpenseHistory(megaExpenseOccurrenceId)
+                    : proposalId
+                        ? await gymkhanaEventsApi.getProposalHistory(proposalId)
+                        : expenseId
+                            ? await gymkhanaEventsApi.getExpenseHistory(expenseId)
+                            : await gymkhanaEventsApi.getCalendarHistory(calendarId)
             setHistory(res.data?.history || res.history || [])
         } catch (err) {
             setError(err.message || "Failed to load history")
         } finally {
             setLoading(false)
         }
-    }, [calendarId, proposalId, expenseId])
+    }, [calendarId, proposalId, expenseId, megaProposalOccurrenceId, megaExpenseOccurrenceId])
 
     useEffect(() => {
-        if (calendarId || proposalId || expenseId) {
+        if (calendarId || proposalId || expenseId || megaProposalOccurrenceId || megaExpenseOccurrenceId) {
             fetchHistory()
         }
-    }, [calendarId, proposalId, expenseId, fetchHistory])
+    }, [calendarId, proposalId, expenseId, megaProposalOccurrenceId, megaExpenseOccurrenceId, fetchHistory])
 
     if (loading) {
         return (
