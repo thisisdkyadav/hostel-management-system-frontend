@@ -208,7 +208,6 @@ const StudentAuthzEditorModal = ({
     for (const capabilityDef of catalog?.capabilities || []) {
       map.set(capabilityDef.key, capabilityDef.label)
     }
-    map.set("*", "Wildcard Capability")
     return map
   }, [catalog])
 
@@ -684,12 +683,13 @@ const AuthzManagementPage = () => {
       ...(override.denyRoutes || []),
     ]).filter((key) => validRouteKeys.has(key))
 
-    const allCapabilityKeys = ["*", ...(activeCatalog?.capabilities || []).map((item) => item.key)]
+    const validCapabilityKeys = new Set((activeCatalog?.capabilities || []).map((item) => item.key))
+    const allCapabilityKeys = (activeCatalog?.capabilities || []).map((item) => item.key)
     const capabilityOptionKeys = unique([
       ...allCapabilityKeys,
       ...(override.allowCapabilities || []),
       ...(override.denyCapabilities || []),
-    ])
+    ]).filter((key) => validCapabilityKeys.has(key))
 
     setRouteSelections(toSelectionMap(routeOptionKeys, override.allowRoutes, override.denyRoutes))
     setCapabilitySelections(toSelectionMap(capabilityOptionKeys, override.allowCapabilities, override.denyCapabilities))
