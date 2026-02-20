@@ -3,7 +3,6 @@ import { discoApi } from "../../../service"
 import { Check, Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
 import { Button } from "czero/react"
-import useAuthz from "../../../hooks/useAuthz"
 
 const formatDisplayDate = (value) => {
   if (!value) return "-"
@@ -13,8 +12,7 @@ const formatDisplayDate = (value) => {
 }
 
 const DisCoActions = ({ userId }) => {
-  const { can } = useAuthz()
-  const canManageDisciplinaryActions = can("cap.students.disciplinary.manage")
+  const canManageDisciplinaryActions = true
   const [actions, setActions] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentAction, setCurrentAction] = useState(null)

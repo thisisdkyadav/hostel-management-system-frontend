@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Upload, Eye } from "lucide-react"
 import { Button } from "czero/react"
 import { useToast } from "@/components/ui/feedback"
+import { Label } from "@/components/ui/form"
 import PdfViewerModal from "./PdfViewerModal"
 
 const resolveUploadedUrl = (uploadResult) => {
@@ -17,6 +18,7 @@ const PdfUploadField = ({
   onChange,
   onUpload,
   disabled = false,
+  required = false,
   maxSizeMb = 5,
   uploadedText = "Document uploaded",
   viewerTitle = "Document",
@@ -79,9 +81,9 @@ const PdfUploadField = ({
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
-        <label style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+        <Label size="sm" required={required} style={{ color: "var(--color-text-muted)" }}>
           {label}
-        </label>
+        </Label>
 
         {value ? (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)", padding: "var(--spacing-3)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-secondary)" }}>

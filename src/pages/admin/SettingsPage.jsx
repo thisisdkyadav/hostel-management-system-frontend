@@ -11,11 +11,9 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import toast from "react-hot-toast"
 import { Card } from "@/components/ui"
-import useAuthz from "../../hooks/useAuthz"
 
 const SettingsPage = () => {
   const { user } = useAuth()
-  const { can } = useAuthz()
   const [activeTab, setActiveTab] = useState("studentFields")
   const [loading, setLoading] = useState({
     studentFields: false,
@@ -42,58 +40,28 @@ const SettingsPage = () => {
     systemSettings: null,
   })
 
-  const SETTINGS_CAPABILITIES = {
-    studentFields: {
-      view: "cap.settings.studentFields.view",
-      update: "cap.settings.studentFields.update",
-    },
-    degrees: {
-      view: "cap.settings.degrees.view",
-      update: "cap.settings.degrees.update",
-      rename: "cap.settings.degrees.rename",
-    },
-    departments: {
-      view: "cap.settings.departments.view",
-      update: "cap.settings.departments.update",
-      rename: "cap.settings.departments.rename",
-    },
-    registeredStudents: {
-      view: "cap.settings.registeredStudents.view",
-      update: "cap.settings.registeredStudents.update",
-    },
-    academicHolidays: {
-      view: "cap.settings.academicHolidays.view",
-      update: "cap.settings.academicHolidays.update",
-    },
-    systemSettings: {
-      view: "cap.settings.system.view",
-      update: "cap.settings.system.update",
-    },
-  }
-
-  const canSettingsView = can("cap.settings.view")
-  const canSettingsUpdate = can("cap.settings.update")
+  const SETTINGS_TABS = [
+    "studentFields",
+    "degrees",
+    "departments",
+    "registeredStudents",
+    "academicHolidays",
+    "systemSettings",
+  ]
 
   const canViewTab = (tab) => {
-    const viewCapability = SETTINGS_CAPABILITIES?.[tab]?.view
-    if (!viewCapability) return canSettingsView
-    return canSettingsView || can(viewCapability)
+    return SETTINGS_TABS.includes(tab)
   }
 
   const canUpdateTab = (tab) => {
-    const updateCapability = SETTINGS_CAPABILITIES?.[tab]?.update
-    if (!updateCapability) return canSettingsUpdate
-    return canSettingsUpdate || can(updateCapability)
+    return SETTINGS_TABS.includes(tab)
   }
 
   const canRenameInTab = (tab) => {
-    const renameCapability = SETTINGS_CAPABILITIES?.[tab]?.rename
-    if (!renameCapability) return canUpdateTab(tab)
-    return canUpdateTab(tab) || can(renameCapability)
+    return canUpdateTab(tab)
   }
 
-  const hasAnySettingsView =
-    canSettingsView || Object.keys(SETTINGS_CAPABILITIES).some((tab) => canViewTab(tab))
+  const hasAnySettingsView = SETTINGS_TABS.some((tab) => canViewTab(tab))
 
   const handleTabChange = (tab) => {
     if (!canViewTab(tab)) {
@@ -125,7 +93,7 @@ const SettingsPage = () => {
 
   useEffect(() => {
     if (!canViewTab(activeTab)) {
-      const firstAllowedTab = Object.keys(SETTINGS_CAPABILITIES).find((tab) => canViewTab(tab))
+      const firstAllowedTab = SETTINGS_TABS.find((tab) => canViewTab(tab))
       if (firstAllowedTab && firstAllowedTab !== activeTab) {
         setActiveTab(firstAllowedTab)
       }

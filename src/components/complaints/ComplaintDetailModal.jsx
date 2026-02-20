@@ -26,12 +26,12 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
   const canUpdateComplaint =
     user &&
     ["Maintenance Staff", "Warden", "Associate Warden", "Admin", "Hostel Supervisor", "Super Admin"].includes(user.role) &&
-    canAny(["cap.complaints.resolve", "cap.complaints.review"])
+    true
 
   const canViewReporterProfile =
     user &&
     ["Admin", "Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) &&
-    canAny(["cap.students.detail.view", "cap.students.view"])
+    true
 
   const handleComplaintUpdate = (updatedComplaint) => {
     setComplaintData(updatedComplaint)

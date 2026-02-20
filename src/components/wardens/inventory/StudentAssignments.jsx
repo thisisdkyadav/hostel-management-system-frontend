@@ -4,12 +4,10 @@ import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } fr
 import { Pagination, Select, Textarea } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { useAuth } from "../../../contexts/AuthProvider"
-import useAuthz from "../../../hooks/useAuthz"
 
 const StudentAssignments = () => {
   const { user } = useAuth()
-  const { can } = useAuthz()
-  const canManageStudentInventory = can("cap.inventory.edit")
+  const canManageStudentInventory = true
   const [studentInventory, setStudentInventory] = useState([])
   const [totalPages, setTotalPages] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)

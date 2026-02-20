@@ -8,12 +8,10 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 import { Card } from "@/components/ui"
 import { Button } from "czero/react"
-import useAuthz from "../../hooks/useAuthz"
 
 const EventCard = ({ event, refresh }) => {
   const { user } = useAuth()
-  const { can } = useAuthz()
-  const canManageEvents = ["Admin"].includes(user?.role) && can("cap.events.create")
+  const canManageEvents = ["Admin"].includes(user?.role) && true
 
   const [isEditing, setIsEditing] = useState(false)
   const [showDetailModal, setShowDetailModal] = useState(false)

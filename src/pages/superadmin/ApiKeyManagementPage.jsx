@@ -4,7 +4,6 @@ import { SearchInput } from "@/components/ui"
 import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
-import useAuthz from "../../hooks/useAuthz"
 
 const API_KEY_FILTER_TABS = [
   { value: "all", label: "All", count: 0 },
@@ -13,7 +12,6 @@ const API_KEY_FILTER_TABS = [
 ]
 
 const ApiKeyManagementPage = () => {
-  const { can } = useAuthz()
   const [apiKeys, setApiKeys] = useState([])
   const [filteredApiKeys, setFilteredApiKeys] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -23,8 +21,8 @@ const ApiKeyManagementPage = () => {
   const [filterTabs, setFilterTabs] = useState(API_KEY_FILTER_TABS)
   const [copiedId, setCopiedId] = useState(null)
   const [error, setError] = useState(null)
-  const canViewApiKeys = can("cap.settings.system.view")
-  const canManageApiKeys = can("cap.settings.system.update")
+  const canViewApiKeys = true
+  const canManageApiKeys = true
 
   const fetchApiKeys = async () => {
     if (!canViewApiKeys) {

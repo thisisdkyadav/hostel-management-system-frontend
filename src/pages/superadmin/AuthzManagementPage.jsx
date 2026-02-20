@@ -4,7 +4,6 @@ import { Card, SearchInput } from "@/components/ui"
 import { FaSlidersH, FaUserShield } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 import { authzApi } from "../../service"
-import useAuthz from "../../hooks/useAuthz"
 import AuthzFieldGuide from "../../components/authz/AuthzFieldGuide"
 import { getFilteredHintKeysFromCatalog } from "../../utils/authzRouteCapabilityHints"
 
@@ -594,9 +593,8 @@ const StudentAuthzEditorModal = ({
 
 const AuthzManagementPage = () => {
   const navigate = useNavigate()
-  const { can } = useAuthz()
-  const canViewAuthz = can("cap.authz.view")
-  const canUpdateAuthz = can("cap.authz.update")
+  const canViewAuthz = true
+  const canUpdateAuthz = true
 
   const [catalog, setCatalog] = useState(null)
   const [students, setStudents] = useState([])
@@ -909,7 +907,7 @@ const AuthzManagementPage = () => {
         <Card>
           <Card.Body className="p-6">
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Access Denied</h2>
-            <p className="mt-2 text-sm text-[var(--color-text-muted)]">You do not have capability `cap.authz.view`.</p>
+            <p className="mt-2 text-sm text-[var(--color-text-muted)]">You do not have access to the AuthZ management route.</p>
           </Card.Body>
         </Card>
       </div>

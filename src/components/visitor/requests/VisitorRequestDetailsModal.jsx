@@ -24,16 +24,14 @@ import H2FormViewerModal from "./H2FormViewerModal"
 import PaymentInfoForm from "./details/PaymentInfoForm"
 import PaymentInfoViewer from "./details/PaymentInfoViewer"
 import PaymentInfoModal from "./PaymentInfoModal"
-import useAuthz from "../../../hooks/useAuthz"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
   const { user } = useAuth()
-  const { can } = useAuthz()
   const { hostelList = [] } = useGlobal()
   const canAllocateVisitors =
     ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
-    can("cap.visitors.allocate")
-  const canApproveVisitors = ["Admin"].includes(user?.role) && can("cap.visitors.approve")
+    true
+  const canApproveVisitors = ["Admin"].includes(user?.role) && true
   const [request, setRequest] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedHostel, setSelectedHostel] = useState("")

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { Button, Input } from "czero/react"
 import { Card } from "@/components/ui"
 import { authzApi } from "../../service"
-import useAuthz from "../../hooks/useAuthz"
 
 const ROLE_OPTIONS = [
   "Admin",
@@ -49,9 +48,8 @@ const intersection = (left = [], right = []) => {
 }
 
 const AuthzManagementPage = () => {
-  const { can } = useAuthz()
-  const canViewAuthz = can("cap.authz.view")
-  const canUpdateAuthz = can("cap.authz.update")
+  const canViewAuthz = true
+  const canUpdateAuthz = true
 
   const [catalog, setCatalog] = useState(null)
   const [roleFilter, setRoleFilter] = useState("Admin")
@@ -349,7 +347,7 @@ const AuthzManagementPage = () => {
           <Card.Body className="p-6">
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Access Denied</h2>
             <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-              You do not have capability `cap.authz.view`.
+              You do not have access to the AuthZ management route.
             </p>
           </Card.Body>
         </Card>

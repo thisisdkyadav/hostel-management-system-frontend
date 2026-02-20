@@ -1,6 +1,5 @@
 import React from "react"
 import { Button } from "czero/react"
-import useAuthz from "../../../../hooks/useAuthz"
 
 const ActionButtons = ({
   userRole,
@@ -22,14 +21,13 @@ const ActionButtons = ({
   isCheckOutForm,
   isCheckTimes,
 }) => {
-  const { can } = useAuthz()
   const isPending = requestStatus === "Pending"
   const isApproved = requestStatus === "Approved"
   const isRejected = requestStatus === "Rejected"
   const canAllocateVisitors =
     ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) &&
-    can("cap.visitors.allocate")
-  const canApproveVisitors = userRole === "Admin" && can("cap.visitors.approve")
+    true
+  const canApproveVisitors = userRole === "Admin" && true
 
   const buttonBaseStyle = {
     padding: "var(--spacing-2) var(--spacing-4)",

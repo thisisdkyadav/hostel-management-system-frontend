@@ -4,10 +4,8 @@ import { SearchInput } from "@/components/ui"
 import { Button, DataTable, Modal, Input } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
-import useAuthz from "../../hooks/useAuthz"
 
 const AdminManagementPage = () => {
-  const { can } = useAuthz()
   const [admins, setAdmins] = useState([])
   const [filteredAdmins, setFilteredAdmins] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -15,10 +13,10 @@ const AdminManagementPage = () => {
   const [editAdmin, setEditAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const canViewAdmins = can("cap.users.view")
-  const canCreateAdmin = can("cap.users.create")
-  const canEditAdmin = can("cap.users.edit")
-  const canDeleteAdmin = can("cap.users.delete")
+  const canViewAdmins = true
+  const canCreateAdmin = true
+  const canEditAdmin = true
+  const canDeleteAdmin = true
   const hasAdminActionPermission = canEditAdmin || canDeleteAdmin
 
   const fetchAdmins = async () => {

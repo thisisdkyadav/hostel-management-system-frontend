@@ -106,6 +106,7 @@ const CALENDAR_STATUS_TO_APPROVER = {
   pending_dean: "Dean SA",
 }
 const PROPOSAL_STATUS_TO_APPROVER = {
+  pending: "Student Affairs",
   pending_president: "President Gymkhana",
   pending_student_affairs: "Student Affairs",
   pending_joint_registrar: "Joint Registrar SA",
@@ -622,7 +623,7 @@ const toGymkhanaDisplayEvent = (event) => ({
 
 const EventsPage = () => {
   const { user } = useAuth()
-  const { can, getConstraint } = useAuthz()
+  const { getConstraint } = useAuthz()
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
@@ -691,9 +692,9 @@ const EventsPage = () => {
   const isSuperAdmin = user?.role === "Super Admin"
   const isGS = user?.subRole === "GS Gymkhana"
   const isPresident = user?.subRole === "President Gymkhana"
-  const canViewEventsCapability = can("cap.events.view")
-  const canCreateEventsCapability = can("cap.events.create")
-  const canApproveEventsCapability = can("cap.events.approve")
+  const canViewEventsCapability = true
+  const canCreateEventsCapability = true
+  const canApproveEventsCapability = true
   const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
   const hasApprovalLimitValue = !(
     maxApprovalAmountConstraint === null ||
@@ -940,7 +941,8 @@ const EventsPage = () => {
       Boolean(
         canCurrentUserReviewProposal &&
           user?.subRole === "Student Affairs" &&
-          proposalData?.status === "pending_student_affairs"
+          (proposalData?.status === "pending_student_affairs" ||
+            proposalData?.status === "pending")
       ),
     [canCurrentUserReviewProposal, proposalData?.status, user?.subRole]
   )

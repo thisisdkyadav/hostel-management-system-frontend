@@ -7,11 +7,9 @@ import { Button, Input } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 import { useAuth } from "../../../contexts/AuthProvider"
-import useAuthz from "../../../hooks/useAuthz"
 const HealthTab = ({ userId }) => {
   const { user } = useAuth()
-  const { can } = useAuthz()
-  const canEditHealth = can("cap.students.edit.health")
+  const canEditHealth = true
   const [healthData, setHealthData] = useState(null)
   const [insuranceClaims, setInsuranceClaims] = useState([])
   const [insuranceProviders, setInsuranceProviders] = useState([])

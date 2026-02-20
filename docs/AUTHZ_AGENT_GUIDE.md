@@ -1,89 +1,58 @@
 # Frontend AuthZ Agent Guide
 
-## Purpose
+## Current Model
 
-This guide is for future coding agents working on frontend authorization behavior.
+Frontend authz is route-first.
 
-Current frontend access model:
-1. RBAC route shell remains via existing role routes/layouts.
-2. Layer-3 AuthZ controls route visibility and in-page actions.
+1. Navigation/page availability is controlled by Layer-3 route keys.
+2. Capability usage is intentionally reduced to one pilot only:
+   - `cap.students.edit.personal`
+3. Constraint usage is intentionally reduced to one pilot only:
+   - `constraint.complaints.scope.hostelIds`
 
-Legacy frontend permission helper (`canAccess`) and access-control API are retired and must not be reintroduced.
+Do not reintroduce retired permission helpers/APIs.
 
-## Core Files (Frontend)
+## Core Files
 
-1. AuthZ context/provider:
-   - `src/contexts/AuthzProvider.jsx`
-2. AuthZ hook:
-   - `src/hooks/useAuthz.js`
-3. AuthZ helpers:
-   - `src/utils/authz.js`
-4. AuthZ API client:
-   - `src/service/modules/authz.api.js`
-5. Guard components:
-   - `src/components/authz/RouteAccessGuard.jsx`
-   - `src/components/authz/CapabilityGuard.jsx`
-6. Provider wiring:
-   - `src/App.jsx` (must include `AuthzProvider`)
+1. Provider: `src/contexts/AuthzProvider.jsx`
+2. Hook: `src/hooks/useAuthz.js`
+3. Helpers: `src/utils/authz.js`
+4. Route guard: `src/components/authz/RouteAccessGuard.jsx`
+5. Superadmin authz UI: `src/pages/superadmin/AuthzManagementPage.jsx`
+6. Help page: `src/pages/superadmin/AuthzHelpPage.jsx`
 
-## Frontend Authorization Pattern (Required)
+## What Is Capability-Gated Right Now
 
-Use these patterns:
+Only student personal edit UI remains capability-gated:
+`src/components/common/students/StudentDetailModal.jsx`
 
-1. Route/page protection:
-   - `RouteAccessGuard routeKey="route.xxx"` for route elements.
-2. Nav filtering:
-   - Use `useAuthz().canRouteByPath(path)` or key-based checks when building nav items.
-3. Action/button visibility:
-   - Use `useAuthz().can("cap.xxx")`, `canAny(...)`, `canAll(...)`
-   - Or wrap with `CapabilityGuard`.
-4. Constraint-driven UI:
-   - Use `getConstraint("constraint.xxx", fallback)` for scoped enable/disable/editability.
+Capability-route hint mapping is limited to student routes:
+`src/utils/authzRouteCapabilityHints.js`
 
-Always keep backend enforcement in mind: UI guards are UX + first line, backend is final authority.
+## Required Pattern For New UI Work
 
-## Adding a New Feature (Frontend)
+1. Add/update route key in backend catalog.
+2. Gate route/page with `RouteAccessGuard` and route-aware nav visibility.
+3. Do not add new capability checks unless explicitly requested for a planned pilot.
 
-When adding a new page/action:
+## If A New Capability Is Needed Later
 
-1. Coordinate with backend to add catalog keys (`route.*`, `cap.*`, optional `constraint.*`).
-2. Add route config in the correct role routes file and apply `RouteAccessGuard`.
-3. Add nav item and filter it through AuthZ route access.
-4. Guard sensitive actions with capability checks.
-5. If feature has partial edit rules, read constraints and reflect in UI controls.
-6. Keep existing hard-coded role boundaries intact unless explicitly changed by product decision.
+Add incrementally for one feature at a time:
+1. Add key in backend catalog.
+2. Enforce in backend endpoints.
+3. Add minimal frontend checks (`can`, `canAny`, `CapabilityGuard`) only for that feature.
+4. Add clear help text in superadmin authz help/editor.
 
-## Adding a New Role/User Type (Frontend)
+## If A New Constraint Is Needed Later
 
-If a new role is introduced:
+1. Add key in backend catalog.
+2. Enforce in backend service logic.
+3. Use `getConstraint(...)` in frontend only where UX must adapt.
+4. Explain the constraint in help docs/modal text.
 
-1. Add role home routing behavior in auth/route shells as needed.
-2. Add a dedicated layout/routes set or extend existing role family safely.
-3. Ensure nav configuration exists for that role and is AuthZ-aware.
-4. Ensure page-level route guards use matching `route.<roleFamily>.*` keys.
-5. Ensure in-page actions use capability keys and not role-name conditionals wherever possible.
+## Guardrails
 
-## Hard-Coded Boundaries Rule
-
-Some controls are intentionally fixed by role (example: admin-only controls).
-Do not convert these into freely configurable AuthZ toggles unless explicitly instructed.
-AuthZ should refine allowed surface, not silently expand fixed business boundaries.
-
-## Anti-Patterns (Do Not Do)
-
-1. Do not add `canAccess` back.
-2. Do not call retired `/permissions` APIs.
-3. Do not rely only on hidden buttons for security assumptions.
-4. Do not hard-code new role checks for actions when a capability key exists or should exist.
-
-## Quick Pre-Merge Checklist (Frontend)
-
-1. New page has route guard (`RouteAccessGuard`) when appropriate.
-2. New nav items are filtered by AuthZ route access.
-3. Sensitive actions are capability-guarded.
-4. Constraint-aware fields/components read constraints from AuthZ context.
-5. No legacy permission symbols:
-   - `canAccess`
-   - `accessControlApi`
-   - `/permissions`
-
+1. Keep hard-coded role boundaries unchanged unless explicitly asked.
+2. Route checks are the default mechanism.
+3. Avoid broad capability frameworks before per-feature agreement.
+4. Keep naming consistent with backend catalog keys.

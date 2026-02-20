@@ -6,13 +6,11 @@ import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
 import { getMediaUrl } from "../utils/mediaUtils"
 import { Card } from "@/components/ui"
 import { Button } from "czero/react"
-import useAuthz from "../hooks/useAuthz"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
-  const { can } = useAuthz()
-  const canViewFeedback = can("cap.feedback.view")
-  const canReactFeedback = can("cap.feedback.react")
-  const canCreateFeedback = can("cap.feedback.create")
+  const canViewFeedback = true
+  const canReactFeedback = true
+  const canCreateFeedback = true
 
   const [isUpdating, setIsUpdating] = useState(false)
   const [status, setStatus] = useState(feedback.status)

@@ -14,7 +14,7 @@ import useAuthz from "../../hooks/useAuthz"
 
 const ComplaintsPage = () => {
   const { user } = useAuth()
-  const { can, getConstraint } = useAuthz()
+  const { getConstraint } = useAuthz()
   const { hostelList = [] } = useGlobal()
   const constrainedHostelIds = getConstraint("constraint.complaints.scope.hostelIds", [])
   const hostels = useMemo(() => {
@@ -34,9 +34,9 @@ const ComplaintsPage = () => {
     return hostelList.filter((hostel) => allowedHostelIds.has(hostel._id))
   }, [constrainedHostelIds, hostelList, user?.role])
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
-  const canViewComplaints = can("cap.complaints.view")
+  const canViewComplaints = true
   const canCreateComplaint =
-    can("cap.complaints.create") &&
+    true &&
     WHO_CAN_CREATE_COMPLAINT.includes(user?.role)
 
   const [filters, setFilters] = useState({

@@ -3,11 +3,9 @@ import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
 import { Button } from "czero/react"
-import useAuthz from "../../../hooks/useAuthz"
 
 const FamilyDetails = ({ userId }) => {
-  const { can } = useAuthz()
-  const canEditFamilyDetails = can("cap.students.family.edit")
+  const canEditFamilyDetails = true
   const [familyDetails, setFamilyDetails] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)

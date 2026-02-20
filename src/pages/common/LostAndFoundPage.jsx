@@ -9,7 +9,6 @@ import LostAndFoundHeader from "../../components/headers/LostAndFoundHeader"
 import { filterLostItems } from "../../utils/adminUtils"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
-import useAuthz from "../../hooks/useAuthz"
 import { MdInventory } from "react-icons/md"
 
 const LOST_FILTER_TABS = [
@@ -20,9 +19,8 @@ const LOST_FILTER_TABS = [
 
 const LostAndFoundPage = () => {
   const { user } = useAuth()
-  const { can } = useAuthz()
-  const canViewLostAndFound = can("cap.lostAndFound.view")
-  const canCreateLostAndFound = can("cap.lostAndFound.create")
+  const canViewLostAndFound = true
+  const canCreateLostAndFound = true
 
   const [activeTab, setActiveTab] = useState("Active")
   const [searchTerm, setSearchTerm] = useState("")

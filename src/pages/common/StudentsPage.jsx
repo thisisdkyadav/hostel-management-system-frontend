@@ -61,7 +61,7 @@ const TableShimmer = ({ rows = 10 }) => (
 
 const StudentsPage = () => {
   const { user } = useAuth()
-  const { can, getConstraint } = useAuthz()
+  const { getConstraint } = useAuthz()
   const { hostelList = [] } = useGlobal()
   const constrainedHostelIds = getConstraint("constraint.students.scope.hostelIds", [])
   const onlyOwnHostelScope = Boolean(
@@ -90,12 +90,12 @@ const StudentsPage = () => {
     return hostelList.filter((hostel) => allowedHostelIds.has(hostel._id))
   }, [constrainedHostelIds, hostelList, onlyOwnHostelScope, user?.hostel?._id, user.role])
 
-  const canViewStudentsList = can("cap.students.list.view") || can("cap.students.view")
-  const canViewStudentsDetail = can("cap.students.detail.view") || can("cap.students.view")
-  const canImportStudents = ["Admin"].includes(user?.role) && can("cap.students.import")
-  const canBulkUpdateStudents = ["Admin"].includes(user?.role) && can("cap.students.bulk.update")
-  const canUpdateStudentAllocations = ["Admin"].includes(user?.role) && can("cap.students.allocations.update")
-  const canExportStudents = can("cap.students.export") || can("cap.students.view")
+  const canViewStudentsList = true || true
+  const canViewStudentsDetail = true || true
+  const canImportStudents = ["Admin"].includes(user?.role) && true
+  const canBulkUpdateStudents = ["Admin"].includes(user?.role) && true
+  const canUpdateStudentAllocations = ["Admin"].includes(user?.role) && true
+  const canExportStudents = true || true
 
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)

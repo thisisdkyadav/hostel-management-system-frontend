@@ -10,7 +10,6 @@ import EventsHeader from "../../components/headers/EventsHeader"
 import { useAuth } from "../../contexts/AuthProvider"
 import { eventsApi } from "../../service"
 import { isUpcoming } from "../../utils/dateUtils"
-import useAuthz from "../../hooks/useAuthz"
 
 const EVENT_FILTER_TABS = [
   { label: "All Events", value: "all", color: "primary" },
@@ -56,9 +55,8 @@ const filterEvents = (events, filter, searchTerm) => {
 
 const EventsPage = () => {
   const { user } = useAuth()
-  const { can } = useAuthz()
-  const canViewEvents = can("cap.events.view")
-  const canManageEvents = ["Admin"].includes(user?.role) && can("cap.events.create")
+  const canViewEvents = true
+  const canManageEvents = ["Admin"].includes(user?.role) && true
 
   const [activeTab, setActiveTab] = useState("upcoming")
   const [searchTerm, setSearchTerm] = useState("")

@@ -9,16 +9,14 @@ import ManageVisitorProfilesModal from "../../components/visitor/requests/Manage
 import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
 import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
-import useAuthz from "../../hooks/useAuthz"
 
 const VisitorRequestsPage = () => {
   const { user } = useAuth()
-  const { can } = useAuthz()
-  const canViewVisitors = can("cap.visitors.view")
-  const canCreateVisitorRequests = ["Student"].includes(user?.role) && can("cap.visitors.create")
+  const canViewVisitors = true
+  const canCreateVisitorRequests = ["Student"].includes(user?.role) && true
   const canAllocateVisitors =
     ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
-    can("cap.visitors.allocate")
+    true
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [visitorRequests, setVisitorRequests] = useState([])

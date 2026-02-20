@@ -3,7 +3,6 @@
  */
 
 const normalizeKey = (value) => (typeof value === "string" ? value.trim() : "")
-const ACTIVE_CAPABILITY_KEYS = new Set(["cap.students.edit.personal"])
 const normalizePath = (value) => {
   if (typeof value !== "string") return ""
 
@@ -56,9 +55,6 @@ export const canCapability = (effectiveAuthz, capabilityKey) => {
   const key = normalizeKey(capabilityKey)
   if (!key) return false
 
-  // Capability rollout is paused except selected pilot keys.
-  if (!ACTIVE_CAPABILITY_KEYS.has(key)) return true
-
   if (!effectiveAuthz) return true
 
   const explicit = effectiveAuthz.capabilities?.[key]
@@ -73,16 +69,12 @@ export const canCapability = (effectiveAuthz, capabilityKey) => {
 
 export const canAnyCapability = (effectiveAuthz, keys = []) => {
   if (!Array.isArray(keys) || keys.length === 0) return false
-  const activeKeys = keys.filter((key) => ACTIVE_CAPABILITY_KEYS.has(normalizeKey(key)))
-  if (activeKeys.length === 0) return true
-  return activeKeys.some((key) => canCapability(effectiveAuthz, key))
+  return keys.some((key) => canCapability(effectiveAuthz, key))
 }
 
 export const canAllCapabilities = (effectiveAuthz, keys = []) => {
   if (!Array.isArray(keys) || keys.length === 0) return false
-  const activeKeys = keys.filter((key) => ACTIVE_CAPABILITY_KEYS.has(normalizeKey(key)))
-  if (activeKeys.length === 0) return true
-  return activeKeys.every((key) => canCapability(effectiveAuthz, key))
+  return keys.every((key) => canCapability(effectiveAuthz, key))
 }
 
 export const getConstraint = (effectiveAuthz, key, fallback = null) => {

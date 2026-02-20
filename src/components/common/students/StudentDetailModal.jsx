@@ -44,8 +44,8 @@ import { Button, Modal, Input } from "czero/react"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
   const { user } = useAuth()
   const { can } = useAuthz()
-  const canAssignInventory = can("cap.inventory.assign")
-  const canEditInventory = can("cap.inventory.edit")
+  const canAssignInventory = true
+  const canEditInventory = true
   const canEditStudentProfile = can("cap.students.edit.personal")
 
   const [studentDetails, setStudentDetails] = useState({})

@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
-import useAuthz from "../../../hooks/useAuthz"
 import { Button } from "czero/react"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 
 const Certificates = ({ userId }) => {
-  const { can } = useAuthz()
-  const canManageCertificates = can("cap.students.certificates.manage")
+  const canManageCertificates = true
   const [certificates, setCertificates] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentCertificate, setCurrentCertificate] = useState(null)
