@@ -8,6 +8,13 @@ import apiClient from "../core/apiClient"
 const BASE_PATH = "/student-affairs/events"
 
 export const gymkhanaEventsApi = {
+  /**
+   * Get dashboard summary for Gymkhana dashboard page
+   */
+  getDashboardSummary: (daysUntilDue = 21) => {
+    return apiClient.get(`${BASE_PATH}/dashboard/summary`, { params: { daysUntilDue } })
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // CALENDAR OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════

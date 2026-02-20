@@ -33,33 +33,19 @@ const DashboardPage = () => {
         try {
             setLoading(true)
             setError(null)
-
-            // Fetch academic years and pending proposals in parallel
-            const [calendarsRes, pendingRes] = await Promise.all([
-                gymkhanaEventsApi.getAcademicYears(),
-                gymkhanaEventsApi.getPendingProposals(21),
-            ])
-
-            // Get current year's calendar details
-            const yearsList = calendarsRes.data?.years || calendarsRes.years || []
-            const currentYear = yearsList[0]
-            let currentCalendar = null
-            let totalEvents = 0
-            if (currentYear?.academicYear) {
-                try {
-                    const calendarRes = await gymkhanaEventsApi.getCalendarByYear(currentYear.academicYear)
-                    currentCalendar = calendarRes.data?.calendar || calendarRes.calendar || null
-                    totalEvents = currentCalendar?.events?.length || 0
-                } catch (err) {
-                    if (err.status !== 404) {
-                        throw err
-                    }
-                }
-            }
+            const summaryRes = await gymkhanaEventsApi.getDashboardSummary(21)
+            const currentCalendar = summaryRes.currentCalendar || summaryRes.data?.currentCalendar || null
+            const totalEvents = summaryRes.totalEvents || summaryRes.data?.totalEvents || 0
+            const pendingProposalsCount =
+                summaryRes.pendingProposalsCount ||
+                summaryRes.data?.pendingProposalsCount ||
+                summaryRes.pendingProposals?.length ||
+                summaryRes.data?.pendingProposals?.length ||
+                0
 
             setStats({
                 totalEvents,
-                pendingProposals: pendingRes.data?.events?.length || pendingRes.events?.length || 0,
+                pendingProposals: pendingProposalsCount,
                 upcomingEvents: 0, // Would need events query
                 currentCalendar,
             })
