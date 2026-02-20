@@ -1,13 +1,18 @@
 const unique = (items = []) => [...new Set((items || []).filter(Boolean))]
 
+const ROUTE_KEYS_WITH_NO_CAPABILITY_HINT = new Set([
+  "route.admin.dashboard",
+  "route.warden.dashboard",
+  "route.associateWarden.dashboard",
+  "route.hostelSupervisor.dashboard",
+  "route.hostelGate.dashboard",
+  "route.maintenance.dashboard",
+  "route.student.dashboard",
+  "route.gymkhana.dashboard",
+])
+
 const ROUTE_CAPABILITY_HINTS = {
   "route.superAdmin.dashboard": ["cap.users.view", "cap.settings.system.view"],
-  "route.warden.dashboard": ["cap.students.list.view", "cap.students.view"],
-  "route.associateWarden.dashboard": ["cap.students.list.view", "cap.students.view"],
-  "route.hostelSupervisor.dashboard": ["cap.students.list.view", "cap.students.view"],
-  "route.hostelGate.dashboard": ["cap.students.view", "cap.students.detail.view"],
-  "route.maintenance.dashboard": ["cap.tasks.view"],
-  "route.gymkhana.dashboard": ["cap.events.view"],
 
   "route.admin.profile": ["cap.profile.self.view", "cap.profile.self.update"],
   "route.superAdmin.profile": ["cap.profile.self.view", "cap.profile.self.update"],
@@ -43,6 +48,10 @@ const CAPABILITY_FAMILY_HINTS = [
 ]
 
 export const getRouteCapabilityHintKeys = (routeKey, routeLabel = "") => {
+  if (ROUTE_KEYS_WITH_NO_CAPABILITY_HINT.has(routeKey)) {
+    return []
+  }
+
   const direct = ROUTE_CAPABILITY_HINTS[routeKey] || []
   const text = `${routeKey} ${routeLabel}`.toLowerCase()
 
