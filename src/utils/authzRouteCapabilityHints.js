@@ -1,7 +1,6 @@
 const unique = (items = []) => [...new Set((items || []).filter(Boolean))]
 
 const ROUTE_CAPABILITY_HINTS = {
-  "route.admin.dashboard": ["cap.students.list.view", "cap.students.view"],
   "route.superAdmin.dashboard": ["cap.users.view", "cap.settings.system.view"],
   "route.warden.dashboard": ["cap.students.list.view", "cap.students.view"],
   "route.associateWarden.dashboard": ["cap.students.list.view", "cap.students.view"],
