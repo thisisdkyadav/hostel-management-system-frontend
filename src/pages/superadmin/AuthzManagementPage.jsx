@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { authzApi } from "../../service"
 import useAuthz from "../../hooks/useAuthz"
 import AuthzFieldGuide from "../../components/authz/AuthzFieldGuide"
+import { getFilteredHintKeysFromCatalog } from "../../utils/authzRouteCapabilityHints"
 
 const STUDENT_ROLE = "Student"
 const ALL_NON_STUDENT_FILTER = "__all_non_students__"
@@ -152,6 +153,21 @@ const OverrideSelect = ({ value, onChange, disabled = false }) => {
   )
 }
 
+const buildRouteDefaultAccessMap = (catalog, role) => {
+  const roleDefaultKeys = new Set(catalog?.roleDefaults?.routeAccess?.[role] || [])
+  return (catalog?.routes || []).reduce((acc, routeDef) => {
+    acc[routeDef.key] = roleDefaultKeys.has(routeDef.key)
+    return acc
+  }, {})
+}
+
+const resolveRouteEnabled = (routeKey, routeSelections = {}, routeDefaultAccessMap = {}) => {
+  const mode = routeSelections?.[routeKey] || OVERRIDE_MODE.DEFAULT
+  if (mode === OVERRIDE_MODE.ALLOW) return true
+  if (mode === OVERRIDE_MODE.DENY) return false
+  return Boolean(routeDefaultAccessMap?.[routeKey])
+}
+
 const StudentAuthzEditorModal = ({
   open,
   onClose,
@@ -176,6 +192,8 @@ const StudentAuthzEditorModal = ({
 }) => {
   const [routeSearch, setRouteSearch] = useState("")
   const [capabilitySearch, setCapabilitySearch] = useState("")
+  const [selectedRouteForCapabilities, setSelectedRouteForCapabilities] = useState(null)
+  const [showAllCapabilitiesInRouteModal, setShowAllCapabilitiesInRouteModal] = useState(false)
 
   const routeLabelMap = useMemo(() => {
     const map = new Map()
@@ -208,7 +226,13 @@ const StudentAuthzEditorModal = ({
 
   const filteredCapabilityKeys = useMemo(() => {
     const term = capabilitySearch.trim().toLowerCase()
-    const keys = Object.keys(capabilitySelections || {})
+    const selectedRoute = (catalog?.routes || []).find((item) => item.key === selectedRouteForCapabilities)
+    const relatedKeys = getFilteredHintKeysFromCatalog(
+      selectedRouteForCapabilities,
+      selectedRoute?.label || "",
+      catalog?.capabilities || []
+    )
+    const keys = showAllCapabilitiesInRouteModal ? Object.keys(capabilitySelections || {}) : relatedKeys
 
     if (!term) return keys
 
@@ -216,7 +240,33 @@ const StudentAuthzEditorModal = ({
       const label = String(capabilityLabelMap.get(key) || "").toLowerCase()
       return key.toLowerCase().includes(term) || label.includes(term)
     })
-  }, [capabilityLabelMap, capabilitySearch, capabilitySelections])
+  }, [
+    capabilityLabelMap,
+    capabilitySearch,
+    capabilitySelections,
+    catalog,
+    selectedRouteForCapabilities,
+    showAllCapabilitiesInRouteModal,
+  ])
+
+  const routeDefaultAccessMap = useMemo(() => {
+    const role = userData?.user?.role
+    return buildRouteDefaultAccessMap(catalog, role)
+  }, [catalog, userData])
+
+  const selectedRouteDefinition = useMemo(
+    () => (catalog?.routes || []).find((item) => item.key === selectedRouteForCapabilities),
+    [catalog, selectedRouteForCapabilities]
+  )
+
+  const selectedRouteRelatedCapabilities = useMemo(
+    () => getFilteredHintKeysFromCatalog(
+      selectedRouteForCapabilities,
+      selectedRouteDefinition?.label || "",
+      catalog?.capabilities || []
+    ),
+    [catalog, selectedRouteDefinition, selectedRouteForCapabilities]
+  )
 
   const overrideSummary = useMemo(() => {
     const routeValues = Object.values(routeSelections || {})
@@ -254,12 +304,13 @@ const StudentAuthzEditorModal = ({
   if (!open) return null
 
   return (
-    <Modal title="User Access Configuration" onClose={onClose} width={1100}>
-      <div className="space-y-4">
-        <div className="flex justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={onHelpClick}>Help</Button>
-          <Button variant="secondary" size="sm" onClick={onHelpPageClick}>Open Help Page</Button>
-        </div>
+    <>
+      <Modal title="User Access Configuration" onClose={onClose} width={1100}>
+        <div className="space-y-4">
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" size="sm" onClick={onHelpClick}>Help</Button>
+            <Button variant="secondary" size="sm" onClick={onHelpPageClick}>Open Help Page</Button>
+          </div>
 
         {error ? (
           <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-danger)] bg-[var(--color-danger-bg-light)] px-3 py-2 text-sm text-[var(--color-danger)]">
@@ -295,76 +346,74 @@ const StudentAuthzEditorModal = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] p-3">
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Route Access</h3>
-                  <SearchInput
-                    value={routeSearch}
-                    onChange={(e) => setRouteSearch(e.target.value)}
-                    placeholder="Search routes"
-                    className="w-56"
-                  />
-                </div>
-                <div className="max-h-60 overflow-auto rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)]">
-                  {filteredRouteKeys.map((key) => (
-                    <div key={key} className="grid grid-cols-[1fr_auto] gap-2 items-center border-b border-[var(--color-border-light)] px-3 py-2">
+            <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] p-3">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Route Access (Step 1)</h3>
+                <SearchInput
+                  value={routeSearch}
+                  onChange={(e) => setRouteSearch(e.target.value)}
+                  placeholder="Search routes"
+                  className="w-56"
+                />
+              </div>
+              <div className="mb-2 text-xs text-[var(--color-text-muted)]">
+                Select route access first. Capability configuration opens only when a route is currently enabled.
+              </div>
+              <div className="max-h-72 overflow-auto rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)]">
+                {filteredRouteKeys.map((key) => {
+                  const selectedMode = routeSelections[key] || OVERRIDE_MODE.DEFAULT
+                  const defaultAllowed = Boolean(routeDefaultAccessMap[key])
+                  const routeEnabled = resolveRouteEnabled(key, routeSelections, routeDefaultAccessMap)
+
+                  return (
+                    <div key={key} className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-2 items-center border-b border-[var(--color-border-light)] px-3 py-2">
                       <div>
                         <div className="text-xs font-medium text-[var(--color-text-primary)]">{routeLabelMap.get(key) || key}</div>
                         <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{key}</div>
+                        <div className="text-[11px] text-[var(--color-text-muted)] mt-1">
+                          Default: {defaultAllowed ? "Allow" : "Deny"} • Current: {routeEnabled ? "Enabled" : "Blocked"}
+                        </div>
                       </div>
                       <OverrideSelect
-                        value={routeSelections[key] || OVERRIDE_MODE.DEFAULT}
+                        value={selectedMode}
                         onChange={(e) => {
                           const nextValue = e.target.value
                           setRouteSelections((prev) => ({ ...prev, [key]: nextValue }))
                         }}
                         disabled={!canUpdate || saving}
                       />
+                      {routeEnabled ? (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          disabled={!canUpdate || saving}
+                          onClick={() => {
+                            setSelectedRouteForCapabilities(key)
+                            setCapabilitySearch("")
+                            setShowAllCapabilitiesInRouteModal(false)
+                          }}
+                        >
+                          Configure Capabilities
+                        </Button>
+                      ) : (
+                        <span className="text-[11px] text-[var(--color-text-muted)] px-2 text-right">
+                          Capabilities hidden
+                        </span>
+                      )}
                     </div>
-                  ))}
-                  {filteredRouteKeys.length === 0 ? (
-                    <div className="px-3 py-8 text-center text-sm text-[var(--color-text-muted)]">No routes found</div>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] p-3">
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Capabilities</h3>
-                  <SearchInput
-                    value={capabilitySearch}
-                    onChange={(e) => setCapabilitySearch(e.target.value)}
-                    placeholder="Search capabilities"
-                    className="w-56"
-                  />
-                </div>
-                <div className="max-h-60 overflow-auto rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)]">
-                  {filteredCapabilityKeys.map((key) => (
-                    <div key={key} className="grid grid-cols-[1fr_auto] gap-2 items-center border-b border-[var(--color-border-light)] px-3 py-2">
-                      <div>
-                        <div className="text-xs font-medium text-[var(--color-text-primary)]">{capabilityLabelMap.get(key) || key}</div>
-                        <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{key}</div>
-                      </div>
-                      <OverrideSelect
-                        value={capabilitySelections[key] || OVERRIDE_MODE.DEFAULT}
-                        onChange={(e) => {
-                          const nextValue = e.target.value
-                          setCapabilitySelections((prev) => ({ ...prev, [key]: nextValue }))
-                        }}
-                        disabled={!canUpdate || saving}
-                      />
-                    </div>
-                  ))}
-                  {filteredCapabilityKeys.length === 0 ? (
-                    <div className="px-3 py-8 text-center text-sm text-[var(--color-text-muted)]">No capabilities found</div>
-                  ) : null}
-                </div>
+                  )
+                })}
+                {filteredRouteKeys.length === 0 ? (
+                  <div className="px-3 py-8 text-center text-sm text-[var(--color-text-muted)]">No routes found</div>
+                ) : null}
               </div>
             </div>
 
             <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] p-3 space-y-3">
-              <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Constraints</h3>
+              <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Constraints (Step 2)</h3>
+              <div className="text-xs text-[var(--color-text-muted)]">
+                Enable override for a constraint only when needed. If override is off, role default behavior is used.
+              </div>
               {(Object.entries(constraintDraft || {})).map(([key, item]) => (
                 <div key={key} className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-light)] p-3">
                   <div className="flex flex-wrap items-center gap-2">
@@ -470,8 +519,77 @@ const StudentAuthzEditorModal = ({
             </div>
           </>
         )}
-      </div>
-    </Modal>
+        </div>
+      </Modal>
+
+      {selectedRouteForCapabilities ? (
+        <Modal
+          title={`Capabilities for ${selectedRouteDefinition?.label || selectedRouteForCapabilities}`}
+          onClose={() => setSelectedRouteForCapabilities(null)}
+          width={900}
+        >
+          <div className="space-y-3">
+            <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
+              <div className="text-xs text-[var(--color-text-muted)]">Route Key</div>
+              <div className="text-sm font-mono text-[var(--color-text-primary)]">{selectedRouteForCapabilities}</div>
+              {Array.isArray(selectedRouteDefinition?.paths) && selectedRouteDefinition.paths.length > 0 ? (
+                <div className="text-xs text-[var(--color-text-muted)] mt-1">
+                  Paths: {selectedRouteDefinition.paths.join(", ")}
+                </div>
+              ) : null}
+            </div>
+
+            <div className="flex items-center justify-between gap-2">
+              <SearchInput
+                value={capabilitySearch}
+                onChange={(e) => setCapabilitySearch(e.target.value)}
+                placeholder="Search capabilities"
+                className="w-full sm:w-80"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAllCapabilitiesInRouteModal((prev) => !prev)}
+              >
+                {showAllCapabilitiesInRouteModal ? "Show Related Only" : "Show All (Advanced)"}
+              </Button>
+            </div>
+
+            {!showAllCapabilitiesInRouteModal && selectedRouteRelatedCapabilities.length === 0 ? (
+              <div className="rounded-[var(--radius-card-sm)] border border-[var(--color-warning)] bg-[var(--color-warning-bg-light)] px-3 py-2 text-xs text-[var(--color-warning-text)]">
+                No direct capability hints found for this route. Use "Show All (Advanced)" to configure manually.
+              </div>
+            ) : null}
+
+            <div className="max-h-80 overflow-auto rounded-[var(--radius-card-sm)] border border-[var(--color-border-primary)]">
+              {filteredCapabilityKeys.map((key) => (
+                <div key={key} className="grid grid-cols-[1fr_auto] gap-2 items-center border-b border-[var(--color-border-light)] px-3 py-2">
+                  <div>
+                    <div className="text-xs font-medium text-[var(--color-text-primary)]">{capabilityLabelMap.get(key) || key}</div>
+                    <div className="text-[11px] text-[var(--color-text-muted)] font-mono">{key}</div>
+                  </div>
+                  <OverrideSelect
+                    value={capabilitySelections[key] || OVERRIDE_MODE.DEFAULT}
+                    onChange={(e) => {
+                      const nextValue = e.target.value
+                      setCapabilitySelections((prev) => ({ ...prev, [key]: nextValue }))
+                    }}
+                    disabled={!canUpdate || saving}
+                  />
+                </div>
+              ))}
+              {filteredCapabilityKeys.length === 0 ? (
+                <div className="px-3 py-8 text-center text-sm text-[var(--color-text-muted)]">No capabilities found</div>
+              ) : null}
+            </div>
+
+            <div className="flex justify-end">
+              <Button variant="secondary" size="sm" onClick={() => setSelectedRouteForCapabilities(null)}>Done</Button>
+            </div>
+          </div>
+        </Modal>
+      ) : null}
+    </>
   )
 }
 
