@@ -52,6 +52,11 @@ import { isCsoAdminSubRole } from "../constants/navigationConfig"
 const AdminRoutes = () => {
     const { user } = useAuth()
     const isCsoAdmin = isCsoAdminSubRole(user)
+    const guardRoute = (routeKey, element) => (
+        <RouteAccessGuard routeKey={routeKey} fallback={<NotFoundPage />}>
+            {element}
+        </RouteAccessGuard>
+    )
 
     return (
         <ProtectedRoute allowedRoles={["Admin"]}>
@@ -59,72 +64,51 @@ const AdminRoutes = () => {
                 <Route element={<AdminLayout />}>
                     {isCsoAdmin ? (
                         <>
-                            <Route index element={<Navigate to="live-checkinout" replace />} />
-                            <Route path="live-checkinout" element={<LiveCheckInOutPage />} />
-                            <Route path="lc" element={<LiveCheckInOutPage />} /> {/* temp shortcut */}
-                            <Route path="fs" element={<FaceScannersPage />} /> {/* temp shortcut */}
-                            <Route path="face-scanners" element={<FaceScannersPage />} />
-                            <Route path="profile" element={<ProfilePage />} />
+                            <Route index element={guardRoute("route.admin.liveCheckInOut", <Navigate to="live-checkinout" replace />)} />
+                            <Route path="live-checkinout" element={guardRoute("route.admin.liveCheckInOut", <LiveCheckInOutPage />)} />
+                            <Route path="lc" element={guardRoute("route.admin.liveCheckInOut", <LiveCheckInOutPage />)} /> {/* temp shortcut */}
+                            <Route path="fs" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} /> {/* temp shortcut */}
+                            <Route path="face-scanners" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} />
+                            <Route path="profile" element={guardRoute("route.admin.profile", <ProfilePage />)} />
                             <Route path="*" element={<Navigate to="live-checkinout" replace />} />
                         </>
                     ) : (
                         <>
-                            <Route index element={<AdminDashboard />} />
-                            <Route path="live-checkinout" element={<LiveCheckInOutPage />} />
-                            <Route path="lc" element={<LiveCheckInOutPage />} /> {/* temp shortcut */}
-                            <Route path="fs" element={<FaceScannersPage />} /> {/* temp shortcut */}
-                            <Route path="face-scanners" element={<FaceScannersPage />} />
-                            <Route path="hostels" element={<AdminHostels />} />
-                            <Route path="hostels/:hostelName" element={<UnitsAndRoomsPage />} />
-                            <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRoomsPage />} />
-                            <Route path="administrators" element={<AdminAdminManagement />} />
-                            <Route path="wardens" element={<AdminWarden />} />
-                            <Route path="associate-wardens" element={<AdminAssociateWardens />} />
-                            <Route path="hostel-supervisors" element={<AdminHostelSupervisors />} />
-                            <Route
-                                path="students"
-                                element={
-                                    <RouteAccessGuard routeKey="route.admin.students" fallback={<NotFoundPage />}>
-                                        <StudentsPage />
-                                    </RouteAccessGuard>
-                                }
-                            />
-                            <Route path="inventory" element={<InventoryPage />} />
-                            <Route path="complaints" element={<ComplaintsPage />} />
-                            <Route path="disciplinary-process" element={<DisciplinaryProcessPage />} />
-                            <Route path="appointments" element={<AppointmentsPage />} />
-                            <Route path="jr-appointments" element={<AppointmentsPage />} />
-                            <Route path="leaves" element={<LeavesPage />} />
-                            <Route path="security" element={<SecurityLoginsPage />} />
-                            <Route path="visitors" element={<VisitorRequestsPage />} />
-                            <Route path="lost-and-found" element={<LostAndFoundPage />} />
-                            <Route path="events" element={<EventsPage />} />
-                            <Route path="gymkhana-events" element={<GymkhanaEventsPage />} />
-                            <Route path="mega-events" element={<MegaEventsPage />} />
-                            <Route path="update-password" element={<UpdatePasswordPage />} />
-                            <Route
-                                path="settings"
-                                element={
-                                    <RouteAccessGuard routeKey="route.admin.settings" fallback={<NotFoundPage />}>
-                                        <AdminSettings />
-                                    </RouteAccessGuard>
-                                }
-                            />
-                            <Route
-                                path="authz"
-                                element={
-                                    <RouteAccessGuard routeKey="route.admin.authz" fallback={<NotFoundPage />}>
-                                        <AuthzManagementPage />
-                                    </RouteAccessGuard>
-                                }
-                            />
-                            <Route path="profile" element={<ProfilePage />} />
-                            <Route path="maintenance" element={<MaintenanceStaffPage />} />
-                            <Route path="notifications" element={<NotificationCenterPage />} />
-                            <Route path="feedbacks" element={<FeedbacksPage />} />
-                            <Route path="others" element={<OthersPage />} />
-                            <Route path="task-management" element={<TaskManagementPage />} />
-                            <Route path="sheet" element={<SheetPage />} />
+                            <Route index element={guardRoute("route.admin.dashboard", <AdminDashboard />)} />
+                            <Route path="live-checkinout" element={guardRoute("route.admin.liveCheckInOut", <LiveCheckInOutPage />)} />
+                            <Route path="lc" element={guardRoute("route.admin.liveCheckInOut", <LiveCheckInOutPage />)} /> {/* temp shortcut */}
+                            <Route path="fs" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} /> {/* temp shortcut */}
+                            <Route path="face-scanners" element={guardRoute("route.admin.faceScanners", <FaceScannersPage />)} />
+                            <Route path="hostels" element={guardRoute("route.admin.hostels", <AdminHostels />)} />
+                            <Route path="hostels/:hostelName" element={guardRoute("route.admin.hostels", <UnitsAndRoomsPage />)} />
+                            <Route path="hostels/:hostelName/units/:unitNumber" element={guardRoute("route.admin.hostels", <UnitsAndRoomsPage />)} />
+                            <Route path="administrators" element={guardRoute("route.admin.administrators", <AdminAdminManagement />)} />
+                            <Route path="wardens" element={guardRoute("route.admin.wardens", <AdminWarden />)} />
+                            <Route path="associate-wardens" element={guardRoute("route.admin.associateWardens", <AdminAssociateWardens />)} />
+                            <Route path="hostel-supervisors" element={guardRoute("route.admin.hostelSupervisors", <AdminHostelSupervisors />)} />
+                            <Route path="students" element={guardRoute("route.admin.students", <StudentsPage />)} />
+                            <Route path="inventory" element={guardRoute("route.admin.inventory", <InventoryPage />)} />
+                            <Route path="complaints" element={guardRoute("route.admin.complaints", <ComplaintsPage />)} />
+                            <Route path="disciplinary-process" element={guardRoute("route.admin.disciplinaryProcess", <DisciplinaryProcessPage />)} />
+                            <Route path="appointments" element={guardRoute("route.admin.appointments", <AppointmentsPage />)} />
+                            <Route path="jr-appointments" element={guardRoute("route.admin.appointments", <AppointmentsPage />)} />
+                            <Route path="leaves" element={guardRoute("route.admin.leaves", <LeavesPage />)} />
+                            <Route path="security" element={guardRoute("route.admin.security", <SecurityLoginsPage />)} />
+                            <Route path="visitors" element={guardRoute("route.admin.visitors", <VisitorRequestsPage />)} />
+                            <Route path="lost-and-found" element={guardRoute("route.admin.lostAndFound", <LostAndFoundPage />)} />
+                            <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
+                            <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
+                            <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
+                            <Route path="update-password" element={guardRoute("route.admin.updatePassword", <UpdatePasswordPage />)} />
+                            <Route path="settings" element={guardRoute("route.admin.settings", <AdminSettings />)} />
+                            <Route path="authz" element={guardRoute("route.admin.authz", <AuthzManagementPage />)} />
+                            <Route path="profile" element={guardRoute("route.admin.profile", <ProfilePage />)} />
+                            <Route path="maintenance" element={guardRoute("route.admin.maintenance", <MaintenanceStaffPage />)} />
+                            <Route path="notifications" element={guardRoute("route.admin.notifications", <NotificationCenterPage />)} />
+                            <Route path="feedbacks" element={guardRoute("route.admin.feedbacks", <FeedbacksPage />)} />
+                            <Route path="others" element={guardRoute("route.admin.others", <OthersPage />)} />
+                            <Route path="task-management" element={guardRoute("route.admin.taskManagement", <TaskManagementPage />)} />
+                            <Route path="sheet" element={guardRoute("route.admin.sheet", <SheetPage />)} />
                             <Route path="*" element={<NotFoundPage />} />
                         </>
                     )}

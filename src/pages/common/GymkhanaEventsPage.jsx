@@ -695,7 +695,12 @@ const EventsPage = () => {
   const canCreateEventsCapability = can("cap.events.create")
   const canApproveEventsCapability = can("cap.events.approve")
   const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
-  const parsedApprovalLimit = Number(maxApprovalAmountConstraint)
+  const hasApprovalLimitValue = !(
+    maxApprovalAmountConstraint === null ||
+    maxApprovalAmountConstraint === undefined ||
+    (typeof maxApprovalAmountConstraint === "string" && maxApprovalAmountConstraint.trim() === "")
+  )
+  const parsedApprovalLimit = hasApprovalLimitValue ? Number(maxApprovalAmountConstraint) : null
   const maxApprovalAmount = Number.isFinite(parsedApprovalLimit) && parsedApprovalLimit >= 0
     ? parsedApprovalLimit
     : null
