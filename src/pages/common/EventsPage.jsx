@@ -10,6 +10,7 @@ import EventsHeader from "../../components/headers/EventsHeader"
 import { useAuth } from "../../contexts/AuthProvider"
 import { eventsApi } from "../../service"
 import { isUpcoming } from "../../utils/dateUtils"
+import useAuthz from "../../hooks/useAuthz"
 
 const EVENT_FILTER_TABS = [
   { label: "All Events", value: "all", color: "primary" },
@@ -55,6 +56,9 @@ const filterEvents = (events, filter, searchTerm) => {
 
 const EventsPage = () => {
   const { user } = useAuth()
+  const { can } = useAuthz()
+  const canViewEvents = can("cap.events.view")
+  const canManageEvents = ["Admin"].includes(user?.role) && can("cap.events.create")
 
   const [activeTab, setActiveTab] = useState("upcoming")
   const [searchTerm, setSearchTerm] = useState("")
@@ -64,6 +68,7 @@ const EventsPage = () => {
   const filteredEvents = filterEvents(events, activeTab, searchTerm)
 
   const fetchEvents = async () => {
+    if (!canViewEvents) return
     try {
       const response = await eventsApi.getAllEvents()
       setEvents(response.events || [])
@@ -73,13 +78,24 @@ const EventsPage = () => {
   }
 
   useEffect(() => {
+    if (!canViewEvents) return
     fetchEvents()
-  }, [])
+  }, [canViewEvents])
+
+  if (!canViewEvents) {
+    return (
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+        <div className="rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger-bg)] p-4 text-[var(--color-danger-text)]">
+          You do not have permission to view events.
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
       <div className="flex flex-col h-full">
-        <EventsHeader onAddEvent={() => setShowAddModal(true)} userRole={user?.role} />
+        <EventsHeader onAddEvent={() => setShowAddModal(true)} userRole={user?.role} canManageEvents={canManageEvents} />
 
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
 
@@ -102,7 +118,7 @@ const EventsPage = () => {
         </div>
       </div>
 
-      {["Admin"].includes(user?.role) && <AddEventModal show={showAddModal} onClose={() => setShowAddModal(false)} onEventAdded={fetchEvents} />}
+      {canManageEvents && <AddEventModal show={showAddModal} onClose={() => setShowAddModal(false)} onEventAdded={fetchEvents} />}
     </>
   )
 }

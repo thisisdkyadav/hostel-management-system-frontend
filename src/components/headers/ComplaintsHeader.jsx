@@ -3,11 +3,8 @@ import ToggleButtonGroup from "../common/ToggleButtonGroup"
 import PageHeader from "../common/PageHeader"
 import { Filter, Plus, List, LayoutGrid } from "lucide-react"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
-import { useAuth } from "../../contexts/AuthProvider"
 
-const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole, title = "Complaints Management" }) => {
-  const { canAccess } = useAuth()
-
+const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole, title = "Complaints Management", canCreateComplaint = true }) => {
   const viewModeOptions = [
     { value: "list", label: "List", icon: <List size={14} /> },
     { value: "cards", label: "Grid", icon: <LayoutGrid size={14} /> },
@@ -34,7 +31,7 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
       </Button>
 
       {/* Create Button */}
-      {canAccess("complaints", "create") && WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
+      {canCreateComplaint && WHO_CAN_CREATE_COMPLAINT.includes(userRole) && (
         <Button onClick={() => setShowCraftComplaint(true)}
           variant="primary"
           size="md"

@@ -15,6 +15,7 @@ import {
     SecurityLoginsPage,
     UpdatePasswordPage,
     SettingsPage as AdminSettings,
+    AuthzManagementPage,
     MaintenanceStaffPage,
     OthersPage,
     TaskManagementPage,
@@ -43,6 +44,7 @@ import { FeedbacksPage } from "../pages/warden"
 
 // Utility pages
 import NotFoundPage from "../pages/NotFoundPage"
+import RouteAccessGuard from "../components/authz/RouteAccessGuard"
 
 import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
 import { isCsoAdminSubRole } from "../constants/navigationConfig"
@@ -79,7 +81,14 @@ const AdminRoutes = () => {
                             <Route path="wardens" element={<AdminWarden />} />
                             <Route path="associate-wardens" element={<AdminAssociateWardens />} />
                             <Route path="hostel-supervisors" element={<AdminHostelSupervisors />} />
-                            <Route path="students" element={<StudentsPage />} />
+                            <Route
+                                path="students"
+                                element={
+                                    <RouteAccessGuard routeKey="route.admin.students" fallback={<NotFoundPage />}>
+                                        <StudentsPage />
+                                    </RouteAccessGuard>
+                                }
+                            />
                             <Route path="inventory" element={<InventoryPage />} />
                             <Route path="complaints" element={<ComplaintsPage />} />
                             <Route path="disciplinary-process" element={<DisciplinaryProcessPage />} />
@@ -93,7 +102,22 @@ const AdminRoutes = () => {
                             <Route path="gymkhana-events" element={<GymkhanaEventsPage />} />
                             <Route path="mega-events" element={<MegaEventsPage />} />
                             <Route path="update-password" element={<UpdatePasswordPage />} />
-                            <Route path="settings" element={<AdminSettings />} />
+                            <Route
+                                path="settings"
+                                element={
+                                    <RouteAccessGuard routeKey="route.admin.settings" fallback={<NotFoundPage />}>
+                                        <AdminSettings />
+                                    </RouteAccessGuard>
+                                }
+                            />
+                            <Route
+                                path="authz"
+                                element={
+                                    <RouteAccessGuard routeKey="route.admin.authz" fallback={<NotFoundPage />}>
+                                        <AuthzManagementPage />
+                                    </RouteAccessGuard>
+                                }
+                            />
                             <Route path="profile" element={<ProfilePage />} />
                             <Route path="maintenance" element={<MaintenanceStaffPage />} />
                             <Route path="notifications" element={<NotificationCenterPage />} />

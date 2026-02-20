@@ -24,6 +24,7 @@ import {
 
 // Utility pages
 import NotFoundPage from "../pages/NotFoundPage"
+import RouteAccessGuard from "../components/authz/RouteAccessGuard"
 
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
@@ -31,20 +32,118 @@ const WardenRoutes = () => (
     <ProtectedRoute allowedRoles={["Warden"]}>
         <Routes>
             <Route element={<WardenLayout />}>
-                <Route index element={<WardenDashboard />} />
-                <Route path="hostels/:hostelName" element={<UnitsAndRoomsPage />} />
-                <Route path="hostels/:hostelName/units/:unitNumber" element={<UnitsAndRoomsPage />} />
-                <Route path="complaints" element={<ComplaintsPage />} />
-                <Route path="students" element={<StudentsPage />} />
-                <Route path="visitors" element={<VisitorRequestsPage />} />
-                <Route path="notifications" element={<NotificationCenterPage />} />
-                <Route path="lost-and-found" element={<LostAndFoundPage />} />
-                <Route path="events" element={<EventsPage />} />
-                <Route path="student-inventory" element={<StudentInventoryPage />} />
-                <Route path="profile" element={<ProfilePage />} />
-                <Route path="feedbacks" element={<FeedbacksPage />} />
-                <Route path="undertakings" element={<WardenUndertakings />} />
-                <Route path="my-tasks" element={<MyTasksPage />} />
+                <Route
+                    index
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.dashboard" fallback={<NotFoundPage />}>
+                            <WardenDashboard />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="hostels/:hostelName"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.hostels" fallback={<NotFoundPage />}>
+                            <UnitsAndRoomsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="hostels/:hostelName/units/:unitNumber"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.hostels" fallback={<NotFoundPage />}>
+                            <UnitsAndRoomsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="complaints"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.complaints" fallback={<NotFoundPage />}>
+                            <ComplaintsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="students"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.students" fallback={<NotFoundPage />}>
+                            <StudentsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="visitors"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.visitors" fallback={<NotFoundPage />}>
+                            <VisitorRequestsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="notifications"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.notifications" fallback={<NotFoundPage />}>
+                            <NotificationCenterPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="lost-and-found"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.lostAndFound" fallback={<NotFoundPage />}>
+                            <LostAndFoundPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="events"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.events" fallback={<NotFoundPage />}>
+                            <EventsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="student-inventory"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.studentInventory" fallback={<NotFoundPage />}>
+                            <StudentInventoryPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="profile"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.profile" fallback={<NotFoundPage />}>
+                            <ProfilePage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="feedbacks"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.feedbacks" fallback={<NotFoundPage />}>
+                            <FeedbacksPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="undertakings"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.undertakings" fallback={<NotFoundPage />}>
+                            <WardenUndertakings />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="my-tasks"
+                    element={
+                        <RouteAccessGuard routeKey="route.warden.myTasks" fallback={<NotFoundPage />}>
+                            <MyTasksPage />
+                        </RouteAccessGuard>
+                    }
+                />
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>

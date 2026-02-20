@@ -9,9 +9,16 @@ import ManageVisitorProfilesModal from "../../components/visitor/requests/Manage
 import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
 import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
+import useAuthz from "../../hooks/useAuthz"
 
 const VisitorRequestsPage = () => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canViewVisitors = can("cap.visitors.view")
+  const canCreateVisitorRequests = ["Student"].includes(user?.role) && can("cap.visitors.create")
+  const canAllocateVisitors =
+    ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
+    can("cap.visitors.allocate")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [visitorRequests, setVisitorRequests] = useState([])
@@ -24,6 +31,10 @@ const VisitorRequestsPage = () => {
   const [allocationFilter, setAllocationFilter] = useState("all")
 
   const fetchVisitorData = async () => {
+    if (!canViewVisitors) {
+      setLoading(false)
+      return
+    }
     try {
       setLoading(true)
       setError(null)
@@ -31,7 +42,7 @@ const VisitorRequestsPage = () => {
       const requests = await visitorApi.getVisitorRequestsSummary()
 
       let profiles = []
-      if (user.role === "Student") {
+      if (user.role === "Student" && canCreateVisitorRequests) {
         profiles = await visitorApi.getVisitorProfiles()
       }
 
@@ -46,8 +57,9 @@ const VisitorRequestsPage = () => {
   }
 
   useEffect(() => {
+    if (!canViewVisitors) return
     fetchVisitorData()
-  }, [])
+  }, [canViewVisitors])
 
   const handleAddProfile = async (profileData) => {
     try {
@@ -87,7 +99,7 @@ const VisitorRequestsPage = () => {
       return false
     }
 
-    if (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && allocationFilter !== "all") {
+    if (canAllocateVisitors && allocationFilter !== "all") {
       if (allocationFilter === "allocated" && !request.isAllocated) return false
       if (allocationFilter === "unallocated" && request.isAllocated) return false
     }
@@ -103,9 +115,20 @@ const VisitorRequestsPage = () => {
     return <ErrorState message={error} onRetry={fetchVisitorData} />
   }
 
+  if (!canViewVisitors) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{ backgroundColor: "var(--color-danger-bg)", borderLeft: "var(--border-4) solid var(--color-danger)", color: "var(--color-danger-text)", padding: "var(--spacing-4)", marginBottom: "var(--spacing-6)", borderRadius: "var(--radius-lg)" }}>
+          <p style={{ fontWeight: "var(--font-weight-medium)" }}>Access Denied</p>
+          <p>You do not have permission to view visitor requests.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <VisitorRequestsHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)} onAddProfile={() => setShowAddProfileModal(true)} onManageProfiles={() => setShowManageProfilesModal(true)} onNewRequest={() => setShowAddRequestModal(true)} userRole={user.role} />
+      <VisitorRequestsHeader showFilters={showFilters} onToggleFilters={() => setShowFilters(!showFilters)} onAddProfile={() => setShowAddProfileModal(true)} onManageProfiles={() => setShowManageProfilesModal(true)} onNewRequest={() => setShowAddRequestModal(true)} userRole={user.role} canManageProfiles={canCreateVisitorRequests} canCreateRequest={canCreateVisitorRequests} />
 
       <div style={{ flex: "1", overflowY: "auto", padding: "var(--spacing-6) var(--spacing-8)" }}>
         {showFilters && (
@@ -128,7 +151,7 @@ const VisitorRequestsPage = () => {
                 </div>
               </div>
 
-              {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+              {canAllocateVisitors && (
                 <div>
                   <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Allocation:</h3>
                   <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
@@ -160,11 +183,11 @@ const VisitorRequestsPage = () => {
           <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />
         )}
 
-        {showAddProfileModal && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
+        {showAddProfileModal && canCreateVisitorRequests && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
 
-        {showAddRequestModal && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
+        {showAddRequestModal && canCreateVisitorRequests && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
 
-        {showManageProfilesModal && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
+        {showManageProfilesModal && canCreateVisitorRequests && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
       </div>
     </div>
   )

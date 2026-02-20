@@ -11,7 +11,6 @@ src/service/
 │   ├── errors.js         # Custom error classes
 │   └── index.js          # Core exports
 ├── modules/
-│   ├── accessControl.api.js
 │   ├── admin.api.js
 │   ├── alert.api.js
 │   ├── auth.api.js

@@ -24,6 +24,7 @@ import { FeedbacksPage } from "../pages/warden"
 
 // Utility pages
 import NotFoundPage from "../pages/NotFoundPage"
+import RouteAccessGuard from "../components/authz/RouteAccessGuard"
 
 import { ProtectedRoute } from "../contexts/AuthProvider.jsx"
 
@@ -31,17 +32,94 @@ const StudentRoutes = () => (
     <ProtectedRoute allowedRoles={["Student"]}>
         <Routes>
             <Route element={<StudentLayout />}>
-                <Route index element={<StudentDashboard />} />
-                <Route path="complaints" element={<ComplaintsPage />} />
-                <Route path="profile" element={<ProfilePage />} />
-                <Route path="lost-and-found" element={<LostAndFoundPage />} />
-                <Route path="events" element={<EventsPage />} />
-                <Route path="feedbacks" element={<FeedbacksPage />} />
-                <Route path="notifications" element={<NotificationCenterPage />} />
-                <Route path="visitors" element={<VisitorRequestsPage />} />
-                <Route path="security" element={<SecurityPage />} />
-                <Route path="id-card" element={<IDCardPage />} />
-                <Route path="undertakings" element={<UndertakingsPage />} />
+                <Route
+                    index
+                    element={
+                        <RouteAccessGuard routeKey="route.student.dashboard" fallback={<NotFoundPage />}>
+                            <StudentDashboard />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="complaints"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.complaints" fallback={<NotFoundPage />}>
+                            <ComplaintsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="profile"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.profile" fallback={<NotFoundPage />}>
+                            <ProfilePage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="lost-and-found"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.lostAndFound" fallback={<NotFoundPage />}>
+                            <LostAndFoundPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="events"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.events" fallback={<NotFoundPage />}>
+                            <EventsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="feedbacks"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.feedbacks" fallback={<NotFoundPage />}>
+                            <FeedbacksPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="notifications"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.notifications" fallback={<NotFoundPage />}>
+                            <NotificationCenterPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="visitors"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.visitors" fallback={<NotFoundPage />}>
+                            <VisitorRequestsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="security"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.security" fallback={<NotFoundPage />}>
+                            <SecurityPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="id-card"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.idCard" fallback={<NotFoundPage />}>
+                            <IDCardPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="undertakings"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.undertakings" fallback={<NotFoundPage />}>
+                            <UndertakingsPage />
+                        </RouteAccessGuard>
+                    }
+                />
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
         </Routes>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { discoApi } from "../../../service"
-import { useAuth } from "../../../contexts/AuthProvider"
 import { Check, Plus } from "lucide-react"
 import DisCoActionModal from "./DisCoActionModal"
 import { Button } from "czero/react"
+import useAuthz from "../../../hooks/useAuthz"
 
 const formatDisplayDate = (value) => {
   if (!value) return "-"
@@ -13,7 +13,8 @@ const formatDisplayDate = (value) => {
 }
 
 const DisCoActions = ({ userId }) => {
-  const { canAccess } = useAuth()
+  const { can } = useAuthz()
+  const canManageDisciplinaryActions = can("cap.students.disciplinary.manage")
   const [actions, setActions] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentAction, setCurrentAction] = useState(null)
@@ -253,7 +254,7 @@ const DisCoActions = ({ userId }) => {
     <div style={styles.container}>
       <div style={styles.header}>
         <h3 style={styles.title}>Disciplinary Actions</h3>
-        {canAccess("students_info", "create") && (
+        {canManageDisciplinaryActions && (
           <Button variant="primary" size="sm" onClick={handleAddClick}>
             <Plus size={16} />
             Add DisCo Action
@@ -264,7 +265,7 @@ const DisCoActions = ({ userId }) => {
       {actions.length === 0 ? (
         <div style={styles.emptyState}>
           <p style={styles.emptyText}>No disciplinary actions found.</p>
-          {canAccess("students_info", "create") && (
+          {canManageDisciplinaryActions && (
             <div style={styles.emptyAddButton}>
               <Button variant="secondary" size="sm" onClick={handleAddClick}>
                 Add DisCo Action
@@ -287,7 +288,7 @@ const DisCoActions = ({ userId }) => {
                   <h4 style={styles.cardTitle}>{action.actionTaken}</h4>
                   <span style={styles.dateBadge}>{new Date(action.date).toLocaleDateString()}</span>
                 </div>
-                {canAccess("students_info", "edit") && (
+                {canManageDisciplinaryActions && (
                   <Button onClick={() => handleEditClick(action)} variant="secondary" size="sm">
                     Edit
                   </Button>
@@ -321,7 +322,7 @@ const DisCoActions = ({ userId }) => {
                         {item.isDone ? (
                           <span style={styles.doneBadge}>Done</span>
                         ) : (
-                          canAccess("students_info", "edit") && (
+                          canManageDisciplinaryActions && (
                             <Button
                               size="sm"
                               variant="secondary"

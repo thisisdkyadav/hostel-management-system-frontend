@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react"
 import { adminApi } from "../../../service"
 import { Plus } from "lucide-react"
 import FamilyMemberModal from "./FamilyMemberModal"
-import { useAuth } from "../../../contexts/AuthProvider"
 import { Button } from "czero/react"
+import useAuthz from "../../../hooks/useAuthz"
 
 const FamilyDetails = ({ userId }) => {
-  const { canAccess } = useAuth()
+  const { can } = useAuthz()
+  const canEditFamilyDetails = can("cap.students.family.edit")
   const [familyDetails, setFamilyDetails] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -239,7 +240,7 @@ const FamilyDetails = ({ userId }) => {
     <div>
       <div style={styles.header}>
         <h3 style={styles.title}>Family Information</h3>
-        {canAccess("students_info", "create") && (
+        {canEditFamilyDetails && (
           <Button variant="primary" size="sm" onClick={handleAddClick}>
             <Plus size={16} />
             Add Family Member
@@ -262,7 +263,7 @@ const FamilyDetails = ({ userId }) => {
                   <h4 style={styles.cardTitle}>{member.name}</h4>
                   <span style={styles.badge}>{member.relationship}</span>
                 </div>
-                {canAccess("students_info", "edit") && (
+                {canEditFamilyDetails && (
                   <Button onClick={() => handleEditClick(member)} variant="secondary" size="sm">
                     Edit
                   </Button>

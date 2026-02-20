@@ -8,9 +8,12 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { formatDateTime, isUpcoming } from "../../utils/dateUtils"
 import { Card } from "@/components/ui"
 import { Button } from "czero/react"
+import useAuthz from "../../hooks/useAuthz"
 
 const EventCard = ({ event, refresh }) => {
   const { user } = useAuth()
+  const { can } = useAuthz()
+  const canManageEvents = ["Admin"].includes(user?.role) && can("cap.events.create")
 
   const [isEditing, setIsEditing] = useState(false)
   const [showDetailModal, setShowDetailModal] = useState(false)
@@ -109,7 +112,7 @@ const EventCard = ({ event, refresh }) => {
         </Card.Body>
 
         <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', justifyContent: 'flex-end' }}>
-          {["Admin"].includes(user.role) && (
+          {canManageEvents && (
             <Button onClick={handleEditClick} variant="outline" size="sm">
               <FaEdit /> Edit
             </Button>

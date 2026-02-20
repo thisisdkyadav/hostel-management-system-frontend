@@ -9,6 +9,7 @@ import LostAndFoundHeader from "../../components/headers/LostAndFoundHeader"
 import { filterLostItems } from "../../utils/adminUtils"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+import useAuthz from "../../hooks/useAuthz"
 import { MdInventory } from "react-icons/md"
 
 const LOST_FILTER_TABS = [
@@ -18,7 +19,10 @@ const LOST_FILTER_TABS = [
 ]
 
 const LostAndFoundPage = () => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canViewLostAndFound = can("cap.lostAndFound.view")
+  const canCreateLostAndFound = can("cap.lostAndFound.create")
 
   const [activeTab, setActiveTab] = useState("Active")
   const [searchTerm, setSearchTerm] = useState("")
@@ -28,6 +32,7 @@ const LostAndFoundPage = () => {
   const filteredItems = filterLostItems(lostItems, activeTab, searchTerm)
 
   const fetchLostItems = async () => {
+    if (!canViewLostAndFound) return
     try {
       const response = await lostAndFoundApi.getAllLostItems()
       setLostItems(response.lostAndFoundItems || [])
@@ -38,13 +43,13 @@ const LostAndFoundPage = () => {
 
   useEffect(() => {
     fetchLostItems()
-  }, [])
+  }, [canViewLostAndFound])
 
   return (
     <>
       <div className="flex flex-col h-full">
         <LostAndFoundHeader onAddItem={() => setShowAddModal(true)}
-          canCreate={canAccess("lost_and_found", "create")}
+          canCreate={canCreateLostAndFound}
           userRole={user?.role}
         />
 

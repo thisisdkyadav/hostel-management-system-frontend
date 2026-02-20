@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { GraduationCap } from "lucide-react"
 import NoResults from "../../components/common/NoResults"
 import PageFooter from "../../components/common/PageFooter"
@@ -14,6 +14,7 @@ import StudentsHeader from "../../components/headers/StudentsHeader"
 import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
+import useAuthz from "../../hooks/useAuthz"
 import { studentApi } from "../../service"
 import { hostelApi } from "../../service"
 import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
@@ -60,8 +61,41 @@ const TableShimmer = ({ rows = 10 }) => (
 
 const StudentsPage = () => {
   const { user } = useAuth()
+  const { can, getConstraint } = useAuthz()
   const { hostelList = [] } = useGlobal()
-  const hostels = ["Admin"].includes(user.role) ? hostelList : []
+  const constrainedHostelIds = getConstraint("constraint.students.scope.hostelIds", [])
+  const onlyOwnHostelScope = Boolean(
+    getConstraint("constraint.students.scope.onlyOwnHostel", false)
+  )
+  const hostels = useMemo(() => {
+    if (!["Admin"].includes(user.role)) {
+      return []
+    }
+
+    if (onlyOwnHostelScope) {
+      const ownHostelId = user?.hostel?._id
+      if (!ownHostelId) return []
+      return hostelList.filter((hostel) => hostel._id === ownHostelId)
+    }
+
+    if (!Array.isArray(constrainedHostelIds) || constrainedHostelIds.length === 0) {
+      return hostelList
+    }
+
+    const allowedHostelIds = new Set(
+      constrainedHostelIds
+        .map((hostelId) => (typeof hostelId === "string" ? hostelId.trim() : ""))
+        .filter(Boolean)
+    )
+    return hostelList.filter((hostel) => allowedHostelIds.has(hostel._id))
+  }, [constrainedHostelIds, hostelList, onlyOwnHostelScope, user?.hostel?._id, user.role])
+
+  const canViewStudentsList = can("cap.students.list.view") || can("cap.students.view")
+  const canViewStudentsDetail = can("cap.students.detail.view") || can("cap.students.view")
+  const canImportStudents = ["Admin"].includes(user?.role) && can("cap.students.import")
+  const canBulkUpdateStudents = ["Admin"].includes(user?.role) && can("cap.students.bulk.update")
+  const canUpdateStudentAllocations = ["Admin"].includes(user?.role) && can("cap.students.allocations.update")
+  const canExportStudents = can("cap.students.export") || can("cap.students.view")
 
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -71,10 +105,15 @@ const StudentsPage = () => {
 
   const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents, missingOptions } = useStudents({
     perPage: 10,
-    autoFetch: true,
+    autoFetch: canViewStudentsList,
   })
 
   const handleImportStudents = async (importedStudents) => {
+    if (!canImportStudents) {
+      alert("You do not have permission to import students.")
+      return false
+    }
+
     try {
       const result = await importStudents(importedStudents)
       if (result.error) {
@@ -90,6 +129,11 @@ const StudentsPage = () => {
   }
 
   const handleUpdateStudents = async (updatedStudents) => {
+    if (!canBulkUpdateStudents) {
+      alert("You do not have permission to bulk update students.")
+      return false
+    }
+
     try {
       await studentApi.updateStudents(updatedStudents)
       alert("Students updated successfully")
@@ -102,6 +146,11 @@ const StudentsPage = () => {
   }
 
   const handleUpdateAllocations = async (allocations, hostelId) => {
+    if (!canUpdateStudentAllocations) {
+      alert("You do not have permission to update allocations.")
+      return false
+    }
+
     try {
       const response = await hostelApi.updateRoomAllocations(allocations, hostelId)
       if (response.success) {
@@ -125,6 +174,11 @@ const StudentsPage = () => {
   }
 
   const viewStudentDetails = (student) => {
+    if (!canViewStudentsDetail) {
+      alert("You do not have permission to view student details.")
+      return
+    }
+
     setSelectedStudent(student)
     setShowStudentDetail(true)
   }
@@ -142,6 +196,11 @@ const StudentsPage = () => {
   }
 
   const handleExportStudents = async () => {
+    if (!canExportStudents) {
+      alert("You do not have permission to export students.")
+      return
+    }
+
     const userIds = students.map((student) => student.userId)
     if (userIds.length === 0) {
       alert("No students to export")
@@ -192,6 +251,17 @@ const StudentsPage = () => {
     }
   }
 
+  if (!canViewStudentsList) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{ backgroundColor: 'var(--color-danger-bg)', borderLeft: 'var(--border-4) solid var(--color-danger)', color: 'var(--color-danger-text)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', borderRadius: 'var(--radius-lg)' }}>
+          <p style={{ fontWeight: 'var(--font-weight-medium)' }}>Access Denied</p>
+          <p>You do not have permission to view students.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {error && (
@@ -207,6 +277,10 @@ const StudentsPage = () => {
         onUpdateAllocations={() => setShowAllocateModal(true)}
         onExport={handleExportStudents}
         userRole={user?.role}
+        canImport={canImportStudents}
+        canBulkUpdate={canBulkUpdateStudents}
+        canUpdateAllocations={canUpdateStudentAllocations}
+        canExport={canExportStudents}
       />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: 'var(--spacing-6) var(--spacing-8)' }}>
@@ -228,11 +302,11 @@ const StudentsPage = () => {
           </>
         )}
 
-        {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
+        {showStudentDetail && selectedStudent && canViewStudentsDetail && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 
-        {["Admin"].includes(user?.role) && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
-        {["Admin"].includes(user?.role) && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
-        {["Admin"].includes(user?.role) && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
+        {["Admin"].includes(user?.role) && canImportStudents && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
+        {["Admin"].includes(user?.role) && canBulkUpdateStudents && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
+        {["Admin"].includes(user?.role) && canUpdateStudentAllocations && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
       </div>
 
       <PageFooter

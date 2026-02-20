@@ -4,8 +4,10 @@ import { SearchInput } from "@/components/ui"
 import { Button, DataTable, Modal, Input } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
+import useAuthz from "../../hooks/useAuthz"
 
 const AdminManagementPage = () => {
+  const { can } = useAuthz()
   const [admins, setAdmins] = useState([])
   const [filteredAdmins, setFilteredAdmins] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -13,8 +15,21 @@ const AdminManagementPage = () => {
   const [editAdmin, setEditAdmin] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const canViewAdmins = can("cap.users.view")
+  const canCreateAdmin = can("cap.users.create")
+  const canEditAdmin = can("cap.users.edit")
+  const canDeleteAdmin = can("cap.users.delete")
+  const hasAdminActionPermission = canEditAdmin || canDeleteAdmin
 
   const fetchAdmins = async () => {
+    if (!canViewAdmins) {
+      setAdmins([])
+      setFilteredAdmins([])
+      setError(null)
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
       setError(null)
@@ -32,7 +47,7 @@ const AdminManagementPage = () => {
 
   useEffect(() => {
     fetchAdmins()
-  }, [])
+  }, [canViewAdmins])
 
   useEffect(() => {
     if (!admins.length) return
@@ -48,6 +63,11 @@ const AdminManagementPage = () => {
   }, [admins, searchTerm])
 
   const handleAddAdmin = async (adminData) => {
+    if (!canCreateAdmin) {
+      window.alert("You do not have permission to add administrators")
+      return
+    }
+
     try {
       setLoading(true)
       await superAdminApi.createAdmin(adminData)
@@ -63,6 +83,11 @@ const AdminManagementPage = () => {
   }
 
   const handleUpdateAdmin = async (updatedAdmin) => {
+    if (!canEditAdmin) {
+      window.alert("You do not have permission to update administrators")
+      return
+    }
+
     try {
       setLoading(true)
       await superAdminApi.updateAdmin(updatedAdmin.id, updatedAdmin)
@@ -78,6 +103,11 @@ const AdminManagementPage = () => {
   }
 
   const handleDeleteAdmin = async (id) => {
+    if (!canDeleteAdmin) {
+      window.alert("You do not have permission to delete administrators")
+      return
+    }
+
     const confirmDelete = window.confirm("Are you sure you want to delete this admin?")
     if (!confirmDelete) return
 
@@ -130,20 +160,32 @@ const AdminManagementPage = () => {
       align: "right",
       render: (admin) => (
         <div className="flex justify-end space-x-2">
-          <Button onClick={() => setEditAdmin(admin)} variant="ghost" size="sm" aria-label="Edit admin"><FaEdit /></Button>
-          <Button onClick={() => handleDeleteAdmin(admin.id)} variant="danger" size="sm" aria-label="Delete admin"><FaTrash /></Button>
+          {canEditAdmin && <Button onClick={() => setEditAdmin(admin)} variant="ghost" size="sm" aria-label="Edit admin"><FaEdit /></Button>}
+          {canDeleteAdmin && <Button onClick={() => handleDeleteAdmin(admin.id)} variant="danger" size="sm" aria-label="Delete admin"><FaTrash /></Button>}
         </div>
       ),
     },
   ]
 
+  if (!canViewAdmins) {
+    return (
+      <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+        <div className="rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger-bg)] p-4 text-[var(--color-danger-text)]">
+          You do not have permission to view administrators.
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Admin Management</h1>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
-          <FaPlus /> Add Admin
-        </Button>
+        {canCreateAdmin && (
+          <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+            <FaPlus /> Add Admin
+          </Button>
+        )}
       </header>
 
       <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -172,7 +214,12 @@ const AdminManagementPage = () => {
       ) : filteredAdmins.length === 0 ? (
         <NoResults icon={<FaUserShield className="text-gray-300 text-3xl" />} message="No administrators found" suggestion="Try changing your search criteria" />
       ) : (
-        <DataTable columns={columns} data={filteredAdmins} emptyMessage="No administrators found" isLoading={loading} />
+        <DataTable
+          columns={hasAdminActionPermission ? columns : columns.filter((column) => column.key !== "actions")}
+          data={filteredAdmins}
+          emptyMessage="No administrators found"
+          isLoading={loading}
+        />
       )}
 
       {showAddModal && <AdminModal onClose={() => setShowAddModal(false)} onSubmit={handleAddAdmin} title="Add Admin" />}

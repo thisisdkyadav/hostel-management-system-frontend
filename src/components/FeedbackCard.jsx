@@ -3,13 +3,16 @@ import { HiAnnotation, HiUser, HiCalendar, HiClock, HiEye, HiReply, HiTrash, HiP
 import { feedbackApi } from "../service"
 import FeedbackReplyModal from "./FeedbackReplyModal"
 import FeedbackFormModal from "./student/feedback/FeedbackFormModal"
-import { useAuth } from "../contexts/AuthProvider"
 import { getMediaUrl } from "../utils/mediaUtils"
 import { Card } from "@/components/ui"
 import { Button } from "czero/react"
+import useAuthz from "../hooks/useAuthz"
 
 const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
-  const { canAccess } = useAuth()
+  const { can } = useAuthz()
+  const canViewFeedback = can("cap.feedback.view")
+  const canReactFeedback = can("cap.feedback.react")
+  const canCreateFeedback = can("cap.feedback.create")
 
   const [isUpdating, setIsUpdating] = useState(false)
   const [status, setStatus] = useState(feedback.status)
@@ -136,7 +139,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
               <span className="text-xs text-[var(--color-text-muted)]">ID: {feedback._id.substring(0, 8)}</span>
             </div>
           </div>
-          {!isStudentView && canAccess("feedback", "view") && (
+          {!isStudentView && canViewFeedback && (
             <div className="flex items-center">
               {feedback.userId.profileImage ? (
                 <img src={getMediaUrl(feedback.userId.profileImage)} alt={feedback.userId.name} className="w-10 h-10 rounded-full object-cover mr-2 border border-[var(--color-border-primary)]" />
@@ -155,7 +158,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
               <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>
             </div>
           )}
-          {isStudentView && canAccess("feedback", "view") && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
+          {isStudentView && canViewFeedback && <span className={`text-xs px-2.5 py-1 rounded-full ${getStatusColor(status)}`}>{status}</span>}
         </div>
       </Card.Header>
 
@@ -188,7 +191,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
       </Card.Body>
 
       <Card.Footer className="mt-4 pt-3 border-t border-[var(--color-border-light)] flex justify-end space-x-3">
-        {!isStudentView && canAccess("feedback", "react") && status === "Pending" && !feedback.reply && (
+        {!isStudentView && canReactFeedback && status === "Pending" && !feedback.reply && (
           <>
             <Button onClick={() => setIsReplyModalOpen(true)} variant="primary" size="sm">
               <HiReply /> Reply
@@ -199,7 +202,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
           </>
         )}
 
-        {!isStudentView && canAccess("feedback", "react") && status === "Seen" && (
+        {!isStudentView && canReactFeedback && status === "Seen" && (
           <>
             <Button onClick={() => setIsReplyModalOpen(true)} variant="outline" size="sm">
               <HiReply /> {feedback.reply ? "Edit Reply" : "Add Reply"}
@@ -210,7 +213,7 @@ const FeedbackCard = ({ feedback, refresh, isStudentView = false }) => {
           </>
         )}
 
-        {isStudentView && canAccess("feedback", "react") && isPending && (
+        {isStudentView && canCreateFeedback && isPending && (
           <>
             <Button onClick={() => setIsEditModalOpen(true)} variant="outline" size="sm">
               <HiPencilAlt /> Edit

@@ -8,11 +8,16 @@ import LostAndFoundEditForm from "./LostAndFoundEditForm"
 import LostAndFoundDetailModal from "./LostAndFoundDetailModal"
 import { lostAndFoundApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+import useAuthz from "../../hooks/useAuthz"
 import { Card } from "@/components/ui"
 import { Button } from "czero/react"
 
 const LostAndFoundCard = ({ item, refresh }) => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canEditLostAndFound =
+    can("cap.lostAndFound.edit") &&
+    ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role)
 
   const [isEditing, setIsEditing] = useState(false)
   const [showDetailModal, setShowDetailModal] = useState(false)
@@ -127,7 +132,7 @@ const LostAndFoundCard = ({ item, refresh }) => {
         </Card.Body>
 
         <Card.Footer style={{ marginTop: 'var(--spacing-4)', paddingTop: 'var(--spacing-3)', borderTop: `var(--border-1) solid var(--color-border-light)`, display: 'flex', justifyContent: 'flex-end' }}>
-          {user && canAccess("lost_and_found", "edit") && ["Admin", "Warden", "Associate Warden", "Hostel Supervisor", "Security", "Hostel Gate"].includes(user?.role) && (
+          {canEditLostAndFound && (
             <Button onClick={handleEditClick} variant="outline" size="sm">
               <FaEdit /> Edit
             </Button>

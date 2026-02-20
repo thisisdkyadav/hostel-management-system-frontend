@@ -47,8 +47,8 @@ export { statsApi } from "./modules/stats.api"
 export { dashboardApi } from "./modules/dashboard.api"
 export { uploadApi } from "./modules/upload.api"
 export { notificationApi } from "./modules/notification.api"
+export { authzApi } from "./modules/authz.api"
 export { userApi } from "./modules/user.api"
-export { accessControlApi } from "./modules/accessControl.api"
 export { certificateApi } from "./modules/certificate.api"
 export { idCardApi } from "./modules/idCard.api"
 export { hostelGateApi } from "./modules/hostelGate.api"
@@ -84,8 +84,8 @@ import { statsApi } from "./modules/stats.api"
 import { dashboardApi } from "./modules/dashboard.api"
 import { uploadApi } from "./modules/upload.api"
 import { notificationApi } from "./modules/notification.api"
+import { authzApi } from "./modules/authz.api"
 import { userApi } from "./modules/user.api"
-import { accessControlApi } from "./modules/accessControl.api"
 import { certificateApi } from "./modules/certificate.api"
 import { idCardApi } from "./modules/idCard.api"
 import { hostelGateApi } from "./modules/hostelGate.api"
@@ -123,8 +123,8 @@ const api = {
   dashboard: dashboardApi,
   upload: uploadApi,
   notification: notificationApi,
+  authz: authzApi,
   user: userApi,
-  accessControl: accessControlApi,
   certificate: certificateApi,
   idCard: idCardApi,
   hostelGate: hostelGateApi,

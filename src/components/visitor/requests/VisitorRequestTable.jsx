@@ -5,6 +5,7 @@ import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import useAuthz from "../../../hooks/useAuthz"
 const StatusBadge = ({ status }) => {
   const statusMap = {
     Pending: { bgColor: "var(--color-warning-bg)", textColor: "var(--color-warning-text)", label: "Pending" },
@@ -35,7 +36,11 @@ const CheckInOutBadge = ({ request }) => {
 }
 
 const VisitorRequestTable = ({ requests, onRefresh }) => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canAllocateVisitors =
+    ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
+    can("cap.visitors.allocate")
   const [selectedRequestId, setSelectedRequestId] = useState(null)
   const [showDetails, setShowDetails] = useState(false)
 
@@ -116,7 +121,7 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
             <FaEye />
           </Button>
 
-          {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && !request.isAllocated && (
+          {canAllocateVisitors && request.status === "Approved" && !request.isAllocated && (
             <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Allocate rooms">
               <FaHome />
             </Button>

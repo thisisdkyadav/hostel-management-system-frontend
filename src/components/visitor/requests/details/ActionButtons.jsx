@@ -1,6 +1,6 @@
 import React from "react"
-import { useAuth } from "../../../../contexts/AuthProvider"
 import { Button } from "czero/react"
+import useAuthz from "../../../../hooks/useAuthz"
 
 const ActionButtons = ({
   userRole,
@@ -22,10 +22,14 @@ const ActionButtons = ({
   isCheckOutForm,
   isCheckTimes,
 }) => {
-  const { user, canAccess } = useAuth()
+  const { can } = useAuthz()
   const isPending = requestStatus === "Pending"
   const isApproved = requestStatus === "Approved"
   const isRejected = requestStatus === "Rejected"
+  const canAllocateVisitors =
+    ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) &&
+    can("cap.visitors.allocate")
+  const canApproveVisitors = userRole === "Admin" && can("cap.visitors.approve")
 
   const buttonBaseStyle = {
     padding: "var(--spacing-2) var(--spacing-4)",
@@ -107,7 +111,7 @@ const ActionButtons = ({
       )}
 
       {/* Admin actions for pending requests */}
-      {userRole === "Admin" && isPending && (
+      {canApproveVisitors && isPending && (
         <>
           <Button onClick={onClose} variant="secondary" size="md">
             Close
@@ -122,7 +126,7 @@ const ActionButtons = ({
       )}
 
       {/* Warden actions for approved requests */}
-      {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && isApproved && (
+      {canAllocateVisitors && isApproved && (
         <>
           <Button onClick={onClose} variant="secondary" size="md">
             Close
@@ -168,8 +172,8 @@ const ActionButtons = ({
 
       {/* Default close button for other cases */}
       {((userRole !== "Admin" && userRole !== "Warden" && userRole !== "Associate Warden" && userRole !== "Hostel Supervisor" && userRole !== "Security" && userRole !== "Hostel Gate") ||
-        (userRole === "Admin" && !isPending) ||
-        (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && !isApproved) ||
+        (userRole === "Admin" && (!isPending || !canApproveVisitors)) ||
+        (["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && (!canAllocateVisitors || !isApproved)) ||
         (["Security", "Hostel Gate"].includes(userRole) && !isApproved)) && (
           <Button onClick={onClose} variant="secondary" size="md">
             Close

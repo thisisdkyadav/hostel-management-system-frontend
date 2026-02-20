@@ -8,7 +8,9 @@ const VisitorRequestsHeader = ({
   onAddProfile,
   onManageProfiles,
   onNewRequest,
-  userRole
+  userRole,
+  canManageProfiles = true,
+  canCreateRequest = true,
 }) => {
   return (
     <PageHeader title="Visitor Requests">
@@ -17,15 +19,21 @@ const VisitorRequestsHeader = ({
       </Button>
       {["Student"].includes(userRole) && (
         <>
-          <Button variant="white" onClick={onAddProfile}>
-            <Plus size={18} /> Add Visitor Profile
-          </Button>
-          <Button variant="white" onClick={onManageProfiles}>
-            <UserPen size={18} /> Manage Profiles
-          </Button>
-          <Button variant="primary" onClick={onNewRequest}>
-            <Plus size={18} /> New Request
-          </Button>
+          {canManageProfiles && (
+            <Button variant="white" onClick={onAddProfile}>
+              <Plus size={18} /> Add Visitor Profile
+            </Button>
+          )}
+          {canManageProfiles && (
+            <Button variant="white" onClick={onManageProfiles}>
+              <UserPen size={18} /> Manage Profiles
+            </Button>
+          )}
+          {canCreateRequest && (
+            <Button variant="primary" onClick={onNewRequest}>
+              <Plus size={18} /> New Request
+            </Button>
+          )}
         </>
       )}
     </PageHeader>

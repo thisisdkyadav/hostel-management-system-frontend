@@ -44,6 +44,7 @@ import {
   NotebookText,
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
+import useAuthz from "@/hooks/useAuthz"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
@@ -621,6 +622,7 @@ const toGymkhanaDisplayEvent = (event) => ({
 
 const EventsPage = () => {
   const { user } = useAuth()
+  const { can, getConstraint } = useAuthz()
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
@@ -689,22 +691,38 @@ const EventsPage = () => {
   const isSuperAdmin = user?.role === "Super Admin"
   const isGS = user?.subRole === "GS Gymkhana"
   const isPresident = user?.subRole === "President Gymkhana"
-  const canEditGS = calendar && !calendar.isLocked && isGS && (calendar.status === "draft" || calendar.status === "rejected")
+  const canViewEventsCapability = can("cap.events.view")
+  const canCreateEventsCapability = can("cap.events.create")
+  const canApproveEventsCapability = can("cap.events.approve")
+  const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
+  const parsedApprovalLimit = Number(maxApprovalAmountConstraint)
+  const maxApprovalAmount = Number.isFinite(parsedApprovalLimit) && parsedApprovalLimit >= 0
+    ? parsedApprovalLimit
+    : null
+  const canEditGS =
+    calendar &&
+    !calendar.isLocked &&
+    isGS &&
+    canCreateEventsCapability &&
+    (calendar.status === "draft" || calendar.status === "rejected")
   const canEditPresident =
     calendar &&
     !calendar.isLocked &&
     isPresident &&
+    canCreateEventsCapability &&
     ["draft", "rejected", "pending_president"].includes(calendar.status)
   const canEdit = canEditGS || canEditPresident
   const canSubmitCalendar = Boolean(
     calendar &&
       !calendar.isLocked &&
       isPresident &&
+      canCreateEventsCapability &&
       calendar.status === "draft" &&
       events.length > 0
   )
   const canApprove = Boolean(
     calendar?.status &&
+      canApproveEventsCapability &&
       user?.subRole &&
       CALENDAR_STATUS_TO_APPROVER[calendar.status] === user.subRole
   )
@@ -713,8 +731,8 @@ const EventsPage = () => {
       user?.subRole === "Student Affairs" &&
       calendar?.status === "pending_student_affairs"
   )
-  const canManageCalendarLock = isAdminLevel && Boolean(calendar?._id)
-  const canCreateCalendar = isAdminLevel
+  const canManageCalendarLock = isAdminLevel && canApproveEventsCapability && Boolean(calendar?._id)
+  const canCreateCalendar = isAdminLevel && canCreateEventsCapability
 
   const VIEW_OPTIONS = [
     { value: "list", label: "List", icon: <List size={14} /> },
@@ -887,12 +905,31 @@ const EventsPage = () => {
   }, [proposalData, isGS, isPresident])
   const canCreateProposalForSelectedEvent = useMemo(() => {
     if (!proposalEvent) return false
-    return isGS && isProposalWindowOpen(proposalEvent) && !proposalData && proposalEvent.gymkhanaEventId
-  }, [proposalEvent, isGS, proposalData])
+    return (
+      isGS &&
+      canCreateEventsCapability &&
+      isProposalWindowOpen(proposalEvent) &&
+      !proposalData &&
+      proposalEvent.gymkhanaEventId
+    )
+  }, [proposalEvent, isGS, canCreateEventsCapability, proposalData])
+  const isProposalWithinApprovalLimit = useMemo(
+    () =>
+      maxApprovalAmount === null ||
+      Number(proposalData?.totalExpenditure || 0) <= maxApprovalAmount,
+    [maxApprovalAmount, proposalData?.totalExpenditure]
+  )
   const canCurrentUserReviewProposal = useMemo(() => {
+    if (!canApproveEventsCapability) return false
     if (!proposalData?.status || !user?.subRole) return false
+    if (!isProposalWithinApprovalLimit) return false
     return PROPOSAL_STATUS_TO_APPROVER[proposalData.status] === user.subRole
-  }, [proposalData?.status, user?.subRole])
+  }, [
+    proposalData?.status,
+    canApproveEventsCapability,
+    isProposalWithinApprovalLimit,
+    user?.subRole,
+  ])
   const requiresProposalNextApprovalSelection = useMemo(
     () =>
       Boolean(
@@ -943,15 +980,23 @@ const EventsPage = () => {
   const canEditExpenseForm = useMemo(
     () =>
       isGS &&
+      canCreateEventsCapability &&
       isExpenseSubmissionAllowedForSelectedEvent &&
       expenseData?.approvalStatus !== "approved",
-    [isGS, isExpenseSubmissionAllowedForSelectedEvent, expenseData?.approvalStatus]
+    [isGS, canCreateEventsCapability, isExpenseSubmissionAllowedForSelectedEvent, expenseData?.approvalStatus]
   )
   const canApproveExpense = useMemo(
     () => {
+      if (!canApproveEventsCapability) return false
       if (!isAdminLevel || !expenseData?._id) return false
       if (!expenseData?.approvalStatus || expenseData.approvalStatus === "approved") return false
       if (!expenseData.approvalStatus.startsWith("pending")) return false
+      if (
+        maxApprovalAmount !== null &&
+        Number(expenseData.totalExpenditure || 0) > maxApprovalAmount
+      ) {
+        return false
+      }
       if (isSuperAdmin) return true
 
       const expenseStatusBySubRole = {
@@ -970,7 +1015,16 @@ const EventsPage = () => {
 
       return expenseStatusBySubRole[user?.subRole] === expenseData.approvalStatus
     },
-    [isAdminLevel, isSuperAdmin, expenseData?._id, expenseData?.approvalStatus, user?.subRole]
+    [
+      canApproveEventsCapability,
+      isAdminLevel,
+      isSuperAdmin,
+      maxApprovalAmount,
+      expenseData?._id,
+      expenseData?.approvalStatus,
+      expenseData?.totalExpenditure,
+      user?.subRole,
+    ]
   )
   const requiresExpenseNextApprovalSelection = useMemo(
     () =>
@@ -1115,6 +1169,16 @@ const EventsPage = () => {
   }
 
   const fetchYears = async () => {
+    if (!canViewEventsCapability) {
+      setYears([])
+      setSelectedYear(null)
+      setCalendar(null)
+      setEvents([])
+      setHasAttemptedCalendarLoad(true)
+      setLoading(false)
+      return
+    }
+
     try {
       setHasAttemptedCalendarLoad(false)
       const [yearsResponse, proposalsResponse, pendingExpenses] = await Promise.all([
@@ -1149,6 +1213,14 @@ const EventsPage = () => {
   }
 
   const fetchCalendar = async (year, { resetData = false, showLoader = resetData } = {}) => {
+    if (!canViewEventsCapability) {
+      setCalendar(null)
+      setEvents([])
+      setCalendarHolidays([])
+      setHasAttemptedCalendarLoad(true)
+      return
+    }
+
     const requestId = ++calendarRequestRef.current
     try {
       if (showLoader) {
@@ -1404,7 +1476,7 @@ const toCalendarEventPayload = (event) => {
       return
     }
 
-    if (calendar?.isLocked && isGS) {
+    if (calendar?.isLocked && isGS && canCreateEventsCapability) {
       openAmendmentModal(event)
       return
     }
@@ -1438,6 +1510,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const openProposalModal = async (event) => {
+    if (!canViewEventsCapability) {
+      toast.error("You do not have permission to view event proposals")
+      return
+    }
+
     setProposalEvent(event)
     setProposalActionComments("")
     setProposalNextApprovalStages([])
@@ -1466,6 +1543,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleCreateOrUpdateProposal = async () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to submit proposals")
+      return
+    }
+
     if (!proposalEvent?.gymkhanaEventId) {
       toast.error("Linked event record not found")
       return
@@ -1517,7 +1599,16 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleApproveProposal = async () => {
+    if (!canCurrentUserReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
     if (!proposalData?._id) return
+    if (!isProposalWithinApprovalLimit && maxApprovalAmount !== null) {
+      toast.error(`Proposal amount exceeds your approval limit of ${maxApprovalAmount}`)
+      return
+    }
     if (
       requiresProposalNextApprovalSelection &&
       proposalNextApprovalStages.length === 0
@@ -1547,6 +1638,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleRejectProposal = async () => {
+    if (!canCurrentUserReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
     if (!proposalData?._id) return
     if (!proposalActionComments || proposalActionComments.length < 10) {
       toast.error("Please provide a rejection reason (min 10 characters)")
@@ -1570,6 +1666,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleRequestProposalRevision = async () => {
+    if (!canCurrentUserReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
     if (!proposalData?._id) return
     if (!proposalActionComments || proposalActionComments.length < 10) {
       toast.error("Please provide revision notes (min 10 characters)")
@@ -1618,6 +1719,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const openExpenseModal = async (event) => {
+    if (!canViewEventsCapability) {
+      toast.error("You do not have permission to view event expenses")
+      return
+    }
+
     setExpenseEvent(event)
     setExpenseApprovalComments("")
     setExpenseNextApprovalStages([])
@@ -1672,6 +1778,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleCreateOrUpdateExpense = async () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to submit event expenses")
+      return
+    }
+
     if (!expenseEvent?.gymkhanaEventId) {
       toast.error("Linked event record not found")
       return
@@ -1709,7 +1820,19 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleApproveExpense = async () => {
+    if (!canApproveExpense) {
+      toast.error("You do not have permission to review this expense")
+      return
+    }
+
     if (!expenseData?._id) return
+    if (
+      maxApprovalAmount !== null &&
+      Number(expenseData.totalExpenditure || 0) > maxApprovalAmount
+    ) {
+      toast.error(`Expense amount exceeds your approval limit of ${maxApprovalAmount}`)
+      return
+    }
     if (
       requiresExpenseNextApprovalSelection &&
       expenseNextApprovalStages.length === 0
@@ -1740,6 +1863,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleRejectExpense = async () => {
+    if (!canApproveExpense) {
+      toast.error("You do not have permission to review this expense")
+      return
+    }
+
     if (!expenseData?._id) return
     if (!expenseApprovalComments || expenseApprovalComments.trim().length < 10) {
       toast.error("Please provide a rejection reason (min 10 characters)")
@@ -1764,6 +1892,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleAddEvent = () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to create events")
+      return
+    }
+
     setSelectedEvent(null)
     resetDateOverlapInfo()
     setEventForm({
@@ -1814,6 +1947,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleSaveEvent = async () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to update events")
+      return
+    }
+
     const payload = buildEventPayload(eventForm)
 
     if (!payload.title || !payload.startDate || !payload.endDate || !payload.category) {
@@ -1859,6 +1997,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleSubmitAmendment = async () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to submit amendments")
+      return
+    }
+
     const payload = buildEventPayload(eventForm)
 
     if (!payload.title || !payload.startDate || !payload.endDate || !payload.category) {
@@ -1902,6 +2045,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleSubmitCalendar = async () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to submit calendar")
+      return
+    }
+
     try {
       setSubmitting(true)
       const response = await gymkhanaEventsApi.submitCalendar(calendar._id, false)
@@ -1924,6 +2072,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleConfirmSubmitWithOverlap = async () => {
+    if (!canCreateEventsCapability) {
+      toast.error("You do not have permission to submit calendar")
+      return
+    }
+
     if (!calendar?._id) return
 
     try {
@@ -1941,6 +2094,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleApprove = async () => {
+    if (!canApprove) {
+      toast.error("You do not have permission to approve calendar")
+      return
+    }
+
     if (
       requiresCalendarNextApprovalSelection &&
       calendarNextApprovalStages.length === 0
@@ -1969,6 +2127,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleReject = async () => {
+    if (!canApprove) {
+      toast.error("You do not have permission to reject calendar")
+      return
+    }
+
     if (!approvalComments || approvalComments.length < 10) {
       toast.error("Please provide a rejection reason (min 10 characters)")
       return
@@ -1990,6 +2153,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleCreateCalendar = async () => {
+    if (!canCreateCalendar) {
+      toast.error("You do not have permission to create calendar")
+      return
+    }
+
     if (!newAcademicYear) {
       toast.error("Please select an academic year")
       return
@@ -2011,6 +2179,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleLockCalendar = async () => {
+    if (!canManageCalendarLock) {
+      toast.error("You do not have permission to manage calendar lock")
+      return
+    }
+
     if (!calendar?._id) return
     try {
       setSubmitting(true)
@@ -2025,6 +2198,11 @@ const toCalendarEventPayload = (event) => {
   }
 
   const handleUnlockCalendar = async () => {
+    if (!canManageCalendarLock) {
+      toast.error("You do not have permission to manage calendar lock")
+      return
+    }
+
     if (!calendar?._id) return
     try {
       setSubmitting(true)
@@ -2060,6 +2238,16 @@ const toCalendarEventPayload = (event) => {
     return <ErrorState message={error} onRetry={fetchYears} />
   }
 
+  if (!canViewEventsCapability) {
+    return (
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+        <div className="rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger-bg)] p-4 text-[var(--color-danger-text)]">
+          You do not have permission to view events.
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
       <PageHeader title={headerTitle} subtitle={headerSubtitle} showDate={false}>
@@ -2080,7 +2268,7 @@ const toCalendarEventPayload = (event) => {
             <Send size={16} /> Submit for Approval
           </Button>
         )}
-        {calendar?.isLocked && isGS && (
+        {calendar?.isLocked && isGS && canCreateEventsCapability && (
           <Button size="md" variant="secondary" onClick={() => openAmendmentModal(null)}>
             <FileText size={16} /> Request New Event
           </Button>
@@ -2135,7 +2323,7 @@ const toCalendarEventPayload = (event) => {
           </div>
         )}
 
-        {!loading && calendar && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
+        {!loading && calendar && canCreateEventsCapability && (isGS || isPresident) && pendingProposalReminders.length > 0 && (
           <div
             style={{
               marginBottom: "var(--spacing-3)",
@@ -2212,7 +2400,7 @@ const toCalendarEventPayload = (event) => {
           </div>
         )}
 
-        {!loading && calendar && isAdminLevel && pendingExpenseApprovalsForSelectedCalendar.length > 0 && (
+        {!loading && calendar && canApproveEventsCapability && isAdminLevel && pendingExpenseApprovalsForSelectedCalendar.length > 0 && (
           <div
             style={{
               marginBottom: "var(--spacing-3)",
@@ -2672,12 +2860,15 @@ const toCalendarEventPayload = (event) => {
           const proposalDueDate = getProposalDueDate(selectedEvent)
           const proposalDueText = proposalDueDate ? proposalDueDate.toLocaleDateString() : "Not available"
           const canOpenProposal =
-            selectedEvent.gymkhanaEventId && (selectedEvent.proposalSubmitted || isGS || isPresident)
+            canViewEventsCapability &&
+            selectedEvent.gymkhanaEventId &&
+            (selectedEvent.proposalSubmitted || ((isGS || isPresident) && canCreateEventsCapability))
           const canManageBills =
+            canViewEventsCapability &&
             selectedEvent.gymkhanaEventId &&
             (selectedEvent.eventStatus === "proposal_approved" ||
               selectedEvent.eventStatus === "completed") &&
-            (isGS || isAdminLevel)
+            ((isGS && canCreateEventsCapability) || (isAdminLevel && canApproveEventsCapability))
 
           const proposalSummary = !selectedEvent.gymkhanaEventId
             ? "Available after calendar approval and event record generation."
@@ -2742,7 +2933,7 @@ const toCalendarEventPayload = (event) => {
                   </div>
                 </EventDetailSectionCard>
 
-                {(isGymkhanaRole || isAdminLevel) && (
+                {((isGymkhanaRole && canCreateEventsCapability) || (isAdminLevel && canApproveEventsCapability)) && (
                   <EventDetailSectionCard icon={Clock3} title="Workflow" accentColor="var(--color-primary)">
                     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
                       <div

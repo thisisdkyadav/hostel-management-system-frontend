@@ -4,11 +4,22 @@ import { useLogout } from "../hooks/useLogout"
 import GlobalProvider from "../contexts/GlobalProvider"
 import { ToastProvider } from "../components/ui/feedback"
 import { useAuth } from "../contexts/AuthProvider"
+import useAuthz from "../hooks/useAuthz"
+
+const PILOT_ROUTE_GATED_PATHS = new Set([
+  "/admin/settings",
+  "/admin/students",
+])
 
 const AdminLayout = () => {
   const handleLogout = useLogout()
   const { user } = useAuth()
-  const navItems = getAdminNavItems(handleLogout, user)
+  const { canRouteByPath } = useAuthz()
+  const navItems = getAdminNavItems(handleLogout, user).filter((item) => {
+    if (!item?.path) return true
+    if (!PILOT_ROUTE_GATED_PATHS.has(item.path)) return true
+    return canRouteByPath(item.path)
+  })
 
   return (
     <GlobalProvider>

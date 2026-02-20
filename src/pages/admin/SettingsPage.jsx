@@ -11,9 +11,11 @@ import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import toast from "react-hot-toast"
 import { Card } from "@/components/ui"
+import useAuthz from "../../hooks/useAuthz"
 
 const SettingsPage = () => {
   const { user } = useAuth()
+  const { can } = useAuthz()
   const [activeTab, setActiveTab] = useState("studentFields")
   const [loading, setLoading] = useState({
     studentFields: false,
@@ -40,6 +42,67 @@ const SettingsPage = () => {
     systemSettings: null,
   })
 
+  const SETTINGS_CAPABILITIES = {
+    studentFields: {
+      view: "cap.settings.studentFields.view",
+      update: "cap.settings.studentFields.update",
+    },
+    degrees: {
+      view: "cap.settings.degrees.view",
+      update: "cap.settings.degrees.update",
+      rename: "cap.settings.degrees.rename",
+    },
+    departments: {
+      view: "cap.settings.departments.view",
+      update: "cap.settings.departments.update",
+      rename: "cap.settings.departments.rename",
+    },
+    registeredStudents: {
+      view: "cap.settings.registeredStudents.view",
+      update: "cap.settings.registeredStudents.update",
+    },
+    academicHolidays: {
+      view: "cap.settings.academicHolidays.view",
+      update: "cap.settings.academicHolidays.update",
+    },
+    systemSettings: {
+      view: "cap.settings.system.view",
+      update: "cap.settings.system.update",
+    },
+  }
+
+  const canSettingsView = can("cap.settings.view")
+  const canSettingsUpdate = can("cap.settings.update")
+
+  const canViewTab = (tab) => {
+    const viewCapability = SETTINGS_CAPABILITIES?.[tab]?.view
+    if (!viewCapability) return canSettingsView
+    return canSettingsView || can(viewCapability)
+  }
+
+  const canUpdateTab = (tab) => {
+    const updateCapability = SETTINGS_CAPABILITIES?.[tab]?.update
+    if (!updateCapability) return canSettingsUpdate
+    return canSettingsUpdate || can(updateCapability)
+  }
+
+  const canRenameInTab = (tab) => {
+    const renameCapability = SETTINGS_CAPABILITIES?.[tab]?.rename
+    if (!renameCapability) return canUpdateTab(tab)
+    return canUpdateTab(tab) || can(renameCapability)
+  }
+
+  const hasAnySettingsView =
+    canSettingsView || Object.keys(SETTINGS_CAPABILITIES).some((tab) => canViewTab(tab))
+
+  const handleTabChange = (tab) => {
+    if (!canViewTab(tab)) {
+      toast.error("You do not have access to this settings section.")
+      return
+    }
+    setActiveTab(tab)
+  }
+
   // List of all possible student editable fields with their labels
   const availableFields = [
     { field: "profileImage", label: "Profile Image" },
@@ -55,10 +118,20 @@ const SettingsPage = () => {
   ]
 
   useEffect(() => {
-    fetchStudentEditPermissions()
+    if (canViewTab("studentFields")) {
+      fetchStudentEditPermissions()
+    }
   }, [])
 
   useEffect(() => {
+    if (!canViewTab(activeTab)) {
+      const firstAllowedTab = Object.keys(SETTINGS_CAPABILITIES).find((tab) => canViewTab(tab))
+      if (firstAllowedTab && firstAllowedTab !== activeTab) {
+        setActiveTab(firstAllowedTab)
+      }
+      return
+    }
+
     // Fetch data based on active tab
     if (activeTab === "degrees" && degrees.length === 0) {
       fetchDegrees()
@@ -191,6 +264,11 @@ const SettingsPage = () => {
   }
 
   const handleUpdatePermissions = async (updatedPermissions) => {
+    if (!canUpdateTab("studentFields")) {
+      toast.error("You do not have permission to update student edit permissions.")
+      return
+    }
+
     const confirmUpdate = window.confirm("Are you sure you want to update student edit permissions?")
     if (!confirmUpdate) return
 
@@ -217,6 +295,11 @@ const SettingsPage = () => {
   }
 
   const handleRenameDegree = async (oldName, newName) => {
+    if (!canRenameInTab("degrees")) {
+      toast.error("You do not have permission to rename degree values.")
+      return false
+    }
+
     try {
       // Only call the API to rename the degree in the database
       await adminApi.renameDegree(oldName, newName)
@@ -235,6 +318,11 @@ const SettingsPage = () => {
   }
 
   const handleRenameDepartment = async (oldName, newName) => {
+    if (!canRenameInTab("departments")) {
+      toast.error("You do not have permission to rename department values.")
+      return false
+    }
+
     try {
       // Only call the API to rename the department in the database
       await adminApi.renameDepartment(oldName, newName)
@@ -253,6 +341,11 @@ const SettingsPage = () => {
   }
 
   const handleUpdateDegrees = async (updatedDegrees) => {
+    if (!canUpdateTab("degrees")) {
+      toast.error("You do not have permission to update degrees.")
+      return
+    }
+
     const confirmUpdate = window.confirm("Are you sure you want to update degrees?")
     if (!confirmUpdate) return
 
@@ -271,6 +364,11 @@ const SettingsPage = () => {
   }
 
   const handleUpdateDepartments = async (updatedDepartments) => {
+    if (!canUpdateTab("departments")) {
+      toast.error("You do not have permission to update departments.")
+      return
+    }
+
     const confirmUpdate = window.confirm("Are you sure you want to update departments?")
     if (!confirmUpdate) return
 
@@ -289,6 +387,11 @@ const SettingsPage = () => {
   }
 
   const handleUpdateRegisteredStudents = async (updatedRegisteredStudents) => {
+    if (!canUpdateTab("registeredStudents")) {
+      toast.error("You do not have permission to update registered student counts.")
+      return
+    }
+
     const confirmUpdate = window.confirm("Are you sure you want to update registered students counts?")
     if (!confirmUpdate) return
 
@@ -307,6 +410,11 @@ const SettingsPage = () => {
   }
 
   const handleUpdateSystemSettings = async (updatedSettings) => {
+    if (!canUpdateTab("systemSettings")) {
+      toast.error("You do not have permission to update system settings.")
+      return
+    }
+
     const confirmUpdate = window.confirm("Are you sure you want to update the system settings?")
     if (!confirmUpdate) return
 
@@ -325,6 +433,11 @@ const SettingsPage = () => {
   }
 
   const handleUpdateAcademicHolidays = async (updatedAcademicHolidays) => {
+    if (!canUpdateTab("academicHolidays")) {
+      toast.error("You do not have permission to update academic holidays.")
+      return
+    }
+
     const confirmUpdate = window.confirm("Are you sure you want to update academic holidays?")
     if (!confirmUpdate) return
 
@@ -342,7 +455,7 @@ const SettingsPage = () => {
     }
   }
 
-  if (user?.role !== "Admin") {
+  if (user?.role !== "Admin" || !hasAnySettingsView) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg-tertiary)] px-4">
         <div className="bg-[var(--color-bg-primary)] rounded-xl shadow-md p-6 md:p-8 max-w-md w-full border border-[var(--color-danger-light)]">
@@ -374,37 +487,37 @@ const SettingsPage = () => {
           <div className="mb-6 border-b border-[var(--color-border-primary)]">
             <ul className="flex flex-wrap -mb-px">
               <li className="mr-2">
-                <button onClick={() => setActiveTab("studentFields")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentFields" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                <button onClick={() => handleTabChange("studentFields")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentFields" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiCog className="mr-2 h-5 w-5" />
                   Student Edit Permissions
                 </button>
               </li>
               <li className="mr-2">
-                <button onClick={() => setActiveTab("degrees")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "degrees" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                <button onClick={() => handleTabChange("degrees")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "degrees" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiAcademicCap className="mr-2 h-5 w-5" />
                   Degrees
                 </button>
               </li>
               <li className="mr-2">
-                <button onClick={() => setActiveTab("departments")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "departments" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                <button onClick={() => handleTabChange("departments")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "departments" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiOfficeBuilding className="mr-2 h-5 w-5" />
                   Departments
                 </button>
               </li>
               <li className="mr-2">
-                <button onClick={() => setActiveTab("registeredStudents")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "registeredStudents" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                <button onClick={() => handleTabChange("registeredStudents")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "registeredStudents" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiUsers className="mr-2 h-5 w-5" />
                   Registered Students
                 </button>
               </li>
               <li className="mr-2">
-                <button onClick={() => setActiveTab("academicHolidays")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "academicHolidays" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                <button onClick={() => handleTabChange("academicHolidays")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "academicHolidays" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiCalendar className="mr-2 h-5 w-5" />
                   Academic Holidays
                 </button>
               </li>
               <li className="mr-2">
-                <button onClick={() => setActiveTab("systemSettings")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "systemSettings" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                <button onClick={() => handleTabChange("systemSettings")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "systemSettings" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiAdjustments className="mr-2 h-5 w-5" />
                   System Settings
                 </button>

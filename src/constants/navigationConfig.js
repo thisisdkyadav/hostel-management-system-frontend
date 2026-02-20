@@ -170,6 +170,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Others", icon: UserPlus, section: "main", path: "/admin/others", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Update Password", icon: KeyRound, section: "main", path: "/admin/update-password", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Settings", icon: Settings, section: "main", path: "/admin/settings", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "AuthZ", icon: ShieldCheck, section: "main", path: "/admin/authz", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
   ]
 
   if (APPOINTMENT_ADMIN_SUBROLES.includes(user?.subRole)) {

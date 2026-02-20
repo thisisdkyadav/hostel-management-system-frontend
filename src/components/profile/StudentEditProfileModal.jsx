@@ -9,8 +9,10 @@ import { studentProfileApi } from "../../service"
 import ImageUploadModal from "../common/ImageUploadModal"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import StudentFamilyDetails from "./StudentFamilyDetails"
+import useAuthz from "../../hooks/useAuthz"
 
 const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentData }) => {
+  const { getConstraint } = useAuthz()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
@@ -21,16 +23,31 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
   const [canManageFamilyMembers, setCanManageFamilyMembers] = useState(false)
 
   useEffect(() => {
+    const applyConstraintFields = (serverFields = []) => {
+      const constrainedFields = getConstraint("constraint.profile.edit.allowedFields", null)
+      if (!Array.isArray(constrainedFields)) {
+        return serverFields
+      }
+
+      const allowedFieldSet = new Set(
+        constrainedFields
+          .map((field) => (typeof field === "string" ? field.trim() : ""))
+          .filter(Boolean)
+      )
+      return serverFields.filter((field) => allowedFieldSet.has(field))
+    }
+
     const fetchEditableFields = async () => {
       try {
         setLoading(true)
         const response = await studentProfileApi.getEditableProfile()
 
-        setEditableFields(response.editableFields || [])
+        const resolvedEditableFields = applyConstraintFields(response.editableFields || [])
+        setEditableFields(resolvedEditableFields)
         setEditableData(response.data || {})
 
         // Check if family members management is allowed
-        if (response.editableFields?.includes("familyMembers")) {
+        if (resolvedEditableFields.includes("familyMembers")) {
           setCanManageFamilyMembers(true)
         }
       } catch (error) {
@@ -42,7 +59,7 @@ const StudentEditProfileModal = ({ isOpen, onClose, onUpdate, userId, currentDat
     }
 
     fetchEditableFields()
-  }, [])
+  }, [getConstraint])
 
   const handleChange = (field, value) => {
     setEditableData((prev) => ({

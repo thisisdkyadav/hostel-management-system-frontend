@@ -24,10 +24,16 @@ import H2FormViewerModal from "./H2FormViewerModal"
 import PaymentInfoForm from "./details/PaymentInfoForm"
 import PaymentInfoViewer from "./details/PaymentInfoViewer"
 import PaymentInfoModal from "./PaymentInfoModal"
+import useAuthz from "../../../hooks/useAuthz"
 
 const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
   const { hostelList = [] } = useGlobal()
+  const canAllocateVisitors =
+    ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
+    can("cap.visitors.allocate")
+  const canApproveVisitors = ["Admin"].includes(user?.role) && can("cap.visitors.approve")
   const [request, setRequest] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedHostel, setSelectedHostel] = useState("")
@@ -92,11 +98,13 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
 
   // Initialize forms and room allocation based on request data
   useEffect(() => {
-    if (canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
+    if (canAllocateVisitors && request?.status === "Approved" && (!request?.allocatedRooms || request?.allocatedRooms.length === 0)) {
       setShowAllocationForm(true)
     } else {
       setShowAllocationForm(false)
     }
+
+    let nextIsUnitBased = false
 
     // Initialize room allocation form
     if (request?.hostelId) {
@@ -104,7 +112,8 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       const hostel = hostelList.find((h) => h._id === request.hostelId || h.name === request.hostelId)
       if (hostel) {
         setCurrentHostel(hostel)
-        setIsUnitBased(hostel.type === "unit-based" || false)
+        nextIsUnitBased = hostel.type === "unit-based" || false
+        setIsUnitBased(nextIsUnitBased)
       }
     }
 
@@ -113,9 +122,9 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
       setAllocatedRooms(request.allocatedRooms)
     } else {
       // Start with one empty room entry
-      setAllocatedRooms([isUnitBased ? ["", ""] : [""]])
+      setAllocatedRooms([nextIsUnitBased ? ["", ""] : [""]])
     }
-  }, [request, user.role, hostelList])
+  }, [canAllocateVisitors, hostelList, request])
 
   if (!isOpen) return null
 
@@ -151,6 +160,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   }
 
   const handleApproveRequest = async () => {
+    if (!canApproveVisitors) {
+      alert("You do not have permission to approve requests.")
+      return
+    }
+
     if (!selectedHostel) {
       alert("Please select a hostel to assign for this visit.")
       return
@@ -179,6 +193,11 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
   }
 
   const handleAllocateRooms = async () => {
+    if (!canAllocateVisitors) {
+      alert("You do not have permission to allocate rooms.")
+      return
+    }
+
     // Validate rooms
     const isValid = allocatedRooms.every((room) => (isUnitBased ? room[0].trim() !== "" && room[1].trim() !== "" : room[0].trim() !== ""))
 
@@ -431,17 +450,17 @@ const VisitorRequestDetailsModal = ({ isOpen, onClose, requestId, onRefresh }) =
         )}
 
         {/* Room Allocation Form (for Warden) */}
-        {canAccess("visitors", "react") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && request.status === "Approved" && showAllocationForm && (
+        {canAllocateVisitors && request.status === "Approved" && showAllocationForm && (
           <RoomAllocationForm isUnitBased={isUnitBased} allocatedRooms={allocatedRooms} onRoomChange={handleRoomChange} onAddRoom={addRoomField} onRemoveRoom={removeRoomField} onCancel={() => setShowAllocationForm(false)} onSubmit={handleAllocateRooms} />
         )}
 
         {/* Approve Form (for Admin) */}
-        {["Admin"].includes(user.role) && request.status === "Pending" && showApproveForm && (
+        {canApproveVisitors && request.status === "Pending" && showApproveForm && (
           <ApprovalForm selectedHostel={selectedHostel} onHostelChange={setSelectedHostel} approvalInformation={approvalInformation} onApprovalInformationChange={setApprovalInformation} onCancel={() => setShowApproveForm(false)} onSubmit={handleApproveRequest} hostelList={hostelList} />
         )}
 
         {/* Reject Form (for Admin) */}
-        {["Admin"].includes(user.role) && request.status === "Pending" && showRejectForm && <RejectionForm rejectionReason={rejectionReason} onReasonChange={setRejectionReason} onCancel={() => setShowRejectForm(false)} onSubmit={handleRejectRequest} />}
+        {canApproveVisitors && request.status === "Pending" && showRejectForm && <RejectionForm rejectionReason={rejectionReason} onReasonChange={setRejectionReason} onCancel={() => setShowRejectForm(false)} onSubmit={handleRejectRequest} />}
 
         {/* Action Buttons */}
         <ActionButtons

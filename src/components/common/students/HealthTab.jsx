@@ -7,8 +7,11 @@ import { Button, Input } from "czero/react"
 // import { toast } from "react-toastify"
 import InsuranceClaimModal from "./InsuranceClaimModal"
 import { useAuth } from "../../../contexts/AuthProvider"
+import useAuthz from "../../../hooks/useAuthz"
 const HealthTab = ({ userId }) => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canEditHealth = can("cap.students.edit.health")
   const [healthData, setHealthData] = useState(null)
   const [insuranceClaims, setInsuranceClaims] = useState([])
   const [insuranceProviders, setInsuranceProviders] = useState([])
@@ -205,7 +208,7 @@ const HealthTab = ({ userId }) => {
                 <Settings size={14} style={{ marginRight: 'var(--spacing-1)' }} /> Manage Providers
               </Link>
             )}
-            {canAccess("students_info", "edit") && !editHealthData && (
+            {canEditHealth && !editHealthData && (
               <Button onClick={() => setEditHealthData(true)} variant="primary" size="sm">
                 <Edit size={16} /> Edit
               </Button>
@@ -313,7 +316,7 @@ const HealthTab = ({ userId }) => {
             <Pill size={20} style={{ color: 'var(--color-primary)', marginRight: 'var(--spacing-2)' }} />
             Insurance Claims
           </h3>
-          {canAccess("students_info", "edit") && (
+          {canEditHealth && (
             <Button onClick={handleAddClaim} variant="primary" size="sm">
               <Plus size={16} /> Add Claim
             </Button>

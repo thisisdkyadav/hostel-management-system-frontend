@@ -37,11 +37,16 @@ import FamilyDetails from "./FamilyDetails"
 import HealthTab from "./HealthTab"
 import ComplaintsTab from "./tabs/ComplaintsTab"
 import { useAuth } from "../../../contexts/AuthProvider"
+import useAuthz from "../../../hooks/useAuthz"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 import { Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, isImport = false }) => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canAssignInventory = can("cap.inventory.assign")
+  const canEditInventory = can("cap.inventory.edit")
+  const canEditStudentProfile = can("cap.students.edit.personal")
 
   const [studentDetails, setStudentDetails] = useState({})
   const [loading, setLoading] = useState(true)
@@ -659,7 +664,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
           <div style={{ backgroundColor: "var(--color-bg-primary)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--spacing-4)" }}>
               <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-body)" }}>Student Inventory</h3>
-              {user && canAccess("student_inventory", "create") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+              {user && canAssignInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                 <Button onClick={handleOpenAssignInventory} variant="primary" size="sm">
                   <Plus size={14} />
                   Assign Item
@@ -686,7 +691,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Issue Date</th>
                       <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Status</th>
                       <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Condition</th>
-                      {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+                      {user && canEditInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                         <th style={{ padding: "var(--spacing-3) var(--spacing-6)", textAlign: "left", fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Actions</th>
                       )}
                     </tr>
@@ -719,7 +724,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                           </span>
                         </td>
                         <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap", color: "var(--color-text-muted)" }}>{item.condition}</td>
-                        {user && canAccess("student_inventory", "edit") && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
+                        {user && canEditInventory && ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) && (
                           <td style={{ padding: "var(--spacing-4) var(--spacing-6)", whiteSpace: "nowrap" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
                               <Button
@@ -990,7 +995,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             >
               Email Student
             </a>
-            {canAccess("students_info", "edit") && (
+            {canEditStudentProfile && (
               <Button onClick={() => setShowEditModal(true)} variant="primary" size="md">
                 Edit Student
               </Button>

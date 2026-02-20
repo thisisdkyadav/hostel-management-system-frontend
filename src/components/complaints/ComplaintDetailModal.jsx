@@ -9,9 +9,11 @@ import UpdateComplaintModal from "./UpdateComplaintModal"
 import { studentApi } from "../../service"
 import StudentDetailModal from "../common/students/StudentDetailModal"
 import FeedbackModal from "./FeedbackModal"
+import useAuthz from "../../hooks/useAuthz"
 
 const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplaintUpdate }) => {
   const { user } = useAuth()
+  const { canAny } = useAuthz()
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [complaintData, setComplaintData] = useState(selectedComplaint)
   const [studentId, setStudentId] = useState(null)
@@ -21,7 +23,15 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
   if (!complaintData) return null
 
   const isResolved = complaintData.status === "Resolved"
-  const canUpdateComplaint = user && ["Maintenance Staff", "Warden", "Associate Warden", "Admin", "Hostel Supervisor", "Super Admin"].includes(user.role)
+  const canUpdateComplaint =
+    user &&
+    ["Maintenance Staff", "Warden", "Associate Warden", "Admin", "Hostel Supervisor", "Super Admin"].includes(user.role) &&
+    canAny(["cap.complaints.resolve", "cap.complaints.review"])
+
+  const canViewReporterProfile =
+    user &&
+    ["Admin", "Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) &&
+    canAny(["cap.students.detail.view", "cap.students.view"])
 
   const handleComplaintUpdate = (updatedComplaint) => {
     setComplaintData(updatedComplaint)
@@ -35,18 +45,18 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
   }
 
   const handleReporterClick = () => {
-    if (complaintData.reportedBy.role !== "Student") return
+    if (complaintData.reportedBy.role !== "Student" || !canViewReporterProfile) return
     setShowStudentDetailModal(true)
   }
 
   useEffect(() => {
     const fetchStudentId = async () => {
-      if (complaintData.reportedBy.role !== "Student") return
+      if (complaintData.reportedBy.role !== "Student" || !canViewReporterProfile) return
       const studentId = await studentApi.getStudentId(complaintData.reportedBy.id)
       setStudentId(studentId)
     }
     fetchStudentId()
-  }, [complaintData.reportedBy.id])
+  }, [canViewReporterProfile, complaintData.reportedBy.id, complaintData.reportedBy.role])
 
   const getSatisfactionVariant = (status) => {
     switch (status) {
@@ -406,8 +416,8 @@ const ComplaintDetailModal = ({ selectedComplaint, setShowDetailModal, onComplai
               icon={User}
               title="Reported By"
               accentColor="var(--color-primary)"
-              onClick={complaintData.reportedBy.role === "Student" && canUpdateComplaint ? handleReporterClick : undefined}
-              headerAction={complaintData.reportedBy.role === "Student" && canUpdateComplaint ? (
+              onClick={complaintData.reportedBy.role === "Student" && canViewReporterProfile ? handleReporterClick : undefined}
+              headerAction={complaintData.reportedBy.role === "Student" && canViewReporterProfile ? (
                 <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-primary)", opacity: 0.8 }}>
                   View profile →
                 </span>

@@ -4,6 +4,7 @@ import { SearchInput } from "@/components/ui"
 import { Tabs, Button, DataTable, Modal, Input } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
+import useAuthz from "../../hooks/useAuthz"
 
 const API_KEY_FILTER_TABS = [
   { value: "all", label: "All", count: 0 },
@@ -12,6 +13,7 @@ const API_KEY_FILTER_TABS = [
 ]
 
 const ApiKeyManagementPage = () => {
+  const { can } = useAuthz()
   const [apiKeys, setApiKeys] = useState([])
   const [filteredApiKeys, setFilteredApiKeys] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -21,8 +23,18 @@ const ApiKeyManagementPage = () => {
   const [filterTabs, setFilterTabs] = useState(API_KEY_FILTER_TABS)
   const [copiedId, setCopiedId] = useState(null)
   const [error, setError] = useState(null)
+  const canViewApiKeys = can("cap.settings.system.view")
+  const canManageApiKeys = can("cap.settings.system.update")
 
   const fetchApiKeys = async () => {
+    if (!canViewApiKeys) {
+      setApiKeys([])
+      setFilteredApiKeys([])
+      setError(null)
+      setLoading(false)
+      return
+    }
+
     try {
       setLoading(true)
       setError(null)
@@ -48,7 +60,7 @@ const ApiKeyManagementPage = () => {
 
   useEffect(() => {
     fetchApiKeys()
-  }, [])
+  }, [canViewApiKeys])
 
   useEffect(() => {
     if (!apiKeys.length) return
@@ -70,6 +82,11 @@ const ApiKeyManagementPage = () => {
   }, [apiKeys, searchTerm, filterStatus])
 
   const handleAddApiKey = async (keyData) => {
+    if (!canManageApiKeys) {
+      window.alert("You do not have permission to create API keys")
+      return
+    }
+
     try {
       setLoading(true)
       const response = await superAdminApi.createApiKey(keyData)
@@ -93,6 +110,11 @@ const ApiKeyManagementPage = () => {
   }
 
   const handleDeleteApiKey = async (id) => {
+    if (!canManageApiKeys) {
+      window.alert("You do not have permission to delete API keys")
+      return
+    }
+
     const confirmDelete = window.confirm("Are you sure you want to delete this API key?")
     if (!confirmDelete) return
 
@@ -110,6 +132,11 @@ const ApiKeyManagementPage = () => {
   }
 
   const handleToggleStatus = async (id, currentStatus) => {
+    if (!canManageApiKeys) {
+      window.alert("You do not have permission to update API keys")
+      return
+    }
+
     try {
       setLoading(true)
       await superAdminApi.updateApiKeyStatus(id, !currentStatus)
@@ -184,25 +211,41 @@ const ApiKeyManagementPage = () => {
       align: "right",
       render: (apiKey) => (
         <div className="flex justify-end space-x-2">
-          <Button onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
-            variant={apiKey.isActive ? "danger" : "success"}
-            size="sm"
-          >
-            {apiKey.isActive ? "Deactivate" : "Activate"}
-          </Button>
-          <Button onClick={() => handleDeleteApiKey(apiKey._id)} variant="danger" size="sm" aria-label="Delete API key"><FaTrash /></Button>
+          {canManageApiKeys && (
+            <>
+              <Button onClick={() => handleToggleStatus(apiKey._id, apiKey.isActive)}
+                variant={apiKey.isActive ? "danger" : "success"}
+                size="sm"
+              >
+                {apiKey.isActive ? "Deactivate" : "Activate"}
+              </Button>
+              <Button onClick={() => handleDeleteApiKey(apiKey._id)} variant="danger" size="sm" aria-label="Delete API key"><FaTrash /></Button>
+            </>
+          )}
         </div>
       ),
     },
   ]
 
+  if (!canViewApiKeys) {
+    return (
+      <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
+        <div className="rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger-bg)] p-4 text-[var(--color-danger-text)]">
+          You do not have permission to view API keys.
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 flex-1">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">API Key Management</h1>
-        <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
-          <FaPlus /> Generate API Key
-        </Button>
+        {canManageApiKeys && (
+          <Button onClick={() => setShowAddModal(true)} variant="primary" size="md">
+            <FaPlus /> Generate API Key
+          </Button>
+        )}
       </header>
 
       <div className="bg-white rounded-xl shadow-md p-6 mb-6">
@@ -234,11 +277,16 @@ const ApiKeyManagementPage = () => {
       ) : filteredApiKeys.length === 0 ? (
         <NoResults icon={<FaKey className="text-gray-300 text-3xl" />} message="No API keys found" suggestion="Try changing your search or filter criteria" />
       ) : (
-        <DataTable columns={columns} data={filteredApiKeys} emptyMessage="No API keys found" isLoading={loading} />
+        <DataTable
+          columns={canManageApiKeys ? columns : columns.filter((column) => column.key !== "actions")}
+          data={filteredApiKeys}
+          emptyMessage="No API keys found"
+          isLoading={loading}
+        />
       )}
 
       {/* Add API Key Modal */}
-      {showAddModal && <ApiKeyModal onClose={() => setShowAddModal(false)} onSubmit={handleAddApiKey} />}
+      {showAddModal && canManageApiKeys && <ApiKeyModal onClose={() => setShowAddModal(false)} onSubmit={handleAddApiKey} />}
     </div>
   )
 }

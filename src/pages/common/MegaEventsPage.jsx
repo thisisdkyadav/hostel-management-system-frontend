@@ -7,6 +7,7 @@ import { LoadingState, ErrorState, EmptyState, Alert, useToast } from "@/compone
 import { Badge } from "@/components/ui/data-display"
 import { CalendarDays, History, Plus, FileText, Receipt } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
+import useAuthz from "@/hooks/useAuthz"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
@@ -216,12 +217,21 @@ const getRequiredApproverForExpense = (expenseStatus) => EXPENSE_STATUS_TO_APPRO
 
 const MegaEventsPage = () => {
   const { user } = useAuth()
+  const { can, getConstraint } = useAuthz()
   const { toast } = useToast()
 
   const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
   const isGymkhana = user?.role === "Gymkhana"
   const isPresident = isGymkhana && user?.subRole === "President Gymkhana"
   const isGS = isGymkhana && user?.subRole === "GS Gymkhana"
+  const canViewEventsCapability = can("cap.events.view")
+  const canCreateEventsCapability = can("cap.events.create")
+  const canApproveEventsCapability = can("cap.events.approve")
+  const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
+  const parsedApprovalLimit = Number(maxApprovalAmountConstraint)
+  const maxApprovalAmount = Number.isFinite(parsedApprovalLimit) && parsedApprovalLimit >= 0
+    ? parsedApprovalLimit
+    : null
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -260,26 +270,54 @@ const MegaEventsPage = () => {
     [occurrences, selectedOccurrenceId, latestOccurrence]
   )
 
-  const canCreateSeries = isAdminLevel
-  const canCreateOccurrence = isAdminLevel && Boolean(selectedSeries?._id)
-  const canCreateOrEditProposal = isPresident && Boolean(selectedOccurrence?._id)
-  const canCreateOrEditExpense = isGS && selectedOccurrence?.status === "proposal_approved"
+  const canCreateSeries = isAdminLevel && canCreateEventsCapability
+  const canCreateOccurrence = isAdminLevel && canCreateEventsCapability && Boolean(selectedSeries?._id)
+  const canCreateOrEditProposal = isPresident && canCreateEventsCapability && Boolean(selectedOccurrence?._id)
+  const canCreateOrEditExpense =
+    isGS &&
+    canCreateEventsCapability &&
+    selectedOccurrence?.status === "proposal_approved"
+
+  const canApproveCurrentProposalAmount =
+    maxApprovalAmount === null ||
+    Number(proposalData?.totalExpenditure || 0) <= maxApprovalAmount
+  const canApproveCurrentExpenseAmount =
+    maxApprovalAmount === null ||
+    Number(expenseData?.totalExpenditure || 0) <= maxApprovalAmount
 
   const canReviewProposal = useMemo(() => {
+    if (!canApproveEventsCapability) return false
     if (!proposalData?.status || !isAdminLevel) return false
+    if (!canApproveCurrentProposalAmount) return false
     const requiredApprover = getRequiredApproverForProposal(proposalData.status)
     if (!requiredApprover) return false
     if (user?.role === "Super Admin") return true
     return user?.subRole === requiredApprover
-  }, [proposalData?.status, isAdminLevel, user?.role, user?.subRole])
+  }, [
+    proposalData?.status,
+    canApproveEventsCapability,
+    canApproveCurrentProposalAmount,
+    isAdminLevel,
+    user?.role,
+    user?.subRole,
+  ])
 
   const canReviewExpense = useMemo(() => {
+    if (!canApproveEventsCapability) return false
     if (!expenseData?.approvalStatus || !isAdminLevel) return false
+    if (!canApproveCurrentExpenseAmount) return false
     const requiredApprover = getRequiredApproverForExpense(expenseData.approvalStatus)
     if (!requiredApprover) return false
     if (user?.role === "Super Admin") return true
     return user?.subRole === requiredApprover
-  }, [expenseData?.approvalStatus, isAdminLevel, user?.role, user?.subRole])
+  }, [
+    expenseData?.approvalStatus,
+    canApproveCurrentExpenseAmount,
+    canApproveEventsCapability,
+    isAdminLevel,
+    user?.role,
+    user?.subRole,
+  ])
 
   const requiresProposalStageSelection = proposalData?.status === "pending_student_affairs"
   const requiresExpenseStageSelection =
@@ -303,6 +341,14 @@ const MegaEventsPage = () => {
   }, [expenseForm.bills, expenseForm.eventReportDocumentUrl])
 
   const loadSeries = async () => {
+    if (!canViewEventsCapability) {
+      setLoading(false)
+      setError("")
+      setSeries([])
+      setSelectedSeriesId("")
+      return
+    }
+
     try {
       setLoading(true)
       setError("")
@@ -322,6 +368,8 @@ const MegaEventsPage = () => {
   }
 
   const loadSeriesDetails = async (seriesId) => {
+    if (!canViewEventsCapability) return
+
     if (!seriesId) {
       setSelectedSeries(null)
       setOccurrences([])
@@ -348,6 +396,8 @@ const MegaEventsPage = () => {
   }
 
   const loadProposalAndExpense = async (occurrence) => {
+    if (!canViewEventsCapability) return
+
     if (!occurrence?._id) {
       setProposalData(null)
       setExpenseData(null)
@@ -423,6 +473,11 @@ const MegaEventsPage = () => {
   }
 
   const handleCreateSeries = async () => {
+    if (!canCreateSeries) {
+      toast.error("You do not have permission to create mega event series")
+      return
+    }
+
     if (!seriesForm.name.trim()) {
       toast.error("Series name is required")
       return
@@ -446,6 +501,11 @@ const MegaEventsPage = () => {
   }
 
   const handleCreateOccurrence = async () => {
+    if (!canCreateOccurrence) {
+      toast.error("You do not have permission to create mega event occurrences")
+      return
+    }
+
     if (!selectedSeries?._id) return
 
     if (!occurrenceForm.startDate || !occurrenceForm.endDate) {
@@ -476,6 +536,11 @@ const MegaEventsPage = () => {
   }
 
   const handleSaveProposal = async () => {
+    if (!canCreateOrEditProposal) {
+      toast.error("You do not have permission to submit this proposal")
+      return
+    }
+
     if (!selectedOccurrence?._id) return
     if (!isProposalFormValid) {
       toast.error("Please complete required proposal fields")
@@ -502,7 +567,16 @@ const MegaEventsPage = () => {
   }
 
   const handleApproveProposal = async () => {
+    if (!canReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
     if (!proposalData?._id) return
+    if (!canApproveCurrentProposalAmount && maxApprovalAmount !== null) {
+      toast.error(`Proposal amount exceeds your approval limit of ${maxApprovalAmount}`)
+      return
+    }
     if (requiresProposalStageSelection && proposalNextApprovalStages.length === 0) {
       toast.error("Select at least one next approval stage")
       return
@@ -526,6 +600,11 @@ const MegaEventsPage = () => {
   }
 
   const handleRejectProposal = async () => {
+    if (!canReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
     if (!proposalData?._id) return
     if (!proposalComments || proposalComments.trim().length < 10) {
       toast.error("Rejection reason must be at least 10 characters")
@@ -546,6 +625,11 @@ const MegaEventsPage = () => {
   }
 
   const handleRequestProposalRevision = async () => {
+    if (!canReviewProposal) {
+      toast.error("You do not have permission to review this proposal")
+      return
+    }
+
     if (!proposalData?._id) return
     if (!proposalComments || proposalComments.trim().length < 10) {
       toast.error("Revision comments must be at least 10 characters")
@@ -577,6 +661,11 @@ const MegaEventsPage = () => {
   }
 
   const handleSaveExpense = async () => {
+    if (!canCreateOrEditExpense) {
+      toast.error("You do not have permission to submit this expense")
+      return
+    }
+
     if (!selectedOccurrence?._id) return
     if (!isExpenseFormValid) {
       toast.error("Please complete required bill and report fields")
@@ -602,7 +691,16 @@ const MegaEventsPage = () => {
   }
 
   const handleApproveExpense = async () => {
+    if (!canReviewExpense) {
+      toast.error("You do not have permission to review this expense")
+      return
+    }
+
     if (!expenseData?._id) return
+    if (!canApproveCurrentExpenseAmount && maxApprovalAmount !== null) {
+      toast.error(`Expense amount exceeds your approval limit of ${maxApprovalAmount}`)
+      return
+    }
     if (requiresExpenseStageSelection && expenseNextApprovalStages.length === 0) {
       toast.error("Select at least one next approval stage")
       return
@@ -626,6 +724,11 @@ const MegaEventsPage = () => {
   }
 
   const handleRejectExpense = async () => {
+    if (!canReviewExpense) {
+      toast.error("You do not have permission to review this expense")
+      return
+    }
+
     if (!expenseData?._id) return
     if (!expenseComments || expenseComments.trim().length < 10) {
       toast.error("Rejection reason must be at least 10 characters")
@@ -668,6 +771,16 @@ const MegaEventsPage = () => {
       )}
     </div>
   )
+
+  if (!canViewEventsCapability) {
+    return (
+      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+        <div className="rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger-bg)] p-4 text-[var(--color-danger-text)]">
+          You do not have permission to view mega events.
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>

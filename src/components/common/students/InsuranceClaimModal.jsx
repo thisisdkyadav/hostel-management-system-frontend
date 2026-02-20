@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react"
 import { FaEdit, FaTrash, FaHospital, FaMedkit, FaCalendarAlt, FaDollarSign, FaFileAlt, FaSave, FaCalendarCheck } from "react-icons/fa"
 import { Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
-import { useAuth } from "../../../contexts/AuthProvider"
+import useAuthz from "../../../hooks/useAuthz"
 
 const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProviders, isNew = false }) => {
-  const { canAccess } = useAuth()
+  const { can } = useAuthz()
+  const canEditHealth = can("cap.students.edit.health")
   const [isEditing, setIsEditing] = useState(isNew)
   const [formData, setFormData] = useState({
     insuranceProvider: "",
@@ -162,12 +163,12 @@ const InsuranceClaimModal = ({ claim, onClose, onSave, onDelete, insuranceProvid
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', marginTop: 'var(--spacing-6)' }}>
-        {canAccess("students_info", "edit") && (
+        {canEditHealth && (
           <Button onClick={() => setIsEditing(true)} variant="primary" size="md">
             <FaEdit /> Edit Claim
           </Button>
         )}
-        {canAccess("students_info", "edit") && (
+        {canEditHealth && (
           <Button onClick={handleDelete} variant="danger" size="md">
             <FaTrash /> Delete Claim
           </Button>

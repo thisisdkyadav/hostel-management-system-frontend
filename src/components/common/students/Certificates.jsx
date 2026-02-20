@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { Plus, FileText, FileType, Image } from "lucide-react"
 import { certificateApi } from "../../../service"
-import { useAuth } from "../../../contexts/AuthProvider"
+import useAuthz from "../../../hooks/useAuthz"
 import { Button } from "czero/react"
 import CertificateModal from "./CertificateModal"
 import CertificateViewerModal from "./CertificateViewerModal"
 
 const Certificates = ({ userId }) => {
-  const { canAccess } = useAuth()
+  const { can } = useAuthz()
+  const canManageCertificates = can("cap.students.certificates.manage")
   const [certificates, setCertificates] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentCertificate, setCurrentCertificate] = useState(null)
@@ -232,7 +233,7 @@ const Certificates = ({ userId }) => {
     <div style={styles.container}>
       <div style={styles.header}>
         <h3 style={styles.title}>Certificates Issued</h3>
-        {canAccess("students_info", "create") && (
+        {canManageCertificates && (
           <Button variant="primary" size="sm" onClick={handleAddClick}>
             <Plus size={16} />
             Add Certificate
@@ -243,7 +244,7 @@ const Certificates = ({ userId }) => {
       {certificates.length === 0 ? (
         <div style={styles.emptyState}>
           <p style={styles.emptyText}>No certificates found.</p>
-          {canAccess("students_info", "create") && (
+          {canManageCertificates && (
             <div style={styles.emptyAddButton}>
               <Button variant="secondary" size="sm" onClick={handleAddClick}>
                 Add Certificate
@@ -280,7 +281,7 @@ const Certificates = ({ userId }) => {
                   <Button onClick={() => handleViewClick(certificate.certificateUrl)} variant="success" size="sm">
                     View
                   </Button>
-                  {canAccess("students_info", "edit") && (
+                  {canManageCertificates && (
                     <Button onClick={() => handleEditClick(certificate)} variant="secondary" size="sm">
                       Edit
                     </Button>

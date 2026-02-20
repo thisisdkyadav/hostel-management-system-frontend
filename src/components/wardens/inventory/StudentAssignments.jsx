@@ -4,9 +4,12 @@ import { FaSearch, FaFilter, FaUserGraduate, FaBoxes, FaEye, FaEdit, FaUndo } fr
 import { Pagination, Select, Textarea } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { useAuth } from "../../../contexts/AuthProvider"
+import useAuthz from "../../../hooks/useAuthz"
 
 const StudentAssignments = () => {
-  const { user, canAccess } = useAuth()
+  const { user } = useAuth()
+  const { can } = useAuthz()
+  const canManageStudentInventory = can("cap.inventory.edit")
   const [studentInventory, setStudentInventory] = useState([])
   const [totalPages, setTotalPages] = useState(1)
   const [currentPage, setCurrentPage] = useState(1)
@@ -252,7 +255,7 @@ const StudentAssignments = () => {
                       </span>
                     </td>
                     <td className="whitespace-nowrap" style={{ padding: 'var(--table-cell-padding-md)' }}>
-                      {canAccess("student_inventory", "edit") && (
+                      {canManageStudentInventory && (
                         <div className="flex items-center" style={{ gap: 'var(--gap-sm)' }}>
                           <Button onClick={() => handleViewEditItem(item)} variant="ghost" size="sm" aria-label="View/Edit Details">
                             <FaEdit />
