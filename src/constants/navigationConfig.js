@@ -198,6 +198,7 @@ export const getSuperAdminNavItems = (handleLogout) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/super-admin" },
   { name: "Admin Management", icon: UserCog, section: "main", path: "/super-admin/admins" },
   { name: "API Keys", icon: KeyRound, section: "main", path: "/super-admin/api-keys" },
+  { name: "AuthZ", icon: ShieldCheck, section: "main", path: "/super-admin/authz" },
   createProfileItem("/super-admin"),
   createLogoutItem(handleLogout),
 ]

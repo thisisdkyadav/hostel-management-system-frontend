@@ -5,7 +5,9 @@ import SuperAdminLayout from "../layouts/SuperAdminLayout.jsx"
 import {
     DashboardPage as SuperAdminDashboard,
     AdminManagementPage as SuperAdminAdminManagement,
-    ApiKeyManagementPage
+    ApiKeyManagementPage,
+    AuthzManagementPage as SuperAdminAuthzManagement,
+    AuthzHelpPage as SuperAdminAuthzHelpPage
 } from "../pages/superadmin"
 
 // Common pages
@@ -42,6 +44,22 @@ const SuperAdminRoutes = () => (
                     element={
                         <RouteAccessGuard routeKey="route.superAdmin.apiKeys" fallback={<NotFoundPage />}>
                             <ApiKeyManagementPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="authz"
+                    element={
+                        <RouteAccessGuard routeKey="route.superAdmin.authz" fallback={<NotFoundPage />}>
+                            <SuperAdminAuthzManagement />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="authz/help"
+                    element={
+                        <RouteAccessGuard routeKey="route.superAdmin.authz" fallback={<NotFoundPage />}>
+                            <SuperAdminAuthzHelpPage />
                         </RouteAccessGuard>
                     }
                 />
