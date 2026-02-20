@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { FiMail, FiPhone, FiShield, FiKey, FiUser, FiClock } from "react-icons/fi"
 import ProfileHeader from "./ProfileHeader"
 import ProfileCard from "./ProfileCard"
 import ProfileInfo from "./ProfileInfo"
 import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { superAdminApi } from "@/service"
 import { useAuth } from "../../contexts/AuthProvider"
 import { format } from "date-fns"
 
@@ -14,32 +15,38 @@ const SuperAdminProfile = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
 
-      if (user) {
-        setSuperAdminData({
-          name: user.name,
-          email: user.email,
-          phone: user.phone || "Not provided",
-          role: "Super Administrator",
-          lastLogin: user.lastLogin || new Date().toISOString(),
-          permissions: ["Full System Access", "Admin Management", "API Key Management"],
-        })
+      const response = await superAdminApi.getMyProfile()
+      const profile = response?.data?.profile || user
+
+      if (!profile) {
+        setSuperAdminData(null)
+        return
       }
+
+      setSuperAdminData({
+        name: profile.name,
+        email: profile.email,
+        phone: profile.phone || "Not provided",
+        role: "Super Administrator",
+        lastLogin: profile.lastLogin || new Date().toISOString(),
+        permissions: ["Full System Access", "Admin Management", "API Key Management"],
+      })
     } catch (err) {
       console.error("Error loading super admin profile:", err)
       setError("Failed to load your profile data. Please try again later.")
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
 
   useEffect(() => {
     loadProfile()
-  }, [user])
+  }, [loadProfile])
 
   if (loading) {
     return <LoadingState message="Loading your profile..." description="Please wait while we fetch your information" />
@@ -56,7 +63,7 @@ const SuperAdminProfile = () => {
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), "PPpp")
-    } catch (error) {
+    } catch {
       return "Never"
     }
   }

@@ -6,6 +6,15 @@
 import apiClient from "../core/apiClient"
 
 export const adminApi = {
+  // ==================== Profile ====================
+
+  /**
+   * Get current admin profile
+   */
+  getMyProfile: () => {
+    return apiClient.get("/admin/profile")
+  },
+
   // ==================== Hostels ====================
   
   /**

@@ -9,6 +9,13 @@ const BASE_PATH = "/student-affairs/events"
 
 export const gymkhanaEventsApi = {
   /**
+   * Get current gymkhana profile
+   */
+  getMyProfile: () => {
+    return apiClient.get(`${BASE_PATH}/profile`)
+  },
+
+  /**
    * Get dashboard summary for Gymkhana dashboard page
    */
   getDashboardSummary: (daysUntilDue = 21) => {

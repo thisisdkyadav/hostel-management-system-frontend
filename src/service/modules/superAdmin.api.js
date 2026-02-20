@@ -6,6 +6,15 @@
 import apiClient from "../core/apiClient"
 
 export const superAdminApi = {
+  // ==================== Profile ====================
+
+  /**
+   * Get current super admin profile
+   */
+  getMyProfile: () => {
+    return apiClient.get("/super-admin/profile")
+  },
+
   // ==================== Admin Management ====================
 
   /**

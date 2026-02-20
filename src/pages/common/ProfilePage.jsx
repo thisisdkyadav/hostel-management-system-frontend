@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { useAuth } from "../../contexts/AuthProvider"
 import StudentProfile from "../../components/profile/StudentProfile"
 import WardenProfile from "../../components/profile/WardenProfile"
 import AdminProfile from "../../components/profile/AdminProfile"
 import SuperAdminProfile from "../../components/profile/SuperAdminProfile"
+import GymkhanaProfile from "../../components/profile/GymkhanaProfile"
 
 const ProfilePage = () => {
   const { user } = useAuth()
-  const [activeTab, setActiveTab] = useState("profile")
+  const activeTab = "profile"
 
   // Render appropriate profile based on user role
   const renderProfile = () => {
@@ -24,6 +25,8 @@ const ProfilePage = () => {
         return <AdminProfile user={user} activeTab={activeTab} />
       case "Super Admin":
         return <SuperAdminProfile user={user} activeTab={activeTab} />
+      case "Gymkhana":
+        return <GymkhanaProfile user={user} activeTab={activeTab} />
       default:
         return <div>No profile data available</div>
     }
