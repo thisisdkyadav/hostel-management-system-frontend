@@ -32,7 +32,15 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
     }
   }
 
+  // Ring stroke color based on gender
+  const getRingColor = (gender) => {
+    if (gender === "Boys") return "var(--color-boys-text)"
+    if (gender === "Girls") return "var(--color-girls-text)"
+    return "var(--color-coed-text)"
+  }
+
   const iconStyle = getIconStyle(hostel.gender)
+  const ringColor = getRingColor(hostel.gender)
 
   const handleSaveHostel = async (updatedHostel) => {
     if (onUpdate) {
@@ -51,7 +59,7 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
         {/* Header with Icon and Title */}
         <CardHeader>
           <HStack gap="medium" align="center">
-            <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${isHovered ? iconStyle.hover : iconStyle.base}`}>
+            <div className={`w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-xl transition-all duration-300 ${iconStyle.hover}`}>
               <Building size={20} />
             </div>
             <div>
@@ -86,21 +94,23 @@ const HostelCard = ({ hostel, onUpdate, refreshHostels }) => {
           </VStack>
 
           {/* Occupancy Ring */}
-          <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
-            <svg
-              style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}
-              viewBox="0 0 36 36"
-            >
-              {/* Background circle */}
-              <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-bg)" strokeWidth="2.5" />
-              {/* Progress circle */}
-              <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-fill)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray={strokeDasharray} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
-            </svg>
-            {/* Center text */}
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 'var(--font-size-base)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{hostel.occupancyRate}%</span>
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-tertiary)' }}>Occupancy</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-1-5)' }}>
+            <div style={{ position: 'relative', width: '80px', height: '80px', minWidth: '80px', minHeight: '80px' }}>
+              <svg
+                style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}
+                viewBox="0 0 36 36"
+              >
+                {/* Background circle */}
+                <circle cx="18" cy="18" r={radius} fill="none" stroke="var(--occupancy-ring-bg)" strokeWidth="4" />
+                {/* Progress circle — gender colored */}
+                <circle cx="18" cy="18" r={radius} fill="none" stroke={ringColor} strokeWidth="4" strokeLinecap="round" strokeDasharray={strokeDasharray} style={{ transition: 'stroke-dasharray 0.5s ease' }} />
+              </svg>
+              {/* Center: number only */}
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-text-primary)' }}>{hostel.occupancyRate}%</span>
+              </div>
             </div>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Occupancy</span>
           </div>
         </CardBody>
 

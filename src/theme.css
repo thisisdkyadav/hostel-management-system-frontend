@@ -108,23 +108,28 @@
      Colors used for gender indicators
      ============================================ */
   
-  /* Boys - Blue (based on primary) */
-  --color-boys-bg: #E8F1FE;
-  --color-boys-text: #1360AB;
-  --color-boys-hover-bg: #1360AB;
+  /* Boys - Blue (lighter) */
+  --color-boys-bg: #EBF4FF;
+  --color-boys-text: #3B82F6;
+  --color-boys-hover-bg: #4A90D9;
   --color-boys-hover-text: #FFFFFF;
 
-  /* Girls - Pink */
+  /* Girls - Pink (lighter) */
   --color-girls-bg: #FCE7F3;
-  --color-girls-text: #DB2777;
-  --color-girls-hover-bg: #BE185D;       /* Darker pink for hover */
+  --color-girls-text: #EC4899;
+  --color-girls-hover-bg: #E05CAE;
   --color-girls-hover-text: #FFFFFF;
 
-  /* Co-ed/Other - Purple */
-  --color-coed-bg: #F3E8FF;
-  --color-coed-text: #9333EA;
-  --color-coed-hover-bg: #7C3AED;        /* Darker purple for hover */
+  /* Co-ed/Other - Purple (darker) */
+  --color-coed-bg: #EDE9FF;
+  --color-coed-text: #6D28D9;
+  --color-coed-hover-bg: #5B21B6;
   --color-coed-hover-text: #FFFFFF;
+
+  /* Gender card tints - semi-transparent overlays, white base shows through */
+  --color-boys-card-tint: rgba(19, 96, 171, 0.05);
+  --color-girls-card-tint: rgba(219, 39, 119, 0.05);
+  --color-coed-card-tint: rgba(147, 51, 234, 0.05);
 
   /* ============================================
      COLOR PALETTE - ADDITIONAL COLORS
@@ -725,21 +730,26 @@
   --color-info-bg-light: #141C26;
   --color-info-text: #60A5FA;
 
-  /* Gender Colors - Dark mode (subtle backgrounds) */
+  /* Gender Colors - Dark mode */
   --color-boys-bg: #1A2533;              /* Subtle blue */
-  --color-boys-text: #5B9FE8;
-  --color-boys-hover-bg: #5B9FE8;
+  --color-boys-text: #7BB8F8;
+  --color-boys-hover-bg: #6AAEED;
   --color-boys-hover-text: #FFFFFF;
 
   --color-girls-bg: #2D1A24;             /* Subtle pink */
-  --color-girls-text: #F472B6;
-  --color-girls-hover-bg: #EC4899;
+  --color-girls-text: #F9A8D4;
+  --color-girls-hover-bg: #F472B6;
   --color-girls-hover-text: #FFFFFF;
 
   --color-coed-bg: #251A2D;              /* Subtle purple */
-  --color-coed-text: #C084FC;
-  --color-coed-hover-bg: #A855F7;
+  --color-coed-text: #8B5CF6;
+  --color-coed-hover-bg: #7C3AED;
   --color-coed-hover-text: #FFFFFF;
+
+  /* Gender card tints - same rgba overlays work on dark bg too */
+  --color-boys-card-tint: rgba(91, 159, 232, 0.07);
+  --color-girls-card-tint: rgba(244, 114, 182, 0.07);
+  --color-coed-card-tint: rgba(192, 132, 252, 0.07);
 
   /* Additional Colors - Neutral */
   --color-purple-bg: #251A2D;

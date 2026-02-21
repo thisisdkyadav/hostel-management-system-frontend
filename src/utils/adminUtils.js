@@ -35,6 +35,9 @@ export const filterStudents = (students, selectedHostel, selectedYear, selectedD
     })
 }
 
+const GENDER_ORDER = { Girls: 0, Boys: 1 }
+const genderRank = (gender) => GENDER_ORDER[gender] ?? 2
+
 export const filterHostels = (hostels, activeTab, searchTerm) => {
   if (!hostels) return []
   return hostels
@@ -43,6 +46,7 @@ export const filterHostels = (hostels, activeTab, searchTerm) => {
       return hostel.gender.toLowerCase() === activeTab
     })
     .filter((hostel) => hostel.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => genderRank(a.gender) - genderRank(b.gender))
 }
 
 export const filterComplaints = (complaints, filterStatus, filterCategory, filterHostel, searchTerm) => {
