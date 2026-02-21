@@ -11,6 +11,8 @@ import ComplaintsFilterPanel from "../../components/complaints/ComplaintsFilterP
 import ComplaintsContent from "../../components/complaints/ComplaintsContent"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 import useAuthz from "../../hooks/useAuthz"
+import { Pagination } from "@/components/ui"
+import PageFooter from "../../components/common/PageFooter"
 
 const ComplaintsPage = () => {
   const { user } = useAuth()
@@ -35,9 +37,7 @@ const ComplaintsPage = () => {
   }, [constrainedHostelIds, hostelList, user?.role])
   const categories = ["Plumbing", "Electrical", "Civil", "Cleanliness", "Internet", "Other"]
   const canViewComplaints = true
-  const canCreateComplaint =
-    true &&
-    WHO_CAN_CREATE_COMPLAINT.includes(user?.role)
+  const canCreateComplaint = WHO_CAN_CREATE_COMPLAINT.includes(user?.role)
 
   const [filters, setFilters] = useState({
     status: "all",
@@ -58,6 +58,7 @@ const ComplaintsPage = () => {
   const [complaints, setComplaints] = useState([])
   const [loading, setLoading] = useState(false)
   const [totalPages, setTotalPages] = useState(1)
+  const [totalComplaints, setTotalComplaints] = useState(0)
   const [statsData, setStatsData] = useState(null)
   const [statsLoading, setStatsLoading] = useState(false)
 
@@ -131,9 +132,13 @@ const ComplaintsPage = () => {
 
       const response = await adminApi.getAllComplaints(queryParams.toString())
       setComplaints(response.data || [])
+      setTotalComplaints(response.meta?.total || 0)
       setTotalPages(response.meta?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching complaints:", error)
+      setComplaints([])
+      setTotalComplaints(0)
+      setTotalPages(1)
     } finally {
       setLoading(false)
     }
@@ -184,19 +189,38 @@ const ComplaintsPage = () => {
   }
 
   return (
-    <div className="flex-1">
+    <div className="flex flex-col h-full">
       <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={showCraftComplaint} setShowCraftComplaint={setShowCraftComplaint} userRole={user?.role} canCreateComplaint={canCreateComplaint} />
 
       {/* Main Content with padding */}
-      <div className="px-4 sm:px-6 lg:px-8 py-6">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="hidden sm:block">
           <ComplaintStats statsData={statsData} loading={statsLoading} />
         </div>
 
         {showFilters && <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />}
 
-        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={complaintFilterTabs} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} showFilters={showFilters} />
+        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} COMPLAINT_FILTER_TABS={complaintFilterTabs} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} showFilters={showFilters} />
       </div>
+
+      <PageFooter
+        leftContent={[
+          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{complaints.length}</span> of{" "}
+            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalComplaints}</span> complaints
+          </span>,
+        ]}
+        rightContent={[
+          <Pagination
+            key="pagination"
+            currentPage={filters.page}
+            totalPages={Math.max(totalPages, 1)}
+            paginate={paginate}
+            compact
+            showPageInfo={false}
+          />,
+        ]}
+      />
 
       {showDetailModal && selectedComplaint && <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />}
 

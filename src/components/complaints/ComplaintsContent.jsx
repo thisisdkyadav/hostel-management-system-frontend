@@ -3,8 +3,7 @@ import { FaClipboardList } from "react-icons/fa"
 import NoResults from "../common/NoResults"
 import ComplaintListView from "./ComplaintListView"
 import ComplaintCardView from "./ComplaintCardView"
-import { Pagination } from "@/components/ui"
-const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages, COMPLAINT_FILTER_TABS, updateFilter, onViewDetails, paginate, showFilters }) => {
+const ComplaintsContent = ({ loading, complaints, viewMode, filters, COMPLAINT_FILTER_TABS, updateFilter, onViewDetails, showFilters }) => {
   return (
     <>
       {/* Tabs */}
@@ -31,11 +30,6 @@ const ComplaintsContent = ({ loading, complaints, viewMode, filters, totalPages,
           <NoResults icon={<FaClipboardList style={{ color: "var(--color-border-primary)", fontSize: "var(--font-size-5xl)" }} />} message="No complaints found" suggestion="Try changing your search or filter criteria" />
         )}
       </div>
-
-      {/* Pagination - only show when not loading and has multiple pages */}
-      {!loading && complaints.length > 0 && totalPages > 1 && (
-        <Pagination currentPage={filters.page} totalPages={totalPages} paginate={paginate} />
-      )}
     </>
   )
 }
