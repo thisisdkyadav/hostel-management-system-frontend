@@ -3,15 +3,23 @@ import { StatCards } from "@/components/ui"
 import { FaCalendarAlt, FaCalendarCheck, FaCalendarDay } from "react-icons/fa"
 import { MdEventAvailable } from "react-icons/md"
 
-const EventStats = ({ events }) => {
+const EventStats = ({ events = [], stats = null }) => {
   const now = new Date()
-  const totalEvents = events.length
-  const upcomingEvents = events.filter((event) => new Date(event.dateAndTime) > now).length
-  const pastEvents = events.filter((event) => new Date(event.dateAndTime) <= now).length
+  const totalEvents = stats?.total ?? events.length
+  const upcomingEvents = stats?.upcoming ?? events.filter((event) => new Date(event.dateAndTime) > now).length
+  const pastEvents = stats?.past ?? events.filter((event) => new Date(event.dateAndTime) <= now).length
 
   // Get nearest upcoming event date
   const getNextEventDate = () => {
-    if (events.length === 0) return "No events scheduled"
+    if (stats?.nextEventDate) {
+      return new Date(stats.nextEventDate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    }
+
+    if (totalEvents === 0) return "No events scheduled"
 
     const upcomingEvents = events.filter((event) => new Date(event.dateAndTime) > now)
     if (upcomingEvents.length === 0) return "No upcoming events"

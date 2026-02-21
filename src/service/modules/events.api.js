@@ -9,8 +9,8 @@ export const eventsApi = {
   /**
    * Get all events
    */
-  getAllEvents: () => {
-    return apiClient.get("/event")
+  getAllEvents: (params = {}) => {
+    return apiClient.get("/event", { params })
   },
 
   /**

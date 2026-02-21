@@ -3,14 +3,22 @@ import { StatCards } from "@/components/ui"
 import { MdInventory, MdCheckCircle } from "react-icons/md"
 import { FaSearch, FaCalendarAlt } from "react-icons/fa"
 
-const LostAndFoundStats = ({ items }) => {
-  const totalItems = items.length
-  const activeItems = items.filter((item) => item.status === "Active").length
-  const claimedItems = items.filter((item) => item.status === "Claimed").length
+const LostAndFoundStats = ({ items = [], stats = null }) => {
+  const totalItems = stats?.total ?? items.length
+  const activeItems = stats?.active ?? items.filter((item) => item.status === "Active").length
+  const claimedItems = stats?.claimed ?? items.filter((item) => item.status === "Claimed").length
 
   // Calculate the newest item date
   const getNewestItemDate = () => {
-    if (items.length === 0) return "No items yet"
+    if (stats?.latestItemDate) {
+      return new Date(stats.latestItemDate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    }
+
+    if (totalItems === 0) return "No items yet"
 
     const dates = items.map((item) => new Date(item.dateFound))
     const newest = new Date(Math.max(...dates))

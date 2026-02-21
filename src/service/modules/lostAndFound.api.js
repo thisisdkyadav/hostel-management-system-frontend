@@ -17,8 +17,8 @@ export const lostAndFoundApi = {
   /**
    * Get all lost items
    */
-  getAllLostItems: () => {
-    return apiClient.get("/lost-and-found")
+  getAllLostItems: (params = {}) => {
+    return apiClient.get("/lost-and-found", { params })
   },
 
   /**
