@@ -56,11 +56,11 @@ const ComplaintsPage = () => {
   const [viewMode, setViewMode] = useState("list")
   const [showCraftComplaint, setShowCraftComplaint] = useState(false)
   const [complaints, setComplaints] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [totalPages, setTotalPages] = useState(1)
   const [totalComplaints, setTotalComplaints] = useState(0)
   const [statsData, setStatsData] = useState(null)
-  const [statsLoading, setStatsLoading] = useState(false)
+  const [statsLoading, setStatsLoading] = useState(true)
 
   const complaintFilterTabs = useMemo(() => {
     const statusCounts = {
@@ -167,6 +167,7 @@ const ComplaintsPage = () => {
 
   useEffect(() => {
     if (!canViewComplaints) return
+    setLoading(true)
     const delay = setTimeout(() => {
       fetchComplaints()
     }, 500)

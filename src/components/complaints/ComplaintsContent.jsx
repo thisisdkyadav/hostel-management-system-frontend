@@ -13,17 +13,10 @@ const ComplaintsContent = ({ loading, complaints, viewMode, filters, COMPLAINT_F
         </div>
       )}
 
-      {/* Content - Uses DataTable internal loading for list view */}
+      {/* Content - Uses DataTable built-in loading state to avoid standalone spinners */}
       <div style={{ marginTop: "var(--spacing-6)" }}>
-        {viewMode === "list" ? (
+        {viewMode === "list" || loading ? (
           <ComplaintListView complaints={complaints} onViewDetails={onViewDetails} loading={loading} />
-        ) : loading ? (
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "16rem" }}>
-            <div style={{ position: "relative", width: "var(--icon-4xl)", height: "var(--icon-4xl)" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: `var(--border-4) solid var(--color-border-primary)`, borderRadius: "var(--radius-full)" }}></div>
-              <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: `var(--border-4) solid var(--color-primary)`, borderRadius: "var(--radius-full)", borderTopColor: "transparent" }} className="animate-spin"></div>
-            </div>
-          </div>
         ) : complaints.length > 0 ? (
           <ComplaintCardView complaints={complaints} onViewDetails={onViewDetails} />
         ) : (

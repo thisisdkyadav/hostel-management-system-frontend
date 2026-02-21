@@ -2,13 +2,9 @@ import React from "react"
 import { FaClipboardList, FaRegCheckCircle } from "react-icons/fa"
 import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
-import { StatCards, LoadingState } from "@/components/ui"
+import { StatCards } from "@/components/ui"
 
 const ComplaintStats = ({ statsData, loading }) => {
-  if (loading) {
-    return <LoadingState />
-  }
-
   // Default values if statsData is not available
   const totalComplaints = statsData?.total || 0
   const pendingComplaints = statsData?.pending || 0
@@ -70,7 +66,7 @@ const ComplaintStats = ({ statsData, loading }) => {
 
   const STATS_COLUMNS = 5;
   
-  return <StatCards stats={statsCards} columns={STATS_COLUMNS} />
+  return <StatCards stats={statsCards} columns={STATS_COLUMNS} loading={loading} loadingCount={STATS_COLUMNS} />
 }
 
 export default ComplaintStats
