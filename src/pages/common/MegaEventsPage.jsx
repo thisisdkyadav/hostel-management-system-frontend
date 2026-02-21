@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/layout"
 import { Textarea, Checkbox, Select, Label } from "@/components/ui/form"
 import { LoadingState, ErrorState, EmptyState, Alert, useToast } from "@/components/ui/feedback"
 import { Badge } from "@/components/ui/data-display"
-import { CalendarDays, History, Plus, FileText, Receipt } from "lucide-react"
+import { CalendarDays, History, Plus, FileText, Receipt, Building2, Users, Target, DollarSign, ClipboardCheck, MapPin, Clock } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import useAuthz from "@/hooks/useAuthz"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
@@ -125,12 +125,94 @@ const formLabelStyles = {
   letterSpacing: "0.04em",
 }
 
+const sectionHeaderStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--spacing-2)",
+  paddingTop: "var(--spacing-2)",
+  marginBottom: "var(--spacing-2)",
+}
+
+const sectionLabelStyle = {
+  fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+}
+
+const sectionDividerStyle = {
+  flex: 1,
+  height: 1,
+  backgroundColor: "var(--color-border-primary)",
+}
+
+const infoBoxStyle = {
+  padding: "var(--spacing-3)",
+  borderRadius: "var(--radius-card-sm)",
+  backgroundColor: "var(--color-bg-secondary)",
+}
+
+const compactCardStyle = {
+  padding: "var(--spacing-2) var(--spacing-3)",
+  borderRadius: "var(--radius-card-sm)",
+  border: "var(--border-1) solid var(--color-border-primary)",
+  backgroundColor: "var(--color-bg-primary)",
+}
+
+// Panel styles for wide modal layout
+const panelStyle = {
+  padding: "var(--spacing-4)",
+  borderRadius: "var(--radius-card-sm)",
+  border: "var(--border-1) solid var(--color-border-primary)",
+  backgroundColor: "var(--color-bg-primary)",
+}
+
+const panelHeaderStyle = {
+  fontSize: "var(--font-size-sm)",
+  fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-primary)",
+  marginBottom: "var(--spacing-3)",
+  paddingBottom: "var(--spacing-2)",
+  borderBottom: "var(--border-1) solid var(--color-border-primary)",
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--spacing-2)",
+}
+
+const panelAccentStyle = {
+  ...panelStyle,
+  backgroundColor: "var(--color-bg-secondary)",
+  border: "none",
+}
+
+const Panel = ({ title, icon: Icon, accent = false, children }) => (
+  <div style={accent ? panelAccentStyle : panelStyle}>
+    {title && (
+      <div style={panelHeaderStyle}>
+        {Icon && <Icon size={16} style={{ color: "var(--color-primary)" }} />}
+        <span>{title}</span>
+      </div>
+    )}
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+      {children}
+    </div>
+  </div>
+)
+
 const FormField = ({ label, htmlFor, required = false, children }) => (
   <div>
     <Label htmlFor={htmlFor} required={required} size="sm" style={formLabelStyles}>
       {label}
     </Label>
     {children}
+  </div>
+)
+
+const SectionHeader = ({ children }) => (
+  <div style={sectionHeaderStyle}>
+    <span style={sectionLabelStyle}>{children}</span>
+    <div style={sectionDividerStyle} />
   </div>
 )
 
@@ -1178,7 +1260,7 @@ const MegaEventsPage = () => {
   }
 
   const headerActions = (
-    <div className="flex flex-wrap items-center gap-2">
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--spacing-2)" }}>
       {selectedSeries && occurrences.length > 0 && (
         <Button size="md" variant="secondary" onClick={() => setIsHistoryOpen(true)}>
           <History size={16} /> History
@@ -1194,8 +1276,8 @@ const MegaEventsPage = () => {
 
   if (!canViewEventsCapability) {
     return (
-      <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6">
-        <div className="rounded-lg border border-[var(--color-danger)] bg-[var(--color-danger-bg)] p-4 text-[var(--color-danger-text)]">
+      <div style={{ flex: 1, padding: "var(--spacing-6)" }}>
+        <div style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-danger-bg)", color: "var(--color-danger-text)", border: "var(--border-1) solid var(--color-danger)" }}>
           You do not have permission to view mega events.
         </div>
       </div>
@@ -1248,12 +1330,12 @@ const MegaEventsPage = () => {
                         }}
                       >
                         <div>
-                          <h3 className="text-lg font-semibold text-[var(--color-text-heading)]">{selectedSeries.name}</h3>
-                          <p className="text-sm text-[var(--color-text-muted)]">
+                          <h3 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedSeries.name}</h3>
+                          <p style={{ margin: 0, marginTop: 2, fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                             {formatDateRange(selectedOccurrence.scheduledStartDate, selectedOccurrence.scheduledEndDate)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
                           <Badge
                             variant={
                               selectedOccurrence?._id && selectedOccurrence._id === latestOccurrence?._id
@@ -1272,19 +1354,23 @@ const MegaEventsPage = () => {
                       </div>
 
                       <div
-                        className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4"
-                        style={{ flex: 1 }}
+                        style={{
+                          flex: 1,
+                          padding: "var(--spacing-4)",
+                          borderRadius: "var(--radius-card-sm)",
+                          backgroundColor: "var(--color-bg-secondary)",
+                        }}
                       >
-                        <h4 className="text-base font-semibold text-[var(--color-text-heading)]">{selectedOccurrence.title}</h4>
+                        <h4 style={{ margin: 0, fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{selectedOccurrence.title}</h4>
                         {selectedOccurrence.description ? (
-                          <p className="mt-3 text-sm text-[var(--color-text-body)]">{selectedOccurrence.description}</p>
+                          <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{selectedOccurrence.description}</p>
                         ) : (
-                          <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+                          <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                             Description will be available after proposal details are added.
                           </p>
                         )}
 
-                        <div className="mt-5 flex flex-wrap gap-2">
+                        <div style={{ marginTop: "var(--spacing-4)", display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
                           {canCreateOrEditProposal && (
                             <Button size="sm" onClick={() => setIsProposalOpen(true)}>
                               <FileText size={14} /> {proposalData ? "Edit Proposal" : "Submit Proposal"}
@@ -1302,7 +1388,7 @@ const MegaEventsPage = () => {
                           )}
                         </div>
                         {!canCreateOrEditProposal && !canCreateOrEditExpense && !canReviewProposal && !canReviewExpense && (
-                          <p className="mt-3 text-sm text-[var(--color-text-muted)]">
+                          <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                             You have read-only access for this occurrence.
                           </p>
                         )}
@@ -1349,50 +1435,52 @@ const MegaEventsPage = () => {
         title="Create Mega Event Series"
         isOpen={isCreateSeriesOpen}
         onClose={() => setIsCreateSeriesOpen(false)}
+        width={480}
         footer={(
-          <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => setIsCreateSeriesOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateSeries} loading={submitting}>Create</Button>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <Button size="sm" variant="secondary" onClick={() => setIsCreateSeriesOpen(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleCreateSeries} loading={submitting}>Create</Button>
           </div>
         )}
       >
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
           <FormField label="Event Series Name" htmlFor="mega-series-name" required>
             <Input
               id="mega-series-name"
               value={seriesForm.name}
               onChange={(event) => setSeriesForm((prev) => ({ ...prev, name: event.target.value }))}
-              placeholder="Event name (e.g., Flux, IPL Fest, Alumni Summit)"
+              placeholder="e.g., Flux, IPL Fest, Alumni Summit"
             />
           </FormField>
-          <FormField label="Series Description" htmlFor="mega-series-description">
+          <FormField label="Description" htmlFor="mega-series-description">
             <Textarea
               id="mega-series-description"
               value={seriesForm.description}
               onChange={(event) => setSeriesForm((prev) => ({ ...prev, description: event.target.value }))}
               placeholder="Optional description"
-              rows={4}
+              rows={2}
             />
           </FormField>
         </div>
       </Modal>
 
       <Modal
-        title="Create Mega Event Occurrence"
+        title="Create Occurrence"
         isOpen={isCreateOccurrenceOpen}
         onClose={() => setIsCreateOccurrenceOpen(false)}
+        width={420}
         footer={(
-          <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => setIsCreateOccurrenceOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateOccurrence} loading={submitting}>Create Occurrence</Button>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <Button size="sm" variant="secondary" onClick={() => setIsCreateOccurrenceOpen(false)}>Cancel</Button>
+            <Button size="sm" onClick={handleCreateOccurrence} loading={submitting}>Create</Button>
           </div>
         )}
       >
-        <div className="space-y-3">
-          <p className="text-sm text-[var(--color-text-muted)]">
-            Select the date range for this occurrence. Proposal details will be added in the proposal flow.
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            Select the date range for this occurrence.
           </p>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
             <FormField label="Start Date" htmlFor="mega-occurrence-start-date" required>
               <Input
                 id="mega-occurrence-start-date"
@@ -1414,13 +1502,15 @@ const MegaEventsPage = () => {
       </Modal>
 
       <Modal
-        title={`${selectedSeries?.name || "Mega Event"} Occurrences`}
+        title={`${selectedSeries?.name || "Mega Event"} — Occurrences`}
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
+        width={480}
+        footer={<Button size="sm" variant="secondary" onClick={() => setIsHistoryOpen(false)}>Close</Button>}
       >
-        <div className="space-y-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
           {occurrences.length === 0 ? (
-            <p className="text-sm text-[var(--color-text-muted)]">No occurrences available.</p>
+            <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No occurrences available.</p>
           ) : (
             occurrences.map((entry) => {
               const isSelected = selectedOccurrenceId === entry._id
@@ -1433,26 +1523,31 @@ const MegaEventsPage = () => {
                     setSelectedOccurrenceId(entry._id)
                     setIsHistoryOpen(false)
                   }}
-                  className={`w-full rounded-lg border p-3 text-left transition-colors ${
-                    isSelected
-                      ? "border-[var(--color-primary)] bg-[var(--color-primary-bg)]"
-                      : "border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-hover)]"
-                  }`}
+                  style={{
+                    ...compactCardStyle,
+                    textAlign: "left",
+                    cursor: "pointer",
+                    transition: "var(--transition-colors)",
+                    ...(isSelected ? {
+                      borderColor: "var(--color-primary)",
+                      backgroundColor: "var(--color-primary-bg)",
+                    } : {}),
+                  }}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-[var(--color-text-secondary)]">
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+                    <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
                       {entry.title}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={isPresent ? "success" : "default"}>
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-1)" }}>
+                      <Badge variant={isPresent ? "success" : "default"} size="sm">
                         {isPresent ? "Present" : "Past"}
                       </Badge>
-                      <Badge variant={statusBadgeVariant(entry.status)}>
+                      <Badge variant={statusBadgeVariant(entry.status)} size="sm">
                         {(entry.status || "unknown").replace(/_/g, " ")}
                       </Badge>
                     </div>
                   </div>
-                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                  <p style={{ marginTop: 2, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                     {formatDateRange(entry.scheduledStartDate, entry.scheduledEndDate)}
                   </p>
                 </button>
@@ -1466,82 +1561,76 @@ const MegaEventsPage = () => {
         title="Mega Event Proposal"
         isOpen={isProposalOpen}
         onClose={() => setIsProposalOpen(false)}
-        width={960}
+        width={680}
         footer={(
-          <div className="flex flex-wrap justify-end gap-2">
-            <Button variant="ghost" onClick={() => setIsProposalOpen(false)}>Close</Button>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <Button size="sm" variant="secondary" onClick={() => setIsProposalOpen(false)}>Close</Button>
             {canCreateOrEditProposal && (
-              <Button onClick={handleSaveProposal} loading={submitting}>
+              <Button size="sm" onClick={handleSaveProposal} loading={submitting}>
                 {proposalData ? "Update Proposal" : "Submit Proposal"}
               </Button>
             )}
             {canReviewProposal && (
               <>
-                <Button variant="outline" onClick={handleRequestProposalRevision} loading={submitting}>
+                <Button size="sm" variant="outline" onClick={handleRequestProposalRevision} loading={submitting}>
                   Request Revision
                 </Button>
-                <Button variant="danger" onClick={handleRejectProposal} loading={submitting}>Reject</Button>
-                <Button variant="success" onClick={handleApproveProposal} loading={submitting}>Approve</Button>
+                <Button size="sm" variant="danger" onClick={handleRejectProposal} loading={submitting}>Reject</Button>
+                <Button size="sm" variant="success" onClick={handleApproveProposal} loading={submitting}>Approve</Button>
               </>
             )}
           </div>
         )}
       >
-        <div className="space-y-4">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
           {proposalData && (
             <Alert type="info" title="Current proposal status">
               {(proposalData.status || "draft").replace(/_/g, " ")}
             </Alert>
           )}
 
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
+          {/* Details card with action */}
+          <div style={{ ...infoBoxStyle, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
             <div>
-              <p className="text-sm font-medium text-[var(--color-text-secondary)]">Proposal Details Format</p>
-              <p className="text-xs text-[var(--color-text-muted)]">
-                Fill all structured fields in the detailed popup.
-              </p>
+              <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
+              </div>
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                {proposalForm.proposalDetails.organisingUnit.unitType} · {proposalForm.proposalDetails.programmeDetails.programmeType} · {proposalForm.proposalDetails.programmeDetails.mode}
+              </div>
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                {proposalForm.proposalDetails.programmeDetails.datesAndDuration || "Dates not added"}
+              </div>
             </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setIsProposalDetailsOpen(true)}
-            >
-              {canCreateOrEditProposal ? "Submit Proposal Details" : "View Proposal Details"}
+            <Button variant="secondary" size="sm" onClick={() => setIsProposalDetailsOpen(true)}>
+              {canCreateOrEditProposal ? "Edit Details" : "View Details"}
             </Button>
           </div>
 
           {!isDetailedProposalComplete && (
-            <Alert type="warning" title="Proposal details are incomplete">
-              Complete mandatory fields in "Submit Proposal Details" before submitting the proposal.
+            <Alert type="warning" title="Details incomplete">
+              Complete mandatory fields before submitting.
             </Alert>
           )}
 
-          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
-            <p className="text-xs uppercase tracking-wide text-[var(--color-text-muted)]">Details Summary</p>
-            <p className="mt-1 text-sm font-semibold text-[var(--color-text-heading)]">
-              {proposalForm.proposalDetails.programmeTitle || "Programme title not added"}
-            </p>
-            <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-              {proposalForm.proposalDetails.organisingUnit.unitType} | {proposalForm.proposalDetails.programmeDetails.programmeType} | {proposalForm.proposalDetails.programmeDetails.mode}
-            </p>
-            <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-              {proposalForm.proposalDetails.programmeDetails.datesAndDuration || "Dates & duration not added"}
-            </p>
-            {detailedProposalPreviewText && (
-              <FormField label="Detailed Proposal Preview" htmlFor="mega-proposal-preview">
-                <Textarea id="mega-proposal-preview" value={detailedProposalPreviewText} rows={5} disabled />
-              </FormField>
-            )}
-          </div>
+          {detailedProposalPreviewText && (
+            <div style={infoBoxStyle}>
+              <span style={sectionLabelStyle}>Proposal Preview</span>
+              <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
+                {detailedProposalPreviewText.slice(0, 400)}{detailedProposalPreviewText.length > 400 ? "..." : ""}
+              </div>
+            </div>
+          )}
 
-          <div className="grid gap-3 md:grid-cols-2">
-            <FormField label="Total Expected Income (Auto)" htmlFor="mega-total-expected-income">
+          <SectionHeader>Financials</SectionHeader>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)" }}>
+            <FormField label="Expected Income" htmlFor="mega-total-expected-income">
               <Input
                 id="mega-total-expected-income"
                 type="number"
                 min={0}
                 value={String(computedTotalExpectedIncome)}
-                placeholder="Total expected income"
+                placeholder="Auto"
                 disabled
               />
             </FormField>
@@ -1552,57 +1641,65 @@ const MegaEventsPage = () => {
                 min={0}
                 value={proposalForm.totalExpenditure}
                 onChange={(event) => setProposalForm((prev) => ({ ...prev, totalExpenditure: event.target.value }))}
-                placeholder="Total expenditure"
+                placeholder="Amount"
                 disabled={!canCreateOrEditProposal}
               />
             </FormField>
+            <FormField label="Registration Fee" htmlFor="mega-registration-fee-source">
+              <Input
+                id="mega-registration-fee-source"
+                type="number"
+                min={0}
+                value={String(toNumericValue(proposalForm.proposalDetails?.sourceOfFunds?.registrationFee))}
+                placeholder="From source"
+                disabled
+              />
+            </FormField>
           </div>
-          <FormField label="Registration Fee (From Source of Funds)" htmlFor="mega-registration-fee-source">
-            <Input
-              id="mega-registration-fee-source"
-              type="number"
-              min={0}
-              value={String(toNumericValue(proposalForm.proposalDetails?.sourceOfFunds?.registrationFee))}
-              placeholder="Registration fee from source of funds"
-              disabled
-            />
-          </FormField>
+
           <Checkbox
             checked={proposalForm.accommodationRequired}
             onChange={(event) => setProposalForm((prev) => ({ ...prev, accommodationRequired: event.target.checked }))}
             label="Accommodation required"
             disabled={!canCreateOrEditProposal}
           />
+
           {detailedExternalGuestsText && (
-            <FormField label="External Guests Summary" htmlFor="mega-external-guests-summary">
-              <Textarea id="mega-external-guests-summary" value={detailedExternalGuestsText} rows={3} disabled />
-            </FormField>
+            <div style={infoBoxStyle}>
+              <span style={sectionLabelStyle}>External Guests</span>
+              <div style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                {detailedExternalGuestsText}
+              </div>
+            </div>
           )}
-          <PdfUploadField
-            label="Proposal PDF"
-            value={proposalForm.proposalDocumentUrl}
-            onChange={(value) => setProposalForm((prev) => ({ ...prev, proposalDocumentUrl: value }))}
-            onUpload={uploadProposalPdf}
-            disabled={!canCreateOrEditProposal}
-            viewerTitle="Proposal Document"
-          />
-          <PdfUploadField
-            label="Chief Guest PDF"
-            value={proposalForm.chiefGuestDocumentUrl}
-            onChange={(value) => setProposalForm((prev) => ({ ...prev, chiefGuestDocumentUrl: value }))}
-            onUpload={uploadChiefGuestPdf}
-            disabled={!canCreateOrEditProposal}
-            viewerTitle="Chief Guest Document"
-          />
+
+          <SectionHeader>Documents</SectionHeader>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+            <PdfUploadField
+              label="Proposal PDF"
+              value={proposalForm.proposalDocumentUrl}
+              onChange={(value) => setProposalForm((prev) => ({ ...prev, proposalDocumentUrl: value }))}
+              onUpload={uploadProposalPdf}
+              disabled={!canCreateOrEditProposal}
+              viewerTitle="Proposal Document"
+            />
+            <PdfUploadField
+              label="Chief Guest PDF"
+              value={proposalForm.chiefGuestDocumentUrl}
+              onChange={(value) => setProposalForm((prev) => ({ ...prev, chiefGuestDocumentUrl: value }))}
+              onUpload={uploadChiefGuestPdf}
+              disabled={!canCreateOrEditProposal}
+              viewerTitle="Chief Guest Document"
+            />
+          </div>
 
           {canReviewProposal && (
             <>
+              <SectionHeader>Review</SectionHeader>
               {requiresProposalStageSelection && (
-                <div className="space-y-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
-                  <p className="text-sm font-medium text-[var(--color-text-secondary)]">
-                    Select next approval stage(s)
-                  </p>
-                  <div className="grid gap-2 md:grid-cols-3">
+                <div style={infoBoxStyle}>
+                  <span style={sectionLabelStyle}>Next Approval Stage(s)</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
                     {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                       <Checkbox
                         key={stage}
@@ -1620,7 +1717,7 @@ const MegaEventsPage = () => {
                   id="mega-proposal-review-comments"
                   value={proposalComments}
                   onChange={(event) => setProposalComments(event.target.value)}
-                  rows={3}
+                  rows={2}
                   placeholder="Review comments"
                 />
               </FormField>
@@ -1628,15 +1725,15 @@ const MegaEventsPage = () => {
           )}
 
           {proposalData?._id && (
-            <Card>
-              <CardContent>
-                <h4 className="mb-2 text-sm font-semibold text-[var(--color-text-secondary)]">Approval History</h4>
+            <div style={infoBoxStyle}>
+              <span style={sectionLabelStyle}>Approval History</span>
+              <div style={{ marginTop: "var(--spacing-2)" }}>
                 <ApprovalHistory
                   key={`proposal-${selectedOccurrence?._id}-${proposalHistoryRefreshKey}`}
                   megaProposalOccurrenceId={selectedOccurrence?._id}
                 />
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </div>
       </Modal>
@@ -1645,478 +1742,428 @@ const MegaEventsPage = () => {
         title="Proposal Details Format"
         isOpen={isProposalDetailsOpen}
         onClose={() => setIsProposalDetailsOpen(false)}
-        width={1080}
+        width={1200}
         footer={(
-          <div className="flex justify-end gap-2">
-            <Button variant="ghost" onClick={() => setIsProposalDetailsOpen(false)}>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <Button size="sm" variant="secondary" onClick={() => setIsProposalDetailsOpen(false)}>
               Close
             </Button>
           </div>
         )}
       >
-        <div className="space-y-4">
-          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-3 py-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              Basic Programme Information
-            </p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <FormField label="Title of the Programme" htmlFor="mega-proposal-programme-title" required>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          {/* Programme Title - Full Width Header */}
+          <div style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-1) solid var(--color-primary)", }}>
+            <FormField label="Programme Title" htmlFor="mega-proposal-programme-title" required>
               <Input
                 id="mega-proposal-programme-title"
                 value={proposalForm.proposalDetails.programmeTitle}
                 onChange={(event) => handleProposalDetailsChange(["programmeTitle"], event.target.value)}
-                placeholder="Title of the Programme"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Organising Unit Type" htmlFor="mega-proposal-organising-unit-type" required>
-              <Select
-                id="mega-proposal-organising-unit-type"
-                options={ORGANISING_UNIT_OPTIONS}
-                value={proposalForm.proposalDetails.organisingUnit.unitType}
-                onChange={(event) => handleProposalDetailsChange(["organisingUnit", "unitType"], event.target.value)}
+                placeholder="Enter the full title of the programme"
                 disabled={!canCreateOrEditProposal}
               />
             </FormField>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2">
-            <FormField label="Coordinator Name(s)" htmlFor="mega-proposal-coordinator-names" required>
-              <Input
-                id="mega-proposal-coordinator-names"
-                value={proposalForm.proposalDetails.organisingUnit.coordinatorNames}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["organisingUnit", "coordinatorNames"], event.target.value)
-                }
-                placeholder="Coordinator name(s)"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Contact Mobile" htmlFor="mega-proposal-contact-mobile" required>
-              <Input
-                id="mega-proposal-contact-mobile"
-                value={proposalForm.proposalDetails.organisingUnit.contactMobile}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["organisingUnit", "contactMobile"], event.target.value)
-                }
-                placeholder="Contact mobile"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
+          {/* Two Column Layout */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
+            {/* Left Column */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              {/* Programme Details Panel */}
+              <Panel title="Programme Details" icon={CalendarDays}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Programme Type" htmlFor="mega-proposal-programme-type" required>
+                    <Select
+                      id="mega-proposal-programme-type"
+                      options={PROGRAMME_TYPE_OPTIONS}
+                      value={proposalForm.proposalDetails.programmeDetails.programmeType}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "programmeType"], event.target.value)}
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                  <FormField label="Programme Mode" htmlFor="mega-proposal-programme-mode" required>
+                    <Select
+                      id="mega-proposal-programme-mode"
+                      options={PROGRAMME_MODE_OPTIONS}
+                      value={proposalForm.proposalDetails.programmeDetails.mode}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "mode"], event.target.value)}
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Dates & Duration" htmlFor="mega-proposal-dates-duration" required>
+                    <Input
+                      id="mega-proposal-dates-duration"
+                      value={proposalForm.proposalDetails.programmeDetails.datesAndDuration}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "datesAndDuration"], event.target.value)}
+                      placeholder="e.g., 3-5 March, 3 days"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                  <FormField label="Venue" htmlFor="mega-proposal-venue" required>
+                    <Input
+                      id="mega-proposal-venue"
+                      value={proposalForm.proposalDetails.programmeDetails.venue}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "venue"], event.target.value)}
+                      placeholder="Venue"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                  <FormField label="Expected Participants" htmlFor="mega-proposal-expected-participants" required>
+                    <Input
+                      id="mega-proposal-expected-participants"
+                      type="number"
+                      min={0}
+                      value={proposalForm.proposalDetails.programmeDetails.expectedParticipants}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "expectedParticipants"], event.target.value)}
+                      placeholder="Count"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                </div>
+              </Panel>
+
+              {/* Background & Rationale Panel */}
+              <Panel title="Background & Rationale" icon={FileText} accent>
+                <FormField label="Context and Relevance" htmlFor="mega-proposal-context-relevance" required>
+                  <Textarea
+                    id="mega-proposal-context-relevance"
+                    value={proposalForm.proposalDetails.backgroundAndRationale.contextRelevance}
+                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "contextRelevance"], event.target.value)}
+                    rows={2}
+                    placeholder="Describe the background context and relevance of this programme"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <FormField label="Expected Impact" htmlFor="mega-proposal-expected-impact" required>
+                  <Textarea
+                    id="mega-proposal-expected-impact"
+                    value={proposalForm.proposalDetails.backgroundAndRationale.expectedImpact}
+                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "expectedImpact"], event.target.value)}
+                    rows={2}
+                    placeholder="Expected institutional/societal impact"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <FormField label="Alignment with Objectives" htmlFor="mega-proposal-alignment-objectives" required>
+                  <Textarea
+                    id="mega-proposal-alignment-objectives"
+                    value={proposalForm.proposalDetails.backgroundAndRationale.alignmentWithObjectives}
+                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "alignmentWithObjectives"], event.target.value)}
+                    rows={2}
+                    placeholder="How does this align with institute objectives?"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+              </Panel>
+
+              {/* Objectives Panel */}
+              <Panel title="Programme Objectives" icon={Target}>
+                <FormField label="Primary Objective" htmlFor="mega-proposal-objective-1" required>
+                  <Input
+                    id="mega-proposal-objective-1"
+                    value={proposalForm.proposalDetails.objectives.objective1}
+                    onChange={(event) => handleProposalDetailsChange(["objectives", "objective1"], event.target.value)}
+                    placeholder="Main objective of the programme"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Secondary Objective" htmlFor="mega-proposal-objective-2">
+                    <Input
+                      id="mega-proposal-objective-2"
+                      value={proposalForm.proposalDetails.objectives.objective2}
+                      onChange={(event) => handleProposalDetailsChange(["objectives", "objective2"], event.target.value)}
+                      placeholder="Optional"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                  <FormField label="Tertiary Objective" htmlFor="mega-proposal-objective-3">
+                    <Input
+                      id="mega-proposal-objective-3"
+                      value={proposalForm.proposalDetails.objectives.objective3}
+                      onChange={(event) => handleProposalDetailsChange(["objectives", "objective3"], event.target.value)}
+                      placeholder="Optional"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                </div>
+              </Panel>
+            </div>
+
+            {/* Right Column */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              {/* Organising Unit Panel */}
+              <Panel title="Organising Unit" icon={Building2} accent>
+                <FormField label="Unit Type" htmlFor="mega-proposal-organising-unit-type" required>
+                  <Select
+                    id="mega-proposal-organising-unit-type"
+                    options={ORGANISING_UNIT_OPTIONS}
+                    value={proposalForm.proposalDetails.organisingUnit.unitType}
+                    onChange={(event) => handleProposalDetailsChange(["organisingUnit", "unitType"], event.target.value)}
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <FormField label="Coordinator Name(s)" htmlFor="mega-proposal-coordinator-names" required>
+                  <Input
+                    id="mega-proposal-coordinator-names"
+                    value={proposalForm.proposalDetails.organisingUnit.coordinatorNames}
+                    onChange={(event) => handleProposalDetailsChange(["organisingUnit", "coordinatorNames"], event.target.value)}
+                    placeholder="Names of coordinators"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Contact Mobile" htmlFor="mega-proposal-contact-mobile" required>
+                    <Input
+                      id="mega-proposal-contact-mobile"
+                      value={proposalForm.proposalDetails.organisingUnit.contactMobile}
+                      onChange={(event) => handleProposalDetailsChange(["organisingUnit", "contactMobile"], event.target.value)}
+                      placeholder="Mobile"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                  <FormField label="Contact Email" htmlFor="mega-proposal-contact-email" required>
+                    <Input
+                      id="mega-proposal-contact-email"
+                      type="email"
+                      value={proposalForm.proposalDetails.organisingUnit.contactEmail}
+                      onChange={(event) => handleProposalDetailsChange(["organisingUnit", "contactEmail"], event.target.value)}
+                      placeholder="Email"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                </div>
+              </Panel>
+
+              {/* Target Participants Panel */}
+              <Panel title="Target Participants" icon={Users}>
+                <FormField label="Institute Faculty / Staff / Students" htmlFor="mega-target-participants-institute">
+                  <Textarea
+                    id="mega-target-participants-institute"
+                    value={proposalForm.proposalDetails.targetParticipants.instituteFacultyStaffStudents}
+                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "instituteFacultyStaffStudents"], event.target.value)}
+                    rows={2}
+                    placeholder="Faculty, staff, students from the institute"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <FormField label="Guests / Invitees" htmlFor="mega-target-participants-guests">
+                  <Textarea
+                    id="mega-target-participants-guests"
+                    value={proposalForm.proposalDetails.targetParticipants.guestsInvitees}
+                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "guestsInvitees"], event.target.value)}
+                    rows={2}
+                    placeholder="Invited guests"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+                <FormField label="External Visitors / Participants" htmlFor="mega-target-participants-external">
+                  <Textarea
+                    id="mega-target-participants-external"
+                    value={proposalForm.proposalDetails.targetParticipants.externalVisitorsParticipants}
+                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "externalVisitorsParticipants"], event.target.value)}
+                    rows={2}
+                    placeholder="External participants"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+              </Panel>
+
+              {/* Guest Details Panel */}
+              <Panel title="Guest & Speaker Details" icon={Users} accent>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="No. of Speakers/Guests" htmlFor="mega-tentative-speakers-guests">
+                    <Input
+                      id="mega-tentative-speakers-guests"
+                      type="number"
+                      min={0}
+                      value={proposalForm.proposalDetails.guestsDetails.tentativeNumberOfSpeakersGuests}
+                      onChange={(event) => handleProposalDetailsChange(["guestsDetails", "tentativeNumberOfSpeakersGuests"], event.target.value)}
+                      placeholder="Count"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                  <FormField label="Registration Fee Source" htmlFor="mega-source-funds-registration-fee">
+                    <Input
+                      id="mega-source-funds-registration-fee"
+                      type="number"
+                      min={0}
+                      value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
+                      onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
+                      placeholder="₹"
+                      disabled={!canCreateOrEditProposal}
+                    />
+                  </FormField>
+                </div>
+                <FormField label="Guest Names, Designations & Affiliations" htmlFor="mega-guests-details-names">
+                  <Textarea
+                    id="mega-guests-details-names"
+                    value={proposalForm.proposalDetails.guestsDetails.guestsNamesDesignationAffiliations}
+                    onChange={(event) => handleProposalDetailsChange(["guestsDetails", "guestsNamesDesignationAffiliations"], event.target.value)}
+                    rows={3}
+                    placeholder="List guests with their designation and affiliation"
+                    disabled={!canCreateOrEditProposal}
+                  />
+                </FormField>
+              </Panel>
+            </div>
           </div>
-          <FormField label="Contact Email" htmlFor="mega-proposal-contact-email" required>
-            <Input
-              id="mega-proposal-contact-email"
-              type="email"
-              value={proposalForm.proposalDetails.organisingUnit.contactEmail}
-              onChange={(event) =>
-                handleProposalDetailsChange(["organisingUnit", "contactEmail"], event.target.value)
-              }
-              placeholder="Contact email"
+
+          {/* Programme Schedule - Full Width */}
+          <Panel title="Programme Schedule" icon={Clock}>
+            <FormField label="Brief Schedule" htmlFor="mega-programme-schedule-brief" required>
+              <Textarea
+                id="mega-programme-schedule-brief"
+                value={proposalForm.proposalDetails.programmeSchedule.brief}
+                onChange={(event) => handleProposalDetailsChange(["programmeSchedule", "brief"], event.target.value)}
+                rows={3}
+                placeholder="Brief overview of the programme schedule"
+                disabled={!canCreateOrEditProposal}
+              />
+            </FormField>
+            <PdfUploadField
+              label="Detailed Schedule (PDF)"
+              value={proposalForm.proposalDetails.programmeSchedule.detailedScheduleAnnexureUrl}
+              onChange={(value) => handleProposalDetailsChange(["programmeSchedule", "detailedScheduleAnnexureUrl"], value)}
+              onUpload={uploadScheduleAnnexurePdf}
               disabled={!canCreateOrEditProposal}
+              viewerTitle="Detailed Schedule Annexure"
             />
-          </FormField>
+          </Panel>
 
-          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-3 py-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              Background and Rationale
-            </p>
-          </div>
-          <FormField label="Background and Rationale: Context and Relevance" htmlFor="mega-proposal-context-relevance" required>
-            <Textarea
-              id="mega-proposal-context-relevance"
-              value={proposalForm.proposalDetails.backgroundAndRationale.contextRelevance}
-              onChange={(event) =>
-                handleProposalDetailsChange(["backgroundAndRationale", "contextRelevance"], event.target.value)}
-              rows={3}
-              placeholder="Background and rationale: context and relevance"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-          <FormField label="Expected Institutional/Societal Impact" htmlFor="mega-proposal-expected-impact" required>
-            <Textarea
-              id="mega-proposal-expected-impact"
-              value={proposalForm.proposalDetails.backgroundAndRationale.expectedImpact}
-              onChange={(event) =>
-                handleProposalDetailsChange(["backgroundAndRationale", "expectedImpact"], event.target.value)}
-              rows={3}
-              placeholder="Need and expected institutional/societal impact"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-          <FormField label="Alignment with Institute Objectives" htmlFor="mega-proposal-alignment-objectives" required>
-            <Textarea
-              id="mega-proposal-alignment-objectives"
-              value={proposalForm.proposalDetails.backgroundAndRationale.alignmentWithObjectives}
-              onChange={(event) =>
-                handleProposalDetailsChange(["backgroundAndRationale", "alignmentWithObjectives"], event.target.value)}
-              rows={3}
-              placeholder="Alignment with institute objectives"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
+          {/* Source of Funds - Full Width */}
+          <Panel title="Source of Funds" icon={DollarSign} accent>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--spacing-2)" }}>
+              <FormField label="Registration Fee" htmlFor="mega-source-funds-registration-fee-main">
+                <Input
+                  id="mega-source-funds-registration-fee-main"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canCreateOrEditProposal}
+                />
+              </FormField>
+              <FormField label="Gymkhana Fund" htmlFor="mega-source-funds-gymkhana">
+                <Input
+                  id="mega-source-funds-gymkhana"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.gymkhanaFund}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "gymkhanaFund"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canCreateOrEditProposal}
+                />
+              </FormField>
+              <FormField label="Institute Support" htmlFor="mega-source-funds-institute-support">
+                <Input
+                  id="mega-source-funds-institute-support"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.instituteSupport}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "instituteSupport"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canCreateOrEditProposal}
+                />
+              </FormField>
+              <FormField label="Sponsorship / Grant" htmlFor="mega-source-funds-sponsorship">
+                <Input
+                  id="mega-source-funds-sponsorship"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.sponsorshipGrant}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "sponsorshipGrant"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canCreateOrEditProposal}
+                />
+              </FormField>
+            </div>
+          </Panel>
 
-          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-3 py-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              Objectives and Programme Plan
-            </p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            <FormField label="Objective 1" htmlFor="mega-proposal-objective-1" required>
-              <Input
-                id="mega-proposal-objective-1"
-                value={proposalForm.proposalDetails.objectives.objective1}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["objectives", "objective1"], event.target.value)
-                }
-                placeholder="Objective 1"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Objective 2" htmlFor="mega-proposal-objective-2">
-              <Input
-                id="mega-proposal-objective-2"
-                value={proposalForm.proposalDetails.objectives.objective2}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["objectives", "objective2"], event.target.value)
-                }
-                placeholder="Objective 2"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Objective 3" htmlFor="mega-proposal-objective-3">
-              <Input
-                id="mega-proposal-objective-3"
-                value={proposalForm.proposalDetails.objectives.objective3}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["objectives", "objective3"], event.target.value)
-                }
-                placeholder="Objective 3"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-          </div>
-
-          <div className="grid gap-3 md:grid-cols-2">
-            <FormField label="Programme Type" htmlFor="mega-proposal-programme-type" required>
-              <Select
-                id="mega-proposal-programme-type"
-                options={PROGRAMME_TYPE_OPTIONS}
-                value={proposalForm.proposalDetails.programmeDetails.programmeType}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["programmeDetails", "programmeType"], event.target.value)
-                }
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Programme Mode" htmlFor="mega-proposal-programme-mode" required>
-              <Select
-                id="mega-proposal-programme-mode"
-                options={PROGRAMME_MODE_OPTIONS}
-                value={proposalForm.proposalDetails.programmeDetails.mode}
-                onChange={(event) => handleProposalDetailsChange(["programmeDetails", "mode"], event.target.value)}
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            <FormField label="Dates and Duration" htmlFor="mega-proposal-dates-duration" required>
-              <Input
-                id="mega-proposal-dates-duration"
-                value={proposalForm.proposalDetails.programmeDetails.datesAndDuration}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["programmeDetails", "datesAndDuration"], event.target.value)}
-                placeholder="Dates & Duration"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Venue" htmlFor="mega-proposal-venue" required>
-              <Input
-                id="mega-proposal-venue"
-                value={proposalForm.proposalDetails.programmeDetails.venue}
-                onChange={(event) => handleProposalDetailsChange(["programmeDetails", "venue"], event.target.value)}
-                placeholder="Venue"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Expected Participants" htmlFor="mega-proposal-expected-participants" required>
-              <Input
-                id="mega-proposal-expected-participants"
-                type="number"
-                min={0}
-                value={proposalForm.proposalDetails.programmeDetails.expectedParticipants}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["programmeDetails", "expectedParticipants"], event.target.value)}
-                placeholder="Expected participants"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-          </div>
-
-          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-3 py-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              Participants and Guest Details
-            </p>
-          </div>
-          <FormField label="Target Participants: Institute Faculty / Staff / Students" htmlFor="mega-target-participants-institute">
-            <Textarea
-              id="mega-target-participants-institute"
-              value={proposalForm.proposalDetails.targetParticipants.instituteFacultyStaffStudents}
-              onChange={(event) =>
-                handleProposalDetailsChange(["targetParticipants", "instituteFacultyStaffStudents"], event.target.value)
-              }
-              rows={2}
-              placeholder="Target participants: Institute Faculty / Staff / Students"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-          <FormField label="Target Participants: Guests / Invitees" htmlFor="mega-target-participants-guests">
-            <Textarea
-              id="mega-target-participants-guests"
-              value={proposalForm.proposalDetails.targetParticipants.guestsInvitees}
-              onChange={(event) =>
-                handleProposalDetailsChange(["targetParticipants", "guestsInvitees"], event.target.value)
-              }
-              rows={2}
-              placeholder="Target participants: Guests / Invitees"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-          <FormField label="Target Participants: External Visitors / Participants" htmlFor="mega-target-participants-external">
-            <Textarea
-              id="mega-target-participants-external"
-              value={proposalForm.proposalDetails.targetParticipants.externalVisitorsParticipants}
-              onChange={(event) =>
-                handleProposalDetailsChange(["targetParticipants", "externalVisitorsParticipants"], event.target.value)
-              }
-              rows={2}
-              placeholder="Target participants: External Visitors / Participants"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-
-          <div className="grid gap-3 md:grid-cols-2">
-            <FormField label="Tentative Number of Speakers / Guests" htmlFor="mega-tentative-speakers-guests">
-              <Input
-                id="mega-tentative-speakers-guests"
-                type="number"
-                min={0}
-                value={proposalForm.proposalDetails.guestsDetails.tentativeNumberOfSpeakersGuests}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["guestsDetails", "tentativeNumberOfSpeakersGuests"], event.target.value)}
-                placeholder="Tentative number of speakers/guests"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Source of Funds: Registration Fee" htmlFor="mega-source-funds-registration-fee">
-              <Input
-                id="mega-source-funds-registration-fee"
-                type="number"
-                min={0}
-                value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
-                placeholder="Source of funds: Registration fee"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-          </div>
-
-          <FormField label="Guests Names, Designation and Affiliations" htmlFor="mega-guests-details-names">
-            <Textarea
-              id="mega-guests-details-names"
-              value={proposalForm.proposalDetails.guestsDetails.guestsNamesDesignationAffiliations}
-              onChange={(event) =>
-                handleProposalDetailsChange(["guestsDetails", "guestsNamesDesignationAffiliations"], event.target.value)}
-              rows={3}
-              placeholder="Names of guests with designation and affiliations"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-
-          <FormField label="Programme Schedule (Brief)" htmlFor="mega-programme-schedule-brief" required>
-            <Textarea
-              id="mega-programme-schedule-brief"
-              value={proposalForm.proposalDetails.programmeSchedule.brief}
-              onChange={(event) =>
-                handleProposalDetailsChange(["programmeSchedule", "brief"], event.target.value)}
-              rows={3}
-              placeholder="Programme schedule (brief)"
-              disabled={!canCreateOrEditProposal}
-            />
-          </FormField>
-          <PdfUploadField
-            label="Detailed Schedule Annexure (Optional PDF)"
-            value={proposalForm.proposalDetails.programmeSchedule.detailedScheduleAnnexureUrl}
-            onChange={(value) =>
-              handleProposalDetailsChange(["programmeSchedule", "detailedScheduleAnnexureUrl"], value)}
-            onUpload={uploadScheduleAnnexurePdf}
-            disabled={!canCreateOrEditProposal}
-            viewerTitle="Detailed Schedule Annexure"
-          />
-
-          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] px-3 py-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              Source of Funds
-            </p>
-          </div>
-          <div className="grid gap-3 md:grid-cols-3">
-            <FormField label="Source of Funds: Gymkhana Fund" htmlFor="mega-source-funds-gymkhana">
-              <Input
-                id="mega-source-funds-gymkhana"
-                type="number"
-                min={0}
-                value={proposalForm.proposalDetails.sourceOfFunds.gymkhanaFund}
-                onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "gymkhanaFund"], event.target.value)}
-                placeholder="Source of funds: Gymkhana fund"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Source of Funds: Institute Support" htmlFor="mega-source-funds-institute-support">
-              <Input
-                id="mega-source-funds-institute-support"
-                type="number"
-                min={0}
-                value={proposalForm.proposalDetails.sourceOfFunds.instituteSupport}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["sourceOfFunds", "instituteSupport"], event.target.value)}
-                placeholder="Source of funds: Institute support"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-            <FormField label="Source of Funds: Sponsorship / Grant" htmlFor="mega-source-funds-sponsorship">
-              <Input
-                id="mega-source-funds-sponsorship"
-                type="number"
-                min={0}
-                value={proposalForm.proposalDetails.sourceOfFunds.sponsorshipGrant}
-                onChange={(event) =>
-                  handleProposalDetailsChange(["sourceOfFunds", "sponsorshipGrant"], event.target.value)}
-                placeholder="Source of funds: Sponsorship / grant"
-                disabled={!canCreateOrEditProposal}
-              />
-            </FormField>
-          </div>
-
-          <div className="space-y-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
-            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Registration Details</p>
-            <div className="hidden gap-2 md:grid md:grid-cols-4">
-              <span style={formLabelStyles}>Category</span>
-              <span style={formLabelStyles}>Registration Fee (INR)</span>
-              <span style={formLabelStyles}>Accommodation Charges (INR)</span>
-              <span style={formLabelStyles}>Remarks</span>
+          {/* Registration Details - Full Width Table-style */}
+          <Panel title="Registration Details by Category" icon={ClipboardCheck}>
+            <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Category</span>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Registration Fee</span>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Accommodation</span>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Remarks</span>
             </div>
             {REGISTRATION_CATEGORIES.map((category) => (
-              <div key={category.key} className="grid gap-2 md:grid-cols-4">
-                <FormField label="Category" htmlFor={`mega-registration-category-${category.key}`}>
-                  <Input id={`mega-registration-category-${category.key}`} value={category.label} disabled />
-                </FormField>
-                <FormField label="Registration Fee (INR)" htmlFor={`mega-registration-fee-${category.key}`}>
-                  <Input
-                    id={`mega-registration-fee-${category.key}`}
-                    type="number"
-                    min={0}
-                    value={proposalForm.proposalDetails.registrationDetails[category.key].registrationFee}
-                    onChange={(event) =>
-                      handleProposalRegistrationDetailChange(
-                        category.key,
-                        "registrationFee",
-                        event.target.value
-                      )}
-                    placeholder="Registration fee (₹)"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="Accommodation Charges (INR)" htmlFor={`mega-registration-accommodation-${category.key}`}>
-                  <Input
-                    id={`mega-registration-accommodation-${category.key}`}
-                    type="number"
-                    min={0}
-                    value={proposalForm.proposalDetails.registrationDetails[category.key].accommodationCharges}
-                    onChange={(event) =>
-                      handleProposalRegistrationDetailChange(
-                        category.key,
-                        "accommodationCharges",
-                        event.target.value
-                      )}
-                    placeholder="Accommodation charges (₹)"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
-                <FormField label="Remarks" htmlFor={`mega-registration-remarks-${category.key}`}>
-                  <Input
-                    id={`mega-registration-remarks-${category.key}`}
-                    value={proposalForm.proposalDetails.registrationDetails[category.key].remarks}
-                    onChange={(event) =>
-                      handleProposalRegistrationDetailChange(category.key, "remarks", event.target.value)}
-                    placeholder="Remarks"
-                    disabled={!canCreateOrEditProposal}
-                  />
-                </FormField>
+              <div key={category.key} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", alignItems: "center", padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
+                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{category.label}</span>
+                <Input
+                  id={`mega-registration-fee-${category.key}`}
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.registrationDetails[category.key].registrationFee}
+                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "registrationFee", event.target.value)}
+                  placeholder="₹"
+                  disabled={!canCreateOrEditProposal}
+                />
+                <Input
+                  id={`mega-registration-accommodation-${category.key}`}
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.registrationDetails[category.key].accommodationCharges}
+                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "accommodationCharges", event.target.value)}
+                  placeholder="₹"
+                  disabled={!canCreateOrEditProposal}
+                />
+                <Input
+                  id={`mega-registration-remarks-${category.key}`}
+                  value={proposalForm.proposalDetails.registrationDetails[category.key].remarks}
+                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "remarks", event.target.value)}
+                  placeholder="Optional remarks"
+                  disabled={!canCreateOrEditProposal}
+                />
               </div>
             ))}
-          </div>
+          </Panel>
 
-          <div className="space-y-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
-            <p className="text-sm font-medium text-[var(--color-text-secondary)]">Approval Requested</p>
-            <Checkbox
-              checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
-              onChange={(event) =>
-                handleProposalDetailsChange(
-                  ["approvalRequested", "conductProgrammeAsProposed"],
-                  event.target.checked
-                )}
-              label="Conduct of the programme as proposed"
-              disabled={!canCreateOrEditProposal}
-            />
-            <Checkbox
-              checked={proposalForm.proposalDetails.approvalRequested.chargingRegistrationFees}
-              onChange={(event) =>
-                handleProposalDetailsChange(
-                  ["approvalRequested", "chargingRegistrationFees"],
-                  event.target.checked
-                )}
-              label="Charging of registration fees for guests and external participants"
-              disabled={!canCreateOrEditProposal}
-            />
-            <Checkbox
-              checked={proposalForm.proposalDetails.approvalRequested.utilisationOfCollectedFees}
-              onChange={(event) =>
-                handleProposalDetailsChange(
-                  ["approvalRequested", "utilisationOfCollectedFees"],
-                  event.target.checked
-                )}
-              label="Utilisation of collected fees for programme expenditure"
-              disabled={!canCreateOrEditProposal}
-            />
-            <Checkbox
-              checked={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport}
-              onChange={(event) =>
-                handleProposalDetailsChange(
-                  ["approvalRequested", "additionalInstitutionalSupport"],
-                  event.target.checked
-                )}
-              label="Any additional institutional support"
-              disabled={!canCreateOrEditProposal}
-            />
+          {/* Approval Requested - Full Width */}
+          <Panel title="Approval Requested" icon={ClipboardCheck} accent>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "conductProgrammeAsProposed"], event.target.checked)}
+                label="Conduct of the programme as proposed"
+                disabled={!canCreateOrEditProposal}
+              />
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.chargingRegistrationFees}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "chargingRegistrationFees"], event.target.checked)}
+                label="Charging registration fees for guests/external participants"
+                disabled={!canCreateOrEditProposal}
+              />
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.utilisationOfCollectedFees}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "utilisationOfCollectedFees"], event.target.checked)}
+                label="Utilisation of collected fees for programme expenditure"
+                disabled={!canCreateOrEditProposal}
+              />
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "additionalInstitutionalSupport"], event.target.checked)}
+                label="Additional institutional support"
+                disabled={!canCreateOrEditProposal}
+              />
+            </div>
             {proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport && (
-              <FormField label="Additional Institutional Support Details" htmlFor="mega-additional-support-details">
+              <FormField label="Additional Support Details" htmlFor="mega-additional-support-details">
                 <Textarea
                   id="mega-additional-support-details"
                   value={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupportDetails}
-                  onChange={(event) =>
-                    handleProposalDetailsChange(
-                      ["approvalRequested", "additionalInstitutionalSupportDetails"],
-                      event.target.value
-                    )}
+                  onChange={(event) => handleProposalDetailsChange(["approvalRequested", "additionalInstitutionalSupportDetails"], event.target.value)}
                   rows={2}
-                  placeholder="Additional institutional support details"
+                  placeholder="Describe the additional institutional support required"
                   disabled={!canCreateOrEditProposal}
                 />
               </FormField>
             )}
-          </div>
+          </Panel>
         </div>
       </Modal>
 
@@ -2124,35 +2171,36 @@ const MegaEventsPage = () => {
         title="Mega Event Expenses"
         isOpen={isExpenseOpen}
         onClose={() => setIsExpenseOpen(false)}
-        width={960}
+        width={680}
         footer={(
-          <div className="flex flex-wrap justify-end gap-2">
-            <Button variant="ghost" onClick={() => setIsExpenseOpen(false)}>Close</Button>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <Button size="sm" variant="secondary" onClick={() => setIsExpenseOpen(false)}>Close</Button>
             {canCreateOrEditExpense && (
-              <Button onClick={handleSaveExpense} loading={submitting}>
-                {expenseData ? "Update Expense" : "Submit Expense"}
+              <Button size="sm" onClick={handleSaveExpense} loading={submitting}>
+                {expenseData ? "Update" : "Submit"}
               </Button>
             )}
             {canReviewExpense && (
               <>
-                <Button variant="danger" onClick={handleRejectExpense} loading={submitting}>Reject</Button>
-                <Button variant="success" onClick={handleApproveExpense} loading={submitting}>Approve</Button>
+                <Button size="sm" variant="danger" onClick={handleRejectExpense} loading={submitting}>Reject</Button>
+                <Button size="sm" variant="success" onClick={handleApproveExpense} loading={submitting}>Approve</Button>
               </>
             )}
           </div>
         )}
       >
-        <div className="space-y-4">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
           {expenseData && (
-            <Alert type="info" title="Current expense status">
+            <Alert type="info" title="Expense status">
               {(expenseData.approvalStatus || "pending").replace(/_/g, " ")}
             </Alert>
           )}
 
+          <SectionHeader>Bills</SectionHeader>
           {(expenseForm.bills || []).map((bill, index) => (
-            <div key={`bill-${index}`} className="space-y-3 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-semibold text-[var(--color-text-secondary)]">Bill {index + 1}</p>
+            <div key={`bill-${index}`} style={{ ...compactCardStyle, display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-2)" }}>
+                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-secondary)" }}>Bill {index + 1}</span>
                 {canCreateOrEditExpense && expenseForm.bills.length > 1 && (
                   <Button
                     size="sm"
@@ -2169,7 +2217,7 @@ const MegaEventsPage = () => {
                 )}
               </div>
 
-              <FormField label="Bill Description" htmlFor={`mega-bill-description-${index}`} required>
+              <FormField label="Description" htmlFor={`mega-bill-description-${index}`} required>
                 <Input
                   id={`mega-bill-description-${index}`}
                   value={bill.description}
@@ -2178,8 +2226,8 @@ const MegaEventsPage = () => {
                   disabled={!canCreateOrEditExpense}
                 />
               </FormField>
-              <div className="grid gap-3 md:grid-cols-2">
-                <FormField label="Amount (INR)" htmlFor={`mega-bill-amount-${index}`} required>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                <FormField label="Amount (₹)" htmlFor={`mega-bill-amount-${index}`} required>
                   <Input
                     id={`mega-bill-amount-${index}`}
                     type="number"
@@ -2190,7 +2238,7 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditExpense}
                   />
                 </FormField>
-                <FormField label="Bill Date" htmlFor={`mega-bill-date-${index}`}>
+                <FormField label="Date" htmlFor={`mega-bill-date-${index}`}>
                   <Input
                     id={`mega-bill-date-${index}`}
                     type="date"
@@ -2200,7 +2248,7 @@ const MegaEventsPage = () => {
                   />
                 </FormField>
               </div>
-              <div className="grid gap-3 md:grid-cols-2">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
                 <FormField label="Bill Number" htmlFor={`mega-bill-number-${index}`}>
                   <Input
                     id={`mega-bill-number-${index}`}
@@ -2210,7 +2258,7 @@ const MegaEventsPage = () => {
                     disabled={!canCreateOrEditExpense}
                   />
                 </FormField>
-                <FormField label="Vendor Name" htmlFor={`mega-bill-vendor-${index}`}>
+                <FormField label="Vendor" htmlFor={`mega-bill-vendor-${index}`}>
                   <Input
                     id={`mega-bill-vendor-${index}`}
                     value={bill.vendor}
@@ -2243,6 +2291,7 @@ const MegaEventsPage = () => {
             </Button>
           )}
 
+          <SectionHeader>Event Report</SectionHeader>
           <PdfUploadField
             label="Event Report PDF"
             value={expenseForm.eventReportDocumentUrl}
@@ -2258,7 +2307,7 @@ const MegaEventsPage = () => {
               id="mega-expense-notes"
               value={expenseForm.notes}
               onChange={(event) => setExpenseForm((prev) => ({ ...prev, notes: event.target.value }))}
-              rows={3}
+              rows={2}
               placeholder="Notes"
               disabled={!canCreateOrEditExpense}
             />
@@ -2266,12 +2315,11 @@ const MegaEventsPage = () => {
 
           {canReviewExpense && (
             <>
+              <SectionHeader>Review</SectionHeader>
               {requiresExpenseStageSelection && (
-                <div className="space-y-2 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-3">
-                  <p className="text-sm font-medium text-[var(--color-text-secondary)]">
-                    Select next approval stage(s)
-                  </p>
-                  <div className="grid gap-2 md:grid-cols-3">
+                <div style={infoBoxStyle}>
+                  <span style={sectionLabelStyle}>Next Approval Stage(s)</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)", marginTop: "var(--spacing-2)" }}>
                     {POST_STUDENT_AFFAIRS_STAGE_OPTIONS.map((stage) => (
                       <Checkbox
                         key={stage}
@@ -2289,7 +2337,7 @@ const MegaEventsPage = () => {
                   id="mega-expense-review-comments"
                   value={expenseComments}
                   onChange={(event) => setExpenseComments(event.target.value)}
-                  rows={3}
+                  rows={2}
                   placeholder="Review comments"
                 />
               </FormField>
@@ -2297,15 +2345,15 @@ const MegaEventsPage = () => {
           )}
 
           {expenseData?._id && (
-            <Card>
-              <CardContent>
-                <h4 className="mb-2 text-sm font-semibold text-[var(--color-text-secondary)]">Approval History</h4>
+            <div style={infoBoxStyle}>
+              <span style={sectionLabelStyle}>Approval History</span>
+              <div style={{ marginTop: "var(--spacing-2)" }}>
                 <ApprovalHistory
                   key={`expense-${selectedOccurrence?._id}-${expenseHistoryRefreshKey}`}
                   megaExpenseOccurrenceId={selectedOccurrence?._id}
                 />
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </div>
       </Modal>
