@@ -2,13 +2,22 @@ import React from "react"
 import { StatCards } from "@/components/ui"
 import { HiAnnotation, HiEye, HiClipboardList, HiClock } from "react-icons/hi"
 
-const FeedbackStats = ({ feedbacks }) => {
-  const totalFeedbacks = feedbacks.length
-  const pendingFeedbacks = feedbacks.filter((f) => f.status === "Pending").length
-  const seenFeedbacks = feedbacks.filter((f) => f.status === "Seen").length
+const FeedbackStats = ({ feedbacks = [], stats = null }) => {
+  const totalFeedbacks = stats?.total ?? feedbacks.length
+  const pendingFeedbacks = stats?.pending ?? feedbacks.filter((f) => f.status === "Pending").length
+  const seenFeedbacks = stats?.seen ?? feedbacks.filter((f) => f.status === "Seen").length
 
   // Get most recent feedback date
   const getLatestFeedbackDate = () => {
+    if (stats?.latestFeedbackDate) {
+      const latestDate = new Date(stats.latestFeedbackDate)
+      return latestDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    }
+
     if (feedbacks.length === 0) return "No feedbacks"
 
     const sortedFeedbacks = [...feedbacks].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

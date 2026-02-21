@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { FaUserFriends } from "react-icons/fa"
 import { useAuth } from "../../contexts/AuthProvider"
 import { visitorApi } from "../../service"
@@ -6,9 +6,12 @@ import VisitorRequestTable from "../../components/visitor/requests/VisitorReques
 import AddVisitorProfileModal from "../../components/visitor/requests/AddVisitorProfileModal"
 import AddVisitorRequestModal from "../../components/visitor/requests/AddVisitorRequestModal"
 import ManageVisitorProfilesModal from "../../components/visitor/requests/ManageVisitorProfilesModal"
-import { LoadingState, ErrorState, EmptyState } from "@/components/ui"
+import { LoadingState, ErrorState, EmptyState, Pagination } from "@/components/ui"
 import { Button } from "czero/react"
 import VisitorRequestsHeader from "../../components/headers/VisitorRequestsHeader"
+import PageFooter from "../../components/common/PageFooter"
+
+const REQUESTS_PAGE_SIZE = 10
 
 const VisitorRequestsPage = () => {
   const { user } = useAuth()
@@ -27,8 +30,25 @@ const VisitorRequestsPage = () => {
   const [showFilters, setShowFilters] = useState(false)
   const [statusFilter, setStatusFilter] = useState("all")
   const [allocationFilter, setAllocationFilter] = useState("all")
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalRequests, setTotalRequests] = useState(0)
+  const fetchVisitorProfiles = useCallback(async () => {
+    if (user?.role !== "Student" || !canCreateVisitorRequests) {
+      setVisitorProfiles([])
+      return
+    }
 
-  const fetchVisitorData = async () => {
+    try {
+      const profiles = await visitorApi.getVisitorProfiles()
+      setVisitorProfiles(profiles.data || [])
+    } catch (err) {
+      console.error("Error fetching visitor profiles:", err)
+      setVisitorProfiles([])
+    }
+  }, [canCreateVisitorRequests, user?.role])
+
+  const fetchVisitorData = useCallback(async () => {
     if (!canViewVisitors) {
       setLoading(false)
       return
@@ -37,32 +57,60 @@ const VisitorRequestsPage = () => {
       setLoading(true)
       setError(null)
 
-      const requests = await visitorApi.getVisitorRequestsSummary()
+      const requestParams = {
+        page: currentPage,
+        limit: REQUESTS_PAGE_SIZE,
+      }
 
-      let profiles = []
-      if (user.role === "Student" && canCreateVisitorRequests) {
-        profiles = await visitorApi.getVisitorProfiles()
+      if (statusFilter !== "all") {
+        requestParams.status = statusFilter
+      }
+
+      if (canAllocateVisitors && allocationFilter !== "all") {
+        requestParams.allocation = allocationFilter
+      }
+
+      const requests = await visitorApi.getVisitorRequestsSummary(requestParams)
+      const apiPagination = requests.pagination || {}
+      const nextTotalPages = apiPagination.totalPages || 0
+
+      if (nextTotalPages > 0 && currentPage > nextTotalPages) {
+        setCurrentPage(nextTotalPages)
+        return
       }
 
       setVisitorRequests(requests.data || [])
-      setVisitorProfiles(profiles.data || [])
+      setTotalRequests(apiPagination.total || 0)
+      setTotalPages(Math.max(nextTotalPages, 1))
     } catch (err) {
       console.error("Error fetching visitor data:", err)
       setError("Failed to load visitor requests. Please try again later.")
+      setVisitorRequests([])
+      setTotalRequests(0)
+      setTotalPages(1)
     } finally {
       setLoading(false)
     }
-  }
+  }, [
+    allocationFilter,
+    canAllocateVisitors,
+    canViewVisitors,
+    currentPage,
+    statusFilter,
+  ])
 
   useEffect(() => {
-    if (!canViewVisitors) return
     fetchVisitorData()
-  }, [canViewVisitors])
+  }, [fetchVisitorData])
+
+  useEffect(() => {
+    fetchVisitorProfiles()
+  }, [fetchVisitorProfiles])
 
   const handleAddProfile = async (profileData) => {
     try {
       await visitorApi.addVisitorProfile(profileData)
-      fetchVisitorData()
+      await fetchVisitorProfiles()
       setShowAddProfileModal(false)
       return true
     } catch (err) {
@@ -86,24 +134,18 @@ const VisitorRequestsPage = () => {
     }
   }
 
-  const handleAddProfileFromRequest = async (profileData) => {
+  const handleAddProfileFromRequest = async () => {
     setShowAddProfileModal(true)
     setShowAddRequestModal(false)
     setShowManageProfilesModal(false)
   }
 
-  const filteredRequests = visitorRequests.filter((request) => {
-    if (statusFilter !== "all" && request.status.toLowerCase() !== statusFilter.toLowerCase()) {
-      return false
-    }
+  const hasActiveFilters =
+    statusFilter !== "all" || (canAllocateVisitors && allocationFilter !== "all")
 
-    if (canAllocateVisitors && allocationFilter !== "all") {
-      if (allocationFilter === "allocated" && !request.isAllocated) return false
-      if (allocationFilter === "unallocated" && request.isAllocated) return false
-    }
-
-    return true
-  })
+  const handlePaginate = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
 
   if (loading) {
     return <LoadingState message="Loading visitor requests..." />
@@ -137,12 +179,18 @@ const VisitorRequestsPage = () => {
                 <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                   {["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role)
                     ? ["all", "approved"].map((status) => (
-                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="sm">
+                        <Button key={status} onClick={() => {
+                          setStatusFilter(status)
+                          setCurrentPage(1)
+                        }} variant={statusFilter === status ? "primary" : "ghost"} size="sm">
                           {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
                         </Button>
                       ))
                     : ["all", "pending", "approved", "rejected"].map((status) => (
-                        <Button key={status} onClick={() => setStatusFilter(status)} variant={statusFilter === status ? "primary" : "ghost"} size="sm">
+                        <Button key={status} onClick={() => {
+                          setStatusFilter(status)
+                          setCurrentPage(1)
+                        }} variant={statusFilter === status ? "primary" : "ghost"} size="sm">
                           {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
                         </Button>
                       ))}
@@ -154,7 +202,10 @@ const VisitorRequestsPage = () => {
                   <h3 style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-body)", marginBottom: "var(--spacing-2)" }}>Filter by Allocation:</h3>
                   <div style={{ display: "flex", gap: "var(--spacing-2)", backgroundColor: "var(--color-bg-muted)", padding: "var(--spacing-1)", borderRadius: "var(--radius-lg)" }}>
                     {["all", "allocated", "unallocated"].map((status) => (
-                      <Button key={status} onClick={() => setAllocationFilter(status)} variant={allocationFilter === status ? "primary" : "ghost"} size="sm">
+                      <Button key={status} onClick={() => {
+                        setAllocationFilter(status)
+                        setCurrentPage(1)
+                      }} variant={allocationFilter === status ? "primary" : "ghost"} size="sm">
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                       </Button>
                     ))}
@@ -165,7 +216,7 @@ const VisitorRequestsPage = () => {
           </div>
         )}
 
-        {visitorRequests.length === 0 ? (
+        {totalRequests === 0 && !hasActiveFilters ? (
           <EmptyState
             icon={() => <FaUserFriends style={{ color: "var(--color-text-placeholder)" }} size={48} />}
             title={["Warden", "Associate Warden", "Hostel Supervisor"].includes(user.role) ? "No Visitor Requests" : "No Visitor Requests"}
@@ -173,20 +224,39 @@ const VisitorRequestsPage = () => {
             buttonText={user.role === "Student" ? "Create Request" : null}
             buttonAction={user.role === "Student" ? () => setShowAddRequestModal(true) : null}
           />
-        ) : filteredRequests.length === 0 ? (
+        ) : totalRequests === 0 ? (
           <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-xl)", boxShadow: "var(--shadow-sm)", padding: "var(--spacing-8)", textAlign: "center" }}>
             <p style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-base)" }}>No requests found matching your filters.</p>
           </div>
         ) : (
-          <VisitorRequestTable requests={filteredRequests} onRefresh={fetchVisitorData} />
+          <VisitorRequestTable requests={visitorRequests} onRefresh={fetchVisitorData} />
         )}
 
         {showAddProfileModal && canCreateVisitorRequests && <AddVisitorProfileModal isOpen={showAddProfileModal} onClose={() => setShowAddProfileModal(false)} onSubmit={handleAddProfile} />}
 
         {showAddRequestModal && canCreateVisitorRequests && <AddVisitorRequestModal isOpen={showAddRequestModal} onClose={() => setShowAddRequestModal(false)} onSubmit={handleAddRequest} visitorProfiles={visitorProfiles} handleAddProfile={handleAddProfileFromRequest} />}
 
-        {showManageProfilesModal && canCreateVisitorRequests && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorData} />}
+        {showManageProfilesModal && canCreateVisitorRequests && <ManageVisitorProfilesModal isOpen={showManageProfilesModal} onClose={() => setShowManageProfilesModal(false)} visitorProfiles={visitorProfiles} onRefresh={fetchVisitorProfiles} />}
       </div>
+
+      <PageFooter
+        leftContent={[
+          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{visitorRequests.length}</span> of{" "}
+            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalRequests}</span> requests
+          </span>,
+        ]}
+        rightContent={[
+          <Pagination
+            key="pagination"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginate={handlePaginate}
+            compact
+            showPageInfo={false}
+          />,
+        ]}
+      />
     </div>
   )
 }

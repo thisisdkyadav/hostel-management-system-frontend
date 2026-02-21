@@ -10,6 +10,7 @@ import { Pagination } from "@/components/ui"
 import NotificationCenterHeader from "../../components/headers/NotificationCenterHeader"
 import { notificationApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
+import PageFooter from "../../components/common/PageFooter"
 
 const NOTIFICATION_FILTER_TABS = [
   { label: "All", value: "all" },
@@ -42,6 +43,7 @@ const NotificationCenterPage = () => {
     limit: 10,
   })
   const [totalPages, setTotalPages] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
 
   const statusTabs = useMemo(() => {
     const statusCounts = {
@@ -59,6 +61,7 @@ const NotificationCenterPage = () => {
   const fetchNotifications = useCallback(async () => {
     try {
       setLoading(true)
+      setError(null)
 
       const queryParams = new URLSearchParams({
         page: filters.page,
@@ -90,8 +93,16 @@ const NotificationCenterPage = () => {
       }
 
       const response = await notificationApi.getNotifications(queryParams.toString())
+      const nextTotalPages = response.meta?.totalPages || 0
+
+      if (nextTotalPages > 0 && filters.page > nextTotalPages) {
+        setFilters((prev) => ({ ...prev, page: nextTotalPages }))
+        return
+      }
+
       setNotifications(response.data || [])
-      setTotalPages(response.meta?.totalPages || 1)
+      setTotalCount(response.meta?.totalCount || 0)
+      setTotalPages(Math.max(nextTotalPages, 1))
 
       const statsResponse = await notificationApi.getNotificationStats()
       setStats(
@@ -103,6 +114,9 @@ const NotificationCenterPage = () => {
       )
     } catch (err) {
       setError("Failed to load notifications")
+      setNotifications([])
+      setTotalCount(0)
+      setTotalPages(1)
       console.error(err)
       alert("An error occurred while fetching notifications. Please try again later.")
     } finally {
@@ -202,14 +216,31 @@ const NotificationCenterPage = () => {
                   suggestion="Try changing your search or filter criteria"
                 />
               )}
-
-              {totalPages > 1 && <Pagination currentPage={filters.page} totalPages={totalPages} paginate={paginate} />}
             </>
           )}
         </div>
-
-        <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
       </div>
+
+      <PageFooter
+        leftContent={[
+          <span key="count" style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            Showing <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{notifications.length}</span> of{" "}
+            <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{totalCount}</span> notifications
+          </span>,
+        ]}
+        rightContent={[
+          <Pagination
+            key="pagination"
+            currentPage={filters.page}
+            totalPages={totalPages}
+            paginate={paginate}
+            compact
+            showPageInfo={false}
+          />,
+        ]}
+      />
+
+      <CreateNotificationModal isOpen={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchNotifications} />
     </div>
   )
 }

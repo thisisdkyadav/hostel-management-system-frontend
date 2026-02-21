@@ -16,9 +16,10 @@ export const visitorApi = {
 
   /**
    * Get visitor requests summary
+   * @param {Object} params - Optional query params ({ page, limit, status, allocation })
    */
-  getVisitorRequestsSummary: () => {
-    return apiClient.get("/visitor/requests/summary")
+  getVisitorRequestsSummary: (params = {}) => {
+    return apiClient.get("/visitor/requests/summary", { params })
   },
 
   /**

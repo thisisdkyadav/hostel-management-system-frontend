@@ -8,9 +8,10 @@ import apiClient from "../core/apiClient"
 export const feedbackApi = {
   /**
    * Get all feedbacks
+   * @param {Object} params - Optional query params ({ page, limit, status, search })
    */
-  getFeedbacks: () => {
-    return apiClient.get("/feedback/")
+  getFeedbacks: (params = {}) => {
+    return apiClient.get("/feedback/", { params })
   },
 
   /**
