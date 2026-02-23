@@ -258,7 +258,7 @@ const Sidebar = ({ navItems }) => {
                 onClick={() => handleCategoryChange(category.id)}
                 className={`
                   h-10 rounded-xl flex items-center justify-center transition-all duration-200
-                  ${isActiveCategory ? `${activeCategoryClass} shadow-md` : `bg-white ${inactiveIconColor} hover:scale-105 active:scale-95`}
+                  ${isActiveCategory ? `${activeCategoryClass} shadow-md` : `bg-white ${activeAdminCategory === ADMIN_NAV_CATEGORY_HOME ? "border border-current/20" : ""} ${inactiveIconColor} hover:scale-105 active:scale-95`}
                 `}
                 title={category.name}
                 aria-label={category.name}
