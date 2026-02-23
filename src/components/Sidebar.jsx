@@ -51,6 +51,18 @@ const ADMIN_CATEGORY_BG_TINTS = {
   dining: "rgba(225, 29, 72, 0.15)",
 }
 
+/**
+ * Icon colors for inactive (unselected) category buttons.
+ * Each category shows its brand color on the icon when not selected.
+ */
+const ADMIN_CATEGORY_INACTIVE_ICON_COLORS = {
+  home: "text-[var(--color-primary)]",
+  hostels: "text-emerald-600",
+  "student-affairs": "text-amber-500",
+  staff: "text-sky-600",
+  dining: "text-rose-600",
+}
+
 const Sidebar = ({ navItems }) => {
   const [active, setActive] = useState("")
   const [isOpen, setIsOpen] = useState(true)
@@ -239,13 +251,14 @@ const Sidebar = ({ navItems }) => {
           {ADMIN_NAV_CATEGORIES.map((category) => {
             const isActiveCategory = activeAdminCategory === category.id
             const activeCategoryClass = ADMIN_CATEGORY_ACTIVE_STYLES[category.id] || ADMIN_CATEGORY_ACTIVE_STYLES.home
+            const inactiveIconColor = ADMIN_CATEGORY_INACTIVE_ICON_COLORS[category.id] || "text-[var(--color-text-muted)]"
             return (
               <button
                 key={category.id}
                 onClick={() => handleCategoryChange(category.id)}
                 className={`
                   h-9 rounded-[10px] border flex items-center justify-center transition-all duration-200
-                  ${isActiveCategory ? activeCategoryClass : "border-[var(--color-border-primary)] text-[var(--color-text-muted)] hover:border-[var(--color-primary)]/40 hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)]"}
+                  ${isActiveCategory ? activeCategoryClass : `bg-white border-[var(--color-border-primary)] ${inactiveIconColor} hover:opacity-80`}
                 `}
                 title={category.name}
                 aria-label={category.name}
@@ -459,10 +472,16 @@ const Sidebar = ({ navItems }) => {
             }}
           >
             <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
-              {/* HMS Text Logo - only show when expanded */}
+              {/* Text Logo - only show when expanded */}
               {isOpen && (
                 <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
-                  <span className="text-[var(--color-primary)] font-bold text-xl tracking-tight">HMS</span>
+                  <span
+                    className={`font-bold text-xl tracking-tight transition-colors duration-300 ${useCategorizedAdminNav ? (ADMIN_CATEGORY_INACTIVE_ICON_COLORS[activeAdminCategory] || "text-[var(--color-primary)]") : "text-[var(--color-primary)]"}`}
+                  >
+                    {useCategorizedAdminNav
+                      ? (ADMIN_NAV_CATEGORIES.find((c) => c.id === activeAdminCategory)?.name || "HMS")
+                      : "HMS"}
+                  </span>
                 </div>
               )}
 
