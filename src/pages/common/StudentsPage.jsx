@@ -1,6 +1,4 @@
 import { useMemo, useState } from "react"
-import { GraduationCap } from "lucide-react"
-import NoResults from "../../components/common/NoResults"
 import PageFooter from "../../components/common/PageFooter"
 import StudentStats from "../../components/common/students/StudentStats"
 import StudentFilterSection from "../../components/common/students/StudentFilterSection"
@@ -15,49 +13,8 @@ import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
 import useAuthz from "../../hooks/useAuthz"
-import { studentApi } from "../../service"
-import { hostelApi } from "../../service"
+import { hostelApi, studentApi } from "../../service"
 import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
-
-// Shimmer loader components
-const ShimmerLoader = ({ height, width = "100%", className = "" }) => (
-  <div
-    className={className}
-    style={{
-      height,
-      width,
-      background: `linear - gradient(90deg, var(--skeleton - base) 25 %, var(--skeleton - highlight) 50 %, var(--skeleton - base) 75 %)`,
-      backgroundSize: '200% 100%',
-      animation: 'shimmer var(--skeleton-animation-duration) infinite',
-      borderRadius: 'var(--radius-lg)'
-    }}
-  ></div>
-)
-
-const TableRowShimmer = () => (
-  <div style={{ display: 'flex', padding: 'var(--spacing-3) var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-light)' }}>
-    {[...Array(5)].map((_, i) => (
-      <div key={i} style={{ flex: 1, padding: '0 var(--spacing-2)' }}>
-        <ShimmerLoader height="1rem" width={i === 0 ? "80%" : "60%"} />
-      </div>
-    ))}
-  </div>
-)
-
-const TableShimmer = ({ rows = 10 }) => (
-  <div style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden' }}>
-    <div style={{ backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3) var(--spacing-4)', display: 'flex', borderBottom: 'var(--border-1) solid var(--color-border-primary)' }}>
-      {[...Array(5)].map((_, i) => (
-        <div key={i} style={{ flex: 1, padding: '0 var(--spacing-2)' }}>
-          <ShimmerLoader height="1rem" width="100px" />
-        </div>
-      ))}
-    </div>
-    {[...Array(rows)].map((_, i) => (
-      <TableRowShimmer key={i} />
-    ))}
-  </div>
-)
 
 const StudentsPage = () => {
   const { user } = useAuth()
@@ -90,12 +47,12 @@ const StudentsPage = () => {
     return hostelList.filter((hostel) => allowedHostelIds.has(hostel._id))
   }, [constrainedHostelIds, hostelList, onlyOwnHostelScope, user?.hostel?._id, user.role])
 
-  const canViewStudentsList = true || true
-  const canViewStudentsDetail = true || true
+  const canViewStudentsList = true
+  const canViewStudentsDetail = true
   const canImportStudents = ["Admin"].includes(user?.role) && true
   const canBulkUpdateStudents = ["Admin"].includes(user?.role) && true
   const canUpdateStudentAllocations = ["Admin"].includes(user?.role) && true
-  const canExportStudents = true || true
+  const canExportStudents = true
 
   const [showStudentDetail, setShowStudentDetail] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
@@ -167,7 +124,7 @@ const StudentsPage = () => {
         alert("Failed to update allocations")
         return false
       }
-    } catch (error) {
+    } catch {
       alert("An error occurred while updating allocations")
       return false
     }
@@ -289,18 +246,16 @@ const StudentsPage = () => {
 
         <StudentFilterSection filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} setPageSize={setPageSize} missingOptions={missingOptions} />
 
-
-
-        {loading ? (
-          <TableShimmer rows={pagination.pageSize || 10} />
-        ) : (
-          <>
-            <div style={{ marginTop: 'var(--spacing-4)' }}>
-              <StudentTableView currentStudents={students} sortField={sorting.sortField} sortDirection={sorting.sortDirection} handleSort={handleSort} viewStudentDetails={viewStudentDetails} />
-            </div>
-
-          </>
-        )}
+        <div style={{ marginTop: 'var(--spacing-4)' }}>
+          <StudentTableView
+            currentStudents={students}
+            sortField={sorting.sortField}
+            sortDirection={sorting.sortDirection}
+            handleSort={handleSort}
+            viewStudentDetails={viewStudentDetails}
+            loading={loading}
+          />
+        </div>
 
         {showStudentDetail && selectedStudent && canViewStudentsDetail && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={refreshStudents} />}
 

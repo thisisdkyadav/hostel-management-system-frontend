@@ -7,7 +7,7 @@ export const useStudents = (options = {}) => {
 
   const [students, setStudents] = useState([])
   const [totalCount, setTotalCount] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(Boolean(autoFetch))
   const [error, setError] = useState(null)
   const [missingOptions, setMissingOptions] = useState([])
 

@@ -3,7 +3,7 @@ import { FaSortAmountDown, FaSortAmountUp, FaUserGraduate } from "react-icons/fa
 import { DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
-const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails }) => {
+const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSort, viewStudentDetails, loading = false }) => {
   const columns = [
     {
       header: "Student",
@@ -79,7 +79,7 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
     },
   ]
 
-  return <DataTable columns={columns} data={currentStudents} emptyMessage="Try changing your search or filter criteria" onRowClick={viewStudentDetails} />
+  return <DataTable columns={columns} data={currentStudents} emptyMessage="Try changing your search or filter criteria" onRowClick={viewStudentDetails} loading={loading} />
 }
 
 export default StudentTableView
