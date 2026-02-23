@@ -242,12 +242,12 @@ const Sidebar = ({ navItems }) => {
 
     return (
       <div
-        className={`border-t border-[var(--color-border-primary)] transition-colors duration-300 ${isOpen ? "px-[0.875rem] py-[0.75rem]" : "p-2"}`}
+        className={`border-t border-[var(--color-border-primary)] transition-all duration-300 ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}
         style={{
           backgroundColor: ADMIN_CATEGORY_BG_TINTS[activeAdminCategory] || ADMIN_CATEGORY_BG_TINTS.home,
         }}
       >
-        <div className={isOpen ? "grid grid-cols-5 gap-2" : "flex flex-col gap-2"}>
+        <div className={isOpen ? "grid grid-cols-5 gap-2" : "flex flex-col gap-1.5"}>
           {ADMIN_NAV_CATEGORIES.map((category) => {
             const isActiveCategory = activeAdminCategory === category.id
             const activeCategoryClass = ADMIN_CATEGORY_ACTIVE_STYLES[category.id] || ADMIN_CATEGORY_ACTIVE_STYLES.home
@@ -257,13 +257,13 @@ const Sidebar = ({ navItems }) => {
                 key={category.id}
                 onClick={() => handleCategoryChange(category.id)}
                 className={`
-                  h-9 rounded-[10px] border flex items-center justify-center transition-all duration-200
-                  ${isActiveCategory ? activeCategoryClass : `bg-white border-[var(--color-border-primary)] ${inactiveIconColor} hover:opacity-80`}
+                  h-10 rounded-xl flex items-center justify-center transition-all duration-200
+                  ${isActiveCategory ? `${activeCategoryClass} shadow-md` : `bg-white ${inactiveIconColor} hover:scale-105 active:scale-95`}
                 `}
                 title={category.name}
                 aria-label={category.name}
               >
-                <category.icon size={16} strokeWidth={2.1} />
+                <category.icon size={17} strokeWidth={isActiveCategory ? 2.2 : 1.8} />
               </button>
             )
           })}
@@ -291,14 +291,13 @@ const Sidebar = ({ navItems }) => {
         onClick={() => handleNavigation(item)}
         title={!isOpen ? item.name : ""}
         className={`
-          group relative rounded-[10px] transition-all duration-200 cursor-pointer
-          ${isOpen ? "my-[0.35rem]" : "my-1"}
-          ${isActiveItem ? "bg-[var(--color-primary)] text-white shadow-[var(--shadow-button-active)]" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-primary)] hover:shadow-sm"}
+          group relative rounded-xl transition-all duration-200 cursor-pointer
+          ${isActiveItem ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/20" : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-muted)] hover:shadow-sm"}
         `}
       >
-        <div className={`flex items-center ${isOpen ? "px-[0.875rem] py-[0.7rem]" : "px-2 py-[0.7rem] justify-center"}`}>
-          <div className={`relative flex justify-center items-center ${isOpen ? "mr-[0.65rem]" : ""}`}>
-            <item.icon size={18} strokeWidth={2} className={`transition-colors duration-200 ${isActiveItem ? "text-white" : "text-[var(--color-text-light)] group-hover:text-[var(--color-primary)]"}`} />
+        <div className={`flex items-center ${isOpen ? "px-4 py-3" : "px-3 py-3 justify-center"}`}>
+          <div className={`relative flex justify-center items-center ${isOpen ? "mr-3" : ""}`}>
+            <item.icon size={19} strokeWidth={1.8} className={`transition-all duration-200 ${isActiveItem ? "text-white" : "text-[var(--color-text-muted)] group-hover:text-[var(--color-primary)]"}`} />
 
             {item?.badge > 0 && (
               <div className="absolute -top-2 -right-2 flex items-center justify-center">
@@ -313,14 +312,13 @@ const Sidebar = ({ navItems }) => {
           </div>
 
           {isOpen && (
-            <div className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-7" : ""}`}>
-              <span className={`text-[0.85rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white font-semibold" : ""}`}>{item.name}</span>
+            <div className={`flex items-center gap-2 flex-1 min-w-0 ${showPinControl ? "pr-8" : ""}`}>
+              <span className={`text-[0.875rem] font-medium whitespace-nowrap transition-all duration-200 ${isActiveItem ? "text-white" : "group-hover:text-[var(--color-text-primary)]"}`}>{item.name}</span>
               {item.isNew && (
                 <span
                   className={`
-                    px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-full
-                    ${isActiveItem ? "bg-white/20 text-white" : "bg-[var(--color-success)] text-white"}
-                    animate-pulse
+                    px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide rounded-md
+                    ${isActiveItem ? "bg-white/25 text-white" : "bg-emerald-500/10 text-emerald-600"}
                   `}
                 >
                   New
@@ -336,27 +334,25 @@ const Sidebar = ({ navItems }) => {
                 togglePinnedItem(item)
               }}
               className={`
-                absolute right-[0.65rem] top-1/2 -translate-y-1/2 w-5 h-5 rounded-[6px] flex items-center justify-center transition-all duration-200
+                absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200
                 ${isPinnedItem
                   ? isActiveItem
-                    ? "opacity-100 text-white bg-white/15"
-                    : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary-bg)]"
+                    ? "opacity-100 text-white bg-white/20"
+                    : "opacity-100 text-[var(--color-primary)] bg-[var(--color-primary)]/10"
                   : isActiveItem
-                    ? "opacity-0 group-hover:opacity-100 text-white/85 hover:bg-white/15"
-                    : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-hover)]"
+                    ? "opacity-0 group-hover:opacity-100 text-white/80 hover:bg-white/20"
+                    : "opacity-0 group-hover:opacity-100 text-[var(--color-text-muted)] hover:text-[var(--color-primary)] hover:bg-[var(--color-bg-tertiary)]"
                 }
               `}
               title={isPinnedItem ? "Unpin from Home" : "Pin to Home"}
               aria-label={isPinnedItem ? `Unpin ${item.name} from Home` : `Pin ${item.name} to Home`}
             >
-              <Pin size={12} strokeWidth={2.2} className={isPinnedItem ? "fill-current" : ""} />
+              <Pin size={13} strokeWidth={2} className={isPinnedItem ? "fill-current" : ""} />
             </button>
           )}
           {/* NEW indicator dot when sidebar is collapsed */}
-          {!isOpen && item.isNew && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" style={{ boxShadow: "var(--shadow-glow-success)" }} />}
+          {!isOpen && item.isNew && <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500" style={{ boxShadow: "0 0 8px rgba(16, 185, 129, 0.6)" }} />}
         </div>
-
-        {isActiveItem && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/80"></div>}
       </li>
     )
   }
@@ -375,20 +371,19 @@ const Sidebar = ({ navItems }) => {
           <div
             onClick={() => profileItem && handleNavigation(profileItem)}
             className={`
-              relative rounded-xl transition-all duration-200 cursor-pointer py-3 px-2 flex justify-center border border-transparent
-              ${isProfileActive ? "bg-[var(--color-primary)] text-white shadow-lg shadow-[var(--color-primary)]/20 border-[var(--color-primary)]/70" : "text-[var(--color-text-muted)] hover:bg-[var(--color-bg-primary)]/60 hover:border-[var(--color-border-primary)] hover:text-[var(--color-primary)]"}
+              relative rounded-xl transition-all duration-200 cursor-pointer p-2 flex justify-center
+              ${isProfileActive ? "bg-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/25" : "hover:bg-[var(--color-bg-hover)]"}
             `}
           >
-            <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden ring-2 transition-all duration-200 ${isProfileActive ? "ring-white/30" : "ring-[var(--color-border-primary)] group-hover:ring-[var(--color-primary)]/30"}`}>
               {user.profileImage ? (
                 <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
               ) : user.name?.charAt(0).toUpperCase() ? (
-                <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>{user.name.charAt(0).toUpperCase()}</div>
+                <div className={`w-full h-full flex items-center justify-center font-semibold text-sm ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white"}`}>{user.name.charAt(0).toUpperCase()}</div>
               ) : (
                 <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[var(--color-primary)]"}`} />
               )}
             </div>
-            {isProfileActive && <div className="absolute left-[4px] top-1/2 -translate-y-1/2 h-1/2 w-[3px] rounded-sm bg-white/70"></div>}
           </div>
         </div>
       )
@@ -399,18 +394,18 @@ const Sidebar = ({ navItems }) => {
         <div
           onClick={() => profileItem && handleNavigation(profileItem)}
           className={`
-            group relative rounded-xl transition-all duration-200 cursor-pointer border
-            ${isProfileActive ? "bg-[var(--color-primary)] text-white border-transparent shadow-sm" : "text-[var(--color-text-muted)] border-transparent hover:bg-[var(--color-bg-tertiary)] hover:border-[var(--color-border-primary)]"}
+            group relative rounded-2xl transition-all duration-200 cursor-pointer
+            ${isProfileActive ? "bg-[var(--color-primary)] shadow-lg shadow-[var(--color-primary)]/20" : "bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)]"}
           `}
         >
           <div className="flex items-center justify-between px-3 py-3">
             <div className="flex items-center flex-1 min-w-0">
               <div className="relative mr-3 flex-shrink-0">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center overflow-hidden ring-2 transition-all duration-200 ${isProfileActive ? "ring-white/30" : "ring-white"}`}>
                   {user.profileImage ? (
                     <img src={getMediaUrl(user.profileImage)} alt={`${user.name}'s profile`} className="w-full h-full object-cover" />
                   ) : user.name?.charAt(0).toUpperCase() ? (
-                    <div className={` w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-[var(--color-primary)] text-white"} `}>{user.name.charAt(0).toUpperCase()}</div>
+                    <div className={`w-full h-full flex items-center justify-center font-semibold ${isProfileActive ? "bg-white text-[var(--color-primary)]" : "bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white"}`}>{user.name.charAt(0).toUpperCase()}</div>
                   ) : (
                     <FaUserCircle className={`text-2xl ${isProfileActive ? "text-white" : "text-[var(--color-primary)]"}`} />
                   )}
@@ -418,13 +413,13 @@ const Sidebar = ({ navItems }) => {
               </div>
 
               <div className="flex flex-col justify-center overflow-hidden flex-1 min-w-0">
-                <span className={`text-[0.9rem] font-semibold truncate ${isProfileActive ? "text-white" : "text-[var(--color-text-secondary)]"}`}>{user.name || "User"}</span>
-                {user.email && <span className={`text-xs truncate ${isProfileActive ? "text-white/80" : "text-[var(--color-text-muted)]"}`}>{user.email}</span>}
+                <span className={`text-[0.875rem] font-semibold truncate ${isProfileActive ? "text-white" : "text-[var(--color-text-primary)]"}`}>{user.name || "User"}</span>
+                {user.email && <span className={`text-[0.75rem] truncate ${isProfileActive ? "text-white/75" : "text-[var(--color-text-muted)]"}`}>{user.email}</span>}
               </div>
             </div>
 
             {logoutItem && (
-              <div className="relative flex-shrink-0 ml-3 group/logout">
+              <div className="relative flex-shrink-0 ml-2 group/logout">
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
@@ -432,19 +427,16 @@ const Sidebar = ({ navItems }) => {
                   }}
                   title="Logout"
                   className={`
-                    w-9 h-9 rounded-[10px] flex items-center justify-center
-                    transition-all duration-200 border
-                    ${isProfileActive ? "hover:bg-white/20 text-white border-transparent" : "border-transparent hover:border-[var(--color-danger-light)] hover:bg-[var(--color-danger-bg-light)] text-[var(--color-text-muted)] hover:text-[var(--color-danger)]"}
+                    w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200
+                    ${isProfileActive ? "text-white/80 hover:text-white hover:bg-white/15" : "text-[var(--color-text-muted)] hover:text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10"}
                   `}
                   aria-label="Logout"
                 >
-                  <logoutItem.icon size={18} strokeWidth={2} />
+                  <logoutItem.icon size={18} strokeWidth={1.8} />
                 </button>
               </div>
             )}
           </div>
-
-          {isProfileActive && <div className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2/3 w-[6px] rounded-full bg-white/70 shadow-sm shadow-white/40"></div>}
         </div>
       </div>
     )
@@ -457,26 +449,25 @@ const Sidebar = ({ navItems }) => {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black bg-opacity-40 z-20 backdrop-blur-sm pt-16" onClick={() => setIsOpen(false)}></div>}
 
       <div
-        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-[var(--color-bg-primary)] border-r border-[var(--color-border-primary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[260px]" : "w-0 md:w-20"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"
-          } overflow-hidden`}
-        style={{ boxShadow: "var(--shadow-sm)" }}
+        className={`fixed md:relative z-30 transition-all duration-300 ease-in-out bg-gradient-to-b from-[var(--color-bg-primary)] to-[var(--color-bg-secondary)] ${isOpen ? "left-0" : "-left-full md:left-0"} ${isOpen ? "w-[280px]" : "w-0 md:w-[72px]"} ${isMobile ? "mt-16 h-[calc(100vh-64px)]" : "h-screen"} overflow-hidden`}
+        style={{ boxShadow: "0 0 40px rgba(0, 0, 0, 0.06)" }}
       >
         <div className="flex flex-col h-full">
           {/* Logo and Toggle */}
           <div
-            className={`border-b border-[var(--color-border-primary)] transition-colors duration-300 ${isMobile ? "hidden" : ""} h-16`}
+            className={`border-b border-[var(--color-border-primary)] transition-all duration-300 ${isMobile ? "hidden" : ""} h-16`}
             style={{
               backgroundColor: useCategorizedAdminNav
                 ? (ADMIN_CATEGORY_BG_TINTS[activeAdminCategory] || ADMIN_CATEGORY_BG_TINTS.home)
                 : undefined,
             }}
           >
-            <div className={`h-full flex items-center ${isOpen ? "justify-between px-4" : "justify-center px-2"} transition-colors duration-200`}>
+            <div className={`h-full flex items-center ${isOpen ? "justify-between px-5" : "justify-center px-3"} transition-all duration-200`}>
               {/* Text Logo - only show when expanded */}
               {isOpen && (
-                <div className="cursor-pointer flex items-center" onClick={() => navigate("/")}>
+                <div className="cursor-pointer flex items-center group" onClick={() => navigate("/")}>
                   <span
-                    className={`font-bold text-xl tracking-tight transition-colors duration-300 ${useCategorizedAdminNav ? (ADMIN_CATEGORY_INACTIVE_ICON_COLORS[activeAdminCategory] || "text-[var(--color-primary)]") : "text-[var(--color-primary)]"}`}
+                    className={`font-semibold text-lg tracking-tight transition-all duration-300 group-hover:opacity-70 ${useCategorizedAdminNav ? (ADMIN_CATEGORY_INACTIVE_ICON_COLORS[activeAdminCategory] || "text-[var(--color-text-primary)]") : "text-[var(--color-text-primary)]"}`}
                   >
                     {useCategorizedAdminNav
                       ? (ADMIN_NAV_CATEGORIES.find((c) => c.id === activeAdminCategory)?.name || "HMS")
@@ -487,18 +478,18 @@ const Sidebar = ({ navItems }) => {
 
               {/* Toggle Button */}
               {isOpen ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   {isAdmin && (
                     <button
                       onClick={() => setIsLegacySidebarEnabled((prev) => !prev)}
                       title={isLegacySidebarEnabled ? "Switch to categorized nav" : "Switch to legacy flat nav"}
                       aria-label={isLegacySidebarEnabled ? "Switch to categorized nav" : "Switch to legacy flat nav"}
                       className={`
-                        h-9 min-w-10 px-2 rounded-[10px] border text-[10px] font-semibold tracking-wide
+                        h-8 min-w-9 px-2 rounded-lg text-[9px] font-bold tracking-wider
                         flex items-center justify-center transition-all duration-200
                         ${isLegacySidebarEnabled
-                          ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-[var(--shadow-button-active)]"
-                          : "bg-[var(--color-bg-primary)] text-[var(--color-text-tertiary)] border-[var(--color-border-secondary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)]"
+                          ? "bg-[var(--color-primary)] text-white shadow-md shadow-[var(--color-primary)]/20"
+                          : "bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)]"
                         }
                       `}
                     >
@@ -508,28 +499,28 @@ const Sidebar = ({ navItems }) => {
                   <button
                     onClick={() => setIsOpen(!isOpen)}
                     title="Minimize"
-                    className="w-9 h-9 rounded-[10px] border border-[var(--color-border-secondary)] flex items-center justify-center text-[var(--color-text-tertiary)] bg-[var(--color-bg-primary)] hover:bg-[var(--color-primary-bg)] hover:border-[var(--color-border-hover)] hover:text-[var(--color-primary)] transition-all duration-200"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] transition-all duration-200"
                   >
-                    <HiMenuAlt2 className="text-[19px]" />
+                    <HiMenuAlt2 className="text-[17px]" />
                   </button>
                 </div>
               ) : (
                 <button
                   onClick={() => setIsOpen(!isOpen)}
                   title="Expand"
-                  className="w-9 h-9 rounded-[10px] bg-[var(--color-bg-primary)] border border-[var(--color-border-secondary)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-primary-bg)] hover:text-[var(--color-primary)] hover:border-[var(--color-border-hover)] flex items-center justify-center transition-all duration-200"
+                  className="w-8 h-8 rounded-lg bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:bg-[var(--color-bg-hover)] hover:text-[var(--color-text-secondary)] flex items-center justify-center transition-all duration-200"
                 >
-                  <HiMenuAlt3 className="text-[19px]" />
+                  <HiMenuAlt3 className="text-[17px]" />
                 </button>
               )}
             </div>
           </div>
 
           {/* Main Navigation */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden px-[0.875rem] py-[0.875rem] sidebar-scrollbar">
-            <ul className="space-y-0">{filteredMainNavItems.map(renderNavItem)}</ul>
+          <div className={`flex-1 overflow-y-auto overflow-x-hidden sidebar-scrollbar ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}>
+            <ul className="space-y-1">{filteredMainNavItems.map(renderNavItem)}</ul>
             {useCategorizedAdminNav && filteredMainNavItems.length === 0 && isOpen && (
-              <div className="mt-2 px-2 py-2 rounded-lg text-[0.72rem] text-[var(--color-text-muted)] bg-[var(--color-bg-hover)]">
+              <div className="mt-3 px-4 py-3 rounded-xl text-[0.75rem] text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border border-[var(--color-border-light)]">
                 {activeAdminCategory === ADMIN_NAV_CATEGORY_DINING ? "Coming Soon" : "No tabs here yet. Pin tabs from other categories to show them in Home."}
               </div>
             )}
@@ -540,7 +531,7 @@ const Sidebar = ({ navItems }) => {
 
           {/* Profile and Logout */}
           <div
-            className={`border-t border-[var(--color-border-primary)] space-y-2 overflow-x-hidden transition-colors duration-300 ${isOpen ? "px-[0.875rem] py-[0.875rem]" : "p-2"}`}
+            className={`border-t border-[var(--color-border-primary)] overflow-x-hidden transition-all duration-300 ${isOpen ? "px-4 py-3" : "px-2 py-3"}`}
             style={{
               backgroundColor: useCategorizedAdminNav
                 ? (ADMIN_CATEGORY_BG_TINTS[activeAdminCategory] || ADMIN_CATEGORY_BG_TINTS.home)
