@@ -9,7 +9,7 @@ import { useState, useEffect, useMemo, useRef, createElement } from "react"
 import { Tabs, Button, DataTable, Modal, Table, Input } from "czero/react"
 import PageHeader from "@/components/common/PageHeader"
 import { Card, CardContent } from "@/components/ui/layout"
-import { Select, Textarea, Checkbox } from "@/components/ui/form"
+import { Select, Textarea, Checkbox, Label } from "@/components/ui/form"
 import {
   LoadingState, ErrorState, EmptyState, Alert, useToast, } from "@/components/ui/feedback"
 import { Badge, StatCards } from "@/components/ui/data-display"
@@ -42,6 +42,12 @@ import {
   CircleDollarSign,
   Clock3,
   NotebookText,
+  Building2,
+  Users,
+  Target,
+  DollarSign,
+  ClipboardCheck,
+  Clock,
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
 import useAuthz from "@/hooks/useAuthz"
@@ -118,6 +124,33 @@ const POST_STUDENT_AFFAIRS_STAGE_OPTIONS = [
   "Associate Dean SA",
   "Dean SA",
 ]
+const PROGRAMME_TYPE_OPTIONS = [
+  { value: "Workshop", label: "Workshop" },
+  { value: "Conference", label: "Conference" },
+  { value: "Outreach", label: "Outreach" },
+  { value: "Cultural", label: "Cultural" },
+  { value: "Technical", label: "Technical" },
+  { value: "Sports", label: "Sports" },
+  { value: "Other Event", label: "Other Event" },
+]
+const PROGRAMME_MODE_OPTIONS = [
+  { value: "Offline", label: "Offline" },
+  { value: "Online", label: "Online" },
+  { value: "Hybrid", label: "Hybrid" },
+]
+const ORGANISING_UNIT_OPTIONS = [
+  { value: "Department", label: "Department" },
+  { value: "Centre", label: "Centre" },
+  { value: "Office", label: "Office" },
+  { value: "Student Body", label: "Student Body" },
+]
+const REGISTRATION_CATEGORIES = [
+  { key: "instituteStudents", label: "Institute Students" },
+  { key: "instituteFacultyStaff", label: "Institute Faculty & Staff" },
+  { key: "guestsInvitees", label: "Guests / Invitees" },
+  { key: "externalParticipants", label: "External Participants" },
+  { key: "industryProfessionals", label: "Industry / Professionals" },
+]
 
 const footerTabStyles = {
   tabsBar: {
@@ -176,6 +209,89 @@ const formLabelStyles = {
   textTransform: "uppercase",
   letterSpacing: "0.3px",
 }
+
+const sectionHeaderStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--spacing-2)",
+  paddingTop: "var(--spacing-2)",
+  marginBottom: "var(--spacing-2)",
+}
+
+const sectionLabelStyle = {
+  fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-muted)",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+}
+
+const sectionDividerStyle = {
+  flex: 1,
+  height: 1,
+  backgroundColor: "var(--color-border-primary)",
+}
+
+const infoBoxStyle = {
+  padding: "var(--spacing-3)",
+  borderRadius: "var(--radius-card-sm)",
+  backgroundColor: "var(--color-bg-secondary)",
+}
+
+const panelStyle = {
+  padding: "var(--spacing-4)",
+  borderRadius: "var(--radius-card-sm)",
+  border: "var(--border-1) solid var(--color-border-primary)",
+  backgroundColor: "var(--color-bg-primary)",
+}
+
+const panelHeaderStyle = {
+  fontSize: "var(--font-size-sm)",
+  fontWeight: "var(--font-weight-semibold)",
+  color: "var(--color-text-primary)",
+  marginBottom: "var(--spacing-3)",
+  paddingBottom: "var(--spacing-2)",
+  borderBottom: "var(--border-1) solid var(--color-border-primary)",
+  display: "flex",
+  alignItems: "center",
+  gap: "var(--spacing-2)",
+}
+
+const panelAccentStyle = {
+  ...panelStyle,
+  backgroundColor: "var(--color-bg-secondary)",
+  border: "none",
+}
+
+const Panel = ({ title, icon: Icon, accent = false, children }) => (
+  <div style={accent ? panelAccentStyle : panelStyle}>
+    {title && (
+      <div style={panelHeaderStyle}>
+        {Icon && <Icon size={16} style={{ color: "var(--color-primary)" }} />}
+        <span>{title}</span>
+      </div>
+    )}
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)" }}>
+      {children}
+    </div>
+  </div>
+)
+
+const FormField = ({ label, htmlFor, required = false, children }) => (
+  <div>
+    <Label htmlFor={htmlFor} required={required} size="sm" style={formLabelStyles}>
+      {label}
+    </Label>
+    {children}
+  </div>
+)
+
+const SectionHeader = ({ children }) => (
+  <div style={sectionHeaderStyle}>
+    <span style={sectionLabelStyle}>{children}</span>
+    <div style={sectionDividerStyle} />
+  </div>
+)
 
 const eventDetailMetaChipStyles = {
   display: "inline-flex",
@@ -414,17 +530,321 @@ const createDefaultOverlapState = () => ({
   errorMessage: "",
 })
 
+const createDefaultRegistrationRow = () => ({
+  registrationFee: "",
+  accommodationCharges: "",
+  remarks: "",
+})
+
+const createDefaultProposalDetails = () => ({
+  programmeTitle: "",
+  organisingUnit: {
+    unitType: "Student Body",
+    coordinatorNames: "",
+    contactEmail: "",
+    contactMobile: "",
+  },
+  backgroundAndRationale: {
+    contextRelevance: "",
+    expectedImpact: "",
+    alignmentWithObjectives: "",
+  },
+  objectives: {
+    objective1: "",
+    objective2: "",
+    objective3: "",
+  },
+  programmeDetails: {
+    programmeType: "Cultural",
+    mode: "Offline",
+    datesAndDuration: "",
+    venue: "",
+    expectedParticipants: "",
+  },
+  targetParticipants: {
+    instituteFacultyStaffStudents: "",
+    guestsInvitees: "",
+    externalVisitorsParticipants: "",
+  },
+  guestsDetails: {
+    tentativeNumberOfSpeakersGuests: "",
+    guestsNamesDesignationAffiliations: "",
+  },
+  programmeSchedule: {
+    brief: "",
+    detailedScheduleAnnexureUrl: "",
+  },
+  sourceOfFunds: {
+    registrationFee: "",
+    gymkhanaFund: "",
+    instituteSupport: "",
+    sponsorshipGrant: "",
+  },
+  registrationDetails: {
+    instituteStudents: createDefaultRegistrationRow(),
+    instituteFacultyStaff: createDefaultRegistrationRow(),
+    guestsInvitees: createDefaultRegistrationRow(),
+    externalParticipants: createDefaultRegistrationRow(),
+    industryProfessionals: createDefaultRegistrationRow(),
+  },
+  approvalRequested: {
+    conductProgrammeAsProposed: true,
+    chargingRegistrationFees: false,
+    utilisationOfCollectedFees: false,
+    additionalInstitutionalSupport: false,
+    additionalInstitutionalSupportDetails: "",
+  },
+})
+
 const createDefaultProposalForm = () => ({
   proposalText: "",
   proposalDocumentUrl: "",
   externalGuestsDetails: "",
   chiefGuestDocumentUrl: "",
+  proposalDetails: createDefaultProposalDetails(),
   accommodationRequired: false,
   hasRegistrationFee: false,
   registrationFeeAmount: "",
   totalExpectedIncome: "",
   totalExpenditure: "",
 })
+
+const toFormNumberValue = (value) =>
+  value === null || value === undefined || value === "" ? "" : String(value)
+
+const toNumericValue = (value) => Number(value || 0)
+
+const toProposalDetailsForm = (proposalDetails) => {
+  const defaults = createDefaultProposalDetails()
+  const details = proposalDetails || {}
+  const getRegistrationRow = (key) => {
+    const row = details?.registrationDetails?.[key] || {}
+    return {
+      ...defaults.registrationDetails[key],
+      ...row,
+      registrationFee: toFormNumberValue(row.registrationFee),
+      accommodationCharges: toFormNumberValue(row.accommodationCharges),
+    }
+  }
+
+  return {
+    ...defaults,
+    ...details,
+    organisingUnit: {
+      ...defaults.organisingUnit,
+      ...(details.organisingUnit || {}),
+    },
+    backgroundAndRationale: {
+      ...defaults.backgroundAndRationale,
+      ...(details.backgroundAndRationale || {}),
+    },
+    objectives: {
+      ...defaults.objectives,
+      ...(details.objectives || {}),
+    },
+    programmeDetails: {
+      ...defaults.programmeDetails,
+      ...(details.programmeDetails || {}),
+      expectedParticipants: toFormNumberValue(details?.programmeDetails?.expectedParticipants),
+    },
+    targetParticipants: {
+      ...defaults.targetParticipants,
+      ...(details.targetParticipants || {}),
+    },
+    guestsDetails: {
+      ...defaults.guestsDetails,
+      ...(details.guestsDetails || {}),
+      tentativeNumberOfSpeakersGuests: toFormNumberValue(
+        details?.guestsDetails?.tentativeNumberOfSpeakersGuests
+      ),
+    },
+    programmeSchedule: {
+      ...defaults.programmeSchedule,
+      ...(details.programmeSchedule || {}),
+    },
+    sourceOfFunds: {
+      ...defaults.sourceOfFunds,
+      ...(details.sourceOfFunds || {}),
+      registrationFee: toFormNumberValue(details?.sourceOfFunds?.registrationFee),
+      gymkhanaFund: toFormNumberValue(details?.sourceOfFunds?.gymkhanaFund),
+      instituteSupport: toFormNumberValue(details?.sourceOfFunds?.instituteSupport),
+      sponsorshipGrant: toFormNumberValue(details?.sourceOfFunds?.sponsorshipGrant),
+    },
+    registrationDetails: {
+      instituteStudents: getRegistrationRow("instituteStudents"),
+      instituteFacultyStaff: getRegistrationRow("instituteFacultyStaff"),
+      guestsInvitees: getRegistrationRow("guestsInvitees"),
+      externalParticipants: getRegistrationRow("externalParticipants"),
+      industryProfessionals: getRegistrationRow("industryProfessionals"),
+    },
+    approvalRequested: {
+      ...defaults.approvalRequested,
+      ...(details.approvalRequested || {}),
+    },
+  }
+}
+
+const calculateTotalExpectedIncomeFromDetails = (proposalDetails = {}) => {
+  const sourceOfFunds = proposalDetails?.sourceOfFunds || {}
+  return (
+    toNumericValue(sourceOfFunds.registrationFee) +
+    toNumericValue(sourceOfFunds.gymkhanaFund) +
+    toNumericValue(sourceOfFunds.instituteSupport) +
+    toNumericValue(sourceOfFunds.sponsorshipGrant)
+  )
+}
+
+const generateExternalGuestsDetailsFromDetails = (proposalDetails = {}) =>
+  [
+    proposalDetails?.guestsDetails?.guestsNamesDesignationAffiliations,
+    proposalDetails?.targetParticipants?.guestsInvitees,
+    proposalDetails?.targetParticipants?.externalVisitorsParticipants,
+  ]
+    .filter((value) => String(value || "").trim())
+    .join("\n\n")
+    .trim()
+
+const generateProposalTextFromDetails = (proposalDetails = {}) => {
+  const lines = [
+    `Title: ${proposalDetails?.programmeTitle || ""}`.trim(),
+    `Organising Unit: ${proposalDetails?.organisingUnit?.unitType || ""}`.trim(),
+    `Coordinators: ${proposalDetails?.organisingUnit?.coordinatorNames || ""}`.trim(),
+    `Programme Type: ${proposalDetails?.programmeDetails?.programmeType || ""}`.trim(),
+    `Mode: ${proposalDetails?.programmeDetails?.mode || ""}`.trim(),
+    `Dates & Duration: ${proposalDetails?.programmeDetails?.datesAndDuration || ""}`.trim(),
+    `Venue: ${proposalDetails?.programmeDetails?.venue || ""}`.trim(),
+    `Background: ${proposalDetails?.backgroundAndRationale?.contextRelevance || ""}`.trim(),
+    `Expected Impact: ${proposalDetails?.backgroundAndRationale?.expectedImpact || ""}`.trim(),
+    `Objective 1: ${proposalDetails?.objectives?.objective1 || ""}`.trim(),
+    `Schedule Brief: ${proposalDetails?.programmeSchedule?.brief || ""}`.trim(),
+  ].filter((value) => !value.endsWith(":"))
+
+  return lines.join("\n")
+}
+
+const hasRequiredDetailedProposalFields = (proposalDetails = {}) => {
+  const details = proposalDetails || {}
+  const contactEmail = String(details?.organisingUnit?.contactEmail || "").trim()
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)
+
+  return Boolean(
+    String(details?.programmeTitle || "").trim() &&
+      String(details?.organisingUnit?.unitType || "").trim() &&
+      String(details?.organisingUnit?.coordinatorNames || "").trim() &&
+      emailLooksValid &&
+      String(details?.organisingUnit?.contactMobile || "").trim() &&
+      String(details?.backgroundAndRationale?.contextRelevance || "").trim() &&
+      String(details?.backgroundAndRationale?.expectedImpact || "").trim() &&
+      String(details?.backgroundAndRationale?.alignmentWithObjectives || "").trim() &&
+      String(details?.objectives?.objective1 || "").trim() &&
+      String(details?.programmeDetails?.programmeType || "").trim() &&
+      String(details?.programmeDetails?.mode || "").trim() &&
+      String(details?.programmeDetails?.datesAndDuration || "").trim() &&
+      String(details?.programmeDetails?.venue || "").trim() &&
+      String(details?.programmeDetails?.expectedParticipants || "").trim() &&
+      String(details?.programmeSchedule?.brief || "").trim()
+  )
+}
+
+const buildProposalDetailsPayload = (proposalDetails = {}) => {
+  const details = proposalDetails || {}
+  const getRowPayload = (key) => ({
+    registrationFee: toNumericValue(details?.registrationDetails?.[key]?.registrationFee),
+    accommodationCharges: toNumericValue(details?.registrationDetails?.[key]?.accommodationCharges),
+    remarks: String(details?.registrationDetails?.[key]?.remarks || "").trim(),
+  })
+
+  return {
+    programmeTitle: String(details?.programmeTitle || "").trim(),
+    organisingUnit: {
+      unitType: String(details?.organisingUnit?.unitType || "").trim(),
+      coordinatorNames: String(details?.organisingUnit?.coordinatorNames || "").trim(),
+      contactEmail: String(details?.organisingUnit?.contactEmail || "").trim(),
+      contactMobile: String(details?.organisingUnit?.contactMobile || "").trim(),
+    },
+    backgroundAndRationale: {
+      contextRelevance: String(details?.backgroundAndRationale?.contextRelevance || "").trim(),
+      expectedImpact: String(details?.backgroundAndRationale?.expectedImpact || "").trim(),
+      alignmentWithObjectives: String(details?.backgroundAndRationale?.alignmentWithObjectives || "").trim(),
+    },
+    objectives: {
+      objective1: String(details?.objectives?.objective1 || "").trim(),
+      objective2: String(details?.objectives?.objective2 || "").trim(),
+      objective3: String(details?.objectives?.objective3 || "").trim(),
+    },
+    programmeDetails: {
+      programmeType: String(details?.programmeDetails?.programmeType || "").trim(),
+      mode: String(details?.programmeDetails?.mode || "").trim(),
+      datesAndDuration: String(details?.programmeDetails?.datesAndDuration || "").trim(),
+      venue: String(details?.programmeDetails?.venue || "").trim(),
+      expectedParticipants: toNumericValue(details?.programmeDetails?.expectedParticipants),
+    },
+    targetParticipants: {
+      instituteFacultyStaffStudents: String(
+        details?.targetParticipants?.instituteFacultyStaffStudents || ""
+      ).trim(),
+      guestsInvitees: String(details?.targetParticipants?.guestsInvitees || "").trim(),
+      externalVisitorsParticipants: String(
+        details?.targetParticipants?.externalVisitorsParticipants || ""
+      ).trim(),
+    },
+    guestsDetails: {
+      tentativeNumberOfSpeakersGuests: toNumericValue(
+        details?.guestsDetails?.tentativeNumberOfSpeakersGuests
+      ),
+      guestsNamesDesignationAffiliations: String(
+        details?.guestsDetails?.guestsNamesDesignationAffiliations || ""
+      ).trim(),
+    },
+    programmeSchedule: {
+      brief: String(details?.programmeSchedule?.brief || "").trim(),
+      detailedScheduleAnnexureUrl: String(
+        details?.programmeSchedule?.detailedScheduleAnnexureUrl || ""
+      ).trim(),
+    },
+    sourceOfFunds: {
+      registrationFee: toNumericValue(details?.sourceOfFunds?.registrationFee),
+      gymkhanaFund: toNumericValue(details?.sourceOfFunds?.gymkhanaFund),
+      instituteSupport: toNumericValue(details?.sourceOfFunds?.instituteSupport),
+      sponsorshipGrant: toNumericValue(details?.sourceOfFunds?.sponsorshipGrant),
+    },
+    registrationDetails: {
+      instituteStudents: getRowPayload("instituteStudents"),
+      instituteFacultyStaff: getRowPayload("instituteFacultyStaff"),
+      guestsInvitees: getRowPayload("guestsInvitees"),
+      externalParticipants: getRowPayload("externalParticipants"),
+      industryProfessionals: getRowPayload("industryProfessionals"),
+    },
+    approvalRequested: {
+      conductProgrammeAsProposed: Boolean(
+        details?.approvalRequested?.conductProgrammeAsProposed
+      ),
+      chargingRegistrationFees: Boolean(details?.approvalRequested?.chargingRegistrationFees),
+      utilisationOfCollectedFees: Boolean(details?.approvalRequested?.utilisationOfCollectedFees),
+      additionalInstitutionalSupport: Boolean(
+        details?.approvalRequested?.additionalInstitutionalSupport
+      ),
+      additionalInstitutionalSupportDetails: String(
+        details?.approvalRequested?.additionalInstitutionalSupportDetails || ""
+      ).trim(),
+    },
+  }
+}
+
+const setNestedValue = (source, path, value) => {
+  if (!Array.isArray(path) || path.length === 0) return source
+  const [head, ...rest] = path
+  if (rest.length === 0) {
+    return {
+      ...(source || {}),
+      [head]: value,
+    }
+  }
+  return {
+    ...(source || {}),
+    [head]: setNestedValue(source?.[head] || {}, rest, value),
+  }
+}
 
 const createEmptyBill = () => ({
   localId: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -448,6 +868,7 @@ const toProposalForm = (proposal) => ({
   proposalDocumentUrl: proposal?.proposalDocumentUrl || "",
   externalGuestsDetails: proposal?.externalGuestsDetails || "",
   chiefGuestDocumentUrl: proposal?.chiefGuestDocumentUrl || "",
+  proposalDetails: toProposalDetailsForm(proposal?.proposalDetails),
   accommodationRequired: Boolean(proposal?.accommodationRequired),
   hasRegistrationFee: Boolean(proposal?.hasRegistrationFee),
   registrationFeeAmount:
@@ -464,19 +885,31 @@ const toProposalForm = (proposal) => ({
       : String(proposal.totalExpenditure),
 })
 
-const buildProposalPayload = (proposalForm) => ({
-  proposalText: proposalForm.proposalText?.trim(),
-  proposalDocumentUrl: proposalForm.proposalDocumentUrl?.trim() || "",
-  externalGuestsDetails: proposalForm.externalGuestsDetails?.trim() || "",
-  chiefGuestDocumentUrl: proposalForm.chiefGuestDocumentUrl?.trim() || "",
-  accommodationRequired: Boolean(proposalForm.accommodationRequired),
-  hasRegistrationFee: Boolean(proposalForm.hasRegistrationFee),
-  registrationFeeAmount: proposalForm.hasRegistrationFee
-    ? Number(proposalForm.registrationFeeAmount || 0)
-    : 0,
-  totalExpectedIncome: Number(proposalForm.totalExpectedIncome || 0),
-  totalExpenditure: Number(proposalForm.totalExpenditure || 0),
-})
+const buildProposalPayload = (proposalForm) => {
+  const detailsPayload = buildProposalDetailsPayload(proposalForm.proposalDetails)
+  const registrationFeeAmount = toNumericValue(detailsPayload?.sourceOfFunds?.registrationFee)
+  const totalExpectedIncome = calculateTotalExpectedIncomeFromDetails(proposalForm.proposalDetails)
+  const generatedText = generateProposalTextFromDetails(proposalForm.proposalDetails)
+  const generatedExternalGuests = generateExternalGuestsDetailsFromDetails(proposalForm.proposalDetails)
+
+  return {
+    proposalText: generatedText || proposalForm.proposalText?.trim() || "Detailed proposal submitted",
+    proposalDocumentUrl: proposalForm.proposalDocumentUrl?.trim() || "",
+    externalGuestsDetails: generatedExternalGuests || proposalForm.externalGuestsDetails?.trim() || "",
+    chiefGuestDocumentUrl: proposalForm.chiefGuestDocumentUrl?.trim() || "",
+    proposalDetails: detailsPayload,
+    accommodationRequired: Boolean(proposalForm.accommodationRequired),
+    hasRegistrationFee: registrationFeeAmount > 0 ? true : Boolean(proposalForm.hasRegistrationFee),
+    registrationFeeAmount:
+      registrationFeeAmount > 0
+        ? registrationFeeAmount
+        : proposalForm.hasRegistrationFee
+          ? Number(proposalForm.registrationFeeAmount || 0)
+          : 0,
+    totalExpectedIncome: totalExpectedIncome || Number(proposalForm.totalExpectedIncome || 0),
+    totalExpenditure: Number(proposalForm.totalExpenditure || 0),
+  }
+}
 
 const toDateInputValue = (value) => {
   if (!value) return ""
@@ -651,6 +1084,7 @@ const EventsPage = () => {
   const [showPendingProposalModal, setShowPendingProposalModal] = useState(false)
   const [showPendingBillsModal, setShowPendingBillsModal] = useState(false)
   const [showProposalModal, setShowProposalModal] = useState(false)
+  const [showProposalDetailsModal, setShowProposalDetailsModal] = useState(false)
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
@@ -1072,11 +1506,26 @@ const EventsPage = () => {
 
   const canSaveEventInModal = isBaseEventFormValid && overlapCheckCompletedForCurrentDates && !submitting
   const canSubmitAmendmentInModal = canSaveEventInModal && amendmentReason.length >= 10
+  const computedTotalExpectedIncome = useMemo(
+    () => calculateTotalExpectedIncomeFromDetails(proposalForm.proposalDetails),
+    [proposalForm.proposalDetails]
+  )
+  const detailedProposalPreviewText = useMemo(
+    () => generateProposalTextFromDetails(proposalForm.proposalDetails),
+    [proposalForm.proposalDetails]
+  )
+  const detailedExternalGuestsText = useMemo(
+    () => generateExternalGuestsDetailsFromDetails(proposalForm.proposalDetails),
+    [proposalForm.proposalDetails]
+  )
+  const isDetailedProposalComplete = useMemo(
+    () => hasRequiredDetailedProposalFields(proposalForm.proposalDetails),
+    [proposalForm.proposalDetails]
+  )
   const isProposalFormValid = Boolean(
-    proposalForm.proposalText?.trim() &&
-      Number(proposalForm.totalExpectedIncome || 0) >= 0 &&
-      Number(proposalForm.totalExpenditure || 0) >= 0 &&
-      (!proposalForm.hasRegistrationFee || Number(proposalForm.registrationFeeAmount || 0) >= 0)
+    isDetailedProposalComplete &&
+      Number(computedTotalExpectedIncome) >= 0 &&
+      Number(proposalForm.totalExpenditure || 0) >= 0
   )
   const canEditProposalForm = canCreateProposalForSelectedEvent || isProposalEditableByCurrentUser
   const calendarStatusLabel = calendar?.status ? calendar.status.replace(/_/g, " ") : ""
@@ -1523,6 +1972,7 @@ const toCalendarEventPayload = (event) => {
     }
 
     setProposalEvent(event)
+    setShowProposalDetailsModal(false)
     setProposalActionComments("")
     setProposalNextApprovalStages([])
     setProposalHistoryRefreshKey((prev) => prev + 1)
@@ -1537,7 +1987,24 @@ const toCalendarEventPayload = (event) => {
     }))
   }
 
+  const handleProposalDetailsChange = (path, value) => {
+    setProposalForm((prev) => ({
+      ...prev,
+      proposalDetails: setNestedValue(prev.proposalDetails || createDefaultProposalDetails(), path, value),
+    }))
+  }
+
+  const handleProposalRegistrationDetailChange = (categoryKey, field, value) => {
+    handleProposalDetailsChange(["registrationDetails", categoryKey, field], value)
+  }
+
   const uploadProposalDocument = async (file) => {
+    const formData = new FormData()
+    formData.append("proposalPdf", file)
+    return uploadApi.uploadEventProposalPDF(formData)
+  }
+
+  const uploadScheduleAnnexureDocument = async (file) => {
     const formData = new FormData()
     formData.append("proposalPdf", file)
     return uploadApi.uploadEventProposalPDF(formData)
@@ -3024,6 +3491,7 @@ const toCalendarEventPayload = (event) => {
         closeButtonVariant="button"
         onClose={() => {
           setShowProposalModal(false)
+          setShowProposalDetailsModal(false)
           setProposalEvent(null)
           setProposalData(null)
           setProposalForm(createDefaultProposalForm())
@@ -3081,22 +3549,90 @@ const toCalendarEventPayload = (event) => {
                     </Alert>
                   )}
 
-                  <div>
-                    <label style={formLabelStyles} htmlFor="proposalText">
-                      Proposal Details
-                    </label>
-                    <Textarea
-                      id="proposalText"
-                      name="proposalText"
-                      placeholder="Proposal details"
-                      value={proposalForm.proposalText}
-                      onChange={(event) => handleProposalFormChange("proposalText", event.target.value)}
-                      rows={4}
-                      disabled={!canEditProposalForm}
-                      required
-                    />
+                  <div style={{ ...infoBoxStyle, display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                    <div>
+                      <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                        {proposalForm.proposalDetails.programmeTitle || "Programme title not set"}
+                      </div>
+                      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginTop: 2 }}>
+                        {proposalForm.proposalDetails.organisingUnit.unitType} · {proposalForm.proposalDetails.programmeDetails.programmeType} · {proposalForm.proposalDetails.programmeDetails.mode}
+                      </div>
+                      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                        {proposalForm.proposalDetails.programmeDetails.datesAndDuration || "Dates not added"}
+                      </div>
+                    </div>
+                    <Button variant="secondary" size="sm" onClick={() => setShowProposalDetailsModal(true)}>
+                      {canEditProposalForm ? "Edit Details" : "View Details"}
+                    </Button>
                   </div>
 
+                  {!isDetailedProposalComplete && (
+                    <Alert type="warning" title="Details incomplete">
+                      Complete mandatory proposal details before submitting.
+                    </Alert>
+                  )}
+
+                  {detailedProposalPreviewText && (
+                    <div style={infoBoxStyle}>
+                      <span style={sectionLabelStyle}>Proposal Preview</span>
+                      <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap", lineHeight: 1.5 }}>
+                        {detailedProposalPreviewText.slice(0, 400)}{detailedProposalPreviewText.length > 400 ? "..." : ""}
+                      </div>
+                    </div>
+                  )}
+
+                  {detailedExternalGuestsText && (
+                    <div style={infoBoxStyle}>
+                      <span style={sectionLabelStyle}>External Guests</span>
+                      <div style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", whiteSpace: "pre-wrap" }}>
+                        {detailedExternalGuestsText}
+                      </div>
+                    </div>
+                  )}
+
+                  <SectionHeader>Financials</SectionHeader>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-2)" }}>
+                    <FormField label="Expected Income" htmlFor="gymkhana-total-expected-income">
+                      <Input
+                        id="gymkhana-total-expected-income"
+                        type="number"
+                        min={0}
+                        value={String(computedTotalExpectedIncome)}
+                        placeholder="Auto"
+                        disabled
+                      />
+                    </FormField>
+                    <FormField label="Total Expenditure" htmlFor="gymkhana-total-expenditure">
+                      <Input
+                        id="gymkhana-total-expenditure"
+                        type="number"
+                        min={0}
+                        value={proposalForm.totalExpenditure}
+                        onChange={(event) => handleProposalFormChange("totalExpenditure", event.target.value)}
+                        placeholder="Amount"
+                        disabled={!canEditProposalForm}
+                      />
+                    </FormField>
+                    <FormField label="Registration Fee" htmlFor="gymkhana-registration-fee-source">
+                      <Input
+                        id="gymkhana-registration-fee-source"
+                        type="number"
+                        min={0}
+                        value={String(toNumericValue(proposalForm.proposalDetails?.sourceOfFunds?.registrationFee))}
+                        placeholder="From source"
+                        disabled
+                      />
+                    </FormField>
+                  </div>
+
+                  <Checkbox
+                    checked={proposalForm.accommodationRequired}
+                    onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
+                    label="Accommodation required"
+                    disabled={!canEditProposalForm}
+                  />
+
+                  <SectionHeader>Documents</SectionHeader>
                   <PdfUploadField
                     label="Proposal PDF"
                     value={proposalForm.proposalDocumentUrl}
@@ -3109,21 +3645,6 @@ const toCalendarEventPayload = (event) => {
                     downloadFileName="proposal-document.pdf"
                   />
 
-                  <div>
-                    <label style={formLabelStyles} htmlFor="externalGuestsDetails">
-                      External Guests
-                    </label>
-                    <Textarea
-                      id="externalGuestsDetails"
-                      name="externalGuestsDetails"
-                      placeholder="External guests details"
-                      value={proposalForm.externalGuestsDetails}
-                      onChange={(event) => handleProposalFormChange("externalGuestsDetails", event.target.value)}
-                      rows={2}
-                      disabled={!canEditProposalForm}
-                    />
-                  </div>
-
                   <PdfUploadField
                     label="Chief Guest PDF"
                     value={proposalForm.chiefGuestDocumentUrl}
@@ -3135,78 +3656,6 @@ const toCalendarEventPayload = (event) => {
                     viewerSubtitle="External guest attachment"
                     downloadFileName="chief-guest-document.pdf"
                   />
-
-                  <div style={{ display: "flex", gap: "var(--spacing-4)", flexWrap: "wrap" }}>
-                    <Checkbox
-                      name="accommodationRequired"
-                      label="Accommodation required"
-                      checked={proposalForm.accommodationRequired}
-                      onChange={(event) => handleProposalFormChange("accommodationRequired", event.target.checked)}
-                      disabled={!canEditProposalForm}
-                    />
-
-                  <Checkbox
-                    name="hasRegistrationFee"
-                    label="Registration fee applicable"
-                    checked={proposalForm.hasRegistrationFee}
-                    onChange={(event) => handleProposalFormChange("hasRegistrationFee", event.target.checked)}
-                    disabled={!canEditProposalForm}
-                  />
-                  </div>
-
-                  {proposalForm.hasRegistrationFee && (
-                    <div>
-                      <label style={formLabelStyles} htmlFor="registrationFeeAmount">
-                        Registration Fee (₹)
-                      </label>
-                      <Input
-                        id="registrationFeeAmount"
-                        name="registrationFeeAmount"
-                        type="number"
-                        placeholder="Amount"
-                        value={proposalForm.registrationFeeAmount}
-                        onChange={(event) =>
-                          handleProposalFormChange("registrationFeeAmount", event.target.value)
-                        }
-                        disabled={!canEditProposalForm}
-                      />
-                    </div>
-                  )}
-
-                  <div style={{ display: "grid", gap: "var(--spacing-2)", gridTemplateColumns: "repeat(2, 1fr)" }}>
-                    <div>
-                      <label style={formLabelStyles} htmlFor="totalExpectedIncome">
-                        Expected Income (₹)
-                      </label>
-                      <Input
-                        id="totalExpectedIncome"
-                        name="totalExpectedIncome"
-                        type="number"
-                        placeholder="Income"
-                        value={proposalForm.totalExpectedIncome}
-                        onChange={(event) =>
-                          handleProposalFormChange("totalExpectedIncome", event.target.value)
-                        }
-                        disabled={!canEditProposalForm}
-                      />
-                    </div>
-                    <div>
-                      <label style={formLabelStyles} htmlFor="totalExpenditure">
-                        Total Expenditure (₹)
-                      </label>
-                      <Input
-                        id="totalExpenditure"
-                        name="totalExpenditure"
-                        type="number"
-                        placeholder="Expenditure"
-                        value={proposalForm.totalExpenditure}
-                        onChange={(event) =>
-                          handleProposalFormChange("totalExpenditure", event.target.value)
-                        }
-                        disabled={!canEditProposalForm}
-                      />
-                    </div>
-                  </div>
                 </div>
               </EventDetailSectionCard>
 
@@ -3214,7 +3663,7 @@ const toCalendarEventPayload = (event) => {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
                   <EventDetailInfoRow
                     label="Income"
-                    value={`₹${Number(proposalForm.totalExpectedIncome || 0).toLocaleString()}`}
+                    value={`₹${Number(computedTotalExpectedIncome || 0).toLocaleString()}`}
                   />
                   <EventDetailInfoRow
                     label="Expenditure"
@@ -3328,6 +3777,422 @@ const toCalendarEventPayload = (event) => {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        isOpen={showProposalDetailsModal}
+        title="Proposal Details Format"
+        width={1200}
+        closeButtonVariant="button"
+        onClose={() => setShowProposalDetailsModal(false)}
+        footer={(
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+            <Button size="sm" variant="secondary" onClick={() => setShowProposalDetailsModal(false)}>
+              Close
+            </Button>
+          </div>
+        )}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <div style={{ padding: "var(--spacing-4)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-primary-bg)", border: "var(--border-1) solid var(--color-primary)" }}>
+            <FormField label="Programme Title" htmlFor="gymkhana-proposal-programme-title" required>
+              <Input
+                id="gymkhana-proposal-programme-title"
+                value={proposalForm.proposalDetails.programmeTitle}
+                onChange={(event) => handleProposalDetailsChange(["programmeTitle"], event.target.value)}
+                placeholder="Enter the full title of the programme"
+                disabled={!canEditProposalForm}
+              />
+            </FormField>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-4)" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <Panel title="Programme Details" icon={CalendarDays}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Programme Type" htmlFor="gymkhana-proposal-programme-type" required>
+                    <Select
+                      id="gymkhana-proposal-programme-type"
+                      options={PROGRAMME_TYPE_OPTIONS}
+                      value={proposalForm.proposalDetails.programmeDetails.programmeType}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "programmeType"], event.target.value)}
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                  <FormField label="Programme Mode" htmlFor="gymkhana-proposal-programme-mode" required>
+                    <Select
+                      id="gymkhana-proposal-programme-mode"
+                      options={PROGRAMME_MODE_OPTIONS}
+                      value={proposalForm.proposalDetails.programmeDetails.mode}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "mode"], event.target.value)}
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Dates & Duration" htmlFor="gymkhana-proposal-dates-duration" required>
+                    <Input
+                      id="gymkhana-proposal-dates-duration"
+                      value={proposalForm.proposalDetails.programmeDetails.datesAndDuration}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "datesAndDuration"], event.target.value)}
+                      placeholder="e.g., 3-5 March, 3 days"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                  <FormField label="Venue" htmlFor="gymkhana-proposal-venue" required>
+                    <Input
+                      id="gymkhana-proposal-venue"
+                      value={proposalForm.proposalDetails.programmeDetails.venue}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "venue"], event.target.value)}
+                      placeholder="Venue"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                  <FormField label="Expected Participants" htmlFor="gymkhana-proposal-expected-participants" required>
+                    <Input
+                      id="gymkhana-proposal-expected-participants"
+                      type="number"
+                      min={0}
+                      value={proposalForm.proposalDetails.programmeDetails.expectedParticipants}
+                      onChange={(event) => handleProposalDetailsChange(["programmeDetails", "expectedParticipants"], event.target.value)}
+                      placeholder="Count"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                </div>
+              </Panel>
+
+              <Panel title="Background & Rationale" icon={FileText} accent>
+                <FormField label="Context and Relevance" htmlFor="gymkhana-proposal-context-relevance" required>
+                  <Textarea
+                    id="gymkhana-proposal-context-relevance"
+                    value={proposalForm.proposalDetails.backgroundAndRationale.contextRelevance}
+                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "contextRelevance"], event.target.value)}
+                    rows={2}
+                    placeholder="Describe the background context and relevance of this programme"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <FormField label="Expected Impact" htmlFor="gymkhana-proposal-expected-impact" required>
+                  <Textarea
+                    id="gymkhana-proposal-expected-impact"
+                    value={proposalForm.proposalDetails.backgroundAndRationale.expectedImpact}
+                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "expectedImpact"], event.target.value)}
+                    rows={2}
+                    placeholder="Expected institutional/societal impact"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <FormField label="Alignment with Objectives" htmlFor="gymkhana-proposal-alignment-objectives" required>
+                  <Textarea
+                    id="gymkhana-proposal-alignment-objectives"
+                    value={proposalForm.proposalDetails.backgroundAndRationale.alignmentWithObjectives}
+                    onChange={(event) => handleProposalDetailsChange(["backgroundAndRationale", "alignmentWithObjectives"], event.target.value)}
+                    rows={2}
+                    placeholder="How does this align with institute objectives?"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+              </Panel>
+
+              <Panel title="Programme Objectives" icon={Target}>
+                <FormField label="Primary Objective" htmlFor="gymkhana-proposal-objective-1" required>
+                  <Input
+                    id="gymkhana-proposal-objective-1"
+                    value={proposalForm.proposalDetails.objectives.objective1}
+                    onChange={(event) => handleProposalDetailsChange(["objectives", "objective1"], event.target.value)}
+                    placeholder="Main objective of the programme"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Secondary Objective" htmlFor="gymkhana-proposal-objective-2">
+                    <Input
+                      id="gymkhana-proposal-objective-2"
+                      value={proposalForm.proposalDetails.objectives.objective2}
+                      onChange={(event) => handleProposalDetailsChange(["objectives", "objective2"], event.target.value)}
+                      placeholder="Optional"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                  <FormField label="Tertiary Objective" htmlFor="gymkhana-proposal-objective-3">
+                    <Input
+                      id="gymkhana-proposal-objective-3"
+                      value={proposalForm.proposalDetails.objectives.objective3}
+                      onChange={(event) => handleProposalDetailsChange(["objectives", "objective3"], event.target.value)}
+                      placeholder="Optional"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                </div>
+              </Panel>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <Panel title="Organising Unit" icon={Building2} accent>
+                <FormField label="Unit Type" htmlFor="gymkhana-proposal-organising-unit-type" required>
+                  <Select
+                    id="gymkhana-proposal-organising-unit-type"
+                    options={ORGANISING_UNIT_OPTIONS}
+                    value={proposalForm.proposalDetails.organisingUnit.unitType}
+                    onChange={(event) => handleProposalDetailsChange(["organisingUnit", "unitType"], event.target.value)}
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <FormField label="Coordinator Name(s)" htmlFor="gymkhana-proposal-coordinator-names" required>
+                  <Input
+                    id="gymkhana-proposal-coordinator-names"
+                    value={proposalForm.proposalDetails.organisingUnit.coordinatorNames}
+                    onChange={(event) => handleProposalDetailsChange(["organisingUnit", "coordinatorNames"], event.target.value)}
+                    placeholder="Names of coordinators"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="Contact Mobile" htmlFor="gymkhana-proposal-contact-mobile" required>
+                    <Input
+                      id="gymkhana-proposal-contact-mobile"
+                      value={proposalForm.proposalDetails.organisingUnit.contactMobile}
+                      onChange={(event) => handleProposalDetailsChange(["organisingUnit", "contactMobile"], event.target.value)}
+                      placeholder="Mobile"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                  <FormField label="Contact Email" htmlFor="gymkhana-proposal-contact-email" required>
+                    <Input
+                      id="gymkhana-proposal-contact-email"
+                      type="email"
+                      value={proposalForm.proposalDetails.organisingUnit.contactEmail}
+                      onChange={(event) => handleProposalDetailsChange(["organisingUnit", "contactEmail"], event.target.value)}
+                      placeholder="Email"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                </div>
+              </Panel>
+
+              <Panel title="Target Participants" icon={Users}>
+                <FormField label="Institute Faculty / Staff / Students" htmlFor="gymkhana-target-participants-institute">
+                  <Textarea
+                    id="gymkhana-target-participants-institute"
+                    value={proposalForm.proposalDetails.targetParticipants.instituteFacultyStaffStudents}
+                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "instituteFacultyStaffStudents"], event.target.value)}
+                    rows={2}
+                    placeholder="Faculty, staff, students from the institute"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <FormField label="Guests / Invitees" htmlFor="gymkhana-target-participants-guests">
+                  <Textarea
+                    id="gymkhana-target-participants-guests"
+                    value={proposalForm.proposalDetails.targetParticipants.guestsInvitees}
+                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "guestsInvitees"], event.target.value)}
+                    rows={2}
+                    placeholder="Invited guests"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+                <FormField label="External Visitors / Participants" htmlFor="gymkhana-target-participants-external">
+                  <Textarea
+                    id="gymkhana-target-participants-external"
+                    value={proposalForm.proposalDetails.targetParticipants.externalVisitorsParticipants}
+                    onChange={(event) => handleProposalDetailsChange(["targetParticipants", "externalVisitorsParticipants"], event.target.value)}
+                    rows={2}
+                    placeholder="External participants"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+              </Panel>
+
+              <Panel title="Guest & Speaker Details" icon={Users} accent>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
+                  <FormField label="No. of Speakers/Guests" htmlFor="gymkhana-tentative-speakers-guests">
+                    <Input
+                      id="gymkhana-tentative-speakers-guests"
+                      type="number"
+                      min={0}
+                      value={proposalForm.proposalDetails.guestsDetails.tentativeNumberOfSpeakersGuests}
+                      onChange={(event) => handleProposalDetailsChange(["guestsDetails", "tentativeNumberOfSpeakersGuests"], event.target.value)}
+                      placeholder="Count"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                  <FormField label="Registration Fee Source" htmlFor="gymkhana-source-funds-registration-fee">
+                    <Input
+                      id="gymkhana-source-funds-registration-fee"
+                      type="number"
+                      min={0}
+                      value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
+                      onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
+                      placeholder="₹"
+                      disabled={!canEditProposalForm}
+                    />
+                  </FormField>
+                </div>
+                <FormField label="Guest Names, Designations & Affiliations" htmlFor="gymkhana-guests-details-names">
+                  <Textarea
+                    id="gymkhana-guests-details-names"
+                    value={proposalForm.proposalDetails.guestsDetails.guestsNamesDesignationAffiliations}
+                    onChange={(event) => handleProposalDetailsChange(["guestsDetails", "guestsNamesDesignationAffiliations"], event.target.value)}
+                    rows={3}
+                    placeholder="List guests with their designation and affiliation"
+                    disabled={!canEditProposalForm}
+                  />
+                </FormField>
+              </Panel>
+            </div>
+          </div>
+
+          <Panel title="Programme Schedule" icon={Clock}>
+            <FormField label="Brief Schedule" htmlFor="gymkhana-programme-schedule-brief" required>
+              <Textarea
+                id="gymkhana-programme-schedule-brief"
+                value={proposalForm.proposalDetails.programmeSchedule.brief}
+                onChange={(event) => handleProposalDetailsChange(["programmeSchedule", "brief"], event.target.value)}
+                rows={3}
+                placeholder="Brief overview of the programme schedule"
+                disabled={!canEditProposalForm}
+              />
+            </FormField>
+            <PdfUploadField
+              label="Detailed Schedule (PDF)"
+              value={proposalForm.proposalDetails.programmeSchedule.detailedScheduleAnnexureUrl}
+              onChange={(value) => handleProposalDetailsChange(["programmeSchedule", "detailedScheduleAnnexureUrl"], value)}
+              onUpload={uploadScheduleAnnexureDocument}
+              disabled={!canEditProposalForm}
+              viewerTitle="Detailed Schedule Annexure"
+            />
+          </Panel>
+
+          <Panel title="Source of Funds" icon={DollarSign} accent>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--spacing-2)" }}>
+              <FormField label="Registration Fee" htmlFor="gymkhana-source-funds-registration-fee-main">
+                <Input
+                  id="gymkhana-source-funds-registration-fee-main"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.registrationFee}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "registrationFee"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canEditProposalForm}
+                />
+              </FormField>
+              <FormField label="Gymkhana Fund" htmlFor="gymkhana-source-funds-gymkhana">
+                <Input
+                  id="gymkhana-source-funds-gymkhana"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.gymkhanaFund}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "gymkhanaFund"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canEditProposalForm}
+                />
+              </FormField>
+              <FormField label="Institute Support" htmlFor="gymkhana-source-funds-institute-support">
+                <Input
+                  id="gymkhana-source-funds-institute-support"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.instituteSupport}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "instituteSupport"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canEditProposalForm}
+                />
+              </FormField>
+              <FormField label="Sponsorship / Grant" htmlFor="gymkhana-source-funds-sponsorship">
+                <Input
+                  id="gymkhana-source-funds-sponsorship"
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.sourceOfFunds.sponsorshipGrant}
+                  onChange={(event) => handleProposalDetailsChange(["sourceOfFunds", "sponsorshipGrant"], event.target.value)}
+                  placeholder="₹"
+                  disabled={!canEditProposalForm}
+                />
+              </FormField>
+            </div>
+          </Panel>
+
+          <Panel title="Registration Details by Category" icon={ClipboardCheck}>
+            <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", padding: "var(--spacing-2)", backgroundColor: "var(--color-bg-tertiary)", borderRadius: "var(--radius-card-sm)", marginBottom: "var(--spacing-2)" }}>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Category</span>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Registration Fee</span>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Accommodation</span>
+              <span style={{ fontSize: "var(--font-size-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-muted)", textTransform: "uppercase" }}>Remarks</span>
+            </div>
+            {REGISTRATION_CATEGORIES.map((category) => (
+              <div key={category.key} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1.5fr", gap: "var(--spacing-2)", alignItems: "center", padding: "var(--spacing-2)", borderRadius: "var(--radius-card-sm)", backgroundColor: "var(--color-bg-secondary)" }}>
+                <span style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{category.label}</span>
+                <Input
+                  id={`gymkhana-registration-fee-${category.key}`}
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.registrationDetails[category.key].registrationFee}
+                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "registrationFee", event.target.value)}
+                  placeholder="₹"
+                  disabled={!canEditProposalForm}
+                />
+                <Input
+                  id={`gymkhana-registration-accommodation-${category.key}`}
+                  type="number"
+                  min={0}
+                  value={proposalForm.proposalDetails.registrationDetails[category.key].accommodationCharges}
+                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "accommodationCharges", event.target.value)}
+                  placeholder="₹"
+                  disabled={!canEditProposalForm}
+                />
+                <Input
+                  id={`gymkhana-registration-remarks-${category.key}`}
+                  value={proposalForm.proposalDetails.registrationDetails[category.key].remarks}
+                  onChange={(event) => handleProposalRegistrationDetailChange(category.key, "remarks", event.target.value)}
+                  placeholder="Optional remarks"
+                  disabled={!canEditProposalForm}
+                />
+              </div>
+            ))}
+          </Panel>
+
+          <Panel title="Approval Requested" icon={ClipboardCheck} accent>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-3)" }}>
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.conductProgrammeAsProposed}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "conductProgrammeAsProposed"], event.target.checked)}
+                label="Conduct of the programme as proposed"
+                disabled={!canEditProposalForm}
+              />
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.chargingRegistrationFees}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "chargingRegistrationFees"], event.target.checked)}
+                label="Charging registration fees for guests/external participants"
+                disabled={!canEditProposalForm}
+              />
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.utilisationOfCollectedFees}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "utilisationOfCollectedFees"], event.target.checked)}
+                label="Utilisation of collected fees for programme expenditure"
+                disabled={!canEditProposalForm}
+              />
+              <Checkbox
+                checked={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport}
+                onChange={(event) => handleProposalDetailsChange(["approvalRequested", "additionalInstitutionalSupport"], event.target.checked)}
+                label="Additional institutional support"
+                disabled={!canEditProposalForm}
+              />
+            </div>
+            {proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupport && (
+              <FormField label="Additional Support Details" htmlFor="gymkhana-additional-support-details">
+                <Textarea
+                  id="gymkhana-additional-support-details"
+                  value={proposalForm.proposalDetails.approvalRequested.additionalInstitutionalSupportDetails}
+                  onChange={(event) => handleProposalDetailsChange(["approvalRequested", "additionalInstitutionalSupportDetails"], event.target.value)}
+                  rows={2}
+                  placeholder="Describe the additional institutional support required"
+                  disabled={!canEditProposalForm}
+                />
+              </FormField>
+            )}
+          </Panel>
+        </div>
       </Modal>
 
       <Modal
