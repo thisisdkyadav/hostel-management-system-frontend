@@ -1,23 +1,8 @@
 import { FaUsers } from "react-icons/fa"
 import { BsGenderMale, BsGenderFemale } from "react-icons/bs"
-import { IoMdSchool } from "react-icons/io"
 import { StatCards } from "@/components/ui"
 import { useEffect, useState } from "react"
 import { dashboardApi } from "../../../service"
-
-// Shimmer loader component for stats
-const StatCardShimmer = () => (
-  <div style={{ backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-sm)", borderLeft: "4px solid var(--skeleton-base)", position: "relative", overflow: "hidden", }} >
-    <div className="animate-pulse" style={{ display: "flex", flexDirection: "column" }}>
-      <div style={{ height: "var(--spacing-5)", width: "6rem", backgroundColor: "var(--skeleton-base)", borderRadius: "var(--radius-sm)", marginBottom: "var(--spacing-2)", }} ></div>
-      <div style={{ height: "var(--spacing-8)", width: "4rem", backgroundColor: "var(--skeleton-highlight)", borderRadius: "var(--radius-sm)", marginBottom: "var(--spacing-2)", }} ></div>
-      <div style={{ height: "var(--spacing-4)", width: "8rem", backgroundColor: "var(--skeleton-base)", borderRadius: "var(--radius-sm)", }} ></div>
-    </div>
-    <div style={{ position: "absolute", right: "var(--spacing-4)", top: "var(--spacing-4)" }}>
-      <div className="animate-pulse" style={{ height: "var(--spacing-8)", width: "var(--spacing-8)", backgroundColor: "var(--skeleton-base)", borderRadius: "var(--radius-full)", }} ></div>
-    </div>
-  </div>
-)
 
 const StudentStats = () => {
   const [studentCounts, setStudentCounts] = useState({
@@ -67,15 +52,7 @@ const StudentStats = () => {
     },
   ]
 
-  return loading ? (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" >
-      <StatCardShimmer />
-      <StatCardShimmer />
-      <StatCardShimmer />
-    </div>
-  ) : (
-    <StatCards stats={statsData} columns={3} />
-  )
+  return <StatCards stats={statsData} columns={3} loading={loading} loadingCount={3} />
 }
 
 export default StudentStats

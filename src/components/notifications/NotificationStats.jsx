@@ -1,12 +1,8 @@
 import React from "react"
 import { FaRegCalendarAlt, FaBell, FaUsers } from "react-icons/fa"
-import { StatCards, LoadingState } from "@/components/ui"
+import { StatCards } from "@/components/ui"
 
 const NotificationStats = ({ stats, loading }) => {
-  if (loading) {
-    return <LoadingState />
-  }
-
   const statItems = [
     {
       title: "Total",
@@ -31,7 +27,7 @@ const NotificationStats = ({ stats, loading }) => {
     },
   ]
 
-  return <StatCards stats={statItems} columns={3} />
+  return <StatCards stats={statItems} columns={3} loading={loading} loadingCount={3} />
 }
 
 export default NotificationStats

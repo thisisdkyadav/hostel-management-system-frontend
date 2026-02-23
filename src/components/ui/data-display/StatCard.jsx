@@ -23,7 +23,7 @@ const ShimmerBar = ({ width, height, style }) => (
  * @param {React.ReactNode} icon - Icon element
  * @param {string} color - Icon/value color (CSS color or variable)
  * @param {boolean} tintBackground - Whether to tint the card background with the color
- * @param {boolean} loading - Show skeleton loading state instead of content
+ * @param {boolean} loading - Keep layout fixed and show skeleton only for value
  */
 export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-primary)", tintBackground = false, loading = false }) => {
   const getColorValue = (cssVar) => {
@@ -37,29 +37,6 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
     "#1360AB"
 
   const cardClass = `bg-[var(--color-bg-primary)] rounded-xl p-3 border border-[var(--color-border-primary)]`
-
-  if (loading) {
-    return (
-      <div
-        className={cardClass}
-        style={{ boxShadow: "var(--shadow-xs)" }}
-      >
-        {/* Header row mirrors: flex justify-between items-start mb-1.5 */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
-          <ShimmerBar width="55%" height={12} style={{ marginTop: 4 }} />
-          {/* Icon placeholder: w-8 h-8 = 32×32 rounded-lg */}
-          <div
-            className="animate-pulse"
-            style={{ width: 32, height: 32, borderRadius: 8, backgroundColor: "var(--color-bg-hover)", flexShrink: 0 }}
-          />
-        </div>
-        {/* Value: text-2xl font-bold leading-none */}
-        <ShimmerBar width="45%" height={24} style={{ marginBottom: 6 }} />
-        {/* Subtitle: text-xs mt-0.5 */}
-        <ShimmerBar width="65%" height={10} />
-      </div>
-    )
-  }
 
   return (
     <div
@@ -77,16 +54,22 @@ export const StatCard = ({ title, value, subtitle, icon, color = "var(--color-pr
           className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 group-hover:scale-110"
           style={{ backgroundColor: `${colorValue}15` }}
         >
-          {React.cloneElement(icon, {
-            style: { color: colorValue },
-            className: "text-base",
-          })}
+          {React.isValidElement(icon)
+            ? React.cloneElement(icon, {
+                style: { color: colorValue },
+                className: "text-base",
+              })
+            : null}
         </div>
       </div>
       <div>
-        <h3 className="text-xl md:text-2xl font-bold leading-none" style={{ color: colorValue }}>
-          {value}
-        </h3>
+        {loading ? (
+          <ShimmerBar width="3.5rem" height={24} style={{ marginBottom: 2 }} />
+        ) : (
+          <h3 className="text-xl md:text-2xl font-bold leading-none" style={{ color: colorValue }}>
+            {value}
+          </h3>
+        )}
         <p className="text-xs text-[var(--color-text-light)] mt-0.5">{subtitle}</p>
       </div>
     </div>
@@ -112,29 +95,33 @@ const StatCards = ({ stats, columns = 4, loading = false, loadingCount }) => {
     return gridClass
   }
 
-  const skeletonCount = loadingCount ?? (loading ? columns : (stats?.length ?? columns))
-
-  if (loading) {
-    return (
-      <div className={`grid ${getGridClass()} gap-3 md:gap-5`}>
-        {Array.from({ length: skeletonCount }).map((_, i) => (
-          <StatCard key={i} loading title="" value="" subtitle="" icon={<span />} />
-        ))}
-      </div>
-    )
-  }
+  const normalizedStats = Array.isArray(stats) ? stats : []
+  const skeletonCount = loadingCount ?? (normalizedStats.length || columns)
+  const loadingStats =
+    normalizedStats.length > 0
+      ? normalizedStats
+      : Array.from({ length: skeletonCount }).map((_, i) => ({
+          title: "Loading",
+          value: "",
+          subtitle: "",
+          icon: <span />,
+          color: "var(--color-primary)",
+          _key: `stat-loading-${i}`,
+        }))
+  const statsToRender = loading ? loadingStats : normalizedStats
 
   return (
     <div className={`grid ${getGridClass()} gap-3 md:gap-5`}>
-      {stats.map((stat, index) => (
+      {statsToRender.map((stat, index) => (
         <StatCard
-          key={index}
+          key={stat._key ?? index}
           title={stat.title}
           value={stat.value}
           subtitle={stat.subtitle}
           icon={stat.icon}
           color={stat.color}
           tintBackground={stat.tintBackground}
+          loading={loading}
         />
       ))}
     </div>
