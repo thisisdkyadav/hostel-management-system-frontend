@@ -81,6 +81,29 @@ const EventCardShimmer = ({ count = 3, className = "" }) => (
   </div>
 )
 
+const HeaderStatCard = ({ icon, label, value, children }) => (
+  <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-xl px-3.5 py-1.5 hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
+    <div className="flex items-center gap-2.5">
+      {icon}
+      <div className="flex items-center gap-2.5">
+        <div>
+          <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide leading-none mb-0.5">{label}</p>
+          <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{value}</p>
+        </div>
+        <div className="flex gap-1 ml-1.5 border-l border-[var(--color-border-primary)] pl-2">
+          {children}
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
+const HeaderStatBadge = ({ label, value }) => (
+  <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">
+    {label} {value}
+  </span>
+)
+
 const DashboardPage = () => {
   const { user } = useAuth()
   const [dashboardData, setDashboardData] = useState(null)
@@ -227,56 +250,32 @@ const DashboardPage = () => {
 
             return (
               <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
-                {/* Hostlers Card - Compact */}
-                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
-                  <div className="flex items-center gap-[var(--spacing-2)]">
-                    <FaUser className="text-[var(--color-primary)] text-sm" />
-                    <div className="flex items-center gap-[var(--spacing-2)]">
-                      <div>
-                        <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Hostlers</p>
-                        <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{hostler.total}</p>
-                      </div>
-                      <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">B {hostler.boys}</span>
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">G {hostler.girls}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <HeaderStatCard icon={<FaUser className="text-[var(--color-primary)] text-sm" />} label="Hostlers" value={hostler.total}>
+                  <HeaderStatBadge label="B" value={hostler.boys} />
+                  <HeaderStatBadge label="G" value={hostler.girls} />
+                </HeaderStatCard>
 
-                {/* Day Scholars Card - Compact */}
-                <div className="bg-[var(--color-bg-primary)] border border-[var(--color-border-primary)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-primary)] transition-[var(--transition-all)]">
-                  <div className="flex items-center gap-[var(--spacing-2)]">
-                    <FaUser className="text-[var(--color-primary)] text-sm" />
-                    <div className="flex items-center gap-[var(--spacing-2)]">
-                      <div>
-                        <p className="text-xs text-[var(--color-text-muted)] font-medium uppercase tracking-wide">Day Scholars</p>
-                        <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{finalDayScholar.total}</p>
-                      </div>
-                      <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-2)]">
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">B {finalDayScholar.boys}</span>
-                        <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-bg-tertiary)] text-[var(--color-text-body)] rounded-[var(--radius-sm)] text-xs font-medium">G {finalDayScholar.girls}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <HeaderStatCard icon={<FaUser className="text-[var(--color-primary)] text-sm" />} label="Day Scholars" value={finalDayScholar.total}>
+                  <HeaderStatBadge label="B" value={finalDayScholar.boys} />
+                  <HeaderStatBadge label="G" value={finalDayScholar.girls} />
+                </HeaderStatCard>
 
-                {/* Online Users Card - Compact (Rightmost) */}
-                <div className="bg-gradient-to-br from-[var(--color-success-bg-light)] to-[var(--color-success-bg)] border border-[var(--color-success-light)] rounded-[var(--radius-md)] px-[var(--spacing-3)] py-[var(--spacing-1)] hover:border-[var(--color-success)] transition-[var(--transition-all)]">
-                  <div className="flex items-center gap-[var(--spacing-2)]">
+                {/* Online Users Card */}
+                <div className="bg-[var(--color-success-bg-light)] border border-[var(--color-success-light)] rounded-xl px-3.5 py-1.5 hover:border-[var(--color-success)] transition-[var(--transition-all)]">
+                  <div className="flex items-center gap-2.5">
                     <HiStatusOnline className="text-[var(--color-success)] text-sm animate-pulse" />
-                    <div className="flex items-center gap-[var(--spacing-2)]">
+                    <div className="flex items-center gap-2.5">
                       <div>
-                        <p className="text-xs text-[var(--color-success-text)] font-medium uppercase tracking-wide">Online Now</p>
+                        <p className="text-xs text-[var(--color-success-text)] font-medium uppercase tracking-wide leading-none mb-0.5">Online Now</p>
                         <p className="text-lg font-bold text-[var(--color-success-text)] leading-none">{onlineStats?.totalOnline || 0}</p>
                       </div>
-                      <div className="flex gap-[var(--spacing-1)] ml-[var(--spacing-1-5)] border-l border-[var(--color-success-light)] pl-[var(--spacing-2)]">
+                      <div className="flex gap-1 ml-1.5 border-l border-[var(--color-success-light)] pl-2">
                         <Popover
                           trigger="hover"
                           placement="bottom"
                           content={<OnlineUsersPopupContent role="Student" roleLabel="Students" />}
                         >
-                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg-light)] transition-[var(--transition-colors)]">
+                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
                             S: {onlineStats?.byRole?.Student || 0}
                           </span>
                         </Popover>
@@ -285,7 +284,7 @@ const DashboardPage = () => {
                           placement="bottom"
                           content={<OnlineUsersPopupContent role="Hostel Supervisor" roleLabel="Hostel Supervisors" />}
                         >
-                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg-light)] transition-[var(--transition-colors)]">
+                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
                             HS: {onlineStats?.byRole?.["Hostel Supervisor"] || 0}
                           </span>
                         </Popover>
@@ -294,7 +293,7 @@ const DashboardPage = () => {
                           placement="bottom"
                           content={<OnlineUsersPopupContent role="Admin" roleLabel="Admins" />}
                         >
-                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg-light)] transition-[var(--transition-colors)]">
+                          <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
                             A: {onlineStats?.byRole?.Admin || 0}
                           </span>
                         </Popover>
