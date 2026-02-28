@@ -1,15 +1,11 @@
 import BaseLayout from "./BaseLayout"
 import { getSuperAdminNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
-import useAuthz from "../hooks/useAuthz"
+import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const SuperAdminLayout = () => {
   const handleLogout = useLogout()
-  const { canRouteByPath } = useAuthz()
-  const navItems = getSuperAdminNavItems(handleLogout).filter((item) => {
-    if (!item?.path) return true
-    return canRouteByPath(item.path)
-  })
+  const navItems = useAuthorizedNavItems(getSuperAdminNavItems(handleLogout))
 
   return <BaseLayout navItems={navItems} />
 }

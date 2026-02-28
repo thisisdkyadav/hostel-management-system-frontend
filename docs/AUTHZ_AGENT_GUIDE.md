@@ -24,6 +24,7 @@ Do not reintroduce retired permission helpers/APIs.
 4. Route guard: `src/components/authz/RouteAccessGuard.jsx`
 5. Superadmin authz UI: `src/pages/superadmin/AuthzManagementPage.jsx`
 6. Help page: `src/pages/superadmin/AuthzHelpPage.jsx`
+7. Nav filtering hook: `src/hooks/useAuthorizedNavItems.js`
 
 Admin UI does not expose AuthZ management. Override management is Super Admin only.
 
@@ -39,14 +40,15 @@ Capability-route hint mapping is limited to student routes:
 
 1. Add/update route key in backend catalog.
 2. Gate route/page with `RouteAccessGuard` and route-aware nav visibility.
-3. Do not add new capability checks unless explicitly requested for a planned pilot.
+3. Use `useAuthorizedNavItems(...)` in layouts for show/hide navigation links.
+4. Do not add new capability checks unless explicitly requested for a planned pilot.
 
 ## If A New Capability Is Needed Later
 
 Add incrementally for one feature at a time:
 1. Add key in backend catalog.
 2. Enforce in backend endpoints.
-3. Add minimal frontend checks (`can`, `canAny`, `CapabilityGuard`) only for that feature.
+3. Add minimal frontend checks (`can`, `canAny`) only for that feature.
 4. Add clear help text in superadmin authz help/editor.
 
 ## If A New Constraint Is Needed Later

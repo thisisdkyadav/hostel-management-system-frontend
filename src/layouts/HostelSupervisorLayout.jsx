@@ -3,16 +3,12 @@ import { getHostelSupervisorNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
-import useAuthz from "../hooks/useAuthz"
+import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const HostelSupervisorLayout = () => {
   const handleLogout = useLogout()
   const { user } = useAuth()
-  const { canRouteByPath } = useAuthz()
-  const navItems = getHostelSupervisorNavItems(handleLogout, user).filter((item) => {
-    if (!item?.path) return true
-    return canRouteByPath(item.path)
-  })
+  const navItems = useAuthorizedNavItems(getHostelSupervisorNavItems(handleLogout, user))
 
   return (
     <WardenProvider>

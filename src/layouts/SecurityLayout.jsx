@@ -2,16 +2,12 @@ import BaseLayout from "./BaseLayout"
 import { getSecurityNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import { useAuth } from "../contexts/AuthProvider"
-import useAuthz from "../hooks/useAuthz"
+import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const SecurityLayout = () => {
   const handleLogout = useLogout()
   const { user } = useAuth()
-  const { canRouteByPath } = useAuthz()
-  const navItems = getSecurityNavItems(handleLogout, user).filter((item) => {
-    if (!item?.path) return true
-    return canRouteByPath(item.path)
-  })
+  const navItems = useAuthorizedNavItems(getSecurityNavItems(handleLogout, user))
 
   return <BaseLayout navItems={navItems} />
 }

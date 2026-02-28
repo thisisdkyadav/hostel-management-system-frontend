@@ -3,16 +3,12 @@ import { getWardenNavItems } from "../constants/navigationConfig"
 import { useLogout } from "../hooks/useLogout"
 import WardenProvider from "../contexts/WardenProvider"
 import { useAuth } from "../contexts/AuthProvider"
-import useAuthz from "../hooks/useAuthz"
+import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const WardenLayout = () => {
   const handleLogout = useLogout()
   const { user } = useAuth()
-  const { canRouteByPath } = useAuthz()
-  const navItems = getWardenNavItems(handleLogout, user).filter((item) => {
-    if (!item?.path) return true
-    return canRouteByPath(item.path)
-  })
+  const navItems = useAuthorizedNavItems(getWardenNavItems(handleLogout, user))
 
   return (
     <WardenProvider>

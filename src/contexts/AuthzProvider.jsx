@@ -1,6 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { authzApi } from "../service"
 import { useAuth } from "./AuthProvider"
+import { AuthzContext } from "./AuthzContext"
 import {
   buildRoutePathMapFromCatalog,
   buildRoutePathMatchersFromCatalog,
@@ -12,16 +13,6 @@ import {
   getConstraint,
   resolveRouteKeyByPath,
 } from "../utils/authz"
-
-const AuthzContext = createContext(null)
-
-export const useAuthz = () => {
-  const context = useContext(AuthzContext)
-  if (!context) {
-    throw new Error("useAuthz must be used inside AuthzProvider")
-  }
-  return context
-}
 
 export const AuthzProvider = ({ children }) => {
   const { user } = useAuth()
@@ -89,8 +80,6 @@ export const AuthzProvider = ({ children }) => {
       catalog,
       override,
       effective,
-      routePathMap,
-      routePathMatchers,
       refreshAuthz,
       canRoute: canRouteByKey,
       canRouteByPath,

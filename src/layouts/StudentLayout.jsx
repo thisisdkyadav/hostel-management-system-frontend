@@ -12,7 +12,7 @@ import {
   getStudentPwaBottomBarMainItems,
   getStudentPwaHiddenItems
 } from "../constants/navigationConfig"
-import useAuthz from "../hooks/useAuthz"
+import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
@@ -20,7 +20,6 @@ const StudentLayout = () => {
   const { isPwaMobile, isMobile, isStandalone } = usePwaMobile()
   const { layoutPreference, loading } = useLayoutPreference()
   const handleLogout = useLogout()
-  const { canRouteByPath } = useAuthz()
   const [notificationsCount, setNotificationsCount] = useState(0)
 
   useEffect(() => {
@@ -37,14 +36,8 @@ const StudentLayout = () => {
   }, [])
 
   // Get navigation items from centralized config
-  const allNavItems = getStudentNavItems(handleLogout, notificationsCount).filter((item) => {
-    if (!item?.path) return true
-    return canRouteByPath(item.path)
-  })
-  const pwaBottomBarMainItems = getStudentPwaBottomBarMainItems().filter((item) => {
-    if (!item?.path) return true
-    return canRouteByPath(item.path)
-  })
+  const allNavItems = useAuthorizedNavItems(getStudentNavItems(handleLogout, notificationsCount))
+  const pwaBottomBarMainItems = useAuthorizedNavItems(getStudentPwaBottomBarMainItems())
   const pwaBottomBarHiddenItems = getStudentPwaHiddenItems(allNavItems)
 
   // Navigation handler for bottom bar
