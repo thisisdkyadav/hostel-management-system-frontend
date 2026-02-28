@@ -15,7 +15,6 @@ import {
     SecurityLoginsPage,
     UpdatePasswordPage,
     SettingsPage as AdminSettings,
-    AuthzManagementPage,
     MaintenanceStaffPage,
     OthersPage,
     TaskManagementPage,
@@ -101,7 +100,6 @@ const AdminRoutes = () => {
                             <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
                             <Route path="update-password" element={guardRoute("route.admin.updatePassword", <UpdatePasswordPage />)} />
                             <Route path="settings" element={guardRoute("route.admin.settings", <AdminSettings />)} />
-                            <Route path="authz" element={guardRoute("route.admin.authz", <AuthzManagementPage />)} />
                             <Route path="profile" element={guardRoute("route.admin.profile", <ProfilePage />)} />
                             <Route path="maintenance" element={guardRoute("route.admin.maintenance", <MaintenanceStaffPage />)} />
                             <Route path="notifications" element={guardRoute("route.admin.notifications", <NotificationCenterPage />)} />

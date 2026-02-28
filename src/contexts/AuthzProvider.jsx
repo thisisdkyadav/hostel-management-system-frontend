@@ -8,7 +8,7 @@ import {
   canAnyCapability,
   canCapability,
   canRoute,
-  createOpenEffectiveAuthz,
+  createStrictEffectiveAuthz,
   getConstraint,
   resolveRouteKeyByPath,
 } from "../utils/authz"
@@ -27,7 +27,9 @@ export const AuthzProvider = ({ children }) => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [catalog, setCatalog] = useState(null)
-  const [effective, setEffective] = useState(createOpenEffectiveAuthz(user?.role))
+  const [effective, setEffective] = useState(
+    user?.authz?.effective || createStrictEffectiveAuthz(user?.role)
+  )
   const [override, setOverride] = useState(null)
   const [error, setError] = useState(null)
 
@@ -37,7 +39,7 @@ export const AuthzProvider = ({ children }) => {
   const refreshAuthz = useCallback(async () => {
     if (!user) {
       setCatalog(null)
-      setEffective(createOpenEffectiveAuthz(null))
+      setEffective(createStrictEffectiveAuthz(null))
       setOverride(null)
       setError(null)
       setLoading(false)
@@ -55,11 +57,15 @@ export const AuthzProvider = ({ children }) => {
 
       setCatalog(catalogResponse?.data?.catalog || null)
       setOverride(myAuthzResponse?.data?.authz?.override || null)
-      setEffective(myAuthzResponse?.data?.authz?.effective || createOpenEffectiveAuthz(user.role))
+      setEffective(
+        myAuthzResponse?.data?.authz?.effective ||
+        user?.authz?.effective ||
+        createStrictEffectiveAuthz(user.role)
+      )
     } catch (err) {
       console.error("Failed to load authz data", err)
       setError(err)
-      setEffective(createOpenEffectiveAuthz(user.role))
+      setEffective(user?.authz?.effective || createStrictEffectiveAuthz(user.role))
     } finally {
       setLoading(false)
     }
@@ -73,7 +79,7 @@ export const AuthzProvider = ({ children }) => {
     const canRouteByKey = (routeKey) => canRoute(effective, routeKey)
     const canRouteByPath = (path) => {
       const routeKey = resolveRouteKeyByPath(path, routePathMap, routePathMatchers)
-      if (!routeKey) return true
+      if (!routeKey) return false
       return canRouteByKey(routeKey)
     }
 

@@ -12,40 +12,18 @@ import StudentsHeader from "../../components/headers/StudentsHeader"
 import { useStudents } from "../../hooks/useStudents"
 import { useGlobal } from "../../contexts/GlobalProvider"
 import { useAuth } from "../../contexts/AuthProvider"
-import useAuthz from "../../hooks/useAuthz"
 import { hostelApi, studentApi } from "../../service"
 import UpdateAllocationModal from "../../components/common/students/UpdateAllocationModal"
 
 const StudentsPage = () => {
   const { user } = useAuth()
-  const { getConstraint } = useAuthz()
   const { hostelList = [] } = useGlobal()
-  const constrainedHostelIds = getConstraint("constraint.students.scope.hostelIds", [])
-  const onlyOwnHostelScope = Boolean(
-    getConstraint("constraint.students.scope.onlyOwnHostel", false)
-  )
   const hostels = useMemo(() => {
     if (!["Admin"].includes(user.role)) {
       return []
     }
-
-    if (onlyOwnHostelScope) {
-      const ownHostelId = user?.hostel?._id
-      if (!ownHostelId) return []
-      return hostelList.filter((hostel) => hostel._id === ownHostelId)
-    }
-
-    if (!Array.isArray(constrainedHostelIds) || constrainedHostelIds.length === 0) {
-      return hostelList
-    }
-
-    const allowedHostelIds = new Set(
-      constrainedHostelIds
-        .map((hostelId) => (typeof hostelId === "string" ? hostelId.trim() : ""))
-        .filter(Boolean)
-    )
-    return hostelList.filter((hostel) => allowedHostelIds.has(hostel._id))
-  }, [constrainedHostelIds, hostelList, onlyOwnHostelScope, user?.hostel?._id, user.role])
+    return hostelList
+  }, [hostelList, user.role])
 
   const canViewStudentsList = true
   const canViewStudentsDetail = true

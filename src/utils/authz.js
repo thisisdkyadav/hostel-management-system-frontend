@@ -31,10 +31,10 @@ const convertCatalogPathToRegex = (catalogPath) => {
   return new RegExp(`^/${segments.join("/")}$`)
 }
 
-export const createOpenEffectiveAuthz = (role = null) => ({
+export const createStrictEffectiveAuthz = (role = null) => ({
   role,
   routeAccess: {},
-  capabilities: { "*": true },
+  capabilities: { "*": false },
   constraints: {},
 })
 
@@ -42,20 +42,19 @@ export const canRoute = (effectiveAuthz, routeKey) => {
   const key = normalizeKey(routeKey)
   if (!key) return false
 
-  // Default-open until layer-3 starts enforcement in routes/components.
-  if (!effectiveAuthz) return true
+  if (!effectiveAuthz) return false
 
   const explicit = effectiveAuthz.routeAccess?.[key]
   if (typeof explicit === "boolean") return explicit
 
-  return true
+  return false
 }
 
 export const canCapability = (effectiveAuthz, capabilityKey) => {
   const key = normalizeKey(capabilityKey)
   if (!key) return false
 
-  if (!effectiveAuthz) return true
+  if (!effectiveAuthz) return false
 
   const explicit = effectiveAuthz.capabilities?.[key]
   if (typeof explicit === "boolean") return explicit
@@ -64,7 +63,7 @@ export const canCapability = (effectiveAuthz, capabilityKey) => {
     return effectiveAuthz.capabilities["*"]
   }
 
-  return true
+  return false
 }
 
 export const canAnyCapability = (effectiveAuthz, keys = []) => {

@@ -50,7 +50,6 @@ import {
   Clock,
 } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
-import useAuthz from "@/hooks/useAuthz"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
@@ -1056,7 +1055,6 @@ const toGymkhanaDisplayEvent = (event) => ({
 
 const EventsPage = () => {
   const { user } = useAuth()
-  const { getConstraint } = useAuthz()
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
@@ -1129,16 +1127,7 @@ const EventsPage = () => {
   const canViewEventsCapability = true
   const canCreateEventsCapability = true
   const canApproveEventsCapability = true
-  const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
-  const hasApprovalLimitValue = !(
-    maxApprovalAmountConstraint === null ||
-    maxApprovalAmountConstraint === undefined ||
-    (typeof maxApprovalAmountConstraint === "string" && maxApprovalAmountConstraint.trim() === "")
-  )
-  const parsedApprovalLimit = hasApprovalLimitValue ? Number(maxApprovalAmountConstraint) : null
-  const maxApprovalAmount = Number.isFinite(parsedApprovalLimit) && parsedApprovalLimit >= 0
-    ? parsedApprovalLimit
-    : null
+  const maxApprovalAmount = null
   const canEditGS =
     calendar &&
     !calendar.isLocked &&

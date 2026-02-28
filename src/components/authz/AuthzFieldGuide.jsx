@@ -25,10 +25,10 @@ const getConstraintPlainLanguage = (constraint) => {
   if (type === "string") {
     return `${label}: set a custom text value for this user only.`
   }
-  if (type === "string_array") {
+  if (type === "string_array" || type === "string[]") {
     return `${label}: provide a JSON array of strings, for example ["A", "B"].`
   }
-  if (type === "number_array") {
+  if (type === "number_array" || type === "number[]") {
     return `${label}: provide a JSON array of numbers, for example [1, 2, 3].`
   }
   if (type === "object") {

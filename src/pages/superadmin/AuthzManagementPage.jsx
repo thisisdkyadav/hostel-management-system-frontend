@@ -91,14 +91,14 @@ const parseConstraintValue = (valueType, rawValue) => {
     throw new Error("Invalid JSON value")
   }
 
-  if (valueType === "string_array") {
+  if (valueType === "string_array" || valueType === "string[]") {
     if (!Array.isArray(parsed) || !parsed.every((item) => typeof item === "string")) {
       throw new Error("Expected a JSON array of strings")
     }
     return parsed
   }
 
-  if (valueType === "number_array") {
+  if (valueType === "number_array" || valueType === "number[]") {
     if (!Array.isArray(parsed) || !parsed.every((item) => typeof item === "number" && Number.isFinite(item))) {
       throw new Error("Expected a JSON array of numbers")
     }

@@ -7,7 +7,6 @@ import { LoadingState, ErrorState, EmptyState, Alert, useToast } from "@/compone
 import { Badge } from "@/components/ui/data-display"
 import { CalendarDays, History, Plus, FileText, Receipt, Building2, Users, Target, DollarSign, ClipboardCheck, MapPin, Clock } from "lucide-react"
 import { useAuth } from "@/contexts/AuthProvider"
-import useAuthz from "@/hooks/useAuthz"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import uploadApi from "@/service/modules/upload.api"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
@@ -668,7 +667,6 @@ const getRequiredApproverForExpense = (expenseStatus) => EXPENSE_STATUS_TO_APPRO
 
 const MegaEventsPage = () => {
   const { user } = useAuth()
-  const { getConstraint } = useAuthz()
   const { toast } = useToast()
 
   const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
@@ -678,16 +676,7 @@ const MegaEventsPage = () => {
   const canViewEventsCapability = true
   const canCreateEventsCapability = true
   const canApproveEventsCapability = true
-  const maxApprovalAmountConstraint = getConstraint("constraint.events.maxApprovalAmount", null)
-  const hasApprovalLimitValue = !(
-    maxApprovalAmountConstraint === null ||
-    maxApprovalAmountConstraint === undefined ||
-    (typeof maxApprovalAmountConstraint === "string" && maxApprovalAmountConstraint.trim() === "")
-  )
-  const parsedApprovalLimit = hasApprovalLimitValue ? Number(maxApprovalAmountConstraint) : null
-  const maxApprovalAmount = Number.isFinite(parsedApprovalLimit) && parsedApprovalLimit >= 0
-    ? parsedApprovalLimit
-    : null
+  const maxApprovalAmount = null
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")

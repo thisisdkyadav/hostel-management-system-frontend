@@ -4,6 +4,10 @@
 
 Frontend authz is route-first.
 
+Frontend layer-3 behavior is strict:
+- deny by default when authz state is unavailable
+- do not add fail-open fallback behavior for unknown routes/capabilities
+
 1. Navigation/page availability is controlled by Layer-3 route keys.
 2. Capability usage is intentionally reduced to one pilot only:
    - `cap.students.edit.personal`
@@ -20,6 +24,8 @@ Do not reintroduce retired permission helpers/APIs.
 4. Route guard: `src/components/authz/RouteAccessGuard.jsx`
 5. Superadmin authz UI: `src/pages/superadmin/AuthzManagementPage.jsx`
 6. Help page: `src/pages/superadmin/AuthzHelpPage.jsx`
+
+Admin UI does not expose AuthZ management. Override management is Super Admin only.
 
 ## What Is Capability-Gated Right Now
 
