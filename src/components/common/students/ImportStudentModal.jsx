@@ -1,232 +1,398 @@
-import { useState, useRef, useEffect } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaUpload } from "react-icons/fa"
-import StudentTableView from "./StudentTableView"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { FaCheck, FaFileDownload, FaFileUpload, FaTimes, FaUpload, FaUser } from "react-icons/fa"
 import Papa from "papaparse"
-import StudentDetailModal from "./StudentDetailModal"
-import { adminApi } from "../../../service"
-import { FileInput, Select, Textarea } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
+import { FileInput } from "@/components/ui"
+import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
+import SheetPreviewTable from "../../sheet/SheetPreviewTable"
+import { useSocket } from "../../../contexts/SocketProvider"
 
-// Extracted to avoid remounting on each parent render which caused input focus loss
-const ManualStudentForm = ({ manualStudent, handleManualInputChange, validDegrees, validDepartments, configLoading, error }) => {
-  const formStyles = {
-    container: { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-6)' },
-    title: { fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' },
-    infoBox: { backgroundColor: 'var(--color-primary-bg)', color: 'var(--color-primary)', borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-4)', marginBottom: 'var(--spacing-6)', display: 'flex', alignItems: 'flex-start' },
-    infoIcon: { flexShrink: 0, marginTop: 'var(--spacing-0-5)', marginRight: 'var(--spacing-3)', height: 'var(--icon-lg)', width: 'var(--icon-lg)' },
-    infoText: { fontSize: 'var(--font-size-sm)' },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-6)' },
-    sectionHeader: { gridColumn: 'span 2' },
-    sectionTitle: { fontSize: 'var(--font-size-md)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-4)', borderBottom: 'var(--border-1) solid var(--color-border-primary)', paddingBottom: 'var(--spacing-2)' },
-    label: { display: 'block', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-body)', marginBottom: 'var(--spacing-1)' },
-    input: { width: '100%', borderRadius: 'var(--radius-md)', border: 'var(--border-1) solid var(--color-border-input)', padding: 'var(--spacing-2) var(--spacing-3)', fontSize: 'var(--font-size-sm)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-body)' },
-    errorBox: { padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)', whiteSpace: 'pre-line' },
-    loadingContainer: { display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' },
-    spinner: { width: 'var(--spacing-6)', height: 'var(--spacing-6)', border: 'var(--border-2) solid var(--color-bg-muted)', borderTopColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' },
-    loadingText: { marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' },
+const REQUIRED_FIELDS = ["name", "email", "rollNumber"]
+const OPTIONAL_FIELDS = ["password"]
+const ALLOWED_FIELDS = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS]
+const IMPORT_PROGRESS_EVENT = "students:import:progress"
+const MAX_CSV_RESULT_ROWS_SHOWN = MAX_BULK_RECORDS
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const createImportJobId = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID()
   }
+
+  return `student-import-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+const toSafeString = (value) => (value === null || value === undefined ? "" : String(value).trim())
+
+const normalizeCsvRows = (rows, headers) => {
+  const previewRows = rows.map((row) => {
+    const normalized = {}
+    headers.forEach((header) => {
+      normalized[header] = toSafeString(row?.[header])
+    })
+    return normalized
+  })
+
+  const payload = []
+  const errors = []
+  const seenEmails = new Set()
+  const seenRollNumbers = new Set()
+
+  previewRows.forEach((row, index) => {
+    const rowNumber = index + 2
+    const name = toSafeString(row.name)
+    const email = toSafeString(row.email)
+    const rollNumber = toSafeString(row.rollNumber).toUpperCase()
+    const password = toSafeString(row.password)
+
+    if (!name || !email || !rollNumber) {
+      errors.push(`Row ${rowNumber}: Missing required fields (name, email, rollNumber)`)
+      return
+    }
+
+    if (!emailRegex.test(email)) {
+      errors.push(`Row ${rowNumber}: Invalid email format`)
+      return
+    }
+
+    if (seenEmails.has(email.toLowerCase())) {
+      errors.push(`Row ${rowNumber}: Duplicate email ${email} in CSV`)
+      return
+    }
+
+    if (seenRollNumbers.has(rollNumber)) {
+      errors.push(`Row ${rowNumber}: Duplicate roll number ${rollNumber} in CSV`)
+      return
+    }
+
+    seenEmails.add(email.toLowerCase())
+    seenRollNumbers.add(rollNumber)
+
+    const student = { name, email, rollNumber }
+    if (password) {
+      student.password = password
+    }
+
+    payload.push(student)
+  })
+
+  return { previewRows, payload, errors }
+}
+
+const normalizeRollNumber = (value) => toSafeString(value).toUpperCase()
+const normalizeEmail = (value) => toSafeString(value).toLowerCase()
+
+const buildCsvImportResultRows = (students = [], outcome = null) => {
+  const results = Array.isArray(outcome?.results)
+    ? outcome.results
+    : (outcome?.results ? [outcome.results] : [])
+  const errors = Array.isArray(outcome?.errors) ? outcome.errors : []
+
+  const successRollNumbers = new Set()
+  const successEmails = new Set()
+  const failedByRollNumber = new Map()
+  const failedByEmail = new Map()
+
+  results.forEach((entry) => {
+    const rollCandidates = [
+      entry?.profile?.rollNumber,
+      entry?.rollNumber,
+      entry?.student?.rollNumber,
+      entry?.student,
+    ]
+    const emailCandidates = [entry?.email, entry?.student?.email, entry?.student]
+
+    rollCandidates.forEach((candidate) => {
+      const roll = normalizeRollNumber(candidate)
+      if (roll && !roll.includes("@")) successRollNumbers.add(roll)
+    })
+    emailCandidates.forEach((candidate) => {
+      const email = normalizeEmail(candidate)
+      if (email && email.includes("@")) successEmails.add(email)
+    })
+  })
+
+  errors.forEach((entry) => {
+    const message = toSafeString(entry?.message || entry?.reason || entry?.error) || "Import failed"
+    const rollCandidates = [entry?.rollNumber, entry?.student]
+    const emailCandidates = [entry?.email, entry?.student]
+
+    rollCandidates.forEach((candidate) => {
+      const roll = normalizeRollNumber(candidate)
+      if (roll && !roll.includes("@") && !failedByRollNumber.has(roll)) {
+        failedByRollNumber.set(roll, message)
+      }
+    })
+    emailCandidates.forEach((candidate) => {
+      const email = normalizeEmail(candidate)
+      if (email && email.includes("@") && !failedByEmail.has(email)) {
+        failedByEmail.set(email, message)
+      }
+    })
+  })
+
+  const requestFailedMessage = toSafeString(outcome?.message) || "Import failed"
+
+  return students.map((student) => {
+    const rollNumber = toSafeString(student?.rollNumber) || "—"
+    const email = toSafeString(student?.email) || "—"
+    const normalizedRoll = normalizeRollNumber(rollNumber)
+    const normalizedEmailValue = normalizeEmail(email)
+
+    const matchedError = failedByRollNumber.get(normalizedRoll) || failedByEmail.get(normalizedEmailValue)
+    if (matchedError) {
+      return { rollNumber, email, successStatus: "Failed", reason: matchedError }
+    }
+
+    if (successRollNumbers.has(normalizedRoll) || successEmails.has(normalizedEmailValue)) {
+      return { rollNumber, email, successStatus: "Success", reason: "—" }
+    }
+
+    if (outcome?.success === false) {
+      return { rollNumber, email, successStatus: "Failed", reason: requestFailedMessage }
+    }
+
+    if (errors.length > 0) {
+      return { rollNumber, email, successStatus: "Failed", reason: "Not imported" }
+    }
+
+    return { rollNumber, email, successStatus: "Success", reason: "—" }
+  })
+}
+
+const escapeCSV = (value) => {
+  const str = String(value ?? "")
+  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+    return `"${str.replace(/"/g, '""')}"`
+  }
+  return str
+}
+
+const downloadCSV = (rows, filenameBase) => {
+  if (!Array.isArray(rows) || rows.length === 0) return false
+
+  const headers = ["roll number", "email", "success status", "reason"]
+  const csvContent = [
+    headers.map(escapeCSV).join(","),
+    ...rows.map((row) => ([
+      row?.["roll number"] ?? "",
+      row?.email ?? "",
+      row?.["success status"] ?? "",
+      row?.reason ?? "",
+    ]).map(escapeCSV).join(",")),
+  ].join("\n")
+
+  const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.setAttribute("download", `${filenameBase}_${new Date().toISOString().split("T")[0]}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+  return true
+}
+
+const toNonNegativeCount = (value) => {
+  const parsed = Number(value)
+  if (!Number.isFinite(parsed) || parsed < 0) return null
+  return Math.trunc(parsed)
+}
+
+const toSuccessIdentifier = (entry, index) => {
   return (
-    <div style={formStyles.container}>
-      <h3 style={formStyles.title}>Add Single Student</h3>
-
-      <div style={formStyles.infoBox}>
-        <div style={formStyles.infoIcon}>
-          <svg xmlns="http://www.w3.org/2000/svg" style={{ height: '100%', width: '100%' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <p style={formStyles.infoText}>Fill in the student details below. Fields marked with * are required.</p>
-      </div>
-
-      <div style={formStyles.grid}>
-        {/* Required Fields */}
-        <div style={formStyles.sectionHeader}>
-          <h4 style={formStyles.sectionTitle}>Required Information</h4>
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Name *</label>
-          <Input type="text" value={manualStudent.name} onChange={(e) => handleManualInputChange("name", e.target.value)} placeholder="Enter student's full name" required />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Email *</label>
-          <Input type="email" value={manualStudent.email} onChange={(e) => handleManualInputChange("email", e.target.value)} placeholder="Enter email address" required />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Roll Number *</label>
-          <Input type="text" value={manualStudent.rollNumber} onChange={(e) => handleManualInputChange("rollNumber", e.target.value)} placeholder="Enter roll number" required />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Phone</label>
-          <Input type="tel" value={manualStudent.phone} onChange={(e) => handleManualInputChange("phone", e.target.value)} placeholder="Enter phone number" />
-        </div>
-
-        {/* Optional Fields */}
-        <div style={{ ...formStyles.sectionHeader, marginTop: 'var(--spacing-6)' }}>
-          <h4 style={formStyles.sectionTitle}>Optional Information</h4>
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Password</label>
-          <Input type="password" value={manualStudent.password} onChange={(e) => handleManualInputChange("password", e.target.value)} placeholder="Enter password" />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Gender</label>
-          <Select value={manualStudent.gender} onChange={(e) => handleManualInputChange("gender", e.target.value)} placeholder="Select gender" options={[{ value: "Male", label: "Male" }, { value: "Female", label: "Female" }]} />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Date of Birth</label>
-          <Input type="date" value={manualStudent.dateOfBirth} onChange={(e) => handleManualInputChange("dateOfBirth", e.target.value)} />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Degree</label>
-          {validDegrees.length > 0 ? (
-            <Select value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} placeholder="Select degree" options={validDegrees.map((degree) => ({ value: degree, label: degree }))} />
-          ) : (
-            <Input type="text" value={manualStudent.degree} onChange={(e) => handleManualInputChange("degree", e.target.value)} placeholder="Enter degree" />
-          )}
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Department</label>
-          {validDepartments.length > 0 ? (
-            <Select value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} placeholder="Select department" options={validDepartments.map((department) => ({ value: department, label: department }))} />
-          ) : (
-            <Input type="text" value={manualStudent.department} onChange={(e) => handleManualInputChange("department", e.target.value)} placeholder="Enter department" />
-          )}
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Year</label>
-          <Input type="number" value={manualStudent.year} onChange={(e) => handleManualInputChange("year", e.target.value)} placeholder="Enter year" min="1" max="10" />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Admission Date</label>
-          <Input type="date" value={manualStudent.admissionDate} onChange={(e) => handleManualInputChange("admissionDate", e.target.value)} />
-        </div>
-
-        <div style={{ gridColumn: 'span 2' }}>
-          <label style={formStyles.label}>Address</label>
-          <Textarea value={manualStudent.address} onChange={(e) => handleManualInputChange("address", e.target.value)} rows={3} placeholder="Enter address" />
-        </div>
-
-        {/* Guardian Information */}
-        <div style={{ ...formStyles.sectionHeader, marginTop: 'var(--spacing-6)' }}>
-          <h4 style={formStyles.sectionTitle}>Guardian Information</h4>
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Guardian Name</label>
-          <Input type="text" value={manualStudent.guardian} onChange={(e) => handleManualInputChange("guardian", e.target.value)} placeholder="Enter guardian's name" />
-        </div>
-
-        <div>
-          <label style={formStyles.label}>Guardian Phone</label>
-          <Input type="tel" value={manualStudent.guardianPhone} onChange={(e) => handleManualInputChange("guardianPhone", e.target.value)} placeholder="Enter guardian's phone" />
-        </div>
-
-        <div style={{ gridColumn: 'span 2' }}>
-          <label style={formStyles.label}>Guardian Email</label>
-          <Input type="email" value={manualStudent.guardianEmail} onChange={(e) => handleManualInputChange("guardianEmail", e.target.value)} placeholder="Enter guardian's email" />
-        </div>
-      </div>
-
-      {error && <div style={formStyles.errorBox}>{error}</div>}
-
-      {configLoading && (
-        <div style={formStyles.loadingContainer}>
-          <div style={formStyles.spinner}></div>
-          <span style={formStyles.loadingText}>Loading configuration...</span>
-        </div>
-      )}
-    </div>
+    toSafeString(entry?.profile?.rollNumber)
+    || toSafeString(entry?.rollNumber)
+    || toSafeString(entry?.student?.rollNumber)
+    || toSafeString(entry?.student)
+    || toSafeString(entry?.email)
+    || toSafeString(entry?.name)
+    || `Record ${index + 1}`
   )
 }
 
+const toFailedItem = (entry, index) => {
+  return {
+    id: (
+      toSafeString(entry?.student)
+      || toSafeString(entry?.rollNumber)
+      || toSafeString(entry?.email)
+      || toSafeString(entry?.name)
+      || `Record ${index + 1}`
+    ),
+    message: toSafeString(entry?.message || entry?.reason || entry?.error) || "Unknown error",
+  }
+}
+
+const buildImportSummary = (outcome, fallbackTotal) => {
+  const hasOutcomeObject = Boolean(outcome && typeof outcome === "object")
+  const results = Array.isArray(outcome?.results) ? outcome.results : []
+  const errors = Array.isArray(outcome?.errors) ? outcome.errors : []
+
+  const successItems = results.map(toSuccessIdentifier)
+  const failedItems = errors.map(toFailedItem)
+
+  const resolvedSuccessCount = toNonNegativeCount(outcome?.successCount) ?? successItems.length
+  const resolvedErrorCount = toNonNegativeCount(outcome?.errorCount) ?? failedItems.length
+  const totalFromOutcome = toNonNegativeCount(outcome?.total)
+  const resolvedTotal = (totalFromOutcome ?? (resolvedSuccessCount + resolvedErrorCount)) || fallbackTotal
+
+  const isRequestSuccessful = hasOutcomeObject ? outcome.success !== false : false
+  const status = (!isRequestSuccessful && resolvedSuccessCount === 0)
+    ? "failed"
+    : (resolvedErrorCount > 0 ? "partial" : "success")
+
+  const message = toSafeString(outcome?.message) || (
+    status === "success"
+      ? "Import completed successfully."
+      : status === "partial"
+        ? "Import completed with some errors."
+        : "Import failed."
+  )
+
+  return {
+    status,
+    message,
+    total: resolvedTotal,
+    successCount: resolvedSuccessCount,
+    errorCount: resolvedErrorCount,
+    successItems,
+    failedItems,
+  }
+}
+
 const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
+  const { on, isConnected } = useSocket()
+
+  const [activeTab, setActiveTab] = useState("csv")
   const [csvFile, setCsvFile] = useState(null)
-  const [parsedData, setParsedData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [error, setError] = useState("")
   const [step, setStep] = useState(1)
-  const fileInputRef = useRef(null)
-  const [showStudentDetail, setShowStudentDetail] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState(null)
-  const [validDegrees, setValidDegrees] = useState([])
-  const [validDepartments, setValidDepartments] = useState([])
-  const [configLoading, setConfigLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState("csv")
+  const [previewRows, setPreviewRows] = useState([])
+  const [parsedData, setParsedData] = useState([])
   const [manualStudent, setManualStudent] = useState({
     name: "",
     email: "",
     rollNumber: "",
-    phone: "",
     password: "",
-    gender: "",
-    dateOfBirth: "",
-    degree: "",
-    department: "",
-    year: "",
-    address: "",
-    admissionDate: new Date().toISOString().split("T")[0],
-    guardian: "",
-    guardianPhone: "",
-    guardianEmail: "",
   })
+  const [importProgress, setImportProgress] = useState({
+    phase: "idle",
+    total: 0,
+    processed: 0,
+    created: 0,
+    failed: 0,
+    message: null,
+  })
+  const [importSummary, setImportSummary] = useState(null)
+  const [csvImportResultRows, setCsvImportResultRows] = useState([])
 
-  const availableFields = ["name", "email", "phone", "password", "profileImage", "rollNumber", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
-  const requiredFields = ["name", "email", "rollNumber"]
+  const importJobIdRef = useRef(null)
+  const fileInputRef = useRef(null)
 
-  // Fetch valid degrees and departments from the config API
+  const progressPercent = useMemo(() => {
+    if (!importProgress.total) return 0
+    return Math.max(0, Math.min(100, Math.round((importProgress.processed / importProgress.total) * 100)))
+  }, [importProgress])
+
+  const csvResultSheetRows = useMemo(() => (
+    csvImportResultRows.map((row) => ({
+      "roll number": row.rollNumber,
+      email: row.email,
+      "success status": row.successStatus,
+      reason: row.reason,
+    }))
+  ), [csvImportResultRows])
+  const csvDisplayedSheetRows = useMemo(
+    () => csvResultSheetRows.slice(0, MAX_CSV_RESULT_ROWS_SHOWN),
+    [csvResultSheetRows]
+  )
+
+  const csvSuccessCount = useMemo(
+    () => csvImportResultRows.filter((row) => row.successStatus === "Success").length,
+    [csvImportResultRows]
+  )
+  const csvFailedCount = useMemo(
+    () => csvImportResultRows.filter((row) => row.successStatus === "Failed").length,
+    [csvImportResultRows]
+  )
+  const isCsvImportCompleted = importProgress.phase === "completed" || importProgress.phase === "failed"
+
   useEffect(() => {
-    if (isOpen) {
-      fetchConfigData()
+    if (!on) return undefined
+
+    const cleanup = on(IMPORT_PROGRESS_EVENT, (payload) => {
+      if (!payload || !importJobIdRef.current) return
+      if (payload.jobId !== importJobIdRef.current) return
+
+      setImportProgress({
+        phase: payload.phase || "processing",
+        total: payload.total || 0,
+        processed: payload.processed || 0,
+        created: payload.created || 0,
+        failed: payload.failed || 0,
+        message: payload.message || null,
+      })
+    })
+
+    return () => {
+      if (typeof cleanup === "function") {
+        cleanup()
+      }
+    }
+  }, [on])
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm()
     }
   }, [isOpen])
 
-  // Clear errors when switching tabs
-  useEffect(() => {
+  const resetForm = () => {
+    setCsvFile(null)
+    setIsLoading(false)
+    setIsImporting(false)
     setError("")
-  }, [activeTab])
-
-  const fetchConfigData = async () => {
-    setConfigLoading(true)
-    try {
-      const [degreesResponse, departmentsResponse] = await Promise.all([adminApi.getDegrees(), adminApi.getDepartments()])
-
-      setValidDegrees(degreesResponse.value || [])
-      setValidDepartments(departmentsResponse.value || [])
-    } catch (err) {
-      console.error("Error fetching config data:", err)
-      setError("Failed to load degree and department options. Some validations may not work properly.")
-    } finally {
-      setConfigLoading(false)
-    }
+    setStep(1)
+    setPreviewRows([])
+    setParsedData([])
+    setCsvImportResultRows([])
+    setActiveTab("csv")
+    setManualStudent({
+      name: "",
+      email: "",
+      rollNumber: "",
+      password: "",
+    })
+    setImportProgress({
+      phase: "idle",
+      total: 0,
+      processed: 0,
+      created: 0,
+      failed: 0,
+      message: null,
+    })
+    setImportSummary(null)
+    importJobIdRef.current = null
   }
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      if (file.type !== "text/csv") {
-        setError("Please upload a valid CSV file")
-        return
-      }
-      setCsvFile(file)
-      parseCSV(file)
-    }
+  const clearImportSummary = () => {
+    setImportSummary(null)
+    setError("")
+    setImportProgress((prev) => ({
+      ...prev,
+      phase: "idle",
+      message: null,
+    }))
+    importJobIdRef.current = null
   }
 
   const generateCsvTemplate = () => {
-    const headers = availableFields
-    const csvContent = headers.join(",")
+    const csvContent = ALLOWED_FIELDS.join(",")
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" })
     const url = URL.createObjectURL(blob)
@@ -236,23 +402,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }
-
-  const handleDragOver = (e) => {
-    e.preventDefault()
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      if (file.type !== "text/csv") {
-        setError("Please upload a valid CSV file")
-        return
-      }
-      setCsvFile(file)
-      parseCSV(file)
-    }
+    URL.revokeObjectURL(url)
   }
 
   const parseCSV = (file) => {
@@ -264,14 +414,15 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 900) {
-            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
+          const rows = Array.isArray(results.data) ? results.data : []
+          if (rows.length > MAX_BULK_RECORDS) {
+            setError(BULK_RECORD_LIMIT_MESSAGE)
             setIsLoading(false)
             return
           }
 
-          const headers = results.meta.fields
-          const missingFields = requiredFields.filter((field) => !headers.includes(field))
+          const headers = (results.meta.fields || []).map((field) => toSafeString(field)).filter(Boolean)
+          const missingFields = REQUIRED_FIELDS.filter((field) => !headers.includes(field))
 
           if (missingFields.length > 0) {
             setError(`Missing required fields: ${missingFields.join(", ")}`)
@@ -279,75 +430,75 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
             return
           }
 
-          const invalidRecords = []
-          const validGenders = ["Male", "Female"]
-          const parsedData = results.data.map((student, index) => {
-            const studentData = {}
+          const { previewRows: normalizedRows, payload, errors } = normalizeCsvRows(rows, headers)
 
-            availableFields.forEach((field) => {
-              if (field === "admissionDate") {
-                studentData[field] = student[field] || new Date().toISOString().split("T")[0]
-              } else {
-                studentData[field] = student[field] || ""
-              }
-            })
-
-            // Validate gender if provided
-            if (studentData.gender && !validGenders.includes(studentData.gender)) {
-              invalidRecords.push({
-                row: index + 2,
-                field: "gender",
-                value: studentData.gender,
-                message: `Invalid gender: "${studentData.gender}". Only "Male" or "Female" are allowed.`,
-              })
-            }
-
-            // Validate degree and department if they are provided
-            if (studentData.degree && validDegrees.length > 0 && !validDegrees.includes(studentData.degree)) {
-              invalidRecords.push({
-                row: index + 2, // +2 because of 0-indexing and header row
-                field: "degree",
-                value: studentData.degree,
-                message: `Invalid degree: "${studentData.degree}"`,
-              })
-            }
-
-            if (studentData.department && validDepartments.length > 0 && !validDepartments.includes(studentData.department)) {
-              invalidRecords.push({
-                row: index + 2,
-                field: "department",
-                value: studentData.department,
-                message: `Invalid department: "${studentData.department}"`,
-              })
-            }
-
-            return studentData
-          })
-
-          if (invalidRecords.length > 0) {
-            const errorMessages = invalidRecords.slice(0, 5).map((rec) => `Row ${rec.row}: ${rec.message}`)
-
-            if (invalidRecords.length > 5) {
-              errorMessages.push(`... and ${invalidRecords.length - 5} more errors`)
-            }
-
-            setError(`Invalid data detected:\n${errorMessages.join("\n")}`)
+          if (errors.length > 0) {
+            const topErrors = errors.slice(0, 8)
+            const remaining = errors.length - topErrors.length
+            const message = remaining > 0 ? `${topErrors.join("\n")}\n... and ${remaining} more errors` : topErrors.join("\n")
+            setError(`Invalid CSV data:\n${message}`)
             setIsLoading(false)
             return
           }
 
-          setParsedData(parsedData)
+          setPreviewRows(normalizedRows)
+          setParsedData(payload)
           setStep(2)
           setIsLoading(false)
-        } catch (err) {
+        } catch {
           setError("Failed to process CSV data. Please check the format.")
           setIsLoading(false)
         }
       },
-      error: (error) => {
-        setError(`Error parsing CSV: ${error.message}`)
+      error: (parseError) => {
+        setError(`Error parsing CSV: ${parseError.message}`)
         setIsLoading(false)
       },
+    })
+  }
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const isCsv = file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv")
+    if (!isCsv) {
+      setError("Please upload a valid CSV file")
+      return
+    }
+
+    setCsvFile(file)
+    parseCSV(file)
+  }
+
+  const handleDrop = (event) => {
+    event.preventDefault()
+    const file = event.dataTransfer.files?.[0]
+    if (!file) return
+
+    const isCsv = file.type === "text/csv" || file.name.toLowerCase().endsWith(".csv")
+    if (!isCsv) {
+      setError("Please upload a valid CSV file")
+      return
+    }
+
+    setCsvFile(file)
+    parseCSV(file)
+  }
+
+  const handleDragOver = (event) => {
+    event.preventDefault()
+  }
+
+  const startImportProgress = (total) => {
+    setImportSummary(null)
+    setImportProgress({
+      phase: "started",
+      total,
+      processed: 0,
+      created: 0,
+      failed: 0,
+      message: "Student import started",
     })
   }
 
@@ -357,286 +508,565 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       return
     }
 
+    setError("")
     setIsImporting(true)
+    setStep(3)
+
+    const importJobId = createImportJobId()
+    importJobIdRef.current = importJobId
+    startImportProgress(parsedData.length)
+    setCsvImportResultRows([])
 
     try {
-      const isSuccess = await onImport(parsedData)
-      if (isSuccess) {
-        onClose()
-        resetForm()
+      const outcome = await onImport(parsedData, { importJobId })
+      const finalRows = buildCsvImportResultRows(parsedData, outcome)
+      const successful = finalRows.filter((row) => row.successStatus === "Success").length
+      const failed = finalRows.filter((row) => row.successStatus === "Failed").length
+      const total = finalRows.length
+      const requestFailed = outcome?.success === false && successful === 0
+
+      setCsvImportResultRows(finalRows)
+      setImportProgress({
+        phase: requestFailed ? "failed" : "completed",
+        total,
+        processed: total,
+        created: successful,
+        failed,
+        message: toSafeString(outcome?.message)
+          || (failed > 0
+            ? `Import completed with ${failed} failed records`
+            : "Import completed successfully"),
+      })
+      setError(requestFailed ? (toSafeString(outcome?.message) || "Import failed") : "")
+    } catch (importError) {
+      const failedMessage = importError?.message || "Import failed"
+      const fallbackOutcome = {
+        success: false,
+        message: failedMessage,
+        errors: [{ student: "All records", message: failedMessage }],
       }
+      const finalRows = buildCsvImportResultRows(parsedData, fallbackOutcome)
+      setCsvImportResultRows(finalRows)
+      setImportProgress({
+        phase: "failed",
+        total: finalRows.length,
+        processed: finalRows.length,
+        created: 0,
+        failed: finalRows.length,
+        message: failedMessage,
+      })
+      setError(failedMessage)
     } finally {
       setIsImporting(false)
     }
   }
 
-  const resetForm = () => {
-    setCsvFile(null)
-    setParsedData([])
-    setError("")
-    setStep(1)
-    setManualStudent({
-      name: "",
-      email: "",
-      rollNumber: "",
-      phone: "",
-      password: "",
-      gender: "",
-      dateOfBirth: "",
-      degree: "",
-      department: "",
-      year: "",
-      address: "",
-      admissionDate: new Date().toISOString().split("T")[0],
-      guardian: "",
-      guardianPhone: "",
-      guardianEmail: "",
-    })
-  }
-
-  const handleManualInputChange = (field, value) => {
-    setManualStudent((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
-  }
-
-  const validateManualStudent = () => {
-    const errors = []
-    const validGenders = ["Male", "Female"]
-
-    // Check required fields
-    if (!manualStudent.name.trim()) errors.push("Name is required")
-    if (!manualStudent.email.trim()) errors.push("Email is required")
-    if (!manualStudent.rollNumber.trim()) errors.push("Roll Number is required")
-
-    // Validate email format
-    if (manualStudent.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(manualStudent.email)) {
-      errors.push("Please enter a valid email address")
-    }
-
-    // Validate gender if provided
-    if (manualStudent.gender && !validGenders.includes(manualStudent.gender)) {
-      errors.push(`Invalid gender: "${manualStudent.gender}". Only "Male" or "Female" are allowed.`)
-    }
-
-    // Validate degree and department
-    if (manualStudent.degree && validDegrees.length > 0 && !validDegrees.includes(manualStudent.degree)) {
-      errors.push(`Invalid degree: "${manualStudent.degree}"`)
-    }
-
-    if (manualStudent.department && validDepartments.length > 0 && !validDepartments.includes(manualStudent.department)) {
-      errors.push(`Invalid department: "${manualStudent.department}"`)
-    }
-
-    return errors
-  }
-
-  const handleManualImport = async () => {
-    const validationErrors = validateManualStudent()
-
-    if (validationErrors.length > 0) {
-      setError(validationErrors.join("\n"))
+  const handleExportCsvResults = () => {
+    if (!isCsvImportCompleted || csvResultSheetRows.length === 0) {
+      setError("No completed import results available to export")
       return
     }
 
-    setIsImporting(true)
+    const exported = downloadCSV(csvResultSheetRows, "student_import_results")
+    if (!exported) {
+      setError("Failed to export import results")
+    }
+  }
+
+  const handleManualInputChange = (field, value) => {
+    setManualStudent((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const handleManualImport = async () => {
+    const name = toSafeString(manualStudent.name)
+    const email = toSafeString(manualStudent.email)
+    const rollNumber = toSafeString(manualStudent.rollNumber).toUpperCase()
+    const password = toSafeString(manualStudent.password)
+
+    if (!name || !email || !rollNumber) {
+      setError("Name, email, and roll number are required")
+      return
+    }
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address")
+      return
+    }
+
     setError("")
+    setIsImporting(true)
+
+    const importJobId = createImportJobId()
+    importJobIdRef.current = importJobId
+    startImportProgress(1)
+
+    const student = { name, email, rollNumber }
+    if (password) {
+      student.password = password
+    }
 
     try {
-      // Create student data in the same format as CSV import
-      const studentData = { ...manualStudent }
-
-      // Remove empty fields
-      Object.keys(studentData).forEach((key) => {
-        if (!studentData[key]) {
-          delete studentData[key]
-        }
+      const outcome = await onImport([student], { importJobId })
+      const summary = buildImportSummary(outcome, 1)
+      setImportSummary(summary)
+      setImportProgress({
+        phase: summary.status === "failed" ? "failed" : "completed",
+        total: summary.total,
+        processed: summary.total,
+        created: summary.successCount,
+        failed: summary.errorCount,
+        message: summary.message,
       })
-
-      const isSuccess = await onImport([studentData])
-      if (isSuccess) {
-        onClose()
-        resetForm()
-      }
-    } catch (error) {
-      setError(error.message || "An error occurred while importing the student")
+      setError(summary.status === "failed" ? summary.message : "")
+    } catch (importError) {
+      const failedMessage = importError?.message || "Import failed"
+      const summary = buildImportSummary({
+        success: false,
+        message: failedMessage,
+        total: 1,
+        successCount: 0,
+        errorCount: 1,
+        errors: [{ student: rollNumber || email || "Student", message: failedMessage }],
+      }, 1)
+      setImportSummary(summary)
+      setImportProgress({
+        phase: "failed",
+        total: summary.total,
+        processed: summary.total,
+        created: summary.successCount,
+        failed: summary.errorCount,
+        message: summary.message,
+      })
+      setError(failedMessage)
     } finally {
       setIsImporting(false)
     }
   }
 
-  const viewStudentDetails = (student) => {
-    setSelectedStudent(student)
-    setShowStudentDetail(true)
+  const renderImportSummary = () => {
+    if (!importSummary) return null
+
+    const shownSuccessItems = importSummary.successItems.slice(0, 25)
+    const shownFailedItems = importSummary.failedItems.slice(0, 25)
+    const remainingSuccessItems = importSummary.successItems.length - shownSuccessItems.length
+    const remainingFailedItems = importSummary.failedItems.length - shownFailedItems.length
+
+    const summaryTitle = importSummary.status === "success"
+      ? "Import Completed"
+      : importSummary.status === "partial"
+        ? "Import Completed With Errors"
+        : "Import Failed"
+
+    const summaryBg = importSummary.status === "success"
+      ? "var(--color-success-bg)"
+      : importSummary.status === "partial"
+        ? "var(--color-warning-bg)"
+        : "var(--color-danger-bg-light)"
+
+    return (
+      <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-4)", backgroundColor: summaryBg, display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+        <div>
+          <h4 style={{ fontSize: "var(--font-size-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>{summaryTitle}</h4>
+          <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{importSummary.message}</p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Total</div>
+            <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>{importSummary.total}</div>
+          </div>
+          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Successfully Done</div>
+            <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success)" }}>{importSummary.successCount}</div>
+          </div>
+          <div style={{ backgroundColor: "var(--color-bg-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>Not Done (Errors)</div>
+            <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-danger)" }}>{importSummary.errorCount}</div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+          <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
+            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-primary)" }}>Done</div>
+            {shownSuccessItems.length === 0 ? (
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No successful records.</div>
+            ) : (
+              <>
+                <ul style={{ margin: 0, paddingLeft: "var(--spacing-4)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
+                  {shownSuccessItems.map((item, index) => (
+                    <li key={`success-${item}-${index}`}>{item}</li>
+                  ))}
+                </ul>
+                {remainingSuccessItems > 0 && (
+                  <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>...and {remainingSuccessItems} more</div>
+                )}
+              </>
+            )}
+          </div>
+
+          <div style={{ backgroundColor: "var(--color-bg-primary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)", maxHeight: "12rem", overflow: "auto" }}>
+            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-2)", color: "var(--color-text-primary)" }}>Not Done</div>
+            {shownFailedItems.length === 0 ? (
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>No failed records.</div>
+            ) : (
+              <>
+                <ul style={{ margin: 0, paddingLeft: "var(--spacing-4)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
+                  {shownFailedItems.map((item, index) => (
+                    <li key={`failed-${item.id}-${index}`}>
+                      <strong>{item.id}:</strong> {item.message}
+                    </li>
+                  ))}
+                </ul>
+                {remainingFailedItems > 0 && (
+                  <div style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>...and {remainingFailedItems} more</div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    )
   }
 
-  // Format array for display in the UI
-  const formatArrayForDisplay = (arr) => {
-    if (!arr || arr.length === 0) return "Loading..."
-
-    if (arr.length <= 5) {
-      return arr.join(", ")
-    }
-
-    return arr.slice(0, 5).join(", ") + `, ... (${arr.length - 5} more)`
-  }
-
-  // Define tabs
   const tabs = [
     { id: "csv", name: "CSV Import", icon: <FaUpload /> },
     { id: "manual", name: "Single Student", icon: <FaUser /> },
   ]
+  const hasImportSummary = Boolean(importSummary)
+
+  const handleTabChange = (nextTab) => {
+    if (isImporting) return
+    if (hasImportSummary) {
+      clearImportSummary()
+    }
+    setStep(1)
+    setCsvFile(null)
+    setParsedData([])
+    setPreviewRows([])
+    setCsvImportResultRows([])
+    setActiveTab(nextTab)
+  }
 
   if (!isOpen) return null
 
   return (
-    <Modal title="Import Students" onClose={onClose} width={900} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}>
-      {/* CSV Import Tab */}
+    <Modal title="Import Students" onClose={onClose} width={980} tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange}>
       {activeTab === "csv" && (
         <>
           {step === 1 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-              <div style={{ border: 'var(--border-2) dashed var(--color-border-input)', borderRadius: 'var(--radius-xl)', padding: 'var(--spacing-8)', textAlign: 'center', cursor: 'pointer', backgroundColor: 'var(--color-bg-tertiary)', transition: 'var(--transition-all)' }} onDragOver={handleDragOver} onDrop={handleDrop} onClick={() => fileInputRef.current.click()}>
-                <FaFileUpload style={{ margin: '0 auto', height: 'var(--icon-4xl)', width: 'var(--icon-4xl)', color: 'var(--color-text-disabled)' }} />
-                <p style={{ marginTop: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>Drag and drop a CSV file here, or click to select a file</p>
-                <p style={{ marginTop: 'var(--spacing-3)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
-                  <strong>Required fields:</strong> {requiredFields.join(", ")}
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-5)" }}>
+              <div
+                style={{
+                  border: "var(--border-2) dashed var(--color-border-input)",
+                  borderRadius: "var(--radius-xl)",
+                  padding: "var(--spacing-8)",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  backgroundColor: "var(--color-bg-tertiary)",
+                }}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <FaFileUpload style={{ margin: "0 auto", height: "var(--icon-4xl)", width: "var(--icon-4xl)", color: "var(--color-text-disabled)" }} />
+                <p style={{ marginTop: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  Drag and drop a CSV file here, or click to select a file
                 </p>
-                <p style={{ marginTop: 'var(--spacing-1)', fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>
-                  <strong>Optional fields:</strong> {availableFields.filter((field) => !requiredFields.includes(field)).join(", ")}
+                <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <strong>Required fields:</strong> {REQUIRED_FIELDS.join(", ")}
+                </p>
+                <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  <strong>Optional fields:</strong> {OPTIONAL_FIELDS.join(", ")}
                 </p>
                 <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--spacing-2)" }}>
                 <Button onClick={generateCsvTemplate} variant="ghost" size="sm">
                   <FaFileDownload />
                   Download CSV Template
                 </Button>
-
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--spacing-2)', backgroundColor: 'var(--color-bg-tertiary)', padding: 'var(--spacing-3)', borderRadius: 'var(--radius-lg)', maxWidth: '28rem' }}>
-                  <p style={{ fontWeight: 'var(--font-weight-medium)', marginBottom: 'var(--spacing-1)' }}>Field Input Types:</p>
-                  <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 'var(--spacing-4)', rowGap: 'var(--spacing-1)' }}>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>name:</span> String (Required)</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>email:</span> Email (Required)</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>rollNumber:</span> String (Required)</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>phone:</span> Number</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>password:</span> String</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>gender:</span> Male/Female</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>dateOfBirth:</span> YYYY-MM-DD</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>degree:</span> {configLoading ? "Loading..." : validDegrees.length > 0 ? "Must be one of the valid degrees" : "String"}</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>department:</span> {configLoading ? "Loading..." : validDepartments.length > 0 ? "Must be one of the valid departments" : "String"}</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>year:</span> Number</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>address:</span> String</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>admissionDate:</span> YYYY-MM-DD</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>guardian:</span> String</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>guardianPhone:</span> Number</li>
-                    <li><span style={{ fontWeight: 'var(--font-weight-medium)' }}>guardianEmail:</span> Email</li>
+                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-3)", borderRadius: "var(--radius-lg)", maxWidth: "30rem" }}>
+                  <p style={{ fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Field Input Types:</p>
+                  <ul style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-1) var(--spacing-4)" }}>
+                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>name:</span> String (Required)</li>
+                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>email:</span> Email (Required)</li>
+                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>rollNumber:</span> String (Required)</li>
+                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>password:</span> String (Optional)</li>
                   </ul>
-
-                  {/* Display valid degrees and departments */}
-                  {!configLoading && (
-                    <div style={{ marginTop: 'var(--spacing-3)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)' }}>
-                      {validDegrees.length > 0 && (
-                        <div>
-                          <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>Valid Degrees:</p>
-                          <p style={{ color: 'var(--color-text-body)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-md)' }}>{formatArrayForDisplay(validDegrees)}</p>
-                        </div>
-                      )}
-
-                      {validDepartments.length > 0 && (
-                        <div>
-                          <p style={{ fontWeight: 'var(--font-weight-medium)', color: 'var(--color-primary)' }}>Valid Departments:</p>
-                          <p style={{ color: 'var(--color-text-body)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1)', borderRadius: 'var(--radius-md)' }}>{formatArrayForDisplay(validDepartments)}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               </div>
 
               {csvFile && (
-                <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary-bg)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-primary)' }}>
-                    Selected file: <span style={{ fontWeight: 'var(--font-weight-medium)' }}>{csvFile.name}</span>
+                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-primary-bg)", borderRadius: "var(--radius-lg)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-primary)" }}>
+                    Selected file: <span style={{ fontWeight: "var(--font-weight-medium)" }}>{csvFile.name}</span>
                   </span>
-                  <Button onClick={(e) => {
-                    e.stopPropagation()
-                    setCsvFile(null)
-                  }} variant="ghost" size="sm" title="Remove file"><FaTimes /></Button>
+                  <Button
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      setCsvFile(null)
+                    }}
+                    variant="ghost"
+                    size="sm"
+                    title="Remove file"
+                  >
+                    <FaTimes />
+                  </Button>
                 </div>
               )}
 
-              {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)', whiteSpace: 'pre-line' }}>{error}</div>}
+              {error && (
+                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+                  {error}
+                </div>
+              )}
 
-              {(isLoading || configLoading) && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4) 0' }}>
-                  <div style={{ width: 'var(--spacing-6)', height: 'var(--spacing-6)', border: 'var(--border-2) solid var(--color-bg-muted)', borderTopColor: 'var(--color-primary)', borderRadius: 'var(--radius-full)', animation: 'spin 1s linear infinite' }}></div>
-                  <span style={{ marginLeft: 'var(--spacing-2)', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)' }}>{isLoading ? "Processing file..." : "Loading configuration..."}</span>
+              {isLoading && (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4) 0" }}>
+                  <div style={{ width: "var(--spacing-6)", height: "var(--spacing-6)", border: "var(--border-2) solid var(--color-bg-muted)", borderTopColor: "var(--color-primary)", borderRadius: "var(--radius-full)", animation: "spin 1s linear infinite" }} />
+                  <span style={{ marginLeft: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>Processing file...</span>
                 </div>
               )}
             </div>
           )}
 
           {step === 2 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-5)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-                <h3 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 'var(--font-weight-medium)', color: 'var(--color-text-secondary)' }}>Preview Import Data</h3>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-muted)', backgroundColor: 'var(--color-primary-bg)', padding: 'var(--spacing-1) var(--spacing-3)', borderRadius: 'var(--radius-full)' }}>{parsedData.length} students found in CSV</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Preview Import Data</h3>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-1) var(--spacing-3)", borderRadius: "var(--radius-full)" }}>
+                  {parsedData.length} valid students
+                </div>
               </div>
 
-              <div style={{ border: 'var(--border-1) solid var(--color-border-primary)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
-                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => { }} viewStudentDetails={viewStudentDetails} />
+              <SheetPreviewTable rows={previewRows} />
+
+              {error && (
+                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+                  {error}
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === 3 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+              <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>
+                Import Progress
+              </h3>
+
+              <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "var(--spacing-2)", fontSize: "var(--font-size-xs)", color: "var(--color-text-body)" }}>
+                  <span>{importProgress.message || "Importing students..."}</span>
+                  <span>{progressPercent}%</span>
+                </div>
+                <div style={{ width: "100%", height: "8px", borderRadius: "999px", backgroundColor: "var(--color-bg-muted)", overflow: "hidden" }}>
+                  <div
+                    style={{
+                      width: `${progressPercent}%`,
+                      height: "100%",
+                      backgroundColor: "var(--color-primary)",
+                      transition: "width 240ms ease",
+                    }}
+                  />
+                </div>
               </div>
 
-              {error && <div style={{ padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-danger-bg-light)', color: 'var(--color-danger)', borderRadius: 'var(--radius-lg)', borderLeft: 'var(--border-4) solid var(--color-danger)', whiteSpace: 'pre-line' }}>{error}</div>}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "var(--spacing-3)" }}>
+                <div style={{ backgroundColor: "var(--color-info-bg)", border: "var(--border-1) solid var(--color-info-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-info-text)" }}>Imported</div>
+                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-info-text)" }}>
+                    {importProgress.processed}/{importProgress.total || parsedData.length}
+                  </div>
+                </div>
+                <div style={{ backgroundColor: "var(--color-success-bg)", border: "var(--border-1) solid var(--color-success-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success-text)" }}>Successful</div>
+                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-success-text)" }}>{csvSuccessCount}</div>
+                </div>
+                <div style={{ backgroundColor: "var(--color-danger-bg)", border: "var(--border-1) solid var(--color-danger-border)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-danger-text)" }}>Failed</div>
+                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-danger-text)" }}>{csvFailedCount}</div>
+                </div>
+                <div style={{ backgroundColor: "var(--color-warning-bg)", border: "var(--border-1) solid var(--color-warning-light)", borderRadius: "var(--radius-md)", padding: "var(--spacing-3)" }}>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning-text)" }}>Shown In Sheet</div>
+                  <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning-text)" }}>
+                    {csvDisplayedSheetRows.length}/{csvResultSheetRows.length}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", backgroundColor: "var(--color-bg-tertiary)", border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-2) var(--spacing-3)" }}>
+                Status table columns: roll number, email, success status, reason.
+                {!isConnected && " Socket offline: showing limited progress"}
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button onClick={handleExportCsvResults} variant="secondary" size="sm" disabled={!isCsvImportCompleted || csvResultSheetRows.length === 0}>
+                  <FaFileDownload />
+                  Export Results
+                </Button>
+              </div>
+
+              {isCsvImportCompleted ? (
+                <SheetPreviewTable rows={csvDisplayedSheetRows} />
+              ) : (
+                <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", backgroundColor: "var(--color-bg-tertiary)", padding: "var(--spacing-4)", fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  Results sheet will appear when import finishes.
+                </div>
+              )}
+
+              {error && (
+                <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+                  {error}
+                </div>
+              )}
             </div>
           )}
         </>
       )}
 
-      {/* Manual Student Tab */}
-      {activeTab === "manual" && <ManualStudentForm manualStudent={manualStudent} handleManualInputChange={handleManualInputChange} validDegrees={validDegrees} validDepartments={validDepartments} configLoading={configLoading} error={error} />}
+      {activeTab === "manual" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+          <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-secondary)" }}>Add Single Student</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--spacing-4)" }}>
+            <div>
+              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Name *</label>
+              <Input type="text" value={manualStudent.name} onChange={(event) => handleManualInputChange("name", event.target.value)} placeholder="Enter student's full name" />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Email *</label>
+              <Input type="email" value={manualStudent.email} onChange={(event) => handleManualInputChange("email", event.target.value)} placeholder="Enter email address" />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Roll Number *</label>
+              <Input type="text" value={manualStudent.rollNumber} onChange={(event) => handleManualInputChange("rollNumber", event.target.value)} placeholder="Enter roll number" />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Password</label>
+              <Input type="password" value={manualStudent.password} onChange={(event) => handleManualInputChange("password", event.target.value)} placeholder="Optional custom password" />
+            </div>
+          </div>
 
-      <div style={{ marginTop: 'var(--spacing-6)', display: 'flex', justifyContent: 'flex-end', gap: 'var(--spacing-3)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
-        {/* CSV Tab Buttons */}
+          {(isImporting || importProgress.phase === "processing" || importProgress.phase === "started") && (
+            <div style={{ border: "var(--border-1) solid var(--color-border-primary)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-3)", backgroundColor: "var(--color-bg-tertiary)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+              {importProgress.message || "Adding student..."}
+            </div>
+          )}
+
+          {importSummary && renderImportSummary()}
+
+          {error && (
+            <div style={{ padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger)", borderRadius: "var(--radius-lg)", borderLeft: "var(--border-4) solid var(--color-danger)", whiteSpace: "pre-line" }}>
+              {error}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div style={{ marginTop: "var(--spacing-6)", display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", paddingTop: "var(--spacing-4)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
         {activeTab === "csv" && (
           <>
             {step === 1 ? (
-              <Button onClick={onClose} variant="secondary" size="md">
-                Cancel
-              </Button>
-            ) : (
-              <Button onClick={resetForm} variant="secondary" size="md">
-                Back
-              </Button>
-            )}
+              <Button onClick={onClose} variant="secondary" size="md" disabled={isImporting}>Cancel</Button>
+            ) : null}
 
-            {step === 2 && (
+            {step === 2 ? (
+              <Button onClick={() => { setStep(1); setError("") }} variant="secondary" size="md" disabled={isImporting}>Back</Button>
+            ) : null}
+
+            {step === 2 ? (
               <Button onClick={handleImport} variant="primary" size="md" loading={isImporting} disabled={parsedData.length === 0 || isLoading || isImporting}>
                 {!isImporting && <FaCheck />}
                 {isImporting ? "Importing Students..." : "Confirm Import"}
               </Button>
+            ) : null}
+
+            {step === 3 ? (
+              <Button
+                onClick={() => {
+                  setStep(1)
+                  setCsvFile(null)
+                  setParsedData([])
+                  setPreviewRows([])
+                  setCsvImportResultRows([])
+                  setError("")
+                  setImportProgress({
+                    phase: "idle",
+                    total: 0,
+                    processed: 0,
+                    created: 0,
+                    failed: 0,
+                    message: null,
+                  })
+                  importJobIdRef.current = null
+                }}
+                variant="secondary"
+                size="md"
+                disabled={isImporting}
+              >
+                Import Another File
+              </Button>
+            ) : null}
+
+            {step === 3 ? (
+              <Button onClick={handleExportCsvResults} variant="secondary" size="md" disabled={!isCsvImportCompleted || csvResultSheetRows.length === 0}>
+                <FaFileDownload />
+                Export Results
+              </Button>
+            ) : null}
+
+            {step === 3 ? (
+              <Button onClick={onClose} variant="primary" size="md" disabled={isImporting}>
+                Close
+              </Button>
+            ) : null}
+          </>
+        )}
+
+        {activeTab === "manual" && (
+          <>
+            {!hasImportSummary ? (
+              <Button onClick={onClose} variant="secondary" size="md" disabled={isImporting}>Cancel</Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  clearImportSummary()
+                  setManualStudent({
+                    name: "",
+                    email: "",
+                    rollNumber: "",
+                    password: "",
+                  })
+                }}
+                variant="secondary"
+                size="md"
+              >
+                Add Another Student
+              </Button>
+            )}
+
+            {!hasImportSummary ? (
+              <Button
+                onClick={handleManualImport}
+                variant="primary"
+                size="md"
+                loading={isImporting}
+                disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting}
+              >
+                {!isImporting && <FaCheck />}
+                {isImporting ? "Adding Student..." : "Add Student"}
+              </Button>
+            ) : (
+              <Button onClick={onClose} variant="primary" size="md">
+                Close
+              </Button>
             )}
           </>
         )}
-
-        {/* Manual Tab Buttons */}
-        {activeTab === "manual" && (
-          <>
-            <Button onClick={onClose} variant="secondary" size="md">
-              Cancel
-            </Button>
-
-            <Button onClick={handleManualImport} variant="primary" size="md" loading={isImporting} disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting || configLoading}>
-              {!isImporting && <FaCheck />}
-              {isImporting ? "Adding Student..." : "Add Student"}
-            </Button>
-          </>
-        )}
       </div>
-      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={null} isImport={true} />}
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </Modal>
   )
 }

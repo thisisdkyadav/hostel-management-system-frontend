@@ -133,18 +133,39 @@ export const useStudents = (options = {}) => {
   }, [])
 
   const importStudents = useCallback(
-    async (importedStudents) => {
+    async (importedStudents, options = {}) => {
       try {
         setLoading(true)
-        const response = await studentApi.importStudents(importedStudents)
-        if (response?.error) {
-          throw new Error(response.error.message)
-        }
+        const response = await studentApi.importStudents(importedStudents, options)
+        const results = Array.isArray(response?.results)
+          ? response.results
+          : (response?.results ? [response.results] : [])
+        const errors = Array.isArray(response?.errors) ? response.errors : []
+
         fetchWithCurrentFilters()
-        return { success: true }
+        return {
+          success: true,
+          data: {
+            total: Array.isArray(importedStudents) ? importedStudents.length : 1,
+            successCount: results.length,
+            errorCount: errors.length,
+            results,
+            errors,
+          },
+        }
       } catch (err) {
         setError(err.message || "Failed to import students")
-        return { error: err }
+        return {
+          success: false,
+          error: err,
+          data: {
+            total: Array.isArray(importedStudents) ? importedStudents.length : 1,
+            successCount: 0,
+            errorCount: Array.isArray(importedStudents) ? importedStudents.length : 1,
+            results: [],
+            errors: [],
+          },
+        }
       } finally {
         setLoading(false)
       }

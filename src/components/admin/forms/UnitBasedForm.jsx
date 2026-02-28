@@ -4,6 +4,7 @@ import RoomStatsSummary from "./RoomStatsSummary"
 import { VStack, HStack, Label } from "@/components/ui"
 import { Button, Input } from "czero/react"
 import { FaTable, FaEdit } from "react-icons/fa"
+import { MAX_BULK_RECORDS } from "@/constants/systemLimits"
 
 const UnitBasedForm = ({ formData, setFormData }) => {
   const [inputMethod, setInputMethod] = useState("form")
@@ -276,7 +277,7 @@ const UnitBasedForm = ({ formData, setFormData }) => {
         </>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-6)" }}>
-          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity"]} instructionText={templateInstructions} maxRecords={900} />
+          <CsvUploader onDataParsed={handleCsvDataParsed} requiredFields={requiredFields} templateFileName="unit_based_rooms_template.csv" templateHeaders={["unitNumber", "roomNumber", "capacity"]} instructionText={templateInstructions} maxRecords={MAX_BULK_RECORDS} />
 
           {parsedCsvData.length > 0 && (
             <div style={{ marginTop: "var(--spacing-4)" }}>

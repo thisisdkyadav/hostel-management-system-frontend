@@ -5,6 +5,19 @@
 
 import apiClient from "../core/apiClient"
 
+const unwrapStandardResponse = (response) => {
+  if (
+    response &&
+    typeof response === "object" &&
+    typeof response.success === "boolean" &&
+    Object.prototype.hasOwnProperty.call(response, "data")
+  ) {
+    return response.data
+  }
+
+  return response
+}
+
 export const adminApi = {
   // ==================== Profile ====================
 
@@ -319,7 +332,9 @@ export const adminApi = {
    * @param {string} newName - New degree name
    */
   renameDegree: (oldName, newName) => {
-    return apiClient.put("/students/profiles-admin/degrees/rename", { oldName, newName })
+    return apiClient
+      .put("/students/profiles-admin/degrees/rename", { oldName, newName })
+      .then(unwrapStandardResponse)
   },
 
   // ==================== Departments Management ====================
@@ -345,7 +360,9 @@ export const adminApi = {
    * @param {string} newName - New department name
    */
   renameDepartment: (oldName, newName) => {
-    return apiClient.put("/students/profiles-admin/departments/rename", { oldName, newName })
+    return apiClient
+      .put("/students/profiles-admin/departments/rename", { oldName, newName })
+      .then(unwrapStandardResponse)
   },
 
   // ==================== Registered Students Management ====================
@@ -462,7 +479,9 @@ export const adminApi = {
    * @param {string} status - Status to set
    */
   bulkUpdateStudentsStatus: (rollNumbers, status) => {
-    return apiClient.post("/students/profiles-admin/profiles/status", { rollNumbers, status })
+    return apiClient
+      .post("/students/profiles-admin/profiles/status", { rollNumbers, status })
+      .then((response) => response?.success === true)
   },
 
   /**
@@ -470,7 +489,12 @@ export const adminApi = {
    * @param {Object} dayScholarData - Day scholar data
    */
   bulkUpdateDayScholarDetails: (dayScholarData) => {
-    return apiClient.put("/students/profiles-admin/profiles/day-scholar", dayScholarData)
+    return apiClient.put("/students/profiles-admin/profiles/day-scholar", dayScholarData).then((response) => ({
+      success: response?.success === true,
+      errors: response?.data?.errors || [],
+      results: response?.data?.results || [],
+      message: response?.message || null,
+    }))
   },
 
   // ==================== Admin Undertakings ====================

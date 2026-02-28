@@ -3,6 +3,7 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import { VStack, HStack, Alert, FileInput } from "@/components/ui"
 import { Button, Modal } from "czero/react"
+import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { adminApi } from "../../../service"
 
 const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId, undertakingTitle }) => {
@@ -68,8 +69,8 @@ const BulkStudentUndertakingModal = ({ isOpen, onClose, onUpdate, undertakingId,
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 900) {
-            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
+          if (results.data.length > MAX_BULK_RECORDS) {
+            setError(BULK_RECORD_LIMIT_MESSAGE)
             setIsLoading(false)
             return
           }

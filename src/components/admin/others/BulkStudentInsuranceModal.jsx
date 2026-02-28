@@ -3,6 +3,7 @@ import { FaFileUpload, FaCheck, FaTimes, FaFileDownload } from "react-icons/fa"
 import Papa from "papaparse"
 import { VStack, HStack, Alert, FileInput } from "@/components/ui"
 import { Button, Modal } from "czero/react"
+import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, providerName }) => {
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
@@ -66,8 +67,8 @@ const BulkStudentInsuranceModal = ({ isOpen, onClose, onUpdate, providerId, prov
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 10000) {
-            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
+          if (results.data.length > MAX_BULK_RECORDS) {
+            setError(BULK_RECORD_LIMIT_MESSAGE)
             setIsLoading(false)
             return
           }

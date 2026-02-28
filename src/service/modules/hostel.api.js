@@ -96,7 +96,12 @@ export const hostelApi = {
    * @param {string} hostelId - Hostel ID
    */
   updateRoomAllocations: (allocationData, hostelId) => {
-    return apiClient.put(`/hostel/update-allocations/${hostelId}`, allocationData)
+    return apiClient.put(`/hostel/update-allocations/${hostelId}`, allocationData).then((response) => ({
+      success: response?.success === true,
+      data: response?.data?.allocations || [],
+      errors: response?.data?.errors || [],
+      message: response?.message || null,
+    }))
   },
 
   /**

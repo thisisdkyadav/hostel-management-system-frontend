@@ -6,6 +6,7 @@ import Papa from "papaparse"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { Select, FileInput } from "@/components/ui"
 import { Button, Modal } from "czero/react"
+import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import StudentDetailModal from "./StudentDetailModal"
 
 const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
@@ -103,8 +104,8 @@ const UpdateAllocationModal = ({ isOpen, onClose, onAllocate }) => {
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 900) {
-            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
+          if (results.data.length > MAX_BULK_RECORDS) {
+            setError(BULK_RECORD_LIMIT_MESSAGE)
             setIsLoading(false)
             return
           }

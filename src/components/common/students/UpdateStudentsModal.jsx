@@ -10,6 +10,7 @@ import { adminApi } from "../../../service"
 import toast from "react-hot-toast"
 import { Select, Checkbox, FileInput } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
+import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 
 // Reusable styles using theme CSS variables
 const styles = {
@@ -169,8 +170,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       skipEmptyLines: true,
       complete: (results) => {
         try {
-          if (results.data.length > 900) {
-            setError("Free accounts are limited to 900 records. Please upgrade or reduce your data.")
+          if (results.data.length > MAX_BULK_RECORDS) {
+            setError(BULK_RECORD_LIMIT_MESSAGE)
             setIsLoading(false)
             return
           }
@@ -501,7 +502,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       <div style={styles.container}>
         <h3 style={styles.sectionTitle}>Update Health Information</h3>
 
-        <CsvUploader onDataParsed={handleHealthDataParsed} requiredFields={["rollNumber", "bloodGroup"]} templateFileName="health_update_template.csv" templateHeaders={healthTemplateHeaders} maxRecords={900} instructionText={healthInstructionsText} />
+        <CsvUploader onDataParsed={handleHealthDataParsed} requiredFields={["rollNumber", "bloodGroup"]} templateFileName="health_update_template.csv" templateHeaders={healthTemplateHeaders} maxRecords={MAX_BULK_RECORDS} instructionText={healthInstructionsText} />
 
         {error && <div style={styles.errorBox}>{error}</div>}
 
@@ -634,7 +635,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <div className="flex flex-col space-y-4">
           <div className="border-b border-gray-200 pb-4">
             <h4 className="text-base font-medium text-gray-700 mb-2">Option 1: Upload CSV</h4>
-            <CsvUploader onDataParsed={handleFamilyDataParsed} requiredFields={["rollNumber", "name"]} templateFileName="family_update_template.csv" templateHeaders={familyTemplateHeaders} maxRecords={900} instructionText={familyInstructionsText} />
+            <CsvUploader onDataParsed={handleFamilyDataParsed} requiredFields={["rollNumber", "name"]} templateFileName="family_update_template.csv" templateHeaders={familyTemplateHeaders} maxRecords={MAX_BULK_RECORDS} instructionText={familyInstructionsText} />
 
             {familyData.length > 0 && (
               <div className="mt-4 p-4 bg-green-50 rounded-lg">
@@ -794,7 +795,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <div className="border-t pt-4">
           <h4 className="text-base font-medium text-gray-700 mb-3">Upload CSV with Student Roll Numbers</h4>
 
-          <CsvUploader onDataParsed={handleStatusDataParsed} requiredFields={["rollNumber"]} templateFileName="status_update_template.csv" templateHeaders={statusTemplateHeaders} maxRecords={900} instructionText={statusInstructionsText} />
+          <CsvUploader onDataParsed={handleStatusDataParsed} requiredFields={["rollNumber"]} templateFileName="status_update_template.csv" templateHeaders={statusTemplateHeaders} maxRecords={MAX_BULK_RECORDS} instructionText={statusInstructionsText} />
         </div>
 
         {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
@@ -943,7 +944,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <div className="flex flex-col space-y-4">
           <div className="border-b border-gray-200 pb-4">
             <h4 className="text-base font-medium text-gray-700 mb-2">Option 1: Upload CSV</h4>
-            <CsvUploader onDataParsed={handleDayScholarDataParsed} requiredFields={["rollNumber"]} templateFileName={dayScholarMode === "add" ? "day_scholar_add_template.csv" : "day_scholar_remove_template.csv"} templateHeaders={dayScholarTemplateHeaders} maxRecords={900} instructionText={dayScholarInstructionsText} />
+            <CsvUploader onDataParsed={handleDayScholarDataParsed} requiredFields={["rollNumber"]} templateFileName={dayScholarMode === "add" ? "day_scholar_add_template.csv" : "day_scholar_remove_template.csv"} templateHeaders={dayScholarTemplateHeaders} maxRecords={MAX_BULK_RECORDS} instructionText={dayScholarInstructionsText} />
 
             {dayScholarData.length > 0 && (
               <div className="mt-4 p-4 bg-green-50 rounded-lg">

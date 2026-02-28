@@ -43,23 +43,55 @@ const StudentsPage = () => {
     autoFetch: canViewStudentsList,
   })
 
-  const handleImportStudents = async (importedStudents) => {
+  const handleImportStudents = async (importedStudents, options = {}) => {
     if (!canImportStudents) {
-      alert("You do not have permission to import students.")
-      return false
+      const total = Array.isArray(importedStudents) ? importedStudents.length : 1
+      return {
+        success: false,
+        message: "You do not have permission to import students.",
+        total,
+        successCount: 0,
+        errorCount: total,
+        results: [],
+        errors: [],
+      }
     }
 
     try {
-      const result = await importStudents(importedStudents)
-      if (result.error) {
-        alert(`Error importing students: ${result.error.message} `)
-        return false
+      const result = await importStudents(importedStudents, options)
+      if (!result?.success) {
+        const total = Array.isArray(importedStudents) ? importedStudents.length : 1
+        return {
+          success: false,
+          message: result?.error?.message || "Error importing students",
+          total,
+          successCount: 0,
+          errorCount: total,
+          results: [],
+          errors: [],
+        }
       }
-      alert("Students imported successfully")
-      return true
+
+      return {
+        success: true,
+        message: "Import completed",
+        total: result?.data?.total ?? (Array.isArray(importedStudents) ? importedStudents.length : 1),
+        successCount: result?.data?.successCount ?? 0,
+        errorCount: result?.data?.errorCount ?? 0,
+        results: result?.data?.results || [],
+        errors: result?.data?.errors || [],
+      }
     } catch (error) {
-      alert(`An error occurred: ${error.message} `)
-      return false
+      const total = Array.isArray(importedStudents) ? importedStudents.length : 1
+      return {
+        success: false,
+        message: `An error occurred: ${error.message}`,
+        total,
+        successCount: 0,
+        errorCount: total,
+        results: [],
+        errors: [],
+      }
     }
   }
 
