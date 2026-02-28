@@ -98,8 +98,14 @@ export const studentApi = {
    * Update multiple students
    * @param {Array} students - Array of student data to update
    */
-  updateStudents: (students) => {
-    return apiClient.put("/students/profiles-admin/profiles", students).then(unwrapStandardResponse)
+  updateStudents: (students, options = {}) => {
+    const headers = options.updateJobId
+      ? { "x-update-job-id": options.updateJobId }
+      : undefined
+
+    return apiClient
+      .put("/students/profiles-admin/profiles", students, { headers })
+      .then(unwrapStandardResponse)
   },
 
   /**

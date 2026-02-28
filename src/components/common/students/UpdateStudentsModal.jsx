@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate, FaHome } from "react-icons/fa"
-import StudentTableView from "./StudentTableView"
 import Papa from "papaparse"
 import ToggleButtonGroup from "../../common/ToggleButtonGroup"
-import StudentDetailModal from "./StudentDetailModal"
+import SheetPreviewTable from "../../sheet/SheetPreviewTable"
 import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
@@ -11,6 +10,7 @@ import toast from "react-hot-toast"
 import { Select, Checkbox, FileInput } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
+import { useSocket } from "../../../contexts/SocketProvider"
 
 // Reusable styles using theme CSS variables
 const styles = {
@@ -69,17 +69,164 @@ const styles = {
   downloadLink: { display: "flex", alignItems: "center", fontSize: "var(--font-size-sm)", color: "var(--color-primary)", background: "none", border: "none", cursor: "pointer", marginBottom: "var(--spacing-2)" },
 }
 
+const normalizeString = (value) => (value === null || value === undefined ? "" : String(value).trim())
+const UPDATE_PROGRESS_EVENT = "students:update:progress"
+const MAX_UPDATE_RESULT_ROWS_SHOWN = MAX_BULK_RECORDS
+
+const createUpdateJobId = () => {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID()
+  }
+
+  return `student-update-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+const normalizeRollNumber = (value) => normalizeString(value).toUpperCase()
+const normalizeEmail = (value) => normalizeString(value).toLowerCase()
+
+const toOutcomeArray = (value) => (Array.isArray(value) ? value : (value ? [value] : []))
+
+const buildUpdateResultRows = (students = [], outcome = null) => {
+  const results = toOutcomeArray(outcome?.results)
+  const errors = toOutcomeArray(outcome?.errors)
+
+  const successRollNumbers = new Set()
+  const successEmails = new Set()
+  const failedByRollNumber = new Map()
+  const failedByEmail = new Map()
+
+  results.forEach((entry) => {
+    const rollCandidates = [
+      entry?.rollNumber,
+      entry?.student?.rollNumber,
+      entry?.student,
+    ]
+    const emailCandidates = [entry?.email, entry?.student?.email, entry?.student]
+
+    rollCandidates.forEach((candidate) => {
+      const roll = normalizeRollNumber(candidate)
+      if (roll && !roll.includes("@")) successRollNumbers.add(roll)
+    })
+
+    emailCandidates.forEach((candidate) => {
+      const email = normalizeEmail(candidate)
+      if (email && email.includes("@")) successEmails.add(email)
+    })
+  })
+
+  errors.forEach((entry) => {
+    const message = normalizeString(entry?.message || entry?.reason || entry?.error) || "Update failed"
+    const rollCandidates = [entry?.rollNumber, entry?.student]
+    const emailCandidates = [entry?.email, entry?.student]
+
+    rollCandidates.forEach((candidate) => {
+      const roll = normalizeRollNumber(candidate)
+      if (roll && !roll.includes("@") && !failedByRollNumber.has(roll)) {
+        failedByRollNumber.set(roll, message)
+      }
+    })
+
+    emailCandidates.forEach((candidate) => {
+      const email = normalizeEmail(candidate)
+      if (email && email.includes("@") && !failedByEmail.has(email)) {
+        failedByEmail.set(email, message)
+      }
+    })
+  })
+
+  const requestFailedMessage = normalizeString(outcome?.message) || "Update failed"
+
+  return students.map((student) => {
+    const rollNumber = normalizeString(student?.rollNumber) || "—"
+    const email = normalizeString(student?.email) || "—"
+    const normalizedRoll = normalizeRollNumber(rollNumber)
+    const normalizedEmailValue = normalizeEmail(email)
+
+    const matchedError = failedByRollNumber.get(normalizedRoll) || failedByEmail.get(normalizedEmailValue)
+    if (matchedError) {
+      return { rollNumber, email, successStatus: "Failed", reason: matchedError }
+    }
+
+    if (successRollNumbers.has(normalizedRoll) || successEmails.has(normalizedEmailValue)) {
+      return { rollNumber, email, successStatus: "Success", reason: "—" }
+    }
+
+    if (outcome?.success === false) {
+      return { rollNumber, email, successStatus: "Failed", reason: requestFailedMessage }
+    }
+
+    if (errors.length > 0) {
+      return { rollNumber, email, successStatus: "Failed", reason: "Not updated" }
+    }
+
+    return { rollNumber, email, successStatus: "Success", reason: "—" }
+  })
+}
+
+const escapeCSV = (value) => {
+  const str = String(value ?? "")
+  if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+    return `"${str.replace(/"/g, '""')}"`
+  }
+  return str
+}
+
+const downloadCSV = (rows, filenameBase) => {
+  if (!Array.isArray(rows) || rows.length === 0) return false
+
+  const headers = ["roll number", "email", "success status", "reason"]
+  const csvContent = [
+    headers.map(escapeCSV).join(","),
+    ...rows.map((row) => ([
+      row?.["roll number"] ?? "",
+      row?.email ?? "",
+      row?.["success status"] ?? "",
+      row?.reason ?? "",
+    ]).map(escapeCSV).join(",")),
+  ].join("\n")
+
+  const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.setAttribute("download", `${filenameBase}_${new Date().toISOString().split("T")[0]}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+  return true
+}
+
+const uniqueNonEmptyValues = (values = []) => {
+  const seen = new Set()
+  const unique = []
+
+  values.forEach((value) => {
+    const normalized = normalizeString(value)
+    if (!normalized) return
+    const key = normalized.toLowerCase()
+    if (seen.has(key)) return
+    seen.add(key)
+    unique.push(normalized)
+  })
+
+  return unique
+}
+
 
 const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
+  const { on, isConnected } = useSocket()
+
   const [csvFile, setCsvFile] = useState(null)
   const [parsedData, setParsedData] = useState([])
+  const [basicValidationIssues, setBasicValidationIssues] = useState([])
+  const [basicInvalidCellMap, setBasicInvalidCellMap] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [error, setError] = useState("")
   const [step, setStep] = useState(1)
   const fileInputRef = useRef(null)
-  const [showStudentDetail, setShowStudentDetail] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState(null)
+  const updateJobIdRef = useRef(null)
   const [activeTab, setActiveTab] = useState("basic")
   const [healthData, setHealthData] = useState([])
   const [familyData, setFamilyData] = useState([])
@@ -91,10 +238,80 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [dayScholarMode, setDayScholarMode] = useState("add")
   const [validDegrees, setValidDegrees] = useState([])
   const [validDepartments, setValidDepartments] = useState([])
+  const [showAllDegrees, setShowAllDegrees] = useState(false)
+  const [showAllDepartments, setShowAllDepartments] = useState(false)
   const [configLoading, setConfigLoading] = useState(false)
+  const [updateProgress, setUpdateProgress] = useState({
+    phase: "idle",
+    total: 0,
+    processed: 0,
+    updated: 0,
+    failed: 0,
+    message: null,
+  })
+  const [updateResultRows, setUpdateResultRows] = useState([])
 
   const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
+  const VISIBLE_REFERENCE_LIMIT = 25
+
+  const displayedDegrees = useMemo(
+    () => (showAllDegrees ? validDegrees : validDegrees.slice(0, VISIBLE_REFERENCE_LIMIT)),
+    [showAllDegrees, validDegrees]
+  )
+  const displayedDepartments = useMemo(
+    () => (showAllDepartments ? validDepartments : validDepartments.slice(0, VISIBLE_REFERENCE_LIMIT)),
+    [showAllDepartments, validDepartments]
+  )
+  const invalidDegreeValues = useMemo(
+    () => uniqueNonEmptyValues(basicValidationIssues.filter((issue) => issue.field === "degree").map((issue) => issue.value)),
+    [basicValidationIssues]
+  )
+  const invalidDepartmentValues = useMemo(
+    () => uniqueNonEmptyValues(basicValidationIssues.filter((issue) => issue.field === "department").map((issue) => issue.value)),
+    [basicValidationIssues]
+  )
+  const progressPercent = useMemo(() => {
+    if (!updateProgress.total) return 0
+    return Math.max(0, Math.min(100, Math.round((updateProgress.processed / updateProgress.total) * 100)))
+  }, [updateProgress])
+
+  const updateResultSheetRows = useMemo(() => (
+    updateResultRows.map((row) => ({
+      "roll number": row.rollNumber,
+      email: row.email,
+      "success status": row.successStatus,
+      reason: row.reason,
+    }))
+  ), [updateResultRows])
+
+  const updateDisplayedSheetRows = useMemo(
+    () => updateResultSheetRows.slice(0, MAX_UPDATE_RESULT_ROWS_SHOWN),
+    [updateResultSheetRows]
+  )
+  const updateSuccessCount = useMemo(
+    () => updateResultRows.filter((row) => row.successStatus === "Success").length,
+    [updateResultRows]
+  )
+  const updateFailedCount = useMemo(
+    () => updateResultRows.filter((row) => row.successStatus === "Failed").length,
+    [updateResultRows]
+  )
+  const isBasicUpdateCompleted = updateProgress.phase === "completed" || updateProgress.phase === "failed"
+
+  const getBasicPreviewCellStyle = (column, _value, _row, rowIndex) => {
+    const rowIssues = basicInvalidCellMap[rowIndex] || {}
+    if (column === "degree" && rowIssues.degree) {
+      return { backgroundColor: "var(--color-warning-bg)", color: "var(--color-warning-text)", fontWeight: "var(--font-weight-medium)" }
+    }
+    if (column === "department" && rowIssues.department) {
+      return { backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)" }
+    }
+    if (column === "gender" && rowIssues.gender) {
+      return { backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", fontWeight: "var(--font-weight-medium)" }
+    }
+    return null
+  }
 
   // Fetch valid degrees and departments from the config API
   useEffect(() => {
@@ -103,13 +320,36 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     }
   }, [isOpen, activeTab])
 
+  useEffect(() => {
+    if (!on) return undefined
+
+    const cleanup = on(UPDATE_PROGRESS_EVENT, (payload) => {
+      if (!payload || !updateJobIdRef.current) return
+      if (payload.jobId !== updateJobIdRef.current) return
+
+      setUpdateProgress({
+        phase: payload.phase || "processing",
+        total: payload.total || 0,
+        processed: payload.processed || 0,
+        updated: payload.updated || 0,
+        failed: payload.failed || 0,
+        message: payload.message || null,
+      })
+    })
+
+    return () => {
+      if (typeof cleanup === "function") {
+        cleanup()
+      }
+    }
+  }, [on])
+
   const fetchConfigData = async () => {
     setConfigLoading(true)
     try {
       const [degreesResponse, departmentsResponse] = await Promise.all([adminApi.getDegrees(), adminApi.getDepartments()])
-
-      setValidDegrees(degreesResponse.value || [])
-      setValidDepartments(departmentsResponse.value || [])
+      setValidDegrees(uniqueNonEmptyValues(degreesResponse.value || []))
+      setValidDepartments(uniqueNonEmptyValues(departmentsResponse.value || []))
     } catch (err) {
       console.error("Error fetching config data:", err)
       toast.error("Failed to load degree and department options. Some validations may not work properly.")
@@ -164,6 +404,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const parseCSV = (file) => {
     setIsLoading(true)
     setError("")
+    setBasicValidationIssues([])
+    setBasicInvalidCellMap({})
 
     Papa.parse(file, {
       header: true,
@@ -193,66 +435,82 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           }
 
           const validGenders = ["Male", "Female"]
+          const degreeLookup = new Set(validDegrees.map((value) => value.toLowerCase()))
+          const departmentLookup = new Set(validDepartments.map((value) => value.toLowerCase()))
           const invalidRecords = []
+          const invalidCellMap = {}
           const parsedData = results.data.map((student, index) => {
             const studentData = {
-              rollNumber: student.rollNumber,
+              rollNumber: normalizeString(student.rollNumber),
             }
 
             availableFields.forEach((field) => {
-              if (student[field]) {
+              if (student[field] !== undefined && student[field] !== null && String(student[field]).trim() !== "") {
                 if (field === "admissionDate") {
                   studentData[field] = student[field] || new Date().toISOString().split("T")[0]
                 } else {
-                  studentData[field] = student[field] || ""
+                  studentData[field] = normalizeString(student[field])
                 }
               }
             })
 
+            const rowInvalidMap = {}
+
             // Validate gender if provided
             if (studentData.gender && !validGenders.includes(studentData.gender)) {
-              invalidRecords.push({
+              const issue = {
                 row: index + 2,
                 field: "gender",
                 value: studentData.gender,
                 message: `Invalid gender: "${studentData.gender}". Only "Male" or "Female" are allowed.`,
-              })
+              }
+              invalidRecords.push(issue)
+              rowInvalidMap.gender = issue.message
             }
 
             // Validate degree and department if they are provided
-            if (studentData.degree && validDegrees.length > 0 && !validDegrees.includes(studentData.degree)) {
-              invalidRecords.push({
-                row: index + 2, // +2 because of 0-indexing and header row
+            if (studentData.degree && degreeLookup.size > 0 && !degreeLookup.has(studentData.degree.toLowerCase())) {
+              const issue = {
+                row: index + 2,
                 field: "degree",
                 value: studentData.degree,
                 message: `Invalid degree: "${studentData.degree}"`,
-              })
+              }
+              invalidRecords.push(issue)
+              rowInvalidMap.degree = issue.message
             }
 
-            if (studentData.department && validDepartments.length > 0 && !validDepartments.includes(studentData.department)) {
-              invalidRecords.push({
+            if (studentData.department && departmentLookup.size > 0 && !departmentLookup.has(studentData.department.toLowerCase())) {
+              const issue = {
                 row: index + 2,
                 field: "department",
                 value: studentData.department,
                 message: `Invalid department: "${studentData.department}"`,
-              })
+              }
+              invalidRecords.push(issue)
+              rowInvalidMap.department = issue.message
+            }
+
+            if (Object.keys(rowInvalidMap).length > 0) {
+              invalidCellMap[index] = rowInvalidMap
             }
 
             return studentData
           })
 
           if (invalidRecords.length > 0) {
-            const errorMessages = invalidRecords.slice(0, 5).map((rec) => `Row ${rec.row}: ${rec.message}`)
-
-            if (invalidRecords.length > 5) {
-              errorMessages.push(`... and ${invalidRecords.length - 5} more errors`)
-            }
-
-            setError(`Invalid data detected:\n${errorMessages.join("\n")}`)
-            setIsLoading(false)
-            return
+            const groupedSummary = invalidRecords.reduce((acc, issue) => {
+              acc[issue.field] = (acc[issue.field] || 0) + 1
+              return acc
+            }, {})
+            const summaryText = Object.entries(groupedSummary).map(([field, count]) => `${count} ${field}`).join(", ")
+            setError(`Invalid values found (${summaryText}). Invalid cells are highlighted in the sheet. Fix them before confirming update.`)
+          } else {
+            setError("")
           }
 
+          setBasicValidationIssues(invalidRecords)
+          setBasicInvalidCellMap(invalidCellMap)
           setParsedData(parsedData)
           setStep(2)
           setIsLoading(false)
@@ -268,15 +526,26 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     })
   }
 
-  // Format array for display in the UI
-  const formatArrayForDisplay = (arr) => {
-    if (!arr || arr.length === 0) return "Loading..."
+  const renderReferenceValues = (title, values, displayedValues, showAll, setShowAll) => {
+    if (values.length === 0) return null
 
-    if (arr.length <= 5) {
-      return arr.join(", ")
-    }
-
-    return arr.slice(0, 5).join(", ") + `, ... (${arr.length - 5} more)`
+    return (
+      <div>
+        <p className="font-medium text-blue-700">{title} ({values.length})</p>
+        <div className="text-gray-700 bg-blue-50 p-2 rounded max-h-40 overflow-auto">
+          {displayedValues.join(", ")}
+        </div>
+        {values.length > VISIBLE_REFERENCE_LIMIT && (
+          <Button
+            onClick={() => setShowAll((prev) => !prev)}
+            variant="ghost"
+            size="sm"
+          >
+            {showAll ? "Show less" : `Show all (${values.length})`}
+          </Button>
+        )}
+      </div>
+    )
   }
 
   const handleHealthDataParsed = (data) => {
@@ -390,7 +659,50 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       let isSuccess = false
 
       if (activeTab === "basic") {
-        isSuccess = await onUpdate(parsedData, activeTab)
+        setStep(3)
+        setError("")
+        setUpdateResultRows([])
+
+        const updateJobId = createUpdateJobId()
+        updateJobIdRef.current = updateJobId
+        setUpdateProgress({
+          phase: "started",
+          total: parsedData.length,
+          processed: 0,
+          updated: 0,
+          failed: 0,
+          message: "Student update started",
+        })
+
+        const rawOutcome = await onUpdate(parsedData, activeTab, { updateJobId })
+        const outcome = rawOutcome && typeof rawOutcome === "object"
+          ? rawOutcome
+          : {
+            success: Boolean(rawOutcome),
+            message: rawOutcome ? "Students updated successfully" : "Failed to update students",
+            results: [],
+            errors: [],
+          }
+        const finalRows = buildUpdateResultRows(parsedData, outcome)
+        const successful = finalRows.filter((row) => row.successStatus === "Success").length
+        const failed = finalRows.filter((row) => row.successStatus === "Failed").length
+        const total = finalRows.length
+        const requestFailed = outcome?.success === false && successful === 0
+
+        setUpdateResultRows(finalRows)
+        setUpdateProgress({
+          phase: requestFailed ? "failed" : "completed",
+          total,
+          processed: total,
+          updated: successful,
+          failed,
+          message: normalizeString(outcome?.message)
+            || (failed > 0
+              ? `Update completed with ${failed} failed records`
+              : "Update completed successfully"),
+        })
+        setError(requestFailed ? (normalizeString(outcome?.message) || "Update failed") : "")
+        return
       } else if (activeTab === "health") {
         // Format health data for the API
         const formattedHealthData = {
@@ -444,12 +756,29 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       }
 
       if (isSuccess) {
-        onClose()
-        resetForm()
+        handleCloseModal()
       }
     } catch (error) {
-      setError(error.message || "An error occurred while updating")
-      toast.error(error.message || "An error occurred while updating")
+      const message = error.message || "An error occurred while updating"
+      if (activeTab === "basic" && parsedData.length > 0) {
+        const fallbackOutcome = {
+          success: false,
+          message,
+          errors: [{ student: "All records", message }],
+        }
+        const finalRows = buildUpdateResultRows(parsedData, fallbackOutcome)
+        setUpdateResultRows(finalRows)
+        setUpdateProgress({
+          phase: "failed",
+          total: finalRows.length,
+          processed: finalRows.length,
+          updated: 0,
+          failed: finalRows.length,
+          message,
+        })
+      }
+      setError(message)
+      toast.error(message)
     } finally {
       setIsUpdating(false)
     }
@@ -458,17 +787,44 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const resetForm = () => {
     setCsvFile(null)
     setParsedData([])
+    setBasicValidationIssues([])
+    setBasicInvalidCellMap({})
     setHealthData([])
     setFamilyData([])
     setStatusData([])
     setDayScholarData([])
     setError("")
     setStep(1)
+    setShowAllDegrees(false)
+    setShowAllDepartments(false)
+    setUpdateResultRows([])
+    setUpdateProgress({
+      phase: "idle",
+      total: 0,
+      processed: 0,
+      updated: 0,
+      failed: 0,
+      message: null,
+    })
+    updateJobIdRef.current = null
   }
 
-  const viewStudentDetails = (student) => {
-    setSelectedStudent(student)
-    setShowStudentDetail(true)
+  function handleCloseModal() {
+    resetForm()
+    setActiveTab("basic")
+    onClose()
+  }
+
+  const handleExportUpdateResults = () => {
+    if (!isBasicUpdateCompleted || updateResultSheetRows.length === 0) {
+      setError("No completed update results available to export")
+      return
+    }
+
+    const exported = downloadCSV(updateResultSheetRows, "student_update_results")
+    if (!exported) {
+      setError("Failed to export update results")
+    }
   }
 
   // Define tabs
@@ -1062,7 +1418,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   if (!isOpen) return null
 
   return (
-    <Modal title="Update Students in Bulk" onClose={onClose} width={900} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}>
+    <Modal title="Update Students in Bulk" onClose={handleCloseModal} width={1280} tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}>
       {activeTab === "basic" && (
         <>
           {step === 1 && (
@@ -1137,19 +1493,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   {/* Display valid degrees and departments */}
                   {!configLoading && (
                     <div className="mt-3 space-y-2">
-                      {validDegrees.length > 0 && (
-                        <div>
-                          <p className="font-medium text-blue-700">Valid Degrees:</p>
-                          <p className="text-gray-700 bg-blue-50 p-1 rounded">{formatArrayForDisplay(validDegrees)}</p>
-                        </div>
-                      )}
-
-                      {validDepartments.length > 0 && (
-                        <div>
-                          <p className="font-medium text-blue-700">Valid Departments:</p>
-                          <p className="text-gray-700 bg-blue-50 p-1 rounded">{formatArrayForDisplay(validDepartments)}</p>
-                        </div>
-                      )}
+                      {renderReferenceValues("Valid Degrees", validDegrees, displayedDegrees, showAllDegrees, setShowAllDegrees)}
+                      {renderReferenceValues("Valid Departments", validDepartments, displayedDepartments, showAllDepartments, setShowAllDepartments)}
                     </div>
                   )}
                 </div>
@@ -1181,10 +1526,105 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 <h3 className="text-lg font-medium text-gray-800">Preview Updates</h3>
                 <div className="mt-2 sm:mt-0 text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">{parsedData.length} students will be updated</div>
               </div>
+              <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-4 items-start">
+                <div className="border rounded-lg overflow-hidden">
+                  <SheetPreviewTable rows={parsedData} getCellStyle={getBasicPreviewCellStyle} />
+                </div>
 
-              <div className="border rounded-lg overflow-hidden">
-                <StudentTableView currentStudents={parsedData} sortField="name" sortDirection="asc" handleSort={() => { }} viewStudentDetails={viewStudentDetails} />
+                <div className="space-y-3">
+                  <div className="p-3 rounded-lg border bg-[var(--color-info-bg)] border-[var(--color-info-light)]">
+                    <div className="text-xs text-[var(--color-info-text)]">Rows In Sheet</div>
+                    <div className="text-lg font-semibold text-[var(--color-info-text)]">{parsedData.length}</div>
+                  </div>
+                  <div className="p-3 rounded-lg border bg-[var(--color-success-bg)] border-[var(--color-success-light)]">
+                    <div className="text-xs text-[var(--color-success-text)]">Rows Ready To Update</div>
+                    <div className="text-lg font-semibold text-[var(--color-success-text)]">{Math.max(parsedData.length - Object.keys(basicInvalidCellMap).length, 0)}</div>
+                  </div>
+                  <div className="p-3 rounded-lg border bg-[var(--color-warning-bg)] border-[var(--color-warning-light)]">
+                    <div className="text-xs text-[var(--color-warning-text)]">Invalid Degree Values</div>
+                    <div className="text-lg font-semibold text-[var(--color-warning-text)]">{invalidDegreeValues.length}</div>
+                    {invalidDegreeValues.length > 0 && (
+                      <div className="mt-2 text-xs text-[var(--color-warning-text)] max-h-24 overflow-auto">
+                        {invalidDegreeValues.join(", ")}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 rounded-lg border bg-[var(--color-danger-bg)] border-[var(--color-danger-border)]">
+                    <div className="text-xs text-[var(--color-danger-text)]">Invalid Department Values</div>
+                    <div className="text-lg font-semibold text-[var(--color-danger-text)]">{invalidDepartmentValues.length}</div>
+                    {invalidDepartmentValues.length > 0 && (
+                      <div className="mt-2 text-xs text-[var(--color-danger-text)] max-h-24 overflow-auto">
+                        {invalidDepartmentValues.join(", ")}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
+
+              {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="space-y-5">
+              <h3 className="text-lg font-medium text-gray-800">Update Progress</h3>
+
+              <div className="border rounded-lg p-3 bg-[var(--color-bg-tertiary)]">
+                <div className="flex justify-between mb-2 text-xs text-[var(--color-text-body)]">
+                  <span>{updateProgress.message || "Updating students..."}</span>
+                  <span>{progressPercent}%</span>
+                </div>
+                <div className="w-full h-2 rounded-full bg-[var(--color-bg-muted)] overflow-hidden">
+                  <div
+                    style={{
+                      width: `${progressPercent}%`,
+                      height: "100%",
+                      backgroundColor: "var(--color-primary)",
+                      transition: "width 240ms ease",
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                <div className="p-3 rounded-lg border bg-[var(--color-info-bg)] border-[var(--color-info-light)]">
+                  <div className="text-xs text-[var(--color-info-text)]">Processed</div>
+                  <div className="text-lg font-semibold text-[var(--color-info-text)]">
+                    {updateProgress.processed}/{updateProgress.total || parsedData.length}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border bg-[var(--color-success-bg)] border-[var(--color-success-light)]">
+                  <div className="text-xs text-[var(--color-success-text)]">Successful</div>
+                  <div className="text-lg font-semibold text-[var(--color-success-text)]">
+                    {isBasicUpdateCompleted ? updateSuccessCount : updateProgress.updated}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border bg-[var(--color-danger-bg)] border-[var(--color-danger-border)]">
+                  <div className="text-xs text-[var(--color-danger-text)]">Failed</div>
+                  <div className="text-lg font-semibold text-[var(--color-danger-text)]">
+                    {isBasicUpdateCompleted ? updateFailedCount : updateProgress.failed}
+                  </div>
+                </div>
+                <div className="p-3 rounded-lg border bg-[var(--color-warning-bg)] border-[var(--color-warning-light)]">
+                  <div className="text-xs text-[var(--color-warning-text)]">Shown In Sheet</div>
+                  <div className="text-lg font-semibold text-[var(--color-warning-text)]">
+                    {updateDisplayedSheetRows.length}/{updateResultSheetRows.length}
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] border rounded-lg px-3 py-2">
+                Status table columns: roll number, email, success status, reason.
+                {!isConnected && " Socket offline: showing limited live progress"}
+              </div>
+
+              {isBasicUpdateCompleted ? (
+                <SheetPreviewTable rows={updateDisplayedSheetRows} />
+              ) : (
+                <div className="border rounded-lg bg-[var(--color-bg-tertiary)] p-4 text-sm text-[var(--color-text-muted)]">
+                  Results sheet will appear when update finishes.
+                </div>
+              )}
 
               {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500 whitespace-pre-line">{error}</div>}
             </div>
@@ -1206,27 +1646,64 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
       <div style={styles.footer}>
         {activeTab === "basic" && step === 1 ? (
-          <Button onClick={onClose} variant="secondary" size="md">
+          <Button onClick={handleCloseModal} variant="secondary" size="md" disabled={isUpdating}>
             Cancel
           </Button>
-        ) : activeTab === "basic" ? (
-          <Button onClick={resetForm} variant="secondary" size="md">
+        ) : activeTab === "basic" && step === 2 ? (
+          <Button onClick={resetForm} variant="secondary" size="md" disabled={isUpdating}>
             Back
           </Button>
+        ) : activeTab === "basic" && step === 3 ? (
+          <Button
+            onClick={() => {
+              setStep(1)
+              setCsvFile(null)
+              setParsedData([])
+              setBasicValidationIssues([])
+              setBasicInvalidCellMap({})
+              setError("")
+              setUpdateResultRows([])
+              setUpdateProgress({
+                phase: "idle",
+                total: 0,
+                processed: 0,
+                updated: 0,
+                failed: 0,
+                message: null,
+              })
+              updateJobIdRef.current = null
+            }}
+            variant="secondary"
+            size="md"
+            disabled={isUpdating}
+          >
+            Update Another File
+          </Button>
         ) : (
-          <Button onClick={onClose} variant="secondary" size="md">
+          <Button onClick={handleCloseModal} variant="secondary" size="md" disabled={isUpdating}>
             Cancel
           </Button>
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={(activeTab === "basic" && parsedData.length === 0) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
+          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={(activeTab === "basic" && (parsedData.length === 0 || Object.keys(basicInvalidCellMap).length > 0)) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
             <FaCheck />
             {isUpdating ? "Updating Students..." : "Confirm Update"}
           </Button>
         )}
+
+        {activeTab === "basic" && step === 3 && (
+          <>
+            <Button onClick={handleExportUpdateResults} variant="secondary" size="md" disabled={!isBasicUpdateCompleted || updateResultSheetRows.length === 0 || isUpdating}>
+              <FaFileDownload />
+              Export Results
+            </Button>
+            <Button onClick={handleCloseModal} variant="primary" size="md" disabled={isUpdating}>
+              Close
+            </Button>
+          </>
+        )}
       </div>
-      {showStudentDetail && selectedStudent && <StudentDetailModal selectedStudent={selectedStudent} setShowStudentDetail={setShowStudentDetail} onUpdate={null} isImport={true} />}
     </Modal>
   )
 }

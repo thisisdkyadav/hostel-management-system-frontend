@@ -95,20 +95,49 @@ const StudentsPage = () => {
     }
   }
 
-  const handleUpdateStudents = async (updatedStudents) => {
+  const handleUpdateStudents = async (updatedStudents, _tab, options = {}) => {
+    const total = Array.isArray(updatedStudents) ? updatedStudents.length : 1
+
     if (!canBulkUpdateStudents) {
-      alert("You do not have permission to bulk update students.")
-      return false
+      return {
+        success: false,
+        message: "You do not have permission to bulk update students.",
+        total,
+        successCount: 0,
+        errorCount: total,
+        results: [],
+        errors: [],
+      }
     }
 
     try {
-      await studentApi.updateStudents(updatedStudents)
-      alert("Students updated successfully")
+      const response = await studentApi.updateStudents(updatedStudents, options)
+      const results = Array.isArray(response?.results)
+        ? response.results
+        : (response?.results ? [response.results] : [])
+      const errors = Array.isArray(response?.errors) ? response.errors : []
+
       refreshStudents()
-      return true
+
+      return {
+        success: true,
+        message: response?.message || "Students updated successfully",
+        total,
+        successCount: results.length,
+        errorCount: errors.length,
+        results,
+        errors,
+      }
     } catch (error) {
-      alert(`An error occurred: ${error.message} `)
-      return false
+      return {
+        success: false,
+        message: error.message || "An error occurred while updating students",
+        total,
+        successCount: 0,
+        errorCount: total,
+        results: [],
+        errors: [],
+      }
     }
   }
 

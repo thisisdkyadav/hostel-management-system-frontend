@@ -134,7 +134,7 @@ const getCellStyleByValue = (column, value) => {
   return null
 }
 
-const SheetPreviewTable = ({ rows = [] }) => {
+const SheetPreviewTable = ({ rows = [], getCellStyle = null }) => {
   const columns = useMemo(() => {
     if (!rows.length) return []
 
@@ -173,15 +173,21 @@ const SheetPreviewTable = ({ rows = [] }) => {
             {rows.map((row, index) => (
               <tr key={`preview-row-${index}`} style={styles.bodyRow} className="sheet-preview-row">
                 <td style={{ ...styles.cell, ...styles.rowNumberCell }}>{index + 1}</td>
-                {columns.map((column) => (
+                {columns.map((column) => {
+                  const normalizedValue = normalizeValue(row?.[column])
+                  const customStyle = typeof getCellStyle === "function"
+                    ? getCellStyle(column, normalizedValue, row, index)
+                    : null
+                  return (
                   <td
                     key={`${column}-${index}`}
-                    style={{ ...styles.cell, ...getCellStyleByValue(column, normalizeValue(row?.[column])) }}
-                    title={normalizeValue(row?.[column])}
+                    style={{ ...styles.cell, ...getCellStyleByValue(column, normalizedValue), ...(customStyle || {}) }}
+                    title={normalizedValue}
                   >
-                    {normalizeValue(row?.[column])}
+                    {normalizedValue}
                   </td>
-                ))}
+                  )
+                })}
               </tr>
             ))}
           </tbody>
