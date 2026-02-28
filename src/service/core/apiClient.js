@@ -25,7 +25,17 @@ const defaultConfig = {
 const parseErrorResponse = async (response) => {
   try {
     const errorData = await response.json()
-    return errorData.message || errorData.error || `Request failed with status ${response.status}`
+    if (typeof errorData?.message === "string" && errorData.message.trim()) {
+      return errorData.message
+    }
+
+    if (Array.isArray(errorData?.errors) && errorData.errors.length > 0) {
+      const firstError = errorData.errors[0]
+      if (typeof firstError === "string") return firstError
+      if (firstError && typeof firstError.message === "string") return firstError.message
+    }
+
+    return errorData.error || `Request failed with status ${response.status}`
   } catch {
     return `Request failed with status ${response.status}`
   }

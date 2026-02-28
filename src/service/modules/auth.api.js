@@ -5,12 +5,25 @@
 
 import apiClient from "../core/apiClient"
 
+const unwrapStandardResponse = (response) => {
+  if (
+    response &&
+    typeof response === "object" &&
+    typeof response.success === "boolean" &&
+    Object.prototype.hasOwnProperty.call(response, "data")
+  ) {
+    return response.data
+  }
+
+  return response
+}
+
 export const authApi = {
   /**
    * Verify current user authentication
    */
   verify: () => {
-    return apiClient.get("/auth/user")
+    return apiClient.get("/auth/user").then(unwrapStandardResponse)
   },
 
   /**
@@ -18,7 +31,7 @@ export const authApi = {
    * @param {Object} credentials - { email, password }
    */
   login: (credentials) => {
-    return apiClient.post("/auth/login", credentials)
+    return apiClient.post("/auth/login", credentials).then(unwrapStandardResponse)
   },
 
   /**
@@ -26,7 +39,7 @@ export const authApi = {
    * @param {string} token - Google OAuth token
    */
   loginWithGoogle: (token) => {
-    return apiClient.post("/auth/google", { token })
+    return apiClient.post("/auth/google", { token }).then(unwrapStandardResponse)
   },
 
   /**
@@ -34,14 +47,14 @@ export const authApi = {
    * @param {string} token - SSO token
    */
   verifySSOToken: (token) => {
-    return apiClient.post("/auth/verify-sso-token", { token })
+    return apiClient.post("/auth/verify-sso-token", { token }).then(unwrapStandardResponse)
   },
 
   /**
    * Logout current user
    */
   logout: () => {
-    return apiClient.get("/auth/logout")
+    return apiClient.get("/auth/logout").then(unwrapStandardResponse)
   },
 
   /**
@@ -50,14 +63,14 @@ export const authApi = {
    * @param {string} newPassword - New password
    */
   changePassword: (oldPassword, newPassword) => {
-    return apiClient.post("/auth/update-password", { oldPassword, newPassword })
+    return apiClient.post("/auth/update-password", { oldPassword, newPassword }).then(unwrapStandardResponse)
   },
 
   /**
    * Get user's active devices/sessions
    */
   getUserDevices: () => {
-    return apiClient.get("/auth/user/devices")
+    return apiClient.get("/auth/user/devices").then(unwrapStandardResponse)
   },
 
   /**
@@ -65,7 +78,7 @@ export const authApi = {
    * @param {string[]} pinnedTabs - Array of pinned tab paths
    */
   updatePinnedTabs: (pinnedTabs) => {
-    return apiClient.patch("/auth/user/pinned-tabs", { pinnedTabs })
+    return apiClient.patch("/auth/user/pinned-tabs", { pinnedTabs }).then(unwrapStandardResponse)
   },
 
   /**
@@ -73,7 +86,7 @@ export const authApi = {
    * @param {string} sessionId - Session ID to logout from
    */
   logoutFromDevice: (sessionId) => {
-    return apiClient.post(`/auth/user/devices/logout/${sessionId}`)
+    return apiClient.post(`/auth/user/devices/logout/${sessionId}`).then(unwrapStandardResponse)
   },
 
   /**
@@ -92,7 +105,7 @@ export const authApi = {
    * @param {string} email - User email
    */
   forgotPassword: (email) => {
-    return apiClient.post("/auth/forgot-password", { email })
+    return apiClient.post("/auth/forgot-password", { email }).then(unwrapStandardResponse)
   },
 
   /**
@@ -100,7 +113,7 @@ export const authApi = {
    * @param {string} token - Reset token
    */
   verifyResetToken: (token) => {
-    return apiClient.get(`/auth/reset-password/${token}`)
+    return apiClient.get(`/auth/reset-password/${token}`).then(unwrapStandardResponse)
   },
 
   /**
@@ -109,7 +122,7 @@ export const authApi = {
    * @param {string} password - New password
    */
   resetPassword: (token, password) => {
-    return apiClient.post("/auth/reset-password", { token, password })
+    return apiClient.post("/auth/reset-password", { token, password }).then(unwrapStandardResponse)
   },
 }
 
