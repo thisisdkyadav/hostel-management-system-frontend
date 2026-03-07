@@ -37,6 +37,7 @@ import {
     ProfilePage,
     NotificationCenterPage
 } from "../pages/common"
+import OverallBestPerformerPage from "../pages/common/OverallBestPerformerPage"
 
 // Warden pages (shared)
 import { FeedbacksPage } from "../pages/warden"
@@ -98,6 +99,7 @@ const AdminRoutes = () => {
                             <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
                             <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
                             <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
+                            <Route path="overall-best-performer" element={guardRoute("route.admin.overallBestPerformer", <OverallBestPerformerPage />)} />
                             <Route path="update-password" element={guardRoute("route.admin.updatePassword", <UpdatePasswordPage />)} />
                             <Route path="settings" element={guardRoute("route.admin.settings", <AdminSettings />)} />
                             <Route path="profile" element={guardRoute("route.admin.profile", <ProfilePage />)} />

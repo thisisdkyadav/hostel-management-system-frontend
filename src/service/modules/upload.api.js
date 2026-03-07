@@ -95,6 +95,14 @@ export const uploadApi = {
   uploadCertificate: (fileData) => {
     return apiClient.upload("/upload/certificate", fileData)
   },
+
+  /**
+   * Upload Overall Best Performer proof PDF
+   * @param {FormData} fileData - File form data
+   */
+  uploadOverallBestPerformerProofPDF: (fileData) => {
+    return apiClient.upload("/upload/overall-best-performer-proof-pdf", fileData)
+  },
 }
 
 export default uploadApi

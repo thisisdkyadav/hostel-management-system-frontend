@@ -16,8 +16,9 @@ import {
     ProfilePage,
     LostAndFoundPage,
     EventsPage,
-    NotificationCenterPage
+    NotificationCenterPage,
 } from "../pages/common"
+import OverallBestPerformerPage from "../pages/common/OverallBestPerformerPage"
 
 // Warden pages (shared)
 import { FeedbacksPage } from "../pages/warden"
@@ -117,6 +118,14 @@ const StudentRoutes = () => (
                     element={
                         <RouteAccessGuard routeKey="route.student.undertakings" fallback={<NotFoundPage />}>
                             <UndertakingsPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="overall-best-performer"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.overallBestPerformer" fallback={<NotFoundPage />}>
+                            <OverallBestPerformerPage />
                         </RouteAccessGuard>
                     }
                 />

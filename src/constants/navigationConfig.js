@@ -19,6 +19,7 @@ import {
 
   CalendarOff,
   Search,
+  Trophy,
   MessageCircle,
   ShieldCheck,
   UserCog,
@@ -156,6 +157,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Best Performer", icon: Trophy, section: "main", path: "/admin/overall-best-performer", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
@@ -327,7 +329,7 @@ export const getMaintenanceNavItems = (handleLogout) => [
 // STUDENT NAVIGATION
 // ============================================
 
-export const getStudentNavItems = (handleLogout, notificationsCount = 0) => [
+export const getStudentNavItems = (handleLogout, notificationsCount = 0, showOverallBestPerformer = false) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/student" },
   { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/student/complaints" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/student/lost-and-found" },
@@ -338,6 +340,7 @@ export const getStudentNavItems = (handleLogout, notificationsCount = 0) => [
   { name: "Security", icon: ShieldCheck, section: "main", path: "/student/security" },
   { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
+  ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer", isNew: true }] : []),
   createProfileItem("/student"),
   createLogoutItem(handleLogout),
 ]
