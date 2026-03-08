@@ -20,6 +20,20 @@ import ComplaintFeedbackPopup from "../../components/student/ComplaintFeedbackPo
 const DASHBOARD_CACHE_KEY = "student_dashboard_data"
 const CACHE_EXPIRY_TIME = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
+const normalizeDashboardData = (payload) => {
+  if (!payload || typeof payload !== "object") return null
+
+  const candidate =
+    Object.prototype.hasOwnProperty.call(payload, "data") && payload.data && typeof payload.data === "object"
+      ? payload.data
+      : payload
+
+  if (!candidate || typeof candidate !== "object") return null
+  if (!candidate.profile || typeof candidate.profile !== "object") return null
+
+  return candidate
+}
+
 // Enhanced shimmer loader components
 const ShimmerLoader = ({ height, width = "100%", className = "" }) => <div className={`animate-pulse bg-gradient-to-r from-[var(--skeleton-base)] via-[var(--skeleton-highlight)] to-[var(--skeleton-base)] ${className}`} style={{ height, width, borderRadius: 'var(--radius-md)' }}></div>
 
@@ -85,7 +99,11 @@ const DashboardPage = () => {
       if (isOnline) {
         try {
           const response = await studentApi.getStudentDashboard()
-          const data = response.data
+          const data = normalizeDashboardData(response)
+
+          if (!data) {
+            throw new Error("Student dashboard response is missing profile data")
+          }
 
           // Store in cache with timestamp
           localStorage.setItem(
@@ -104,9 +122,17 @@ const DashboardPage = () => {
           const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
 
           if (cachedData) {
-            const { data } = JSON.parse(cachedData)
-            setDashboardData(data)
-            setIsOfflineData(true)
+            const parsedCache = JSON.parse(cachedData)
+            const data = normalizeDashboardData(parsedCache?.data)
+
+            if (data) {
+              setDashboardData(data)
+              setIsOfflineData(true)
+              setError(null)
+            } else {
+              localStorage.removeItem(DASHBOARD_CACHE_KEY)
+              setError("Failed to load dashboard data")
+            }
           } else {
             setError("Failed to load dashboard data")
           }
@@ -115,9 +141,17 @@ const DashboardPage = () => {
         const cachedData = localStorage.getItem(DASHBOARD_CACHE_KEY)
 
         if (cachedData) {
-          const { data } = JSON.parse(cachedData)
-          setDashboardData(data)
-          setIsOfflineData(true)
+          const parsedCache = JSON.parse(cachedData)
+          const data = normalizeDashboardData(parsedCache?.data)
+
+          if (data) {
+            setDashboardData(data)
+            setIsOfflineData(true)
+            setError(null)
+          } else {
+            localStorage.removeItem(DASHBOARD_CACHE_KEY)
+            setError("You are offline and no cached data is available")
+          }
         } else {
           setError("You are offline and no cached data is available")
         }
@@ -192,10 +226,17 @@ const DashboardPage = () => {
       // Offline: try to use cached data
       if (cachedData) {
         try {
-          const { data } = JSON.parse(cachedData)
-          setDashboardData(data)
-          setIsOfflineData(true)
-          setError(null)
+          const parsedCache = JSON.parse(cachedData)
+          const data = normalizeDashboardData(parsedCache?.data)
+
+          if (data) {
+            setDashboardData(data)
+            setIsOfflineData(true)
+            setError(null)
+          } else {
+            localStorage.removeItem(DASHBOARD_CACHE_KEY)
+            setError("You are offline and no cached data is available")
+          }
         } catch (e) {
           console.error("Failed to parse cached dashboard data:", e)
           setError("You are offline and no cached data is available")
@@ -496,6 +537,23 @@ const DashboardPage = () => {
           <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
           <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Unable to Load Dashboard</h2>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>{error}</p>
+          <Button onClick={fetchDashboardData} variant="primary" size="md">
+            Try Again
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  if (!dashboardData?.profile) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full" style={{ padding: 'var(--spacing-6)' }}>
+        <div className="max-w-md w-full text-center" style={{ backgroundColor: 'var(--color-bg-primary)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-sm)', padding: 'var(--spacing-6)' }}>
+          <BiError className="mx-auto" style={{ color: 'var(--color-danger)', fontSize: 'var(--font-size-5xl)', marginBottom: 'var(--spacing-4)' }} />
+          <h2 className="font-semibold" style={{ fontSize: 'var(--font-size-xl)', color: 'var(--color-text-secondary)', marginBottom: 'var(--spacing-2)' }}>Dashboard Data Error</h2>
+          <p style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-6)' }}>
+            Student dashboard data is unavailable or malformed.
+          </p>
           <Button onClick={fetchDashboardData} variant="primary" size="md">
             Try Again
           </Button>
