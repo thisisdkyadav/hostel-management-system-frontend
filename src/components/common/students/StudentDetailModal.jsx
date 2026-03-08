@@ -202,6 +202,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         rollNumber: selectedStudent.rollNumber || "",
         department: selectedStudent.department || "",
         degree: selectedStudent.degree || "",
+        batch: selectedStudent.batch || "",
         year: selectedStudent.year || "",
         admissionDate: selectedStudent.admissionDate || "",
         hostel: selectedStudent.hostel || "",
@@ -387,6 +388,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Degree:</span>
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.degree || "N/A"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Batch:</span>
+                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.batch || "N/A"}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Year:</span>

@@ -6,6 +6,7 @@ import SheetPreviewTable from "../../sheet/SheetPreviewTable"
 import CsvUploader from "../../common/CsvUploader"
 import { healthApi } from "../../../service"
 import { adminApi } from "../../../service"
+import { studentApi } from "../../../service"
 import toast from "react-hot-toast"
 import { Select, Checkbox, FileInput } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
@@ -236,6 +237,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [selectedStatus, setSelectedStatus] = useState("Active")
   const [dayScholarData, setDayScholarData] = useState([])
   const [dayScholarMode, setDayScholarMode] = useState("add")
+  const [batchAssignmentData, setBatchAssignmentData] = useState([])
+  const [selectedBatchDegree, setSelectedBatchDegree] = useState("")
+  const [selectedBatchDepartment, setSelectedBatchDepartment] = useState("")
+  const [selectedBatch, setSelectedBatch] = useState("")
+  const [availableBatches, setAvailableBatches] = useState([])
+  const [batchOptionsLoading, setBatchOptionsLoading] = useState(false)
   const [validDegrees, setValidDegrees] = useState([])
   const [validDepartments, setValidDepartments] = useState([])
   const [showAllDegrees, setShowAllDegrees] = useState(false)
@@ -315,10 +322,42 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
   // Fetch valid degrees and departments from the config API
   useEffect(() => {
-    if (isOpen && activeTab === "basic") {
+    if (isOpen && (activeTab === "basic" || activeTab === "batch")) {
       fetchConfigData()
     }
   }, [isOpen, activeTab])
+
+  useEffect(() => {
+    if (!isOpen || activeTab !== "batch") return
+    if (!selectedBatchDegree || !selectedBatchDepartment) {
+      setAvailableBatches([])
+      setSelectedBatch("")
+      return
+    }
+
+    const loadBatchOptions = async () => {
+      setBatchOptionsLoading(true)
+      try {
+        const response = await studentApi.getBatchList({
+          degree: selectedBatchDegree,
+          department: selectedBatchDepartment,
+        })
+        setAvailableBatches(response || [])
+        if (selectedBatch && !(response || []).includes(selectedBatch)) {
+          setSelectedBatch("")
+        }
+      } catch (err) {
+        console.error("Error fetching batch options:", err)
+        toast.error("Failed to load batch options for the selected degree and department.")
+        setAvailableBatches([])
+        setSelectedBatch("")
+      } finally {
+        setBatchOptionsLoading(false)
+      }
+    }
+
+    loadBatchOptions()
+  }, [activeTab, isOpen, selectedBatchDegree, selectedBatchDepartment])
 
   useEffect(() => {
     if (!on) return undefined
@@ -627,6 +666,24 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     toast.success(`${data.length} students ready for update`)
   }
 
+  const handleBatchDataParsed = (data) => {
+    const invalidEntries = data.filter((item) => !item.rollNumber)
+
+    if (invalidEntries.length > 0) {
+      setError("All entries must have a rollNumber field")
+      return
+    }
+
+    setError("")
+    const normalizedData = data.map((item) => ({
+      ...item,
+      rollNumber: normalizeString(item.rollNumber).toUpperCase(),
+    }))
+    setBatchAssignmentData(normalizedData)
+    setUploadStatus(`${normalizedData.length} students ready for batch assignment`)
+    toast.success(`${normalizedData.length} students ready for batch assignment`)
+  }
+
   const handleUpdate = async () => {
     if (activeTab === "basic" && parsedData.length === 0) {
       setError("No data to update")
@@ -650,6 +707,16 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     if (activeTab === "dayScholar" && dayScholarData.length === 0) {
       setError("No day scholar data to update")
+      return
+    }
+
+    if (activeTab === "batch" && batchAssignmentData.length === 0) {
+      setError("No students selected for batch assignment")
+      return
+    }
+
+    if (activeTab === "batch" && (!selectedBatchDegree || !selectedBatchDepartment || !selectedBatch)) {
+      setError("Select degree, department, and batch before confirming the update")
       return
     }
 
@@ -753,6 +820,24 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         } else if (response.errors && response.errors.length > 0) {
           toast.error(`Updated with ${response.errors.length} errors. Please check the details.`)
         }
+      } else if (activeTab === "batch") {
+        const rollNumbers = batchAssignmentData.map((student) => student.rollNumber)
+        const response = await studentApi.bulkUpdateBatchAssignment({
+          rollNumbers,
+          degree: selectedBatchDegree,
+          department: selectedBatchDepartment,
+          batch: selectedBatch,
+        })
+        isSuccess = true
+
+        const unsuccessfulCount = Array.isArray(response?.unsuccessfulRollNumbers)
+          ? response.unsuccessfulRollNumbers.length
+          : 0
+        if (unsuccessfulCount > 0) {
+          toast.success(`Updated ${response.updatedCount || 0} students. ${unsuccessfulCount} roll numbers were not found.`)
+        } else {
+          toast.success(`Successfully assigned ${rollNumbers.length} student${rollNumbers.length > 1 ? "s" : ""} to ${selectedBatch}`)
+        }
       }
 
       if (isSuccess) {
@@ -793,6 +878,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setFamilyData([])
     setStatusData([])
     setDayScholarData([])
+    setBatchAssignmentData([])
+    setSelectedBatchDegree("")
+    setSelectedBatchDepartment("")
+    setSelectedBatch("")
+    setAvailableBatches([])
+    setUploadStatus("")
     setError("")
     setStep(1)
     setShowAllDegrees(false)
@@ -830,6 +921,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   // Define tabs
   const tabs = [
     { id: "basic", name: "Basic Details", icon: <FaUser /> },
+    { id: "batch", name: "Batch Assignment", icon: <FaUsers /> },
     { id: "health", name: "Health Info", icon: <FaHeartbeat /> },
     { id: "family", name: "Family Members", icon: <FaUsers /> },
     { id: "status", name: "Status Update", icon: <FaUserGraduate /> },
@@ -1415,6 +1507,108 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     )
   }
 
+  const BatchAssignmentTab = () => {
+    const batchTemplateHeaders = ["rollNumber"]
+
+    const batchInstructionsText = (
+      <div>
+        <p className="font-medium mb-1">How this works:</p>
+        <ul className="grid grid-cols-1 gap-y-1">
+          <li>
+            <span className="font-medium">1.</span> Select a degree.
+          </li>
+          <li>
+            <span className="font-medium">2.</span> Select a department.
+          </li>
+          <li>
+            <span className="font-medium">3.</span> Select one configured batch for that combination.
+          </li>
+          <li>
+            <span className="font-medium">4.</span> Upload a CSV with student roll numbers to assign all of them to that batch.
+          </li>
+        </ul>
+      </div>
+    )
+
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Degree</label>
+            <Select
+              value={selectedBatchDegree}
+              onChange={(event) => {
+                setSelectedBatchDegree(event.target.value)
+                setSelectedBatch("")
+              }}
+              options={[
+                { value: "", label: "Select Degree" },
+                ...validDegrees.map((degree) => ({ value: degree, label: degree })),
+              ]}
+              disabled={configLoading}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Department</label>
+            <Select
+              value={selectedBatchDepartment}
+              onChange={(event) => {
+                setSelectedBatchDepartment(event.target.value)
+                setSelectedBatch("")
+              }}
+              options={[
+                { value: "", label: "Select Department" },
+                ...validDepartments.map((department) => ({ value: department, label: department })),
+              ]}
+              disabled={configLoading}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Batch</label>
+            <Select
+              value={selectedBatch}
+              onChange={(event) => setSelectedBatch(event.target.value)}
+              options={[
+                { value: "", label: batchOptionsLoading ? "Loading batches..." : "Select Batch" },
+                ...availableBatches.map((batch) => ({ value: batch, label: batch })),
+              ]}
+              disabled={configLoading || batchOptionsLoading || !selectedBatchDegree || !selectedBatchDepartment}
+            />
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4 text-sm text-[var(--color-text-muted)]">
+          Select the academic combination first. Assigning a batch through this tab also stores the selected degree and department on the student profile.
+        </div>
+
+        <CsvUploader
+          onDataParsed={handleBatchDataParsed}
+          requiredFields={["rollNumber"]}
+          templateFileName="student_batch_assignment_template.csv"
+          templateHeaders={batchTemplateHeaders}
+          maxRecords={MAX_BULK_RECORDS}
+          instructionText={batchInstructionsText}
+        />
+
+        {batchAssignmentData.length > 0 && !error && (
+          <div className="p-4 rounded-lg bg-[var(--color-success-bg)] text-[var(--color-success-text)]">
+            {uploadStatus}
+          </div>
+        )}
+
+        {batchAssignmentData.length > 0 && (
+          <div className="border rounded-lg overflow-hidden">
+            <SheetPreviewTable rows={batchAssignmentData.slice(0, 100)} />
+          </div>
+        )}
+
+        {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+      </div>
+    )
+  }
+
   if (!isOpen) return null
 
   return (
@@ -1633,6 +1827,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       )}
 
       {/* Health Tab */}
+      {activeTab === "batch" && <BatchAssignmentTab />}
+
+      {/* Health Tab */}
       {activeTab === "health" && <HealthInfoTab />}
 
       {/* Family Tab */}
@@ -1686,7 +1883,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={(activeTab === "basic" && (parsedData.length === 0 || Object.keys(basicInvalidCellMap).length > 0)) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
+          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={(activeTab === "basic" && (parsedData.length === 0 || Object.keys(basicInvalidCellMap).length > 0)) || (activeTab === "batch" && (batchAssignmentData.length === 0 || !selectedBatchDegree || !selectedBatchDepartment || !selectedBatch)) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
             <FaCheck />
             {isUpdating ? "Updating Students..." : "Confirm Update"}
           </Button>

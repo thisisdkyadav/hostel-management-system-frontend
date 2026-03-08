@@ -1,16 +1,46 @@
 import React, { useState, useEffect } from "react"
 import { FaUserGraduate } from "react-icons/fa"
 import { FormField, Select } from "@/components/ui"
-import { adminApi } from "../../../../../service"
+import { adminApi, studentApi } from "../../../../../service"
 
 const AcademicInfoSection = ({ data, onChange }) => {
   const [validDegrees, setValidDegrees] = useState([])
   const [validDepartments, setValidDepartments] = useState([])
+  const [availableBatches, setAvailableBatches] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [batchLoading, setBatchLoading] = useState(false)
 
   useEffect(() => {
     fetchConfigData()
   }, [])
+
+  useEffect(() => {
+    const fetchBatchOptions = async () => {
+      if (!data.degree || !data.department) {
+        setAvailableBatches([])
+        return
+      }
+
+      setBatchLoading(true)
+      try {
+        const response = await studentApi.getBatchList({
+          degree: data.degree,
+          department: data.department,
+        })
+        setAvailableBatches(response || [])
+        if (data.batch && !(response || []).includes(data.batch)) {
+          onChange({ batch: "" })
+        }
+      } catch (err) {
+        console.error("Error fetching batch options:", err)
+        setAvailableBatches([])
+      } finally {
+        setBatchLoading(false)
+      }
+    }
+
+    fetchBatchOptions()
+  }, [data.degree, data.department])
 
   const fetchConfigData = async () => {
     setIsLoading(true)
@@ -28,6 +58,10 @@ const AcademicInfoSection = ({ data, onChange }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
+    if (name === "degree" || name === "department") {
+      onChange({ [name]: value, batch: "" })
+      return
+    }
     onChange({ [name]: value })
   }
 
@@ -57,6 +91,21 @@ const AcademicInfoSection = ({ data, onChange }) => {
               { value: "", label: "Select Degree" },
               ...(isLoading ? [{ value: "", label: "Loading degrees...", disabled: true }] : validDegrees.map((degree) => ({ value: degree, label: degree }))),
               ...(data.degree && !validDegrees.includes(data.degree) ? [{ value: data.degree, label: data.degree }] : [])
+            ]}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Batch</label>
+          <Select
+            name="batch"
+            value={data.batch || ""}
+            onChange={handleChange}
+            disabled={isLoading || batchLoading || !data.degree || !data.department}
+            options={[
+              { value: "", label: !data.degree || !data.department ? "Select degree and department first" : "Select Batch" },
+              ...(batchLoading ? [{ value: "", label: "Loading batches...", disabled: true }] : availableBatches.map((batch) => ({ value: batch, label: batch }))),
+              ...(data.batch && !availableBatches.includes(data.batch) ? [{ value: data.batch, label: data.batch }] : []),
             ]}
           />
         </div>

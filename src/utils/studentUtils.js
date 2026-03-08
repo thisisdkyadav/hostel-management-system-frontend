@@ -39,6 +39,7 @@ export const buildStudentQueryParams = (filters, pagination, sorting) => {
   // Add filter parameters
   if (filters.department) params.department = filters.department
   if (filters.degree) params.degree = filters.degree
+  if (filters.batch) params.batch = filters.batch
   if (filters.gender) params.gender = filters.gender
   if (filters.hostelId) params.hostelId = filters.hostelId
   if (filters.unitNumber) params.unitNumber = filters.unitNumber
@@ -81,6 +82,7 @@ export const DEFAULT_FILTERS = {
   yearOfStudy: "",
   department: "",
   degree: "",
+  batch: "",
   gender: "",
   roomNumber: "",
   hasAllocation: "",

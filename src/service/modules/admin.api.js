@@ -365,6 +365,32 @@ export const adminApi = {
       .then(unwrapStandardResponse)
   },
 
+  // ==================== Student Batches Management ====================
+
+  /**
+   * Get student batches configuration
+   */
+  getStudentBatches: () => {
+    return apiClient.get("/config/studentBatches")
+  },
+
+  /**
+   * Update student batches configuration
+   * @param {Object} studentBatches - Nested degree -> department -> batches config
+   */
+  updateStudentBatches: (studentBatches) => {
+    return apiClient.put("/config/studentBatches", { value: studentBatches })
+  },
+
+  /**
+   * Rename a student batch within a degree/department combination
+   */
+  renameStudentBatch: ({ degree, department, oldName, newName }) => {
+    return apiClient
+      .put("/students/profiles-admin/batches/rename", { degree, department, oldName, newName })
+      .then(unwrapStandardResponse)
+  },
+
   // ==================== Registered Students Management ====================
 
   /**

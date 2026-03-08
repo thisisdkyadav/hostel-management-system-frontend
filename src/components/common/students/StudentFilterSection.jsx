@@ -8,10 +8,13 @@ import { studentApi } from "../../../service"
 const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, setPageSize, missingOptions = [] }) => {
   const [departments, setDepartments] = useState([])
   const [degreeOptions, setDegreeOptions] = useState([])
+  const [batchOptions, setBatchOptions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [degreesLoading, setDegreesLoading] = useState(false)
   const [degreesError, setDegreesError] = useState(null)
+  const [batchLoading, setBatchLoading] = useState(false)
+  const [batchError, setBatchError] = useState(null)
   const [isExpanded, setIsExpanded] = useState(false)
 
   const fetchDepartments = async () => {
@@ -52,10 +55,39 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
     }
   }
 
+  const fetchBatches = async () => {
+    setBatchLoading(true)
+    setBatchError(null)
+    try {
+      const batchesData = await studentApi.getBatchList({
+        degree: filters.degree || undefined,
+        department: filters.department || undefined,
+      })
+      if (batchesData && Array.isArray(batchesData)) {
+        setBatchOptions(batchesData)
+        if (filters.batch && !batchesData.includes(filters.batch)) {
+          updateFilter("batch", "")
+        }
+      } else {
+        setBatchOptions([])
+      }
+    } catch (error) {
+      console.error("Failed to fetch batches:", error)
+      setBatchError("Failed to load batches")
+      setBatchOptions([])
+    } finally {
+      setBatchLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchDepartments()
     fetchDegrees()
   }, [])
+
+  useEffect(() => {
+    fetchBatches()
+  }, [filters.degree, filters.department])
 
   // Count active filters (excluding searchTerm and studentsPerPage)
   const getActiveFilterCount = () => {
@@ -65,6 +97,7 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
     if (filters.roomNumber) count++
     if (filters.department) count++
     if (filters.degree) count++
+    if (filters.batch) count++
     if (filters.gender) count++
     if (filters.status) count++
     if (filters.hasAllocation) count++
@@ -191,6 +224,25 @@ const StudentFilterSection = ({ filters, updateFilter, resetFilters, hostels, se
                   { value: "Other", label: "Other" }
                 ]}
               />
+            </VStack>
+
+            <VStack gap="xsmall">
+              <Label size="sm">Batch</Label>
+              <Select
+                value={filters.batch}
+                onChange={(e) => updateFilter("batch", e.target.value)}
+                disabled={batchLoading}
+                placeholder="All Batches"
+                options={batchLoading ? [{ value: "", label: "Loading batches..." }] : batchError ? [{ value: "", label: "Error loading batches" }] : batchOptions.map((batch) => ({ value: batch, label: batch }))}
+              />
+              {batchError && (
+                <HStack gap="small" align="center">
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-danger)' }}>{batchError}</span>
+                  <Button onClick={fetchBatches} variant="ghost" size="sm" disabled={batchLoading}>
+                    Retry
+                  </Button>
+                </HStack>
+              )}
             </VStack>
 
             <VStack gap="xsmall">

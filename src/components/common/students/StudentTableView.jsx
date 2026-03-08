@@ -68,6 +68,16 @@ const StudentTableView = ({ currentStudents, sortField, sortDirection, handleSor
       ),
     },
     {
+      header: "Batch",
+      key: "batch",
+      className: "hidden lg:table-cell",
+      render: (student) => (
+        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)" }}>
+          {student.batch || "—"}
+        </span>
+      ),
+    },
+    {
       header: "Room",
       key: "room",
       className: "hidden sm:table-cell",

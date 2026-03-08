@@ -111,6 +111,11 @@ const StudentProfile = ({ profile }) => {
             <span className="student-profile-detail-item">
               <FaGraduationCap style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.degree}
             </span>
+            {profile.batch && (
+              <span className="student-profile-detail-item">
+                <FaGraduationCap style={{ marginRight: 'var(--spacing-1)', fontSize: 'var(--icon-sm)' }} /> {profile.batch}
+              </span>
+            )}
           </div>
         </div>
 

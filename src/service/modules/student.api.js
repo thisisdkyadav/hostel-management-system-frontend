@@ -157,6 +157,22 @@ export const studentApi = {
   getDegreesList: () => {
     return apiClient.get("/students/profiles-admin/degrees/list").then(unwrapListFromKey("degrees"))
   },
+
+  /**
+   * Get batch list
+   */
+  getBatchList: (filters = {}) => {
+    return apiClient.get("/students/profiles-admin/batches/list", { params: filters }).then(unwrapListFromKey("batches"))
+  },
+
+  /**
+   * Bulk assign students to a configured batch
+   */
+  bulkUpdateBatchAssignment: ({ rollNumbers, degree, department, batch }) => {
+    return apiClient
+      .put("/students/profiles-admin/profiles/batch", { rollNumbers, degree, department, batch })
+      .then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi

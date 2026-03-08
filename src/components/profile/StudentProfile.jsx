@@ -67,10 +67,12 @@ const StudentProfile = ({ user }) => {
     return <EmptyState icon={FiUser} title="Profile Not Found" message="We couldn't find your profile information. Please contact the administrator if this issue persists." />
   }
 
+  const academicSubtitle = [studentData.department, studentData.degree, studentData.batch].filter(Boolean).join(" | ")
+
   return (
     <div>
       <div className="flex justify-between items-start">
-        <ProfileHeader user={studentData} role="Student" subtitle={`${studentData.department} | ${studentData.degree}`} />
+        <ProfileHeader user={studentData} role="Student" subtitle={academicSubtitle} />
 
         <Button onClick={() => setIsEditModalOpen(true)} variant="primary" size="md">
           <FiEdit2 /> Edit Profile
@@ -90,6 +92,7 @@ const StudentProfile = ({ user }) => {
           <ProfileCard title="Academic Information">
             {studentData.department && <ProfileInfo label="Department" value={studentData.department} icon={FiBook} />}
             <ProfileInfo label="Degree" value={studentData.degree} icon={FiBookmark} />
+            {studentData.batch && <ProfileInfo label="Batch" value={studentData.batch} icon={FiBookmark} />}
             {/* {studentData.degree && <ProfileInfo label="Year" value={studentData.year} icon={FiUser} />} */}
           </ProfileCard>
           <ProfileCard title="Family Members">

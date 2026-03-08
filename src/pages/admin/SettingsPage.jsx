@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
 import ConfigListManager from "../../components/admin/settings/ConfigListManager"
+import StudentBatchManager from "../../components/admin/settings/StudentBatchManager"
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
@@ -19,6 +20,7 @@ const SettingsPage = () => {
     studentFields: false,
     degrees: false,
     departments: false,
+    studentBatches: false,
     registeredStudents: false,
     academicHolidays: false,
     systemSettings: false,
@@ -27,6 +29,7 @@ const SettingsPage = () => {
   const [studentEditPermissions, setStudentEditPermissions] = useState([])
   const [degrees, setDegrees] = useState([])
   const [departments, setDepartments] = useState([])
+  const [studentBatches, setStudentBatches] = useState({})
   const [registeredStudents, setRegisteredStudents] = useState({})
   const [academicHolidays, setAcademicHolidays] = useState({})
   const [systemSettings, setSystemSettings] = useState({})
@@ -35,6 +38,7 @@ const SettingsPage = () => {
     studentFields: null,
     degrees: null,
     departments: null,
+    studentBatches: null,
     registeredStudents: null,
     academicHolidays: null,
     systemSettings: null,
@@ -44,6 +48,7 @@ const SettingsPage = () => {
     "studentFields",
     "degrees",
     "departments",
+    "studentBatches",
     "registeredStudents",
     "academicHolidays",
     "systemSettings",
@@ -105,6 +110,16 @@ const SettingsPage = () => {
       fetchDegrees()
     } else if (activeTab === "departments" && departments.length === 0) {
       fetchDepartments()
+    } else if (activeTab === "studentBatches") {
+      if (degrees.length === 0) {
+        fetchDegrees()
+      }
+      if (departments.length === 0) {
+        fetchDepartments()
+      }
+      if (Object.keys(studentBatches).length === 0) {
+        fetchStudentBatches()
+      }
     } else if (activeTab === "registeredStudents") {
       if (degrees.length === 0) {
         fetchDegrees()
@@ -211,6 +226,23 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, systemSettings: false }))
+    }
+  }
+
+  const fetchStudentBatches = async () => {
+    setLoading((prev) => ({ ...prev, studentBatches: true }))
+    setError((prev) => ({ ...prev, studentBatches: null }))
+    try {
+      const response = await adminApi.getStudentBatches()
+      setStudentBatches(response.value || {})
+    } catch (err) {
+      console.error("Error fetching student batches:", err)
+      setError((prev) => ({
+        ...prev,
+        studentBatches: "Failed to load batch configuration. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, studentBatches: false }))
     }
   }
 
@@ -400,6 +432,59 @@ const SettingsPage = () => {
     }
   }
 
+  const handleRenameStudentBatch = async ({ degree, department, oldName, newName }) => {
+    if (!canRenameInTab("studentBatches")) {
+      toast.error("You do not have permission to rename student batch values.")
+      return false
+    }
+
+    try {
+      await adminApi.renameStudentBatch({ degree, department, oldName, newName })
+
+      setStudentBatches((prev) => {
+        const nextDegreeConfig = { ...(prev[degree] || {}) }
+        const nextBatches = (nextDegreeConfig[department] || []).map((batch) => (
+          batch === oldName ? newName : batch
+        ))
+        nextDegreeConfig[department] = [...new Set(nextBatches)]
+        return {
+          ...prev,
+          [degree]: nextDegreeConfig,
+        }
+      })
+
+      toast.success(`Batch "${oldName}" has been renamed to "${newName}"`)
+      return true
+    } catch (err) {
+      console.error("Error renaming batch:", err)
+      toast.error(`Failed to rename batch: ${err.message || "Unknown error"}`)
+      throw err
+    }
+  }
+
+  const handleUpdateStudentBatches = async (updatedStudentBatches) => {
+    if (!canUpdateTab("studentBatches")) {
+      toast.error("You do not have permission to update student batches.")
+      return
+    }
+
+    const confirmUpdate = window.confirm("Are you sure you want to update student batches?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, studentBatches: true }))
+    try {
+      const response = await adminApi.updateStudentBatches(updatedStudentBatches)
+      setStudentBatches(response.configuration.value || {})
+      setSuccessMessage(`Student batches updated successfully on ${new Date(response.configuration?.lastUpdated || Date.now()).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating student batches:", err)
+      toast.error("An error occurred while updating student batches. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, studentBatches: false }))
+    }
+  }
+
   const handleUpdateAcademicHolidays = async (updatedAcademicHolidays) => {
     if (!canUpdateTab("academicHolidays")) {
       toast.error("You do not have permission to update academic holidays.")
@@ -470,6 +555,12 @@ const SettingsPage = () => {
                 <button onClick={() => handleTabChange("departments")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "departments" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiOfficeBuilding className="mr-2 h-5 w-5" />
                   Departments
+                </button>
+              </li>
+              <li className="mr-2">
+                <button onClick={() => handleTabChange("studentBatches")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentBatches" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                  <HiUsers className="mr-2 h-5 w-5" />
+                  Batches
                 </button>
               </li>
               <li className="mr-2">
@@ -565,6 +656,34 @@ const SettingsPage = () => {
                     </div>
                   ) : (
                     <ConfigListManager items={departments} onUpdate={handleUpdateDepartments} onRename={handleRenameDepartment} isLoading={loading.departments} title="Department Management" description="Add or rename academic departments available in the system. Click on a department to edit it." itemLabel="Department" placeholder="Enter department name (e.g., Computer Science, Electrical Engineering)" />
+                  )}
+                </>
+              )}
+
+              {activeTab === "studentBatches" && (
+                <>
+                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
+                    <div className="flex-shrink-0 mt-0.5 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm">Manage batch values per degree and department combination. Use this before assigning students to batches in the bulk update flow.</p>
+                  </div>
+
+                  {loading.studentBatches && Object.keys(studentBatches).length === 0 ? (
+                    <div className="flex justify-center py-6">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
+                    </div>
+                  ) : (
+                    <StudentBatchManager
+                      degrees={degrees}
+                      departments={departments}
+                      studentBatches={studentBatches}
+                      onUpdate={handleUpdateStudentBatches}
+                      onRename={handleRenameStudentBatch}
+                      isLoading={loading.studentBatches}
+                    />
                   )}
                 </>
               )}
