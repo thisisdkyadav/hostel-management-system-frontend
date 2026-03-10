@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Button } from "czero/react"
 import {
   Eye,
+  Download,
   FileText,
   Users,
   Mail,
@@ -52,7 +53,12 @@ const getStatusIcon = (status = "") => {
 /**
  * CaseSummaryView - Complete case summary for closed cases
  */
-const CaseSummaryView = ({ caseData, onViewPdf }) => {
+const CaseSummaryView = ({
+  caseData,
+  onViewPdf,
+  onDownloadBundle,
+  isDownloadingBundle = false,
+}) => {
   const [expandedSections, setExpandedSections] = useState({
     students: true,
     documents: true,
@@ -80,7 +86,7 @@ const CaseSummaryView = ({ caseData, onViewPdf }) => {
   const extraDocuments = caseData.extraDocuments || []
   const emailLogs = caseData.emailLogs || []
   const finalDecision = caseData.finalDecision || {}
-  const disciplinaryActions = caseData.studentDisciplinaryActions || []
+  const disciplinaryActions = finalDecision.studentDisciplinaryActions || []
 
   const sectionStyle = {
     backgroundColor: "var(--color-bg-primary)",
@@ -191,20 +197,33 @@ const CaseSummaryView = ({ caseData, onViewPdf }) => {
             </span>
           </div>
         </div>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() =>
-            onViewPdf(
-              caseData.complaintPdfUrl,
-              "Complaint PDF",
-              caseData.complaintPdfName || "complaint.pdf"
-            )
-          }
-        >
-          <Eye size={14} />
-          Complaint
-        </Button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              onViewPdf(
+                caseData.complaintPdfUrl,
+                "Complaint PDF",
+                caseData.complaintPdfName || "complaint.pdf"
+              )
+            }
+          >
+            <Eye size={14} />
+            Complaint
+          </Button>
+          {typeof onDownloadBundle === "function" && (
+            <Button
+              size="sm"
+              variant="primary"
+              loading={isDownloadingBundle}
+              onClick={onDownloadBundle}
+            >
+              <Download size={14} />
+              Download Bundle
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Final Decision */}

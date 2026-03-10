@@ -249,6 +249,7 @@ const DisciplinaryProcessPage = () => {
   const [adminModalLoading, setAdminModalLoading] = useState(false)
   const [selectedAdminCase, setSelectedAdminCase] = useState(null)
   const [viewingHistoryStep, setViewingHistoryStep] = useState(null)
+  const [exportingCaseBundle, setExportingCaseBundle] = useState(false)
 
   // Student Search state
   const [studentSearchRoll, setStudentSearchRoll] = useState("")
@@ -316,6 +317,17 @@ const DisciplinaryProcessPage = () => {
       title,
       fileName,
     })
+  }
+
+  const triggerBlobDownload = (blob, fileName) => {
+    const downloadUrl = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = downloadUrl
+    link.download = fileName || "disciplinary-case-export.zip"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(downloadUrl)
   }
 
   // ============================================================================
@@ -557,6 +569,26 @@ const DisciplinaryProcessPage = () => {
   const openAdminCase = async (row) => {
     setAdminModalOpen(true)
     await fetchAdminCaseById(row.id)
+  }
+
+  const handleDownloadCaseBundle = async () => {
+    if (!selectedAdminCase?.id) return
+
+    if (deriveAdminStage(selectedAdminCase) !== "closed_final") {
+      toast.error("Only completed cases can be exported")
+      return
+    }
+
+    try {
+      setExportingCaseBundle(true)
+      const { blob, fileName } = await discoApi.downloadProcessCaseBundle(selectedAdminCase.id)
+      triggerBlobDownload(blob, fileName)
+      toast.success("Disciplinary case bundle downloaded")
+    } catch (error) {
+      toast.error(error.message || "Failed to download disciplinary case bundle")
+    } finally {
+      setExportingCaseBundle(false)
+    }
   }
 
   const addStudentToGroup = (student, group) => {
@@ -1379,7 +1411,12 @@ const DisciplinaryProcessPage = () => {
             Case details unavailable
           </div>
         ) : adminCurrentStage === "closed_final" ? (
-          <CaseSummaryView caseData={selectedAdminCase} onViewPdf={showPdf} />
+          <CaseSummaryView
+            caseData={selectedAdminCase}
+            onViewPdf={showPdf}
+            onDownloadBundle={handleDownloadCaseBundle}
+            isDownloadingBundle={exportingCaseBundle}
+          />
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             {/* Case Header - always visible */}
