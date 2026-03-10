@@ -11,6 +11,27 @@ import { filterMaintenanceStaff } from "../../utils/adminUtils"
 import { MAINTENANCE_FILTER_TABS } from "../../constants/adminConstants"
 import { adminApi } from "../../service"
 
+const groupMaintenanceStaffByCategory = (staffList) => {
+  const orderedStaff = []
+  const groupsByCategory = new Map()
+
+  staffList.forEach((staff) => {
+    const category = staff.category || "Other"
+
+    if (!groupsByCategory.has(category)) {
+      groupsByCategory.set(category, [])
+    }
+
+    groupsByCategory.get(category).push(staff)
+  })
+
+  groupsByCategory.forEach((group) => {
+    orderedStaff.push(...group)
+  })
+
+  return orderedStaff
+}
+
 const MaintenanceStaffPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterCategory, setFilterCategory] = useState("all")
@@ -18,6 +39,7 @@ const MaintenanceStaffPage = () => {
   const [maintenanceStaff, setMaintenanceStaff] = useState([])
 
   const filteredStaff = filterMaintenanceStaff(maintenanceStaff, filterCategory, searchTerm)
+  const groupedStaff = groupMaintenanceStaffByCategory(filteredStaff)
 
   const fetchMaintenanceStaff = async () => {
     try {
@@ -48,8 +70,8 @@ const MaintenanceStaffPage = () => {
         </div>
 
         {filteredStaff.length > 0 ? (
-          <div className="mt-[var(--spacing-6)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-4)] md:gap-[var(--spacing-6)]">
-            {filteredStaff.map((staff) => (
+          <div className="mt-[var(--spacing-6)] grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-[var(--spacing-4)] md:gap-[var(--spacing-6)]">
+            {groupedStaff.map((staff) => (
               <MaintenanceCard key={staff.id} staff={staff} onUpdate={fetchMaintenanceStaff} onDelete={fetchMaintenanceStaff} />
             ))}
           </div>
