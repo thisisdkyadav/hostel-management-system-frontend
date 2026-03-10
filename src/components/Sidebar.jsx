@@ -18,8 +18,21 @@ import {
   isCsoAdminSubRole
 } from "../constants/navigationConfig"
 
-const ADMIN_DEFAULT_PINNED_PATHS = ["/admin", "/admin/hostels", "/admin/students", "/admin/sheet", "/admin/complaints"]
+const ADMIN_DEFAULT_PINNED_PATHS = [
+  "/admin",
+  "/admin/hostels",
+  "/admin/students",
+  "/admin/sheet",
+  "/admin/complaints",
+  "/admin/overall-best-performer",
+]
 const ADMIN_SIDEBAR_V2_TOGGLE_KEY = "admin_sidebar_legacy_enabled"
+const ADMIN_PINNED_TAB_MIGRATIONS = [
+  {
+    storageKey: "admin_sidebar_pin_overall_best_performer_v1",
+    path: "/admin/overall-best-performer",
+  },
+]
 
 /**
  * The categorized admin sidebar is now the default.
@@ -137,6 +150,8 @@ const Sidebar = ({ navItems }) => {
       return
     }
 
+    if (typeof window === "undefined") return
+
     const adminMainNavItems = (navItems || []).filter((item) => item.section === "main" && item.path)
     const validPaths = new Set(adminMainNavItems.map((item) => item.path))
     const fallbackPins = ADMIN_DEFAULT_PINNED_PATHS.filter((path) => validPaths.has(path))
@@ -144,9 +159,28 @@ const Sidebar = ({ navItems }) => {
     const hasPersistedPinnedTabs = Array.isArray(user?.pinnedTabs)
     const userPinnedTabs = hasPersistedPinnedTabs ? user.pinnedTabs.filter((path) => typeof path === "string" && validPaths.has(path)) : []
     const sanitizedUserPinnedTabs = [...new Set(userPinnedTabs)]
+    const nextPinnedPaths = hasPersistedPinnedTabs ? sanitizedUserPinnedTabs : safeFallbackPins
 
-    setPinnedAdminPaths(hasPersistedPinnedTabs ? sanitizedUserPinnedTabs : safeFallbackPins)
+    const migrationPathsToAdd = ADMIN_PINNED_TAB_MIGRATIONS
+      .filter((migration) => validPaths.has(migration.path) && !window.localStorage.getItem(migration.storageKey))
+      .map((migration) => migration.path)
+
+    const migratedPinnedPaths = [...new Set([...nextPinnedPaths, ...migrationPathsToAdd])]
+
+    setPinnedAdminPaths(migratedPinnedPaths)
     setActiveAdminCategory(ADMIN_NAV_CATEGORY_HOME)
+
+    if (migrationPathsToAdd.length > 0) {
+      ADMIN_PINNED_TAB_MIGRATIONS.forEach((migration) => {
+        if (migrationPathsToAdd.includes(migration.path)) {
+          window.localStorage.setItem(migration.storageKey, "true")
+        }
+      })
+
+      authApi.updatePinnedTabs(migratedPinnedPaths).catch((error) => {
+        console.error("Failed to persist pinned tab migration:", error)
+      })
+    }
   }, [useCategorizedAdminNav, adminMainPathsSignature, user?.pinnedTabs])
 
   useEffect(() => {
