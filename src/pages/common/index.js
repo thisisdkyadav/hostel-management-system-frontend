@@ -2,6 +2,7 @@
 export { default as ComplaintsPage } from './ComplaintsPage'
 export { default as DisciplinaryProcessPage } from './DisciplinaryProcessPage'
 export { default as EventsPage } from './EventsPage'
+export { default as ElectionsPage } from './ElectionsPage'
 export { default as GymkhanaEventsPage } from './GymkhanaEventsPage'
 export { default as MegaEventsPage } from './MegaEventsPage'
 export { default as OverallBestPerformerPage } from './OverallBestPerformerPage'

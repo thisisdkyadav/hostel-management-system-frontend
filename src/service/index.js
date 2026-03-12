@@ -62,6 +62,7 @@ export { discoApi } from "./modules/disco.api"
 export { faceScannerApi } from "./modules/faceScanner.api"
 export { appointmentsApi } from "./modules/appointments.api"
 export { overallBestPerformerApi } from "./modules/overallBestPerformer.api"
+export { electionsApi } from "./modules/elections.api"
 
 // Default export with all APIs grouped
 import { authApi } from "./modules/auth.api"
@@ -100,6 +101,7 @@ import { discoApi } from "./modules/disco.api"
 import { faceScannerApi } from "./modules/faceScanner.api"
 import { appointmentsApi } from "./modules/appointments.api"
 import { overallBestPerformerApi } from "./modules/overallBestPerformer.api"
+import { electionsApi } from "./modules/elections.api"
 
 const api = {
   auth: authApi,
@@ -140,6 +142,7 @@ const api = {
   faceScanner: faceScannerApi,
   appointments: appointmentsApi,
   overallBestPerformer: overallBestPerformerApi,
+  elections: electionsApi,
 }
 
 export default api

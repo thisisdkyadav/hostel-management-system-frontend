@@ -3,7 +3,7 @@ import BottomBar from "../components/BottomBar"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthProvider"
 import { useEffect, useState } from "react"
-import { notificationApi, overallBestPerformerApi } from "../service"
+import { electionsApi, notificationApi, overallBestPerformerApi } from "../service"
 import usePwaMobile from "../hooks/usePwaMobile"
 import { useLayoutPreference } from "../hooks/useLayoutPreference"
 import { useLogout } from "../hooks/useLogout"
@@ -22,6 +22,7 @@ const StudentLayout = () => {
   const handleLogout = useLogout()
   const [notificationsCount, setNotificationsCount] = useState(0)
   const [showOverallBestPerformer, setShowOverallBestPerformer] = useState(false)
+  const [electionPortalState, setElectionPortalState] = useState(null)
 
   useEffect(() => {
     const fetchNotificationsCount = async () => {
@@ -51,8 +52,30 @@ const StudentLayout = () => {
     }
   }, [user?.role])
 
+  useEffect(() => {
+    const fetchElectionPortalState = async () => {
+      try {
+        const response = await electionsApi.getStudentPortalState()
+        setElectionPortalState(response?.data || null)
+      } catch (_error) {
+        setElectionPortalState(null)
+      }
+    }
+
+    if (user?.role === "Student") {
+      fetchElectionPortalState()
+    }
+  }, [user?.role])
+
   // Get navigation items from centralized config
-  const allNavItems = useAuthorizedNavItems(getStudentNavItems(handleLogout, notificationsCount, showOverallBestPerformer))
+  const allNavItems = useAuthorizedNavItems(
+    getStudentNavItems(
+      handleLogout,
+      notificationsCount,
+      showOverallBestPerformer,
+      electionPortalState
+    )
+  )
   const pwaBottomBarMainItems = useAuthorizedNavItems(getStudentPwaBottomBarMainItems())
   const pwaBottomBarHiddenItems = getStudentPwaHiddenItems(allNavItems)
 

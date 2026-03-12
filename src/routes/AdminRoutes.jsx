@@ -32,6 +32,7 @@ import {
     VisitorRequestsPage,
     LostAndFoundPage,
     EventsPage,
+    ElectionsPage,
     GymkhanaEventsPage,
     MegaEventsPage,
     ProfilePage,
@@ -100,6 +101,7 @@ const AdminRoutes = () => {
                             <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
                             <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
                             <Route path="overall-best-performer" element={guardRoute("route.admin.overallBestPerformer", <OverallBestPerformerPage />)} />
+                            <Route path="elections" element={guardRoute("route.admin.elections", <ElectionsPage />)} />
                             <Route path="update-password" element={guardRoute("route.admin.updatePassword", <UpdatePasswordPage />)} />
                             <Route path="settings" element={guardRoute("route.admin.settings", <AdminSettings />)} />
                             <Route path="profile" element={guardRoute("route.admin.profile", <ProfilePage />)} />

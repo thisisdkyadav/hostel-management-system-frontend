@@ -16,6 +16,7 @@ import {
     ProfilePage,
     LostAndFoundPage,
     EventsPage,
+    ElectionsPage,
     NotificationCenterPage,
 } from "../pages/common"
 import OverallBestPerformerPage from "../pages/common/OverallBestPerformerPage"
@@ -126,6 +127,14 @@ const StudentRoutes = () => (
                     element={
                         <RouteAccessGuard routeKey="route.student.overallBestPerformer" fallback={<NotFoundPage />}>
                             <OverallBestPerformerPage />
+                        </RouteAccessGuard>
+                    }
+                />
+                <Route
+                    path="elections"
+                    element={
+                        <RouteAccessGuard routeKey="route.student.elections" fallback={<NotFoundPage />}>
+                            <ElectionsPage />
                         </RouteAccessGuard>
                     }
                 />

@@ -42,7 +42,8 @@ import {
   House,
   GraduationCap,
   BriefcaseBusiness,
-  UtensilsCrossed
+  UtensilsCrossed,
+  BadgeCheck
 } from "lucide-react"
 
 // ============================================
@@ -158,6 +159,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Best Performer", icon: Trophy, section: "main", path: "/admin/overall-best-performer", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Elections", icon: BadgeCheck, section: "main", path: "/admin/elections", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Leaves", icon: CalendarOff, section: "main", path: "/admin/leaves", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
@@ -328,7 +330,12 @@ export const getMaintenanceNavItems = (handleLogout) => [
 // STUDENT NAVIGATION
 // ============================================
 
-export const getStudentNavItems = (handleLogout, notificationsCount = 0, showOverallBestPerformer = false) => [
+export const getStudentNavItems = (
+  handleLogout,
+  notificationsCount = 0,
+  showOverallBestPerformer = false,
+  electionPortalState = null
+) => [
   { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/student" },
   { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/student/complaints" },
   { name: "Lost and Found", icon: Search, section: "main", path: "/student/lost-and-found" },
@@ -340,6 +347,13 @@ export const getStudentNavItems = (handleLogout, notificationsCount = 0, showOve
   { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
   ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer", isNew: true }] : []),
+  ...(electionPortalState?.canAccessPortal ? [{
+    name: electionPortalState.navLabel || "Elections",
+    icon: BadgeCheck,
+    section: "main",
+    path: "/student/elections",
+    isNew: electionPortalState.mode === "voting",
+  }] : []),
   createProfileItem("/student"),
   createLogoutItem(handleLogout),
 ]
