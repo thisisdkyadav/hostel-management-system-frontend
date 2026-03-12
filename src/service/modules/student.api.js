@@ -42,6 +42,11 @@ const unwrapStudentDetailsResponse = (response) => {
   }
 }
 
+const unwrapAllocationLookupResponse = (response) => {
+  const data = unwrapStandardResponse(response)
+  return data?.student || null
+}
+
 const unwrapListFromKey = (key) => (response) => {
   const data = unwrapStandardResponse(response)
   return Array.isArray(data?.[key]) ? data[key] : []
@@ -76,6 +81,14 @@ export const studentApi = {
    */
   getStudentDetails: (userId) => {
     return apiClient.get(`/students/profiles-admin/profile/details/${userId}`).then(unwrapStudentDetailsResponse)
+  },
+
+  /**
+   * Get student allocation lookup details by roll number
+   * @param {string} rollNumber - Student roll number
+   */
+  getAllocationStudentByRollNumber: (rollNumber) => {
+    return apiClient.get(`/students/profiles-admin/room-allocations/student/${encodeURIComponent(rollNumber)}`).then(unwrapAllocationLookupResponse)
   },
 
   /**

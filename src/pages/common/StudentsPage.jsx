@@ -141,10 +141,18 @@ const StudentsPage = () => {
     }
   }
 
-  const handleUpdateAllocations = async (allocations, hostelId) => {
+  const handleUpdateAllocations = async (allocations, hostelId, options = {}) => {
+    const { silent = false } = options
+
     if (!canUpdateStudentAllocations) {
-      alert("You do not have permission to update allocations.")
-      return false
+      if (!silent) {
+        alert("You do not have permission to update allocations.")
+      }
+      return {
+        success: false,
+        errors: [{ message: "You do not have permission to update allocations." }],
+        message: "You do not have permission to update allocations.",
+      }
     }
 
     try {
@@ -152,20 +160,39 @@ const StudentsPage = () => {
       if (response.success) {
         refreshStudents()
         const errors = response.errors || []
-        if (errors.length > 0) {
+        if (!silent && errors.length > 0) {
           alert(`Some allocations failed: ${errors.map((error) => `${error.rollNumber}: ${error.message}`).join(", ")} `)
-        } else {
+        } else if (!silent) {
           alert("Allocations updated successfully")
         }
-        setShowAllocateModal(false)
-        return true
+        if (!silent) {
+          setShowAllocateModal(false)
+        }
+        return {
+          success: true,
+          errors,
+          data: response.data || [],
+          message: response.message || null,
+        }
       } else {
-        alert("Failed to update allocations")
-        return false
+        if (!silent) {
+          alert("Failed to update allocations")
+        }
+        return {
+          success: false,
+          errors: response.errors || [],
+          message: response.message || "Failed to update allocations",
+        }
       }
-    } catch {
-      alert("An error occurred while updating allocations")
-      return false
+    } catch (error) {
+      if (!silent) {
+        alert("An error occurred while updating allocations")
+      }
+      return {
+        success: false,
+        errors: [{ message: error.message || "An error occurred while updating allocations" }],
+        message: error.message || "An error occurred while updating allocations",
+      }
     }
   }
 

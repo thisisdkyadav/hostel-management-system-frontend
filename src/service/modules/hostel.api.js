@@ -23,6 +23,14 @@ export const hostelApi = {
   },
 
   /**
+   * Get rooms by unit for allocation UI
+   * @param {string} unitId - Unit ID
+   */
+  getAllocationRoomsByUnit: (unitId) => {
+    return apiClient.get(`/hostel/rooms/${unitId}`).then((response) => response?.data || [])
+  },
+
+  /**
    * Allocate room to student
    * @param {Object} allocationData - Room allocation data
    */
@@ -88,6 +96,14 @@ export const hostelApi = {
    */
   getRooms: (query = {}) => {
     return apiClient.get("/hostel/rooms-room-only", { params: query })
+  },
+
+  /**
+   * Get room-only hostel rooms for allocation UI
+   * @param {string} hostelId - Hostel ID
+   */
+  getAllocationRooms: (hostelId) => {
+    return apiClient.get("/hostel/rooms-room-only", { params: { hostelId } }).then((response) => response?.data || [])
   },
 
   /**
