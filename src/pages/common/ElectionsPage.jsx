@@ -920,6 +920,17 @@ const formatApiErrorMessage = (error, fallbackMessage) => {
   return error?.message || fallbackMessage
 }
 
+const buildResultsDraftMap = (results = {}) =>
+  Object.fromEntries(
+    (results.posts || []).map((post) => [
+      String(post.postId),
+      {
+        winnerNominationId: post.publishedWinnerNominationId || post.previewWinnerNominationId || "",
+        notes: post.notes || "",
+      },
+    ])
+  )
+
 const DocumentUploadField = ({
   label,
   value,
@@ -2323,6 +2334,88 @@ const StudentVoteModal = ({
   )
 }
 
+const AdminResultsEditModal = ({ postResult, draft, onClose, onChange }) => {
+  if (!postResult) return null
+
+  return (
+    <Modal
+      isOpen={Boolean(postResult)}
+      onClose={onClose}
+      title={`Results · ${postResult.postTitle}`}
+      width={720}
+      footer={
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+          <div style={badgeRowStyle}>
+            <StatusPill tone="default">{postResult.totalVotes} vote(s)</StatusPill>
+            {postResult.previewWinnerName ? (
+              <StatusPill tone="success">Lead: {postResult.previewWinnerName}</StatusPill>
+            ) : null}
+          </div>
+          <Button size="sm" variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+      }
+    >
+      <div style={modalBodyStyle}>
+        {(postResult.candidates || []).length === 0 ? (
+          <EmptyState title="No verified candidates" message="Results will appear here after verification and voting." />
+        ) : (
+          <>
+            <div style={{ display: "grid", gap: "12px" }}>
+              {(postResult.candidates || []).map((candidate) => {
+                const checked = String(draft?.winnerNominationId || "") === String(candidate.nominationId)
+                return (
+                  <label
+                    key={candidate.nominationId}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "var(--spacing-3)",
+                      padding: "var(--spacing-3)",
+                      border: "1px solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-lg)",
+                      backgroundColor: checked ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                      <input
+                        type="radio"
+                        name={`winner-${postResult.postId}`}
+                        checked={checked}
+                        onChange={() => onChange({ winnerNominationId: candidate.nominationId })}
+                      />
+                      <div style={{ display: "grid", gap: "4px" }}>
+                        <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                          {candidate.candidateName}
+                        </span>
+                        <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
+                      </div>
+                    </div>
+                    <strong style={{ color: "var(--color-text-heading)" }}>{candidate.voteCount}</strong>
+                  </label>
+                )
+              })}
+            </div>
+
+            <div style={flatPanelStyle}>
+              <label style={labelStyle}>Notes</label>
+              <textarea
+                style={textareaStyle}
+                value={draft?.notes || ""}
+                onChange={(event) => onChange({ notes: event.target.value })}
+                placeholder="Optional notes for this result."
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </Modal>
+  )
+}
+
 const ElectionsPage = () => {
   const { user } = useAuth()
   const { hostelList = [], fetchHostelList } = useGlobal()
@@ -2354,8 +2447,9 @@ const ElectionsPage = () => {
   const [reviewNomination, setReviewNomination] = useState(null)
   const [nominationFormDrafts, setNominationFormDrafts] = useState({})
   const [nominationContext, setNominationContext] = useState(null)
-  const [voteContext, setVoteContext] = useState(null)
-  const [selectedCandidateId, setSelectedCandidateId] = useState("")
+  const [voteSelections, setVoteSelections] = useState({})
+  const [resultsDrafts, setResultsDrafts] = useState({})
+  const [resultsEditorPostId, setResultsEditorPostId] = useState("")
   const [busyKey, setBusyKey] = useState("")
 
   const normalizedHostels = useMemo(
@@ -2390,6 +2484,11 @@ const ElectionsPage = () => {
       voteCount: posts.reduce((total, post) => total + Number(post.voteCount || 0), 0),
     }
   }, [selectedAdminElection])
+
+  const selectedAdminResultPost = useMemo(
+    () => (selectedAdminElection?.results?.posts || []).find((item) => item.postId === resultsEditorPostId) || null,
+    [resultsEditorPostId, selectedAdminElection]
+  )
 
   const loadBatchOptions = async () => {
     try {
@@ -2439,6 +2538,7 @@ const ElectionsPage = () => {
     })
 
     const nextDrafts = {}
+    const nextVoteSelections = {}
     nextElections.forEach((election) => {
       ;(election.posts || []).forEach((post) => {
         nextDrafts[`${election.id}:${post.id}`] = post.myNomination
@@ -2454,9 +2554,11 @@ const ElectionsPage = () => {
               manifestoUrl: post.myNomination.manifestoUrl || "",
             }
           : createBlankNominationForm()
+        nextVoteSelections[`${election.id}:${post.id}`] = post.votedCandidateNominationId || ""
       })
     })
     setNominationFormDrafts(nextDrafts)
+    setVoteSelections(nextVoteSelections)
   }
 
   const loadPage = async () => {
@@ -2500,6 +2602,14 @@ const ElectionsPage = () => {
       toast.error(formatApiErrorMessage(err, "Failed to load election details"))
     })
   }, [isAdminView, selectedAdminElectionId, toast])
+
+  useEffect(() => {
+    if (!selectedAdminElection?.results) {
+      setResultsDrafts({})
+      return
+    }
+    setResultsDrafts(buildResultsDraftMap(selectedAdminElection.results))
+  }, [selectedAdminElection])
 
   const openCreateWizard = () => {
     setWizardMode("create")
@@ -2614,25 +2724,53 @@ const ElectionsPage = () => {
     }
   }
 
-  const openVoteModal = (election, post) => {
-    setVoteContext({ election, post })
-    setSelectedCandidateId(post.votedCandidateNominationId || "")
-  }
-
-  const castVote = async () => {
-    if (!voteContext || !selectedCandidateId) return
+  const castVote = async (electionId, postId) => {
+    const selectedCandidateId = voteSelections[`${electionId}:${postId}`]
+    if (!selectedCandidateId) return
 
     try {
-      setBusyKey(`vote:${voteContext.election.id}:${voteContext.post.id}`)
-      const response = await electionsApi.castVote(voteContext.election.id, voteContext.post.id, {
+      setBusyKey(`vote:${electionId}:${postId}`)
+      const response = await electionsApi.castVote(electionId, postId, {
         candidateNominationId: selectedCandidateId,
       })
       toast.success(response?.message || "Vote cast successfully")
-      setVoteContext(null)
-      setSelectedCandidateId("")
       await loadStudentPortal()
     } catch (err) {
       toast.error(formatApiErrorMessage(err, "Failed to cast vote"))
+    } finally {
+      setBusyKey("")
+    }
+  }
+
+  const updateResultsDraft = (postId, patch) => {
+    setResultsDrafts((current) => ({
+      ...current,
+      [postId]: {
+        winnerNominationId: current[postId]?.winnerNominationId || "",
+        notes: current[postId]?.notes || "",
+        ...patch,
+      },
+    }))
+  }
+
+  const publishResults = async () => {
+    if (!selectedAdminElectionId) return
+
+    try {
+      setBusyKey(`results:${selectedAdminElectionId}`)
+      const payload = {
+        posts: Object.entries(resultsDrafts).map(([postId, draft]) => ({
+          postId,
+          winnerNominationId: draft?.winnerNominationId || null,
+          notes: draft?.notes || "",
+        })),
+      }
+      const response = await electionsApi.publishResults(selectedAdminElectionId, payload)
+      toast.success(response?.message || "Results published")
+      await loadAdminDetail(selectedAdminElectionId)
+      setResultsEditorPostId("")
+    } catch (err) {
+      toast.error(formatApiErrorMessage(err, "Failed to publish results"))
     } finally {
       setBusyKey("")
     }
@@ -2649,7 +2787,7 @@ const ElectionsPage = () => {
   return (
     <div style={pageStyle}>
       <PageHeader
-        title={isAdminView ? "Elections" : "Student Elections"}
+        title="Elections"
         showDate={false}
       >
         {isAdminView ? (
@@ -2676,19 +2814,13 @@ const ElectionsPage = () => {
           </>
         ) : (
           <>
-            <HeaderSelect
-              value={selectedStudentElectionId}
-              onChange={setSelectedStudentElectionId}
-              options={studentElections}
-              placeholder="Select election occurrence"
-            />
-            {studentPortalState?.canAccessPortal ? (
-              <StatusPill
-                tone={studentPortalState.mode === "voting" ? "success" : "primary"}
-                icon={studentPortalState.mode === "voting" ? <Vote size={14} /> : <ClipboardCheck size={14} />}
-              >
-                {studentPortalState.navLabel}
-              </StatusPill>
+            {studentElections.length > 1 ? (
+              <HeaderSelect
+                value={selectedStudentElectionId}
+                onChange={setSelectedStudentElectionId}
+                options={studentElections}
+                placeholder="Select active election"
+              />
             ) : null}
           </>
         )}
@@ -2740,6 +2872,7 @@ const ElectionsPage = () => {
                 tabs={[
                   { label: "Posts", value: "posts" },
                   { label: "Nominations", value: "nominations" },
+                  { label: "Results", value: "results" },
                   { label: "Schedule", value: "schedule" },
                 ]}
                 activeTab={adminViewTab}
@@ -2814,13 +2947,12 @@ const ElectionsPage = () => {
                       <Table.Head>Post</Table.Head>
                       <Table.Head>Status</Table.Head>
                       <Table.Head>Submitted</Table.Head>
-                      <Table.Head align="right">Action</Table.Head>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
                     {filteredNominations.length === 0 ? (
                       <Table.Row>
-                        <Table.Cell colSpan={5}>
+                        <Table.Cell colSpan={4}>
                           <div style={{ padding: "var(--spacing-4)", textAlign: "center", color: "var(--color-text-muted)" }}>
                             No nominations in this view.
                           </div>
@@ -2828,7 +2960,11 @@ const ElectionsPage = () => {
                       </Table.Row>
                     ) : (
                       filteredNominations.map((nomination) => (
-                        <Table.Row key={nomination.id}>
+                        <Table.Row
+                          key={nomination.id}
+                          onClick={() => setReviewNomination(nomination)}
+                          style={{ cursor: "pointer" }}
+                        >
                           <Table.Cell>
                             <div style={{ display: "grid", gap: "2px" }}>
                               <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
@@ -2844,13 +2980,83 @@ const ElectionsPage = () => {
                             </StatusPill>
                           </Table.Cell>
                           <Table.Cell>{formatDateTime(nomination.submittedAt)}</Table.Cell>
-                          <Table.Cell align="right">
-                            <Button size="sm" variant="ghost" onClick={() => setReviewNomination(nomination)}>
-                              Review
-                            </Button>
-                          </Table.Cell>
                         </Table.Row>
                       ))
+                    )}
+                  </Table.Body>
+                </Table>
+              </>
+            )}
+
+            {adminViewTab === "results" && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "var(--spacing-3)",
+                    flexWrap: "wrap",
+                    marginBottom: "var(--spacing-3)",
+                  }}
+                >
+                  <div style={mutedTextStyle}>
+                    Open a row to adjust the winner before publishing the final result.
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={publishResults}
+                    loading={busyKey === `results:${selectedAdminElectionId}`}
+                    disabled={(selectedAdminElection?.results?.posts || []).length === 0}
+                  >
+                    Publish Results
+                  </Button>
+                </div>
+
+                <Table>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.Head>Post</Table.Head>
+                      <Table.Head>Leading Candidate</Table.Head>
+                      <Table.Head>Total Votes</Table.Head>
+                      <Table.Head>Published Winner</Table.Head>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {(selectedAdminElection?.results?.posts || []).length === 0 ? (
+                      <Table.Row>
+                        <Table.Cell colSpan={4}>
+                          <div style={{ padding: "var(--spacing-4)", textAlign: "center", color: "var(--color-text-muted)" }}>
+                            No result data available yet.
+                          </div>
+                        </Table.Cell>
+                      </Table.Row>
+                    ) : (
+                      (selectedAdminElection?.results?.posts || []).map((postResult) => {
+                        const draft = resultsDrafts[String(postResult.postId)] || {}
+                        const selectedWinner =
+                          (postResult.candidates || []).find(
+                            (candidate) => String(candidate.nominationId) === String(draft.winnerNominationId || "")
+                          ) || null
+
+                        return (
+                          <Table.Row
+                            key={postResult.postId}
+                            onClick={() => setResultsEditorPostId(String(postResult.postId))}
+                            style={{ cursor: "pointer" }}
+                          >
+                            <Table.Cell>
+                              <div style={{ display: "grid", gap: "2px" }}>
+                                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{postResult.postTitle}</span>
+                                <span style={mutedTextStyle}>{(postResult.candidates || []).length} candidate(s)</span>
+                              </div>
+                            </Table.Cell>
+                            <Table.Cell>{postResult.previewWinnerName || "—"}</Table.Cell>
+                            <Table.Cell>{postResult.totalVotes}</Table.Cell>
+                            <Table.Cell>{selectedWinner?.candidateName || "Not selected"}</Table.Cell>
+                          </Table.Row>
+                        )
+                      })
                     )}
                   </Table.Body>
                 </Table>
@@ -2900,56 +3106,45 @@ const ElectionsPage = () => {
         {isStudentView && !selectedStudentElectionId ? (
           <EmptyState
             title="No active election window"
-            message="The participation or voting portal will appear here when your election window opens."
+            message="The active election will appear here when participation, voting, or results are available."
           />
         ) : null}
 
         {isStudentView && selectedStudentElection ? (
           <>
-            {/* Compact info banner */}
             <div style={infoBannerStyle}>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                 <h2 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)" }}>
                   {selectedStudentElection.title}
                 </h2>
-                <StatusPill
-                  tone={selectedStudentElection.mode === "voting" ? "success" : "primary"}
-                  icon={
-                    selectedStudentElection.mode === "voting" ? (
-                      <Vote size={14} />
-                    ) : (
-                      <ClipboardCheck size={14} />
-                    )
-                  }
-                >
-                  {selectedStudentElection.mode === "voting" ? "Voting Open" : "Participation Open"}
-                </StatusPill>
-                <StatusPill tone="default" icon={<CalendarDays size={14} />}>
-                  {selectedStudentElection.academicYear}
-                </StatusPill>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap", color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                <span><strong>Stage:</strong> {formatStageLabel(selectedStudentElection.currentStage)}</span>
-                <span><strong>Voting:</strong> {formatDateTime(selectedStudentElection.timeline?.votingStartAt)} – {formatDateTime(selectedStudentElection.timeline?.votingEndAt)}</span>
+                {selectedStudentElection.mode === "voting" ? (
+                  <span><strong>Voting:</strong> {formatDateTime(selectedStudentElection.timeline?.votingStartAt)} – {formatDateTime(selectedStudentElection.timeline?.votingEndAt)}</span>
+                ) : null}
+                {selectedStudentElection.mode === "results" ? (
+                  <span>
+                    <strong>Status:</strong> {selectedStudentElection.results?.isPublished ? "Published" : "Publishing soon"}
+                  </span>
+                ) : null}
               </div>
             </div>
 
-            {/* Posts table - flat, no SectionFrame */}
-            <Table>
-              <Table.Header>
+            {selectedStudentElection.mode === "participation" ? (
+              <Table>
+                <Table.Header>
                   <Table.Row>
                     <Table.Head>Post</Table.Head>
-                    <Table.Head>Eligibility</Table.Head>
-                    <Table.Head>Current State</Table.Head>
+                    <Table.Head>Status</Table.Head>
                     <Table.Head align="right">Action</Table.Head>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
                   {(selectedStudentElection.posts || []).length === 0 ? (
                     <Table.Row>
-                      <Table.Cell colSpan={4}>
+                      <Table.Cell colSpan={3}>
                         <div style={{ padding: "var(--spacing-5)", textAlign: "center", color: "var(--color-text-muted)" }}>
-                          No posts are available for your electorate.
+                          No posts are available for nomination right now.
                         </div>
                       </Table.Cell>
                     </Table.Row>
@@ -2966,60 +3161,167 @@ const ElectionsPage = () => {
                           </div>
                         </Table.Cell>
                         <Table.Cell>
-                          <div style={badgeRowStyle}>
-                            {post.canStand ? (
-                              <StatusPill tone="primary" icon={<GraduationCap size={14} />}>
-                                Can Stand
-                              </StatusPill>
-                            ) : null}
-                            {post.canVote ? (
-                              <StatusPill tone="success" icon={<Vote size={14} />}>
-                                Can Vote
-                              </StatusPill>
-                            ) : null}
-                          </div>
-                        </Table.Cell>
-                        <Table.Cell>
-                          {selectedStudentElection.mode === "voting"
-                            ? post.hasVoted
-                              ? "Vote submitted"
-                              : `${(post.approvedCandidates || []).length} candidate(s)`
-                            : post.myNomination
-                              ? `Nomination ${formatStageLabel(post.myNomination.status)}`
-                              : "No nomination yet"}
+                          {post.myNomination ? `Nomination ${formatStageLabel(post.myNomination.status)}` : "Not submitted"}
                         </Table.Cell>
                         <Table.Cell align="right">
-                          {selectedStudentElection.mode === "participation" && post.canStand ? (
-                            <div style={{ display: "inline-flex", gap: "8px", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                              <Button size="sm" variant="ghost" onClick={() => openNominationModal(selectedStudentElection, post)}>
-                                {post.myNomination ? "Edit" : "Nominate"}
-                              </Button>
-                              {selectedStudentElection.currentStage === "withdrawal" &&
-                              post.myNomination &&
-                              post.myNomination.status !== "withdrawn" ? (
-                                <Button
-                                  size="sm"
-                                  variant="danger"
-                                  loading={busyKey === `withdraw:${selectedStudentElection.id}:${post.myNomination.id}`}
-                                  onClick={() => withdrawNomination(selectedStudentElection.id, post.myNomination.id)}
-                                >
-                                  Withdraw
-                                </Button>
-                              ) : null}
-                            </div>
-                          ) : null}
-
-                          {selectedStudentElection.mode === "voting" && post.canVote ? (
-                            <Button size="sm" variant="ghost" onClick={() => openVoteModal(selectedStudentElection, post)}>
-                              {post.hasVoted ? "View Ballot" : "Open Ballot"}
+                          <div style={{ display: "inline-flex", gap: "8px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+                            <Button size="sm" variant="ghost" onClick={() => openNominationModal(selectedStudentElection, post)}>
+                              {post.myNomination ? "Edit" : "Nominate"}
                             </Button>
-                          ) : null}
+                            {selectedStudentElection.currentStage === "withdrawal" &&
+                            post.myNomination &&
+                            post.myNomination.status !== "withdrawn" ? (
+                              <Button
+                                size="sm"
+                                variant="danger"
+                                loading={busyKey === `withdraw:${selectedStudentElection.id}:${post.myNomination.id}`}
+                                onClick={() => withdrawNomination(selectedStudentElection.id, post.myNomination.id)}
+                              >
+                                Withdraw
+                              </Button>
+                            ) : null}
+                          </div>
                         </Table.Cell>
                       </Table.Row>
                     ))
                   )}
                 </Table.Body>
               </Table>
+            ) : null}
+
+            {selectedStudentElection.mode === "voting" ? (
+              <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+                {(selectedStudentElection.posts || []).map((post) => (
+                  <div key={post.id} style={detailPanelStyle}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                      <div>
+                        <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>{post.title}</div>
+                        <div style={mutedTextStyle}>{(post.approvedCandidates || []).length} candidate(s)</div>
+                      </div>
+                      {post.hasVoted ? <StatusPill tone="success">Vote submitted</StatusPill> : null}
+                    </div>
+
+                    {(post.approvedCandidates || []).length === 0 ? (
+                      <div style={mutedTextStyle}>No verified candidates are available for this post yet.</div>
+                    ) : (
+                      <div style={{ display: "grid", gap: "10px" }}>
+                        {(post.approvedCandidates || []).map((candidate) => {
+                          const selectedValue = voteSelections[`${selectedStudentElection.id}:${post.id}`] || ""
+                          const checked = String(selectedValue) === String(candidate.id)
+                          return (
+                            <label
+                              key={candidate.id}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "var(--spacing-3)",
+                                padding: "var(--spacing-3)",
+                                border: "1px solid var(--color-border-primary)",
+                                borderRadius: "var(--radius-lg)",
+                                backgroundColor: checked ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
+                                cursor: post.hasVoted ? "default" : "pointer",
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
+                                <input
+                                  type="radio"
+                                  name={`vote-${selectedStudentElection.id}-${post.id}`}
+                                  checked={checked}
+                                  disabled={post.hasVoted}
+                                  onChange={() =>
+                                    setVoteSelections((current) => ({
+                                      ...current,
+                                      [`${selectedStudentElection.id}:${post.id}`]: candidate.id,
+                                    }))
+                                  }
+                                />
+                                <div style={{ display: "grid", gap: "4px" }}>
+                                  <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                                    {candidate.candidateName}
+                                  </span>
+                                  <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
+                                </div>
+                              </div>
+                              <span style={mutedTextStyle}>{candidate.pitch || "Candidate"}</span>
+                            </label>
+                          )
+                        })}
+
+                        {!post.hasVoted ? (
+                          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Button
+                              size="sm"
+                              onClick={() => castVote(selectedStudentElection.id, post.id)}
+                              loading={busyKey === `vote:${selectedStudentElection.id}:${post.id}`}
+                              disabled={!voteSelections[`${selectedStudentElection.id}:${post.id}`]}
+                            >
+                              Submit Vote
+                            </Button>
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            {selectedStudentElection.mode === "results" ? (
+              selectedStudentElection.results?.isPublished ? (
+                <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+                  {(selectedStudentElection.results?.posts || []).map((postResult) => {
+                    const winner =
+                      (postResult.candidates || []).find(
+                        (candidate) =>
+                          String(candidate.nominationId) === String(postResult.publishedWinnerNominationId || "")
+                      ) || null
+
+                    return (
+                      <div key={postResult.postId} style={detailPanelStyle}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+                          <div>
+                            <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                              {postResult.postTitle}
+                            </div>
+                            <div style={mutedTextStyle}>{postResult.totalVotes} vote(s)</div>
+                          </div>
+                          <StatusPill tone="success">{winner?.candidateName || "Result published"}</StatusPill>
+                        </div>
+
+                        <div style={{ display: "grid", gap: "8px" }}>
+                          {(postResult.candidates || []).map((candidate) => (
+                            <div
+                              key={candidate.nominationId}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: "var(--spacing-3)",
+                                padding: "var(--spacing-3)",
+                                border: "1px solid var(--color-border-primary)",
+                                borderRadius: "var(--radius-lg)",
+                                backgroundColor:
+                                  String(candidate.nominationId) === String(postResult.publishedWinnerNominationId || "")
+                                    ? "var(--color-success-bg)"
+                                    : "var(--color-bg-primary)",
+                              }}
+                            >
+                              <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                                {candidate.candidateName}
+                              </span>
+                              <strong style={{ color: "var(--color-text-heading)" }}>{candidate.voteCount}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <Alert type="info">Results will be published soon.</Alert>
+              )
+            ) : null}
           </>
         ) : null}
       </div>
@@ -3044,6 +3346,16 @@ const ElectionsPage = () => {
             onClose={() => setReviewNomination(null)}
             onReview={handleReviewNomination}
             busy={busyKey}
+          />
+
+          <AdminResultsEditModal
+            postResult={selectedAdminResultPost}
+            draft={selectedAdminResultPost ? resultsDrafts[String(selectedAdminResultPost.postId)] : null}
+            onClose={() => setResultsEditorPostId("")}
+            onChange={(patch) => {
+              if (!selectedAdminResultPost) return
+              updateResultsDraft(String(selectedAdminResultPost.postId), patch)
+            }}
           />
 
           <ElectionHistoryModal
@@ -3076,19 +3388,6 @@ const ElectionsPage = () => {
             onSave={saveNomination}
             saving={busyKey === `nomination:${nominationContext?.election?.id}:${nominationContext?.post?.id}`}
             currentUserId={user?._id}
-          />
-
-          <StudentVoteModal
-            election={voteContext?.election}
-            post={voteContext?.post}
-            selectedCandidateId={selectedCandidateId}
-            setSelectedCandidateId={setSelectedCandidateId}
-            onClose={() => {
-              setVoteContext(null)
-              setSelectedCandidateId("")
-            }}
-            onVote={castVote}
-            saving={busyKey === `vote:${voteContext?.election?.id}:${voteContext?.post?.id}`}
           />
         </>
       ) : null}

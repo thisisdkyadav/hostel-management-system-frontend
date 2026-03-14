@@ -26,6 +26,9 @@ export const electionsApi = {
 
   castVote: (electionId, postId, payload) =>
     apiClient.post(`${BASE_PATH}/${electionId}/posts/${postId}/vote`, payload),
+
+  publishResults: (electionId, payload) =>
+    apiClient.post(`${BASE_PATH}/${electionId}/results/publish`, payload),
 }
 
 export default electionsApi

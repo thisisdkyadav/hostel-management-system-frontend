@@ -348,7 +348,7 @@ export const getStudentNavItems = (
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
   ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer", isNew: true }] : []),
   ...(electionPortalState?.canAccessPortal ? [{
-    name: electionPortalState.navLabel || "Elections",
+    name: "Elections",
     icon: BadgeCheck,
     section: "main",
     path: "/student/elections",
