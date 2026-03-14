@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { FaEye, FaHome, FaSignInAlt, FaSignOutAlt, FaClock } from "react-icons/fa"
 import VisitorRequestDetailsModal from "./VisitorRequestDetailsModal"
-import { visitorApi } from "../../../service"
 import { useAuth } from "../../../contexts/AuthProvider"
 import { Button, DataTable } from "czero/react"
 import { getMediaUrl } from "../../../utils/mediaUtils"
@@ -36,9 +35,9 @@ const CheckInOutBadge = ({ request }) => {
 
 const VisitorRequestTable = ({ requests, onRefresh }) => {
   const { user } = useAuth()
+  const userRole = user?.role
   const canAllocateVisitors =
-    ["Warden", "Associate Warden", "Hostel Supervisor"].includes(user?.role) &&
-    true
+    ["Warden", "Associate Warden", "Hostel Supervisor"].includes(userRole) && true
   const [selectedRequestId, setSelectedRequestId] = useState(null)
   const [showDetails, setShowDetails] = useState(false)
 
@@ -47,6 +46,24 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
     setShowDetails(true)
   }
 
+  const getActionCount = (request) => {
+    let actionCount = 1
+
+    if (canAllocateVisitors && request.status === "Approved" && !request.isAllocated) {
+      actionCount += 1
+    }
+
+    if (["Security", "Hostel Gate"].includes(userRole) && request.status === "Approved" && request.isAllocated) {
+      if (!request.checkInTime) actionCount += 1
+      if (request.checkInTime && !request.checkOutTime) actionCount += 1
+      if (request.checkInTime) actionCount += 1
+    }
+
+    return actionCount
+  }
+
+  const shouldUseRowClick = requests.length > 0 && requests.every((request) => getActionCount(request) === 1)
+
   const formatDate = (dateString) => {
     const date = new Date(dateString)
     return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
@@ -54,25 +71,20 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
 
   const columns = [
     {
-      header: "Request ID and Student Details",
+      header: "Student Details",
       key: "studentDetails",
       render: (request) => (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ flexShrink: "0" }}>
-            <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)", marginBottom: "var(--spacing-1)", display: "block" }}>#{request._id.substring(0, 8)}</span>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {request.studentProfileImage ? (
-                <img style={{ height: "var(--avatar-md)", width: "var(--avatar-md)", borderRadius: "var(--radius-full)", objectFit: "cover" }} src={getMediaUrl(request.studentProfileImage)} alt={request.studentName} />
-              ) : (
-                <div style={{ height: "var(--avatar-md)", width: "var(--avatar-md)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)" }}>
-                  {request.studentName?.charAt(0) || "?"}
-                </div>
-              )}
-              <div style={{ marginLeft: "var(--spacing-3)" }}>
-                <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{request.studentName || "N/A"}</div>
-                <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{request.studentEmail || "No email"}</div>
-              </div>
+          {request.studentProfileImage ? (
+            <img style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", objectFit: "cover" }} src={getMediaUrl(request.studentProfileImage)} alt={request.studentName} />
+          ) : (
+            <div style={{ height: "var(--avatar-sm)", width: "var(--avatar-sm)", borderRadius: "var(--radius-full)", backgroundColor: "var(--color-bg-muted)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--color-text-muted)" }}>
+              {request.studentName?.charAt(0) || "?"}
             </div>
+          )}
+          <div style={{ marginLeft: "var(--spacing-2)" }}>
+            <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>{request.studentName || "N/A"}</div>
+            <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>{request.studentEmail || "No email"}</div>
           </div>
         </div>
       ),
@@ -105,36 +117,40 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
       render: (request) => <StatusBadge status={request.status} />,
     },
     {
-      header: ["Security", "Hostel Gate"].includes(user.role) ? "Check Status" : "Allocation",
+      header: ["Security", "Hostel Gate"].includes(userRole) ? "Check Status" : "Allocation",
       key: "checkStatus",
-      render: (request) => (["Security", "Hostel Gate"].includes(user.role) ? <CheckInOutBadge request={request} /> : <AllocationBadge request={request} />),
+      render: (request) => (["Security", "Hostel Gate"].includes(userRole) ? <CheckInOutBadge request={request} /> : <AllocationBadge request={request} />),
     },
-    {
-      header: "Actions",
-      key: "actions",
-      align: "right",
-      render: (request) => (
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
-          <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="View details">
-            <FaEye />
-          </Button>
+    ...(!shouldUseRowClick
+      ? [
+          {
+            header: "Actions",
+            key: "actions",
+            align: "right",
+            render: (request) => (
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+                <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="View details">
+                  <FaEye />
+                </Button>
 
-          {canAllocateVisitors && request.status === "Approved" && !request.isAllocated && (
-            <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Allocate rooms">
-              <FaHome />
-            </Button>
-          )}
+                {canAllocateVisitors && request.status === "Approved" && !request.isAllocated && (
+                  <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Allocate rooms">
+                    <FaHome />
+                  </Button>
+                )}
 
-          {["Security", "Hostel Gate"].includes(user.role) && request.status === "Approved" && request.isAllocated && (
-            <>
-              {!request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Check in visitor"><FaSignInAlt /></Button>}
-              {request.checkInTime && !request.checkOutTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Check out visitor"><FaSignOutAlt /></Button>}
-              {request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Edit check times"><FaClock /></Button>}
-            </>
-          )}
-        </div>
-      ),
-    },
+                {["Security", "Hostel Gate"].includes(userRole) && request.status === "Approved" && request.isAllocated && (
+                  <>
+                    {!request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Check in visitor"><FaSignInAlt /></Button>}
+                    {request.checkInTime && !request.checkOutTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Check out visitor"><FaSignOutAlt /></Button>}
+                    {request.checkInTime && <Button onClick={() => handleViewDetails(request)} variant="ghost" size="sm" aria-label="Edit check times"><FaClock /></Button>}
+                  </>
+                )}
+              </div>
+            ),
+          },
+        ]
+      : []),
   ]
 
   if (!requests || requests.length === 0) {
@@ -147,7 +163,12 @@ const VisitorRequestTable = ({ requests, onRefresh }) => {
 
   return (
     <>
-      <DataTable columns={columns} data={requests} emptyMessage="No visitor requests to display" />
+      <DataTable
+        columns={columns}
+        data={requests}
+        emptyMessage="No visitor requests to display"
+        onRowClick={shouldUseRowClick ? handleViewDetails : undefined}
+      />
 
       {selectedRequestId && (
         <VisitorRequestDetailsModal
