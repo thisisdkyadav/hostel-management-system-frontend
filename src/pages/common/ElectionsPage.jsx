@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, Input, Modal, Table, Tabs } from "czero/react"
+import { useNavigate } from "react-router-dom"
 import {
   BadgeCheck,
   CalendarDays,
@@ -19,11 +20,13 @@ import {
 } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import CsvUploader from "@/components/common/CsvUploader"
-import { EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui/feedback"
+import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
+import { Alert, EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
 import { useGlobal } from "@/contexts/GlobalProvider"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
-import { electionsApi, studentApi } from "@/service"
+import { electionsApi, idCardApi, studentApi, uploadApi } from "@/service"
+import { getMediaUrl } from "@/utils/mediaUtils"
 
 const pageStyle = {
   display: "flex",
@@ -358,7 +361,6 @@ const createBlankNominationForm = () => ({
   proposerRollNumbers: "",
   seconderRollNumbers: "",
   gradeCardUrl: "",
-  identityCardUrl: "",
   manifestoUrl: "",
 })
 
@@ -588,7 +590,6 @@ const buildNominationPayload = (form) => ({
   proposerRollNumbers: splitListInput(form.proposerRollNumbers).map((item) => item.toUpperCase()),
   seconderRollNumbers: splitListInput(form.seconderRollNumbers).map((item) => item.toUpperCase()),
   gradeCardUrl: form.gradeCardUrl.trim(),
-  identityCardUrl: form.identityCardUrl.trim(),
   manifestoUrl: form.manifestoUrl.trim(),
   attachments: [],
 })
@@ -604,6 +605,7 @@ const createEmptyWizardErrors = () => ({
 const isValidUrlOrEmpty = (value) => {
   const trimmed = String(value || "").trim()
   if (!trimmed) return true
+  if (trimmed.startsWith("/")) return true
   try {
     new URL(trimmed)
     return true
@@ -882,15 +884,187 @@ const validateNominationForm = (form) => {
     return "Proposer and seconder roll numbers must stay within the allowed limits."
   }
 
-  if (
-    !isValidUrlOrEmpty(form.gradeCardUrl) ||
-    !isValidUrlOrEmpty(form.identityCardUrl) ||
-    !isValidUrlOrEmpty(form.manifestoUrl)
-  ) {
-    return "Grade card, identity card, and manifesto links must be valid URLs."
+  if (!String(form.gradeCardUrl || "").trim()) {
+    return "Upload the latest grade card before submitting your nomination."
+  }
+
+  if (!isValidUrlOrEmpty(form.gradeCardUrl) || !isValidUrlOrEmpty(form.manifestoUrl)) {
+    return "Uploaded nomination documents are invalid. Please upload them again."
   }
 
   return ""
+}
+
+const isPdfDocument = (url = "") => String(url).toLowerCase().includes(".pdf")
+
+const resolveUploadedUrl = (uploadResponse) => {
+  if (typeof uploadResponse === "string") return uploadResponse
+  if (uploadResponse?.url) return uploadResponse.url
+  if (uploadResponse?.data?.url) return uploadResponse.data.url
+  return ""
+}
+
+const formatApiErrorMessage = (error, fallbackMessage) => {
+  const detailedMessages = Array.isArray(error?.errors)
+    ? [...new Set(
+        error.errors
+          .map((item) => (typeof item === "string" ? item : item?.message || ""))
+          .filter(Boolean)
+      )]
+    : []
+
+  if (detailedMessages.length > 0) {
+    return detailedMessages.join("\n")
+  }
+
+  return error?.message || fallbackMessage
+}
+
+const DocumentUploadField = ({
+  label,
+  value,
+  onChange,
+  disabled = false,
+  required = false,
+}) => {
+  const { toast } = useToast()
+  const [uploading, setUploading] = useState(false)
+  const [viewerOpen, setViewerOpen] = useState(false)
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const allowedMimeTypes = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+      "image/gif",
+    ]
+
+    if (
+      !allowedMimeTypes.includes(file.type) &&
+      !/\.(pdf|png|jpe?g|webp|gif)$/i.test(file.name)
+    ) {
+      toast.error("Only PDF and image files are allowed")
+      event.target.value = ""
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Document size must be 5MB or smaller")
+      event.target.value = ""
+      return
+    }
+
+    try {
+      setUploading(true)
+      const formData = new FormData()
+      formData.append("file", file)
+      const uploadResponse = await uploadApi.uploadElectionNominationDocument(formData)
+      const uploadedUrl = resolveUploadedUrl(uploadResponse)
+
+      if (!uploadedUrl) {
+        throw new Error("Upload response did not include a document URL")
+      }
+
+      onChange(uploadedUrl)
+      toast.success(`${label} uploaded`)
+    } catch (error) {
+      toast.error(error.message || `Failed to upload ${label}`)
+    } finally {
+      setUploading(false)
+      event.target.value = ""
+    }
+  }
+
+  return (
+    <>
+      <div style={flatPanelStyle}>
+        <label style={labelStyle}>
+          {label}
+          {required ? " *" : ""}
+        </label>
+        {value ? (
+          <div style={{ display: "grid", gap: "10px" }}>
+            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+              {isPdfDocument(value) ? "PDF uploaded" : "Image uploaded"}
+            </div>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <Button size="sm" variant="secondary" onClick={() => setViewerOpen(true)}>
+                View
+              </Button>
+              {!disabled ? (
+                <label style={{ margin: 0 }}>
+                  <input
+                    type="file"
+                    accept=".pdf,image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                  />
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: "36px",
+                      padding: "0 var(--spacing-3)",
+                      borderRadius: "var(--radius-md)",
+                      border: "1px solid var(--color-border-primary)",
+                      backgroundColor: "var(--color-bg-primary)",
+                      color: "var(--color-text-body)",
+                      cursor: uploading ? "wait" : "pointer",
+                      fontSize: "var(--font-size-sm)",
+                    }}
+                  >
+                    {uploading ? "Uploading..." : "Replace"}
+                  </span>
+                </label>
+              ) : null}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: "10px" }}>
+            <div style={mutedTextStyle}>PDF or image, max 5MB</div>
+            <label style={{ margin: 0 }}>
+              <input
+                type="file"
+                accept=".pdf,image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                disabled={disabled || uploading}
+              />
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "36px",
+                  padding: "0 var(--spacing-3)",
+                  borderRadius: "var(--radius-md)",
+                  backgroundColor: "var(--button-primary-bg)",
+                  color: "var(--color-white)",
+                  cursor: disabled || uploading ? "not-allowed" : "pointer",
+                  fontSize: "var(--font-size-sm)",
+                  opacity: disabled ? 0.6 : 1,
+                }}
+              >
+                {uploading ? "Uploading..." : `Upload ${label}`}
+              </span>
+            </label>
+          </div>
+        )}
+      </div>
+
+      <CertificateViewerModal
+        isOpen={viewerOpen}
+        onClose={() => setViewerOpen(false)}
+        certificateUrl={value}
+      />
+    </>
+  )
 }
 
 const StatusPill = ({ tone = "default", icon = null, children }) => (
@@ -1695,118 +1869,182 @@ const ElectionWizardModal = ({
 }
 
 const AdminNominationReviewModal = ({ nomination, electionId, onClose, onReview, busy }) => {
+  const [viewerUrl, setViewerUrl] = useState("")
+
   if (!nomination) return null
 
   return (
-    <Modal
-      isOpen={Boolean(nomination)}
-      onClose={onClose}
-      title={nomination.candidateName || nomination.candidateRollNumber}
-      width={760}
-      footer={
-        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-          <div style={badgeRowStyle}>
-            <StatusPill tone={getStatusTone(nomination.status)}>{formatStageLabel(nomination.status)}</StatusPill>
-            <StatusPill tone="default">{nomination.postTitle}</StatusPill>
-            <StatusPill tone="default">{nomination.candidateRollNumber}</StatusPill>
-          </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <Button size="sm" variant="secondary" onClick={onClose}>
-              Close
-            </Button>
-            <Button
-              size="sm"
-              variant="danger"
-              loading={busy === `${electionId}:${nomination.id}:rejected`}
-              onClick={() => onReview(nomination.id, "rejected")}
-            >
-              <XCircle size={14} /> Reject
-            </Button>
-            <Button
-              size="sm"
-              loading={busy === `${electionId}:${nomination.id}:verified`}
-              onClick={() => onReview(nomination.id, "verified")}
-            >
-              <CheckCircle2 size={14} /> Verify
-            </Button>
-          </div>
-        </div>
-      }
-    >
-      <div style={modalBodyStyle}>
-
-        <div style={detailGridStyle}>
-          <div style={detailPanelStyle}>
-            <div style={labelStyle}>Academic details</div>
-            <MetaList
-              items={[
-                { label: "CGPA", value: nomination.cgpa ?? "—" },
-                { label: "Completed semesters", value: nomination.completedSemesters ?? "—" },
-                { label: "Remaining semesters", value: nomination.remainingSemesters ?? "—" },
-                { label: "Submitted", value: formatDateTime(nomination.submittedAt) },
-              ]}
-            />
-          </div>
-
-          <div style={detailPanelStyle}>
-            <div style={labelStyle}>Supporting students</div>
-            <MetaList
-              items={[
-                { label: "Proposers", value: (nomination.proposerRollNumbers || []).join(", ") || "—" },
-                { label: "Seconders", value: (nomination.seconderRollNumbers || []).join(", ") || "—" },
-              ]}
-            />
-          </div>
-        </div>
-
-        {nomination.pitch ? (
-          <div style={detailPanelStyle}>
-            <div style={labelStyle}>Pitch</div>
-            <div style={{ color: "var(--color-text-body)", lineHeight: 1.6 }}>{nomination.pitch}</div>
-          </div>
-        ) : null}
-
-        {(nomination.agendaPoints || []).length > 0 ? (
-          <div style={detailPanelStyle}>
-            <div style={labelStyle}>Agenda points</div>
-            <ul style={{ margin: 0, paddingLeft: "18px", color: "var(--color-text-body)", lineHeight: 1.7 }}>
-              {nomination.agendaPoints.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-
-        <div style={detailGridStyle}>
-          {[
-            { label: "Grade Card", value: nomination.gradeCardUrl },
-            { label: "Identity Card", value: nomination.identityCardUrl },
-            { label: "Manifesto", value: nomination.manifestoUrl },
-          ].map((item) => (
-            <div key={item.label} style={detailPanelStyle}>
-              <div style={labelStyle}>{item.label}</div>
-              {item.value ? (
-                <a
-                  href={item.value}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "var(--font-weight-medium)" }}
-                >
-                  Open document
-                </a>
-              ) : (
-                <span style={mutedTextStyle}>Not submitted</span>
-              )}
+    <>
+      <Modal
+        isOpen={Boolean(nomination)}
+        onClose={onClose}
+        title={nomination.candidateName || nomination.candidateRollNumber}
+        width={760}
+        footer={
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+            <div style={badgeRowStyle}>
+              <StatusPill tone={getStatusTone(nomination.status)}>{formatStageLabel(nomination.status)}</StatusPill>
+              <StatusPill tone="default">{nomination.postTitle}</StatusPill>
+              <StatusPill tone="default">{nomination.candidateRollNumber}</StatusPill>
             </div>
-          ))}
+            <div style={{ display: "flex", gap: "8px" }}>
+              <Button size="sm" variant="secondary" onClick={onClose}>
+                Close
+              </Button>
+              <Button
+                size="sm"
+                variant="danger"
+                loading={busy === `${electionId}:${nomination.id}:rejected`}
+                onClick={() => onReview(nomination.id, "rejected")}
+              >
+                <XCircle size={14} /> Reject
+              </Button>
+              <Button
+                size="sm"
+                loading={busy === `${electionId}:${nomination.id}:verified`}
+                onClick={() => onReview(nomination.id, "verified")}
+              >
+                <CheckCircle2 size={14} /> Verify
+              </Button>
+            </div>
+          </div>
+        }
+      >
+        <div style={modalBodyStyle}>
+
+          <div style={detailGridStyle}>
+            <div style={detailPanelStyle}>
+              <div style={labelStyle}>Academic details</div>
+              <MetaList
+                items={[
+                  { label: "CGPA", value: nomination.cgpa ?? "—" },
+                  { label: "Completed semesters", value: nomination.completedSemesters ?? "—" },
+                  { label: "Remaining semesters", value: nomination.remainingSemesters ?? "—" },
+                  { label: "Submitted", value: formatDateTime(nomination.submittedAt) },
+                ]}
+              />
+            </div>
+
+            <div style={detailPanelStyle}>
+              <div style={labelStyle}>Supporting students</div>
+              <MetaList
+                items={[
+                  { label: "Proposers", value: (nomination.proposerRollNumbers || []).join(", ") || "—" },
+                  { label: "Seconders", value: (nomination.seconderRollNumbers || []).join(", ") || "—" },
+                ]}
+              />
+            </div>
+          </div>
+
+          {nomination.pitch ? (
+            <div style={detailPanelStyle}>
+              <div style={labelStyle}>Pitch</div>
+              <div style={{ color: "var(--color-text-body)", lineHeight: 1.6 }}>{nomination.pitch}</div>
+            </div>
+          ) : null}
+
+          {(nomination.agendaPoints || []).length > 0 ? (
+            <div style={detailPanelStyle}>
+              <div style={labelStyle}>Agenda points</div>
+              <ul style={{ margin: 0, paddingLeft: "18px", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+                {nomination.agendaPoints.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          <div style={detailGridStyle}>
+            {[
+              { label: "Grade Card", value: nomination.gradeCardUrl },
+              { label: "Manifesto", value: nomination.manifestoUrl },
+              { label: "Student ID Front", value: nomination.candidateIdCard?.front || "" },
+              { label: "Student ID Back", value: nomination.candidateIdCard?.back || "" },
+            ].map((item) => (
+              <div key={item.label} style={detailPanelStyle}>
+                <div style={labelStyle}>{item.label}</div>
+                {item.value ? (
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
+                      View
+                    </Button>
+                    <a
+                      href={getMediaUrl(item.value)}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: "var(--font-weight-medium)", alignSelf: "center" }}
+                    >
+                      Open
+                    </a>
+                  </div>
+                ) : (
+                  <span style={mutedTextStyle}>Not submitted</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      <CertificateViewerModal
+        isOpen={Boolean(viewerUrl)}
+        onClose={() => setViewerUrl("")}
+        certificateUrl={viewerUrl}
+      />
+    </>
   )
 }
 
-const StudentNominationModal = ({ election, post, form, setForm, onClose, onSave, saving }) => {
-  if (!post) return null
+const StudentNominationModal = ({
+  election,
+  post,
+  form,
+  setForm,
+  onClose,
+  onSave,
+  saving,
+  currentUserId,
+}) => {
+  const navigate = useNavigate()
+  const [idCard, setIdCard] = useState({ front: "", back: "" })
+  const [loadingIdCard, setLoadingIdCard] = useState(false)
+  const [viewerUrl, setViewerUrl] = useState("")
+
+  useEffect(() => {
+    let isActive = true
+
+    const loadIdCard = async () => {
+      if (!currentUserId || !post) {
+        if (isActive) {
+          setIdCard({ front: "", back: "" })
+        }
+        return
+      }
+
+      try {
+        setLoadingIdCard(true)
+        const response = await idCardApi.getIDcard(currentUserId)
+        if (!isActive) return
+        setIdCard({
+          front: response?.front || "",
+          back: response?.back || "",
+        })
+      } catch (_error) {
+        if (!isActive) return
+        setIdCard({ front: "", back: "" })
+      } finally {
+        if (isActive) {
+          setLoadingIdCard(false)
+        }
+      }
+    }
+
+    loadIdCard()
+
+    return () => {
+      isActive = false
+    }
+  }, [currentUserId, post?.id])
 
   const updateForm = (patch) => {
     setForm((current) => ({
@@ -1815,104 +2053,179 @@ const StudentNominationModal = ({ election, post, form, setForm, onClose, onSave
     }))
   }
 
+  const hasUploadedIdCard = Boolean(idCard.front || idCard.back)
+
+  if (!post) return null
+
   return (
-    <Modal
-      isOpen={Boolean(post)}
-      onClose={onClose}
-      title={`Nomination · ${post.title}`}
-      width={720}
-      footer={
-        <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
-          <div style={badgeRowStyle}>
-            <StatusPill tone="default">{election?.title}</StatusPill>
-            <StatusPill tone="primary">P {post.requirements?.proposersRequired || 0}</StatusPill>
-            <StatusPill tone="primary">S {post.requirements?.secondersRequired || 0}</StatusPill>
+    <>
+      <Modal
+        isOpen={Boolean(post)}
+        onClose={onClose}
+        title={`Nomination · ${post.title}`}
+        width={720}
+        footer={
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+            <div style={badgeRowStyle}>
+              <StatusPill tone="default">{election?.title}</StatusPill>
+              <StatusPill tone="primary">P {post.requirements?.proposersRequired || 0}</StatusPill>
+              <StatusPill tone="primary">S {post.requirements?.secondersRequired || 0}</StatusPill>
+            </div>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <Button size="sm" variant="secondary" onClick={onClose}>
+                Close
+              </Button>
+              <Button size="sm" onClick={onSave} loading={saving} disabled={saving || loadingIdCard || !hasUploadedIdCard}>
+                <FileText size={14} /> Save
+              </Button>
+            </div>
           </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <Button size="sm" variant="secondary" onClick={onClose}>
-              Close
-            </Button>
-            <Button size="sm" onClick={onSave} loading={saving} disabled={saving}>
-              <FileText size={14} /> Save
-            </Button>
-          </div>
-        </div>
-      }
-    >
-      <div style={modalBodyStyle}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
-          <div style={panelStyle}>
-            <label style={labelStyle}>CGPA</label>
-            <Input type="number" value={form.cgpa} onChange={(event) => updateForm({ cgpa: event.target.value })} />
-          </div>
-          <div style={panelStyle}>
-            <label style={labelStyle}>Completed semesters</label>
-            <Input
-              type="number"
-              value={form.completedSemesters}
-              onChange={(event) => updateForm({ completedSemesters: event.target.value })}
-            />
-          </div>
-          <div style={panelStyle}>
-            <label style={labelStyle}>Remaining semesters</label>
-            <Input
-              type="number"
-              value={form.remainingSemesters}
-              onChange={(event) => updateForm({ remainingSemesters: event.target.value })}
-            />
-          </div>
-        </div>
+        }
+      >
+        <div style={modalBodyStyle}>
+          {loadingIdCard ? (
+            <Alert type="info">Checking your student ID card...</Alert>
+          ) : !hasUploadedIdCard ? (
+            <Alert type="warning" title="Student ID card required">
+              Upload your student ID card from the Student ID Card page before submitting nomination.
+              <div style={{ marginTop: "var(--spacing-3)" }}>
+                <Button size="sm" variant="secondary" onClick={() => navigate("/student/id-card")}>
+                  Open ID Card Page
+                </Button>
+              </div>
+            </Alert>
+          ) : (
+            <div style={detailPanelStyle}>
+              <div style={labelStyle}>Student ID card</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+                {[
+                  { label: "Front", value: idCard.front },
+                  { label: "Back", value: idCard.back },
+                ].map((item) => (
+                  <div key={item.label} style={flatPanelStyle}>
+                    <div style={{ ...labelStyle, marginBottom: "8px" }}>{item.label}</div>
+                    {item.value ? (
+                      <div style={{ display: "grid", gap: "10px" }}>
+                        <div
+                          style={{
+                            border: "1px solid var(--color-border-primary)",
+                            borderRadius: "var(--radius-lg)",
+                            minHeight: "120px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            overflow: "hidden",
+                            backgroundColor: "var(--color-bg-primary)",
+                          }}
+                        >
+                          <img
+                            src={getMediaUrl(item.value)}
+                            alt={`Student ID ${item.label}`}
+                            style={{ width: "100%", maxHeight: "140px", objectFit: "contain" }}
+                          />
+                        </div>
+                        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                          <Button size="sm" variant="secondary" onClick={() => setViewerUrl(item.value)}>
+                            View
+                          </Button>
+                          <a
+                            href={getMediaUrl(item.value)}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: "var(--color-primary)", textDecoration: "none", alignSelf: "center" }}
+                          >
+                            Open
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <span style={mutedTextStyle}>Not uploaded</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-        <div style={flatPanelStyle}>
-          <label style={labelStyle}>Pitch</label>
-          <textarea style={textareaStyle} value={form.pitch} onChange={(event) => updateForm({ pitch: event.target.value })} />
-        </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
+            <div style={panelStyle}>
+              <label style={labelStyle}>CGPA</label>
+              <Input type="number" value={form.cgpa} onChange={(event) => updateForm({ cgpa: event.target.value })} />
+            </div>
+            <div style={panelStyle}>
+              <label style={labelStyle}>Completed semesters</label>
+              <Input
+                type="number"
+                value={form.completedSemesters}
+                onChange={(event) => updateForm({ completedSemesters: event.target.value })}
+              />
+            </div>
+            <div style={panelStyle}>
+              <label style={labelStyle}>Remaining semesters</label>
+              <Input
+                type="number"
+                value={form.remainingSemesters}
+                onChange={(event) => updateForm({ remainingSemesters: event.target.value })}
+              />
+            </div>
+          </div>
 
-        <div style={flatPanelStyle}>
-          <label style={labelStyle}>Agenda points</label>
-          <textarea
-            style={textareaStyle}
-            value={form.agendaPoints}
-            onChange={(event) => updateForm({ agendaPoints: event.target.value })}
-            placeholder="One agenda point per line"
-          />
-        </div>
-
-        <div style={detailGridStyle}>
           <div style={flatPanelStyle}>
-            <label style={labelStyle}>Proposer roll numbers</label>
+            <label style={labelStyle}>Pitch</label>
+            <textarea style={textareaStyle} value={form.pitch} onChange={(event) => updateForm({ pitch: event.target.value })} />
+          </div>
+
+          <div style={flatPanelStyle}>
+            <label style={labelStyle}>Agenda points</label>
             <textarea
-              style={{ ...textareaStyle, minHeight: "56px" }}
-              value={form.proposerRollNumbers}
-              onChange={(event) => updateForm({ proposerRollNumbers: event.target.value })}
+              style={textareaStyle}
+              value={form.agendaPoints}
+              onChange={(event) => updateForm({ agendaPoints: event.target.value })}
+              placeholder="One agenda point per line"
             />
           </div>
-          <div style={flatPanelStyle}>
-            <label style={labelStyle}>Seconder roll numbers</label>
-            <textarea
-              style={{ ...textareaStyle, minHeight: "56px" }}
-              value={form.seconderRollNumbers}
-              onChange={(event) => updateForm({ seconderRollNumbers: event.target.value })}
-            />
-          </div>
-        </div>
 
-        <div style={detailGridStyle}>
-          <div style={flatPanelStyle}>
-            <label style={labelStyle}>Grade card URL</label>
-            <Input value={form.gradeCardUrl} onChange={(event) => updateForm({ gradeCardUrl: event.target.value })} />
+          <div style={detailGridStyle}>
+            <div style={flatPanelStyle}>
+              <label style={labelStyle}>Proposer roll numbers</label>
+              <textarea
+                style={{ ...textareaStyle, minHeight: "56px" }}
+                value={form.proposerRollNumbers}
+                onChange={(event) => updateForm({ proposerRollNumbers: event.target.value })}
+              />
+            </div>
+            <div style={flatPanelStyle}>
+              <label style={labelStyle}>Seconder roll numbers</label>
+              <textarea
+                style={{ ...textareaStyle, minHeight: "56px" }}
+                value={form.seconderRollNumbers}
+                onChange={(event) => updateForm({ seconderRollNumbers: event.target.value })}
+              />
+            </div>
           </div>
-          <div style={flatPanelStyle}>
-            <label style={labelStyle}>Identity card URL</label>
-            <Input value={form.identityCardUrl} onChange={(event) => updateForm({ identityCardUrl: event.target.value })} />
-          </div>
-          <div style={flatPanelStyle}>
-            <label style={labelStyle}>Manifesto URL</label>
-            <Input value={form.manifestoUrl} onChange={(event) => updateForm({ manifestoUrl: event.target.value })} />
+
+          <div style={detailGridStyle}>
+            <DocumentUploadField
+              label="Grade Card"
+              value={form.gradeCardUrl}
+              onChange={(nextValue) => updateForm({ gradeCardUrl: nextValue })}
+              required
+            />
+            <DocumentUploadField
+              label="Manifesto"
+              value={form.manifestoUrl}
+              onChange={(nextValue) => updateForm({ manifestoUrl: nextValue })}
+            />
           </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      <CertificateViewerModal
+        isOpen={Boolean(viewerUrl)}
+        onClose={() => setViewerUrl("")}
+        certificateUrl={viewerUrl}
+      />
+    </>
   )
 }
 
@@ -2138,7 +2451,6 @@ const ElectionsPage = () => {
               proposerRollNumbers: (post.myNomination.proposerRollNumbers || []).join(", "),
               seconderRollNumbers: (post.myNomination.seconderRollNumbers || []).join(", "),
               gradeCardUrl: post.myNomination.gradeCardUrl || "",
-              identityCardUrl: post.myNomination.identityCardUrl || "",
               manifestoUrl: post.myNomination.manifestoUrl || "",
             }
           : createBlankNominationForm()
@@ -2161,7 +2473,7 @@ const ElectionsPage = () => {
         await loadStudentPortal()
       }
     } catch (err) {
-      setError(err.message || "Failed to load elections")
+      setError(formatApiErrorMessage(err, "Failed to load elections"))
     } finally {
       setLoading(false)
     }
@@ -2185,7 +2497,7 @@ const ElectionsPage = () => {
     }
 
     loadAdminDetail(selectedAdminElectionId).catch((err) => {
-      toast.error(err.message || "Failed to load election details")
+      toast.error(formatApiErrorMessage(err, "Failed to load election details"))
     })
   }, [isAdminView, selectedAdminElectionId, toast])
 
@@ -2221,7 +2533,7 @@ const ElectionsPage = () => {
         await loadAdminDetail(response?.data?.id || selectedAdminElectionId)
       }
     } catch (err) {
-      toast.error(err.message || "Failed to save election")
+      toast.error(formatApiErrorMessage(err, "Failed to save election"))
     } finally {
       setSavingElection(false)
     }
@@ -2240,7 +2552,7 @@ const ElectionsPage = () => {
       await loadAdminDetail(selectedAdminElectionId)
       setReviewNomination(null)
     } catch (err) {
-      toast.error(err.message || "Failed to review nomination")
+      toast.error(formatApiErrorMessage(err, "Failed to review nomination"))
     } finally {
       setBusyKey("")
     }
@@ -2283,7 +2595,7 @@ const ElectionsPage = () => {
       setNominationContext(null)
       await loadStudentPortal()
     } catch (err) {
-      toast.error(err.message || "Failed to save nomination")
+      toast.error(formatApiErrorMessage(err, "Failed to save nomination"))
     } finally {
       setBusyKey("")
     }
@@ -2296,7 +2608,7 @@ const ElectionsPage = () => {
       toast.success(response?.message || "Nomination withdrawn")
       await loadStudentPortal()
     } catch (err) {
-      toast.error(err.message || "Failed to withdraw nomination")
+      toast.error(formatApiErrorMessage(err, "Failed to withdraw nomination"))
     } finally {
       setBusyKey("")
     }
@@ -2320,7 +2632,7 @@ const ElectionsPage = () => {
       setSelectedCandidateId("")
       await loadStudentPortal()
     } catch (err) {
-      toast.error(err.message || "Failed to cast vote")
+      toast.error(formatApiErrorMessage(err, "Failed to cast vote"))
     } finally {
       setBusyKey("")
     }
@@ -2763,6 +3075,7 @@ const ElectionsPage = () => {
             onClose={() => setNominationContext(null)}
             onSave={saveNomination}
             saving={busyKey === `nomination:${nominationContext?.election?.id}:${nominationContext?.post?.id}`}
+            currentUserId={user?._id}
           />
 
           <StudentVoteModal

@@ -97,6 +97,14 @@ export const uploadApi = {
   },
 
   /**
+   * Upload election nomination document
+   * @param {FormData} fileData - File form data
+   */
+  uploadElectionNominationDocument: (fileData) => {
+    return apiClient.upload("/upload/election-nomination-document", fileData)
+  },
+
+  /**
    * Upload Overall Best Performer proof PDF
    * @param {FormData} fileData - File form data
    */

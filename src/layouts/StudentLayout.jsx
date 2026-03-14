@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar"
 import BottomBar from "../components/BottomBar"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/AuthProvider"
 import { useEffect, useState } from "react"
 import { electionsApi, notificationApi, overallBestPerformerApi } from "../service"
@@ -16,6 +16,7 @@ import useAuthorizedNavItems from "../hooks/useAuthorizedNavItems"
 
 const StudentLayout = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuth()
   const { isPwaMobile, isMobile, isStandalone } = usePwaMobile()
   const { layoutPreference, loading } = useLayoutPreference()
@@ -38,34 +39,67 @@ const StudentLayout = () => {
   }, [])
 
   useEffect(() => {
+    if (user?.role !== "Student") {
+      setShowOverallBestPerformer(false)
+      return
+    }
+
+    let isActive = true
+
     const fetchBestPerformerState = async () => {
       try {
-        const response = await overallBestPerformerApi.getStudentPortalState()
-        setShowOverallBestPerformer(Boolean(response?.data?.canAccessPortal))
-      } catch (error) {
+        const bestPerformerResponse = await overallBestPerformerApi.getStudentPortalState()
+        if (!isActive) return
+
+        setShowOverallBestPerformer(
+          Boolean(bestPerformerResponse?.data?.canAccessPortal)
+        )
+      } catch (_error) {
+        if (!isActive) return
         setShowOverallBestPerformer(false)
       }
     }
 
-    if (user?.role === "Student") {
-      fetchBestPerformerState()
+    fetchBestPerformerState()
+
+    return () => {
+      isActive = false
     }
-  }, [user?.role])
+  }, [location.pathname, user?.role])
 
   useEffect(() => {
+    if (user?.role !== "Student") {
+      setElectionPortalState(null)
+      return
+    }
+
+    let isActive = true
+
     const fetchElectionPortalState = async () => {
       try {
-        const response = await electionsApi.getStudentPortalState()
-        setElectionPortalState(response?.data || null)
+        const electionResponse = await electionsApi.getStudentPortalState()
+        if (!isActive) return
+        setElectionPortalState(electionResponse?.data || null)
       } catch (_error) {
+        if (!isActive) return
         setElectionPortalState(null)
       }
     }
 
-    if (user?.role === "Student") {
-      fetchElectionPortalState()
+    const handleVisibilityRefresh = () => {
+      if (document.visibilityState === "visible") {
+        fetchElectionPortalState()
+      }
     }
-  }, [user?.role])
+
+    fetchElectionPortalState()
+    document.addEventListener("visibilitychange", handleVisibilityRefresh)
+
+    return () => {
+      isActive = false
+      document.removeEventListener("visibilitychange", handleVisibilityRefresh)
+    }
+  }, [location.pathname, user?.role])
 
   // Get navigation items from centralized config
   const allNavItems = useAuthorizedNavItems(

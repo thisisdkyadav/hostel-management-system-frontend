@@ -25,19 +25,34 @@ const defaultConfig = {
 const parseErrorResponse = async (response) => {
   try {
     const errorData = await response.json()
+    const errors = Array.isArray(errorData?.errors) ? errorData.errors : []
+    const firstDetailedMessage =
+      errors.find((item) => typeof item?.message === "string" && item.message.trim())?.message ||
+      (typeof errors[0] === "string" ? errors[0] : "")
+
+    if (firstDetailedMessage) {
+      return {
+        message: firstDetailedMessage,
+        errors,
+      }
+    }
+
     if (typeof errorData?.message === "string" && errorData.message.trim()) {
-      return errorData.message
+      return {
+        message: errorData.message,
+        errors,
+      }
     }
 
-    if (Array.isArray(errorData?.errors) && errorData.errors.length > 0) {
-      const firstError = errorData.errors[0]
-      if (typeof firstError === "string") return firstError
-      if (firstError && typeof firstError.message === "string") return firstError.message
+    return {
+      message: errorData.error || `Request failed with status ${response.status}`,
+      errors,
     }
-
-    return errorData.error || `Request failed with status ${response.status}`
   } catch {
-    return `Request failed with status ${response.status}`
+    return {
+      message: `Request failed with status ${response.status}`,
+      errors: [],
+    }
   }
 }
 
@@ -110,8 +125,8 @@ const request = async (endpoint, options = {}) => {
     const response = await fetch(url, config)
 
     if (!response.ok) {
-      const errorMessage = await parseErrorResponse(response)
-      throw new ApiError(errorMessage, response.status, response)
+      const { message, errors } = await parseErrorResponse(response)
+      throw new ApiError(message, response.status, response, errors)
     }
 
     return response.json()
@@ -219,8 +234,8 @@ export const apiClient = {
       })
 
       if (!response.ok) {
-        const errorMessage = await parseErrorResponse(response)
-        throw new ApiError(errorMessage, response.status, response)
+        const { message, errors } = await parseErrorResponse(response)
+        throw new ApiError(message, response.status, response, errors)
       }
 
       return response.json()

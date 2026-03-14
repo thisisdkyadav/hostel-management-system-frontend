@@ -8,11 +8,12 @@
  * Extends Error with additional properties for API error handling
  */
 export class ApiError extends Error {
-  constructor(message, status = null, response = null) {
+  constructor(message, status = null, response = null, errors = []) {
     super(message)
     this.name = "ApiError"
     this.status = status
     this.response = response
+    this.errors = Array.isArray(errors) ? errors : []
     this.timestamp = new Date().toISOString()
 
     // Maintains proper stack trace for where error was thrown
@@ -57,6 +58,7 @@ export class ApiError extends Error {
       name: this.name,
       message: this.message,
       status: this.status,
+      errors: this.errors,
       timestamp: this.timestamp,
     }
   }
