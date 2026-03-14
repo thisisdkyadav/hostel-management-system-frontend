@@ -515,7 +515,7 @@ export const adminApi = {
    * @param {Object} dayScholarData - Day scholar data
    */
   bulkUpdateDayScholarDetails: (dayScholarData) => {
-    return apiClient.put("/students/profiles-admin/profiles/day-scholar", dayScholarData).then((response) => ({
+    return apiClient.put("/students/profiles-admin/profiles/day-scholar", { data: dayScholarData }).then((response) => ({
       success: response?.success === true,
       errors: response?.data?.errors || [],
       results: response?.data?.results || [],
