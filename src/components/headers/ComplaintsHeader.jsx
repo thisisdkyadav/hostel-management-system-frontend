@@ -4,7 +4,18 @@ import PageHeader from "../common/PageHeader"
 import { Filter, Plus, List, LayoutGrid } from "lucide-react"
 import { WHO_CAN_CREATE_COMPLAINT } from "../../constants/complaintConstants"
 
-const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, showCraftComplaint, setShowCraftComplaint, userRole, title = "Complaints Management", canCreateComplaint = true }) => {
+const ComplaintsHeader = ({
+  showFilters,
+  setShowFilters,
+  viewMode,
+  setViewMode,
+  showCraftComplaint,
+  setShowCraftComplaint,
+  userRole,
+  title = "Complaints Management",
+  canCreateComplaint = true,
+  extraActions = null,
+}) => {
   const viewModeOptions = [
     { value: "list", label: "List", icon: <List size={14} /> },
     { value: "cards", label: "Grid", icon: <LayoutGrid size={14} /> },
@@ -41,6 +52,8 @@ const ComplaintsHeader = ({ showFilters, setShowFilters, viewMode, setViewMode, 
           <Plus size={14} /> New Complaint
         </Button>
       )}
+
+      {extraActions}
     </PageHeader>
   )
 }

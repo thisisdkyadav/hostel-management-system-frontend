@@ -26,17 +26,21 @@ export const maintenanceApi = {
   /**
    * Get maintenance statistics
    */
-  getStats: async () => {
+  getStats: async (queries = "") => {
     try {
-      return await apiClient.get("/complaint/stats")
+      return await apiClient.get("/complaint/stats", { queryString: queries })
     } catch (error) {
       console.error("Error fetching maintenance stats:", error)
       // Return fallback stats in case of failure
       return {
-        total: 0,
-        pending: 0,
-        inProgress: 0,
-        resolved: 0,
+        success: true,
+        data: {
+          total: 0,
+          pending: 0,
+          inProgress: 0,
+          resolved: 0,
+          forwardedToIDO: 0,
+        },
       }
     }
   },

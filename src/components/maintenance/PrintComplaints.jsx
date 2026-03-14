@@ -99,8 +99,9 @@ const PrintComplaints = ({ complaints }) => {
   return (
     <>
       {/* Print Button */}
-      <Button variant="primary" size="sm" onClick={handlePrint} className="no-print">
-        <FaPrint /><span style={{ display: 'none' }}>Print</span>
+      <Button variant="white" size="md" onClick={handlePrint} className="no-print" aria-label="Print complaints">
+        <FaPrint />
+        <span className="hidden sm:inline">Print</span>
       </Button>
 
       {/* Print Modal */}

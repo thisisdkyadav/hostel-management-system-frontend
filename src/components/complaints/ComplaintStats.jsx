@@ -4,20 +4,21 @@ import { MdOutlineWatchLater, MdPriorityHigh } from "react-icons/md"
 import { TbProgressCheck } from "react-icons/tb"
 import { StatCards } from "@/components/ui"
 
-const ComplaintStats = ({ statsData, loading }) => {
-  // Default values if statsData is not available
-  const totalComplaints = statsData?.total || 0
-  const pendingComplaints = statsData?.pending || 0
-  const inProgressComplaints = statsData?.inProgress || 0
-  const resolvedComplaints = statsData?.resolved || 0
-  const forwardedToIDOComplaints = statsData?.forwardedToIDO || 0
-  // const urgentComplaints = statsData?.urgent || 0
+const ComplaintStats = ({ statsData, loading, entityLabel = "Complaints" }) => {
+  const normalizedStats = statsData?.data || statsData || {}
+  const entityLabelLower = entityLabel.toLowerCase()
+
+  const totalComplaints = normalizedStats.total || 0
+  const pendingComplaints = normalizedStats.pending || 0
+  const inProgressComplaints = normalizedStats.inProgress || 0
+  const resolvedComplaints = normalizedStats.resolved || 0
+  const forwardedToIDOComplaints = normalizedStats.forwardedToIDO || 0
 
   const statsCards = [
     {
       title: "Total",
       value: totalComplaints,
-      subtitle: "Complaints",
+      subtitle: entityLabel,
       icon: <FaClipboardList style={{ fontSize: 'var(--icon-2xl)' }} />,
       color: "var(--color-primary)",
       iconColor: "var(--color-primary)",
@@ -25,7 +26,7 @@ const ComplaintStats = ({ statsData, loading }) => {
     {
       title: "Pending",
       value: pendingComplaints,
-      subtitle: "Pending Review",
+      subtitle: `Pending ${entityLabel}`,
       icon: <MdOutlineWatchLater style={{ fontSize: 'var(--icon-2xl)' }} />,
       color: "var(--color-info)",
       iconColor: "var(--color-info)",
@@ -33,7 +34,7 @@ const ComplaintStats = ({ statsData, loading }) => {
     {
       title: "In Progress",
       value: inProgressComplaints,
-      subtitle: "Being Handled",
+      subtitle: `${entityLabel} In Progress`,
       icon: <TbProgressCheck style={{ fontSize: 'var(--icon-2xl)' }} />,
       color: "var(--color-warning)",
       iconColor: "var(--color-warning)",
@@ -41,7 +42,7 @@ const ComplaintStats = ({ statsData, loading }) => {
     {
       title: "Resolved",
       value: resolvedComplaints,
-      subtitle: "Fixed Issues",
+      subtitle: entityLabelLower === "issues" ? "Fixed Issues" : `Resolved ${entityLabel}`,
       icon: <FaRegCheckCircle style={{ fontSize: 'var(--icon-2xl)' }} />,
       color: "var(--color-success)",
       iconColor: "var(--color-success)",
@@ -49,7 +50,7 @@ const ComplaintStats = ({ statsData, loading }) => {
     {
       title: "Forwarded to IDO",
       value: forwardedToIDOComplaints,
-      subtitle: "Escalated",
+      subtitle: `Escalated ${entityLabel}`,
       icon: <MdPriorityHigh style={{ fontSize: 'var(--icon-2xl)' }} />,
       color: "var(--color-orange-text)",
       iconColor: "var(--color-orange-text)",

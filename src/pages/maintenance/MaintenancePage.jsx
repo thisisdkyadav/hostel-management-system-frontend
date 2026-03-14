@@ -92,7 +92,7 @@ const MaintenancePage = () => {
       if (filters.hostelId !== "all") queryParams.hostelId = filters.hostelId
       const queryString = new URLSearchParams(queryParams).toString()
       const response = await maintenanceApi.getStats(queryString)
-      setStatsData(response || null)
+      setStatsData(response?.data || response || null)
     } catch (error) {
       console.error("Error fetching complaint stats:", error)
       setStatsData(null)
@@ -111,9 +111,7 @@ const MaintenancePage = () => {
   }, [filters.category, filters.hostelId])
 
   const styles = {
-    container: { padding: "var(--spacing-6) var(--spacing-4)", flex: 1 },
-    headerRow: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-    printButtonWrapper: { marginLeft: "var(--spacing-2)" },
+    content: { flex: 1, overflowY: "auto", padding: "var(--spacing-6) var(--spacing-4)" },
     filterPanel: { marginTop: "var(--spacing-6)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)", boxShadow: "var(--shadow-sm)" },
     filterContainer: { display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--spacing-4)" },
     filterGroup: { width: "100%" },
@@ -122,41 +120,45 @@ const MaintenancePage = () => {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.headerRow}>
-        <ComplaintsHeader showFilters={showFilters} setShowFilters={setShowFilters} viewMode={viewMode} setViewMode={setViewMode} showCraftComplaint={false} setShowCraftComplaint={() => { }}
-          userRole={user?.role}
-          title="Maintenance Dashboard"
-        />
-        <div style={styles.printButtonWrapper}>
-          <PrintComplaints complaints={complaints} />
-        </div>
-      </div>
+    <div className="flex flex-col h-full">
+      <ComplaintsHeader
+        showFilters={showFilters}
+        setShowFilters={setShowFilters}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        showCraftComplaint={false}
+        setShowCraftComplaint={() => { }}
+        userRole={user?.role}
+        title="Maintenance Dashboard"
+        extraActions={<PrintComplaints complaints={complaints} />}
+      />
 
-      <ComplaintStats statsData={statsData} loading={statsLoading} />
+      <div style={styles.content}>
+        <ComplaintStats statsData={statsData} loading={statsLoading} entityLabel="Issues" />
 
-      {showFilters && (
-        <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />
-      )}
+        {showFilters && (
+          <ComplaintsFilterPanel filters={filters} updateFilter={updateFilter} resetFilters={resetFilters} hostels={hostels} categories={categories} />
+        )}
 
-      <div style={styles.filterPanel}>
-        <div style={styles.filterContainer} className="filter-responsive">
-          <div style={styles.filterGroup}>
-            <p style={styles.filterLabel}>Filter by Status:</p>
-            <div style={styles.tabScrollContainer}>
-              <Tabs variant="pills" tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+        <div style={styles.filterPanel}>
+          <div style={styles.filterContainer} className="filter-responsive">
+            <div style={styles.filterGroup}>
+              <p style={styles.filterLabel}>Filter by Status:</p>
+              <div style={styles.tabScrollContainer}>
+                <Tabs variant="pills" tabs={MAINTENANCE_STATUS_TABS} activeTab={filters.status} setActiveTab={(status) => updateFilter("status", status)} />
+              </div>
+            </div>
+            <div style={styles.filterGroup}>
+              <p style={styles.filterLabel}>Filter by Category:</p>
+              <div style={styles.tabScrollContainer}>
+                <Tabs variant="pills" tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
+              </div>
             </div>
           </div>
-          <div style={styles.filterGroup}>
-            <p style={styles.filterLabel}>Filter by Category:</p>
-            <div style={styles.tabScrollContainer}>
-              <Tabs variant="pills" tabs={MAINTENANCE_FILTER_TABS} activeTab={filters.category} setActiveTab={(category) => updateFilter("category", category)} />
-            </div>
-          </div>
         </div>
-      </div>
 
-      <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={[]} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
+        <ComplaintsContent loading={loading} complaints={complaints} viewMode={viewMode} filters={filters} totalPages={totalPages} COMPLAINT_FILTER_TABS={[]} updateFilter={updateFilter} onViewDetails={viewComplaintDetails} paginate={paginate} />
+      </div>
 
       {showDetailModal && selectedComplaint && (
         <ComplaintDetailModal selectedComplaint={selectedComplaint} setShowDetailModal={setShowDetailModal} onComplaintUpdate={fetchComplaints} />
