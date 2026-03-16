@@ -6,16 +6,8 @@
  * - Consistent configuration
  */
 
-import { baseUrl, fetchOptions } from "../../constants/appConstants"
-import { ApiError, NetworkError, ValidationError } from "./errors"
-
-/**
- * Default request configuration
- */
-const defaultConfig = {
-  baseUrl,
-  ...fetchOptions,
-}
+import { API_BACKENDS, getApiBaseUrl, fetchOptions } from "../../constants/appConstants"
+import { ApiError, NetworkError } from "./errors"
 
 /**
  * Parse error response from server
@@ -62,8 +54,8 @@ const parseErrorResponse = async (response) => {
  * @param {Object} params - Query parameters
  * @returns {string} Complete URL with query string
  */
-const buildUrl = (endpoint, params = {}) => {
-  const url = new URL(`${defaultConfig.baseUrl}${endpoint}`)
+const buildUrl = (endpoint, params = {}, resolvedBaseUrl = getApiBaseUrl()) => {
+  const url = new URL(`${resolvedBaseUrl}${endpoint}`)
   
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -80,11 +72,19 @@ const buildUrl = (endpoint, params = {}) => {
  * @param {string} queryString - Query string
  * @returns {string} Complete URL
  */
-const buildUrlWithQueryString = (endpoint, queryString = "") => {
+const buildUrlWithQueryString = (endpoint, queryString = "", resolvedBaseUrl = getApiBaseUrl()) => {
   if (queryString) {
-    return `${defaultConfig.baseUrl}${endpoint}?${queryString}`
+    return `${resolvedBaseUrl}${endpoint}?${queryString}`
   }
-  return `${defaultConfig.baseUrl}${endpoint}`
+  return `${resolvedBaseUrl}${endpoint}`
+}
+
+const resolveBaseUrl = (options = {}, clientConfig = {}) => {
+  if (options.baseUrl) return options.baseUrl
+  if (clientConfig.baseUrl) return clientConfig.baseUrl
+
+  const backend = options.backend || clientConfig.backend || API_BACKENDS.NODE
+  return getApiBaseUrl(backend)
 }
 
 /**
@@ -93,17 +93,22 @@ const buildUrlWithQueryString = (endpoint, queryString = "") => {
  * @param {Object} options - Request options
  * @returns {Promise<any>} Response data
  */
-const request = async (endpoint, options = {}) => {
-  const { params, queryString, ...fetchOpts } = options
+const request = async (endpoint, options = {}, clientConfig = {}) => {
+  const { params, queryString, backend: _backend, baseUrl: _baseUrl, ...fetchOpts } = options
+  const resolvedBaseUrl = resolveBaseUrl(options, clientConfig)
+  const defaultConfig = {
+    baseUrl: resolvedBaseUrl,
+    ...fetchOptions,
+  }
   
   // Build URL
   let url
   if (queryString) {
-    url = buildUrlWithQueryString(endpoint, queryString)
+    url = buildUrlWithQueryString(endpoint, queryString, resolvedBaseUrl)
   } else if (params) {
-    url = buildUrl(endpoint, params)
+    url = buildUrl(endpoint, params, resolvedBaseUrl)
   } else {
-    url = `${defaultConfig.baseUrl}${endpoint}`
+    url = `${resolvedBaseUrl}${endpoint}`
   }
 
   // Merge options with defaults
@@ -149,104 +154,111 @@ const request = async (endpoint, options = {}) => {
 /**
  * API Client with HTTP method shortcuts
  */
-export const apiClient = {
-  /**
-   * GET request
-   * @param {string} endpoint - API endpoint
-   * @param {Object} options - Request options (params, queryString, headers)
-   * @returns {Promise<any>} Response data
-   */
-  get: (endpoint, options = {}) => {
-    return request(endpoint, { ...options, method: "GET" })
-  },
+export const createApiClient = (clientConfig = {}) => {
+  return {
+    /**
+     * GET request
+     * @param {string} endpoint - API endpoint
+     * @param {Object} options - Request options (params, queryString, headers)
+     * @returns {Promise<any>} Response data
+     */
+    get: (endpoint, options = {}) => {
+      return request(endpoint, { ...options, method: "GET" }, clientConfig)
+    },
 
-  /**
-   * POST request
-   * @param {string} endpoint - API endpoint
-   * @param {any} data - Request body data
-   * @param {Object} options - Additional request options
-   * @returns {Promise<any>} Response data
-   */
-  post: (endpoint, data, options = {}) => {
-    return request(endpoint, {
-      ...options,
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-  },
-
-  /**
-   * PUT request
-   * @param {string} endpoint - API endpoint
-   * @param {any} data - Request body data
-   * @param {Object} options - Additional request options
-   * @returns {Promise<any>} Response data
-   */
-  put: (endpoint, data, options = {}) => {
-    return request(endpoint, {
-      ...options,
-      method: "PUT",
-      body: JSON.stringify(data),
-    })
-  },
-
-  /**
-   * PATCH request
-   * @param {string} endpoint - API endpoint
-   * @param {any} data - Request body data
-   * @param {Object} options - Additional request options
-   * @returns {Promise<any>} Response data
-   */
-  patch: (endpoint, data, options = {}) => {
-    return request(endpoint, {
-      ...options,
-      method: "PATCH",
-      body: JSON.stringify(data),
-    })
-  },
-
-  /**
-   * DELETE request
-   * @param {string} endpoint - API endpoint
-   * @param {Object} options - Additional request options
-   * @returns {Promise<any>} Response data
-   */
-  delete: (endpoint, options = {}) => {
-    return request(endpoint, { ...options, method: "DELETE" })
-  },
-
-  /**
-   * POST request with FormData (for file uploads)
-   * @param {string} endpoint - API endpoint
-   * @param {FormData} formData - Form data to send
-   * @param {Object} options - Additional request options
-   * @returns {Promise<any>} Response data
-   */
-  upload: async (endpoint, formData, options = {}) => {
-    const url = `${defaultConfig.baseUrl}${endpoint}`
-    
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
+    /**
+     * POST request
+     * @param {string} endpoint - API endpoint
+     * @param {any} data - Request body data
+     * @param {Object} options - Additional request options
+     * @returns {Promise<any>} Response data
+     */
+    post: (endpoint, data, options = {}) => {
+      return request(endpoint, {
         ...options,
-      })
+        method: "POST",
+        body: JSON.stringify(data),
+      }, clientConfig)
+    },
 
-      if (!response.ok) {
-        const { message, errors } = await parseErrorResponse(response)
-        throw new ApiError(message, response.status, response, errors)
-      }
+    /**
+     * PUT request
+     * @param {string} endpoint - API endpoint
+     * @param {any} data - Request body data
+     * @param {Object} options - Additional request options
+     * @returns {Promise<any>} Response data
+     */
+    put: (endpoint, data, options = {}) => {
+      return request(endpoint, {
+        ...options,
+        method: "PUT",
+        body: JSON.stringify(data),
+      }, clientConfig)
+    },
 
-      return response.json()
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error
+    /**
+     * PATCH request
+     * @param {string} endpoint - API endpoint
+     * @param {any} data - Request body data
+     * @param {Object} options - Additional request options
+     * @returns {Promise<any>} Response data
+     */
+    patch: (endpoint, data, options = {}) => {
+      return request(endpoint, {
+        ...options,
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }, clientConfig)
+    },
+
+    /**
+     * DELETE request
+     * @param {string} endpoint - API endpoint
+     * @param {Object} options - Additional request options
+     * @returns {Promise<any>} Response data
+     */
+    delete: (endpoint, options = {}) => {
+      return request(endpoint, { ...options, method: "DELETE" }, clientConfig)
+    },
+
+    /**
+     * POST request with FormData (for file uploads)
+     * @param {string} endpoint - API endpoint
+     * @param {FormData} formData - Form data to send
+     * @param {Object} options - Additional request options
+     * @returns {Promise<any>} Response data
+     */
+    upload: async (endpoint, formData, options = {}) => {
+      const resolvedBaseUrl = resolveBaseUrl(options, clientConfig)
+      const url = `${resolvedBaseUrl}${endpoint}`
+      const { backend: _backend, baseUrl: _baseUrl, ...fetchOptionsForUpload } = options
+      
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+          ...fetchOptionsForUpload,
+        })
+
+        if (!response.ok) {
+          const { message, errors } = await parseErrorResponse(response)
+          throw new ApiError(message, response.status, response, errors)
+        }
+
+        return response.json()
+      } catch (error) {
+        if (error instanceof ApiError) {
+          throw error
+        }
+        throw new ApiError(error.message || "Upload failed")
       }
-      throw new ApiError(error.message || "Upload failed")
-    }
-  },
+    },
+  }
 }
+
+export const apiClient = createApiClient()
+export const goApiClient = createApiClient({ backend: API_BACKENDS.GO })
 
 // Export utilities for custom use cases
 export { buildUrl, buildUrlWithQueryString, request }

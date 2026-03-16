@@ -3,7 +3,7 @@
  * Handles all authentication-related API calls
  */
 
-import apiClient from "../core/apiClient"
+import { goApiClient } from "../core/apiClient"
 
 const unwrapStandardResponse = (response) => {
   if (
@@ -23,7 +23,7 @@ export const authApi = {
    * Verify current user authentication
    */
   verify: () => {
-    return apiClient.get("/auth/user").then(unwrapStandardResponse)
+    return goApiClient.get("/auth/user").then(unwrapStandardResponse)
   },
 
   /**
@@ -31,7 +31,7 @@ export const authApi = {
    * @param {Object} credentials - { email, password }
    */
   login: (credentials) => {
-    return apiClient.post("/auth/login", credentials).then(unwrapStandardResponse)
+    return goApiClient.post("/auth/login", credentials).then(unwrapStandardResponse)
   },
 
   /**
@@ -39,7 +39,7 @@ export const authApi = {
    * @param {string} token - Google OAuth token
    */
   loginWithGoogle: (token) => {
-    return apiClient.post("/auth/google", { token }).then(unwrapStandardResponse)
+    return goApiClient.post("/auth/google", { token }).then(unwrapStandardResponse)
   },
 
   /**
@@ -47,14 +47,14 @@ export const authApi = {
    * @param {string} token - SSO token
    */
   verifySSOToken: (token) => {
-    return apiClient.post("/auth/verify-sso-token", { token }).then(unwrapStandardResponse)
+    return goApiClient.post("/auth/verify-sso-token", { token }).then(unwrapStandardResponse)
   },
 
   /**
    * Logout current user
    */
   logout: () => {
-    return apiClient.get("/auth/logout").then(unwrapStandardResponse)
+    return goApiClient.get("/auth/logout").then(unwrapStandardResponse)
   },
 
   /**
@@ -63,14 +63,14 @@ export const authApi = {
    * @param {string} newPassword - New password
    */
   changePassword: (oldPassword, newPassword) => {
-    return apiClient.post("/auth/update-password", { oldPassword, newPassword }).then(unwrapStandardResponse)
+    return goApiClient.post("/auth/update-password", { oldPassword, newPassword }).then(unwrapStandardResponse)
   },
 
   /**
    * Get user's active devices/sessions
    */
   getUserDevices: () => {
-    return apiClient.get("/auth/user/devices").then(unwrapStandardResponse)
+    return goApiClient.get("/auth/user/devices").then(unwrapStandardResponse)
   },
 
   /**
@@ -78,7 +78,7 @@ export const authApi = {
    * @param {string[]} pinnedTabs - Array of pinned tab paths
    */
   updatePinnedTabs: (pinnedTabs) => {
-    return apiClient.patch("/auth/user/pinned-tabs", { pinnedTabs }).then(unwrapStandardResponse)
+    return goApiClient.patch("/auth/user/pinned-tabs", { pinnedTabs }).then(unwrapStandardResponse)
   },
 
   /**
@@ -86,14 +86,14 @@ export const authApi = {
    * @param {string} sessionId - Session ID to logout from
    */
   logoutFromDevice: (sessionId) => {
-    return apiClient.post(`/auth/user/devices/logout/${sessionId}`).then(unwrapStandardResponse)
+    return goApiClient.post(`/auth/user/devices/logout/${sessionId}`).then(unwrapStandardResponse)
   },
 
   /**
    * Redirect to wellness portal
    */
   redirectToWellness: () => {
-    return apiClient.get("/sso/redirect", {
+    return goApiClient.get("/sso/redirect", {
       params: { redirectTo: "https://wellness.iitb.ac.in" },
     })
   },
@@ -105,7 +105,7 @@ export const authApi = {
    * @param {string} email - User email
    */
   forgotPassword: (email) => {
-    return apiClient.post("/auth/forgot-password", { email }).then(unwrapStandardResponse)
+    return goApiClient.post("/auth/forgot-password", { email }).then(unwrapStandardResponse)
   },
 
   /**
@@ -113,7 +113,7 @@ export const authApi = {
    * @param {string} token - Reset token
    */
   verifyResetToken: (token) => {
-    return apiClient.get(`/auth/reset-password/${token}`).then(unwrapStandardResponse)
+    return goApiClient.get(`/auth/reset-password/${token}`).then(unwrapStandardResponse)
   },
 
   /**
@@ -122,7 +122,7 @@ export const authApi = {
    * @param {string} password - New password
    */
   resetPassword: (token, password) => {
-    return apiClient.post("/auth/reset-password", { token, password }).then(unwrapStandardResponse)
+    return goApiClient.post("/auth/reset-password", { token, password }).then(unwrapStandardResponse)
   },
 }
 
