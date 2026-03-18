@@ -818,10 +818,29 @@ export const AdminNominationReviewModal = ({
   formatDateTime,
   pillBaseStyle,
   statusToneStyles,
+  textareaStyle,
 }) => {
   const [viewerUrl, setViewerUrl] = useState("")
+  const [reviewNotes, setReviewNotes] = useState("")
+  const [noteError, setNoteError] = useState("")
+
+  useEffect(() => {
+    setReviewNotes(nomination?.review?.notes || "")
+    setNoteError("")
+  }, [nomination])
 
   if (!nomination) return null
+
+  const handleReviewAction = (status) => {
+    const trimmedNotes = String(reviewNotes || "").trim()
+    if (status === "modification_requested" && trimmedNotes.length < 3) {
+      setNoteError("Add a clear comment before requesting modification.")
+      return
+    }
+
+    setNoteError("")
+    onReview(nomination.id, status, trimmedNotes)
+  }
 
   return (
     <>
@@ -861,16 +880,24 @@ export const AdminNominationReviewModal = ({
               </Button>
               <Button
                 size="sm"
+                variant="ghost"
+                loading={busy === `${electionId}:${nomination.id}:modification_requested`}
+                onClick={() => handleReviewAction("modification_requested")}
+              >
+                Request Modification
+              </Button>
+              <Button
+                size="sm"
                 variant="danger"
                 loading={busy === `${electionId}:${nomination.id}:rejected`}
-                onClick={() => onReview(nomination.id, "rejected")}
+                onClick={() => handleReviewAction("rejected")}
               >
                 <XCircle size={14} /> Reject
               </Button>
               <Button
                 size="sm"
                 loading={busy === `${electionId}:${nomination.id}:verified`}
-                onClick={() => onReview(nomination.id, "verified")}
+                onClick={() => handleReviewAction("verified")}
               >
                 <CheckCircle2 size={14} /> Verify
               </Button>
@@ -922,6 +949,17 @@ export const AdminNominationReviewModal = ({
               </ul>
             </div>
           ) : null}
+
+          <div style={detailPanelStyle}>
+            <div style={labelStyle}>Review comment</div>
+            <textarea
+              style={noteError ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
+              value={reviewNotes}
+              onChange={(event) => setReviewNotes(event.target.value)}
+              placeholder="Add review feedback. This is required when requesting modification."
+            />
+            {noteError ? <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-xs)" }}>{noteError}</div> : null}
+          </div>
 
           <div style={detailGridStyle}>
             {[
@@ -1039,6 +1077,8 @@ export const StudentNominationModal = ({
   }
 
   const hasUploadedIdCard = Boolean(idCard.front || idCard.back)
+  const reviewNote = String(post?.myNomination?.review?.notes || "").trim()
+  const hasReviewNote = reviewNote.length > 0
 
   if (!post) return null
 
@@ -1087,6 +1127,19 @@ export const StudentNominationModal = ({
         }
       >
         <div style={modalBodyStyle}>
+          {hasReviewNote ? (
+            <Alert
+              type={post?.myNomination?.status === "modification_requested" ? "warning" : "info"}
+              title={
+                post?.myNomination?.status === "modification_requested"
+                  ? "Modification requested"
+                  : "Review comment"
+              }
+            >
+              {reviewNote}
+            </Alert>
+          ) : null}
+
           {loadingIdCard ? (
             <Alert type="info">Checking your student ID card...</Alert>
           ) : !hasUploadedIdCard ? (

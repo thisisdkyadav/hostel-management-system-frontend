@@ -2,6 +2,19 @@ import { Button, Table } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
 
+const tableHeaderStyle = {
+  backgroundColor: "var(--color-bg-secondary)",
+}
+
+const tableHeadStyle = {
+  backgroundColor: "var(--color-bg-secondary)",
+  color: "var(--color-text-muted)",
+  fontSize: "var(--font-size-xs)",
+  fontWeight: "var(--font-weight-semibold)",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+}
+
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
   const total = Number(totalVotes || 0)
@@ -61,17 +74,16 @@ const StudentElectionWorkspace = ({
 
     {selectedStudentElection.mode === "participation" ? (
       <Table>
-        <Table.Header>
+        <Table.Header style={tableHeaderStyle}>
           <Table.Row>
-            <Table.Head>Post</Table.Head>
-            <Table.Head>Status</Table.Head>
-            <Table.Head align="right">Action</Table.Head>
+            <Table.Head style={tableHeadStyle}>Post</Table.Head>
+            <Table.Head style={tableHeadStyle}>Status</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {(selectedStudentElection.posts || []).length === 0 ? (
             <Table.Row>
-              <Table.Cell colSpan={3}>
+              <Table.Cell colSpan={2}>
                 <div
                   style={{
                     padding: "var(--spacing-5)",
@@ -85,7 +97,11 @@ const StudentElectionWorkspace = ({
             </Table.Row>
           ) : (
             (selectedStudentElection.posts || []).map((post) => (
-              <Table.Row key={post.id}>
+              <Table.Row
+                key={post.id}
+                onClick={() => openNominationModal(selectedStudentElection, post)}
+                style={{ cursor: "pointer" }}
+              >
                 <Table.Cell>
                   <div style={{ display: "grid", gap: "4px" }}>
                     <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{post.title}</span>
@@ -96,26 +112,56 @@ const StudentElectionWorkspace = ({
                   </div>
                 </Table.Cell>
                 <Table.Cell>
-                  {post.myNomination
-                    ? `Nomination ${formatStageLabel(post.myNomination.status)}`
-                    : "Not submitted"}
-                </Table.Cell>
-                <Table.Cell align="right">
                   <div
                     style={{
-                      display: "inline-flex",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                       gap: "8px",
                       flexWrap: "wrap",
-                      justifyContent: "flex-end",
                     }}
                   >
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => openNominationModal(selectedStudentElection, post)}
-                    >
-                      {post.myNomination ? "Edit" : "Nominate"}
-                    </Button>
+                    <div style={{ display: "grid", gap: "4px" }}>
+                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                        <StatusPill
+                          tone={
+                            post.myNomination
+                              ? post.myNomination.status === "modification_requested"
+                                ? "warning"
+                                : post.myNomination.status === "verified"
+                                  ? "success"
+                                  : post.myNomination.status === "rejected"
+                                    ? "danger"
+                                    : "primary"
+                              : "default"
+                          }
+                          pillBaseStyle={pillBaseStyle}
+                          statusToneStyles={statusToneStyles}
+                        >
+                          {post.myNomination
+                            ? `Nomination ${formatStageLabel(post.myNomination.status)}`
+                            : "Not submitted"}
+                        </StatusPill>
+                        {post.myNomination?.review?.notes ? (
+                          <StatusPill
+                            tone="warning"
+                            pillBaseStyle={pillBaseStyle}
+                            statusToneStyles={statusToneStyles}
+                          >
+                            Comment Available
+                          </StatusPill>
+                        ) : null}
+                      </div>
+                      {post.myNomination?.review?.notes ? (
+                        <div style={{ ...mutedTextStyle, maxWidth: "420px" }}>
+                          {post.myNomination.review.notes}
+                        </div>
+                      ) : (
+                        <div style={mutedTextStyle}>
+                          Click row to {post.myNomination ? "review or update nomination" : "open nomination form"}
+                        </div>
+                      )}
+                    </div>
                     {selectedStudentElection.currentStage === "withdrawal" &&
                     post.myNomination &&
                     post.myNomination.status !== "withdrawn" ? (
@@ -123,9 +169,10 @@ const StudentElectionWorkspace = ({
                         size="sm"
                         variant="danger"
                         loading={busyKey === `withdraw:${selectedStudentElection.id}:${post.myNomination.id}`}
-                        onClick={() =>
+                        onClick={(event) => {
+                          event.stopPropagation()
                           withdrawNomination(selectedStudentElection.id, post.myNomination.id)
-                        }
+                        }}
                       >
                         Withdraw
                       </Button>

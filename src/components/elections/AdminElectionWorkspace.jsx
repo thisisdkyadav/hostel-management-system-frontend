@@ -5,6 +5,7 @@ import { StatusPill } from "@/components/elections/ElectionShared"
 const nominationTabsDefault = [
   { label: "All", value: "all" },
   { label: "Submitted", value: "submitted" },
+  { label: "Modification Requested", value: "modification_requested" },
   { label: "Verified", value: "verified" },
   { label: "Rejected", value: "rejected" },
   { label: "Withdrawn", value: "withdrawn" },
@@ -135,7 +136,9 @@ const AdminElectionWorkspace = ({
                   {post.requirements.secondersRequired}
                 </Table.Cell>
                 <Table.Cell>
-                  {(post.nominationCounts?.submitted || 0) + (post.nominationCounts?.verified || 0)} total ·{" "}
+                  {(post.nominationCounts?.submitted || 0) +
+                    (post.nominationCounts?.modification_requested || 0) +
+                    (post.nominationCounts?.verified || 0)} total ·{" "}
                   {post.nominationCounts?.verified || 0} verified
                 </Table.Cell>
                 <Table.Cell>{post.voteCount || 0}</Table.Cell>

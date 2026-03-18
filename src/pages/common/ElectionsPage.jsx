@@ -241,6 +241,7 @@ const wizardSteps = [
 const nominationTabs = [
   { label: "All", value: "all" },
   { label: "Submitted", value: "submitted" },
+  { label: "Modification Requested", value: "modification_requested" },
   { label: "Verified", value: "verified" },
   { label: "Rejected", value: "rejected" },
   { label: "Withdrawn", value: "withdrawn" },
@@ -379,7 +380,7 @@ const statusToneStyles = {
 const getStatusTone = (status) => {
   if (["verified", "published", "completed", "voting"].includes(status)) return "success"
   if (["rejected", "cancelled"].includes(status)) return "danger"
-  if (["withdrawal", "campaigning", "results", "handover"].includes(status)) return "warning"
+  if (["withdrawal", "campaigning", "results", "handover", "modification_requested"].includes(status)) return "warning"
   if (["nomination", "announced", "draft", "submitted", "participation"].includes(status)) return "primary"
   return "default"
 }
@@ -1138,14 +1139,14 @@ const ElectionsPage = () => {
     }
   }
 
-  const handleReviewNomination = async (nominationId, status) => {
+  const handleReviewNomination = async (nominationId, status, notes = "") => {
     if (!selectedAdminElectionId) return
     const actionKey = `${selectedAdminElectionId}:${nominationId}:${status}`
     try {
       setBusyKey(actionKey)
       const response = await electionsApi.reviewNomination(selectedAdminElectionId, nominationId, {
         status,
-        notes: "",
+        notes,
       })
       toast.success(response?.message || "Nomination updated")
       await loadAdminDetail(selectedAdminElectionId)
@@ -1450,6 +1451,7 @@ const ElectionsPage = () => {
             formatDateTime={formatDateTime}
             pillBaseStyle={pillBaseStyle}
             statusToneStyles={statusToneStyles}
+            textareaStyle={textareaStyle}
           />
 
           <AdminResultsEditModal
