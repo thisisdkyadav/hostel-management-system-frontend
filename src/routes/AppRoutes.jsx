@@ -14,6 +14,7 @@ const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage")
 const ResetPasswordPage = lazy(() => import("../pages/auth/ResetPasswordPage"))
 const ComplaintFeedbackPage = lazy(() => import("../pages/public/ComplaintFeedbackPage"))
 const ElectionSupportConfirmationPage = lazy(() => import("../pages/public/ElectionSupportConfirmationPage"))
+const ElectionBallotPage = lazy(() => import("../pages/public/ElectionBallotPage"))
 
 // Role-based routes - Lazy loaded (loads all pages for a role when user visits that role's routes)
 const SuperAdminRoutes = lazy(() => import("./SuperAdminRoutes"))
@@ -64,6 +65,12 @@ const AppRoutes = () => {
       <Route path="/election-support-confirmation/:token" element={
         <Suspense fallback={<LoadingPage message="Loading Support Confirmation..." />}>
           <ElectionSupportConfirmationPage />
+        </Suspense>
+      } />
+
+      <Route path="/election-ballot/:token" element={
+        <Suspense fallback={<LoadingPage message="Loading Ballot..." />}>
+          <ElectionBallotPage />
         </Suspense>
       } />
 

@@ -38,6 +38,12 @@ export const electionsApi = {
 
   respondToSupporterConfirmation: (token, payload) =>
     apiClient.post(`${BASE_PATH}/supporter-confirmation/${token}/respond`, payload),
+
+  getBallotByToken: (token) =>
+    apiClient.get(`${BASE_PATH}/ballot/${token}`),
+
+  submitBallotByToken: (token, payload) =>
+    apiClient.post(`${BASE_PATH}/ballot/${token}/submit`, payload),
 }
 
 export default electionsApi
