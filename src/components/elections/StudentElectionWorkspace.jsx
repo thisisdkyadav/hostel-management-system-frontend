@@ -1,19 +1,6 @@
-import { Button, Table } from "czero/react"
+import { Button, DataTable, Table } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
-
-const tableHeaderStyle = {
-  backgroundColor: "var(--color-bg-secondary)",
-}
-
-const tableHeadStyle = {
-  backgroundColor: "var(--color-bg-secondary)",
-  color: "var(--color-text-muted)",
-  fontSize: "var(--font-size-xs)",
-  fontWeight: "var(--font-weight-semibold)",
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-}
 
 const formatVotePercentage = (voteCount, totalVotes) => {
   const votes = Number(voteCount || 0)
@@ -73,117 +60,86 @@ const StudentElectionWorkspace = ({
     </div>
 
     {selectedStudentElection.mode === "participation" ? (
-      <Table>
-        <Table.Header style={tableHeaderStyle}>
-          <Table.Row>
-            <Table.Head style={tableHeadStyle}>Post</Table.Head>
-            <Table.Head style={tableHeadStyle}>Status</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {(selectedStudentElection.posts || []).length === 0 ? (
-            <Table.Row>
-              <Table.Cell colSpan={2}>
-                <div
-                  style={{
-                    padding: "var(--spacing-5)",
-                    textAlign: "center",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  No posts are available for nomination right now.
+      <DataTable
+        data={selectedStudentElection.posts || []}
+        emptyMessage="No posts are available for nomination right now."
+        onRowClick={(post) => openNominationModal(selectedStudentElection, post)}
+        columns={[
+          {
+            header: "Post",
+            key: "title",
+            render: (post) => (
+              <div style={{ display: "grid", gap: "4px" }}>
+                <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                  {post.title}
                 </div>
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            (selectedStudentElection.posts || []).map((post) => (
-              <Table.Row
-                key={post.id}
-                onClick={() => openNominationModal(selectedStudentElection, post)}
-                style={{ cursor: "pointer" }}
-              >
-                <Table.Cell>
-                  <div style={{ display: "grid", gap: "4px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{post.title}</span>
-                    <span style={mutedTextStyle}>
-                      {formatStageLabel(post.category)}
-                      {post.code ? ` · ${post.code}` : ""}
-                    </span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: "8px",
-                      flexWrap: "wrap",
-                    }}
+                <div style={mutedTextStyle}>
+                  {formatStageLabel(post.category)}
+                  {post.code ? ` · ${post.code}` : ""}
+                </div>
+              </div>
+            ),
+          },
+          {
+            header: "Status",
+            key: "status",
+            render: (post) => (
+              <div style={{ display: "grid", gap: "6px" }}>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+                  <StatusPill
+                    tone={
+                      post.myNomination
+                        ? post.myNomination.status === "modification_requested"
+                          ? "warning"
+                          : post.myNomination.status === "verified"
+                            ? "success"
+                            : post.myNomination.status === "rejected"
+                              ? "danger"
+                              : "primary"
+                        : "default"
+                    }
+                    pillBaseStyle={pillBaseStyle}
+                    statusToneStyles={statusToneStyles}
                   >
-                    <div style={{ display: "grid", gap: "4px" }}>
-                      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                        <StatusPill
-                          tone={
-                            post.myNomination
-                              ? post.myNomination.status === "modification_requested"
-                                ? "warning"
-                                : post.myNomination.status === "verified"
-                                  ? "success"
-                                  : post.myNomination.status === "rejected"
-                                    ? "danger"
-                                    : "primary"
-                              : "default"
-                          }
-                          pillBaseStyle={pillBaseStyle}
-                          statusToneStyles={statusToneStyles}
-                        >
-                          {post.myNomination
-                            ? `Nomination ${formatStageLabel(post.myNomination.status)}`
-                            : "Not submitted"}
-                        </StatusPill>
-                        {post.myNomination?.review?.notes ? (
-                          <StatusPill
-                            tone="warning"
-                            pillBaseStyle={pillBaseStyle}
-                            statusToneStyles={statusToneStyles}
-                          >
-                            Comment Available
-                          </StatusPill>
-                        ) : null}
-                      </div>
-                      {post.myNomination?.review?.notes ? (
-                        <div style={{ ...mutedTextStyle, maxWidth: "420px" }}>
-                          {post.myNomination.review.notes}
-                        </div>
-                      ) : (
-                        <div style={mutedTextStyle}>
-                          Click row to {post.myNomination ? "review or update nomination" : "open nomination form"}
-                        </div>
-                      )}
-                    </div>
-                    {selectedStudentElection.currentStage === "withdrawal" &&
-                    post.myNomination &&
-                    post.myNomination.status !== "withdrawn" ? (
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        loading={busyKey === `withdraw:${selectedStudentElection.id}:${post.myNomination.id}`}
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          withdrawNomination(selectedStudentElection.id, post.myNomination.id)
-                        }}
-                      >
-                        Withdraw
-                      </Button>
-                    ) : null}
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            ))
-          )}
-        </Table.Body>
-      </Table>
+                    {post.myNomination
+                      ? `Nomination ${formatStageLabel(post.myNomination.status)}`
+                      : "Not submitted"}
+                  </StatusPill>
+                  {post.myNomination?.review?.notes ? (
+                    <StatusPill
+                      tone="warning"
+                      pillBaseStyle={pillBaseStyle}
+                      statusToneStyles={statusToneStyles}
+                    >
+                      Comment Available
+                    </StatusPill>
+                  ) : null}
+                  {selectedStudentElection.currentStage === "withdrawal" &&
+                  post.myNomination &&
+                  post.myNomination.status !== "withdrawn" ? (
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      loading={busyKey === `withdraw:${selectedStudentElection.id}:${post.myNomination.id}`}
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        withdrawNomination(selectedStudentElection.id, post.myNomination.id)
+                      }}
+                    >
+                      Withdraw
+                    </Button>
+                  ) : null}
+                </div>
+                <div style={{ ...mutedTextStyle, maxWidth: "460px" }}>
+                  {post.myNomination?.review?.notes
+                    ? post.myNomination.review.notes
+                    : `Click row to ${post.myNomination ? "review or update nomination" : "open nomination form"}`}
+                </div>
+              </div>
+            ),
+          },
+        ]}
+      />
     ) : null}
 
     {selectedStudentElection.mode === "voting" ? (

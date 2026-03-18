@@ -5,7 +5,7 @@ import CertificateViewerModal from "@/components/common/students/CertificateView
 import { useToast } from "@/components/ui/feedback"
 import { uploadApi } from "@/service"
 
-const isPdfDocument = (url = "") => String(url).toLowerCase().includes(".pdf")
+const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 
 const resolveUploadedUrl = (uploadResponse) => {
   if (typeof uploadResponse === "string") return uploadResponse
@@ -244,17 +244,10 @@ export const DocumentUploadField = ({
     const file = event.target.files?.[0]
     if (!file) return
 
-    const allowedMimeTypes = [
-      "application/pdf",
-      "image/png",
-      "image/jpeg",
-      "image/jpg",
-      "image/webp",
-      "image/gif",
-    ]
+    const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name)
 
-    if (!allowedMimeTypes.includes(file.type) && !/\.(pdf|png|jpe?g|webp|gif)$/i.test(file.name)) {
-      toast.error("Only PDF and image files are allowed")
+    if (!isPdf) {
+      toast.error("Only PDF files are allowed")
       event.target.value = ""
       return
     }
@@ -296,7 +289,7 @@ export const DocumentUploadField = ({
         {value ? (
           <div style={{ display: "grid", gap: "10px" }}>
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
-              {isPdfDocument(value) ? "PDF uploaded" : "Image uploaded"}
+              {isPdfDocument(value) ? "PDF uploaded" : "Document uploaded"}
             </div>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <Button size="sm" variant="secondary" onClick={() => setViewerOpen(true)}>
@@ -306,7 +299,7 @@ export const DocumentUploadField = ({
                 <label style={{ margin: 0 }}>
                   <input
                     type="file"
-                    accept=".pdf,image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                    accept=".pdf,application/pdf"
                     onChange={handleFileChange}
                     style={{ display: "none" }}
                   />
@@ -333,11 +326,11 @@ export const DocumentUploadField = ({
           </div>
         ) : (
           <div style={{ display: "grid", gap: "10px" }}>
-            <div style={mutedTextStyle}>PDF or image, max 5MB</div>
+              <div style={mutedTextStyle}>PDF only, max 5MB</div>
             <label style={{ margin: 0 }}>
               <input
                 type="file"
-                accept=".pdf,image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                accept=".pdf,application/pdf"
                 onChange={handleFileChange}
                 style={{ display: "none" }}
                 disabled={disabled || uploading}

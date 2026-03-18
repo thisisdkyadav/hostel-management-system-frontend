@@ -965,6 +965,7 @@ export const AdminNominationReviewModal = ({
             {[
               { label: "Grade Card", value: nomination.gradeCardUrl },
               { label: "Manifesto", value: nomination.manifestoUrl },
+              { label: "POR Documents", value: nomination.porDocumentUrl },
               { label: "Student ID Front", value: nomination.candidateIdCard?.front || "" },
               { label: "Student ID Back", value: nomination.candidateIdCard?.back || "" },
             ].map((item) => (
@@ -1281,6 +1282,14 @@ export const StudentNominationModal = ({
               label="Manifesto"
               value={form.manifestoUrl}
               onChange={(nextValue) => updateForm({ manifestoUrl: nextValue })}
+              flatPanelStyle={flatPanelStyle}
+              labelStyle={labelStyle}
+              mutedTextStyle={mutedTextStyle}
+            />
+            <DocumentUploadField
+              label="POR Documents"
+              value={form.porDocumentUrl}
+              onChange={(nextValue) => updateForm({ porDocumentUrl: nextValue })}
               flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}
               mutedTextStyle={mutedTextStyle}

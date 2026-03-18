@@ -1,4 +1,4 @@
-import { Button, Table, Tabs } from "czero/react"
+import { Button, DataTable, Tabs } from "czero/react"
 import { Clock3 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
 
@@ -91,62 +91,66 @@ const AdminElectionWorkspace = ({
     </div>
 
     {adminViewTab === "posts" ? (
-      <Table>
-        <Table.Header>
-          <Table.Row>
-            <Table.Head>Post</Table.Head>
-            <Table.Head>Candidate Pool</Table.Head>
-            <Table.Head>Voter Pool</Table.Head>
-            <Table.Head>Requirements</Table.Head>
-            <Table.Head>Nominations</Table.Head>
-            <Table.Head>Votes</Table.Head>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {(selectedAdminElection.posts || []).length === 0 ? (
-            <Table.Row>
-              <Table.Cell colSpan={6}>
-                <div
-                  style={{
-                    padding: "var(--spacing-4)",
-                    textAlign: "center",
-                    color: "var(--color-text-muted)",
-                  }}
-                >
-                  No posts configured yet.
-                </div>
-              </Table.Cell>
-            </Table.Row>
-          ) : (
-            (selectedAdminElection.posts || []).map((post) => (
-              <Table.Row key={post.id}>
-                <Table.Cell>
-                  <div style={{ display: "grid", gap: "2px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{post.title}</span>
-                    <span style={mutedTextStyle}>
-                      {formatStageLabel(post.category)}
-                      {post.code ? ` · ${post.code}` : ""}
-                    </span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell>{summarizeScope(post.candidateEligibility)}</Table.Cell>
-                <Table.Cell>{summarizeScope(post.voterEligibility)}</Table.Cell>
-                <Table.Cell>
-                  CGPA {post.requirements.minCgpa} · P {post.requirements.proposersRequired} · S{" "}
-                  {post.requirements.secondersRequired}
-                </Table.Cell>
-                <Table.Cell>
-                  {(post.nominationCounts?.submitted || 0) +
-                    (post.nominationCounts?.modification_requested || 0) +
-                    (post.nominationCounts?.verified || 0)} total ·{" "}
-                  {post.nominationCounts?.verified || 0} verified
-                </Table.Cell>
-                <Table.Cell>{post.voteCount || 0}</Table.Cell>
-              </Table.Row>
-            ))
-          )}
-        </Table.Body>
-      </Table>
+      <DataTable
+        data={selectedAdminElection.posts || []}
+        emptyMessage="No posts configured yet."
+        columns={[
+          {
+            header: "Post",
+            key: "title",
+            render: (post) => (
+              <div style={{ display: "grid", gap: "2px" }}>
+                <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{post.title}</span>
+                <span style={mutedTextStyle}>
+                  {formatStageLabel(post.category)}
+                  {post.code ? ` · ${post.code}` : ""}
+                </span>
+              </div>
+            ),
+          },
+          {
+            header: "Candidate Pool",
+            key: "candidateEligibility",
+            render: (post) => summarizeScope(post.candidateEligibility),
+          },
+          {
+            header: "Voter Pool",
+            key: "voterEligibility",
+            render: (post) => summarizeScope(post.voterEligibility),
+          },
+          {
+            header: "Requirements",
+            key: "requirements",
+            render: (post) => (
+              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                CGPA {post.requirements.minCgpa} · P {post.requirements.proposersRequired} · S{" "}
+                {post.requirements.secondersRequired}
+              </span>
+            ),
+          },
+          {
+            header: "Nominations",
+            key: "nominationCounts",
+            render: (post) => (
+              <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                {(post.nominationCounts?.submitted || 0) +
+                  (post.nominationCounts?.modification_requested || 0) +
+                  (post.nominationCounts?.verified || 0)}{" "}
+                total · {post.nominationCounts?.verified || 0} verified
+              </span>
+            ),
+          },
+          {
+            header: "Votes",
+            key: "voteCount",
+            render: (post) => (
+              <span style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                {post.voteCount || 0}
+              </span>
+            ),
+          },
+        ]}
+      />
     ) : null}
 
     {adminViewTab === "nominations" ? (
@@ -159,61 +163,47 @@ const AdminElectionWorkspace = ({
             setActiveTab={setNominationTab}
           />
         </div>
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>Candidate</Table.Head>
-              <Table.Head>Post</Table.Head>
-              <Table.Head>Status</Table.Head>
-              <Table.Head>Submitted</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {filteredNominations.length === 0 ? (
-              <Table.Row>
-                <Table.Cell colSpan={4}>
-                  <div
-                    style={{
-                      padding: "var(--spacing-4)",
-                      textAlign: "center",
-                      color: "var(--color-text-muted)",
-                    }}
-                  >
-                    No nominations in this view.
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              filteredNominations.map((nomination) => (
-                <Table.Row
-                  key={nomination.id}
-                  onClick={() => setReviewNomination(nomination)}
-                  style={{ cursor: "pointer" }}
+        <DataTable
+          data={filteredNominations}
+          emptyMessage="No nominations in this view."
+          onRowClick={setReviewNomination}
+          columns={[
+            {
+              header: "Candidate",
+              key: "candidateName",
+              render: (nomination) => (
+                <div style={{ display: "grid", gap: "2px" }}>
+                  <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                    {nomination.candidateName || nomination.candidateRollNumber}
+                  </span>
+                  <span style={mutedTextStyle}>{nomination.candidateRollNumber}</span>
+                </div>
+              ),
+            },
+            {
+              header: "Post",
+              key: "postTitle",
+            },
+            {
+              header: "Status",
+              key: "status",
+              render: (nomination) => (
+                <StatusPill
+                  tone={getStatusTone(nomination.status)}
+                  pillBaseStyle={pillBaseStyle}
+                  statusToneStyles={statusToneStyles}
                 >
-                  <Table.Cell>
-                    <div style={{ display: "grid", gap: "2px" }}>
-                      <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
-                        {nomination.candidateName || nomination.candidateRollNumber}
-                      </span>
-                      <span style={mutedTextStyle}>{nomination.candidateRollNumber}</span>
-                    </div>
-                  </Table.Cell>
-                  <Table.Cell>{nomination.postTitle}</Table.Cell>
-                  <Table.Cell>
-                    <StatusPill
-                      tone={getStatusTone(nomination.status)}
-                      pillBaseStyle={pillBaseStyle}
-                      statusToneStyles={statusToneStyles}
-                    >
-                      {formatStageLabel(nomination.status)}
-                    </StatusPill>
-                  </Table.Cell>
-                  <Table.Cell>{formatDateTime(nomination.submittedAt)}</Table.Cell>
-                </Table.Row>
-              ))
-            )}
-          </Table.Body>
-        </Table>
+                  {formatStageLabel(nomination.status)}
+                </StatusPill>
+              ),
+            },
+            {
+              header: "Submitted",
+              key: "submittedAt",
+              render: (nomination) => formatDateTime(nomination.submittedAt),
+            },
+          ]}
+        />
       </>
     ) : null}
 
@@ -242,64 +232,45 @@ const AdminElectionWorkspace = ({
           </Button>
         </div>
 
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.Head>Post</Table.Head>
-              <Table.Head>Leading Candidate</Table.Head>
-              <Table.Head>Total Votes</Table.Head>
-              <Table.Head>Published Winner</Table.Head>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {(selectedAdminElection?.results?.posts || []).length === 0 ? (
-              <Table.Row>
-                <Table.Cell colSpan={4}>
-                  <div
-                    style={{
-                      padding: "var(--spacing-4)",
-                      textAlign: "center",
-                      color: "var(--color-text-muted)",
-                    }}
-                  >
-                    No result data available yet.
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            ) : (
-              (selectedAdminElection?.results?.posts || []).map((postResult) => {
+        <DataTable
+          data={selectedAdminElection?.results?.posts || []}
+          emptyMessage="No result data available yet."
+          onRowClick={(postResult) => setResultsEditorPostId(String(postResult.postId))}
+          columns={[
+            {
+              header: "Post",
+              key: "postTitle",
+              render: (postResult) => (
+                <div style={{ display: "grid", gap: "2px" }}>
+                  <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{postResult.postTitle}</span>
+                  <span style={mutedTextStyle}>{(postResult.candidates || []).length} candidate(s)</span>
+                </div>
+              ),
+            },
+            {
+              header: "Leading Candidate",
+              key: "previewWinnerName",
+              render: (postResult) => postResult.previewWinnerName || "—",
+            },
+            {
+              header: "Total Votes",
+              key: "totalVotes",
+            },
+            {
+              header: "Published Winner",
+              key: "publishedWinner",
+              render: (postResult) => {
                 const draft = resultsDrafts[String(postResult.postId)] || {}
                 const selectedWinner =
                   (postResult.candidates || []).find(
-                    (candidate) =>
-                      String(candidate.nominationId) === String(draft.winnerNominationId || "")
+                    (candidate) => String(candidate.nominationId) === String(draft.winnerNominationId || "")
                   ) || null
 
-                return (
-                  <Table.Row
-                    key={postResult.postId}
-                    onClick={() => setResultsEditorPostId(String(postResult.postId))}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <Table.Cell>
-                      <div style={{ display: "grid", gap: "2px" }}>
-                        <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
-                          {postResult.postTitle}
-                        </span>
-                        <span style={mutedTextStyle}>
-                          {(postResult.candidates || []).length} candidate(s)
-                        </span>
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell>{postResult.previewWinnerName || "—"}</Table.Cell>
-                    <Table.Cell>{postResult.totalVotes}</Table.Cell>
-                    <Table.Cell>{selectedWinner?.candidateName || "Not selected"}</Table.Cell>
-                  </Table.Row>
-                )
-              })
-            )}
-          </Table.Body>
-        </Table>
+                return selectedWinner?.candidateName || "Not selected"
+              },
+            },
+          ]}
+        />
       </>
     ) : null}
 

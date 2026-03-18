@@ -352,6 +352,7 @@ const createBlankNominationForm = () => ({
   seconderRollNumbers: "",
   gradeCardUrl: "",
   manifestoUrl: "",
+  porDocumentUrl: "",
 })
 
 const statusToneStyles = {
@@ -581,6 +582,7 @@ const buildNominationPayload = (form) => ({
   seconderRollNumbers: splitListInput(form.seconderRollNumbers).map((item) => item.toUpperCase()),
   gradeCardUrl: form.gradeCardUrl.trim(),
   manifestoUrl: form.manifestoUrl.trim(),
+  porDocumentUrl: form.porDocumentUrl.trim(),
   attachments: [],
 })
 
@@ -602,6 +604,12 @@ const isValidUrlOrEmpty = (value) => {
   } catch {
     return false
   }
+}
+
+const isPdfDocumentPathOrEmpty = (value) => {
+  const trimmed = String(value || "").trim()
+  if (!trimmed) return true
+  return /\.pdf(\?.*)?$/i.test(trimmed)
 }
 
 const hasAnyWizardErrors = (errors = createEmptyWizardErrors()) =>
@@ -878,8 +886,20 @@ const validateNominationForm = (form) => {
     return "Upload the latest grade card before submitting your nomination."
   }
 
-  if (!isValidUrlOrEmpty(form.gradeCardUrl) || !isValidUrlOrEmpty(form.manifestoUrl)) {
+  if (
+    !isValidUrlOrEmpty(form.gradeCardUrl) ||
+    !isValidUrlOrEmpty(form.manifestoUrl) ||
+    !isValidUrlOrEmpty(form.porDocumentUrl)
+  ) {
     return "Uploaded nomination documents are invalid. Please upload them again."
+  }
+
+  if (
+    !isPdfDocumentPathOrEmpty(form.gradeCardUrl) ||
+    !isPdfDocumentPathOrEmpty(form.manifestoUrl) ||
+    !isPdfDocumentPathOrEmpty(form.porDocumentUrl)
+  ) {
+    return "Only PDF files are allowed for nomination documents."
   }
 
   return ""
@@ -1042,6 +1062,7 @@ const ElectionsPage = () => {
               seconderRollNumbers: (post.myNomination.seconderRollNumbers || []).join(", "),
               gradeCardUrl: post.myNomination.gradeCardUrl || "",
               manifestoUrl: post.myNomination.manifestoUrl || "",
+              porDocumentUrl: post.myNomination.porDocumentUrl || "",
             }
           : createBlankNominationForm()
         nextVoteSelections[`${election.id}:${post.id}`] = post.votedCandidateNominationId || ""
