@@ -348,11 +348,67 @@ const createBlankNominationForm = () => ({
   cgpa: "",
   completedSemesters: "",
   remainingSemesters: "",
-  proposerRollNumbers: "",
-  seconderRollNumbers: "",
+  proposerEntries: [],
+  seconderEntries: [],
   gradeCardUrl: "",
   manifestoUrl: "",
   porDocumentUrl: "",
+})
+
+const createBlankSupporterEntry = () => ({
+  rollNumber: "",
+  userId: "",
+  name: "",
+  email: "",
+  profileImage: "",
+  lookupStatus: "idle",
+  lookupMessage: "",
+  supportStatus: "",
+  supportRole: "",
+})
+
+const hydrateSupporterEntries = (entries = [], minimumCount = 0) => {
+  const nextEntries = Array.isArray(entries)
+    ? entries.map((entry) => ({
+        ...createBlankSupporterEntry(),
+        rollNumber: String(entry?.rollNumber || "").toUpperCase(),
+        userId: entry?.userId || "",
+        name: entry?.name || "",
+        email: entry?.email || "",
+        profileImage: entry?.profileImage || "",
+        lookupStatus: entry?.rollNumber ? "validated" : "idle",
+        lookupMessage: entry?.status
+          ? `Support ${String(entry.status).replace(/^\w/, (match) => match.toUpperCase())}`
+          : "",
+        supportStatus: entry?.status || "",
+        supportRole: entry?.supportRole || "",
+      }))
+    : []
+
+  while (nextEntries.length < minimumCount) {
+    nextEntries.push(createBlankSupporterEntry())
+  }
+
+  return nextEntries
+}
+
+const buildNominationDraftFromPost = (post = {}) => ({
+  pitch: post?.myNomination?.pitch || "",
+  agendaPoints: (post?.myNomination?.agendaPoints || []).join("\n"),
+  cgpa: post?.myNomination?.cgpa ?? "",
+  completedSemesters: post?.myNomination?.completedSemesters ?? "",
+  remainingSemesters: post?.myNomination?.remainingSemesters ?? "",
+  proposerEntries: hydrateSupporterEntries(
+    post?.myNomination?.proposerEntries || [],
+    Number(post?.requirements?.proposersRequired || 0)
+  ),
+  seconderEntries: hydrateSupporterEntries(
+    post?.myNomination?.seconderEntries || [],
+    Number(post?.requirements?.secondersRequired || 0)
+  ),
+  gradeCardUrl: post?.myNomination?.gradeCardUrl || "",
+  manifestoUrl: post?.myNomination?.manifestoUrl || "",
+  porDocumentUrl: post?.myNomination?.porDocumentUrl || "",
 })
 
 const statusToneStyles = {
@@ -578,8 +634,12 @@ const buildNominationPayload = (form) => ({
   cgpa: Number(form.cgpa || 0),
   completedSemesters: Number(form.completedSemesters || 0),
   remainingSemesters: Number(form.remainingSemesters || 0),
-  proposerRollNumbers: splitListInput(form.proposerRollNumbers).map((item) => item.toUpperCase()),
-  seconderRollNumbers: splitListInput(form.seconderRollNumbers).map((item) => item.toUpperCase()),
+  proposerRollNumbers: (form.proposerEntries || [])
+    .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
+    .filter(Boolean),
+  seconderRollNumbers: (form.seconderEntries || [])
+    .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
+    .filter(Boolean),
   gradeCardUrl: form.gradeCardUrl.trim(),
   manifestoUrl: form.manifestoUrl.trim(),
   porDocumentUrl: form.porDocumentUrl.trim(),
@@ -848,10 +908,18 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
   }
 }
 
-const validateNominationForm = (form) => {
+const validateNominationForm = (form, post) => {
   const agendaPoints = splitListInput(form.agendaPoints)
-  const proposerRollNumbers = splitListInput(form.proposerRollNumbers)
-  const seconderRollNumbers = splitListInput(form.seconderRollNumbers)
+  const proposerEntries = form.proposerEntries || []
+  const seconderEntries = form.seconderEntries || []
+  const proposerRollNumbers = proposerEntries
+    .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
+    .filter(Boolean)
+  const seconderRollNumbers = seconderEntries
+    .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
+    .filter(Boolean)
+  const requiredProposers = Number(post?.requirements?.proposersRequired || 0)
+  const requiredSeconders = Number(post?.requirements?.secondersRequired || 0)
 
   if (!Number.isFinite(Number(form.cgpa)) || Number(form.cgpa) < 0 || Number(form.cgpa) > 10) {
     return "CGPA must be between 0 and 10."
@@ -873,6 +941,10 @@ const validateNominationForm = (form) => {
     return "You can add up to 8 agenda points, each with a maximum of 200 characters."
   }
 
+  if (new Set([...proposerRollNumbers, ...seconderRollNumbers]).size !== proposerRollNumbers.length + seconderRollNumbers.length) {
+    return "The same student cannot be added as both proposer and seconder."
+  }
+
   if (
     proposerRollNumbers.length > 20 ||
     seconderRollNumbers.length > 20 ||
@@ -880,6 +952,23 @@ const validateNominationForm = (form) => {
     seconderRollNumbers.some((item) => item.length > 30)
   ) {
     return "Proposer and seconder roll numbers must stay within the allowed limits."
+  }
+
+  if (proposerRollNumbers.length < requiredProposers) {
+    return `Add ${requiredProposers} proposer${requiredProposers === 1 ? "" : "s"} before saving the nomination.`
+  }
+
+  if (seconderRollNumbers.length < requiredSeconders) {
+    return `Add ${requiredSeconders} seconder${requiredSeconders === 1 ? "" : "s"} before saving the nomination.`
+  }
+
+  const invalidSupporter = [...proposerEntries, ...seconderEntries].find((entry) => {
+    const hasValue = Boolean(String(entry?.rollNumber || "").trim())
+    return hasValue && entry?.lookupStatus !== "validated"
+  })
+
+  if (invalidSupporter) {
+    return invalidSupporter.lookupMessage || `Verify roll number ${invalidSupporter.rollNumber} before saving the nomination.`
   }
 
   if (!String(form.gradeCardUrl || "").trim()) {
@@ -962,6 +1051,7 @@ const ElectionsPage = () => {
   const [reviewNomination, setReviewNomination] = useState(null)
   const [nominationFormDrafts, setNominationFormDrafts] = useState({})
   const [nominationContext, setNominationContext] = useState(null)
+  const [supportLookupKey, setSupportLookupKey] = useState("")
   const [voteSelections, setVoteSelections] = useState({})
   const [resultsDrafts, setResultsDrafts] = useState({})
   const [resultsEditorPostId, setResultsEditorPostId] = useState("")
@@ -1051,20 +1141,7 @@ const ElectionsPage = () => {
     const nextVoteSelections = {}
     nextElections.forEach((election) => {
       ;(election.posts || []).forEach((post) => {
-        nextDrafts[`${election.id}:${post.id}`] = post.myNomination
-          ? {
-              pitch: post.myNomination.pitch || "",
-              agendaPoints: (post.myNomination.agendaPoints || []).join("\n"),
-              cgpa: post.myNomination.cgpa ?? "",
-              completedSemesters: post.myNomination.completedSemesters ?? "",
-              remainingSemesters: post.myNomination.remainingSemesters ?? "",
-              proposerRollNumbers: (post.myNomination.proposerRollNumbers || []).join(", "),
-              seconderRollNumbers: (post.myNomination.seconderRollNumbers || []).join(", "),
-              gradeCardUrl: post.myNomination.gradeCardUrl || "",
-              manifestoUrl: post.myNomination.manifestoUrl || "",
-              porDocumentUrl: post.myNomination.porDocumentUrl || "",
-            }
-          : createBlankNominationForm()
+        nextDrafts[`${election.id}:${post.id}`] = buildNominationDraftFromPost(post)
         nextVoteSelections[`${election.id}:${post.id}`] = post.votedCandidateNominationId || ""
       })
     })
@@ -1189,7 +1266,127 @@ const ElectionsPage = () => {
     }))
   }
 
+  const updateSupporterEntry = (supportType, index, patch) => {
+    if (!nominationContext) return
+    const key = `${nominationContext.election.id}:${nominationContext.post.id}`
+    const fieldKey = supportType === "proposer" ? "proposerEntries" : "seconderEntries"
+    updateNominationDraft(key, (currentForm) => {
+      const nextEntries = [...(currentForm[fieldKey] || [])]
+      nextEntries[index] = {
+        ...createBlankSupporterEntry(),
+        ...(nextEntries[index] || {}),
+        ...patch,
+      }
+      return {
+        ...currentForm,
+        [fieldKey]: nextEntries,
+      }
+    })
+  }
+
+  const addSupporterEntry = (supportType) => {
+    if (!nominationContext) return
+    const key = `${nominationContext.election.id}:${nominationContext.post.id}`
+    const fieldKey = supportType === "proposer" ? "proposerEntries" : "seconderEntries"
+    updateNominationDraft(key, (currentForm) => ({
+      ...currentForm,
+      [fieldKey]: [...(currentForm[fieldKey] || []), createBlankSupporterEntry()],
+    }))
+  }
+
+  const removeSupporterEntry = (supportType, index) => {
+    if (!nominationContext) return
+    const fieldKey = supportType === "proposer" ? "proposerEntries" : "seconderEntries"
+    const minimumCount = Number(
+      supportType === "proposer"
+        ? nominationContext?.post?.requirements?.proposersRequired || 0
+        : nominationContext?.post?.requirements?.secondersRequired || 0
+    )
+    const key = `${nominationContext.election.id}:${nominationContext.post.id}`
+    updateNominationDraft(key, (currentForm) => {
+      const nextEntries = [...(currentForm[fieldKey] || [])]
+      nextEntries.splice(index, 1)
+      return {
+        ...currentForm,
+        [fieldKey]: hydrateSupporterEntries(nextEntries, minimumCount),
+      }
+    })
+  }
+
+  const lookupSupporter = async (supportType, index, rawRollNumber = "") => {
+    if (!nominationContext) return
+
+    const electionId = nominationContext.election.id
+    const postId = nominationContext.post.id
+    const formKey = `${electionId}:${postId}`
+    const fieldKey = supportType === "proposer" ? "proposerEntries" : "seconderEntries"
+    const currentEntry = nominationFormDrafts[formKey]?.[fieldKey]?.[index] || createBlankSupporterEntry()
+    const rollNumber = String(rawRollNumber || currentEntry.rollNumber || "").trim().toUpperCase()
+    const requestKey = `${formKey}:${supportType}:${index}`
+
+    if (!rollNumber) {
+      updateSupporterEntry(supportType, index, createBlankSupporterEntry())
+      return
+    }
+
+    setSupportLookupKey(requestKey)
+    try {
+      const response = await electionsApi.lookupNominationSupporter(electionId, postId, {
+        rollNumber,
+        supportType,
+        nominationId: nominationContext.post?.myNomination?.id || "",
+      })
+      const supporter = response?.data || {}
+      updateSupporterEntry(supportType, index, {
+        rollNumber,
+        userId: supporter.userId || "",
+        name: supporter.name || "",
+        email: supporter.email || "",
+        profileImage: supporter.profileImage || "",
+        lookupStatus: "validated",
+        lookupMessage: supporter.currentStatus
+          ? `Support ${String(supporter.currentStatus).replace(/^\w/, (match) => match.toUpperCase())}`
+          : supporter.voterPoolEligible
+            ? "Eligible from voter pool"
+            : supporter.candidatePoolEligible
+              ? "Eligible from candidate pool"
+              : "Eligible",
+        supportStatus: supporter.currentStatus || "",
+        supportRole: supporter.currentRole || supportType,
+      })
+    } catch (err) {
+      updateSupporterEntry(supportType, index, {
+        rollNumber,
+        userId: "",
+        name: "",
+        email: "",
+        profileImage: "",
+        lookupStatus: "invalid",
+        lookupMessage: formatApiErrorMessage(err, "Unable to verify this roll number"),
+        supportStatus: "",
+        supportRole: "",
+      })
+    } finally {
+      setSupportLookupKey("")
+    }
+  }
+
   const openNominationModal = (election, post) => {
+    const key = `${election.id}:${post.id}`
+    setNominationFormDrafts((current) => ({
+      ...current,
+      [key]: current[key] ? {
+        ...current[key],
+        proposerEntries: hydrateSupporterEntries(
+          current[key].proposerEntries,
+          Number(post?.requirements?.proposersRequired || 0)
+        ),
+        seconderEntries: hydrateSupporterEntries(
+          current[key].seconderEntries,
+          Number(post?.requirements?.secondersRequired || 0)
+        ),
+      } : buildNominationDraftFromPost(post),
+    }))
     setNominationContext({ election, post })
   }
 
@@ -1198,7 +1395,8 @@ const ElectionsPage = () => {
     const key = `${nominationContext.election.id}:${nominationContext.post.id}`
     try {
       const validationMessage = validateNominationForm(
-        nominationFormDrafts[key] || createBlankNominationForm()
+        nominationFormDrafts[key] || createBlankNominationForm(),
+        nominationContext.post
       )
       if (validationMessage) {
         toast.error(validationMessage)
@@ -1526,6 +1724,11 @@ const ElectionsPage = () => {
               const key = `${nominationContext.election.id}:${nominationContext.post.id}`
               updateNominationDraft(key, updater)
             }}
+            onSupporterChange={updateSupporterEntry}
+            onLookupSupporter={lookupSupporter}
+            onAddSupporter={addSupporterEntry}
+            onRemoveSupporter={removeSupporterEntry}
+            supportLookupKey={supportLookupKey}
             onClose={() => setNominationContext(null)}
             onSave={saveNomination}
             saving={busyKey === `nomination:${nominationContext?.election?.id}:${nominationContext?.post?.id}`}

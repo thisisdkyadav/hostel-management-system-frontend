@@ -924,8 +924,20 @@ export const AdminNominationReviewModal = ({
               <div style={labelStyle}>Supporting students</div>
               <MetaList
                 items={[
-                  { label: "Proposers", value: (nomination.proposerRollNumbers || []).join(", ") || "—" },
-                  { label: "Seconders", value: (nomination.seconderRollNumbers || []).join(", ") || "—" },
+                  {
+                    label: "Proposers",
+                    value:
+                      (nomination.proposerEntries || [])
+                        .map((item) => `${item.name || item.rollNumber} (${item.status || "pending"})`)
+                        .join(", ") || "—",
+                  },
+                  {
+                    label: "Seconders",
+                    value:
+                      (nomination.seconderEntries || [])
+                        .map((item) => `${item.name || item.rollNumber} (${item.status || "pending"})`)
+                        .join(", ") || "—",
+                  },
                 ]}
                 mutedTextStyle={mutedTextStyle}
               />
@@ -1013,6 +1025,11 @@ export const StudentNominationModal = ({
   post,
   form,
   setForm,
+  onSupporterChange,
+  onLookupSupporter,
+  onAddSupporter,
+  onRemoveSupporter,
+  supportLookupKey,
   onClose,
   onSave,
   saving,
@@ -1080,6 +1097,8 @@ export const StudentNominationModal = ({
   const hasUploadedIdCard = Boolean(idCard.front || idCard.back)
   const reviewNote = String(post?.myNomination?.review?.notes || "").trim()
   const hasReviewNote = reviewNote.length > 0
+  const proposerRequired = Number(post?.requirements?.proposersRequired || 0)
+  const seconderRequired = Number(post?.requirements?.secondersRequired || 0)
 
   if (!post) return null
 
@@ -1250,22 +1269,114 @@ export const StudentNominationModal = ({
           </div>
 
           <div style={detailGridStyle}>
-            <div style={flatPanelStyle}>
-              <label style={labelStyle}>Proposer roll numbers</label>
-              <textarea
-                style={{ ...textareaStyle, minHeight: "56px" }}
-                value={form.proposerRollNumbers}
-                onChange={(event) => updateForm({ proposerRollNumbers: event.target.value })}
-              />
-            </div>
-            <div style={flatPanelStyle}>
-              <label style={labelStyle}>Seconder roll numbers</label>
-              <textarea
-                style={{ ...textareaStyle, minHeight: "56px" }}
-                value={form.seconderRollNumbers}
-                onChange={(event) => updateForm({ seconderRollNumbers: event.target.value })}
-              />
-            </div>
+            {[
+              {
+                supportType: "proposer",
+                label: "Proposers",
+                entries: form.proposerEntries || [],
+                requiredCount: proposerRequired,
+              },
+              {
+                supportType: "seconder",
+                label: "Seconders",
+                entries: form.seconderEntries || [],
+                requiredCount: seconderRequired,
+              },
+            ].map((section) => (
+              <div key={section.supportType} style={flatPanelStyle}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: "8px",
+                    alignItems: "center",
+                    marginBottom: "var(--spacing-2)",
+                  }}
+                >
+                  <div>
+                    <div style={labelStyle}>{section.label}</div>
+                    <div style={mutedTextStyle}>
+                      Required: {section.requiredCount}
+                    </div>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => onAddSupporter?.(section.supportType)}
+                  >
+                    <Plus size={14} /> Add
+                  </Button>
+                </div>
+
+                <div style={{ display: "grid", gap: "10px" }}>
+                  {section.entries.map((entry, index) => {
+                    const rowKey = `${election?.id}:${post?.id}:${section.supportType}:${index}`
+                    const isLookingUp = supportLookupKey === rowKey
+                    return (
+                      <div
+                        key={rowKey}
+                        style={{
+                          border: "1px solid var(--color-border-primary)",
+                          borderRadius: "var(--radius-lg)",
+                          padding: "var(--spacing-3)",
+                          display: "grid",
+                          gap: "8px",
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                          <Input
+                            value={entry.rollNumber || ""}
+                            placeholder={`Roll number ${index + 1}`}
+                            onChange={(event) =>
+                              onSupporterChange?.(section.supportType, index, {
+                                rollNumber: String(event.target.value || "").toUpperCase(),
+                                userId: "",
+                                name: "",
+                                email: "",
+                                profileImage: "",
+                                lookupStatus: "idle",
+                                lookupMessage: "",
+                                supportStatus: "",
+                                supportRole: "",
+                              })
+                            }
+                            onBlur={(event) => onLookupSupporter?.(section.supportType, index, event.target.value)}
+                          />
+                          {section.entries.length > section.requiredCount ? (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => onRemoveSupporter?.(section.supportType, index)}
+                            >
+                              Remove
+                            </Button>
+                          ) : null}
+                        </div>
+
+                        {isLookingUp ? (
+                          <div style={mutedTextStyle}>Checking roll number...</div>
+                        ) : null}
+
+                        {entry.name ? (
+                          <div style={{ display: "grid", gap: "2px" }}>
+                            <div style={{ fontWeight: "var(--font-weight-medium)" }}>{entry.name}</div>
+                            <div style={mutedTextStyle}>
+                              {entry.lookupMessage || "Verified"}
+                            </div>
+                          </div>
+                        ) : null}
+
+                        {!entry.name && entry.lookupStatus === "invalid" ? (
+                          <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-sm)" }}>
+                            {entry.lookupMessage || "Unable to verify this roll number"}
+                          </div>
+                        ) : null}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div style={detailGridStyle}>

@@ -133,7 +133,9 @@ const StudentElectionWorkspace = ({
                 <div style={{ ...mutedTextStyle, maxWidth: "460px" }}>
                   {post.myNomination?.review?.notes
                     ? post.myNomination.review.notes
-                    : `Click row to ${post.myNomination ? "review or update nomination" : "open nomination form"}`}
+                    : post.myNomination?.supporterSummary?.total
+                      ? `${post.myNomination.supporterSummary.accepted || 0}/${post.myNomination.supporterSummary.total || 0} supporter confirmations received`
+                      : `Click row to ${post.myNomination ? "review or update nomination" : "open nomination form"}`}
                 </div>
               </div>
             ),

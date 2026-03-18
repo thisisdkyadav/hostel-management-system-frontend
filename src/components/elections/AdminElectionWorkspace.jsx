@@ -198,6 +198,16 @@ const AdminElectionWorkspace = ({
               ),
             },
             {
+              header: "Supporters",
+              key: "supporterSummary",
+              render: (nomination) => (
+                <span style={mutedTextStyle}>
+                  {nomination.supporterSummary?.accepted || 0} accepted · {nomination.supporterSummary?.pending || 0} pending
+                  {nomination.supporterSummary?.rejected ? ` · ${nomination.supporterSummary.rejected} rejected` : ""}
+                </span>
+              ),
+            },
+            {
               header: "Submitted",
               key: "submittedAt",
               render: (nomination) => formatDateTime(nomination.submittedAt),

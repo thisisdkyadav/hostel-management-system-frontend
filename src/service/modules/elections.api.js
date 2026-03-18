@@ -15,6 +15,9 @@ export const electionsApi = {
 
   getStudentCurrent: () => apiClient.get(`${BASE_PATH}/student/current`),
 
+  lookupNominationSupporter: (electionId, postId, params) =>
+    apiClient.get(`${BASE_PATH}/${electionId}/posts/${postId}/supporters/lookup`, { params }),
+
   upsertNomination: (electionId, postId, payload) =>
     apiClient.post(`${BASE_PATH}/${electionId}/posts/${postId}/nominations`, payload),
 
@@ -29,6 +32,12 @@ export const electionsApi = {
 
   publishResults: (electionId, payload) =>
     apiClient.post(`${BASE_PATH}/${electionId}/results/publish`, payload),
+
+  getSupporterConfirmation: (token) =>
+    apiClient.get(`${BASE_PATH}/supporter-confirmation/${token}`),
+
+  respondToSupporterConfirmation: (token, payload) =>
+    apiClient.post(`${BASE_PATH}/supporter-confirmation/${token}/respond`, payload),
 }
 
 export default electionsApi
