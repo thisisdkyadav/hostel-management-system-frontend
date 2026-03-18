@@ -2,6 +2,15 @@ import { Button, Table } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
 
+const formatVotePercentage = (voteCount, totalVotes) => {
+  const votes = Number(voteCount || 0)
+  const total = Number(totalVotes || 0)
+  if (total <= 0) return "0%"
+
+  const percentage = (votes / total) * 100
+  return percentage >= 10 ? `${percentage.toFixed(1)}%` : `${percentage.toFixed(2)}%`
+}
+
 const StudentElectionWorkspace = ({
   selectedStudentElection,
   openNominationModal,
@@ -237,17 +246,27 @@ const StudentElectionWorkspace = ({
 
     {selectedStudentElection.mode === "results" ? (
       selectedStudentElection.results?.isPublished ? (
-        <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+        <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
           {(selectedStudentElection.results?.posts || []).map((postResult) => {
+            const rankedCandidates = [...(postResult.candidates || [])].sort(
+              (left, right) => Number(right.voteCount || 0) - Number(left.voteCount || 0)
+            )
             const winner =
-              (postResult.candidates || []).find(
+              rankedCandidates.find(
                 (candidate) =>
                   String(candidate.nominationId) ===
                   String(postResult.publishedWinnerNominationId || "")
               ) || null
 
             return (
-              <div key={postResult.postId} style={detailPanelStyle}>
+              <div
+                key={postResult.postId}
+                style={{
+                  ...detailPanelStyle,
+                  gap: "var(--spacing-3)",
+                  padding: "var(--spacing-3)",
+                }}
+              >
                 <div
                   style={{
                     display: "flex",
@@ -259,53 +278,140 @@ const StudentElectionWorkspace = ({
                   <div>
                     <div
                       style={{
+                        fontSize: "var(--font-size-base)",
                         fontWeight: "var(--font-weight-semibold)",
                         color: "var(--color-text-heading)",
                       }}
                     >
                       {postResult.postTitle}
                     </div>
-                    <div style={mutedTextStyle}>{postResult.totalVotes} vote(s)</div>
+                    <div style={mutedTextStyle}>
+                      {postResult.totalVotes} vote(s)
+                      {winner ? ` · Winner: ${winner.candidateName}` : ""}
+                    </div>
                   </div>
                   <StatusPill
                     tone="success"
                     pillBaseStyle={pillBaseStyle}
                     statusToneStyles={statusToneStyles}
                   >
-                    {winner?.candidateName || "Result published"}
+                    {winner?.candidateName || "Published"}
                   </StatusPill>
                 </div>
 
                 <div style={{ display: "grid", gap: "8px" }}>
-                  {(postResult.candidates || []).map((candidate) => (
-                    <div
-                      key={candidate.nominationId}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "var(--spacing-3)",
-                        padding: "var(--spacing-3)",
-                        border: "1px solid var(--color-border-primary)",
-                        borderRadius: "var(--radius-lg)",
-                        backgroundColor:
-                          String(candidate.nominationId) ===
-                          String(postResult.publishedWinnerNominationId || "")
-                            ? "var(--color-success-bg)"
-                            : "var(--color-bg-primary)",
-                      }}
-                    >
-                      <span
+                  {rankedCandidates.map((candidate, index) => {
+                    const isWinner =
+                      String(candidate.nominationId) ===
+                      String(postResult.publishedWinnerNominationId || "")
+                    const percentage = formatVotePercentage(candidate.voteCount, postResult.totalVotes)
+                    const numericPercentage = Number.parseFloat(percentage)
+
+                    return (
+                      <div
+                        key={candidate.nominationId}
                         style={{
-                          fontWeight: "var(--font-weight-medium)",
-                          color: "var(--color-text-heading)",
+                          display: "grid",
+                          gap: "8px",
+                          padding: "12px",
+                          border: "1px solid var(--color-border-primary)",
+                          borderRadius: "var(--radius-lg)",
+                          backgroundColor: isWinner ? "var(--color-success-bg)" : "var(--color-bg-primary)",
                         }}
                       >
-                        {candidate.candidateName}
-                      </span>
-                      <strong style={{ color: "var(--color-text-heading)" }}>{candidate.voteCount}</strong>
-                    </div>
-                  ))}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "var(--spacing-3)",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
+                            <div
+                              style={{
+                                minWidth: "28px",
+                                height: "28px",
+                                borderRadius: "999px",
+                                backgroundColor: isWinner
+                                  ? "var(--color-success)"
+                                  : "var(--color-bg-secondary)",
+                                color: isWinner ? "var(--color-white)" : "var(--color-text-body)",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "var(--font-size-xs)",
+                                fontWeight: "var(--font-weight-semibold)",
+                              }}
+                            >
+                              #{index + 1}
+                            </div>
+                            <div style={{ minWidth: 0 }}>
+                              <div
+                                style={{
+                                  fontWeight: "var(--font-weight-medium)",
+                                  color: "var(--color-text-heading)",
+                                }}
+                              >
+                                {candidate.candidateName}
+                              </div>
+                              <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                              flexWrap: "wrap",
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            {isWinner ? (
+                              <StatusPill
+                                tone="success"
+                                pillBaseStyle={pillBaseStyle}
+                                statusToneStyles={statusToneStyles}
+                              >
+                                Winner
+                              </StatusPill>
+                            ) : null}
+                            <span
+                              style={{
+                                fontWeight: "var(--font-weight-semibold)",
+                                color: "var(--color-text-heading)",
+                              }}
+                            >
+                              {candidate.voteCount} vote(s)
+                            </span>
+                            <span style={mutedTextStyle}>{percentage}</span>
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            height: "8px",
+                            borderRadius: "999px",
+                            backgroundColor: "var(--color-bg-secondary)",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${Math.max(0, Math.min(numericPercentage, 100))}%`,
+                              height: "100%",
+                              borderRadius: "999px",
+                              backgroundColor: isWinner
+                                ? "var(--color-success)"
+                                : "var(--color-primary)",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )
