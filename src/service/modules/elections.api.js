@@ -7,6 +7,8 @@ export const electionsApi = {
 
   getElectionDetail: (id) => apiClient.get(`${BASE_PATH}/${id}`),
 
+  getVotingLiveStats: (id) => apiClient.get(`${BASE_PATH}/${id}/voting-live`),
+
   createElection: (payload) => apiClient.post(BASE_PATH, payload),
 
   updateElection: (id, payload) => apiClient.put(`${BASE_PATH}/${id}`, payload),
@@ -32,6 +34,9 @@ export const electionsApi = {
 
   publishResults: (electionId, payload) =>
     apiClient.post(`${BASE_PATH}/${electionId}/results/publish`, payload),
+
+  sendVotingEmails: (electionId) =>
+    apiClient.post(`${BASE_PATH}/${electionId}/voting-emails/send`, {}),
 
   getSupporterConfirmation: (token) =>
     apiClient.get(`${BASE_PATH}/supporter-confirmation/${token}`),

@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "czero/react"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
+import ConfirmationDialog from "@/components/common/ConfirmationDialog"
 import { EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
 import { useGlobal } from "@/contexts/GlobalProvider"
+import { useSocket } from "@/contexts/SocketProvider"
 import { electionsApi, studentApi } from "@/service"
 import AdminElectionWorkspace from "@/components/elections/AdminElectionWorkspace"
 import StudentElectionWorkspace from "@/components/elections/StudentElectionWorkspace"
@@ -1024,6 +1026,7 @@ const buildResultsDraftMap = (results = {}) =>
 const ElectionsPage = () => {
   const { user } = useAuth()
   const { hostelList = [], fetchHostelList } = useGlobal()
+  const { on: onSocketEvent, isConnected: isSocketConnected } = useSocket()
   const { toast } = useToast()
 
   const isAdminView = user?.role === "Admin" || user?.role === "Super Admin"
@@ -1056,6 +1059,9 @@ const ElectionsPage = () => {
   const [resultsDrafts, setResultsDrafts] = useState({})
   const [resultsEditorPostId, setResultsEditorPostId] = useState("")
   const [busyKey, setBusyKey] = useState("")
+  const [liveVotingStats, setLiveVotingStats] = useState(null)
+  const [loadingVotingStats, setLoadingVotingStats] = useState(false)
+  const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
 
   const normalizedHostels = useMemo(
     () =>
@@ -1124,6 +1130,27 @@ const ElectionsPage = () => {
     }
     const response = await electionsApi.getElectionDetail(electionId)
     setSelectedAdminElection(response?.data || null)
+  }
+
+  const loadVotingLiveStats = async (electionId, { silent = false } = {}) => {
+    if (!electionId) {
+      setLiveVotingStats(null)
+      setLoadingVotingStats(false)
+      return
+    }
+
+    try {
+      setLoadingVotingStats(true)
+      const response = await electionsApi.getVotingLiveStats(electionId)
+      setLiveVotingStats(response?.data || null)
+    } catch (err) {
+      setLiveVotingStats(null)
+      if (!silent) {
+        toast.error(formatApiErrorMessage(err, "Failed to load live voting data"))
+      }
+    } finally {
+      setLoadingVotingStats(false)
+    }
   }
 
   const loadStudentPortal = async () => {
@@ -1198,6 +1225,48 @@ const ElectionsPage = () => {
     }
     setResultsDrafts(buildResultsDraftMap(selectedAdminElection.results))
   }, [selectedAdminElection])
+
+  useEffect(() => {
+    if (!isAdminView) return
+
+    if (selectedAdminElection?.currentStage !== "voting") {
+      setLiveVotingStats(null)
+      setLoadingVotingStats(false)
+      if (adminViewTab === "voting") {
+        setAdminViewTab("posts")
+      }
+      return
+    }
+
+    if (selectedAdminElectionId) {
+      loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
+    }
+  }, [adminViewTab, isAdminView, selectedAdminElection?.currentStage, selectedAdminElectionId])
+
+  useEffect(() => {
+    if (!isAdminView || !selectedAdminElectionId) return undefined
+
+    const cleanupVotingUpdate = onSocketEvent?.("election:voting-live:update", (payload) => {
+      if (String(payload?.electionId || "") !== String(selectedAdminElectionId)) return
+      setLiveVotingStats(payload?.stats || null)
+    })
+
+    const cleanupDispatchUpdate = onSocketEvent?.("election:voting-live:dispatch", (payload) => {
+      if (String(payload?.electionId || "") !== String(selectedAdminElectionId)) return
+      setLiveVotingStats((current) => ({
+        electionId: String(payload?.electionId || selectedAdminElectionId),
+        generatedAt: current?.generatedAt || null,
+        overview: current?.overview || {},
+        posts: current?.posts || [],
+        dispatch: payload?.dispatch || {},
+      }))
+    })
+
+    return () => {
+      cleanupVotingUpdate?.()
+      cleanupDispatchUpdate?.()
+    }
+  }, [isAdminView, onSocketEvent, selectedAdminElectionId])
 
   const openCreateWizard = () => {
     setWizardMode("create")
@@ -1485,6 +1554,37 @@ const ElectionsPage = () => {
     }
   }
 
+  const sendVotingEmails = async () => {
+    if (!selectedAdminElectionId) return
+
+    try {
+      setBusyKey(`voting-email:${selectedAdminElectionId}`)
+      const response = await electionsApi.sendVotingEmails(selectedAdminElectionId)
+      setLiveVotingStats((current) =>
+        current
+          ? {
+              ...current,
+              dispatch: {
+                ...current.dispatch,
+                status: "running",
+                lastTriggeredAt: new Date().toISOString(),
+              },
+            }
+          : current
+      )
+      toast.success(response?.message || "Voting emails queued")
+
+      window.setTimeout(() => {
+        loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
+        loadAdminDetail(selectedAdminElectionId).catch(() => {})
+      }, 1500)
+    } catch (err) {
+      toast.error(formatApiErrorMessage(err, "Failed to send voting emails"))
+    } finally {
+      setBusyKey("")
+    }
+  }
+
   if (loading) {
     return <LoadingState message="Loading elections" description="Preparing the elections workspace..." />
   }
@@ -1580,6 +1680,10 @@ const ElectionsPage = () => {
             pillBaseStyle={pillBaseStyle}
             statusToneStyles={statusToneStyles}
             nominationTabs={nominationTabs}
+            liveVotingStats={liveVotingStats}
+            loadingVotingStats={loadingVotingStats}
+            onSendVotingEmails={() => setShowSendVotingEmailsConfirm(true)}
+            socketConnected={isSocketConnected}
           />
         ) : null}
 
@@ -1746,6 +1850,18 @@ const ElectionsPage = () => {
             statusToneStyles={statusToneStyles}
           />
         </>
+      ) : null}
+
+      {isAdminView ? (
+        <ConfirmationDialog
+          isOpen={showSendVotingEmailsConfirm}
+          onClose={() => setShowSendVotingEmailsConfirm(false)}
+          onConfirm={sendVotingEmails}
+          title="Send Voting List"
+          message="This will send voting ballot emails again to students who are still eligible to vote in this election. Use this only when you intentionally want to resend the voting list."
+          confirmText="Send Again"
+          cancelText="Cancel"
+        />
       ) : null}
     </div>
   )
