@@ -43,6 +43,9 @@ const AdminElectionWorkspace = ({
   loadingVotingStats,
   onSendVotingEmails,
   socketConnected,
+  onOpenCloneElection,
+  canCloneElection,
+  cloneDisabledReason,
 }) => {
   const isVotingStage = selectedAdminElection?.currentStage === "voting"
   const tabs = [
@@ -50,7 +53,7 @@ const AdminElectionWorkspace = ({
     { label: "Nominations", value: "nominations" },
     { label: "Results", value: "results" },
     ...(isVotingStage ? [{ label: "Ongoing Voting", value: "voting" }] : []),
-    { label: "Schedule", value: "schedule" },
+    { label: "Info", value: "info" },
   ]
   const votingDispatch = liveVotingStats?.dispatch || {}
   const votingOverview = liveVotingStats?.overview || {}
@@ -401,57 +404,89 @@ const AdminElectionWorkspace = ({
         </>
       ) : null}
 
-      {adminViewTab === "schedule" ? (
-        <div style={infoGridStyle}>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Announcement</span>
-            <span style={compactStatValueStyle}>
-              {formatDateTime(selectedAdminElection.timeline?.announcementAt)}
-            </span>
+      {adminViewTab === "info" ? (
+        <>
+          <div style={infoGridStyle}>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Announcement</span>
+              <span style={compactStatValueStyle}>
+                {formatDateTime(selectedAdminElection.timeline?.announcementAt)}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Nomination Ends</span>
+              <span style={compactStatValueStyle}>
+                {formatDateTime(selectedAdminElection.timeline?.nominationEndAt)}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Withdrawal Ends</span>
+              <span style={compactStatValueStyle}>
+                {formatDateTime(selectedAdminElection.timeline?.withdrawalEndAt)}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Voting Starts</span>
+              <span style={compactStatValueStyle}>
+                {formatDateTime(selectedAdminElection.timeline?.votingStartAt)}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Voting Ends</span>
+              <span style={compactStatValueStyle}>
+                {formatDateTime(selectedAdminElection.timeline?.votingEndAt)}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Results</span>
+              <span style={compactStatValueStyle}>
+                {formatDateTime(selectedAdminElection.timeline?.resultsAnnouncedAt)}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>CEO</span>
+              <span style={compactStatValueStyle}>
+                {selectedAdminElection.electionCommission?.chiefElectionOfficerRollNumber || "—"}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Officers</span>
+              <span style={compactStatValueStyle}>
+                {(selectedAdminElection.electionCommission?.officerRollNumbers || []).join(", ") || "—"}
+              </span>
+            </div>
           </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Nomination Ends</span>
-            <span style={compactStatValueStyle}>
-              {formatDateTime(selectedAdminElection.timeline?.nominationEndAt)}
-            </span>
+
+          <div
+            style={{
+              border: "1px solid var(--color-border-primary)",
+              borderRadius: "var(--radius-card-sm)",
+              backgroundColor: "var(--color-bg-secondary)",
+              padding: "var(--spacing-3)",
+              display: "grid",
+              gap: "var(--spacing-2)",
+            }}
+          >
+            <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+              Copy Election
+            </div>
+            <div style={mutedTextStyle}>
+              Create a clean copy of this election for mock testing, then adjust voter eligibility in the copied posts.
+            </div>
+            {cloneDisabledReason ? <div style={mutedTextStyle}>{cloneDisabledReason}</div> : null}
+            <div>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={onOpenCloneElection}
+                loading={busyKey === `clone:${selectedAdminElectionId}`}
+                disabled={!canCloneElection || busyKey === `clone:${selectedAdminElectionId}`}
+              >
+                Copy Election
+              </Button>
+            </div>
           </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Withdrawal Ends</span>
-            <span style={compactStatValueStyle}>
-              {formatDateTime(selectedAdminElection.timeline?.withdrawalEndAt)}
-            </span>
-          </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Voting Starts</span>
-            <span style={compactStatValueStyle}>
-              {formatDateTime(selectedAdminElection.timeline?.votingStartAt)}
-            </span>
-          </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Voting Ends</span>
-            <span style={compactStatValueStyle}>
-              {formatDateTime(selectedAdminElection.timeline?.votingEndAt)}
-            </span>
-          </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Results</span>
-            <span style={compactStatValueStyle}>
-              {formatDateTime(selectedAdminElection.timeline?.resultsAnnouncedAt)}
-            </span>
-          </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>CEO</span>
-            <span style={compactStatValueStyle}>
-              {selectedAdminElection.electionCommission?.chiefElectionOfficerRollNumber || "—"}
-            </span>
-          </div>
-          <div style={compactStatStyle}>
-            <span style={compactStatLabelStyle}>Officers</span>
-            <span style={compactStatValueStyle}>
-              {(selectedAdminElection.electionCommission?.officerRollNumbers || []).join(", ") || "—"}
-            </span>
-          </div>
-        </div>
+        </>
       ) : null}
     </>
   )

@@ -110,6 +110,54 @@ export const ElectionHistoryModal = ({
   </Modal>
 )
 
+export const CloneElectionModal = ({
+  isOpen,
+  onClose,
+  titleValue,
+  onTitleChange,
+  onSubmit,
+  loading,
+  mutedTextStyle,
+  errorTextStyle,
+}) => (
+  <Modal
+    isOpen={isOpen}
+    onClose={onClose}
+    title="Copy Election"
+    width={520}
+    footer={
+      <>
+        <Button size="sm" variant="secondary" onClick={onClose} disabled={loading}>
+          Cancel
+        </Button>
+        <Button size="sm" onClick={onSubmit} loading={loading} disabled={!String(titleValue || "").trim()}>
+          Create Copy
+        </Button>
+      </>
+    }
+  >
+    <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+      <div style={mutedTextStyle}>
+        This creates a fresh copy of the current election configuration. Nominations, votes, results, and voting email state are not copied.
+      </div>
+      <div>
+        <div style={{ marginBottom: "6px", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)" }}>
+          New election name
+        </div>
+        <Input
+          value={titleValue}
+          onChange={(event) => onTitleChange(event.target.value)}
+          placeholder="Enter the mock election name"
+          autoFocus
+        />
+        {!String(titleValue || "").trim() ? (
+          <div style={errorTextStyle}>Election name is required.</div>
+        ) : null}
+      </div>
+    </div>
+  </Modal>
+)
+
 export const ElectionWizardModal = ({
   isOpen,
   mode,

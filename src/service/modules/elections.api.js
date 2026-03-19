@@ -11,6 +11,8 @@ export const electionsApi = {
 
   createElection: (payload) => apiClient.post(BASE_PATH, payload),
 
+  cloneElection: (id, payload) => apiClient.post(`${BASE_PATH}/${id}/clone`, payload),
+
   updateElection: (id, payload) => apiClient.put(`${BASE_PATH}/${id}`, payload),
 
   getStudentPortalState: () => apiClient.get(`${BASE_PATH}/student/portal-state`),

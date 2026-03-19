@@ -12,6 +12,7 @@ import AdminElectionWorkspace from "@/components/elections/AdminElectionWorkspac
 import StudentElectionWorkspace from "@/components/elections/StudentElectionWorkspace"
 import {
   ElectionHistoryModal,
+  CloneElectionModal,
   ElectionWizardModal,
   AdminNominationReviewModal,
   StudentNominationModal,
@@ -1062,6 +1063,8 @@ const ElectionsPage = () => {
   const [liveVotingStats, setLiveVotingStats] = useState(null)
   const [loadingVotingStats, setLoadingVotingStats] = useState(false)
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
+  const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
+  const [cloneElectionTitle, setCloneElectionTitle] = useState("")
 
   const normalizedHostels = useMemo(
     () =>
@@ -1100,6 +1103,15 @@ const ElectionsPage = () => {
     () => (selectedAdminElection?.results?.posts || []).find((item) => item.postId === resultsEditorPostId) || null,
     [resultsEditorPostId, selectedAdminElection]
   )
+
+  const cloneElectionDisabledReason = useMemo(() => {
+    if (!selectedAdminElection) return ""
+    return ["voting", "results", "handover", "completed", "cancelled"].includes(selectedAdminElection.currentStage)
+      ? "Copy is only available before voting starts."
+      : ""
+  }, [selectedAdminElection])
+
+  const canCloneElection = Boolean(selectedAdminElection && !cloneElectionDisabledReason)
 
   const loadBatchOptions = async () => {
     try {
@@ -1279,6 +1291,12 @@ const ElectionsPage = () => {
     setWizardMode("edit")
     setWizardForm(buildElectionFormFromDetail(selectedAdminElection))
     setWizardOpen(true)
+  }
+
+  const openCloneElection = () => {
+    if (!selectedAdminElection || !canCloneElection) return
+    setCloneElectionTitle(`${selectedAdminElection.title} Copy`)
+    setCloneElectionOpen(true)
   }
 
   const saveElection = async () => {
@@ -1585,6 +1603,28 @@ const ElectionsPage = () => {
     }
   }
 
+  const cloneElection = async () => {
+    if (!selectedAdminElectionId) return
+
+    try {
+      setBusyKey(`clone:${selectedAdminElectionId}`)
+      const response = await electionsApi.cloneElection(selectedAdminElectionId, {
+        title: cloneElectionTitle.trim(),
+      })
+      toast.success(response?.message || "Election copied")
+      setCloneElectionOpen(false)
+      await loadAdminElections(false)
+      if (response?.data?.id) {
+        setSelectedAdminElectionId(response.data.id)
+        await loadAdminDetail(response.data.id)
+      }
+    } catch (err) {
+      toast.error(formatApiErrorMessage(err, "Failed to copy election"))
+    } finally {
+      setBusyKey("")
+    }
+  }
+
   if (loading) {
     return <LoadingState message="Loading elections" description="Preparing the elections workspace..." />
   }
@@ -1684,6 +1724,9 @@ const ElectionsPage = () => {
             loadingVotingStats={loadingVotingStats}
             onSendVotingEmails={() => setShowSendVotingEmailsConfirm(true)}
             socketConnected={isSocketConnected}
+            onOpenCloneElection={openCloneElection}
+            canCloneElection={canCloneElection}
+            cloneDisabledReason={cloneElectionDisabledReason}
           />
         ) : null}
 
@@ -1808,6 +1851,17 @@ const ElectionsPage = () => {
             formatDateTime={formatDateTime}
             pillBaseStyle={pillBaseStyle}
             statusToneStyles={statusToneStyles}
+          />
+
+          <CloneElectionModal
+            isOpen={cloneElectionOpen}
+            onClose={() => setCloneElectionOpen(false)}
+            titleValue={cloneElectionTitle}
+            onTitleChange={setCloneElectionTitle}
+            onSubmit={cloneElection}
+            loading={busyKey === `clone:${selectedAdminElectionId}`}
+            mutedTextStyle={mutedTextStyle}
+            errorTextStyle={errorTextStyle}
           />
         </>
       ) : null}
