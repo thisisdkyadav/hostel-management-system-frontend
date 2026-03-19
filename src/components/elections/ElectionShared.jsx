@@ -1,9 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "czero/react"
 import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
-import { uploadApi } from "@/service"
+import { electionsApi, uploadApi } from "@/service"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 
@@ -87,11 +87,52 @@ export const ScopeEditor = ({
   errorTextStyle,
   nominationTemplateHeaders,
 }) => {
+  const [studentCount, setStudentCount] = useState(0)
+  const [countLoading, setCountLoading] = useState(false)
+
+  useEffect(() => {
+    let isActive = true
+    const hasSelection =
+      (Array.isArray(scope?.batches) ? scope.batches.length : 0) > 0 ||
+      (Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers.length : 0) > 0
+
+    if (!hasSelection) {
+      setStudentCount(0)
+      setCountLoading(false)
+      return () => {
+        isActive = false
+      }
+    }
+
+    setCountLoading(true)
+    electionsApi
+      .getScopeCount({
+        batches: Array.isArray(scope?.batches) ? scope.batches : [],
+        extraRollNumbers: Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : [],
+      })
+      .then((response) => {
+        if (!isActive) return
+        setStudentCount(Number(response?.data?.count || 0))
+      })
+      .catch(() => {
+        if (!isActive) return
+        setStudentCount(0)
+      })
+      .finally(() => {
+        if (!isActive) return
+        setCountLoading(false)
+      })
+
+    return () => {
+      isActive = false
+    }
+  }, [scope?.batches, scope?.extraRollNumbers])
+
   const toggleBatch = (batch) => {
     const exists = scope.batches.includes(batch)
     onChange({
-      ...scope,
-      batches: exists ? scope.batches.filter((item) => item !== batch) : [...scope.batches, batch],
+      batches: exists ? [] : [batch],
+      extraRollNumbers: [],
     })
   }
 
@@ -109,14 +150,7 @@ export const ScopeEditor = ({
         <div>
           <div style={{ ...labelStyle, marginBottom: "4px" }}>{title}</div>
           <div style={mutedTextStyle}>
-            {(() => {
-              const batches = Array.isArray(scope?.batches) ? scope.batches.length : 0
-              const extra = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers.length : 0
-              if (batches === 0 && extra === 0) return "Not configured"
-              if (batches > 0 && extra > 0) return `${batches} batch(es) + ${extra} CSV student(s)`
-              if (batches > 0) return `${batches} batch(es)`
-              return `${extra} CSV student(s)`
-            })()}
+            {countLoading ? "Counting students..." : `${studentCount} student(s) selected`}
           </div>
         </div>
       </div>
@@ -161,23 +195,14 @@ export const ScopeEditor = ({
               .filter(Boolean)
 
             onChange({
-              ...scope,
-              extraRollNumbers: [...new Set([...(scope.extraRollNumbers || []), ...nextRollNumbers])],
+              batches: [],
+              extraRollNumbers: [...new Set(nextRollNumbers)],
             })
           }}
         />
         {(scope.extraRollNumbers || []).length > 0 ? (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "var(--spacing-3)" }}>
-            {scope.extraRollNumbers.map((rollNumber) => (
-              <StatusPill
-                key={rollNumber}
-                tone="default"
-                pillBaseStyle={pillBaseStyle}
-                statusToneStyles={{ default: { backgroundColor: "var(--color-bg-secondary)", color: "var(--color-text-body)" } }}
-              >
-                {rollNumber}
-              </StatusPill>
-            ))}
+          <div style={{ marginTop: "var(--spacing-3)", ...mutedTextStyle }}>
+            {(scope.extraRollNumbers || []).length} CSV student(s) loaded
           </div>
         ) : null}
         {error ? <div style={errorTextStyle}>{error}</div> : null}

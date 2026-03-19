@@ -125,12 +125,26 @@ const AdminElectionWorkspace = ({
           {
             header: "Candidate Pool",
             key: "candidateEligibility",
-            render: (post) => summarizeScope(post.candidateEligibility),
+            render: (post) => (
+              <div style={{ display: "grid", gap: "2px" }}>
+                <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                  {post.candidateEligibleCount || 0} student(s)
+                </span>
+                <span style={mutedTextStyle}>{summarizeScope(post.candidateEligibility)}</span>
+              </div>
+            ),
           },
           {
             header: "Voter Pool",
             key: "voterEligibility",
-            render: (post) => summarizeScope(post.voterEligibility),
+            render: (post) => (
+              <div style={{ display: "grid", gap: "2px" }}>
+                <span style={{ fontWeight: "var(--font-weight-medium)" }}>
+                  {post.voterEligibleCount || 0} student(s)
+                </span>
+                <span style={mutedTextStyle}>{summarizeScope(post.voterEligibility)}</span>
+              </div>
+            ),
           },
           {
             header: "Requirements",

@@ -9,6 +9,8 @@ export const electionsApi = {
 
   getVotingLiveStats: (id) => apiClient.get(`${BASE_PATH}/${id}/voting-live`),
 
+  getScopeCount: (payload) => apiClient.post(`${BASE_PATH}/scope-count`, payload),
+
   createElection: (payload) => apiClient.post(BASE_PATH, payload),
 
   cloneElection: (id, payload) => apiClient.post(`${BASE_PATH}/${id}/clone`, payload),
