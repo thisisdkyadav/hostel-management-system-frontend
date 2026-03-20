@@ -343,8 +343,6 @@ const createBlankElectionForm = () => ({
 })
 
 const createBlankNominationForm = () => ({
-  pitch: "",
-  agendaPoints: "",
   cgpa: "",
   hasNoActiveBacklogs: false,
   proposerEntries: [],
@@ -392,8 +390,6 @@ const hydrateSupporterEntries = (entries = [], minimumCount = 0) => {
 }
 
 const buildNominationDraftFromPost = (post = {}) => ({
-  pitch: post?.myNomination?.pitch || "",
-  agendaPoints: (post?.myNomination?.agendaPoints || []).join("\n"),
   cgpa: post?.myNomination?.cgpa ?? "",
   hasNoActiveBacklogs: Boolean(post?.myNomination?.hasNoActiveBacklogs),
   proposerEntries: hydrateSupporterEntries(
@@ -637,8 +633,6 @@ const serializeElectionFormForApi = (form) => ({
 })
 
 const buildNominationPayload = (form) => ({
-  pitch: form.pitch.trim(),
-  agendaPoints: splitListInput(form.agendaPoints),
   cgpa: Number(form.cgpa || 0),
   completedSemesters: null,
   remainingSemesters: null,
@@ -908,7 +902,6 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
 }
 
 const validateNominationForm = (form, post) => {
-  const agendaPoints = splitListInput(form.agendaPoints)
   const proposerEntries = form.proposerEntries || []
   const seconderEntries = form.seconderEntries || []
   const proposerRollNumbers = proposerEntries
@@ -926,18 +919,6 @@ const validateNominationForm = (form, post) => {
 
   if (!form.hasNoActiveBacklogs) {
     return "Confirm that you do not have any active backlog before saving the nomination."
-  }
-
-  if (String(form.pitch || "").trim().length > 2000) {
-    return "Pitch cannot exceed 2000 characters."
-  }
-
-  if (String(form.agendaPoints || "").trim().length > 2000) {
-    return "Agenda points cannot exceed 2000 characters."
-  }
-
-  if (agendaPoints.length > 8 || agendaPoints.some((item) => item.length > 2000)) {
-    return "You can add up to 8 agenda points, and the total content must stay within 2000 characters."
   }
 
   if (new Set([...proposerRollNumbers, ...seconderRollNumbers]).size !== proposerRollNumbers.length + seconderRollNumbers.length) {

@@ -990,24 +990,6 @@ export const AdminNominationReviewModal = ({
             </div>
           </div>
 
-          {nomination.pitch ? (
-            <div style={detailPanelStyle}>
-              <div style={labelStyle}>Pitch</div>
-              <div style={{ color: "var(--color-text-body)", lineHeight: 1.6 }}>{nomination.pitch}</div>
-            </div>
-          ) : null}
-
-          {(nomination.agendaPoints || []).length > 0 ? (
-            <div style={detailPanelStyle}>
-              <div style={labelStyle}>Agenda points</div>
-              <ul style={{ margin: 0, paddingLeft: "18px", color: "var(--color-text-body)", lineHeight: 1.7 }}>
-                {nomination.agendaPoints.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
           <div style={detailPanelStyle}>
             <div style={labelStyle}>Review comment</div>
             <textarea
@@ -1304,27 +1286,6 @@ export const StudentNominationModal = ({
                 nomination in this election at a time.
               </span>
             </label>
-          </div>
-
-          <div style={flatPanelStyle}>
-            <label style={labelStyle}>Pitch</label>
-            <textarea
-              style={textareaStyle}
-              value={form.pitch}
-              maxLength={2000}
-              onChange={(event) => updateForm({ pitch: event.target.value })}
-            />
-          </div>
-
-          <div style={flatPanelStyle}>
-            <label style={labelStyle}>Agenda points</label>
-            <textarea
-              style={textareaStyle}
-              value={form.agendaPoints}
-              maxLength={2000}
-              onChange={(event) => updateForm({ agendaPoints: event.target.value })}
-              placeholder="One agenda point per line"
-            />
           </div>
 
           <div style={detailGridStyle}>

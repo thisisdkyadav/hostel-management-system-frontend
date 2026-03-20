@@ -182,11 +182,6 @@ const ElectionBallotPage = () => {
                                 {candidate.candidateRollNumber}
                               </div>
                             ) : null}
-                            {candidate.pitch ? (
-                              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                                {candidate.pitch}
-                              </div>
-                            ) : null}
                           </div>
                         </label>
                       )
