@@ -1027,9 +1027,27 @@ const buildResultsDraftMap = (results = {}) =>
     (results.posts || []).map((post) => [
       String(post.postId),
       {
-        winnerNominationId: post.publishedWinnerIsNota
-          ? "nota"
-          : post.publishedWinnerNominationId || (post.previewWinnerIsNota ? "nota" : post.previewWinnerNominationId || ""),
+        winnerNominationIds:
+          (post.publishedWinnerNominationIds || []).length > 0 || post.publishedWinnerIsNota
+            ? [
+                ...(post.publishedWinnerNominationIds || []),
+                ...(post.publishedWinnerIsNota ? ["nota"] : []),
+              ]
+            : [
+                ...(post.previewWinnerNominationIds || []),
+                ...(post.previewWinnerIsNota &&
+                !(post.previewWinnerNominationIds || []).includes("nota")
+                  ? ["nota"]
+                  : []),
+              ],
+        winnerNominationId:
+          post.publishedWinnerIsNota && !(post.publishedWinnerNominationIds || []).length
+            ? "nota"
+            : post.publishedWinnerNominationId ||
+              (post.previewWinnerIsNota && !(post.previewWinnerNominationIds || []).length
+                ? "nota"
+                : post.previewWinnerNominationId || ""),
+        winnerIsTie: Boolean(post.publishedWinnerIsTie || post.previewWinnerIsTie),
         notes: post.notes || "",
       },
     ])
@@ -1573,7 +1591,9 @@ const ElectionsPage = () => {
     setResultsDrafts((current) => ({
       ...current,
       [postId]: {
+        winnerNominationIds: current[postId]?.winnerNominationIds || [],
         winnerNominationId: current[postId]?.winnerNominationId || "",
+        winnerIsTie: Boolean(current[postId]?.winnerIsTie),
         notes: current[postId]?.notes || "",
         ...patch,
       },
@@ -1588,8 +1608,15 @@ const ElectionsPage = () => {
       const payload = {
         posts: Object.entries(resultsDrafts).map(([postId, draft]) => ({
           postId,
-          winnerNominationId: draft?.winnerNominationId === "nota" ? null : draft?.winnerNominationId || null,
-          winnerIsNota: draft?.winnerNominationId === "nota",
+          winnerNominationId:
+            !draft?.winnerIsTie && draft?.winnerNominationIds?.[0] && draft.winnerNominationIds[0] !== "nota"
+              ? draft.winnerNominationIds[0]
+              : !draft?.winnerIsTie && draft?.winnerNominationId && draft.winnerNominationId !== "nota"
+                ? draft.winnerNominationId
+                : null,
+          winnerNominationIds: Array.isArray(draft?.winnerNominationIds) ? draft.winnerNominationIds : [],
+          winnerIsNota: (Array.isArray(draft?.winnerNominationIds) ? draft.winnerNominationIds : []).includes("nota"),
+          winnerIsTie: Boolean(draft?.winnerIsTie),
           notes: draft?.notes || "",
         })),
       }
@@ -1621,10 +1648,16 @@ const ElectionsPage = () => {
     const rows = (selectedAdminElection.results.posts || []).flatMap((postResult) => {
       const draft = resultsDrafts[String(postResult.postId)] || {}
       return (postResult.candidates || []).map((candidate, index) => {
-        const isSelectedWinner = String(draft.winnerNominationId || "") === String(candidate.nominationId || "")
-        const isPreviewWinner = postResult.previewWinnerIsNota
-          ? candidate.isNota
-          : String(candidate.nominationId || "") === String(postResult.previewWinnerNominationId || "")
+        const selectedWinnerIds = Array.isArray(draft.winnerNominationIds)
+          ? draft.winnerNominationIds
+          : draft.winnerNominationId
+            ? [draft.winnerNominationId]
+            : []
+        const isSelectedWinner = selectedWinnerIds.includes(String(candidate.nominationId || ""))
+        const previewWinnerIds = Array.isArray(postResult.previewWinnerNominationIds)
+          ? postResult.previewWinnerNominationIds.map((value) => String(value))
+          : []
+        const isPreviewWinner = previewWinnerIds.includes(String(candidate.nominationId || ""))
 
         return [
           selectedAdminElection.title,
@@ -1639,6 +1672,7 @@ const ElectionsPage = () => {
           postResult.totalVotes || 0,
           isPreviewWinner ? "YES" : "NO",
           isSelectedWinner ? "YES" : "NO",
+          draft?.winnerIsTie ? "TIE" : "SINGLE",
           draft.notes || "",
         ]
       })
@@ -1657,6 +1691,7 @@ const ElectionsPage = () => {
       "Total Votes",
       "Preview Winner",
       "Selected Winner",
+      "Selected Result Mode",
       "Notes",
     ]
 

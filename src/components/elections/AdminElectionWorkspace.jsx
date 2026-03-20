@@ -20,6 +20,13 @@ const formatVotePercentage = (voteCount, totalVotes) => {
   return percentage >= 10 ? `${percentage.toFixed(1)}%` : `${percentage.toFixed(2)}%`
 }
 
+const getSelectedWinnerIds = (draft = {}) =>
+  Array.isArray(draft?.winnerNominationIds) && draft.winnerNominationIds.length > 0
+    ? draft.winnerNominationIds.map((value) => String(value))
+    : draft?.winnerNominationId
+      ? [String(draft.winnerNominationId)]
+      : []
+
 const AdminElectionWorkspace = ({
   selectedAdminElection,
   selectedAdminElectionId,
@@ -73,11 +80,11 @@ const AdminElectionWorkspace = ({
     totalVotes: resultPosts.reduce((sum, post) => sum + Number(post.totalVotes || 0), 0),
     publishedCount: resultPosts.filter((post) => {
       const draft = resultsDrafts[String(post.postId)] || {}
-      return Boolean(draft.winnerNominationId)
+      return getSelectedWinnerIds(draft).length > 0
     }).length,
     notaCount: resultPosts.filter((post) => {
       const draft = resultsDrafts[String(post.postId)] || {}
-      return String(draft.winnerNominationId || "") === "nota"
+      return getSelectedWinnerIds(draft).includes("nota")
     }).length,
   }
 
@@ -325,10 +332,10 @@ const AdminElectionWorkspace = ({
           <div style={{ display: "grid", gap: "var(--spacing-3)", marginBottom: "var(--spacing-3)" }}>
             {resultPosts.map((postResult) => {
               const draft = resultsDrafts[String(postResult.postId)] || {}
-              const selectedWinner =
-                (postResult.candidates || []).find(
-                  (candidate) => String(candidate.nominationId) === String(draft.winnerNominationId || "")
-                ) || null
+              const selectedWinnerIds = getSelectedWinnerIds(draft)
+              const selectedWinners = (postResult.candidates || []).filter((candidate) =>
+                selectedWinnerIds.includes(String(candidate.nominationId))
+              )
 
               return (
                 <div
@@ -363,21 +370,27 @@ const AdminElectionWorkspace = ({
                     </div>
                     <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                       <StatusPill tone="default" pillBaseStyle={pillBaseStyle} statusToneStyles={statusToneStyles}>
-                        Lead: {postResult.previewWinnerName || "—"}
+                        Lead: {postResult.previewWinnerIsTie
+                          ? `Tie · ${(postResult.previewWinnerNames || []).join(", ")}`
+                          : postResult.previewWinnerName || "—"}
                       </StatusPill>
                       <StatusPill
-                        tone={String(draft.winnerNominationId || "") === "nota" ? "warning" : "success"}
+                        tone={selectedWinnerIds.includes("nota") ? "warning" : "success"}
                         pillBaseStyle={pillBaseStyle}
                         statusToneStyles={statusToneStyles}
                       >
-                        Selected: {selectedWinner?.candidateName || "Not selected"}
+                        Selected: {selectedWinners.length === 0
+                          ? "Not selected"
+                          : draft?.winnerIsTie
+                            ? `Tie · ${selectedWinners.map((item) => item.candidateName).join(", ")}`
+                            : selectedWinners[0]?.candidateName}
                       </StatusPill>
                     </div>
                   </div>
 
                   <div style={{ display: "grid", gap: "8px" }}>
                     {(postResult.candidates || []).map((candidate) => {
-                      const isSelected = String(draft.winnerNominationId || "") === String(candidate.nominationId || "")
+                      const isSelected = selectedWinnerIds.includes(String(candidate.nominationId || ""))
                       return (
                         <div
                           key={candidate.nominationId}
@@ -432,7 +445,10 @@ const AdminElectionWorkspace = ({
               {
                 header: "Leading Candidate",
                 key: "previewWinnerName",
-                render: (postResult) => postResult.previewWinnerName || "—",
+                render: (postResult) =>
+                  postResult.previewWinnerIsTie
+                    ? `Tie · ${(postResult.previewWinnerNames || []).join(", ")}`
+                    : postResult.previewWinnerName || "—",
               },
               {
                 header: "Total Votes",
@@ -443,12 +459,14 @@ const AdminElectionWorkspace = ({
                 key: "publishedWinner",
                 render: (postResult) => {
                   const draft = resultsDrafts[String(postResult.postId)] || {}
-                  const selectedWinner =
-                    (postResult.candidates || []).find(
-                      (candidate) => String(candidate.nominationId) === String(draft.winnerNominationId || "")
-                    ) || null
+                  const selectedWinnerIds = getSelectedWinnerIds(draft)
+                  const selectedWinners = (postResult.candidates || []).filter((candidate) =>
+                    selectedWinnerIds.includes(String(candidate.nominationId))
+                  )
 
-                  return selectedWinner?.candidateName || "Not selected"
+                  if (selectedWinners.length === 0) return "Not selected"
+                  if (draft?.winnerIsTie) return `Tie · ${selectedWinners.map((item) => item.candidateName).join(", ")}`
+                  return selectedWinners[0]?.candidateName || "Not selected"
                 },
               },
               {

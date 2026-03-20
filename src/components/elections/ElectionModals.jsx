@@ -1521,9 +1521,60 @@ export const AdminResultsEditModal = ({
           </div>
         ) : (
           <>
+            <div style={{ ...flatPanelStyle, display: "grid", gap: "10px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  color: "var(--color-text-body)",
+                  fontWeight: "var(--font-weight-medium)",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={Boolean(draft?.winnerIsTie)}
+                  onChange={(event) => {
+                    const nextIsTie = event.target.checked
+                    const selectedWinnerIds = Array.isArray(draft?.winnerNominationIds)
+                      ? draft.winnerNominationIds.map((value) => String(value))
+                      : draft?.winnerNominationId
+                        ? [String(draft.winnerNominationId)]
+                        : []
+
+                    if (!nextIsTie) {
+                      const nextSingleWinnerId = selectedWinnerIds[0] || ""
+                      onChange({
+                        winnerIsTie: false,
+                        winnerNominationIds: nextSingleWinnerId ? [nextSingleWinnerId] : [],
+                        winnerNominationId: nextSingleWinnerId,
+                      })
+                      return
+                    }
+
+                    onChange({
+                      winnerIsTie: true,
+                      winnerNominationIds: selectedWinnerIds,
+                      winnerNominationId: selectedWinnerIds[0] || "",
+                    })
+                  }}
+                />
+                Publish this post as a tie
+              </label>
+              <div style={mutedTextStyle}>
+                Turn this on to select multiple tied winners for the published result. Leave it off to publish a
+                single winner.
+              </div>
+            </div>
+
             <div style={{ display: "grid", gap: "12px" }}>
               {(postResult.candidates || []).map((candidate) => {
-                const checked = String(draft?.winnerNominationId || "") === String(candidate.nominationId)
+                const selectedWinnerIds = Array.isArray(draft?.winnerNominationIds)
+                  ? draft.winnerNominationIds.map((value) => String(value))
+                  : draft?.winnerNominationId
+                    ? [String(draft.winnerNominationId)]
+                    : []
+                const checked = selectedWinnerIds.includes(String(candidate.nominationId))
                 return (
                   <label
                     key={candidate.nominationId}
@@ -1541,10 +1592,26 @@ export const AdminResultsEditModal = ({
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)" }}>
                       <input
-                        type="radio"
+                        type={draft?.winnerIsTie ? "checkbox" : "radio"}
                         name={`winner-${postResult.postId}`}
                         checked={checked}
-                        onChange={() => onChange({ winnerNominationId: candidate.nominationId })}
+                        onChange={() => {
+                          if (draft?.winnerIsTie) {
+                            const nextIds = checked
+                              ? selectedWinnerIds.filter((value) => value !== String(candidate.nominationId))
+                              : [...selectedWinnerIds, String(candidate.nominationId)]
+                            onChange({
+                              winnerNominationIds: nextIds,
+                              winnerNominationId: nextIds[0] || "",
+                            })
+                            return
+                          }
+
+                          onChange({
+                            winnerNominationIds: [String(candidate.nominationId)],
+                            winnerNominationId: String(candidate.nominationId),
+                          })
+                        }}
                       />
                       <div style={{ display: "grid", gap: "4px" }}>
                         <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
@@ -1560,6 +1627,10 @@ export const AdminResultsEditModal = ({
                 )
               })}
             </div>
+
+            {draft?.winnerIsTie && (draft?.winnerNominationIds || []).length < 2 ? (
+              <div style={mutedTextStyle}>Select at least two options to publish this post as a tie.</div>
+            ) : null}
 
             <div style={flatPanelStyle}>
               <label style={labelStyle}>Notes</label>

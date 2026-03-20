@@ -158,14 +158,10 @@ const StudentElectionWorkspace = ({
             const rankedCandidates = [...(postResult.candidates || [])].sort(
               (left, right) => Number(right.voteCount || 0) - Number(left.voteCount || 0)
             )
-            const winner =
-              rankedCandidates.find(
-                (candidate) =>
-                  postResult.publishedWinnerIsNota
-                    ? candidate.isNota
-                    : String(candidate.nominationId) ===
-                      String(postResult.publishedWinnerNominationId || "")
-              ) || null
+            const winnerIds = new Set((postResult.publishedWinnerNominationIds || []).map((value) => String(value)))
+            const winners = rankedCandidates.filter((candidate) =>
+              winnerIds.has(String(candidate.nominationId))
+            )
 
             return (
               <div
@@ -196,7 +192,9 @@ const StudentElectionWorkspace = ({
                     </div>
                     <div style={mutedTextStyle}>
                       {postResult.totalVotes} vote(s)
-                      {winner ? ` · Winner: ${winner.candidateName}` : ""}
+                      {winners.length > 0
+                        ? ` · ${postResult.publishedWinnerIsTie ? "Tie" : "Winner"}: ${winners.map((item) => item.candidateName).join(", ")}`
+                        : ""}
                     </div>
                   </div>
                   <StatusPill
@@ -204,17 +202,17 @@ const StudentElectionWorkspace = ({
                     pillBaseStyle={pillBaseStyle}
                     statusToneStyles={statusToneStyles}
                   >
-                    {winner?.candidateName || "Published"}
+                    {winners.length > 0
+                      ? postResult.publishedWinnerIsTie
+                        ? "Tie Published"
+                        : winners[0]?.candidateName
+                      : "Published"}
                   </StatusPill>
                 </div>
 
                 <div style={{ display: "grid", gap: "8px" }}>
                   {rankedCandidates.map((candidate, index) => {
-                    const isWinner =
-                      postResult.publishedWinnerIsNota
-                        ? candidate.isNota
-                        : String(candidate.nominationId) ===
-                          String(postResult.publishedWinnerNominationId || "")
+                    const isWinner = winnerIds.has(String(candidate.nominationId))
                     const percentage = formatVotePercentage(candidate.voteCount, postResult.totalVotes)
                     const numericPercentage = Number.parseFloat(percentage)
 
