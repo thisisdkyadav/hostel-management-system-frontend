@@ -391,6 +391,34 @@ export const adminApi = {
       .then(unwrapStandardResponse)
   },
 
+  // ==================== Student Groups Management ====================
+
+  /**
+   * Get student groups configuration
+   */
+  getStudentGroups: () => {
+    return apiClient.get("/config/studentGroups")
+  },
+
+  /**
+   * Update student groups configuration
+   * @param {Array} studentGroups - Flat list of student groups
+   */
+  updateStudentGroups: (studentGroups) => {
+    return apiClient.put("/config/studentGroups", { value: studentGroups })
+  },
+
+  /**
+   * Rename a student group
+   * @param {string} oldName - Old group name
+   * @param {string} newName - New group name
+   */
+  renameStudentGroup: (oldName, newName) => {
+    return apiClient
+      .put("/students/profiles-admin/groups/rename", { oldName, newName })
+      .then(unwrapStandardResponse)
+  },
+
   // ==================== Registered Students Management ====================
 
   /**

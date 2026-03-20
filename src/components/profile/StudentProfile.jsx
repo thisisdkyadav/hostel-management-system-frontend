@@ -68,6 +68,9 @@ const StudentProfile = ({ user }) => {
   }
 
   const academicSubtitle = [studentData.department, studentData.degree, studentData.batch].filter(Boolean).join(" | ")
+  const groupsLabel = Array.isArray(studentData.groups) && studentData.groups.length > 0
+    ? studentData.groups.join(", ")
+    : ""
 
   return (
     <div>
@@ -93,6 +96,7 @@ const StudentProfile = ({ user }) => {
             {studentData.department && <ProfileInfo label="Department" value={studentData.department} icon={FiBook} />}
             <ProfileInfo label="Degree" value={studentData.degree} icon={FiBookmark} />
             {studentData.batch && <ProfileInfo label="Batch" value={studentData.batch} icon={FiBookmark} />}
+            {groupsLabel && <ProfileInfo label="Groups" value={groupsLabel} icon={FiUser} />}
             {/* {studentData.degree && <ProfileInfo label="Year" value={studentData.year} icon={FiUser} />} */}
           </ProfileCard>
           <ProfileCard title="Family Members">

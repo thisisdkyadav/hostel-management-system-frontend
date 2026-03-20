@@ -22,6 +22,7 @@ const SettingsPage = () => {
     degrees: false,
     departments: false,
     studentBatches: false,
+    studentGroups: false,
     registeredStudents: false,
     academicHolidays: false,
     systemSettings: false,
@@ -31,6 +32,7 @@ const SettingsPage = () => {
   const [degrees, setDegrees] = useState([])
   const [departments, setDepartments] = useState([])
   const [studentBatches, setStudentBatches] = useState({})
+  const [studentGroups, setStudentGroups] = useState([])
   const [registeredStudents, setRegisteredStudents] = useState({})
   const [academicHolidays, setAcademicHolidays] = useState({})
   const [systemSettings, setSystemSettings] = useState({})
@@ -40,6 +42,7 @@ const SettingsPage = () => {
     degrees: null,
     departments: null,
     studentBatches: null,
+    studentGroups: null,
     registeredStudents: null,
     academicHolidays: null,
     systemSettings: null,
@@ -50,6 +53,7 @@ const SettingsPage = () => {
     "degrees",
     "departments",
     "studentBatches",
+    "studentGroups",
     "registeredStudents",
     "academicHolidays",
     "systemSettings",
@@ -121,6 +125,8 @@ const SettingsPage = () => {
       if (Object.keys(studentBatches).length === 0) {
         fetchStudentBatches()
       }
+    } else if (activeTab === "studentGroups" && studentGroups.length === 0) {
+      fetchStudentGroups()
     } else if (activeTab === "registeredStudents") {
       if (degrees.length === 0) {
         fetchDegrees()
@@ -261,6 +267,23 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, academicHolidays: false }))
+    }
+  }
+
+  const fetchStudentGroups = async () => {
+    setLoading((prev) => ({ ...prev, studentGroups: true }))
+    setError((prev) => ({ ...prev, studentGroups: null }))
+    try {
+      const response = await adminApi.getStudentGroups()
+      setStudentGroups(response.value || [])
+    } catch (err) {
+      console.error("Error fetching student groups:", err)
+      setError((prev) => ({
+        ...prev,
+        studentGroups: "Failed to load student groups. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, studentGroups: false }))
     }
   }
 
@@ -481,6 +504,48 @@ const SettingsPage = () => {
     }
   }
 
+  const handleRenameStudentGroup = async (oldName, newName) => {
+    if (!canRenameInTab("studentGroups")) {
+      toast.error("You do not have permission to rename student group values.")
+      return false
+    }
+
+    try {
+      await adminApi.renameStudentGroup(oldName, newName)
+
+      setStudentGroups((prev) => prev.map((group) => (group === oldName ? newName : group)))
+      toast.success(`Group "${oldName}" has been renamed to "${newName}"`)
+      return true
+    } catch (err) {
+      console.error("Error renaming group:", err)
+      toast.error(`Failed to rename group: ${err.message || "Unknown error"}`)
+      throw err
+    }
+  }
+
+  const handleUpdateStudentGroups = async (updatedStudentGroups) => {
+    if (!canUpdateTab("studentGroups")) {
+      toast.error("You do not have permission to update student groups.")
+      return
+    }
+
+    const confirmUpdate = window.confirm("Are you sure you want to update student groups?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, studentGroups: true }))
+    try {
+      const response = await adminApi.updateStudentGroups(updatedStudentGroups)
+      setStudentGroups(response.configuration.value || [])
+      setSuccessMessage(`Student groups updated successfully on ${new Date(response.configuration?.lastUpdated || Date.now()).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating student groups:", err)
+      toast.error("An error occurred while updating student groups. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, studentGroups: false }))
+    }
+  }
+
   const handleUpdateAcademicHolidays = async (updatedAcademicHolidays) => {
     if (!canUpdateTab("academicHolidays")) {
       toast.error("You do not have permission to update academic holidays.")
@@ -557,6 +622,12 @@ const SettingsPage = () => {
                 <button onClick={() => handleTabChange("studentBatches")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentBatches" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiUsers className="mr-2 h-5 w-5" />
                   Batches
+                </button>
+              </li>
+              <li className="mr-2">
+                <button onClick={() => handleTabChange("studentGroups")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "studentGroups" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                  <HiUsers className="mr-2 h-5 w-5" />
+                  Groups
                 </button>
               </li>
               <li className="mr-2">
@@ -679,6 +750,36 @@ const SettingsPage = () => {
                       onUpdate={handleUpdateStudentBatches}
                       onRename={handleRenameStudentBatch}
                       isLoading={loading.studentBatches}
+                    />
+                  )}
+                </>
+              )}
+
+              {activeTab === "studentGroups" && (
+                <>
+                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
+                    <div className="flex-shrink-0 mt-0.5 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm">Manage reusable student groups that are independent of degree, department, and batch. Students can belong to multiple groups, and deleting a group here removes it from student profiles as well.</p>
+                  </div>
+
+                  {loading.studentGroups && studentGroups.length === 0 ? (
+                    <div className="flex justify-center py-6">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
+                    </div>
+                  ) : (
+                    <ConfigListManager
+                      items={studentGroups}
+                      onUpdate={handleUpdateStudentGroups}
+                      onRename={handleRenameStudentGroup}
+                      isLoading={loading.studentGroups}
+                      title="Student Group Management"
+                      description="Create, rename, or delete direct student groups for clubs, cohorts, committees, or any other grouping that is not tied to academics."
+                      itemLabel="Group"
+                      placeholder="Enter group name (e.g., Placement Team, Hostel Council, NSS)"
                     />
                   )}
                 </>

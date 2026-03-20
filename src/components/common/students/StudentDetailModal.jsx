@@ -203,6 +203,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         department: selectedStudent.department || "",
         degree: selectedStudent.degree || "",
         batch: selectedStudent.batch || "",
+        groups: Array.isArray(selectedStudent.groups) ? selectedStudent.groups : [],
         year: selectedStudent.year || "",
         admissionDate: selectedStudent.admissionDate || "",
         hostel: selectedStudent.hostel || "",
@@ -392,6 +393,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Batch:</span>
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.batch || "N/A"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
+                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Groups:</span>
+                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", textAlign: "right" }}>
+                      {Array.isArray(studentDetails.groups) && studentDetails.groups.length > 0 ? studentDetails.groups.join(", ") : "N/A"}
+                    </span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>Year:</span>

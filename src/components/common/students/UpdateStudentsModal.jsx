@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react"
-import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate, FaHome } from "react-icons/fa"
+import { FaFileUpload, FaCheck, FaTimes, FaFileDownload, FaUser, FaHeartbeat, FaUsers, FaPlus, FaTrash, FaUserGraduate, FaHome, FaSearch } from "react-icons/fa"
 import Papa from "papaparse"
 import ToggleButtonGroup from "../../common/ToggleButtonGroup"
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
@@ -199,6 +199,26 @@ const downloadCSV = (rows, filenameBase) => {
   return true
 }
 
+const downloadRollNumberCSV = (rollNumbers = [], filenameBase) => {
+  if (!Array.isArray(rollNumbers) || rollNumbers.length === 0) return false
+
+  const csvContent = [
+    "rollNumber",
+    ...rollNumbers.map((rollNumber) => escapeCSV(rollNumber)),
+  ].join("\n")
+
+  const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.setAttribute("download", `${filenameBase}_${new Date().toISOString().split("T")[0]}.csv`)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+  return true
+}
+
 const uniqueNonEmptyValues = (values = []) => {
   const seen = new Set()
   const unique = []
@@ -236,6 +256,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [uploadStatus, setUploadStatus] = useState("")
   const [statusData, setStatusData] = useState([])
   const [selectedStatus, setSelectedStatus] = useState("Active")
+  const [rollNumberCheckData, setRollNumberCheckData] = useState([])
+  const [rollNumberCheckSummary, setRollNumberCheckSummary] = useState(null)
   const [dayScholarData, setDayScholarData] = useState([])
   const [dayScholarMode, setDayScholarMode] = useState("add")
   const [batchAssignmentData, setBatchAssignmentData] = useState([])
@@ -247,6 +269,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [selectedBatchDepartment, setSelectedBatchDepartment] = useState("")
   const [selectedBatch, setSelectedBatch] = useState("")
   const [availableBatches, setAvailableBatches] = useState([])
+  const [groupAssignmentData, setGroupAssignmentData] = useState([])
+  const [groupSelectionMode, setGroupSelectionMode] = useState("csv")
+  const [groupAssignmentMode, setGroupAssignmentMode] = useState("add")
+  const [groupRangeStart, setGroupRangeStart] = useState("")
+  const [groupRangeEnd, setGroupRangeEnd] = useState("")
+  const [availableStudentGroups, setAvailableStudentGroups] = useState([])
+  const [selectedGroups, setSelectedGroups] = useState([])
   const [batchOptionsLoading, setBatchOptionsLoading] = useState(false)
   const [validDegrees, setValidDegrees] = useState([])
   const [validDepartments, setValidDepartments] = useState([])
@@ -337,7 +366,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
   // Fetch valid degrees and departments from the config API
   useEffect(() => {
-    if (isOpen && (activeTab === "basic" || activeTab === "batch")) {
+    if (isOpen && (activeTab === "basic" || activeTab === "batch" || activeTab === "groups")) {
       fetchConfigData()
     }
   }, [isOpen, activeTab])
@@ -398,15 +427,29 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     }
   }, [on])
 
+  useEffect(() => {
+    if (availableStudentGroups.length === 0) {
+      setSelectedGroups([])
+      return
+    }
+
+    setSelectedGroups((prev) => prev.filter((group) => availableStudentGroups.includes(group)))
+  }, [availableStudentGroups])
+
   const fetchConfigData = async () => {
     setConfigLoading(true)
     try {
-      const [degreesResponse, departmentsResponse] = await Promise.all([adminApi.getDegrees(), adminApi.getDepartments()])
+      const [degreesResponse, departmentsResponse, studentGroupsResponse] = await Promise.all([
+        adminApi.getDegrees(),
+        adminApi.getDepartments(),
+        adminApi.getStudentGroups(),
+      ])
       setValidDegrees(uniqueNonEmptyValues(degreesResponse.value || []))
       setValidDepartments(uniqueNonEmptyValues(departmentsResponse.value || []))
+      setAvailableStudentGroups(uniqueNonEmptyValues(studentGroupsResponse.value || []))
     } catch (err) {
       console.error("Error fetching config data:", err)
-      toast.error("Failed to load degree and department options. Some validations may not work properly.")
+      toast.error("Failed to load degree, department, or group options. Some validations may not work properly.")
     } finally {
       setConfigLoading(false)
     }
@@ -656,6 +699,29 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setUploadStatus(`${data.length} students will have their status updated to ${selectedStatus}`)
   }
 
+  const handleRollNumberCheckDataParsed = (data) => {
+    const normalizedRollNumbers = (Array.isArray(data) ? data : [])
+      .map((item) => normalizeRollNumber(item?.rollNumber))
+      .filter(Boolean)
+
+    if (normalizedRollNumbers.length === 0) {
+      setError("All entries must have a rollNumber field")
+      setRollNumberCheckData([])
+      setRollNumberCheckSummary(null)
+      return
+    }
+
+    const uniqueRollNumbers = [...new Set(normalizedRollNumbers)]
+    const duplicateCount = normalizedRollNumbers.length - uniqueRollNumbers.length
+
+    setError("")
+    setRollNumberCheckData(uniqueRollNumbers.map((rollNumber) => ({ rollNumber })))
+    setRollNumberCheckSummary(null)
+    setUploadStatus(
+      `${uniqueRollNumbers.length} unique roll numbers ready to check${duplicateCount > 0 ? ` (${duplicateCount} duplicate entries removed)` : ""}`
+    )
+  }
+
   const handleDayScholarDataParsed = (data) => {
     // Validate required fields
     const invalidEntries = data.filter((item) => !item.rollNumber)
@@ -727,6 +793,65 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     }
   }
 
+  const handleGroupDataParsed = (data) => {
+    const invalidEntries = data.filter((item) => !item.rollNumber)
+
+    if (invalidEntries.length > 0) {
+      setError("All entries must have a rollNumber field")
+      return
+    }
+
+    setError("")
+    const normalizedData = data.map((item) => ({
+      ...item,
+      rollNumber: normalizeString(item.rollNumber).toUpperCase(),
+    }))
+    setGroupAssignmentData(normalizedData)
+    setUploadStatus(`${normalizedData.length} students ready for group assignment`)
+    toast.success(`${normalizedData.length} students ready for group assignment`)
+  }
+
+  const handleGroupSelectionModeChange = (nextMode) => {
+    setGroupSelectionMode(nextMode)
+    setGroupAssignmentData([])
+    setGroupRangeStart("")
+    setGroupRangeEnd("")
+    setUploadStatus("")
+    setError("")
+  }
+
+  const handleGroupRangeChange = (field, value) => {
+    const normalizedValue = normalizeString(value).replace(/\s+/g, "")
+
+    if (field === "start") {
+      setGroupRangeStart(normalizedValue)
+    } else {
+      setGroupRangeEnd(normalizedValue)
+    }
+
+    const nextStart = field === "start" ? normalizedValue : groupRangeStart
+    const nextEnd = field === "end" ? normalizedValue : groupRangeEnd
+    if (nextStart && nextEnd) {
+      setUploadStatus(`Numeric roll number range ${nextStart} to ${nextEnd} is ready for group assignment`)
+      setError("")
+    } else {
+      setUploadStatus("")
+    }
+  }
+
+  const handleGroupToggle = (event) => {
+    const { value, checked } = event.target
+
+    setSelectedGroups((prev) => {
+      if (checked) {
+        return uniqueNonEmptyValues([...prev, value])
+      }
+
+      return prev.filter((group) => group !== value)
+    })
+    setError("")
+  }
+
   const handleUpdate = async () => {
     if (activeTab === "basic" && parsedData.length === 0) {
       setError("No data to update")
@@ -745,6 +870,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     if (activeTab === "status" && statusData.length === 0) {
       setError("No students selected for status update")
+      return
+    }
+
+    if (activeTab === "rollCheck" && rollNumberCheckData.length === 0) {
+      setError("No roll numbers selected for checking")
       return
     }
 
@@ -775,6 +905,33 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       }
 
       if (BigInt(batchRangeStart) > BigInt(batchRangeEnd)) {
+        setError("Range start must be less than or equal to range end")
+        return
+      }
+    }
+
+    if (activeTab === "groups" && selectedGroups.length === 0) {
+      setError("Select at least one group before confirming the update")
+      return
+    }
+
+    if (activeTab === "groups" && groupSelectionMode === "csv" && groupAssignmentData.length === 0) {
+      setError("No students selected for group assignment")
+      return
+    }
+
+    if (activeTab === "groups" && groupSelectionMode === "range") {
+      if (!groupRangeStart || !groupRangeEnd) {
+        setError("Provide both range start and range end before confirming the update")
+        return
+      }
+
+      if (!/^\d+$/.test(groupRangeStart) || !/^\d+$/.test(groupRangeEnd)) {
+        setError("Range mode supports only purely numeric roll numbers")
+        return
+      }
+
+      if (BigInt(groupRangeStart) > BigInt(groupRangeEnd)) {
         setError("Range start must be less than or equal to range end")
         return
       }
@@ -854,6 +1011,19 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         // Use the adminApi to update student statuses
         const rollNumbers = statusData.map((student) => student.rollNumber)
         isSuccess = await adminApi.bulkUpdateStudentsStatus(rollNumbers, selectedStatus)
+      } else if (activeTab === "rollCheck") {
+        const response = await studentApi.checkMissingRollNumbers(
+          rollNumberCheckData.map((student) => student.rollNumber)
+        )
+        setRollNumberCheckSummary(response)
+        setError("")
+
+        if ((response?.missingCount || 0) > 0) {
+          toast.success(`Found ${response.missingCount} missing roll number${response.missingCount === 1 ? "" : "s"}.`)
+        } else {
+          toast.success("All uploaded roll numbers exist in the system.")
+        }
+        return
       } else if (activeTab === "dayScholar") {
         // Format day scholar data for the API
         const formattedDayScholarData = {}
@@ -911,6 +1081,32 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             : ""
           toast.success(`Successfully assigned ${matchedCount} student${matchedCount === 1 ? "" : "s"} to ${selectedBatch} using ${assignmentSummary}.${replaceSummary}`)
         }
+      } else if (activeTab === "groups") {
+        const response = await studentApi.bulkUpdateStudentGroups({
+          groupNames: selectedGroups,
+          assignmentMode: groupAssignmentMode,
+          ...(groupSelectionMode === "csv"
+            ? { rollNumbers: groupAssignmentData.map((student) => student.rollNumber) }
+            : { rollNumberRange: { start: groupRangeStart, end: groupRangeEnd } }),
+        })
+        isSuccess = true
+
+        const unsuccessfulCount = Array.isArray(response?.unsuccessfulRollNumbers)
+          ? response.unsuccessfulRollNumbers.length
+          : 0
+        const matchedCount = response?.matchedCount || response?.updatedCount || 0
+        const actionLabel = groupAssignmentMode === "add"
+          ? "added to"
+          : groupAssignmentMode === "remove"
+            ? "removed from"
+            : "updated with"
+        const groupLabel = selectedGroups.join(", ")
+
+        if (unsuccessfulCount > 0) {
+          toast.success(`Updated ${response.updatedCount || 0} students. ${unsuccessfulCount} roll numbers were not found.`)
+        } else {
+          toast.success(`Successfully ${actionLabel} ${groupLabel} for ${matchedCount} student${matchedCount === 1 ? "" : "s"}.`)
+        }
       }
 
       if (isSuccess) {
@@ -950,6 +1146,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setHealthData([])
     setFamilyData([])
     setStatusData([])
+    setRollNumberCheckData([])
+    setRollNumberCheckSummary(null)
     setDayScholarData([])
     setBatchAssignmentData([])
     setBatchSelectionMode("csv")
@@ -960,6 +1158,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setSelectedBatchDepartment("")
     setSelectedBatch("")
     setAvailableBatches([])
+    setGroupAssignmentData([])
+    setGroupSelectionMode("csv")
+    setGroupAssignmentMode("add")
+    setGroupRangeStart("")
+    setGroupRangeEnd("")
+    setSelectedGroups([])
     setUploadStatus("")
     setError("")
     setStep(1)
@@ -999,9 +1203,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const tabs = [
     { id: "basic", name: "Basic Details", icon: <FaUser /> },
     { id: "batch", name: "Batch Assignment", icon: <FaUsers /> },
+    { id: "groups", name: "Groups", icon: <FaUsers /> },
     { id: "health", name: "Health Info", icon: <FaHeartbeat /> },
     { id: "family", name: "Family Members", icon: <FaUsers /> },
     { id: "status", name: "Status Update", icon: <FaUserGraduate /> },
+    { id: "rollCheck", name: "Check Roll Numbers", icon: <FaSearch /> },
     { id: "dayScholar", name: "Day Scholar", icon: <FaHome /> },
   ]
 
@@ -1584,6 +1790,128 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     )
   }
 
+  const RollNumberCheckTab = () => {
+    const missingRollNumbers = Array.isArray(rollNumberCheckSummary?.missingRollNumbers)
+      ? rollNumberCheckSummary.missingRollNumbers
+      : []
+
+    const rollCheckTemplateHeaders = ["rollNumber"]
+
+    const rollCheckInstructionsText = (
+      <div>
+        <p className="font-medium mb-1">How this works:</p>
+        <ul className="grid grid-cols-1 gap-y-1">
+          <li>
+            <span className="font-medium">rollNumber:</span> Required. Upload the roll numbers you want to verify.
+          </li>
+          <li>
+            Duplicate entries in the CSV are removed before the check runs.
+          </li>
+          <li>
+            After confirmation, only roll numbers missing from the system are listed.
+          </li>
+        </ul>
+      </div>
+    )
+
+    return (
+      <div className="space-y-6">
+        <h3 className="text-lg font-medium text-gray-800">Check Missing Roll Numbers</h3>
+
+        <CsvUploader
+          onDataParsed={handleRollNumberCheckDataParsed}
+          requiredFields={["rollNumber"]}
+          templateFileName="check_roll_numbers_template.csv"
+          templateHeaders={rollCheckTemplateHeaders}
+          maxRecords={MAX_BULK_RECORDS}
+          instructionText={rollCheckInstructionsText}
+        />
+
+        {rollNumberCheckData.length > 0 && !error && (
+          <div className="mt-4 p-4 bg-green-50 rounded-lg">
+            <p className="text-green-700 font-medium">{uploadStatus}</p>
+          </div>
+        )}
+
+        {rollNumberCheckData.length > 0 && (
+          <div className="border rounded-lg overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Uploaded Roll Number
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {rollNumberCheckData.slice(0, 10).map((student, index) => (
+                  <tr key={`${student.rollNumber}-${index}`} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{student.rollNumber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {rollNumberCheckData.length > 10 && (
+              <div className="px-4 py-3 bg-gray-50 text-xs text-gray-500">
+                Showing 10 of {rollNumberCheckData.length} uploaded roll numbers
+              </div>
+            )}
+          </div>
+        )}
+
+        {rollNumberCheckSummary && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+              <div className="p-3 rounded-lg border bg-[var(--color-info-bg)] border-[var(--color-info-light)]">
+                <div className="text-xs text-[var(--color-info-text)]">Submitted</div>
+                <div className="text-lg font-semibold text-[var(--color-info-text)]">{rollNumberCheckSummary.submittedCount || 0}</div>
+              </div>
+              <div className="p-3 rounded-lg border bg-[var(--color-primary-bg)] border-[var(--color-primary-light)]">
+                <div className="text-xs text-[var(--color-primary)]">Unique Checked</div>
+                <div className="text-lg font-semibold text-[var(--color-primary)]">{rollNumberCheckSummary.uniqueCount || 0}</div>
+              </div>
+              <div className="p-3 rounded-lg border bg-[var(--color-success-bg)] border-[var(--color-success-light)]">
+                <div className="text-xs text-[var(--color-success-text)]">Found</div>
+                <div className="text-lg font-semibold text-[var(--color-success-text)]">{rollNumberCheckSummary.foundCount || 0}</div>
+              </div>
+              <div className="p-3 rounded-lg border bg-[var(--color-danger-bg)] border-[var(--color-danger-border)]">
+                <div className="text-xs text-[var(--color-danger-text)]">Missing</div>
+                <div className="text-lg font-semibold text-[var(--color-danger-text)]">{rollNumberCheckSummary.missingCount || 0}</div>
+              </div>
+            </div>
+
+            <div className="border rounded-lg overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Missing Roll Numbers
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {missingRollNumbers.length > 0 ? (
+                    missingRollNumbers.map((rollNumber, index) => (
+                      <tr key={`${rollNumber}-${index}`} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{rollNumber}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="px-4 py-3 text-sm text-gray-600">No missing roll numbers found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+      </div>
+    )
+  }
+
   const BatchAssignmentTab = () => {
     const batchTemplateHeaders = ["rollNumber"]
 
@@ -1752,6 +2080,168 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         {batchSelectionMode === "csv" && batchAssignmentData.length > 0 && (
           <div className="border rounded-lg overflow-hidden">
             <SheetPreviewTable rows={batchAssignmentData.slice(0, 100)} />
+          </div>
+        )}
+
+        {error && <div className="py-2 px-4 bg-red-50 text-red-600 rounded-lg border-l-4 border-red-500">{error}</div>}
+      </div>
+    )
+  }
+
+  const GroupsAssignmentTab = () => {
+    const groupTemplateHeaders = ["rollNumber"]
+
+    const groupInstructionsText = (
+      <div>
+        <p className="font-medium mb-1">How this works:</p>
+        <ul className="grid grid-cols-1 gap-y-1">
+          <li>
+            <span className="font-medium">1.</span> Select one or more configured groups.
+          </li>
+          <li>
+            <span className="font-medium">2.</span> Choose whether to add those groups, remove them, or replace the student&apos;s full group list.
+          </li>
+          <li>
+            <span className="font-medium">3.</span> Pick either CSV upload or a numeric roll number range.
+          </li>
+          <li>
+            <span className="font-medium">4.</span> Range mode works only for purely numeric roll numbers stored in the database.
+          </li>
+        </ul>
+      </div>
+    )
+
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Student Selection</label>
+            <ToggleButtonGroup
+              options={[
+                { value: "csv", label: "CSV Upload" },
+                { value: "range", label: "Roll Number Range" },
+              ]}
+              value={groupSelectionMode}
+              onChange={handleGroupSelectionModeChange}
+              size="small"
+              variant="outline"
+              fullWidth
+              hideLabelsOnMobile={false}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Update Mode</label>
+            <ToggleButtonGroup
+              options={[
+                { value: "add", label: "Add Groups" },
+                { value: "remove", label: "Remove Groups" },
+                { value: "replace", label: "Replace Groups" },
+              ]}
+              value={groupAssignmentMode}
+              onChange={setGroupAssignmentMode}
+              size="small"
+              variant="outline"
+              fullWidth
+              hideLabelsOnMobile={false}
+            />
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <div>
+              <h3 className="text-sm font-medium text-[var(--color-text-body)]">Select Groups</h3>
+              <p className="text-xs text-[var(--color-text-muted)]">Students can belong to multiple groups at the same time.</p>
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)]">
+              {selectedGroups.length} selected
+            </div>
+          </div>
+
+          {configLoading ? (
+            <div className="text-sm text-[var(--color-text-muted)]">Loading groups...</div>
+          ) : availableStudentGroups.length === 0 ? (
+            <div className="text-sm text-[var(--color-text-muted)]">
+              No student groups are configured yet. Create groups first from Settings.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {availableStudentGroups.map((group) => (
+                <Checkbox
+                  key={group}
+                  id={`group-${group}`}
+                  value={group}
+                  checked={selectedGroups.includes(group)}
+                  onChange={handleGroupToggle}
+                  label={group}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {selectedGroups.length > 0 && (
+          <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4 text-sm text-[var(--color-text-muted)]">
+            Selected groups: <span className="font-medium text-[var(--color-text-body)]">{selectedGroups.join(", ")}</span>
+          </div>
+        )}
+
+        {groupSelectionMode === "csv" ? (
+          <CsvUploader
+            onDataParsed={handleGroupDataParsed}
+            requiredFields={["rollNumber"]}
+            templateFileName="student_group_assignment_template.csv"
+            templateHeaders={groupTemplateHeaders}
+            maxRecords={MAX_BULK_RECORDS}
+            instructionText={groupInstructionsText}
+          />
+        ) : (
+          <div className="space-y-4 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Range Start</label>
+                <Input
+                  type="text"
+                  value={groupRangeStart}
+                  onChange={(event) => handleGroupRangeChange("start", event.target.value)}
+                  placeholder="Numeric roll number start"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Range End</label>
+                <Input
+                  type="text"
+                  value={groupRangeEnd}
+                  onChange={(event) => handleGroupRangeChange("end", event.target.value)}
+                  placeholder="Numeric roll number end"
+                />
+              </div>
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)]">
+              Range mode is inclusive and works only for purely numeric roll numbers stored in the database. Alphanumeric roll numbers still need CSV upload.
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] p-3 rounded-lg">
+              {groupInstructionsText}
+            </div>
+          </div>
+        )}
+
+        {groupAssignmentData.length > 0 && !error && (
+          <div className="p-4 rounded-lg bg-[var(--color-success-bg)] text-[var(--color-success-text)]">
+            {uploadStatus}
+          </div>
+        )}
+
+        {groupSelectionMode === "range" && uploadStatus && !error && (
+          <div className="p-4 rounded-lg bg-[var(--color-success-bg)] text-[var(--color-success-text)]">
+            {uploadStatus}
+          </div>
+        )}
+
+        {groupSelectionMode === "csv" && groupAssignmentData.length > 0 && (
+          <div className="border rounded-lg overflow-hidden">
+            <SheetPreviewTable rows={groupAssignmentData.slice(0, 100)} />
           </div>
         )}
 
@@ -1980,6 +2470,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       {/* Health Tab */}
       {activeTab === "batch" && <BatchAssignmentTab />}
 
+      {activeTab === "groups" && <GroupsAssignmentTab />}
+
       {/* Health Tab */}
       {activeTab === "health" && <HealthInfoTab />}
 
@@ -1988,6 +2480,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
       {/* Status Tab */}
       {activeTab === "status" && <StatusUpdateTab />}
+
+      {/* Roll Number Check Tab */}
+      {activeTab === "rollCheck" && <RollNumberCheckTab />}
 
       {/* Day Scholar Tab */}
       {activeTab === "dayScholar" && <DayScholarTab />}
@@ -2048,16 +2543,46 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 (batchSelectionMode === "csv" && batchAssignmentData.length === 0) ||
                 (batchSelectionMode === "range" && (!batchRangeStart || !batchRangeEnd))
               )) ||
+              (activeTab === "groups" && (
+                selectedGroups.length === 0 ||
+                (groupSelectionMode === "csv" && groupAssignmentData.length === 0) ||
+                (groupSelectionMode === "range" && (!groupRangeStart || !groupRangeEnd))
+              )) ||
               (activeTab === "health" && healthData.length === 0) ||
               (activeTab === "family" && familyData.length === 0) ||
               (activeTab === "status" && statusData.length === 0) ||
+              (activeTab === "rollCheck" && rollNumberCheckData.length === 0) ||
               (activeTab === "dayScholar" && dayScholarData.length === 0) ||
               isLoading ||
               isUpdating
             }
           >
             <FaCheck />
-            {isUpdating ? "Updating Students..." : "Confirm Update"}
+            {isUpdating
+              ? (activeTab === "rollCheck" ? "Checking Roll Numbers..." : "Updating Students...")
+              : activeTab === "rollCheck"
+                ? "Check Roll Numbers"
+                : "Confirm Update"}
+          </Button>
+        )}
+
+        {activeTab === "rollCheck" && rollNumberCheckSummary && (
+          <Button
+            onClick={() => {
+              const exported = downloadRollNumberCSV(
+                rollNumberCheckSummary.missingRollNumbers || [],
+                "missing_roll_numbers"
+              )
+              if (!exported) {
+                setError("No missing roll numbers available to export")
+              }
+            }}
+            variant="secondary"
+            size="md"
+            disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.missingRollNumbers) || rollNumberCheckSummary.missingRollNumbers.length === 0}
+          >
+            <FaFileDownload />
+            Export Missing
           </Button>
         )}
 

@@ -186,6 +186,24 @@ export const studentApi = {
       .put("/students/profiles-admin/profiles/batch", payload)
       .then(unwrapStandardResponse)
   },
+
+  /**
+   * Bulk update student group membership
+   */
+  bulkUpdateStudentGroups: (payload) => {
+    return apiClient
+      .put("/students/profiles-admin/profiles/groups", payload)
+      .then(unwrapStandardResponse)
+  },
+
+  /**
+   * Check which uploaded roll numbers are missing from the system
+   */
+  checkMissingRollNumbers: (rollNumbers = []) => {
+    return apiClient
+      .post("/students/profiles-admin/profiles/check-roll-numbers", { rollNumbers })
+      .then(unwrapStandardResponse)
+  },
 }
 
 export default studentApi
