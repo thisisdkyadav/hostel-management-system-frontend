@@ -1696,6 +1696,93 @@ const ElectionsPage = () => {
     URL.revokeObjectURL(link.href)
   }
 
+  const exportNominationsCsv = () => {
+    if (!selectedAdminElection) {
+      toast.error("No election selected")
+      return
+    }
+
+    if (!filteredNominations.length) {
+      toast.error("No nominations available to export in this view")
+      return
+    }
+
+    const escapeCsv = (value) => {
+      const stringValue = String(value ?? "")
+      if (/[",\n]/.test(stringValue)) {
+        return `"${stringValue.replace(/"/g, '""')}"`
+      }
+      return stringValue
+    }
+
+    const countByStatus = (entries = [], status) =>
+      (Array.isArray(entries) ? entries : []).filter((entry) => entry?.status === status).length
+
+    const rows = filteredNominations.map((nomination) => {
+      const proposerEntries = Array.isArray(nomination?.proposerEntries) ? nomination.proposerEntries : []
+      const seconderEntries = Array.isArray(nomination?.seconderEntries) ? nomination.seconderEntries : []
+
+      return [
+        selectedAdminElection.title,
+        selectedAdminElection.academicYear,
+        nomination.postTitle || "",
+        nomination.candidateName || nomination.candidateRollNumber || "",
+        nomination.candidateRollNumber || "",
+        nomination.candidateEmail || "",
+        formatDateTime(nomination.submittedAt),
+        formatStageLabel(nomination.status),
+        proposerEntries.length,
+        countByStatus(proposerEntries, "accepted"),
+        countByStatus(proposerEntries, "pending"),
+        countByStatus(proposerEntries, "rejected"),
+        seconderEntries.length,
+        countByStatus(seconderEntries, "accepted"),
+        countByStatus(seconderEntries, "pending"),
+        countByStatus(seconderEntries, "rejected"),
+        nomination.supporterSummary?.total || 0,
+        nomination.supporterSummary?.accepted || 0,
+        nomination.supporterSummary?.pending || 0,
+        nomination.supporterSummary?.rejected || 0,
+        nomination.review?.notes || "",
+      ]
+    })
+
+    const headers = [
+      "Election",
+      "Academic Year",
+      "Post",
+      "Candidate Name",
+      "Roll Number",
+      "Email",
+      "Submitted At",
+      "Nomination Status",
+      "Proposer Total",
+      "Proposer Accepted",
+      "Proposer Pending",
+      "Proposer Rejected",
+      "Seconder Total",
+      "Seconder Accepted",
+      "Seconder Pending",
+      "Seconder Rejected",
+      "Supporter Total",
+      "Supporter Accepted",
+      "Supporter Pending",
+      "Supporter Rejected",
+      "Review Comment",
+    ]
+
+    const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const date = new Date().toISOString().split("T")[0]
+    link.href = URL.createObjectURL(blob)
+    link.download = `election_nominations_${nominationTab}_${date}.csv`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
+
   const sendVotingEmails = async () => {
     if (!selectedAdminElectionId) return
 
@@ -1829,6 +1916,7 @@ const ElectionsPage = () => {
             busyKey={busyKey}
             onPublishResults={() => setShowPublishResultsConfirm(true)}
             onExportResults={exportResultsCsv}
+            onExportNominations={exportNominationsCsv}
             setReviewNomination={setReviewNomination}
             setResultsEditorPostId={setResultsEditorPostId}
             infoBannerStyle={infoBannerStyle}

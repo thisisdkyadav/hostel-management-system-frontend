@@ -40,6 +40,7 @@ const AdminElectionWorkspace = ({
   busyKey,
   onPublishResults,
   onExportResults,
+  onExportNominations,
   setReviewNomination,
   setResultsEditorPostId,
   infoBannerStyle,
@@ -213,13 +214,25 @@ const AdminElectionWorkspace = ({
 
       {adminViewTab === "nominations" ? (
         <>
-          <div style={{ marginBottom: "var(--spacing-3)" }}>
+          <div
+            style={{
+              marginBottom: "var(--spacing-3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-3)",
+              flexWrap: "wrap",
+            }}
+          >
             <Tabs
               variant="pills"
               tabs={nominationTabs}
               activeTab={nominationTab}
               setActiveTab={setNominationTab}
             />
+            <Button size="sm" variant="secondary" onClick={onExportNominations}>
+              Export CSV
+            </Button>
           </div>
           <DataTable
             data={filteredNominations}
