@@ -1520,11 +1520,7 @@ const ElectionsPage = () => {
         lookupStatus: "validated",
         lookupMessage: supporter.currentStatus
           ? `Support ${String(supporter.currentStatus).replace(/^\w/, (match) => match.toUpperCase())}`
-          : supporter.voterPoolEligible
-            ? "Eligible from voter pool"
-            : supporter.candidatePoolEligible
-              ? "Eligible from candidate pool"
-              : "Eligible",
+          : "Eligible",
         supportStatus: supporter.currentStatus || "",
         supportRole: supporter.currentRole || supportType,
       })
