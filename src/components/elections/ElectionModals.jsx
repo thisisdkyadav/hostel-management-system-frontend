@@ -202,6 +202,12 @@ export const ElectionWizardModal = ({
   const [currentStep, setCurrentStep] = useState("basics")
   const [activePostIndex, setActivePostIndex] = useState(0)
   const [wizardErrors, setWizardErrors] = useState(createEmptyWizardErrors())
+  const wizardBodyStyle = {
+    ...modalBodyStyle,
+    height: "calc(90vh - 180px)",
+    maxHeight: "calc(90vh - 180px)",
+    minHeight: "calc(90vh - 180px)",
+  }
 
   useEffect(() => {
     if (isOpen) {
@@ -800,6 +806,7 @@ export const ElectionWizardModal = ({
       onClose={onClose}
       title={mode === "edit" ? "Edit Election" : "Create Election"}
       width={1040}
+      fullHeight={true}
       footer={
         <div
           style={{
@@ -842,7 +849,7 @@ export const ElectionWizardModal = ({
         </div>
       }
     >
-      <div style={modalBodyStyle}>
+      <div style={wizardBodyStyle}>
         {currentStep === "posts" && wizardErrors.general ? (
           <div style={errorBannerStyle}>{wizardErrors.general}</div>
         ) : null}

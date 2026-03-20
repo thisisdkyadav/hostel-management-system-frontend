@@ -88,8 +88,10 @@ export const ScopeEditor = ({
   errorTextStyle,
   nominationTemplateHeaders,
 }) => {
+  const { toast } = useToast()
   const [studentCount, setStudentCount] = useState(0)
   const [countLoading, setCountLoading] = useState(false)
+  const [manualRollNumber, setManualRollNumber] = useState("")
 
   useEffect(() => {
     let isActive = true
@@ -152,6 +154,40 @@ export const ScopeEditor = ({
       batches: [],
       groups: nextGroups,
       extraRollNumbers: [],
+    })
+  }
+
+  const addManualRollNumber = () => {
+    const normalizedRollNumber = String(manualRollNumber || "").trim().toUpperCase()
+
+    if (!normalizedRollNumber) return
+
+    if (normalizedRollNumber.length > 30) {
+      toast.error("Roll number cannot exceed 30 characters")
+      return
+    }
+
+    const currentRollNumbers = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : []
+    if (currentRollNumbers.includes(normalizedRollNumber)) {
+      toast.error("This roll number is already added")
+      setManualRollNumber("")
+      return
+    }
+
+    onChange({
+      batches: [],
+      groups: [],
+      extraRollNumbers: [...currentRollNumbers, normalizedRollNumber],
+    })
+    setManualRollNumber("")
+  }
+
+  const removeManualRollNumber = (rollNumberToRemove) => {
+    const currentRollNumbers = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : []
+    onChange({
+      batches: [],
+      groups: [],
+      extraRollNumbers: currentRollNumbers.filter((rollNumber) => rollNumber !== rollNumberToRemove),
     })
   }
 
@@ -229,6 +265,45 @@ export const ScopeEditor = ({
       </div>
 
       <div>
+        <div style={{ marginBottom: "var(--spacing-3)" }}>
+          <div style={labelStyle}>Manual roll number entry</div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+            <input
+              type="text"
+              value={manualRollNumber}
+              onChange={(event) => setManualRollNumber(event.target.value.toUpperCase())}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault()
+                  addManualRollNumber()
+                }
+              }}
+              placeholder="Enter roll number"
+              style={{
+                minWidth: "180px",
+                flex: "1 1 180px",
+                border: "1px solid var(--color-border-input)",
+                borderRadius: "var(--radius-input)",
+                backgroundColor: "var(--color-bg-primary)",
+                color: "var(--color-text-primary)",
+                padding: "8px 12px",
+                fontSize: "var(--font-size-sm)",
+              }}
+            />
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={addManualRollNumber}
+              disabled={!String(manualRollNumber || "").trim()}
+            >
+              Add
+            </Button>
+          </div>
+          <div style={{ marginTop: "8px", ...mutedTextStyle }}>
+            Add students one by one. This uses the same saved list as CSV upload.
+          </div>
+        </div>
+
         <div style={labelStyle}>Additional students via CSV</div>
         <CsvUploader
           requiredFields={nominationTemplateHeaders}
@@ -248,8 +323,29 @@ export const ScopeEditor = ({
           }}
         />
         {(scope.extraRollNumbers || []).length > 0 ? (
-          <div style={{ marginTop: "var(--spacing-3)", ...mutedTextStyle }}>
-            {(scope.extraRollNumbers || []).length} CSV student(s) loaded
+          <div style={{ display: "grid", gap: "8px", marginTop: "var(--spacing-3)" }}>
+            <div style={mutedTextStyle}>
+              {(scope.extraRollNumbers || []).length} manually/CSV added student(s)
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {(scope.extraRollNumbers || []).map((rollNumber) => (
+                <button
+                  key={rollNumber}
+                  type="button"
+                  onClick={() => removeManualRollNumber(rollNumber)}
+                  style={{
+                    ...pillBaseStyle,
+                    border: "1px solid var(--color-border-primary)",
+                    backgroundColor: "var(--color-bg-primary)",
+                    color: "var(--color-text-body)",
+                    cursor: "pointer",
+                  }}
+                  title="Remove roll number"
+                >
+                  {rollNumber} ×
+                </button>
+              ))}
+            </div>
           </div>
         ) : null}
         {error ? <div style={errorTextStyle}>{error}</div> : null}
