@@ -167,6 +167,7 @@ export const ElectionWizardModal = ({
   onSave,
   saving,
   batchOptions,
+  groupOptions,
   hostels,
   createBlankPost,
   buildD15Timeline,
@@ -683,6 +684,7 @@ export const ElectionWizardModal = ({
               scope={activePost.candidateEligibility}
               onChange={(scope) => updatePost(activePostIndex, { candidateEligibility: scope })}
               batchOptions={batchOptions}
+              groupOptions={groupOptions}
               error={activePostErrors.candidateEligibility}
               flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}
@@ -696,6 +698,7 @@ export const ElectionWizardModal = ({
               scope={activePost.voterEligibility}
               onChange={(scope) => updatePost(activePostIndex, { voterEligibility: scope })}
               batchOptions={batchOptions}
+              groupOptions={groupOptions}
               error={activePostErrors.voterEligibility}
               flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}

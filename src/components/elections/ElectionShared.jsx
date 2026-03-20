@@ -76,9 +76,10 @@ export const MetaList = ({ items = [], mutedTextStyle }) => (
 
 export const ScopeEditor = ({
   title,
-  scope,
+  scope = {},
   onChange,
-  batchOptions,
+  batchOptions = [],
+  groupOptions = [],
   error,
   flatPanelStyle,
   labelStyle,
@@ -94,6 +95,7 @@ export const ScopeEditor = ({
     let isActive = true
     const hasSelection =
       (Array.isArray(scope?.batches) ? scope.batches.length : 0) > 0 ||
+      (Array.isArray(scope?.groups) ? scope.groups.length : 0) > 0 ||
       (Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers.length : 0) > 0
 
     if (!hasSelection) {
@@ -108,6 +110,7 @@ export const ScopeEditor = ({
     electionsApi
       .getScopeCount({
         batches: Array.isArray(scope?.batches) ? scope.batches : [],
+        groups: Array.isArray(scope?.groups) ? scope.groups : [],
         extraRollNumbers: Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : [],
       })
       .then((response) => {
@@ -126,12 +129,28 @@ export const ScopeEditor = ({
     return () => {
       isActive = false
     }
-  }, [scope?.batches, scope?.extraRollNumbers])
+  }, [scope?.batches, scope?.groups, scope?.extraRollNumbers])
 
   const toggleBatch = (batch) => {
-    const exists = scope.batches.includes(batch)
+    const currentBatches = Array.isArray(scope?.batches) ? scope.batches : []
+    const exists = currentBatches.includes(batch)
     onChange({
       batches: exists ? [] : [batch],
+      groups: [],
+      extraRollNumbers: [],
+    })
+  }
+
+  const toggleGroup = (groupName) => {
+    const currentGroups = Array.isArray(scope?.groups) ? scope.groups : []
+    const exists = currentGroups.includes(groupName)
+    const nextGroups = exists
+      ? currentGroups.filter((item) => item !== groupName)
+      : [...currentGroups, groupName]
+
+    onChange({
+      batches: [],
+      groups: nextGroups,
       extraRollNumbers: [],
     })
   }
@@ -159,7 +178,7 @@ export const ScopeEditor = ({
         <div style={labelStyle}>Batches</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {batchOptions.map((batch) => {
-            const isSelected = scope.batches.includes(batch)
+            const isSelected = (scope.batches || []).includes(batch)
             return (
               <button
                 key={batch}
@@ -182,6 +201,33 @@ export const ScopeEditor = ({
         </div>
       </div>
 
+      <div style={{ marginBottom: "var(--spacing-3)" }}>
+        <div style={labelStyle}>Groups</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          {groupOptions.map((groupName) => {
+            const isSelected = (scope.groups || []).includes(groupName)
+            return (
+              <button
+                key={groupName}
+                type="button"
+                onClick={() => toggleGroup(groupName)}
+                style={{
+                  ...pillBaseStyle,
+                  border: "1px solid",
+                  borderColor: isSelected ? "var(--color-primary)" : "var(--color-border-primary)",
+                  backgroundColor: isSelected ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
+                  color: isSelected ? "var(--color-primary)" : "var(--color-text-body)",
+                  cursor: "pointer",
+                }}
+              >
+                {groupName}
+              </button>
+            )
+          })}
+          {groupOptions.length === 0 ? <span style={mutedTextStyle}>No configured groups available.</span> : null}
+        </div>
+      </div>
+
       <div>
         <div style={labelStyle}>Additional students via CSV</div>
         <CsvUploader
@@ -196,6 +242,7 @@ export const ScopeEditor = ({
 
             onChange({
               batches: [],
+              groups: [],
               extraRollNumbers: [...new Set(nextRollNumbers)],
             })
           }}

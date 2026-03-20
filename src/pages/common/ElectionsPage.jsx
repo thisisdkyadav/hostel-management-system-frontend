@@ -7,7 +7,7 @@ import { EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui/
 import { useAuth } from "@/contexts/AuthProvider"
 import { useGlobal } from "@/contexts/GlobalProvider"
 import { useSocket } from "@/contexts/SocketProvider"
-import { electionsApi, studentApi } from "@/service"
+import { adminApi, electionsApi, studentApi } from "@/service"
 import AdminElectionWorkspace from "@/components/elections/AdminElectionWorkspace"
 import StudentElectionWorkspace from "@/components/elections/StudentElectionWorkspace"
 import {
@@ -300,10 +300,12 @@ const createBlankPost = () => ({
   description: "",
   candidateEligibility: {
     batches: [],
+    groups: [],
     extraRollNumbers: [],
   },
   voterEligibility: {
     batches: [],
+    groups: [],
     extraRollNumbers: [],
   },
   requirements: {
@@ -509,12 +511,26 @@ const buildD15Timeline = (votingStartValue) => {
 
 const summarizeScope = (scope = {}) => {
   const batches = Array.isArray(scope?.batches) ? scope.batches.length : 0
+  const groups = Array.isArray(scope?.groups) ? scope.groups.length : 0
   const extra = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers.length : 0
-  if (batches === 0 && extra === 0) return "Not configured"
-  if (batches > 0 && extra > 0) return `${batches} batch(es) + ${extra} CSV student(s)`
-  if (batches > 0) return `${batches} batch(es)`
-  return `${extra} CSV student(s)`
+  const parts = []
+  if (batches > 0) parts.push(`${batches} batch(es)`)
+  if (groups > 0) parts.push(`${groups} group(s)`)
+  if (extra > 0) parts.push(`${extra} CSV student(s)`)
+  if (parts.length === 0) return "Not configured"
+  return parts.join(" + ")
 }
+
+const hasScopeSelection = (scope = {}) =>
+  (Array.isArray(scope?.batches) ? scope.batches.length : 0) > 0 ||
+  (Array.isArray(scope?.groups) ? scope.groups.length : 0) > 0 ||
+  (Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers.length : 0) > 0
+
+const normalizeScopeForForm = (scope = {}) => ({
+  batches: Array.isArray(scope?.batches) ? scope.batches : [],
+  groups: Array.isArray(scope?.groups) ? scope.groups : [],
+  extraRollNumbers: Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : [],
+})
 
 const sortByActivity = (items = []) => {
   const activeStages = new Set([
@@ -565,14 +581,8 @@ const buildElectionFormFromDetail = (detail) => ({
           code: post.code || "",
           category: post.category || "custom",
           description: post.description || "",
-          candidateEligibility: {
-            batches: post.candidateEligibility?.batches || [],
-            extraRollNumbers: post.candidateEligibility?.extraRollNumbers || [],
-          },
-          voterEligibility: {
-            batches: post.voterEligibility?.batches || [],
-            extraRollNumbers: post.voterEligibility?.extraRollNumbers || [],
-          },
+          candidateEligibility: normalizeScopeForForm(post.candidateEligibility),
+          voterEligibility: normalizeScopeForForm(post.voterEligibility),
           requirements: {
             minCgpa: post.requirements?.minCgpa ?? 6,
             minCompletedSemestersUg: post.requirements?.minCompletedSemestersUg ?? 3,
@@ -612,10 +622,12 @@ const serializeElectionFormForApi = (form) => ({
     description: post.description.trim(),
     candidateEligibility: {
       batches: post.candidateEligibility.batches,
+      groups: post.candidateEligibility.groups,
       extraRollNumbers: post.candidateEligibility.extraRollNumbers,
     },
     voterEligibility: {
       batches: post.voterEligibility.batches,
+      groups: post.voterEligibility.groups,
       extraRollNumbers: post.voterEligibility.extraRollNumbers,
     },
     requirements: {
@@ -835,8 +847,8 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
       const title = String(post.title || "").trim()
       const code = String(post.code || "").trim().toUpperCase()
       const description = String(post.description || "").trim()
-      const candidateScope = post.candidateEligibility || { batches: [], extraRollNumbers: [] }
-      const voterScope = post.voterEligibility || { batches: [], extraRollNumbers: [] }
+      const candidateScope = post.candidateEligibility || { batches: [], groups: [], extraRollNumbers: [] }
+      const voterScope = post.voterEligibility || { batches: [], groups: [], extraRollNumbers: [] }
       const requirements = post.requirements || {}
 
       if (title.length < 2 || title.length > 200) {
@@ -855,17 +867,12 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
         markPostError(index, "description", "Description cannot exceed 4000 characters.")
       }
 
-      const hasCandidateScope =
-        (candidateScope.batches || []).length > 0 || (candidateScope.extraRollNumbers || []).length > 0
-      const hasVoterScope =
-        (voterScope.batches || []).length > 0 || (voterScope.extraRollNumbers || []).length > 0
-
-      if (!hasCandidateScope) {
-        markPostError(index, "candidateEligibility", "Select at least one batch or CSV student for candidates.")
+      if (!hasScopeSelection(candidateScope)) {
+        markPostError(index, "candidateEligibility", "Select at least one batch, group, or CSV student for candidates.")
       }
 
-      if (!hasVoterScope) {
-        markPostError(index, "voterEligibility", "Select at least one batch or CSV student for voters.")
+      if (!hasScopeSelection(voterScope)) {
+        markPostError(index, "voterEligibility", "Select at least one batch, group, or CSV student for voters.")
       }
 
       if ((candidateScope.extraRollNumbers || []).some((value) => String(value || "").trim().length > 30)) {
@@ -874,6 +881,14 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
 
       if ((voterScope.extraRollNumbers || []).some((value) => String(value || "").trim().length > 30)) {
         markPostError(index, "voterEligibility", "Voter roll numbers cannot exceed 30 characters.")
+      }
+
+      if ((candidateScope.groups || []).some((value) => String(value || "").trim().length > 120)) {
+        markPostError(index, "candidateEligibility", "Candidate group names cannot exceed 120 characters.")
+      }
+
+      if ((voterScope.groups || []).some((value) => String(value || "").trim().length > 120)) {
+        markPostError(index, "voterEligibility", "Voter group names cannot exceed 120 characters.")
       }
 
       if (Number(requirements.minCgpa) < 0 || Number(requirements.minCgpa) > 10) {
@@ -1070,6 +1085,7 @@ const ElectionsPage = () => {
   const isStudentView = user?.role === "Student"
 
   const [batchOptions, setBatchOptions] = useState([])
+  const [groupOptions, setGroupOptions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
 
@@ -1169,6 +1185,20 @@ const ElectionsPage = () => {
     }
   }
 
+  const loadGroupOptions = async () => {
+    if (!isAdminView) {
+      setGroupOptions([])
+      return
+    }
+
+    try {
+      const response = await adminApi.getStudentGroups()
+      setGroupOptions(Array.isArray(response?.value) ? response.value : [])
+    } catch {
+      setGroupOptions([])
+    }
+  }
+
   const loadAdminElections = async (preserveSelection = true) => {
     const response = await electionsApi.listAdminElections()
     const elections = response?.data?.elections || []
@@ -1240,6 +1270,7 @@ const ElectionsPage = () => {
       setLoading(true)
       setError("")
       await loadBatchOptions()
+      await loadGroupOptions()
 
       if (isAdminView) {
         await loadAdminElections(false)
@@ -1911,6 +1942,7 @@ const ElectionsPage = () => {
             onSave={saveElection}
             saving={savingElection}
             batchOptions={batchOptions}
+            groupOptions={groupOptions}
             hostels={normalizedHostels}
             createBlankPost={createBlankPost}
             buildD15Timeline={buildD15Timeline}
