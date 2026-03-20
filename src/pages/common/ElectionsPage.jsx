@@ -1118,9 +1118,19 @@ const ElectionsPage = () => {
 
   const cloneElectionDisabledReason = useMemo(() => {
     if (!selectedAdminElection) return ""
-    return ["voting", "results", "handover", "completed", "cancelled"].includes(selectedAdminElection.currentStage)
-      ? "Copy is only available before voting starts."
-      : ""
+    if (["voting", "results", "handover", "completed", "cancelled"].includes(selectedAdminElection.currentStage)) {
+      return "Copy is only available before voting starts."
+    }
+
+    const hasPendingNominationReview = (selectedAdminElection?.nominations || []).some((nomination) =>
+      ["submitted", "modification_requested"].includes(String(nomination.status || ""))
+    )
+
+    if (hasPendingNominationReview) {
+      return "Copy is available only after all nominations are verified, rejected, or withdrawn."
+    }
+
+    return ""
   }, [selectedAdminElection])
 
   const canCloneElection = Boolean(selectedAdminElection && !cloneElectionDisabledReason)
