@@ -239,6 +239,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [dayScholarData, setDayScholarData] = useState([])
   const [dayScholarMode, setDayScholarMode] = useState("add")
   const [batchAssignmentData, setBatchAssignmentData] = useState([])
+  const [batchSelectionMode, setBatchSelectionMode] = useState("csv")
+  const [batchAssignmentMode, setBatchAssignmentMode] = useState("append")
+  const [batchRangeStart, setBatchRangeStart] = useState("")
+  const [batchRangeEnd, setBatchRangeEnd] = useState("")
   const [selectedBatchDegree, setSelectedBatchDegree] = useState("")
   const [selectedBatchDepartment, setSelectedBatchDepartment] = useState("")
   const [selectedBatch, setSelectedBatch] = useState("")
@@ -695,6 +699,34 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     toast.success(`${normalizedData.length} students ready for batch assignment`)
   }
 
+  const handleBatchSelectionModeChange = (nextMode) => {
+    setBatchSelectionMode(nextMode)
+    setBatchAssignmentData([])
+    setBatchRangeStart("")
+    setBatchRangeEnd("")
+    setUploadStatus("")
+    setError("")
+  }
+
+  const handleBatchRangeChange = (field, value) => {
+    const normalizedValue = normalizeString(value).replace(/\s+/g, "")
+
+    if (field === "start") {
+      setBatchRangeStart(normalizedValue)
+    } else {
+      setBatchRangeEnd(normalizedValue)
+    }
+
+    const nextStart = field === "start" ? normalizedValue : batchRangeStart
+    const nextEnd = field === "end" ? normalizedValue : batchRangeEnd
+    if (nextStart && nextEnd) {
+      setUploadStatus(`Numeric roll number range ${nextStart} to ${nextEnd} is ready for batch assignment`)
+      setError("")
+    } else {
+      setUploadStatus("")
+    }
+  }
+
   const handleUpdate = async () => {
     if (activeTab === "basic" && parsedData.length === 0) {
       setError("No data to update")
@@ -721,14 +753,31 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       return
     }
 
-    if (activeTab === "batch" && batchAssignmentData.length === 0) {
+    if (activeTab === "batch" && (!selectedBatchDegree || !selectedBatchDepartment || !selectedBatch)) {
+      setError("Select degree, department, and batch before confirming the update")
+      return
+    }
+
+    if (activeTab === "batch" && batchSelectionMode === "csv" && batchAssignmentData.length === 0) {
       setError("No students selected for batch assignment")
       return
     }
 
-    if (activeTab === "batch" && (!selectedBatchDegree || !selectedBatchDepartment || !selectedBatch)) {
-      setError("Select degree, department, and batch before confirming the update")
-      return
+    if (activeTab === "batch" && batchSelectionMode === "range") {
+      if (!batchRangeStart || !batchRangeEnd) {
+        setError("Provide both range start and range end before confirming the update")
+        return
+      }
+
+      if (!/^\d+$/.test(batchRangeStart) || !/^\d+$/.test(batchRangeEnd)) {
+        setError("Range mode supports only purely numeric roll numbers")
+        return
+      }
+
+      if (BigInt(batchRangeStart) > BigInt(batchRangeEnd)) {
+        setError("Range start must be less than or equal to range end")
+        return
+      }
     }
 
     setIsUpdating(true)
@@ -832,18 +881,21 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           toast.error(`Updated with ${response.errors.length} errors. Please check the details.`)
         }
       } else if (activeTab === "batch") {
-        const rollNumbers = batchAssignmentData.map((student) => student.rollNumber)
         const response = await studentApi.bulkUpdateBatchAssignment({
-          rollNumbers,
           degree: selectedBatchDegree,
           department: selectedBatchDepartment,
           batch: selectedBatch,
+          assignmentMode: batchAssignmentMode,
+          ...(batchSelectionMode === "csv"
+            ? { rollNumbers: batchAssignmentData.map((student) => student.rollNumber) }
+            : { rollNumberRange: { start: batchRangeStart, end: batchRangeEnd } }),
         })
         isSuccess = true
 
         const unsuccessfulCount = Array.isArray(response?.unsuccessfulRollNumbers)
           ? response.unsuccessfulRollNumbers.length
           : 0
+        const clearedCount = response?.clearedCount || 0
         if (unsuccessfulCount > 0) {
           toast.success(`Updated ${response.updatedCount || 0} students. ${unsuccessfulCount} roll numbers were not found.`)
         } else {
@@ -853,7 +905,11 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             appliedDegree ? `degree ${appliedDegree}` : "existing degree",
             appliedDepartment ? `department ${appliedDepartment}` : "existing department",
           ].join(", ")
-          toast.success(`Successfully assigned ${rollNumbers.length} student${rollNumbers.length > 1 ? "s" : ""} to ${selectedBatch} using ${assignmentSummary}.`)
+          const matchedCount = response?.matchedCount || response?.updatedCount || 0
+          const replaceSummary = batchAssignmentMode === "replace"
+            ? ` Replaced the existing list and cleared ${clearedCount} previous assignment${clearedCount === 1 ? "" : "s"}.`
+            : ""
+          toast.success(`Successfully assigned ${matchedCount} student${matchedCount === 1 ? "" : "s"} to ${selectedBatch} using ${assignmentSummary}.${replaceSummary}`)
         }
       }
 
@@ -896,6 +952,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setStatusData([])
     setDayScholarData([])
     setBatchAssignmentData([])
+    setBatchSelectionMode("csv")
+    setBatchAssignmentMode("append")
+    setBatchRangeStart("")
+    setBatchRangeEnd("")
     setSelectedBatchDegree("")
     setSelectedBatchDepartment("")
     setSelectedBatch("")
@@ -1541,7 +1601,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             <span className="font-medium">3.</span> Select one configured batch for that combination. The list includes exact matches plus any mixed-scope batches that apply.
           </li>
           <li>
-            <span className="font-medium">4.</span> Upload a CSV with student roll numbers to assign all of them to that batch.
+            <span className="font-medium">4.</span> Choose whether you want to add to the existing list or replace it entirely.
+          </li>
+          <li>
+            <span className="font-medium">5.</span> Pick either CSV upload or a numeric roll number range. Range mode works only for purely numeric roll numbers stored in the database.
           </li>
         </ul>
       </div>
@@ -1549,6 +1612,40 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     return (
       <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Student Selection</label>
+            <ToggleButtonGroup
+              options={[
+                { value: "csv", label: "CSV Upload" },
+                { value: "range", label: "Roll Number Range" },
+              ]}
+              value={batchSelectionMode}
+              onChange={handleBatchSelectionModeChange}
+              size="small"
+              variant="outline"
+              fullWidth
+              hideLabelsOnMobile={false}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Update Mode</label>
+            <ToggleButtonGroup
+              options={[
+                { value: "append", label: "Add to Existing" },
+                { value: "replace", label: "Replace Existing" },
+              ]}
+              value={batchAssignmentMode}
+              onChange={setBatchAssignmentMode}
+              size="small"
+              variant="outline"
+              fullWidth
+              hideLabelsOnMobile={false}
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Degree</label>
@@ -1600,14 +1697,45 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           The batch list includes exact and mixed-scope batches that apply to the selected lookup scope. If you choose an exact degree or department, that field is updated on the student profile. If you choose <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(MIXED_BATCH_SCOPE_KEY, "degree")}</span> or <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(MIXED_BATCH_SCOPE_KEY, "department")}</span>, that field stays unchanged and is used only to make mixed-scope batches available.
         </div>
 
-        <CsvUploader
-          onDataParsed={handleBatchDataParsed}
-          requiredFields={["rollNumber"]}
-          templateFileName="student_batch_assignment_template.csv"
-          templateHeaders={batchTemplateHeaders}
-          maxRecords={MAX_BULK_RECORDS}
-          instructionText={batchInstructionsText}
-        />
+        {batchSelectionMode === "csv" ? (
+          <CsvUploader
+            onDataParsed={handleBatchDataParsed}
+            requiredFields={["rollNumber"]}
+            templateFileName="student_batch_assignment_template.csv"
+            templateHeaders={batchTemplateHeaders}
+            maxRecords={MAX_BULK_RECORDS}
+            instructionText={batchInstructionsText}
+          />
+        ) : (
+          <div className="space-y-4 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Range Start</label>
+                <Input
+                  type="text"
+                  value={batchRangeStart}
+                  onChange={(event) => handleBatchRangeChange("start", event.target.value)}
+                  placeholder="Numeric roll number start"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Range End</label>
+                <Input
+                  type="text"
+                  value={batchRangeEnd}
+                  onChange={(event) => handleBatchRangeChange("end", event.target.value)}
+                  placeholder="Numeric roll number end"
+                />
+              </div>
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)]">
+              Range mode is inclusive and works only for purely numeric roll numbers stored in the database. Alphanumeric roll numbers still need CSV upload.
+            </div>
+            <div className="text-xs text-[var(--color-text-muted)] bg-[var(--color-bg-tertiary)] p-3 rounded-lg">
+              {batchInstructionsText}
+            </div>
+          </div>
+        )}
 
         {batchAssignmentData.length > 0 && !error && (
           <div className="p-4 rounded-lg bg-[var(--color-success-bg)] text-[var(--color-success-text)]">
@@ -1615,7 +1743,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           </div>
         )}
 
-        {batchAssignmentData.length > 0 && (
+        {batchSelectionMode === "range" && uploadStatus && !error && (
+          <div className="p-4 rounded-lg bg-[var(--color-success-bg)] text-[var(--color-success-text)]">
+            {uploadStatus}
+          </div>
+        )}
+
+        {batchSelectionMode === "csv" && batchAssignmentData.length > 0 && (
           <div className="border rounded-lg overflow-hidden">
             <SheetPreviewTable rows={batchAssignmentData.slice(0, 100)} />
           </div>
@@ -1900,7 +2034,28 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         )}
 
         {(step === 2 || activeTab !== "basic") && (
-          <Button onClick={handleUpdate} variant="primary" size="md" loading={isUpdating} disabled={(activeTab === "basic" && (parsedData.length === 0 || Object.keys(basicInvalidCellMap).length > 0)) || (activeTab === "batch" && (batchAssignmentData.length === 0 || !selectedBatchDegree || !selectedBatchDepartment || !selectedBatch)) || (activeTab === "health" && healthData.length === 0) || (activeTab === "family" && familyData.length === 0) || (activeTab === "status" && statusData.length === 0) || (activeTab === "dayScholar" && dayScholarData.length === 0) || isLoading || isUpdating}>
+          <Button
+            onClick={handleUpdate}
+            variant="primary"
+            size="md"
+            loading={isUpdating}
+            disabled={
+              (activeTab === "basic" && (parsedData.length === 0 || Object.keys(basicInvalidCellMap).length > 0)) ||
+              (activeTab === "batch" && (
+                !selectedBatchDegree ||
+                !selectedBatchDepartment ||
+                !selectedBatch ||
+                (batchSelectionMode === "csv" && batchAssignmentData.length === 0) ||
+                (batchSelectionMode === "range" && (!batchRangeStart || !batchRangeEnd))
+              )) ||
+              (activeTab === "health" && healthData.length === 0) ||
+              (activeTab === "family" && familyData.length === 0) ||
+              (activeTab === "status" && statusData.length === 0) ||
+              (activeTab === "dayScholar" && dayScholarData.length === 0) ||
+              isLoading ||
+              isUpdating
+            }
+          >
             <FaCheck />
             {isUpdating ? "Updating Students..." : "Confirm Update"}
           </Button>

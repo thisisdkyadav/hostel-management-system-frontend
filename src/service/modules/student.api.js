@@ -181,9 +181,9 @@ export const studentApi = {
   /**
    * Bulk assign students to a configured batch
    */
-  bulkUpdateBatchAssignment: ({ rollNumbers, degree, department, batch }) => {
+  bulkUpdateBatchAssignment: (payload) => {
     return apiClient
-      .put("/students/profiles-admin/profiles/batch", { rollNumbers, degree, department, batch })
+      .put("/students/profiles-admin/profiles/batch", payload)
       .then(unwrapStandardResponse)
   },
 }
