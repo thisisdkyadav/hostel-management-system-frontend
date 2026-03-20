@@ -177,9 +177,11 @@ const ElectionBallotPage = () => {
                           ) : null}
                           <div style={{ display: "grid", gap: "2px" }}>
                             <div style={{ fontWeight: "var(--font-weight-medium)" }}>{candidate.candidateName}</div>
-                            <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                              {candidate.candidateRollNumber}
-                            </div>
+                            {!candidate.isNota && candidate.candidateRollNumber ? (
+                              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                                {candidate.candidateRollNumber}
+                              </div>
+                            ) : null}
                             {candidate.pitch ? (
                               <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
                                 {candidate.pitch}

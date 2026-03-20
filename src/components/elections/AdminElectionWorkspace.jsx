@@ -281,7 +281,7 @@ const AdminElectionWorkspace = ({
                 render: (postResult) => (
                   <div style={{ display: "grid", gap: "2px" }}>
                     <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{postResult.postTitle}</span>
-                    <span style={mutedTextStyle}>{(postResult.candidates || []).length} candidate(s)</span>
+                    <span style={mutedTextStyle}>{(postResult.candidates || []).length} option(s)</span>
                   </div>
                 ),
               },

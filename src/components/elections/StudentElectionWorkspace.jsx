@@ -161,8 +161,10 @@ const StudentElectionWorkspace = ({
             const winner =
               rankedCandidates.find(
                 (candidate) =>
-                  String(candidate.nominationId) ===
-                  String(postResult.publishedWinnerNominationId || "")
+                  postResult.publishedWinnerIsNota
+                    ? candidate.isNota
+                    : String(candidate.nominationId) ===
+                      String(postResult.publishedWinnerNominationId || "")
               ) || null
 
             return (
@@ -209,8 +211,10 @@ const StudentElectionWorkspace = ({
                 <div style={{ display: "grid", gap: "8px" }}>
                   {rankedCandidates.map((candidate, index) => {
                     const isWinner =
-                      String(candidate.nominationId) ===
-                      String(postResult.publishedWinnerNominationId || "")
+                      postResult.publishedWinnerIsNota
+                        ? candidate.isNota
+                        : String(candidate.nominationId) ===
+                          String(postResult.publishedWinnerNominationId || "")
                     const percentage = formatVotePercentage(candidate.voteCount, postResult.totalVotes)
                     const numericPercentage = Number.parseFloat(percentage)
 
@@ -263,7 +267,9 @@ const StudentElectionWorkspace = ({
                               >
                                 {candidate.candidateName}
                               </div>
-                              <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
+                              {!candidate.isNota && candidate.candidateRollNumber ? (
+                                <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
+                              ) : null}
                             </div>
                           </div>
 

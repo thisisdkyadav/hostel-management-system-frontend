@@ -1018,7 +1018,9 @@ const buildResultsDraftMap = (results = {}) =>
     (results.posts || []).map((post) => [
       String(post.postId),
       {
-        winnerNominationId: post.publishedWinnerNominationId || post.previewWinnerNominationId || "",
+        winnerNominationId: post.publishedWinnerIsNota
+          ? "nota"
+          : post.publishedWinnerNominationId || (post.previewWinnerIsNota ? "nota" : post.previewWinnerNominationId || ""),
         notes: post.notes || "",
       },
     ])
@@ -1557,7 +1559,8 @@ const ElectionsPage = () => {
       const payload = {
         posts: Object.entries(resultsDrafts).map(([postId, draft]) => ({
           postId,
-          winnerNominationId: draft?.winnerNominationId || null,
+          winnerNominationId: draft?.winnerNominationId === "nota" ? null : draft?.winnerNominationId || null,
+          winnerIsNota: draft?.winnerNominationId === "nota",
           notes: draft?.notes || "",
         })),
       }

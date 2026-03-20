@@ -1550,7 +1550,9 @@ export const AdminResultsEditModal = ({
                         <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
                           {candidate.candidateName}
                         </span>
-                        <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
+                        {!candidate.isNota && candidate.candidateRollNumber ? (
+                          <span style={mutedTextStyle}>{candidate.candidateRollNumber}</span>
+                        ) : null}
                       </div>
                     </div>
                     <strong style={{ color: "var(--color-text-heading)" }}>{candidate.voteCount}</strong>
