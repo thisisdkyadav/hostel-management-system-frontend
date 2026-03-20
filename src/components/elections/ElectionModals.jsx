@@ -747,16 +747,6 @@ export const ElectionWizardModal = ({
             <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
               <input
                 type="checkbox"
-                checked={Boolean(activePost.requirements.requireElectorateMembership)}
-                onChange={(event) =>
-                  updatePostRequirements(activePostIndex, "requireElectorateMembership", event.target.checked)
-                }
-              />
-              Candidate must belong to electorate
-            </label>
-            <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
-              <input
-                type="checkbox"
                 checked={Boolean(activePost.requirements.requireHostelResident)}
                 onChange={(event) =>
                   updatePostRequirements(activePostIndex, "requireHostelResident", event.target.checked)
