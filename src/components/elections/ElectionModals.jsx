@@ -138,7 +138,7 @@ export const CloneElectionModal = ({
   >
     <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
       <div style={mutedTextStyle}>
-        This creates a fresh copy of the current election configuration and nominations. Votes, results, and voting email state are not copied.
+        This creates a fresh draft copy of the current election configuration and nominations. Votes, results, and voting email state are not copied.
       </div>
       <div>
         <div style={{ marginBottom: "6px", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)" }}>
