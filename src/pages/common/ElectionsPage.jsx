@@ -1013,6 +1013,15 @@ const formatApiErrorMessage = (error, fallbackMessage) => {
   return error?.message || fallbackMessage
 }
 
+const formatVotePercentage = (voteCount, totalVotes) => {
+  const votes = Number(voteCount || 0)
+  const total = Number(totalVotes || 0)
+  if (total <= 0) return "0%"
+
+  const percentage = (votes / total) * 100
+  return percentage >= 10 ? `${percentage.toFixed(1)}%` : `${percentage.toFixed(2)}%`
+}
+
 const buildResultsDraftMap = (results = {}) =>
   Object.fromEntries(
     (results.posts || []).map((post) => [
@@ -1065,6 +1074,7 @@ const ElectionsPage = () => {
   const [liveVotingStats, setLiveVotingStats] = useState(null)
   const [loadingVotingStats, setLoadingVotingStats] = useState(false)
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
+  const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
 
@@ -1256,6 +1266,15 @@ const ElectionsPage = () => {
       loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
     }
   }, [adminViewTab, isAdminView, selectedAdminElection?.currentStage, selectedAdminElectionId])
+
+  useEffect(() => {
+    if (!isAdminView) return
+
+    const canViewResults = ["results", "handover", "completed"].includes(selectedAdminElection?.currentStage)
+    if (adminViewTab === "results" && !canViewResults) {
+      setAdminViewTab("posts")
+    }
+  }, [adminViewTab, isAdminView, selectedAdminElection?.currentStage])
 
   useEffect(() => {
     if (!isAdminView || !selectedAdminElectionId) return undefined
@@ -1575,6 +1594,74 @@ const ElectionsPage = () => {
     }
   }
 
+  const exportResultsCsv = () => {
+    if (!selectedAdminElection?.results?.posts?.length) {
+      toast.error("No result data available to export")
+      return
+    }
+
+    const escapeCsv = (value) => {
+      const stringValue = String(value ?? "")
+      if (/[",\n]/.test(stringValue)) {
+        return `"${stringValue.replace(/"/g, '""')}"`
+      }
+      return stringValue
+    }
+
+    const rows = (selectedAdminElection.results.posts || []).flatMap((postResult) => {
+      const draft = resultsDrafts[String(postResult.postId)] || {}
+      return (postResult.candidates || []).map((candidate, index) => {
+        const isSelectedWinner = String(draft.winnerNominationId || "") === String(candidate.nominationId || "")
+        const isPreviewWinner = postResult.previewWinnerIsNota
+          ? candidate.isNota
+          : String(candidate.nominationId || "") === String(postResult.previewWinnerNominationId || "")
+
+        return [
+          selectedAdminElection.title,
+          selectedAdminElection.academicYear,
+          postResult.postTitle,
+          index + 1,
+          candidate.candidateName,
+          candidate.candidateRollNumber || "",
+          candidate.isNota ? "YES" : "NO",
+          candidate.voteCount || 0,
+          formatVotePercentage(candidate.voteCount, postResult.totalVotes),
+          postResult.totalVotes || 0,
+          isPreviewWinner ? "YES" : "NO",
+          isSelectedWinner ? "YES" : "NO",
+          draft.notes || "",
+        ]
+      })
+    })
+
+    const headers = [
+      "Election",
+      "Academic Year",
+      "Post",
+      "Rank",
+      "Candidate",
+      "Roll Number",
+      "Is NOTA",
+      "Votes",
+      "Percentage",
+      "Total Votes",
+      "Preview Winner",
+      "Selected Winner",
+      "Notes",
+    ]
+
+    const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const date = new Date().toISOString().split("T")[0]
+    link.href = URL.createObjectURL(blob)
+    link.download = `election_results_${date}.csv`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
+
   const sendVotingEmails = async () => {
     if (!selectedAdminElectionId) return
 
@@ -1706,7 +1793,8 @@ const ElectionsPage = () => {
             adminOverview={adminOverview}
             resultsDrafts={resultsDrafts}
             busyKey={busyKey}
-            publishResults={publishResults}
+            onPublishResults={() => setShowPublishResultsConfirm(true)}
+            onExportResults={exportResultsCsv}
             setReviewNomination={setReviewNomination}
             setResultsEditorPostId={setResultsEditorPostId}
             infoBannerStyle={infoBannerStyle}
@@ -1910,15 +1998,27 @@ const ElectionsPage = () => {
       ) : null}
 
       {isAdminView ? (
-        <ConfirmationDialog
-          isOpen={showSendVotingEmailsConfirm}
-          onClose={() => setShowSendVotingEmailsConfirm(false)}
-          onConfirm={sendVotingEmails}
-          title="Send Voting List"
-          message="This will send voting ballot emails again to students who are still eligible to vote in this election. Use this only when you intentionally want to resend the voting list."
-          confirmText="Send Again"
-          cancelText="Cancel"
-        />
+        <>
+          <ConfirmationDialog
+            isOpen={showSendVotingEmailsConfirm}
+            onClose={() => setShowSendVotingEmailsConfirm(false)}
+            onConfirm={sendVotingEmails}
+            title="Send Voting List"
+            message="This will send voting ballot emails again to students who are still eligible to vote in this election. Use this only when you intentionally want to resend the voting list."
+            confirmText="Send Again"
+            cancelText="Cancel"
+          />
+
+          <ConfirmationDialog
+            isOpen={showPublishResultsConfirm}
+            onClose={() => setShowPublishResultsConfirm(false)}
+            onConfirm={publishResults}
+            title="Publish Results"
+            message="This will publish the currently selected winners for all posts and make the results visible to students. Please review the NOTA selections and candidate overrides before continuing."
+            confirmText="Publish Now"
+            cancelText="Cancel"
+          />
+        </>
       ) : null}
     </div>
   )

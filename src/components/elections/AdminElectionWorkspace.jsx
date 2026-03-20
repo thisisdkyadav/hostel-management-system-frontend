@@ -11,6 +11,15 @@ const nominationTabsDefault = [
   { label: "Withdrawn", value: "withdrawn" },
 ]
 
+const formatVotePercentage = (voteCount, totalVotes) => {
+  const votes = Number(voteCount || 0)
+  const total = Number(totalVotes || 0)
+  if (total <= 0) return "0%"
+
+  const percentage = (votes / total) * 100
+  return percentage >= 10 ? `${percentage.toFixed(1)}%` : `${percentage.toFixed(2)}%`
+}
+
 const AdminElectionWorkspace = ({
   selectedAdminElection,
   selectedAdminElectionId,
@@ -22,7 +31,8 @@ const AdminElectionWorkspace = ({
   adminOverview,
   resultsDrafts,
   busyKey,
-  publishResults,
+  onPublishResults,
+  onExportResults,
   setReviewNomination,
   setResultsEditorPostId,
   infoBannerStyle,
@@ -48,15 +58,28 @@ const AdminElectionWorkspace = ({
   cloneDisabledReason,
 }) => {
   const isVotingStage = selectedAdminElection?.currentStage === "voting"
+  const canViewResultsTab = ["results", "handover", "completed"].includes(selectedAdminElection?.currentStage)
   const tabs = [
     { label: "Posts", value: "posts" },
     { label: "Nominations", value: "nominations" },
-    { label: "Results", value: "results" },
+    ...(canViewResultsTab ? [{ label: "Results", value: "results" }] : []),
     ...(isVotingStage ? [{ label: "Ongoing Voting", value: "voting" }] : []),
     { label: "Info", value: "info" },
   ]
   const votingDispatch = liveVotingStats?.dispatch || {}
   const votingOverview = liveVotingStats?.overview || {}
+  const resultPosts = selectedAdminElection?.results?.posts || []
+  const resultSummary = {
+    totalVotes: resultPosts.reduce((sum, post) => sum + Number(post.totalVotes || 0), 0),
+    publishedCount: resultPosts.filter((post) => {
+      const draft = resultsDrafts[String(post.postId)] || {}
+      return Boolean(draft.winnerNominationId)
+    }).length,
+    notaCount: resultPosts.filter((post) => {
+      const draft = resultsDrafts[String(post.postId)] || {}
+      return String(draft.winnerNominationId || "") === "nota"
+    }).length,
+  }
 
   return (
     <>
@@ -258,20 +281,141 @@ const AdminElectionWorkspace = ({
             }}
           >
             <div style={mutedTextStyle}>
-              Open a row to adjust the winner before publishing the final result.
+              Review each post, adjust the selected winner if needed, then export or publish the final result.
             </div>
-            <Button
-              size="sm"
-              onClick={publishResults}
-              loading={busyKey === `results:${selectedAdminElectionId}`}
-              disabled={(selectedAdminElection?.results?.posts || []).length === 0}
-            >
-              Publish Results
-            </Button>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={onExportResults}
+                disabled={resultPosts.length === 0}
+              >
+                Export CSV
+              </Button>
+              <Button
+                size="sm"
+                onClick={onPublishResults}
+                loading={busyKey === `results:${selectedAdminElectionId}`}
+                disabled={resultPosts.length === 0}
+              >
+                Publish Results
+              </Button>
+            </div>
+          </div>
+
+          <div style={infoGridStyle}>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Posts</span>
+              <span style={compactStatValueStyle}>{resultPosts.length}</span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Votes Counted</span>
+              <span style={compactStatValueStyle}>{resultSummary.totalVotes}</span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Selected Winners</span>
+              <span style={compactStatValueStyle}>{resultSummary.publishedCount}</span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>NOTA Selected</span>
+              <span style={compactStatValueStyle}>{resultSummary.notaCount}</span>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gap: "var(--spacing-3)", marginBottom: "var(--spacing-3)" }}>
+            {resultPosts.map((postResult) => {
+              const draft = resultsDrafts[String(postResult.postId)] || {}
+              const selectedWinner =
+                (postResult.candidates || []).find(
+                  (candidate) => String(candidate.nominationId) === String(draft.winnerNominationId || "")
+                ) || null
+
+              return (
+                <div
+                  key={postResult.postId}
+                  onClick={() => setResultsEditorPostId(String(postResult.postId))}
+                  style={{
+                    display: "grid",
+                    gap: "var(--spacing-3)",
+                    border: "1px solid var(--color-border-primary)",
+                    borderRadius: "var(--radius-xl)",
+                    padding: "var(--spacing-4)",
+                    backgroundColor: "var(--color-bg-primary)",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "var(--spacing-3)",
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ display: "grid", gap: "4px" }}>
+                      <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                        {postResult.postTitle}
+                      </span>
+                      <span style={mutedTextStyle}>
+                        {postResult.totalVotes} vote(s) · {(postResult.candidates || []).length} option(s)
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                      <StatusPill tone="default" pillBaseStyle={pillBaseStyle} statusToneStyles={statusToneStyles}>
+                        Lead: {postResult.previewWinnerName || "—"}
+                      </StatusPill>
+                      <StatusPill
+                        tone={String(draft.winnerNominationId || "") === "nota" ? "warning" : "success"}
+                        pillBaseStyle={pillBaseStyle}
+                        statusToneStyles={statusToneStyles}
+                      >
+                        Selected: {selectedWinner?.candidateName || "Not selected"}
+                      </StatusPill>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gap: "8px" }}>
+                    {(postResult.candidates || []).map((candidate) => {
+                      const isSelected = String(draft.winnerNominationId || "") === String(candidate.nominationId || "")
+                      return (
+                        <div
+                          key={candidate.nominationId}
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "minmax(0, 1.5fr) auto auto",
+                            gap: "12px",
+                            alignItems: "center",
+                            padding: "10px 12px",
+                            borderRadius: "var(--radius-lg)",
+                            backgroundColor: isSelected ? "var(--color-primary-bg)" : "var(--color-bg-secondary)",
+                          }}
+                        >
+                          <div style={{ minWidth: 0 }}>
+                            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-heading)" }}>
+                              {candidate.candidateName}
+                            </div>
+                            {!candidate.isNota && candidate.candidateRollNumber ? (
+                              <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
+                            ) : null}
+                          </div>
+                          <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                            {candidate.voteCount} vote(s)
+                          </div>
+                          <div style={{ ...mutedTextStyle, textAlign: "right" }}>
+                            {formatVotePercentage(candidate.voteCount, postResult.totalVotes)}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
           </div>
 
           <DataTable
-            data={selectedAdminElection?.results?.posts || []}
+            data={resultPosts}
             emptyMessage="No result data available yet."
             onRowClick={(postResult) => setResultsEditorPostId(String(postResult.postId))}
             columns={[
@@ -281,7 +425,7 @@ const AdminElectionWorkspace = ({
                 render: (postResult) => (
                   <div style={{ display: "grid", gap: "2px" }}>
                     <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{postResult.postTitle}</span>
-                    <span style={mutedTextStyle}>{(postResult.candidates || []).length} option(s)</span>
+                    <span style={mutedTextStyle}>{postResult.totalVotes || 0} vote(s)</span>
                   </div>
                 ),
               },
@@ -305,6 +449,17 @@ const AdminElectionWorkspace = ({
                     ) || null
 
                   return selectedWinner?.candidateName || "Not selected"
+                },
+              },
+              {
+                header: "Leading Margin",
+                key: "leadingMargin",
+                render: (postResult) => {
+                  const topTwo = [...(postResult.candidates || [])]
+                    .sort((left, right) => Number(right.voteCount || 0) - Number(left.voteCount || 0))
+                    .slice(0, 2)
+                  const margin = Number(topTwo[0]?.voteCount || 0) - Number(topTwo[1]?.voteCount || 0)
+                  return topTwo.length > 1 ? `${margin} vote(s)` : "—"
                 },
               },
             ]}
