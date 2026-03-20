@@ -1302,6 +1302,29 @@ export const StudentNominationModal = ({
           </div>
 
           <div style={flatPanelStyle}>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "10px",
+                color: "var(--color-text-body)",
+                fontWeight: "var(--font-weight-medium)",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={Boolean(form.hasNoActiveBacklogs)}
+                onChange={(event) => updateForm({ hasNoActiveBacklogs: event.target.checked })}
+                style={{ marginTop: "2px" }}
+              />
+              <span>
+                I confirm that I do not have any active backlog and that I understand I can keep only one active
+                nomination in this election at a time.
+              </span>
+            </label>
+          </div>
+
+          <div style={flatPanelStyle}>
             <label style={labelStyle}>Pitch</label>
             <textarea style={textareaStyle} value={form.pitch} onChange={(event) => updateForm({ pitch: event.target.value })} />
           </div>

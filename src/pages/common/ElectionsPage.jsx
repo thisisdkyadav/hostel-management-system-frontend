@@ -351,6 +351,7 @@ const createBlankNominationForm = () => ({
   cgpa: "",
   completedSemesters: "",
   remainingSemesters: "",
+  hasNoActiveBacklogs: false,
   proposerEntries: [],
   seconderEntries: [],
   gradeCardUrl: "",
@@ -401,6 +402,7 @@ const buildNominationDraftFromPost = (post = {}) => ({
   cgpa: post?.myNomination?.cgpa ?? "",
   completedSemesters: post?.myNomination?.completedSemesters ?? "",
   remainingSemesters: post?.myNomination?.remainingSemesters ?? "",
+  hasNoActiveBacklogs: Boolean(post?.myNomination?.hasNoActiveBacklogs),
   proposerEntries: hydrateSupporterEntries(
     post?.myNomination?.proposerEntries || [],
     Number(post?.requirements?.proposersRequired || 0)
@@ -637,6 +639,7 @@ const buildNominationPayload = (form) => ({
   cgpa: Number(form.cgpa || 0),
   completedSemesters: Number(form.completedSemesters || 0),
   remainingSemesters: Number(form.remainingSemesters || 0),
+  hasNoActiveBacklogs: Boolean(form.hasNoActiveBacklogs),
   proposerRollNumbers: (form.proposerEntries || [])
     .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
     .filter(Boolean),
@@ -934,6 +937,10 @@ const validateNominationForm = (form, post) => {
 
   if (!Number.isInteger(Number(form.remainingSemesters)) || Number(form.remainingSemesters) < 0) {
     return "Remaining semesters must be a non-negative whole number."
+  }
+
+  if (!form.hasNoActiveBacklogs) {
+    return "Confirm that you do not have any active backlog before saving the nomination."
   }
 
   if (String(form.pitch || "").trim().length > 3000) {
