@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/feedback"
 import { electionsApi, uploadApi } from "@/service"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
+const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
 
 const resolveUploadedUrl = (uploadResponse) => {
   if (typeof uploadResponse === "string") return uploadResponse
@@ -420,8 +421,8 @@ export const DocumentUploadField = ({
       return
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Document size must be 5MB or smaller")
+    if (file.size > nominationDocumentMaxSizeBytes) {
+      toast.error("Document size must be 10MB or smaller")
       event.target.value = ""
       return
     }
@@ -494,7 +495,7 @@ export const DocumentUploadField = ({
           </div>
         ) : (
           <div style={{ display: "grid", gap: "10px" }}>
-              <div style={mutedTextStyle}>PDF only, max 5MB</div>
+              <div style={mutedTextStyle}>PDF only, max 10MB</div>
             <label style={{ margin: 0 }}>
               <input
                 type="file"
