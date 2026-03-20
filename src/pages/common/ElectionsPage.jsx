@@ -928,12 +928,16 @@ const validateNominationForm = (form, post) => {
     return "Confirm that you do not have any active backlog before saving the nomination."
   }
 
-  if (String(form.pitch || "").trim().length > 3000) {
-    return "Pitch cannot exceed 3000 characters."
+  if (String(form.pitch || "").trim().length > 2000) {
+    return "Pitch cannot exceed 2000 characters."
   }
 
-  if (agendaPoints.length > 8 || agendaPoints.some((item) => item.length > 200)) {
-    return "You can add up to 8 agenda points, each with a maximum of 200 characters."
+  if (String(form.agendaPoints || "").trim().length > 2000) {
+    return "Agenda points cannot exceed 2000 characters."
+  }
+
+  if (agendaPoints.length > 8 || agendaPoints.some((item) => item.length > 2000)) {
+    return "You can add up to 8 agenda points, and the total content must stay within 2000 characters."
   }
 
   if (new Set([...proposerRollNumbers, ...seconderRollNumbers]).size !== proposerRollNumbers.length + seconderRollNumbers.length) {

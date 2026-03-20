@@ -1318,7 +1318,12 @@ export const StudentNominationModal = ({
 
           <div style={flatPanelStyle}>
             <label style={labelStyle}>Pitch</label>
-            <textarea style={textareaStyle} value={form.pitch} onChange={(event) => updateForm({ pitch: event.target.value })} />
+            <textarea
+              style={textareaStyle}
+              value={form.pitch}
+              maxLength={2000}
+              onChange={(event) => updateForm({ pitch: event.target.value })}
+            />
           </div>
 
           <div style={flatPanelStyle}>
@@ -1326,6 +1331,7 @@ export const StudentNominationModal = ({
             <textarea
               style={textareaStyle}
               value={form.agendaPoints}
+              maxLength={2000}
               onChange={(event) => updateForm({ agendaPoints: event.target.value })}
               placeholder="One agenda point per line"
             />
