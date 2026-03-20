@@ -1,8 +1,15 @@
 const normalizeName = (value) => (typeof value === "string" ? value.trim() : "")
+export const MIXED_BATCH_SCOPE_KEY = "__MIXED__"
 
 const sortNames = (left, right) => (
   left.localeCompare(right, undefined, { sensitivity: "base", numeric: true })
 )
+
+const normalizeScopeKey = (value) => {
+  const normalized = normalizeName(value)
+  if (!normalized) return ""
+  return normalized === MIXED_BATCH_SCOPE_KEY ? MIXED_BATCH_SCOPE_KEY : normalized
+}
 
 const dedupeNames = (values = []) => {
   const seen = new Set()
@@ -23,8 +30,8 @@ const dedupeNames = (values = []) => {
 }
 
 export const getBatchesForSelection = (config = {}, degree = "", department = "") => {
-  const normalizedDegree = normalizeName(degree)
-  const normalizedDepartment = normalizeName(department)
+  const normalizedDegree = normalizeScopeKey(degree)
+  const normalizedDepartment = normalizeScopeKey(department)
 
   if (!normalizedDegree || !normalizedDepartment) return []
 
@@ -32,8 +39,8 @@ export const getBatchesForSelection = (config = {}, degree = "", department = ""
 }
 
 export const setBatchesForSelection = (config = {}, degree = "", department = "", batches = []) => {
-  const normalizedDegree = normalizeName(degree)
-  const normalizedDepartment = normalizeName(department)
+  const normalizedDegree = normalizeScopeKey(degree)
+  const normalizedDepartment = normalizeScopeKey(department)
 
   if (!normalizedDegree || !normalizedDepartment) return config
 
@@ -57,8 +64,27 @@ export const countConfiguredBatches = (config = {}) => {
   ), 0)
 }
 
+export const getBatchScopeLabel = (value = "", type = "degree") => {
+  const normalizedValue = normalizeScopeKey(value)
+  if (normalizedValue === MIXED_BATCH_SCOPE_KEY) {
+    return type === "department" ? "Mixed Department" : "Mixed Degree"
+  }
+  return normalizedValue
+}
+
+export const createBatchScopeOptions = (items = [], type = "degree") => {
+  const mixedLabel = type === "department" ? "Mixed Department" : "Mixed Degree"
+  const normalizedItems = dedupeNames(items).map((item) => ({ value: item, label: item }))
+  return normalizedItems.length > 0
+    ? [...normalizedItems, { value: MIXED_BATCH_SCOPE_KEY, label: mixedLabel }]
+    : [{ value: MIXED_BATCH_SCOPE_KEY, label: mixedLabel }]
+}
+
 export default {
+  MIXED_BATCH_SCOPE_KEY,
   getBatchesForSelection,
   setBatchesForSelection,
   countConfiguredBatches,
+  getBatchScopeLabel,
+  createBatchScopeOptions,
 }

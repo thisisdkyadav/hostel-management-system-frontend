@@ -10,6 +10,7 @@ import ConfigForm from "../../components/admin/settings/ConfigForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
+import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
 import toast from "react-hot-toast"
 import { Card } from "@/components/ui"
 
@@ -442,15 +443,10 @@ const SettingsPage = () => {
       await adminApi.renameStudentBatch({ degree, department, oldName, newName })
 
       setStudentBatches((prev) => {
-        const nextDegreeConfig = { ...(prev[degree] || {}) }
-        const nextBatches = (nextDegreeConfig[department] || []).map((batch) => (
+        const nextBatches = getBatchesForSelection(prev, degree, department).map((batch) => (
           batch === oldName ? newName : batch
         ))
-        nextDegreeConfig[department] = [...new Set(nextBatches)]
-        return {
-          ...prev,
-          [degree]: nextDegreeConfig,
-        }
+        return setBatchesForSelection(prev, degree, department, nextBatches)
       })
 
       toast.success(`Batch "${oldName}" has been renamed to "${newName}"`)
@@ -668,7 +664,7 @@ const SettingsPage = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <p className="text-sm">Manage batch values per degree and department combination. Use this before assigning students to batches in the bulk update flow.</p>
+                    <p className="text-sm">Manage batch values by degree and department scope. You can configure exact combinations, Mixed Degree, Mixed Department, or both mixed before assigning students in the batch update flow.</p>
                   </div>
 
                   {loading.studentBatches && Object.keys(studentBatches).length === 0 ? (

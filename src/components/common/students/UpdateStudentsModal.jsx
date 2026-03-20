@@ -12,6 +12,7 @@ import { Select, Checkbox, FileInput } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemLimits"
 import { useSocket } from "../../../contexts/SocketProvider"
+import { createBatchScopeOptions, getBatchScopeLabel, MIXED_BATCH_SCOPE_KEY } from "../../../utils/studentBatchConfig"
 
 // Reusable styles using theme CSS variables
 const styles = {
@@ -257,6 +258,16 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     message: null,
   })
   const [updateResultRows, setUpdateResultRows] = useState([])
+
+  const batchDegreeOptions = useMemo(
+    () => createBatchScopeOptions(validDegrees, "degree"),
+    [validDegrees]
+  )
+
+  const batchDepartmentOptions = useMemo(
+    () => createBatchScopeOptions(validDepartments, "department"),
+    [validDepartments]
+  )
 
   const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
@@ -836,7 +847,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         if (unsuccessfulCount > 0) {
           toast.success(`Updated ${response.updatedCount || 0} students. ${unsuccessfulCount} roll numbers were not found.`)
         } else {
-          toast.success(`Successfully assigned ${rollNumbers.length} student${rollNumbers.length > 1 ? "s" : ""} to ${selectedBatch}`)
+          const appliedDegree = response?.assignment?.appliedDegree
+          const appliedDepartment = response?.assignment?.appliedDepartment
+          const assignmentSummary = [
+            appliedDegree ? `degree ${appliedDegree}` : "existing degree",
+            appliedDepartment ? `department ${appliedDepartment}` : "existing department",
+          ].join(", ")
+          toast.success(`Successfully assigned ${rollNumbers.length} student${rollNumbers.length > 1 ? "s" : ""} to ${selectedBatch} using ${assignmentSummary}.`)
         }
       }
 
@@ -1515,13 +1532,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         <p className="font-medium mb-1">How this works:</p>
         <ul className="grid grid-cols-1 gap-y-1">
           <li>
-            <span className="font-medium">1.</span> Select a degree.
+            <span className="font-medium">1.</span> Select a degree or Mixed Degree.
           </li>
           <li>
-            <span className="font-medium">2.</span> Select a department.
+            <span className="font-medium">2.</span> Select a department or Mixed Department.
           </li>
           <li>
-            <span className="font-medium">3.</span> Select one configured batch for that combination.
+            <span className="font-medium">3.</span> Select one configured batch for that combination. The list includes exact matches plus any mixed-scope batches that apply.
           </li>
           <li>
             <span className="font-medium">4.</span> Upload a CSV with student roll numbers to assign all of them to that batch.
@@ -1543,7 +1560,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               }}
               options={[
                 { value: "", label: "Select Degree" },
-                ...validDegrees.map((degree) => ({ value: degree, label: degree })),
+                ...batchDegreeOptions,
               ]}
               disabled={configLoading}
             />
@@ -1559,7 +1576,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               }}
               options={[
                 { value: "", label: "Select Department" },
-                ...validDepartments.map((department) => ({ value: department, label: department })),
+                ...batchDepartmentOptions,
               ]}
               disabled={configLoading}
             />
@@ -1580,7 +1597,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         </div>
 
         <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4 text-sm text-[var(--color-text-muted)]">
-          Select the academic combination first. Assigning a batch through this tab also stores the selected degree and department on the student profile.
+          The batch list includes exact and mixed-scope batches that apply to the selected lookup scope. If you choose an exact degree or department, that field is updated on the student profile. If you choose <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(MIXED_BATCH_SCOPE_KEY, "degree")}</span> or <span className="font-medium text-[var(--color-text-body)]">{getBatchScopeLabel(MIXED_BATCH_SCOPE_KEY, "department")}</span>, that field stays unchanged and is used only to make mixed-scope batches available.
         </div>
 
         <CsvUploader

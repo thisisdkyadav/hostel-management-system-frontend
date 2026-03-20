@@ -108,6 +108,7 @@ const AcademicInfoSection = ({ data, onChange }) => {
               ...(data.batch && !availableBatches.includes(data.batch) ? [{ value: data.batch, label: data.batch }] : []),
             ]}
           />
+          <p className="mt-1 text-xs text-[var(--color-text-muted)]">Batch options include exact matches and any mixed-scope batches configured for the selected degree and department.</p>
         </div>
 
         <FormField label="Admission Date" name="admissionDate" type="date" value={data.admissionDate ? (data.admissionDate instanceof Date ? data.admissionDate.toISOString().split("T")[0] : new Date(data.admissionDate).toISOString().split("T")[0]) : ""} onChange={handleChange} />
