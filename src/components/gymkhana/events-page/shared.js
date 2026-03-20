@@ -860,6 +860,9 @@ export const buildEventPayload = (formData) => ({
 export const toCalendarEventPayload = (event) => {
   const normalized = normalizeEvent(event)
   return {
+    ...(typeof normalized._id === "string" && VALID_OBJECT_ID_REGEX.test(normalized._id)
+      ? { _id: normalized._id }
+      : {}),
     title: normalized.title?.trim(),
     category: normalized.category,
     startDate: normalized.startDate,

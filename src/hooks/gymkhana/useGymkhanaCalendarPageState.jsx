@@ -216,7 +216,13 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   )
   const dateConflicts = useMemo(() => getDateConflicts(events), [events])
   const pendingProposalReminders = useMemo(
-    () => events.filter((event) => event.gymkhanaEventId && isProposalWindowOpen(event)),
+    () =>
+      events.filter(
+        (event) =>
+          event.gymkhanaEventId &&
+          event.proposalCreationAllowed !== false &&
+          isProposalWindowOpen(event)
+      ),
     [events]
   )
   const selectedCalendarEventIds = useMemo(() => {
@@ -341,6 +347,8 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       }
 
       const normalizedEvents = (calendarData.events || []).map(normalizeEvent)
+      const isProposalCreationAllowedForCalendar =
+        calendarData.status === "approved" || Boolean(calendarData.allowProposalBeforeApproval)
       let mergedEvents = normalizedEvents
 
       try {
@@ -383,6 +391,11 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       } catch {
         mergedEvents = normalizedEvents
       }
+
+      mergedEvents = mergedEvents.map((event) => ({
+        ...event,
+        proposalCreationAllowed: isProposalCreationAllowedForCalendar,
+      }))
 
       setCalendar({ ...calendarData, events: mergedEvents })
       setEvents(mergedEvents)
@@ -857,6 +870,29 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     }
   }
 
+  const handleUpdateCalendarSettings = async (nextAllowProposalBeforeApproval) => {
+    if (!canManageCalendarLock) {
+      toast.error("You do not have permission to manage calendar settings")
+      return
+    }
+
+    if (!calendar?._id) return
+
+    try {
+      setSubmitting(true)
+      await gymkhanaEventsApi.updateCalendarSettings(calendar._id, {
+        allowProposalBeforeApproval: Boolean(nextAllowProposalBeforeApproval),
+      })
+      toast.success("Calendar settings updated")
+      await fetchCalendar(selectedYear)
+      await fetchYears()
+    } catch (err) {
+      toast.error(err.message || "Failed to update calendar settings")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   const openApprovalModal = () => {
     setApprovalComments("")
     setCalendarNextApprovalStages([])
@@ -925,6 +961,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     handleEventFormChange,
     handleEventRowClick,
     handleLockCalendar,
+    handleUpdateCalendarSettings,
     handleReject,
     handleSaveEvent,
     handleSubmitAmendment,

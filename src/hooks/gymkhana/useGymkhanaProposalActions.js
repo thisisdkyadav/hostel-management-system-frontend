@@ -87,6 +87,7 @@ export const useGymkhanaProposalActions = ({
     return (
       isGS &&
       canCreateEventsCapability &&
+      proposalEvent.proposalCreationAllowed !== false &&
       isProposalWindowOpen(proposalEvent) &&
       !proposalData &&
       proposalEvent.gymkhanaEventId

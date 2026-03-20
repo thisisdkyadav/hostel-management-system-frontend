@@ -68,6 +68,10 @@ export const gymkhanaEventsApi = {
     return apiClient.put(`${BASE_PATH}/calendar/${id}`, data)
   },
 
+  updateCalendarSettings: (id, data) => {
+    return apiClient.patch(`${BASE_PATH}/calendar/${id}/settings`, data)
+  },
+
   /**
    * Submit calendar for approval (GS only)
    */

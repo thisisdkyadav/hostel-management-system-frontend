@@ -1,6 +1,6 @@
 import { Button, Modal } from "czero/react"
 import { Badge } from "@/components/ui/data-display"
-import { Select } from "@/components/ui/form"
+import { Checkbox, Select } from "@/components/ui/form"
 import {
   CalendarDays,
   CircleDollarSign,
@@ -162,7 +162,7 @@ export const GymkhanaEventDetailsModal = ({
           (isAdminLevel && canApproveEventsCapability))
 
       const proposalSummary = !selectedEvent.gymkhanaEventId
-        ? "Available after calendar approval and event record generation."
+        ? "Available after calendar approval, or earlier if Admin enables early proposals for this calendar."
         : selectedEvent.proposalSubmitted
           ? "Proposal submitted and under review/approved."
           : `Proposal due on ${proposalDueText}.`
@@ -495,6 +495,7 @@ export const GymkhanaSettingsModal = ({
   submitting,
   onLock,
   onUnlock,
+  onToggleAllowProposalBeforeApproval,
 }) => (
   <Modal
     isOpen={isOpen}
@@ -509,7 +510,7 @@ export const GymkhanaSettingsModal = ({
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
       <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-        Configure lock state for {calendar?.academicYear}
+        Configure lock state and proposal rules for {calendar?.academicYear}
       </span>
       <div
         style={{
@@ -545,6 +546,21 @@ export const GymkhanaSettingsModal = ({
             <Lock size={14} /> Lock
           </Button>
         )}
+      </div>
+      <div
+        style={{
+          borderRadius: "var(--radius-card-sm)",
+          padding: "var(--spacing-3)",
+          backgroundColor: "var(--color-bg-secondary)",
+        }}
+      >
+        <Checkbox
+          checked={Boolean(calendar?.allowProposalBeforeApproval)}
+          disabled={submitting}
+          label="Allow proposal submission before calendar approval"
+          description="If enabled, proposals can be submitted and approved even while this calendar is still draft or pending approval."
+          onChange={(event) => onToggleAllowProposalBeforeApproval?.(event.target.checked)}
+        />
       </div>
     </div>
   </Modal>
