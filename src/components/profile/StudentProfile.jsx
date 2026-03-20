@@ -10,12 +10,48 @@ import StudentEditProfileModal from "./StudentEditProfileModal"
 import StudentFamilyDetails from "./StudentFamilyDetails"
 import { formatDateTime } from "../../utils/dateUtils"
 
+const normalizeStudentProfile = (profile) => {
+  if (!profile || typeof profile !== "object") return null
+
+  return {
+    userId: profile.userId || profile._id || "",
+    id: profile.id || "",
+    name: profile.name || "",
+    email: profile.email || "",
+    phone: profile.phone || "",
+    profileImage: profile.profileImage || "",
+    rollNumber: profile.rollNumber || "",
+    department: profile.department || "",
+    degree: profile.degree || "",
+    batch: profile.batch || "",
+    groups: Array.isArray(profile.groups) ? profile.groups.filter(Boolean) : [],
+    year: profile.year || "",
+    gender: profile.gender || "",
+    dateOfBirth: profile.dateOfBirth || "",
+    address: profile.address || "",
+    guardian: profile.guardian || "",
+    guardianPhone: profile.guardianPhone || "",
+    guardianEmail: profile.guardianEmail || "",
+    hostel: profile.hostel || "",
+    unit: profile.unit || "",
+    room: profile.room || "",
+    bedNumber: profile.bedNumber || "",
+    displayRoom: profile.displayRoom || "",
+  }
+}
+
+const formatOptionalDate = (value) => {
+  if (!value) return null
+  return formatDateTime(value).date
+}
+
 const StudentProfile = ({ user }) => {
   const [studentData, setStudentData] = useState(null)
   const [healthDetails, setHealthDetails] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const currentUserId = user?._id || user?.id
 
   const fetchStudentData = async () => {
     try {
@@ -23,7 +59,7 @@ const StudentProfile = ({ user }) => {
       setError(null)
 
       const response = await studentApi.getStudent()
-      setStudentData(response.data)
+      setStudentData(normalizeStudentProfile(response))
     } catch (error) {
       console.error("Error fetching student data:", error)
       setError("Failed to load your profile data. Please try again later.")
@@ -47,7 +83,7 @@ const StudentProfile = ({ user }) => {
   useEffect(() => {
     fetchStudentData()
     fetchHealthDetails()
-  }, [user.id])
+  }, [currentUserId])
 
   const handleProfileUpdate = () => {
     fetchStudentData()
@@ -71,6 +107,12 @@ const StudentProfile = ({ user }) => {
   const groupsLabel = Array.isArray(studentData.groups) && studentData.groups.length > 0
     ? studentData.groups.join(", ")
     : ""
+  const roomLabel = studentData.displayRoom || [studentData.room, studentData.bedNumber].filter(Boolean).join(" ")
+  const dateOfBirthLabel = formatOptionalDate(studentData.dateOfBirth)
+  const insuranceProvider = healthDetails?.insurance?.insuranceProvider
+  const insurancePeriodLabel = insuranceProvider?.startDate && insuranceProvider?.endDate
+    ? `${formatDateTime(insuranceProvider.startDate).date} - ${formatDateTime(insuranceProvider.endDate).date}`
+    : null
 
   return (
     <div>
@@ -89,7 +131,7 @@ const StudentProfile = ({ user }) => {
             <ProfileInfo label="Phone Number" value={studentData.phone} icon={FiPhone} />
             <ProfileInfo label="Roll Number" value={studentData.rollNumber} icon={FiHash} />
             <ProfileInfo label="Permanent Address" value={studentData.address} icon={FiMapPin} />
-            <ProfileInfo label="Date of Birth" value={formatDateTime(studentData.dateOfBirth).date} icon={FiCalendar} />
+            <ProfileInfo label="Date of Birth" value={dateOfBirthLabel} icon={FiCalendar} />
             <ProfileInfo label="Gender" value={studentData.gender} icon={FiUser} />
           </ProfileCard>
           <ProfileCard title="Academic Information">
@@ -100,7 +142,7 @@ const StudentProfile = ({ user }) => {
             {/* {studentData.degree && <ProfileInfo label="Year" value={studentData.year} icon={FiUser} />} */}
           </ProfileCard>
           <ProfileCard title="Family Members">
-            <StudentFamilyDetails userId={studentData.userId || user.id} editable={false} />
+            <StudentFamilyDetails userId={studentData.userId || currentUserId} editable={false} />
           </ProfileCard>
         </div>
 
@@ -108,7 +150,7 @@ const StudentProfile = ({ user }) => {
           <ProfileCard title="Hostel Information">
             <ProfileInfo label="Hostel" value={studentData.hostel} icon={FiHome} />
             <ProfileInfo label="Unit" value={studentData.unit} icon={FiBookmark} />
-            <ProfileInfo label="Room Number" value={`${studentData.room}(${studentData.bedNumber})`} icon={FiHome} />
+            <ProfileInfo label="Room Number" value={roomLabel} icon={FiHome} />
           </ProfileCard>
 
           <ProfileCard title="Emergency Contact">
@@ -120,13 +162,13 @@ const StudentProfile = ({ user }) => {
           <ProfileCard title="Health Details">
             <ProfileInfo label="Blood Group" value={healthDetails?.bloodGroup} icon={FiUser} />
             <ProfileInfo label="Insurance Number" value={healthDetails?.insurance?.insuranceNumber} icon={FiUser} />
-            <ProfileInfo label="Insurance Provider" value={healthDetails?.insurance?.insuranceProvider?.name} icon={FiUser} />
-            {healthDetails?.insurance?.insuranceProvider?.name && <ProfileInfo label="Insurance Period" value={`${formatDateTime(healthDetails?.insurance?.insuranceProvider?.startDate).date} - ${formatDateTime(healthDetails?.insurance?.insuranceProvider?.endDate).date}`} icon={FiUser} />}
+            <ProfileInfo label="Insurance Provider" value={insuranceProvider?.name} icon={FiUser} />
+            {insurancePeriodLabel && <ProfileInfo label="Insurance Period" value={insurancePeriodLabel} icon={FiUser} />}
           </ProfileCard>
         </div>
       </div>
 
-      {isEditModalOpen && <StudentEditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onUpdate={handleProfileUpdate} userId={studentData.userId || user.id} currentData={studentData} />}
+      {isEditModalOpen && <StudentEditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onUpdate={handleProfileUpdate} userId={studentData.userId || currentUserId} currentData={studentData} />}
     </div>
   )
 }
