@@ -285,11 +285,6 @@ const timelineFieldDefs = [
 
 const requirementFieldDefs = [
   { key: "minCgpa", label: "Minimum CGPA", step: "0.1" },
-  { key: "minCompletedSemestersUg", label: "UG semesters completed" },
-  { key: "minCompletedSemestersPg", label: "PG semesters completed" },
-  { key: "minRemainingSemesters", label: "Remaining semesters" },
-  { key: "proposersRequired", label: "Proposers required" },
-  { key: "secondersRequired", label: "Seconders required" },
 ]
 
 const createBlankPost = () => ({
@@ -310,11 +305,11 @@ const createBlankPost = () => ({
   },
   requirements: {
     minCgpa: 6,
-    minCompletedSemestersUg: 3,
-    minCompletedSemestersPg: 1,
-    minRemainingSemesters: 2,
-    proposersRequired: 3,
-    secondersRequired: 5,
+    minCompletedSemestersUg: 0,
+    minCompletedSemestersPg: 0,
+    minRemainingSemesters: 0,
+    proposersRequired: 1,
+    secondersRequired: 1,
     requireElectorateMembership: true,
     requireHostelResident: false,
     allowedHostelNames: [],
@@ -351,8 +346,6 @@ const createBlankNominationForm = () => ({
   pitch: "",
   agendaPoints: "",
   cgpa: "",
-  completedSemesters: "",
-  remainingSemesters: "",
   hasNoActiveBacklogs: false,
   proposerEntries: [],
   seconderEntries: [],
@@ -402,16 +395,14 @@ const buildNominationDraftFromPost = (post = {}) => ({
   pitch: post?.myNomination?.pitch || "",
   agendaPoints: (post?.myNomination?.agendaPoints || []).join("\n"),
   cgpa: post?.myNomination?.cgpa ?? "",
-  completedSemesters: post?.myNomination?.completedSemesters ?? "",
-  remainingSemesters: post?.myNomination?.remainingSemesters ?? "",
   hasNoActiveBacklogs: Boolean(post?.myNomination?.hasNoActiveBacklogs),
   proposerEntries: hydrateSupporterEntries(
     post?.myNomination?.proposerEntries || [],
-    Number(post?.requirements?.proposersRequired || 0)
+    Math.max(1, Number(post?.requirements?.proposersRequired || 1))
   ),
   seconderEntries: hydrateSupporterEntries(
     post?.myNomination?.seconderEntries || [],
-    Number(post?.requirements?.secondersRequired || 0)
+    Math.max(1, Number(post?.requirements?.secondersRequired || 1))
   ),
   gradeCardUrl: post?.myNomination?.gradeCardUrl || "",
   manifestoUrl: post?.myNomination?.manifestoUrl || "",
@@ -585,11 +576,11 @@ const buildElectionFormFromDetail = (detail) => ({
           voterEligibility: normalizeScopeForForm(post.voterEligibility),
           requirements: {
             minCgpa: post.requirements?.minCgpa ?? 6,
-            minCompletedSemestersUg: post.requirements?.minCompletedSemestersUg ?? 3,
-            minCompletedSemestersPg: post.requirements?.minCompletedSemestersPg ?? 1,
-            minRemainingSemesters: post.requirements?.minRemainingSemesters ?? 2,
-            proposersRequired: post.requirements?.proposersRequired ?? 3,
-            secondersRequired: post.requirements?.secondersRequired ?? 5,
+            minCompletedSemestersUg: post.requirements?.minCompletedSemestersUg ?? 0,
+            minCompletedSemestersPg: post.requirements?.minCompletedSemestersPg ?? 0,
+            minRemainingSemesters: post.requirements?.minRemainingSemesters ?? 0,
+            proposersRequired: 1,
+            secondersRequired: 1,
             requireElectorateMembership: Boolean(post.requirements?.requireElectorateMembership),
             requireHostelResident: Boolean(post.requirements?.requireHostelResident),
             allowedHostelNames: post.requirements?.allowedHostelNames || [],
@@ -632,11 +623,11 @@ const serializeElectionFormForApi = (form) => ({
     },
     requirements: {
       minCgpa: Number(post.requirements.minCgpa || 0),
-      minCompletedSemestersUg: Number(post.requirements.minCompletedSemestersUg || 0),
-      minCompletedSemestersPg: Number(post.requirements.minCompletedSemestersPg || 0),
-      minRemainingSemesters: Number(post.requirements.minRemainingSemesters || 0),
-      proposersRequired: Number(post.requirements.proposersRequired || 0),
-      secondersRequired: Number(post.requirements.secondersRequired || 0),
+      minCompletedSemestersUg: 0,
+      minCompletedSemestersPg: 0,
+      minRemainingSemesters: 0,
+      proposersRequired: 1,
+      secondersRequired: 1,
       requireElectorateMembership: Boolean(post.requirements.requireElectorateMembership),
       requireHostelResident: Boolean(post.requirements.requireHostelResident),
       allowedHostelNames: post.requirements.allowedHostelNames,
@@ -649,8 +640,8 @@ const buildNominationPayload = (form) => ({
   pitch: form.pitch.trim(),
   agendaPoints: splitListInput(form.agendaPoints),
   cgpa: Number(form.cgpa || 0),
-  completedSemesters: Number(form.completedSemesters || 0),
-  remainingSemesters: Number(form.remainingSemesters || 0),
+  completedSemesters: null,
+  remainingSemesters: null,
   hasNoActiveBacklogs: Boolean(form.hasNoActiveBacklogs),
   proposerRollNumbers: (form.proposerEntries || [])
     .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
@@ -895,19 +886,6 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
         markPostError(index, "minCgpa", "Minimum CGPA must be between 0 and 10.")
       }
 
-      ;[
-        "minCompletedSemestersUg",
-        "minCompletedSemestersPg",
-        "minRemainingSemesters",
-        "proposersRequired",
-        "secondersRequired",
-      ].forEach((key) => {
-        const value = Number(requirements[key])
-        if (!Number.isInteger(value) || value < 0) {
-          markPostError(index, key, "This field must be a non-negative whole number.")
-        }
-      })
-
       if (String(requirements.notes || "").trim().length > 2000) {
         markPostError(index, "notes", "Notes cannot exceed 2000 characters.")
       }
@@ -939,19 +917,11 @@ const validateNominationForm = (form, post) => {
   const seconderRollNumbers = seconderEntries
     .map((entry) => String(entry?.rollNumber || "").trim().toUpperCase())
     .filter(Boolean)
-  const requiredProposers = Number(post?.requirements?.proposersRequired || 0)
-  const requiredSeconders = Number(post?.requirements?.secondersRequired || 0)
+  const requiredProposers = Math.max(1, Number(post?.requirements?.proposersRequired || 1))
+  const requiredSeconders = Math.max(1, Number(post?.requirements?.secondersRequired || 1))
 
   if (!Number.isFinite(Number(form.cgpa)) || Number(form.cgpa) < 0 || Number(form.cgpa) > 10) {
     return "CGPA must be between 0 and 10."
-  }
-
-  if (!Number.isInteger(Number(form.completedSemesters)) || Number(form.completedSemesters) < 0) {
-    return "Completed semesters must be a non-negative whole number."
-  }
-
-  if (!Number.isInteger(Number(form.remainingSemesters)) || Number(form.remainingSemesters) < 0) {
-    return "Remaining semesters must be a non-negative whole number."
   }
 
   if (!form.hasNoActiveBacklogs) {
@@ -1549,11 +1519,11 @@ const ElectionsPage = () => {
         ...current[key],
         proposerEntries: hydrateSupporterEntries(
           current[key].proposerEntries,
-          Number(post?.requirements?.proposersRequired || 0)
+          Math.max(1, Number(post?.requirements?.proposersRequired || 1))
         ),
         seconderEntries: hydrateSupporterEntries(
           current[key].seconderEntries,
-          Number(post?.requirements?.secondersRequired || 0)
+          Math.max(1, Number(post?.requirements?.secondersRequired || 1))
         ),
       } : buildNominationDraftFromPost(post),
     }))

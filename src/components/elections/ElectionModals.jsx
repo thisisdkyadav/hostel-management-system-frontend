@@ -970,8 +970,6 @@ export const AdminNominationReviewModal = ({
               <MetaList
                 items={[
                   { label: "CGPA", value: nomination.cgpa ?? "—" },
-                  { label: "Completed semesters", value: nomination.completedSemesters ?? "—" },
-                  { label: "Remaining semesters", value: nomination.remainingSemesters ?? "—" },
                   { label: "Submitted", value: formatDateTime(nomination.submittedAt) },
                 ]}
                 mutedTextStyle={mutedTextStyle}
@@ -1034,7 +1032,7 @@ export const AdminNominationReviewModal = ({
           <div style={detailGridStyle}>
             {[
               { label: "Grade Card", value: nomination.gradeCardUrl },
-              { label: "Manifesto", value: nomination.manifestoUrl },
+              { label: "Manifesto (Optional)", value: nomination.manifestoUrl },
               { label: "POR Documents", value: nomination.porDocumentUrl },
               { label: "Student ID Front", value: nomination.candidateIdCard?.front || "" },
               { label: "Student ID Back", value: nomination.candidateIdCard?.back || "" },
@@ -1155,8 +1153,8 @@ export const StudentNominationModal = ({
   const hasUploadedIdCard = Boolean(idCard.front || idCard.back)
   const reviewNote = String(post?.myNomination?.review?.notes || "").trim()
   const hasReviewNote = reviewNote.length > 0
-  const proposerRequired = Number(post?.requirements?.proposersRequired || 0)
-  const seconderRequired = Number(post?.requirements?.secondersRequired || 0)
+  const proposerRequired = Math.max(1, Number(post?.requirements?.proposersRequired || 1))
+  const seconderRequired = Math.max(1, Number(post?.requirements?.secondersRequired || 1))
 
   if (!post) return null
 
@@ -1182,10 +1180,10 @@ export const StudentNominationModal = ({
                 {election?.title}
               </StatusPill>
               <StatusPill tone="primary" pillBaseStyle={pillBaseStyle} statusToneStyles={statusToneStyles}>
-                P {post.requirements?.proposersRequired || 0}
+                P {proposerRequired}
               </StatusPill>
               <StatusPill tone="primary" pillBaseStyle={pillBaseStyle} statusToneStyles={statusToneStyles}>
-                S {post.requirements?.secondersRequired || 0}
+                S {seconderRequired}
               </StatusPill>
             </div>
             <div style={{ display: "flex", gap: "8px" }}>
@@ -1288,26 +1286,10 @@ export const StudentNominationModal = ({
             </div>
           )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--spacing-3)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: "var(--spacing-3)" }}>
             <div style={panelStyle}>
               <label style={labelStyle}>CGPA</label>
               <Input type="number" value={form.cgpa} onChange={(event) => updateForm({ cgpa: event.target.value })} />
-            </div>
-            <div style={panelStyle}>
-              <label style={labelStyle}>Completed semesters</label>
-              <Input
-                type="number"
-                value={form.completedSemesters}
-                onChange={(event) => updateForm({ completedSemesters: event.target.value })}
-              />
-            </div>
-            <div style={panelStyle}>
-              <label style={labelStyle}>Remaining semesters</label>
-              <Input
-                type="number"
-                value={form.remainingSemesters}
-                onChange={(event) => updateForm({ remainingSemesters: event.target.value })}
-              />
             </div>
           </div>
 
@@ -1471,7 +1453,7 @@ export const StudentNominationModal = ({
               mutedTextStyle={mutedTextStyle}
             />
             <DocumentUploadField
-              label="Manifesto"
+              label="Manifesto (Optional)"
               value={form.manifestoUrl}
               onChange={(nextValue) => updateForm({ manifestoUrl: nextValue })}
               flatPanelStyle={flatPanelStyle}
