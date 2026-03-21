@@ -164,6 +164,40 @@ export const adminApi = {
     return apiClient.delete(`/admin/hostel-supervisor/${id}`)
   },
 
+  // ==================== Gymkhana Users ====================
+
+  /**
+   * Get all Gymkhana users
+   */
+  getAllGymkhanaUsers: () => {
+    return apiClient.get("/admin/gymkhana")
+  },
+
+  /**
+   * Add Gymkhana user
+   * @param {Object} data - Gymkhana user data
+   */
+  addGymkhana: (data) => {
+    return apiClient.post("/admin/gymkhana", data)
+  },
+
+  /**
+   * Update Gymkhana user
+   * @param {string} id - Gymkhana user ID
+   * @param {Object} data - Updated data
+   */
+  updateGymkhana: (id, data) => {
+    return apiClient.put(`/admin/gymkhana/${id}`, data)
+  },
+
+  /**
+   * Delete Gymkhana user
+   * @param {string} id - Gymkhana user ID
+   */
+  deleteGymkhana: (id) => {
+    return apiClient.delete(`/admin/gymkhana/${id}`)
+  },
+
   // ==================== Security Staff ====================
   
   /**

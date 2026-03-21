@@ -1038,6 +1038,10 @@ const ElectionsPage = () => {
 
   const isAdminView = user?.role === "Admin" || user?.role === "Super Admin"
   const isStudentView = user?.role === "Student"
+  const isGymkhanaElectionOfficerView =
+    user?.role === "Gymkhana" &&
+    String(user?.subRole || "").trim().toLowerCase().replace(/\s+/g, " ") === "election officer"
+  const isAdminLikeView = isAdminView || isGymkhanaElectionOfficerView
 
   const [batchOptions, setBatchOptions] = useState([])
   const [groupOptions, setGroupOptions] = useState([])
@@ -1047,7 +1051,7 @@ const ElectionsPage = () => {
   const [adminElections, setAdminElections] = useState([])
   const [selectedAdminElectionId, setSelectedAdminElectionId] = useState("")
   const [selectedAdminElection, setSelectedAdminElection] = useState(null)
-  const [adminViewTab, setAdminViewTab] = useState("posts")
+  const [adminViewTab, setAdminViewTab] = useState(isGymkhanaElectionOfficerView ? "nominations" : "posts")
   const [nominationTab, setNominationTab] = useState("all")
   const [historyModalOpen, setHistoryModalOpen] = useState(false)
 
@@ -1224,10 +1228,12 @@ const ElectionsPage = () => {
     try {
       setLoading(true)
       setError("")
-      await loadBatchOptions()
-      await loadGroupOptions()
-
       if (isAdminView) {
+        await loadBatchOptions()
+        await loadGroupOptions()
+      }
+
+      if (isAdminLikeView) {
         await loadAdminElections(false)
       }
 
@@ -1243,7 +1249,7 @@ const ElectionsPage = () => {
 
   useEffect(() => {
     loadPage()
-  }, [isAdminView, isStudentView])
+  }, [isAdminLikeView, isStudentView])
 
   useEffect(() => {
     if (isAdminView && (!hostelList || hostelList.length === 0)) {
@@ -1252,7 +1258,7 @@ const ElectionsPage = () => {
   }, [fetchHostelList, hostelList, isAdminView])
 
   useEffect(() => {
-    if (!isAdminView) return
+    if (!isAdminLikeView) return
     if (!selectedAdminElectionId) {
       setSelectedAdminElection(null)
       return
@@ -1261,7 +1267,14 @@ const ElectionsPage = () => {
     loadAdminDetail(selectedAdminElectionId).catch((err) => {
       toast.error(formatApiErrorMessage(err, "Failed to load election details"))
     })
-  }, [isAdminView, selectedAdminElectionId, toast])
+  }, [isAdminLikeView, selectedAdminElectionId, toast])
+
+  useEffect(() => {
+    if (!isGymkhanaElectionOfficerView) return
+    if (adminViewTab !== "nominations") {
+      setAdminViewTab("nominations")
+    }
+  }, [adminViewTab, isGymkhanaElectionOfficerView])
 
   useEffect(() => {
     if (!selectedAdminElection?.results) {
@@ -1850,29 +1863,31 @@ const ElectionsPage = () => {
         title="Elections"
         showDate={false}
       >
-        {isAdminView ? (
+        {isAdminLikeView ? (
           <>
             <HeaderSelect
               value={selectedAdminElectionId}
               onChange={setSelectedAdminElectionId}
               options={adminElections}
-              placeholder="Select current or past election"
+              placeholder={isGymkhanaElectionOfficerView ? "Select published election" : "Select current or past election"}
               headerSelectStyle={headerSelectStyle}
               formatElectionOptionLabel={formatElectionOptionLabel}
             />
-            {adminElections.length > 0 ? (
+            {isAdminView && adminElections.length > 0 ? (
               <Button size="md" variant="ghost" onClick={() => setHistoryModalOpen(true)}>
                 <History size={16} /> History
               </Button>
             ) : null}
-            {selectedAdminElection ? (
+            {isAdminView && selectedAdminElection ? (
               <Button size="md" variant="secondary" onClick={openEditWizard}>
                 <FileText size={16} /> Edit Election
               </Button>
             ) : null}
-            <Button size="md" onClick={openCreateWizard}>
-              <Plus size={16} /> Create Election
-            </Button>
+            {isAdminView ? (
+              <Button size="md" onClick={openCreateWizard}>
+                <Plus size={16} /> Create Election
+              </Button>
+            ) : null}
           </>
         ) : (
           <>
@@ -1891,18 +1906,22 @@ const ElectionsPage = () => {
       </PageHeader>
 
       <div style={workspaceStyle}>
-        {isAdminView && !selectedAdminElectionId ? (
+        {isAdminLikeView && !selectedAdminElectionId ? (
           <EmptyState
             title="Select an election occurrence"
             message={
               adminElections.length === 0
-                ? "Create the first election from the header to begin."
-                : "No election is auto-selected right now. Choose a current or past occurrence from the header."
+                ? isGymkhanaElectionOfficerView
+                  ? "No published elections are available for review right now."
+                  : "Create the first election from the header to begin."
+                : isGymkhanaElectionOfficerView
+                  ? "Choose one of the published elections from the header to review nominations."
+                  : "No election is auto-selected right now. Choose a current or past occurrence from the header."
             }
           />
         ) : null}
 
-        {isAdminView && selectedAdminElection ? (
+        {isAdminLikeView && selectedAdminElection ? (
           <AdminElectionWorkspace
             selectedAdminElection={selectedAdminElection}
             selectedAdminElectionId={selectedAdminElectionId}
@@ -1940,6 +1959,7 @@ const ElectionsPage = () => {
             onOpenCloneElection={openCloneElection}
             canCloneElection={canCloneElection}
             cloneDisabledReason={cloneElectionDisabledReason}
+            readOnly={isGymkhanaElectionOfficerView}
           />
         ) : null}
 
@@ -2032,6 +2052,7 @@ const ElectionsPage = () => {
             pillBaseStyle={pillBaseStyle}
             statusToneStyles={statusToneStyles}
             textareaStyle={textareaStyle}
+            readOnly={false}
           />
 
           <AdminResultsEditModal
@@ -2078,6 +2099,27 @@ const ElectionsPage = () => {
             errorTextStyle={errorTextStyle}
           />
         </>
+      ) : isGymkhanaElectionOfficerView ? (
+        <AdminNominationReviewModal
+          nomination={reviewNomination}
+          electionId={selectedAdminElectionId}
+          onClose={() => setReviewNomination(null)}
+          onReview={() => {}}
+          busy=""
+          modalBodyStyle={modalBodyStyle}
+          badgeRowStyle={badgeRowStyle}
+          detailGridStyle={detailGridStyle}
+          detailPanelStyle={detailPanelStyle}
+          labelStyle={labelStyle}
+          mutedTextStyle={mutedTextStyle}
+          getStatusTone={getStatusTone}
+          formatStageLabel={formatStageLabel}
+          formatDateTime={formatDateTime}
+          pillBaseStyle={pillBaseStyle}
+          statusToneStyles={statusToneStyles}
+          textareaStyle={textareaStyle}
+          readOnly
+        />
       ) : null}
 
       {isStudentView ? (

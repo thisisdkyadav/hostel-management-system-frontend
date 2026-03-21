@@ -169,6 +169,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "Gymkhana", icon: GraduationCap, section: "main", path: "/admin/gymkhana", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Security", icon: Shield, section: "main", path: "/admin/security", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Maintenance Staff", icon: Wrench, section: "main", path: "/admin/maintenance", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Others", icon: UserPlus, section: "main", path: "/admin/others", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
@@ -362,13 +363,25 @@ export const getStudentNavItems = (
 // GYMKHANA NAVIGATION
 // ============================================
 
-export const getGymkhanaNavItems = (handleLogout) => [
-  { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/gymkhana" },
-  { name: "Events", icon: CalendarDays, section: "main", path: "/gymkhana/events" },
-  { name: "Mega Events", icon: CalendarDays, section: "main", path: "/gymkhana/mega-events" },
-  createProfileItem("/gymkhana"),
-  createLogoutItem(handleLogout),
-]
+export const getGymkhanaNavItems = (handleLogout, user = null) => {
+  const isElectionOfficer = normalizeSubRole(getSubRoleValue(user)) === "election officer"
+
+  if (isElectionOfficer) {
+    return [
+      { name: "Elections", icon: BadgeCheck, section: "main", path: "/gymkhana/elections" },
+      createProfileItem("/gymkhana"),
+      createLogoutItem(handleLogout),
+    ]
+  }
+
+  return [
+    { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/gymkhana" },
+    { name: "Events", icon: CalendarDays, section: "main", path: "/gymkhana/events" },
+    { name: "Mega Events", icon: CalendarDays, section: "main", path: "/gymkhana/mega-events" },
+    createProfileItem("/gymkhana"),
+    createLogoutItem(handleLogout),
+  ]
+}
 
 /**
  * PWA bottom bar main items (4 primary items shown in bottom bar)

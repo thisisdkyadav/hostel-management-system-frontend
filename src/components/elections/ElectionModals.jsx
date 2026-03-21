@@ -867,6 +867,7 @@ export const AdminNominationReviewModal = ({
   pillBaseStyle,
   statusToneStyles,
   textareaStyle,
+  readOnly = false,
 }) => {
   const [viewerUrl, setViewerUrl] = useState("")
   const [reviewNotes, setReviewNotes] = useState("")
@@ -926,29 +927,33 @@ export const AdminNominationReviewModal = ({
               <Button size="sm" variant="secondary" onClick={onClose}>
                 Close
               </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                loading={busy === `${electionId}:${nomination.id}:modification_requested`}
-                onClick={() => handleReviewAction("modification_requested")}
-              >
-                Request Modification
-              </Button>
-              <Button
-                size="sm"
-                variant="danger"
-                loading={busy === `${electionId}:${nomination.id}:rejected`}
-                onClick={() => handleReviewAction("rejected")}
-              >
-                <XCircle size={14} /> Reject
-              </Button>
-              <Button
-                size="sm"
-                loading={busy === `${electionId}:${nomination.id}:verified`}
-                onClick={() => handleReviewAction("verified")}
-              >
-                <CheckCircle2 size={14} /> Verify
-              </Button>
+              {!readOnly ? (
+                <>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    loading={busy === `${electionId}:${nomination.id}:modification_requested`}
+                    onClick={() => handleReviewAction("modification_requested")}
+                  >
+                    Request Modification
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    loading={busy === `${electionId}:${nomination.id}:rejected`}
+                    onClick={() => handleReviewAction("rejected")}
+                  >
+                    <XCircle size={14} /> Reject
+                  </Button>
+                  <Button
+                    size="sm"
+                    loading={busy === `${electionId}:${nomination.id}:verified`}
+                    onClick={() => handleReviewAction("verified")}
+                  >
+                    <CheckCircle2 size={14} /> Verify
+                  </Button>
+                </>
+              ) : null}
             </div>
           </div>
         }
@@ -992,13 +997,19 @@ export const AdminNominationReviewModal = ({
 
           <div style={detailPanelStyle}>
             <div style={labelStyle}>Review comment</div>
-            <textarea
-              style={noteError ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
-              value={reviewNotes}
-              onChange={(event) => setReviewNotes(event.target.value)}
-              placeholder="Add review feedback. This is required when requesting modification."
-            />
-            {noteError ? <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-xs)" }}>{noteError}</div> : null}
+            {readOnly ? (
+              <div style={mutedTextStyle}>{reviewNotes || "No review comment available yet."}</div>
+            ) : (
+              <>
+                <textarea
+                  style={noteError ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
+                  value={reviewNotes}
+                  onChange={(event) => setReviewNotes(event.target.value)}
+                  placeholder="Add review feedback. This is required when requesting modification."
+                />
+                {noteError ? <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-xs)" }}>{noteError}</div> : null}
+              </>
+            )}
           </div>
 
           <div style={detailGridStyle}>

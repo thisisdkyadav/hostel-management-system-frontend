@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt } from "react-icons/fa"
-import { FiTag } from "react-icons/fi"
+import { FiTag, FiUser } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
-import { Checkbox, VStack, HStack, Label } from "@/components/ui"
+import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
 
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useGlobal()
-  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
+  const isGymkhana = staffType === "gymkhana"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const gymkhanaSubRoleOptions = [
+    { value: "GS Gymkhana", label: "GS Gymkhana" },
+    { value: "President Gymkhana", label: "President Gymkhana" },
+    { value: "Election Officer", label: "Election Officer" },
+  ]
 
   const [formData, setFormData] = useState({
+    name: warden.name || "",
+    subRole: warden.subRole || "",
     phone: warden.phone || "",
     hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
     joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
@@ -25,6 +33,8 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
 
   useEffect(() => {
     setFormData({
+      name: warden.name || "",
+      subRole: warden.subRole || "",
       phone: warden.phone || "",
       hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
       joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
@@ -66,20 +76,27 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     setIsLoading(true)
 
     try {
-      const payload = {
-        phone: formData.phone,
-        hostelIds: formData.hostelIds,
-        joinDate: formData.joinDate,
-        profileImage: formData.profileImage,
-        category: formData.category,
-      }
+      const payload = isGymkhana
+        ? {
+            name: formData.name,
+            subRole: formData.subRole,
+          }
+        : {
+            phone: formData.phone,
+            hostelIds: formData.hostelIds,
+            joinDate: formData.joinDate,
+            profileImage: formData.profileImage,
+            category: formData.category,
+          }
 
       const message =
         staffType === "warden"
           ? await adminApi.updateWarden(warden.id, payload)
           : staffType === "associateWarden"
             ? await adminApi.updateAssociateWarden(warden.id, payload)
-            : await adminApi.updateHostelSupervisor(warden.id, payload)
+            : staffType === "hostelSupervisor"
+              ? await adminApi.updateHostelSupervisor(warden.id, payload)
+              : await adminApi.updateGymkhana(warden.id, payload)
 
       if (!message) {
         alert(`Failed to update ${staffTitle.toLowerCase()}. Please try again.`)
@@ -109,7 +126,9 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
           ? await adminApi.deleteWarden(warden.id)
           : staffType === "associateWarden"
             ? await adminApi.deleteAssociateWarden(warden.id)
-            : await adminApi.deleteHostelSupervisor(warden.id)
+            : staffType === "hostelSupervisor"
+              ? await adminApi.deleteHostelSupervisor(warden.id)
+              : await adminApi.deleteGymkhana(warden.id)
 
       if (!message) {
         alert(`Failed to delete ${staffTitle.toLowerCase()}. Please try again.`)
@@ -126,6 +145,60 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     } finally {
       setIsLoading(false)
     }
+  }
+
+  if (isGymkhana) {
+    return (
+      <Modal isOpen={true} title={`Edit ${staffTitle}: ${warden.name}`} onClose={onClose} width={500}>
+        <form onSubmit={handleSubmit}>
+          <VStack gap="large">
+            <div style={{ backgroundColor: "var(--color-primary-bg)", padding: "var(--spacing-4)", borderRadius: "var(--radius-lg)" }}>
+              <div style={{ display: "flex", alignItems: "center", color: "var(--color-primary-dark)" }}>
+                <FiUser style={{ marginRight: "var(--spacing-2)" }} />
+                <h4 style={{ fontWeight: "var(--font-weight-medium)" }}>Gymkhana User Information</h4>
+              </div>
+            </div>
+
+            <VStack gap="medium">
+              <div>
+                <Label htmlFor="name" required>Name</Label>
+                <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} icon={<FiUser />} placeholder="Enter full name" required />
+              </div>
+
+              <div>
+                <Label htmlFor="subRole" required>Sub Role</Label>
+                <Select
+                  name="subRole"
+                  id="subRole"
+                  value={formData.subRole}
+                  onChange={handleChange}
+                  options={gymkhanaSubRoleOptions}
+                  placeholder="Select Gymkhana sub role"
+                  icon={<FiTag />}
+                  required
+                />
+              </div>
+            </VStack>
+
+            <HStack
+              gap="small"
+              justify="between"
+              style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-6)", borderTop: "var(--border-1) solid var(--color-border-light)" }}
+            >
+              <Button type="button" onClick={handleDelete} variant="danger" size="md" loading={isLoading} disabled={isLoading}>
+                <FaTrash />
+                Delete {staffTitle}
+              </Button>
+
+              <Button type="submit" variant="primary" size="md" loading={isLoading} disabled={isLoading}>
+                <FaSave />
+                {isLoading ? "Saving..." : "Save Changes"}
+              </Button>
+            </HStack>
+          </VStack>
+        </form>
+      </Modal>
+    )
   }
 
   return (

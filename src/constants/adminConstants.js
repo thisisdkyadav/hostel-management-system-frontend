@@ -4,6 +4,13 @@ export const WARDEN_FILTER_TABS = [
   { label: "Unassigned", value: "unassigned" },
 ]
 
+export const GYMKHANA_FILTER_TABS = [
+  { label: "All", value: "all" },
+  { label: "GS Gymkhana", value: "GS Gymkhana" },
+  { label: "President Gymkhana", value: "President Gymkhana" },
+  { label: "Election Officer", value: "Election Officer" },
+]
+
 export const COMPLAINT_FILTER_TABS = [
   { label: "All Complaints", value: "all" },
   { label: "Pending", value: "Pending" },

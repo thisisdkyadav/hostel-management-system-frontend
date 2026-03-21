@@ -11,6 +11,7 @@ import {
     WardensPage as AdminWarden,
     AssociateWardensPage as AdminAssociateWardens,
     HostelSupervisorsPage as AdminHostelSupervisors,
+    GymkhanaManagementPage,
     InventoryPage,
     SecurityLoginsPage,
     UpdatePasswordPage,
@@ -87,6 +88,7 @@ const AdminRoutes = () => {
                             <Route path="wardens" element={guardRoute("route.admin.wardens", <AdminWarden />)} />
                             <Route path="associate-wardens" element={guardRoute("route.admin.associateWardens", <AdminAssociateWardens />)} />
                             <Route path="hostel-supervisors" element={guardRoute("route.admin.hostelSupervisors", <AdminHostelSupervisors />)} />
+                            <Route path="gymkhana" element={guardRoute("route.admin.gymkhana", <GymkhanaManagementPage />)} />
                             <Route path="students" element={guardRoute("route.admin.students", <StudentsPage />)} />
                             <Route path="inventory" element={guardRoute("route.admin.inventory", <InventoryPage />)} />
                             <Route path="complaints" element={guardRoute("route.admin.complaints", <ComplaintsPage />)} />

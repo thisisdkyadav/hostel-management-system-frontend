@@ -9,6 +9,46 @@ export const filterWardens = (wardens, filterStatus, searchTerm) => {
     })
 }
 
+export const filterStaffMembers = (staffMembers = [], staffType = "warden", filterStatus = "all", searchTerm = "") => {
+  const normalizedSearchTerm = String(searchTerm || "").trim().toLowerCase()
+
+  if (staffType === "gymkhana") {
+    return staffMembers
+      .filter((staff) => filterStatus === "all" || staff.subRole === filterStatus)
+      .filter((staff) => {
+        if (!normalizedSearchTerm) return true
+
+        const fields = [staff.name, staff.role, staff.subRole, staff.email]
+          .filter(Boolean)
+          .map((value) => String(value).toLowerCase())
+
+        return fields.some((value) => value.includes(normalizedSearchTerm))
+      })
+  }
+
+  return staffMembers
+    .filter((staff) => {
+      if (filterStatus === "all") return true
+      const derivedStatus = staff.status || (staff.hostelIds?.length ? "assigned" : "unassigned")
+      return derivedStatus === filterStatus
+    })
+    .filter((staff) => {
+      if (!normalizedSearchTerm) return true
+
+      const fields = [
+        staff.name,
+        staff.email,
+        staff.department,
+        staff.hostelAssigned,
+        staff.category,
+      ]
+        .filter(Boolean)
+        .map((value) => String(value).toLowerCase())
+
+      return fields.some((value) => value.includes(normalizedSearchTerm))
+    })
+}
+
 export const filterAssociateWardens = (associateWardens, status, searchTerm) => {
   return filterWardens(associateWardens, status, searchTerm)
 }

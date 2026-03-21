@@ -64,16 +64,19 @@ const AdminElectionWorkspace = ({
   onOpenCloneElection,
   canCloneElection,
   cloneDisabledReason,
+  readOnly = false,
 }) => {
   const isVotingStage = selectedAdminElection?.currentStage === "voting"
   const canViewResultsTab = ["results", "handover", "completed"].includes(selectedAdminElection?.currentStage)
-  const tabs = [
-    { label: "Posts", value: "posts" },
-    { label: "Nominations", value: "nominations" },
-    ...(canViewResultsTab ? [{ label: "Results", value: "results" }] : []),
-    ...(isVotingStage ? [{ label: "Ongoing Voting", value: "voting" }] : []),
-    { label: "Info", value: "info" },
-  ]
+  const tabs = readOnly
+    ? [{ label: "Nominations", value: "nominations" }]
+    : [
+        { label: "Posts", value: "posts" },
+        { label: "Nominations", value: "nominations" },
+        ...(canViewResultsTab ? [{ label: "Results", value: "results" }] : []),
+        ...(isVotingStage ? [{ label: "Ongoing Voting", value: "voting" }] : []),
+        { label: "Info", value: "info" },
+      ]
   const votingDispatch = liveVotingStats?.dispatch || {}
   const votingOverview = liveVotingStats?.overview || {}
   const resultPosts = selectedAdminElection?.results?.posts || []
@@ -230,9 +233,11 @@ const AdminElectionWorkspace = ({
               activeTab={nominationTab}
               setActiveTab={setNominationTab}
             />
-            <Button size="sm" variant="secondary" onClick={onExportNominations}>
-              Export CSV
-            </Button>
+            {!readOnly ? (
+              <Button size="sm" variant="secondary" onClick={onExportNominations}>
+                Export CSV
+              </Button>
+            ) : null}
           </div>
           <DataTable
             data={filteredNominations}

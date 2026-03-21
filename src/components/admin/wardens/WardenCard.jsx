@@ -10,7 +10,8 @@ import { Button } from "czero/react"
 const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const { hostelList } = useGlobal()
   const [showEditForm, setShowEditForm] = useState(false)
-  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
+  const isGymkhana = staffType === "gymkhana"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
 
   const getAssignedHostelNames = () => {
     if (!warden.hostelIds || warden.hostelIds.length === 0) {
@@ -57,6 +58,50 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
   const handleDelete = () => {
     if (onDelete) onDelete()
     setShowEditForm(false)
+  }
+
+  if (isGymkhana) {
+    return (
+      <>
+        <Card className="relative overflow-hidden">
+          <CardHeader className="mb-0">
+            <div className="flex flex-col md:flex-row md:items-center">
+              <div className="flex-shrink-0 mb-3 md:mb-0 md:mr-4">
+                <div style={{ width: 'var(--avatar-lg)', height: 'var(--avatar-lg)', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--color-primary-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'var(--border-2) solid var(--color-primary)' }}>
+                  <FaUserTie style={{ color: 'var(--color-primary)', fontSize: 'var(--icon-xl)' }} />
+                </div>
+              </div>
+              <div>
+                <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
+                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)' }}>{warden.subRole || 'No sub role assigned'}</div>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardBody style={{ marginTop: 'var(--spacing-5)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3)', fontSize: 'var(--font-size-sm)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Email</span>
+              <span style={{ color: 'var(--color-text-body)', textAlign: 'right', wordBreak: 'break-word' }}>{warden.email || 'Not available'}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Role</span>
+              <span style={{ color: 'var(--color-text-secondary)', fontWeight: 'var(--font-weight-semibold)' }}>{warden.role || 'Gymkhana'}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Sub Role</span>
+              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{warden.subRole || 'Not assigned'}</span>
+            </div>
+          </CardBody>
+
+          <CardFooter style={{ marginTop: 'var(--spacing-5)', paddingTop: 'var(--spacing-4)', borderTop: 'var(--border-1) solid var(--color-border-light)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-muted)' }}>Gymkhana user</div>
+            <Button onClick={() => setShowEditForm(true)} variant="ghost" size="sm" aria-label={`Edit ${staffTitle.toLowerCase()}`}><FaEdit /></Button>
+          </CardFooter>
+        </Card>
+
+        {showEditForm && <EditWardenForm warden={warden} staffType={staffType} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={handleDelete} />}
+      </>
+    )
   }
 
   return (

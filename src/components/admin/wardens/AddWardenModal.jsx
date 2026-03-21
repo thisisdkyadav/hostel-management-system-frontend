@@ -1,10 +1,16 @@
 import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock, FiCalendar, FiTag } from "react-icons/fi"
 import { adminApi } from "../../../service"
-import { VStack, HStack, Label } from "@/components/ui"
+import { VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
-  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : "Hostel Supervisor"
+  const isGymkhana = staffType === "gymkhana"
+  const staffTitle = staffType === "warden" ? "Warden" : staffType === "associateWarden" ? "Associate Warden" : staffType === "hostelSupervisor" ? "Hostel Supervisor" : "Gymkhana"
+  const gymkhanaSubRoleOptions = [
+    { value: "GS Gymkhana", label: "GS Gymkhana" },
+    { value: "President Gymkhana", label: "President Gymkhana" },
+    { value: "Election Officer", label: "Election Officer" },
+  ]
 
   const [formData, setFormData] = useState({
     name: "",
@@ -13,6 +19,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
     phone: "",
     joinDate: "",
     category: "",
+    subRole: "",
   })
 
   const handleChange = (e) => {
@@ -24,7 +31,27 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
     e.preventDefault()
 
     try {
-      const response = staffType === "warden" ? await adminApi.addWarden(formData) : staffType === "associateWarden" ? await adminApi.addAssociateWarden(formData) : await adminApi.addHostelSupervisor(formData)
+      if (isGymkhana && !formData.subRole) {
+        alert("Please select a Gymkhana sub role.")
+        return
+      }
+
+      const payload = isGymkhana
+        ? {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            subRole: formData.subRole,
+          }
+        : formData
+
+      const response = staffType === "warden"
+        ? await adminApi.addWarden(payload)
+        : staffType === "associateWarden"
+          ? await adminApi.addAssociateWarden(payload)
+          : staffType === "hostelSupervisor"
+            ? await adminApi.addHostelSupervisor(payload)
+            : await adminApi.addGymkhana(payload)
 
       if (!response) {
         alert(`Failed to add ${staffTitle.toLowerCase()}. Please try again.`)
@@ -40,6 +67,7 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
         phone: "",
         joinDate: "",
         category: "",
+        subRole: "",
       })
 
       onClose()
@@ -73,24 +101,42 @@ const AddWardenModal = ({ show, staffType = "warden", onClose, onAdd }) => {
           </div>
 
           <div>
-            <Label htmlFor="password" required>Password</Label>
-            <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Enter password" required />
+            <Label htmlFor="password">Password</Label>
+            <Input type="password" name="password" id="password" value={formData.password} onChange={handleChange} icon={<FiLock />} placeholder="Leave empty to create without password" />
           </div>
 
-          <div>
-            <Label htmlFor="phone">Phone</Label>
-            <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FiPhone />} placeholder="+91 9876543210" />
-          </div>
+          {isGymkhana ? (
+            <div>
+              <Label htmlFor="subRole" required>Sub Role</Label>
+              <Select
+                name="subRole"
+                id="subRole"
+                value={formData.subRole}
+                onChange={handleChange}
+                options={gymkhanaSubRoleOptions}
+                placeholder="Select Gymkhana sub role"
+                icon={<FiTag />}
+                required
+              />
+            </div>
+          ) : (
+            <>
+              <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input type="text" name="phone" id="phone" value={formData.phone} onChange={handleChange} icon={<FiPhone />} placeholder="+91 9876543210" />
+              </div>
 
-          <div>
-            <Label htmlFor="category">Category</Label>
-            <Input type="text" name="category" id="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
-          </div>
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Input type="text" name="category" id="category" value={formData.category} onChange={handleChange} icon={<FiTag />} placeholder="e.g., Senior, Junior" />
+              </div>
 
-          <div>
-            <Label htmlFor="joinDate">Join Date</Label>
-            <Input type="date" name="joinDate" id="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FiCalendar />} />
-          </div>
+              <div>
+                <Label htmlFor="joinDate">Join Date</Label>
+                <Input type="date" name="joinDate" id="joinDate" value={formData.joinDate} onChange={handleChange} icon={<FiCalendar />} />
+              </div>
+            </>
+          )}
 
           <HStack gap="small" justify="end" style={{ paddingTop: 'var(--spacing-5)', marginTop: 'var(--spacing-6)', borderTop: 'var(--border-1) solid var(--color-border-light)' }}>
             <Button type="button" onClick={onClose} variant="secondary" size="md">
