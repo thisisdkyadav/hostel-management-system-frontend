@@ -146,6 +146,7 @@ export const ScopeEditor = ({
 
   const toggleGroup = (groupName) => {
     const currentGroups = Array.isArray(scope?.groups) ? scope.groups : []
+    const currentRollNumbers = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : []
     const exists = currentGroups.includes(groupName)
     const nextGroups = exists
       ? currentGroups.filter((item) => item !== groupName)
@@ -154,7 +155,7 @@ export const ScopeEditor = ({
     onChange({
       batches: [],
       groups: nextGroups,
-      extraRollNumbers: [],
+      extraRollNumbers: currentRollNumbers,
     })
   }
 
@@ -169,6 +170,7 @@ export const ScopeEditor = ({
     }
 
     const currentRollNumbers = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : []
+    const currentGroups = Array.isArray(scope?.groups) ? scope.groups : []
     if (currentRollNumbers.includes(normalizedRollNumber)) {
       toast.error("This roll number is already added")
       setManualRollNumber("")
@@ -177,7 +179,7 @@ export const ScopeEditor = ({
 
     onChange({
       batches: [],
-      groups: [],
+      groups: currentGroups,
       extraRollNumbers: [...currentRollNumbers, normalizedRollNumber],
     })
     setManualRollNumber("")
@@ -185,9 +187,10 @@ export const ScopeEditor = ({
 
   const removeManualRollNumber = (rollNumberToRemove) => {
     const currentRollNumbers = Array.isArray(scope?.extraRollNumbers) ? scope.extraRollNumbers : []
+    const currentGroups = Array.isArray(scope?.groups) ? scope.groups : []
     onChange({
       batches: [],
-      groups: [],
+      groups: currentGroups,
       extraRollNumbers: currentRollNumbers.filter((rollNumber) => rollNumber !== rollNumberToRemove),
     })
   }
@@ -312,13 +315,14 @@ export const ScopeEditor = ({
           templateFileName={`${title.toLowerCase().replace(/\s+/g, "_")}_students.csv`}
           instructionText="Upload a CSV with a single `rollNumber` column."
           onDataParsed={(rows) => {
+            const currentGroups = Array.isArray(scope?.groups) ? scope.groups : []
             const nextRollNumbers = rows
               .map((row) => String(row.rollNumber || "").trim().toUpperCase())
               .filter(Boolean)
 
             onChange({
               batches: [],
-              groups: [],
+              groups: currentGroups,
               extraRollNumbers: [...new Set(nextRollNumbers)],
             })
           }}
