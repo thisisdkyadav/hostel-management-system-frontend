@@ -199,9 +199,9 @@ export const studentApi = {
   /**
    * Check which uploaded roll numbers are missing from the system
    */
-  checkMissingRollNumbers: (rollNumbers = []) => {
+  checkMissingRollNumbers: (rollNumbers = [], options = {}) => {
     return apiClient
-      .post("/students/profiles-admin/profiles/check-roll-numbers", { rollNumbers })
+      .post("/students/profiles-admin/profiles/check-roll-numbers", { rollNumbers, ...options })
       .then(unwrapStandardResponse)
   },
 }

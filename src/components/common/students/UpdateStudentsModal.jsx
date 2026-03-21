@@ -258,6 +258,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
   const [selectedStatus, setSelectedStatus] = useState("Active")
   const [rollNumberCheckData, setRollNumberCheckData] = useState([])
   const [rollNumberCheckSummary, setRollNumberCheckSummary] = useState(null)
+  const [rollNumberCheckScopeType, setRollNumberCheckScopeType] = useState("system")
+  const [selectedRollCheckGroup, setSelectedRollCheckGroup] = useState("")
+  const [selectedRollCheckDegree, setSelectedRollCheckDegree] = useState("")
+  const [selectedRollCheckDepartment, setSelectedRollCheckDepartment] = useState("")
+  const [selectedRollCheckBatch, setSelectedRollCheckBatch] = useState("")
+  const [availableRollCheckBatches, setAvailableRollCheckBatches] = useState([])
+  const [rollCheckBatchOptionsLoading, setRollCheckBatchOptionsLoading] = useState(false)
   const [dayScholarData, setDayScholarData] = useState([])
   const [dayScholarMode, setDayScholarMode] = useState("add")
   const [batchAssignmentData, setBatchAssignmentData] = useState([])
@@ -366,7 +373,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
   // Fetch valid degrees and departments from the config API
   useEffect(() => {
-    if (isOpen && (activeTab === "basic" || activeTab === "batch" || activeTab === "groups")) {
+    if (isOpen && (activeTab === "basic" || activeTab === "batch" || activeTab === "groups" || activeTab === "rollCheck")) {
       fetchConfigData()
     }
   }, [isOpen, activeTab])
@@ -402,6 +409,45 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
 
     loadBatchOptions()
   }, [activeTab, isOpen, selectedBatchDegree, selectedBatchDepartment])
+
+  useEffect(() => {
+    if (!isOpen || activeTab !== "rollCheck" || rollNumberCheckScopeType !== "batch") return
+    if (!selectedRollCheckDegree || !selectedRollCheckDepartment) {
+      setAvailableRollCheckBatches([])
+      setSelectedRollCheckBatch("")
+      return
+    }
+
+    const loadRollCheckBatchOptions = async () => {
+      setRollCheckBatchOptionsLoading(true)
+      try {
+        const response = await studentApi.getBatchList({
+          degree: selectedRollCheckDegree,
+          department: selectedRollCheckDepartment,
+        })
+        setAvailableRollCheckBatches(response || [])
+        if (selectedRollCheckBatch && !(response || []).includes(selectedRollCheckBatch)) {
+          setSelectedRollCheckBatch("")
+        }
+      } catch (err) {
+        console.error("Error fetching roll check batch options:", err)
+        toast.error("Failed to load batch options for the selected degree and department.")
+        setAvailableRollCheckBatches([])
+        setSelectedRollCheckBatch("")
+      } finally {
+        setRollCheckBatchOptionsLoading(false)
+      }
+    }
+
+    loadRollCheckBatchOptions()
+  }, [
+    activeTab,
+    isOpen,
+    rollNumberCheckScopeType,
+    selectedRollCheckDegree,
+    selectedRollCheckDepartment,
+    selectedRollCheckBatch,
+  ])
 
   useEffect(() => {
     if (!on) return undefined
@@ -722,6 +768,17 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     )
   }
 
+  const handleRollNumberCheckScopeTypeChange = (nextScopeType) => {
+    setRollNumberCheckScopeType(nextScopeType)
+    setSelectedRollCheckGroup("")
+    setSelectedRollCheckDegree("")
+    setSelectedRollCheckDepartment("")
+    setSelectedRollCheckBatch("")
+    setAvailableRollCheckBatches([])
+    setRollNumberCheckSummary(null)
+    setError("")
+  }
+
   const handleDayScholarDataParsed = (data) => {
     // Validate required fields
     const invalidEntries = data.filter((item) => !item.rollNumber)
@@ -878,6 +935,20 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       return
     }
 
+    if (activeTab === "rollCheck" && rollNumberCheckScopeType === "group" && !selectedRollCheckGroup) {
+      setError("Select a group before checking")
+      return
+    }
+
+    if (
+      activeTab === "rollCheck" &&
+      rollNumberCheckScopeType === "batch" &&
+      (!selectedRollCheckDegree || !selectedRollCheckDepartment || !selectedRollCheckBatch)
+    ) {
+      setError("Select degree, department, and batch before checking")
+      return
+    }
+
     if (activeTab === "dayScholar" && dayScholarData.length === 0) {
       setError("No day scholar data to update")
       return
@@ -1013,15 +1084,28 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         isSuccess = await adminApi.bulkUpdateStudentsStatus(rollNumbers, selectedStatus)
       } else if (activeTab === "rollCheck") {
         const response = await studentApi.checkMissingRollNumbers(
-          rollNumberCheckData.map((student) => student.rollNumber)
+          rollNumberCheckData.map((student) => student.rollNumber),
+          {
+            scopeType: rollNumberCheckScopeType,
+            ...(rollNumberCheckScopeType === "group" ? { groupName: selectedRollCheckGroup } : {}),
+            ...(rollNumberCheckScopeType === "batch"
+              ? {
+                degree: selectedRollCheckDegree,
+                department: selectedRollCheckDepartment,
+                batch: selectedRollCheckBatch,
+              }
+              : {}),
+          }
         )
         setRollNumberCheckSummary(response)
         setError("")
 
-        if ((response?.missingCount || 0) > 0) {
-          toast.success(`Found ${response.missingCount} missing roll number${response.missingCount === 1 ? "" : "s"}.`)
+        if ((response?.missingCount || 0) > 0 || (response?.outOfScopeCount || 0) > 0) {
+          toast.success(
+            `Check complete. ${response?.missingCount || 0} missing in system, ${response?.outOfScopeCount || 0} outside the selected scope.`
+          )
         } else {
-          toast.success("All uploaded roll numbers exist in the system.")
+          toast.success("All uploaded roll numbers matched the selected check.")
         }
         return
       } else if (activeTab === "dayScholar") {
@@ -1148,6 +1232,12 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     setStatusData([])
     setRollNumberCheckData([])
     setRollNumberCheckSummary(null)
+    setRollNumberCheckScopeType("system")
+    setSelectedRollCheckGroup("")
+    setSelectedRollCheckDegree("")
+    setSelectedRollCheckDepartment("")
+    setSelectedRollCheckBatch("")
+    setAvailableRollCheckBatches([])
     setDayScholarData([])
     setBatchAssignmentData([])
     setBatchSelectionMode("csv")
@@ -1794,6 +1884,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     const missingRollNumbers = Array.isArray(rollNumberCheckSummary?.missingRollNumbers)
       ? rollNumberCheckSummary.missingRollNumbers
       : []
+    const outOfScopeRollNumbers = Array.isArray(rollNumberCheckSummary?.outOfScopeRollNumbers)
+      ? rollNumberCheckSummary.outOfScopeRollNumbers
+      : []
 
     const rollCheckTemplateHeaders = ["rollNumber"]
 
@@ -1808,7 +1901,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
             Duplicate entries in the CSV are removed before the check runs.
           </li>
           <li>
-            After confirmation, only roll numbers missing from the system are listed.
+            After confirmation, results are split into missing-in-system and outside-selected-scope buckets.
           </li>
         </ul>
       </div>
@@ -1817,6 +1910,112 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     return (
       <div className="space-y-6">
         <h3 className="text-lg font-medium text-gray-800">Check Missing Roll Numbers</h3>
+
+        <div className="space-y-4 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4">
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Check Against</label>
+            <ToggleButtonGroup
+              options={[
+                { value: "system", label: "System" },
+                { value: "group", label: "Group" },
+                { value: "batch", label: "Batch" },
+              ]}
+              value={rollNumberCheckScopeType}
+              onChange={handleRollNumberCheckScopeTypeChange}
+              size="small"
+              variant="outline"
+              fullWidth
+              hideLabelsOnMobile={false}
+            />
+          </div>
+
+          {rollNumberCheckScopeType === "group" && (
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Group</label>
+              <Select
+                value={selectedRollCheckGroup}
+                onChange={(event) => {
+                  setSelectedRollCheckGroup(event.target.value)
+                  setRollNumberCheckSummary(null)
+                  setError("")
+                }}
+                options={[
+                  { value: "", label: configLoading ? "Loading groups..." : "Select Group" },
+                  ...availableStudentGroups.map((group) => ({ value: group, label: group })),
+                ]}
+                disabled={configLoading}
+              />
+            </div>
+          )}
+
+          {rollNumberCheckScopeType === "batch" && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Degree</label>
+                <Select
+                  value={selectedRollCheckDegree}
+                  onChange={(event) => {
+                    setSelectedRollCheckDegree(event.target.value)
+                    setSelectedRollCheckBatch("")
+                    setRollNumberCheckSummary(null)
+                    setError("")
+                  }}
+                  options={[
+                    { value: "", label: "Select Degree" },
+                    ...batchDegreeOptions,
+                  ]}
+                  disabled={configLoading}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Department</label>
+                <Select
+                  value={selectedRollCheckDepartment}
+                  onChange={(event) => {
+                    setSelectedRollCheckDepartment(event.target.value)
+                    setSelectedRollCheckBatch("")
+                    setRollNumberCheckSummary(null)
+                    setError("")
+                  }}
+                  options={[
+                    { value: "", label: "Select Department" },
+                    ...batchDepartmentOptions,
+                  ]}
+                  disabled={configLoading}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[var(--color-text-body)] mb-2">Batch</label>
+                <Select
+                  value={selectedRollCheckBatch}
+                  onChange={(event) => {
+                    setSelectedRollCheckBatch(event.target.value)
+                    setRollNumberCheckSummary(null)
+                    setError("")
+                  }}
+                  options={[
+                    {
+                      value: "",
+                      label: rollCheckBatchOptionsLoading ? "Loading batches..." : "Select Batch",
+                    },
+                    ...availableRollCheckBatches.map((batch) => ({ value: batch, label: batch })),
+                  ]}
+                  disabled={configLoading || rollCheckBatchOptionsLoading || !selectedRollCheckDegree || !selectedRollCheckDepartment}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="text-xs text-[var(--color-text-muted)]">
+            {rollNumberCheckScopeType === "system"
+              ? "Checks whether each uploaded roll number exists in the system."
+              : rollNumberCheckScopeType === "group"
+                ? "Checks whether each uploaded roll number exists and belongs to the selected group."
+                : "Checks whether each uploaded roll number exists and belongs to the selected batch scope."}
+          </div>
+        </div>
 
         <CsvUploader
           onDataParsed={handleRollNumberCheckDataParsed}
@@ -1880,12 +2079,24 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               </div>
             </div>
 
+            <div className="rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-secondary)] p-4 text-sm text-[var(--color-text-muted)]">
+              Scope: <span className="font-medium text-[var(--color-text-body)]">{rollNumberCheckSummary.scopeLabel || "System"}</span>
+              {rollNumberCheckScopeType !== "system" && (
+                <>
+                  {" · "}
+                  In selected scope: <span className="font-medium text-[var(--color-text-body)]">{rollNumberCheckSummary.inScopeCount || 0}</span>
+                  {" · "}
+                  Outside selected scope: <span className="font-medium text-[var(--color-text-body)]">{rollNumberCheckSummary.outOfScopeCount || 0}</span>
+                </>
+              )}
+            </div>
+
             <div className="border rounded-lg overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Missing Roll Numbers
+                      Missing In System
                     </th>
                   </tr>
                 </thead>
@@ -1904,6 +2115,33 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                 </tbody>
               </table>
             </div>
+
+            {rollNumberCheckScopeType !== "system" && (
+              <div className="border rounded-lg overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Not In Selected {rollNumberCheckScopeType === "group" ? "Group" : "Batch"}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {outOfScopeRollNumbers.length > 0 ? (
+                      outOfScopeRollNumbers.map((rollNumber, index) => (
+                        <tr key={`${rollNumber}-${index}`} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">{rollNumber}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td className="px-4 py-3 text-sm text-gray-600">Every uploaded student that exists in the system is already in the selected scope.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
@@ -2551,7 +2789,15 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               (activeTab === "health" && healthData.length === 0) ||
               (activeTab === "family" && familyData.length === 0) ||
               (activeTab === "status" && statusData.length === 0) ||
-              (activeTab === "rollCheck" && rollNumberCheckData.length === 0) ||
+              (activeTab === "rollCheck" && (
+                rollNumberCheckData.length === 0 ||
+                (rollNumberCheckScopeType === "group" && !selectedRollCheckGroup) ||
+                (rollNumberCheckScopeType === "batch" && (
+                  !selectedRollCheckDegree ||
+                  !selectedRollCheckDepartment ||
+                  !selectedRollCheckBatch
+                ))
+              )) ||
               (activeTab === "dayScholar" && dayScholarData.length === 0) ||
               isLoading ||
               isUpdating
@@ -2567,23 +2813,44 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         )}
 
         {activeTab === "rollCheck" && rollNumberCheckSummary && (
-          <Button
-            onClick={() => {
-              const exported = downloadRollNumberCSV(
-                rollNumberCheckSummary.missingRollNumbers || [],
-                "missing_roll_numbers"
-              )
-              if (!exported) {
-                setError("No missing roll numbers available to export")
-              }
-            }}
-            variant="secondary"
-            size="md"
-            disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.missingRollNumbers) || rollNumberCheckSummary.missingRollNumbers.length === 0}
-          >
-            <FaFileDownload />
-            Export Missing
-          </Button>
+          <>
+            <Button
+              onClick={() => {
+                const exported = downloadRollNumberCSV(
+                  rollNumberCheckSummary.missingRollNumbers || [],
+                  "missing_roll_numbers"
+                )
+                if (!exported) {
+                  setError("No missing roll numbers available to export")
+                }
+              }}
+              variant="secondary"
+              size="md"
+              disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.missingRollNumbers) || rollNumberCheckSummary.missingRollNumbers.length === 0}
+            >
+              <FaFileDownload />
+              Export Missing
+            </Button>
+            {rollNumberCheckScopeType !== "system" && (
+              <Button
+                onClick={() => {
+                  const exported = downloadRollNumberCSV(
+                    rollNumberCheckSummary.outOfScopeRollNumbers || [],
+                    rollNumberCheckScopeType === "group" ? "students_not_in_group" : "students_not_in_batch"
+                  )
+                  if (!exported) {
+                    setError(`No students outside the selected ${rollNumberCheckScopeType === "group" ? "group" : "batch"} to export`)
+                  }
+                }}
+                variant="secondary"
+                size="md"
+                disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.outOfScopeRollNumbers) || rollNumberCheckSummary.outOfScopeRollNumbers.length === 0}
+              >
+                <FaFileDownload />
+                Export Outside Scope
+              </Button>
+            )}
+          </>
         )}
 
         {activeTab === "basic" && step === 3 && (
