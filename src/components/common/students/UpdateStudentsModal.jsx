@@ -1887,6 +1887,13 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     const outOfScopeRollNumbers = Array.isArray(rollNumberCheckSummary?.outOfScopeRollNumbers)
       ? rollNumberCheckSummary.outOfScopeRollNumbers
       : []
+    const statusCounts = rollNumberCheckSummary?.statusCounts || {}
+    const rollCheckStatusItems = [
+      { key: "Active", label: "Active" },
+      { key: "Graduated", label: "Graduated" },
+      { key: "Dropped", label: "Dropped" },
+      { key: "Inactive", label: "Inactive" },
+    ]
 
     const rollCheckTemplateHeaders = ["rollNumber"]
 
@@ -2089,6 +2096,28 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                   Outside selected scope: <span className="font-medium text-[var(--color-text-body)]">{rollNumberCheckSummary.outOfScopeCount || 0}</span>
                 </>
               )}
+            </div>
+
+            <div className="space-y-3">
+              <div className="text-sm font-medium text-[var(--color-text-body)]">
+                Found Student Status Summary
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {rollCheckStatusItems.map((item) => (
+                  <div
+                    key={item.key}
+                    className="p-3 rounded-lg border bg-[var(--color-bg-secondary)] border-[var(--color-border-primary)]"
+                  >
+                    <div className="text-xs text-[var(--color-text-muted)]">{item.label}</div>
+                    <div className="text-lg font-semibold text-[var(--color-text-body)]">
+                      {statusCounts[item.key] || 0}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="text-xs text-[var(--color-text-muted)]">
+                Active students found: <span className="font-medium text-[var(--color-text-body)]">{statusCounts.Active || 0}</span> of {rollNumberCheckSummary.foundCount || 0}
+              </div>
             </div>
 
             <div className="border rounded-lg overflow-x-auto">
