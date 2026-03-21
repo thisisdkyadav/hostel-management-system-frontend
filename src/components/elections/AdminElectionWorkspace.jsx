@@ -1,6 +1,8 @@
+import { useMemo, useState } from "react"
 import { Button, DataTable, Tabs } from "czero/react"
 import { Clock3 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
+import { getMediaUrl } from "@/utils/mediaUtils"
 
 const nominationTabsDefault = [
   { label: "All", value: "all" },
@@ -26,6 +28,11 @@ const getSelectedWinnerIds = (draft = {}) =>
     : draft?.winnerNominationId
       ? [String(draft.winnerNominationId)]
       : []
+
+const nominationViewTabs = [
+  { label: "Flat", value: "flat" },
+  { label: "Grouped by Post", value: "grouped" },
+]
 
 const AdminElectionWorkspace = ({
   selectedAdminElection,
@@ -80,6 +87,7 @@ const AdminElectionWorkspace = ({
   const votingDispatch = liveVotingStats?.dispatch || {}
   const votingOverview = liveVotingStats?.overview || {}
   const resultPosts = selectedAdminElection?.results?.posts || []
+  const [nominationViewMode, setNominationViewMode] = useState("flat")
   const resultSummary = {
     totalVotes: resultPosts.reduce((sum, post) => sum + Number(post.totalVotes || 0), 0),
     publishedCount: resultPosts.filter((post) => {
@@ -91,6 +99,119 @@ const AdminElectionWorkspace = ({
       return getSelectedWinnerIds(draft).includes("nota")
     }).length,
   }
+  const nominationColumns = useMemo(
+    () => [
+      {
+        header: "Candidate",
+        key: "candidateName",
+        render: (nomination) => {
+          const candidateLabel = nomination.candidateName || nomination.candidateRollNumber
+          const initials = String(candidateLabel || "?")
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((part) => part[0] || "")
+            .join("")
+            .toUpperCase()
+
+          return (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+              <div
+                style={{
+                  width: "var(--avatar-sm)",
+                  height: "var(--avatar-sm)",
+                  borderRadius: "var(--radius-full)",
+                  overflow: "hidden",
+                  flexShrink: 0,
+                  backgroundColor: "var(--color-primary-bg)",
+                  border: "1px solid var(--color-border-primary)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--color-primary)",
+                  fontWeight: "var(--font-weight-semibold)",
+                  fontSize: "var(--font-size-xs)",
+                }}
+              >
+                {nomination.candidateProfileImage ? (
+                  <img
+                    src={getMediaUrl(nomination.candidateProfileImage)}
+                    alt={candidateLabel}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  initials || "?"
+                )}
+              </div>
+              <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+                <span
+                  style={{
+                    fontWeight: "var(--font-weight-semibold)",
+                    color: "var(--color-text-heading)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {candidateLabel}
+                </span>
+                <span style={mutedTextStyle}>{nomination.candidateRollNumber}</span>
+              </div>
+            </div>
+          )
+        },
+      },
+      {
+        header: "Post",
+        key: "postTitle",
+      },
+      {
+        header: "Status",
+        key: "status",
+        render: (nomination) => (
+          <StatusPill
+            tone={getStatusTone(nomination.status)}
+            pillBaseStyle={pillBaseStyle}
+            statusToneStyles={statusToneStyles}
+          >
+            {formatStageLabel(nomination.status)}
+          </StatusPill>
+        ),
+      },
+      {
+        header: "Supporters",
+        key: "supporterSummary",
+        render: (nomination) => (
+          <span style={mutedTextStyle}>
+            {nomination.supporterSummary?.accepted || 0} accepted · {nomination.supporterSummary?.pending || 0} pending
+            {nomination.supporterSummary?.rejected ? ` · ${nomination.supporterSummary.rejected} rejected` : ""}
+          </span>
+        ),
+      },
+      {
+        header: "Submitted",
+        key: "submittedAt",
+        render: (nomination) => formatDateTime(nomination.submittedAt),
+      },
+    ],
+    [formatDateTime, formatStageLabel, getStatusTone, mutedTextStyle, pillBaseStyle, statusToneStyles]
+  )
+  const groupedNominations = useMemo(() => {
+    const groups = new Map()
+
+    filteredNominations.forEach((nomination) => {
+      const groupKey = nomination.postTitle || "Untitled Post"
+      if (!groups.has(groupKey)) {
+        groups.set(groupKey, [])
+      }
+      groups.get(groupKey).push(nomination)
+    })
+
+    return Array.from(groups.entries()).map(([postTitle, nominations]) => ({
+      postTitle,
+      nominations,
+    }))
+  }, [filteredNominations])
 
   return (
     <>
@@ -233,63 +354,69 @@ const AdminElectionWorkspace = ({
               activeTab={nominationTab}
               setActiveTab={setNominationTab}
             />
-            {!readOnly ? (
-              <Button size="sm" variant="secondary" onClick={onExportNominations}>
-                Export CSV
-              </Button>
-            ) : null}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <Tabs
+                variant="pills"
+                tabs={nominationViewTabs}
+                activeTab={nominationViewMode}
+                setActiveTab={setNominationViewMode}
+              />
+              {!readOnly ? (
+                <Button size="sm" variant="secondary" onClick={onExportNominations}>
+                  Export CSV
+                </Button>
+              ) : null}
+            </div>
           </div>
-          <DataTable
-            data={filteredNominations}
-            emptyMessage="No nominations in this view."
-            onRowClick={setReviewNomination}
-            columns={[
-            {
-              header: "Candidate",
-              key: "candidateName",
-              render: (nomination) => (
-                <div style={{ display: "grid", gap: "2px" }}>
-                  <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
-                    {nomination.candidateName || nomination.candidateRollNumber}
-                  </span>
-                  <span style={mutedTextStyle}>{nomination.candidateRollNumber}</span>
-                </div>
-              ),
-            },
-            {
-              header: "Post",
-              key: "postTitle",
-            },
-            {
-              header: "Status",
-              key: "status",
-              render: (nomination) => (
-                <StatusPill
-                  tone={getStatusTone(nomination.status)}
-                  pillBaseStyle={pillBaseStyle}
-                  statusToneStyles={statusToneStyles}
-                >
-                  {formatStageLabel(nomination.status)}
-                </StatusPill>
-              ),
-            },
-            {
-              header: "Supporters",
-              key: "supporterSummary",
-              render: (nomination) => (
-                <span style={mutedTextStyle}>
-                  {nomination.supporterSummary?.accepted || 0} accepted · {nomination.supporterSummary?.pending || 0} pending
-                  {nomination.supporterSummary?.rejected ? ` · ${nomination.supporterSummary.rejected} rejected` : ""}
-                </span>
-              ),
-            },
-            {
-              header: "Submitted",
-              key: "submittedAt",
-              render: (nomination) => formatDateTime(nomination.submittedAt),
-            },
-            ]}
-          />
+          {nominationViewMode === "grouped" ? (
+            groupedNominations.length ? (
+              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                {groupedNominations.map((group) => (
+                  <div
+                    key={group.postTitle}
+                    style={{
+                      display: "grid",
+                      gap: "var(--spacing-2)",
+                      border: "1px solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-xl)",
+                      backgroundColor: "var(--color-bg-primary)",
+                      padding: "var(--spacing-3)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "var(--spacing-3)",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                        {group.postTitle}
+                      </span>
+                      <span style={mutedTextStyle}>{group.nominations.length} nomination(s)</span>
+                    </div>
+                    <DataTable
+                      data={group.nominations}
+                      emptyMessage="No nominations in this post."
+                      onRowClick={setReviewNomination}
+                      columns={nominationColumns.filter((column) => column.key !== "postTitle")}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <DataTable data={[]} emptyMessage="No nominations in this view." columns={nominationColumns} />
+            )
+          ) : (
+            <DataTable
+              data={filteredNominations}
+              emptyMessage="No nominations in this view."
+              onRowClick={setReviewNomination}
+              columns={nominationColumns}
+            />
+          )}
         </>
       ) : null}
 
