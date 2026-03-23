@@ -1166,6 +1166,16 @@ export const AdminNominationReviewModal = ({
 
   if (!nomination) return null
 
+  const proposerEntries = Array.isArray(nomination.proposerEntries) ? nomination.proposerEntries : []
+  const seconderEntries = Array.isArray(nomination.seconderEntries) ? nomination.seconderEntries : []
+  const pendingSupporterCount = [...proposerEntries, ...seconderEntries].filter(
+    (entry) => entry?.status === "pending"
+  ).length
+  const rejectedSupporterCount = [...proposerEntries, ...seconderEntries].filter(
+    (entry) => entry?.status === "rejected"
+  ).length
+  const showSupporterVerificationWarning = pendingSupporterCount > 0 || rejectedSupporterCount > 0
+
   const handleReviewAction = (status) => {
     const trimmedNotes = String(reviewNotes || "").trim()
     if (status === "modification_requested" && trimmedNotes.length < 3) {
@@ -1498,6 +1508,15 @@ export const AdminNominationReviewModal = ({
         }
       >
         <div style={modalBodyStyle}>
+          {showSupporterVerificationWarning ? (
+            <Alert type="warning" title="Supporter confirmations are still incomplete">
+              {pendingSupporterCount > 0 ? `${pendingSupporterCount} pending` : null}
+              {pendingSupporterCount > 0 && rejectedSupporterCount > 0 ? " · " : null}
+              {rejectedSupporterCount > 0 ? `${rejectedSupporterCount} rejected` : null}
+              {!readOnly ? " You can still verify this nomination if you want to proceed." : ""}
+            </Alert>
+          ) : null}
+
           <div
             style={{
               display: "grid",
