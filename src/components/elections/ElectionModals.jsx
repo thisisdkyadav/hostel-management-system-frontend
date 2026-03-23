@@ -1158,10 +1158,12 @@ export const AdminNominationReviewModal = ({
   const [noteError, setNoteError] = useState("")
   const [studentDetailTarget, setStudentDetailTarget] = useState(null)
   const [openingStudentUserId, setOpeningStudentUserId] = useState("")
+  const [showVerifyConfirm, setShowVerifyConfirm] = useState(false)
 
   useEffect(() => {
     setReviewNotes(nomination?.review?.notes || "")
     setNoteError("")
+    setShowVerifyConfirm(false)
   }, [nomination])
 
   if (!nomination) return null
@@ -1180,6 +1182,11 @@ export const AdminNominationReviewModal = ({
     const trimmedNotes = String(reviewNotes || "").trim()
     if (status === "modification_requested" && trimmedNotes.length < 3) {
       setNoteError("Add a clear comment before requesting modification.")
+      return
+    }
+
+    if (status === "verified" && showSupporterVerificationWarning) {
+      setShowVerifyConfirm(true)
       return
     }
 
@@ -1508,15 +1515,6 @@ export const AdminNominationReviewModal = ({
         }
       >
         <div style={modalBodyStyle}>
-          {showSupporterVerificationWarning ? (
-            <Alert type="warning" title="Supporter confirmations are still incomplete">
-              {pendingSupporterCount > 0 ? `${pendingSupporterCount} pending` : null}
-              {pendingSupporterCount > 0 && rejectedSupporterCount > 0 ? " · " : null}
-              {rejectedSupporterCount > 0 ? `${rejectedSupporterCount} rejected` : null}
-              {!readOnly ? " You can still verify this nomination if you want to proceed." : ""}
-            </Alert>
-          ) : null}
-
           <div
             style={{
               display: "grid",
@@ -1652,6 +1650,20 @@ export const AdminNominationReviewModal = ({
           onUpdate={() => setStudentDetailTarget(null)}
         />
       ) : null}
+
+      <ConfirmationDialog
+        isOpen={showVerifyConfirm}
+        onClose={() => setShowVerifyConfirm(false)}
+        onConfirm={() => {
+          setShowVerifyConfirm(false)
+          setNoteError("")
+          onReview(nomination.id, "verified", String(reviewNotes || "").trim())
+        }}
+        title="Verify Nomination"
+        message={`Supporter confirmations are still incomplete${pendingSupporterCount > 0 ? ` (${pendingSupporterCount} pending` : ""}${pendingSupporterCount > 0 && rejectedSupporterCount > 0 ? ", " : ""}${rejectedSupporterCount > 0 ? `${rejectedSupporterCount} rejected` : ""}). You can still verify this nomination if you want to proceed.`}
+        confirmText="Verify Anyway"
+        cancelText="Cancel"
+      />
     </>
   )
 }
