@@ -692,11 +692,11 @@ const AdminElectionWorkspace = ({
 
           <div style={infoGridStyle}>
             <div style={compactStatStyle}>
-              <span style={compactStatLabelStyle}>Ballots Submitted</span>
+              <span style={compactStatLabelStyle}>Votes Submitted</span>
               <span style={compactStatValueStyle}>{votingOverview.ballotsSubmitted || 0}</span>
             </div>
             <div style={compactStatStyle}>
-              <span style={compactStatLabelStyle}>Pending Ballots</span>
+              <span style={compactStatLabelStyle}>Pending Voters</span>
               <span style={compactStatValueStyle}>{votingOverview.ballotsPending || 0}</span>
             </div>
             <div style={compactStatStyle}>

@@ -214,14 +214,14 @@ export const LiveVotingFullscreenModal = ({
 
           <div style={{ display: "flex", gap: "var(--spacing-5)", fontSize: "var(--font-size-base)", alignItems: "center" }}>
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-muted)" }}>Total Ballots</span>
+              <span style={{ color: "var(--color-text-muted)" }}>Eligible Voters</span>
               <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", fontSize: "var(--font-size-md)" }}>
                 {overview.ballotsSubmitted + overview.ballotsPending || 0}
               </span>
             </div>
             <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-muted)" }}>Submitted</span>
+              <span style={{ color: "var(--color-text-muted)" }}>Votes Submitted</span>
               <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-success)", fontSize: "var(--font-size-md)" }}>
                 {overview.ballotsSubmitted || 0}
               </span>
@@ -258,10 +258,10 @@ export const LiveVotingFullscreenModal = ({
             <Table.Row style={{ backgroundColor: "var(--color-bg-secondary)", borderBottom: "1px solid var(--color-border-primary)" }}>
               <Table.Head style={{ width: "240px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Post</Table.Head>
               <Table.Head style={{ padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Candidates</Table.Head>
-              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Elect</Table.Head>
-              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Voted</Table.Head>
-              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Pending</Table.Head>
-              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Turnout</Table.Head>
+              <Table.Head align="center" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Elect</Table.Head>
+              <Table.Head align="center" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Voted</Table.Head>
+              <Table.Head align="center" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Pending</Table.Head>
+              <Table.Head align="center" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Turnout</Table.Head>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -316,16 +316,16 @@ export const LiveVotingFullscreenModal = ({
                         ))}
                       </div>
                     </Table.Cell>
-                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-text-muted)", fontSize: "13px" }}>
+                    <Table.Cell align="center" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-text-muted)", fontSize: "13px" }}>
                       {post.eligibleVoterCount || 0}
                     </Table.Cell>
-                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", fontSize: "13px" }}>
+                    <Table.Cell align="center" style={{ padding: "6px 10px", verticalAlign: "middle", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", fontSize: "13px" }}>
                       {post.votedCount || 0}
                     </Table.Cell>
-                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-warning)", fontWeight: "var(--font-weight-medium)", fontSize: "13px" }}>
+                    <Table.Cell align="center" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-warning)", fontWeight: "var(--font-weight-medium)", fontSize: "13px" }}>
                       {post.pendingCount || 0}
                     </Table.Cell>
-                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", fontSize: "13px" }}>
+                    <Table.Cell align="center" style={{ padding: "6px 10px", verticalAlign: "middle", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", fontSize: "13px" }}>
                       {post.turnoutPercentage || 0}%
                     </Table.Cell>
                   </Table.Row>

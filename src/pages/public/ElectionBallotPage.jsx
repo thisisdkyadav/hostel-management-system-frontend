@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { Button } from "czero/react"
 import { Alert, Card, Spinner } from "@/components/ui"
 import { electionsApi } from "@/service"
@@ -7,11 +7,38 @@ import { getMediaUrl } from "@/utils/mediaUtils"
 
 const pageShellStyle = {
   minHeight: "100vh",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "var(--spacing-5)",
   background: "var(--color-bg-page)",
+}
+
+const formatVotingWindow = (election = {}) => {
+  const start = election?.votingStartAt ? new Date(election.votingStartAt) : null
+  const end = election?.votingEndAt ? new Date(election.votingEndAt) : null
+  const now = new Date()
+
+  const formatOne = (value) =>
+    value && !Number.isNaN(value.getTime())
+      ? value.toLocaleString(undefined, {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        })
+      : "—"
+
+  if (!start || Number.isNaN(start.getTime())) {
+    return "Voting time not available"
+  }
+
+  if (now.getTime() < start.getTime()) {
+    return `Voting starts: ${formatOne(start)}`
+  }
+
+  if (end && !Number.isNaN(end.getTime()) && now.getTime() <= end.getTime()) {
+    return `Voting ends: ${formatOne(end)}`
+  }
+
+  return "Voting ended"
 }
 
 const ElectionBallotPage = () => {
@@ -27,20 +54,20 @@ const ElectionBallotPage = () => {
     const load = async () => {
       try {
         const response = await electionsApi.getBallotByToken(token)
-        const nextBallot = response?.data || null
-        setBallot(nextBallot)
+        const nextVotingPage = response?.data || null
+        setBallot(nextVotingPage)
         setSelections(
-          Object.fromEntries((nextBallot?.posts || []).map((post) => [post.postId, ""]))
+          Object.fromEntries((nextVotingPage?.posts || []).map((post) => [post.postId, ""]))
         )
       } catch (err) {
-        setError(err?.message || "Unable to load this ballot")
+        setError(err?.message || "Unable to load this voting page")
       } finally {
         setLoading(false)
       }
     }
 
     if (!token) {
-      setError("Invalid ballot link")
+      setError("Invalid voting link")
       setLoading(false)
       return
     }
@@ -50,6 +77,8 @@ const ElectionBallotPage = () => {
 
   const tokenState = ballot?.tokenState || "invalid"
   const posts = ballot?.posts || []
+  const votingWindowLabel = formatVotingWindow(ballot?.election || {})
+  const isActiveVotingView = tokenState === "active"
   const hasCompletedSelections = useMemo(
     () => posts.length > 0 && posts.every((post) => Boolean(selections[post.postId])),
     [posts, selections]
@@ -66,11 +95,11 @@ const ElectionBallotPage = () => {
         })),
       }
       const response = await electionsApi.submitBallotByToken(token, payload)
-      setSuccessMessage(response?.message || "Ballot submitted successfully")
+      setSuccessMessage(response?.message || "Your vote has been submitted successfully")
       const refreshed = await electionsApi.getBallotByToken(token)
       setBallot(refreshed?.data || null)
     } catch (err) {
-      setError(err?.message || "Unable to submit ballot")
+      setError(err?.message || "Unable to submit your vote")
     } finally {
       setSubmitting(false)
     }
@@ -78,132 +107,199 @@ const ElectionBallotPage = () => {
 
   if (loading) {
     return (
-      <div style={pageShellStyle}>
+      <div style={{ ...pageShellStyle, display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-5)" }}>
         <Card style={{ width: "100%", maxWidth: "560px", textAlign: "center", padding: "var(--spacing-8)" }}>
           <Spinner size="large" />
           <div style={{ marginTop: "var(--spacing-4)", color: "var(--color-text-muted)" }}>
-            Loading ballot...
+            Loading voting page...
           </div>
         </Card>
       </div>
     )
   }
 
+  const hasStickyIdentity = isActiveVotingView && Boolean(ballot?.election?.title || ballot?.voter?.name)
+
   return (
     <div style={pageShellStyle}>
-      <Card style={{ width: "100%", maxWidth: "960px", padding: "var(--spacing-7)" }}>
-        <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
-          <div style={{ display: "grid", gap: "6px" }}>
-            <h1 style={{ margin: 0, fontSize: "var(--font-size-2xl)" }}>
-              {ballot?.election?.title || "Election Ballot"}
-            </h1>
-            <div style={{ color: "var(--color-text-muted)" }}>
-              {ballot?.voter?.name ? `${ballot.voter.name} · ${ballot.voter.rollNumber}` : "Secure ballot link"}
+      {hasStickyIdentity ? (
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 20,
+            borderBottom: "1px solid var(--color-border-primary)",
+            backgroundColor: "color-mix(in srgb, var(--color-bg-primary) 88%, white 12%)",
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "1120px",
+              margin: "0 auto",
+              padding: "12px var(--spacing-5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-3)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: "var(--font-size-lg)",
+                  fontWeight: "var(--font-weight-semibold)",
+                  color: "var(--color-text-heading)",
+                }}
+              >
+                {ballot?.election?.title || "Election Voting Page"}
+              </div>
+              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                {votingWindowLabel}
+              </div>
             </div>
-          </div>
-
-          {error ? <Alert type="error">{error}</Alert> : null}
-          {successMessage ? <Alert type="success">{successMessage}</Alert> : null}
-          {tokenState === "inactive" ? (
-            <Alert type="warning">This ballot link only works during the voting window.</Alert>
-          ) : null}
-          {tokenState === "expired" ? (
-            <Alert type="warning">This ballot link has expired.</Alert>
-          ) : null}
-          {tokenState === "used" && !successMessage ? (
-            <Alert type="info">This ballot has already been submitted.</Alert>
-          ) : null}
-          {tokenState === "invalidated" ? (
-            <Alert type="warning">This ballot link is no longer active.</Alert>
-          ) : null}
-
-          {posts.length > 0 ? (
-            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
-              {posts.map((post) => (
+            {ballot?.voter?.name ? (
+              <div
+                style={{
+                  display: "grid",
+                  gap: "2px",
+                  textAlign: "right",
+                  minWidth: 0,
+                }}
+              >
                 <div
-                  key={post.postId}
                   style={{
-                    display: "grid",
-                    gap: "var(--spacing-3)",
-                    border: "1px solid var(--color-border-primary)",
-                    borderRadius: "var(--radius-xl)",
-                    padding: "var(--spacing-5)",
+                    fontSize: "var(--font-size-sm)",
+                    fontWeight: "var(--font-weight-medium)",
+                    color: "var(--color-text-heading)",
                   }}
                 >
-                  <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
-                    {post.postTitle}
-                  </div>
-
-                  <div style={{ display: "grid", gap: "10px" }}>
-                    {(post.candidates || []).map((candidate) => {
-                      const isSelected = selections[post.postId] === candidate.nominationId
-                      return (
-                        <label
-                          key={candidate.nominationId}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "var(--spacing-3)",
-                            border: "1px solid var(--color-border-primary)",
-                            borderRadius: "var(--radius-lg)",
-                            padding: "var(--spacing-3)",
-                            backgroundColor: isSelected ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
-                            cursor: tokenState === "active" ? "pointer" : "default",
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            name={`ballot-${post.postId}`}
-                            checked={isSelected}
-                            disabled={tokenState !== "active" || Boolean(successMessage)}
-                            onChange={() =>
-                              setSelections((current) => ({
-                                ...current,
-                                [post.postId]: candidate.nominationId,
-                              }))
-                            }
-                          />
-                          {candidate.candidateProfileImage ? (
-                            <img
-                              src={getMediaUrl(candidate.candidateProfileImage)}
-                              alt={candidate.candidateName}
-                              style={{
-                                width: "44px",
-                                height: "44px",
-                                borderRadius: "var(--radius-full)",
-                                objectFit: "cover",
-                              }}
-                            />
-                          ) : null}
-                          <div style={{ display: "grid", gap: "2px" }}>
-                            <div style={{ fontWeight: "var(--font-weight-medium)" }}>{candidate.candidateName}</div>
-                            {!candidate.isNota && candidate.candidateRollNumber ? (
-                              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
-                                {candidate.candidateRollNumber}
-                              </div>
-                            ) : null}
-                          </div>
-                        </label>
-                      )
-                    })}
-                  </div>
+                  {ballot.voter.name}
                 </div>
-              ))}
-            </div>
-          ) : null}
-
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-            {tokenState === "active" && !successMessage ? (
-              <Button onClick={submitBallot} loading={submitting} disabled={!hasCompletedSelections}>
-                Submit Ballot
-              </Button>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                  {ballot.voter.rollNumber}
+                </div>
+              </div>
             ) : null}
-            <Link to="/login" style={{ textDecoration: "none" }}>
-              <Button variant="secondary">Go to Login</Button>
-            </Link>
           </div>
         </div>
-      </Card>
+      ) : null}
+
+      <div style={{ maxWidth: "960px", margin: "0 auto", padding: "var(--spacing-5)" }}>
+        <Card style={{ width: "100%", padding: "var(--spacing-7)" }}>
+          <div style={{ display: "grid", gap: "var(--spacing-5)" }}>
+            {!hasStickyIdentity && isActiveVotingView ? (
+              <div style={{ display: "grid", gap: "6px" }}>
+                <h1 style={{ margin: 0, fontSize: "var(--font-size-2xl)" }}>
+                  {ballot?.election?.title || "Election Voting Page"}
+                </h1>
+                <div style={{ color: "var(--color-text-muted)" }}>
+                  {votingWindowLabel}
+                </div>
+              </div>
+            ) : null}
+
+            {error ? <Alert type="error">{error}</Alert> : null}
+            {successMessage ? <Alert type="success">{successMessage}</Alert> : null}
+            {tokenState === "inactive" ? (
+              <Alert type="warning">This voting link only works during the voting window.</Alert>
+            ) : null}
+            {tokenState === "expired" ? (
+              <Alert type="warning">This voting link has expired.</Alert>
+            ) : null}
+            {tokenState === "used" && !successMessage ? (
+              <Alert type="info">Your vote has already been submitted.</Alert>
+            ) : null}
+            {tokenState === "invalidated" ? (
+              <Alert type="warning">This voting link is no longer active.</Alert>
+            ) : null}
+
+            {posts.length > 0 ? (
+              <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+                {posts.map((post) => (
+                  <div
+                    key={post.postId}
+                    style={{
+                      display: "grid",
+                      gap: "var(--spacing-3)",
+                      border: "1px solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-xl)",
+                      padding: "var(--spacing-5)",
+                    }}
+                  >
+                    <div style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--font-size-lg)" }}>
+                      {post.postTitle}
+                    </div>
+
+                    <div style={{ display: "grid", gap: "10px" }}>
+                      {(post.candidates || []).map((candidate) => {
+                        const isSelected = selections[post.postId] === candidate.nominationId
+                        return (
+                          <label
+                            key={candidate.nominationId}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "var(--spacing-3)",
+                              border: "1px solid var(--color-border-primary)",
+                              borderRadius: "var(--radius-lg)",
+                              padding: "var(--spacing-3)",
+                              backgroundColor: isSelected ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
+                              cursor: tokenState === "active" ? "pointer" : "default",
+                            }}
+                          >
+                            <input
+                              type="radio"
+                              name={`ballot-${post.postId}`}
+                              checked={isSelected}
+                              disabled={tokenState !== "active" || Boolean(successMessage)}
+                              onChange={() =>
+                                setSelections((current) => ({
+                                  ...current,
+                                  [post.postId]: candidate.nominationId,
+                                }))
+                              }
+                            />
+                            {candidate.candidateProfileImage ? (
+                              <img
+                                src={getMediaUrl(candidate.candidateProfileImage)}
+                                alt={candidate.candidateName}
+                                style={{
+                                  width: "44px",
+                                  height: "44px",
+                                  borderRadius: "var(--radius-full)",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            ) : null}
+                            <div style={{ display: "grid", gap: "2px" }}>
+                              <div style={{ fontWeight: "var(--font-weight-medium)" }}>{candidate.candidateName}</div>
+                              {!candidate.isNota && candidate.candidateRollNumber ? (
+                                <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                                  {candidate.candidateRollNumber}
+                                </div>
+                              ) : null}
+                            </div>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+              {tokenState === "active" && !successMessage ? (
+                <Button onClick={submitBallot} loading={submitting} disabled={!hasCompletedSelections}>
+                  Submit Vote
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        </Card>
+      </div>
     </div>
   )
 }

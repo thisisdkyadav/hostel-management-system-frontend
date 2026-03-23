@@ -146,8 +146,8 @@ const StudentElectionWorkspace = ({
 
     {selectedStudentElection.mode === "voting" ? (
       <Alert type="info" title="Voting Happens Through Email">
-        Your secure ballot link is sent by email shortly before voting starts. That link contains all posts you can vote
-        for and lets you submit the full ballot in one step.
+        Your secure voting link is sent by email shortly before voting starts. That link contains all posts you can
+        vote for and lets you submit your vote in one step.
       </Alert>
     ) : null}
 
