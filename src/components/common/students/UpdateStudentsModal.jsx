@@ -1888,6 +1888,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
       ? rollNumberCheckSummary.outOfScopeRollNumbers
       : []
     const statusCounts = rollNumberCheckSummary?.statusCounts || {}
+    const statusRollNumbers = rollNumberCheckSummary?.statusRollNumbers || {}
     const rollCheckStatusItems = [
       { key: "Active", label: "Active" },
       { key: "Graduated", label: "Graduated" },
@@ -2117,6 +2118,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               </div>
               <div className="text-xs text-[var(--color-text-muted)]">
                 Active students found: <span className="font-medium text-[var(--color-text-body)]">{statusCounts.Active || 0}</span> of {rollNumberCheckSummary.foundCount || 0}
+              </div>
+              <div className="text-xs text-[var(--color-text-muted)]">
+                Downloadable status lists are generated from the found students in the uploaded file.
               </div>
             </div>
 
@@ -2856,9 +2860,60 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               variant="secondary"
               size="md"
               disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.missingRollNumbers) || rollNumberCheckSummary.missingRollNumbers.length === 0}
+              >
+                <FaFileDownload />
+                Export Missing
+              </Button>
+            <Button
+              onClick={() => {
+                const exported = downloadRollNumberCSV(
+                  rollNumberCheckSummary?.statusRollNumbers?.Inactive || [],
+                  "inactive_students_from_uploaded_list"
+                )
+                if (!exported) {
+                  setError("No inactive students from the uploaded list are available to export")
+                }
+              }}
+              variant="secondary"
+              size="md"
+              disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.statusRollNumbers?.Inactive) || rollNumberCheckSummary.statusRollNumbers.Inactive.length === 0}
             >
               <FaFileDownload />
-              Export Missing
+              Export Inactive
+            </Button>
+            <Button
+              onClick={() => {
+                const exported = downloadRollNumberCSV(
+                  rollNumberCheckSummary?.statusRollNumbers?.Dropped || [],
+                  "dropped_students_from_uploaded_list"
+                )
+                if (!exported) {
+                  setError("No dropped students from the uploaded list are available to export")
+                }
+              }}
+              variant="secondary"
+              size="md"
+              disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.statusRollNumbers?.Dropped) || rollNumberCheckSummary.statusRollNumbers.Dropped.length === 0}
+            >
+              <FaFileDownload />
+              Export Dropped
+            </Button>
+            <Button
+              onClick={() => {
+                const exported = downloadRollNumberCSV(
+                  rollNumberCheckSummary?.statusRollNumbers?.Graduated || [],
+                  "graduated_students_from_uploaded_list"
+                )
+                if (!exported) {
+                  setError("No graduated students from the uploaded list are available to export")
+                }
+              }}
+              variant="secondary"
+              size="md"
+              disabled={isUpdating || !Array.isArray(rollNumberCheckSummary?.statusRollNumbers?.Graduated) || rollNumberCheckSummary.statusRollNumbers.Graduated.length === 0}
+            >
+              <FaFileDownload />
+              Export Graduated
             </Button>
             {rollNumberCheckScopeType !== "system" && (
               <Button
