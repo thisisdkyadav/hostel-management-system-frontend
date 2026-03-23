@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react"
 import { Button, DataTable, Tabs } from "czero/react"
-import { Clock3 } from "lucide-react"
+import { Clock3, Maximize2 } from "lucide-react"
 import { StatusPill } from "@/components/elections/ElectionShared"
+import { LiveVotingFullscreenModal } from "@/components/elections/ElectionModals"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
 const nominationTabsDefault = [
@@ -99,6 +100,7 @@ const AdminElectionWorkspace = ({
       return getSelectedWinnerIds(draft).includes("nota")
     }).length,
   }
+  const [showVotingFullscreen, setShowVotingFullscreen] = useState(false)
   const nominationColumns = useMemo(
     () => [
       {
@@ -236,6 +238,15 @@ const AdminElectionWorkspace = ({
           >
             {formatStageLabel(selectedAdminElection.status)}
           </StatusPill>
+          {selectedAdminElection?.mockSettings?.enabled ? (
+            <StatusPill
+              tone="warning"
+              pillBaseStyle={pillBaseStyle}
+              statusToneStyles={statusToneStyles}
+            >
+              Mock
+            </StatusPill>
+          ) : null}
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
@@ -643,6 +654,14 @@ const AdminElectionWorkspace = ({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setShowVotingFullscreen(true)}
+                disabled={loadingVotingStats && !(liveVotingStats?.posts || []).length}
+              >
+                <Maximize2 size={14} /> Full Screen
+              </Button>
               <StatusPill
                 tone={socketConnected ? "success" : "warning"}
                 pillBaseStyle={pillBaseStyle}
@@ -776,6 +795,20 @@ const AdminElectionWorkspace = ({
               </span>
             </div>
             <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Mode</span>
+              <span style={compactStatValueStyle}>
+                {selectedAdminElection?.mockSettings?.enabled ? "Mock" : "Live"}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Mock Voters</span>
+              <span style={compactStatValueStyle}>
+                {selectedAdminElection?.mockSettings?.enabled
+                  ? (selectedAdminElection?.mockSettings?.voterRollNumbers || []).length
+                  : "—"}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
               <span style={compactStatLabelStyle}>CEO</span>
               <span style={compactStatValueStyle}>
                 {selectedAdminElection.electionCommission?.chiefElectionOfficerRollNumber || "—"}
@@ -820,6 +853,16 @@ const AdminElectionWorkspace = ({
           </div>
         </>
       ) : null}
+
+      <LiveVotingFullscreenModal
+        isOpen={showVotingFullscreen && isVotingStage}
+        onClose={() => setShowVotingFullscreen(false)}
+        electionTitle={selectedAdminElection?.title}
+        liveVotingStats={liveVotingStats}
+        loadingVotingStats={loadingVotingStats}
+        socketConnected={socketConnected}
+        formatDateTime={formatDateTime}
+      />
     </>
   )
 }

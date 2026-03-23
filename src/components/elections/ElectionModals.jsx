@@ -13,6 +13,8 @@ import {
 } from "lucide-react"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
+import ConfirmationDialog from "@/components/common/ConfirmationDialog"
+import CsvUploader from "@/components/common/CsvUploader"
 import { Alert } from "@/components/ui/feedback"
 import { idCardApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
@@ -158,6 +160,185 @@ export const CloneElectionModal = ({
   </Modal>
 )
 
+export const LiveVotingFullscreenModal = ({
+  isOpen,
+  onClose,
+  electionTitle,
+  liveVotingStats,
+  loadingVotingStats,
+  socketConnected,
+  formatDateTime,
+}) => {
+  const posts = liveVotingStats?.posts || []
+  const overview = liveVotingStats?.overview || {}
+
+  const formatCompactPercentage = (value) => {
+    const percentage = Number(value || 0)
+    if (!Number.isFinite(percentage) || percentage <= 0) return "0%"
+    return percentage >= 10 ? `${percentage.toFixed(1)}%` : `${percentage.toFixed(2)}%`
+  }
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      width={1480}
+      closeButtonVariant="button"
+      title={
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-6)", marginTop: "-4px", marginBottom: "-4px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "4px 10px",
+              borderRadius: "var(--radius-button-pill)",
+              backgroundColor: socketConnected ? "rgba(34, 197, 94, 0.1)" : "rgba(245, 158, 11, 0.1)",
+              color: socketConnected ? "var(--color-success)" : "var(--color-warning)",
+              fontSize: "var(--font-size-sm)",
+              fontWeight: "var(--font-weight-medium)",
+              border: `1px solid ${socketConnected ? "rgba(34, 197, 94, 0.2)" : "rgba(245, 158, 11, 0.2)"}`,
+            }}
+          >
+            <div
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                backgroundColor: "currentColor",
+                animation: socketConnected ? "pulse 2s infinite" : "none",
+              }}
+            />
+            {socketConnected ? "Live Status" : "Reconnecting"}
+          </div>
+
+          <div style={{ display: "flex", gap: "var(--spacing-5)", fontSize: "var(--font-size-base)", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <span style={{ color: "var(--color-text-muted)" }}>Total Ballots</span>
+              <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", fontSize: "var(--font-size-md)" }}>
+                {overview.ballotsSubmitted + overview.ballotsPending || 0}
+              </span>
+            </div>
+            <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <span style={{ color: "var(--color-text-muted)" }}>Submitted</span>
+              <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-success)", fontSize: "var(--font-size-md)" }}>
+                {overview.ballotsSubmitted || 0}
+              </span>
+            </div>
+            <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <span style={{ color: "var(--color-text-muted)" }}>Pending</span>
+              <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-warning)", fontSize: "var(--font-size-md)" }}>
+                {overview.ballotsPending || 0}
+              </span>
+            </div>
+            <div style={{ width: "1px", height: "18px", backgroundColor: "var(--color-border-primary)" }} />
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <span style={{ color: "var(--color-text-muted)" }}>Turnout</span>
+              <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", fontSize: "var(--font-size-lg)" }}>
+                {overview.turnoutPercentage || 0}%
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <div
+        style={{
+          maxHeight: "calc(95vh - 100px)",
+          overflow: "auto",
+          backgroundColor: "var(--color-bg-page)",
+          borderRadius: "var(--radius-lg)",
+          border: "1px solid var(--color-border-primary)",
+        }}
+      >
+        <Table>
+          <Table.Header>
+            <Table.Row style={{ backgroundColor: "var(--color-bg-secondary)", borderBottom: "1px solid var(--color-border-primary)" }}>
+              <Table.Head style={{ width: "240px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Post</Table.Head>
+              <Table.Head style={{ padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Candidates</Table.Head>
+              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Elect</Table.Head>
+              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Voted</Table.Head>
+              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Pending</Table.Head>
+              <Table.Head align="right" style={{ width: "80px", padding: "4px 10px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Turnout</Table.Head>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {posts.length === 0 ? (
+              <Table.Row>
+                <Table.Cell colSpan={6} style={{ textAlign: "center", padding: "var(--spacing-5)", color: "var(--color-text-muted)" }}>
+                  {loadingVotingStats ? "Loading live data..." : "No live voting data available."}
+                </Table.Cell>
+              </Table.Row>
+            ) : (
+              posts.map((post, index) => {
+                const sortedCandidates = [...(post.candidates || [])].sort((left, right) => {
+                  if (left.isNota && !right.isNota) return -1
+                  if (!left.isNota && right.isNota) return 1
+                  return (right.voteCount || 0) - (left.voteCount || 0) || String(left.candidateName || "").localeCompare(String(right.candidateName || ""))
+                })
+
+                return (
+                  <Table.Row key={post.postId} style={{ backgroundColor: index % 2 === 0 ? "var(--color-bg-primary)" : "var(--color-bg-tertiary)" }}>
+                    <Table.Cell style={{ padding: "6px 10px", verticalAlign: "middle" }}>
+                      <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", fontSize: "13px", lineHeight: 1.2 }}>
+                        {post.postTitle}
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell style={{ padding: "4px 10px" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                        {sortedCandidates.map((candidate) => (
+                          <div
+                            key={candidate.nominationId}
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              border: `1px solid ${candidate.isNota ? "var(--color-border-primary)" : "var(--color-primary-bg)"}`,
+                              backgroundColor: candidate.isNota ? "var(--color-bg-secondary)" : "rgba(19, 96, 171, 0.04)",
+                              borderRadius: "var(--radius-md)",
+                              padding: "2px 6px",
+                              gap: "6px",
+                            }}
+                          >
+                            <span style={{ fontSize: "12px", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {candidate.isNota ? "NOTA" : candidate.candidateName || candidate.candidateRollNumber}
+                            </span>
+                            <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+                              <span style={{ fontSize: "12px", fontWeight: "var(--font-weight-bold)", color: "var(--color-text-heading)" }}>
+                                {candidate.voteCount || 0}
+                              </span>
+                              <span style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>
+                                ({formatCompactPercentage(candidate.votePercentage)})
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-text-muted)", fontSize: "13px" }}>
+                      {post.eligibleVoterCount || 0}
+                    </Table.Cell>
+                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)", fontSize: "13px" }}>
+                      {post.votedCount || 0}
+                    </Table.Cell>
+                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", color: "var(--color-warning)", fontWeight: "var(--font-weight-medium)", fontSize: "13px" }}>
+                      {post.pendingCount || 0}
+                    </Table.Cell>
+                    <Table.Cell align="right" style={{ padding: "6px 10px", verticalAlign: "middle", fontWeight: "var(--font-weight-bold)", color: "var(--color-primary)", fontSize: "13px" }}>
+                      {post.turnoutPercentage || 0}%
+                    </Table.Cell>
+                  </Table.Row>
+                )
+              })
+            )}
+          </Table.Body>
+        </Table>
+      </div>
+    </Modal>
+  )
+}
+
 export const ElectionWizardModal = ({
   isOpen,
   mode,
@@ -202,6 +383,7 @@ export const ElectionWizardModal = ({
   const [currentStep, setCurrentStep] = useState("basics")
   const [activePostIndex, setActivePostIndex] = useState(0)
   const [wizardErrors, setWizardErrors] = useState(createEmptyWizardErrors())
+  const [showMockEnableConfirm, setShowMockEnableConfirm] = useState(false)
   const wizardBodyStyle = {
     ...modalBodyStyle,
     height: "calc(90vh - 180px)",
@@ -214,6 +396,7 @@ export const ElectionWizardModal = ({
       setCurrentStep("basics")
       setActivePostIndex(0)
       setWizardErrors(createEmptyWizardErrors())
+      setShowMockEnableConfirm(false)
     }
   }, [createEmptyWizardErrors, isOpen, mode])
 
@@ -239,6 +422,16 @@ export const ElectionWizardModal = ({
       timeline: {
         ...current.timeline,
         [key]: value,
+      },
+    }))
+  }
+
+  const updateMockSettings = (patch) => {
+    setForm((current) => ({
+      ...current,
+      mockSettings: {
+        ...(current.mockSettings || {}),
+        ...patch,
       },
     }))
   }
@@ -340,6 +533,10 @@ export const ElectionWizardModal = ({
   let body = null
 
   if (currentStep === "basics") {
+    const mockVoterCount = Array.isArray(form.mockSettings?.voterRollNumbers)
+      ? form.mockSettings.voterRollNumbers.length
+      : 0
+
     body = (
       <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
         <div
@@ -410,6 +607,77 @@ export const ElectionWizardModal = ({
             placeholder="Add constitutional notes, internal remarks, or an overview for this election cycle."
           />
           {basicsErrors.description ? <div style={errorTextStyle}>{basicsErrors.description}</div> : null}
+        </div>
+
+        <div style={flatPanelStyle}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-3)",
+              flexWrap: "wrap",
+              marginBottom: form.mockSettings?.enabled ? "var(--spacing-3)" : 0,
+            }}
+          >
+            <div>
+              <div style={{ ...labelStyle, marginBottom: "4px" }}>Mock election</div>
+              <div style={mutedTextStyle}>
+                Limit voting email delivery to an uploaded mock voter list while keeping the rest of the election flow unchanged.
+              </div>
+            </div>
+            <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
+              <input
+                type="checkbox"
+                checked={Boolean(form.mockSettings?.enabled)}
+                onChange={(event) => {
+                  if (event.target.checked) {
+                    setShowMockEnableConfirm(true)
+                    return
+                  }
+                  updateMockSettings({ enabled: false })
+                }}
+              />
+              Mark as mock
+            </label>
+          </div>
+
+          {form.mockSettings?.enabled ? (
+            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              <Alert
+                type="warning"
+                title="Mock election enabled"
+              >
+                Only the students from the uploaded mock voter CSV will receive voting links for this election.
+              </Alert>
+
+              <div>
+                <div style={{ ...labelStyle, marginBottom: "4px" }}>Mock voter list</div>
+                <div style={mutedTextStyle}>
+                  Upload a CSV with a single <code>rollNumber</code> column. Uploading a new file replaces the previous mock list.
+                </div>
+              </div>
+
+              <CsvUploader
+                requiredFields={nominationTemplateHeaders}
+                templateHeaders={nominationTemplateHeaders}
+                templateFileName="mock_voters.csv"
+                instructionText="Upload a CSV with a single `rollNumber` column."
+                onDataParsed={(rows) => {
+                  const nextRollNumbers = rows
+                    .map((row) => String(row.rollNumber || "").trim().toUpperCase())
+                    .filter(Boolean)
+
+                  updateMockSettings({
+                    voterRollNumbers: [...new Set(nextRollNumbers)],
+                  })
+                }}
+              />
+
+              <div style={mutedTextStyle}>{mockVoterCount} mock voter(s) uploaded</div>
+              {basicsErrors.mockSettings ? <div style={errorTextStyle}>{basicsErrors.mockSettings}</div> : null}
+            </div>
+          ) : null}
         </div>
       </div>
     )
@@ -791,61 +1059,74 @@ export const ElectionWizardModal = ({
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={mode === "edit" ? "Edit Election" : "Create Election"}
-      width={1040}
-      fullHeight={true}
-      footer={
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-            gap: "var(--spacing-3)",
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-            <Button size="sm" variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={currentStepIndex === 0}
-              onClick={() => setCurrentStep(wizardSteps[currentStepIndex - 1].id)}
-            >
-              <ChevronLeft size={14} /> Previous
-            </Button>
-            {isLastStep ? (
-              <Button size="sm" onClick={handleSave} loading={saving} disabled={saving}>
-                <BadgeCheck size={14} /> {mode === "edit" ? "Save Changes" : "Create Election"}
+    <>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={mode === "edit" ? "Edit Election" : "Create Election"}
+        width={1040}
+        fullHeight={true}
+        footer={
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+              gap: "var(--spacing-3)",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <Button size="sm" variant="secondary" onClick={onClose}>
+                Cancel
               </Button>
-            ) : (
-              <Button size="sm" onClick={goToNextStep}>
-                Next <ChevronRight size={14} />
+              <Button
+                size="sm"
+                variant="ghost"
+                disabled={currentStepIndex === 0}
+                onClick={() => setCurrentStep(wizardSteps[currentStepIndex - 1].id)}
+              >
+                <ChevronLeft size={14} /> Previous
               </Button>
-            )}
+              {isLastStep ? (
+                <Button size="sm" onClick={handleSave} loading={saving} disabled={saving}>
+                  <BadgeCheck size={14} /> {mode === "edit" ? "Save Changes" : "Create Election"}
+                </Button>
+              ) : (
+                <Button size="sm" onClick={goToNextStep}>
+                  Next <ChevronRight size={14} />
+                </Button>
+              )}
+            </div>
+            <StepIndicator
+              steps={wizardSteps}
+              currentStep={currentStep}
+              compact
+              onStepClick={(stepId) => setCurrentStep(stepId)}
+            />
           </div>
-          <StepIndicator
-            steps={wizardSteps}
-            currentStep={currentStep}
-            compact
-            onStepClick={(stepId) => setCurrentStep(stepId)}
-          />
+        }
+      >
+        <div style={wizardBodyStyle}>
+          {currentStep === "posts" && wizardErrors.general ? (
+            <div style={errorBannerStyle}>{wizardErrors.general}</div>
+          ) : null}
+          {body}
         </div>
-      }
-    >
-      <div style={wizardBodyStyle}>
-        {currentStep === "posts" && wizardErrors.general ? (
-          <div style={errorBannerStyle}>{wizardErrors.general}</div>
-        ) : null}
-        {body}
-      </div>
-    </Modal>
+      </Modal>
+      <ConfirmationDialog
+        isOpen={showMockEnableConfirm}
+        onClose={() => setShowMockEnableConfirm(false)}
+        onConfirm={() => {
+          updateMockSettings({ enabled: true })
+          setShowMockEnableConfirm(false)
+        }}
+        title="Enable Mock Election"
+        message="Only students from the uploaded mock voter list will receive the voting email for this election. You can upload or replace that list in this step."
+        confirmText="Enable Mock"
+      />
+    </>
   )
 }
 

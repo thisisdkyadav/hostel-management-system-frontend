@@ -323,6 +323,10 @@ const createBlankElectionForm = () => ({
   phase: "phase1",
   description: "",
   status: "draft",
+  mockSettings: {
+    enabled: false,
+    voterRollNumbers: [],
+  },
   electionCommission: {
     chiefElectionOfficerRollNumber: "",
     officerRollNumbers: [],
@@ -544,6 +548,12 @@ const buildElectionFormFromDetail = (detail) => ({
   phase: detail?.phase || "phase1",
   description: detail?.description || "",
   status: detail?.status || "draft",
+  mockSettings: {
+    enabled: Boolean(detail?.mockSettings?.enabled),
+    voterRollNumbers: Array.isArray(detail?.mockSettings?.voterRollNumbers)
+      ? detail.mockSettings.voterRollNumbers
+      : [],
+  },
   electionCommission: {
     chiefElectionOfficerRollNumber: detail?.electionCommission?.chiefElectionOfficerRollNumber || "",
     officerRollNumbers: detail?.electionCommission?.officerRollNumbers || [],
@@ -592,6 +602,12 @@ const serializeElectionFormForApi = (form) => ({
   phase: form.phase,
   description: form.description.trim(),
   status: form.status,
+  mockSettings: {
+    enabled: Boolean(form.mockSettings?.enabled),
+    voterRollNumbers: Array.isArray(form.mockSettings?.voterRollNumbers)
+      ? form.mockSettings.voterRollNumbers
+      : [],
+  },
   electionCommission: {
     chiefElectionOfficerRollNumber: form.electionCommission.chiefElectionOfficerRollNumber
       .trim()
@@ -733,6 +749,22 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
     if (description.length > 5000) {
       errors.basics.description = "Description cannot exceed 5000 characters."
       markStep("basics")
+    }
+
+    if (Boolean(form.mockSettings?.enabled)) {
+      const mockRollNumbers = Array.isArray(form.mockSettings?.voterRollNumbers)
+        ? form.mockSettings.voterRollNumbers
+        : []
+
+      if (mockRollNumbers.length === 0) {
+        errors.basics.mockSettings = "Upload a mock voter list before enabling a mock election."
+        markStep("basics")
+      }
+
+      if (mockRollNumbers.some((value) => String(value || "").trim().length > 30)) {
+        errors.basics.mockSettings = "Mock voter roll numbers cannot exceed 30 characters."
+        markStep("basics")
+      }
     }
   }
 
