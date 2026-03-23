@@ -9,14 +9,17 @@ import {
   FileText,
   History,
   Plus,
+  User,
+  Users,
   XCircle,
 } from "lucide-react"
 import StepIndicator from "@/components/ui/navigation/StepIndicator"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
 import CsvUploader from "@/components/common/CsvUploader"
+import StudentDetailModal from "@/components/common/students/StudentDetailModal"
 import { Alert } from "@/components/ui/feedback"
-import { idCardApi } from "@/service"
+import { idCardApi, studentApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 import {
   DocumentUploadField,
@@ -1153,6 +1156,8 @@ export const AdminNominationReviewModal = ({
   const [viewerUrl, setViewerUrl] = useState("")
   const [reviewNotes, setReviewNotes] = useState("")
   const [noteError, setNoteError] = useState("")
+  const [studentDetailTarget, setStudentDetailTarget] = useState(null)
+  const [openingStudentUserId, setOpeningStudentUserId] = useState("")
 
   useEffect(() => {
     setReviewNotes(nomination?.review?.notes || "")
@@ -1172,13 +1177,266 @@ export const AdminNominationReviewModal = ({
     onReview(nomination.id, status, trimmedNotes)
   }
 
+  const openStudentDetail = async (userId) => {
+    if (readOnly || !userId) return
+
+    try {
+      setOpeningStudentUserId(String(userId))
+      const studentId = await studentApi.getStudentId(userId)
+      if (!studentId) return
+      setStudentDetailTarget({ _id: studentId, userId })
+    } finally {
+      setOpeningStudentUserId("")
+    }
+  }
+
+  const SectionCard = ({ icon: Icon, title, children }) => (
+    <div
+      style={{
+        background: "var(--color-bg-tertiary)",
+        borderRadius: "var(--radius-lg)",
+        padding: "var(--spacing-3) var(--spacing-4)",
+        border: "1px solid var(--color-border-light)",
+        display: "grid",
+        gap: "var(--spacing-3)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)" }}>
+        <div
+          style={{
+            width: "24px",
+            height: "24px",
+            borderRadius: "var(--radius-sm)",
+            background: "linear-gradient(135deg, var(--color-primary-bg), color-mix(in srgb, var(--color-primary-bg) 76%, white 24%))",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--color-primary)",
+          }}
+        >
+          <Icon size={13} />
+        </div>
+        <div
+          style={{
+            fontSize: "var(--font-size-xs)",
+            fontWeight: "var(--font-weight-semibold)",
+            color: "var(--color-primary)",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}
+        >
+          {title}
+        </div>
+      </div>
+      {children}
+    </div>
+  )
+
+  const StudentSummaryCard = ({
+    name,
+    email,
+    image,
+    subtitle,
+    onClick,
+    loading = false,
+  }) => (
+    <div
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--spacing-3)",
+        padding: "var(--spacing-3)",
+        borderRadius: "var(--radius-lg)",
+        backgroundColor: "var(--color-bg-primary)",
+        border: "1px solid var(--color-border-primary)",
+        cursor: onClick ? "pointer" : "default",
+        transition: "all 0.2s ease",
+      }}
+      onMouseEnter={(event) => {
+        if (!onClick) return
+        event.currentTarget.style.borderColor = "var(--color-border-hover)"
+        event.currentTarget.style.transform = "translateY(-1px)"
+      }}
+      onMouseLeave={(event) => {
+        if (!onClick) return
+        event.currentTarget.style.borderColor = "var(--color-border-primary)"
+        event.currentTarget.style.transform = "translateY(0)"
+      }}
+    >
+      {image ? (
+        <img
+          src={getMediaUrl(image)}
+          alt={name}
+          style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "var(--radius-full)",
+            objectFit: "cover",
+            border: "2px solid var(--color-primary-bg)",
+            flexShrink: 0,
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            width: "48px",
+            height: "48px",
+            borderRadius: "var(--radius-full)",
+            backgroundColor: "var(--color-primary-bg)",
+            color: "var(--color-primary)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "var(--font-weight-semibold)",
+            flexShrink: 0,
+          }}
+        >
+          {(name || "?").trim().charAt(0).toUpperCase()}
+        </div>
+      )}
+      <div style={{ minWidth: 0, flex: 1, display: "grid", gap: "2px" }}>
+        <div
+          style={{
+            fontWeight: "var(--font-weight-semibold)",
+            color: "var(--color-text-heading)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {name || "Unknown student"}
+        </div>
+        {subtitle ? <div style={mutedTextStyle}>{subtitle}</div> : null}
+        {email ? (
+          <div
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--color-text-muted)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {email}
+          </div>
+        ) : null}
+      </div>
+      {loading ? <span style={mutedTextStyle}>Opening...</span> : null}
+    </div>
+  )
+
+  const renderSupporterList = (entries = []) => {
+    if (entries.length === 0) {
+      return <div style={mutedTextStyle}>No supporters added.</div>
+    }
+
+    return (
+      <div style={{ display: "grid", gap: "10px" }}>
+        {entries.map((entry) => (
+          <div
+            key={`${entry.userId || entry.rollNumber}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "var(--spacing-3)",
+              padding: "var(--spacing-3)",
+              borderRadius: "var(--radius-lg)",
+              backgroundColor: "var(--color-bg-primary)",
+              border: "1px solid var(--color-border-primary)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "var(--spacing-3)",
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              {entry.profileImage ? (
+                <img
+                  src={getMediaUrl(entry.profileImage)}
+                  alt={entry.name || entry.rollNumber}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "var(--radius-full)",
+                    objectFit: "cover",
+                    flexShrink: 0,
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: "var(--color-primary-bg)",
+                    color: "var(--color-primary)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: "var(--font-weight-semibold)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {(entry.name || entry.rollNumber || "?").trim().charAt(0).toUpperCase()}
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => openStudentDetail(entry.userId)}
+                disabled={readOnly || !entry.userId}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  padding: 0,
+                  margin: 0,
+                  textAlign: "left",
+                  cursor: !readOnly && entry.userId ? "pointer" : "default",
+                  minWidth: 0,
+                  flex: 1,
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: "var(--font-weight-medium)",
+                    color: "var(--color-text-heading)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {entry.name || entry.rollNumber}
+                </div>
+                <div style={mutedTextStyle}>{entry.rollNumber}</div>
+              </button>
+            </div>
+
+            <StatusPill
+              tone={getStatusTone(entry.status)}
+              pillBaseStyle={pillBaseStyle}
+              statusToneStyles={statusToneStyles}
+            >
+              {formatStageLabel(entry.status)}
+            </StatusPill>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <>
       <Modal
         isOpen={Boolean(nomination)}
         onClose={onClose}
         title={nomination.candidateName || nomination.candidateRollNumber}
-        width={760}
+        width={1120}
+        fullHeight={true}
         footer={
           <div
             style={{
@@ -1240,57 +1498,84 @@ export const AdminNominationReviewModal = ({
         }
       >
         <div style={modalBodyStyle}>
-          <div style={detailGridStyle}>
-            <div style={detailPanelStyle}>
-              <div style={labelStyle}>Academic details</div>
-              <MetaList
-                items={[
-                  { label: "CGPA", value: nomination.cgpa ?? "—" },
-                  { label: "Submitted", value: formatDateTime(nomination.submittedAt) },
-                ]}
-                mutedTextStyle={mutedTextStyle}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+              gap: "var(--spacing-3)",
+              alignItems: "start",
+            }}
+          >
+            <SectionCard icon={User} title="Candidate Details">
+              <StudentSummaryCard
+                name={nomination.candidateName || nomination.candidateRollNumber}
+                email={nomination.candidateEmail}
+                image={nomination.candidateProfileImage}
+                subtitle={`${nomination.candidateRollNumber}${nomination.candidateBatch ? ` · ${nomination.candidateBatch}` : ""}`}
+                onClick={
+                  nomination.candidateUserId && !readOnly
+                    ? () => openStudentDetail(nomination.candidateUserId)
+                    : undefined
+                }
+                loading={openingStudentUserId === String(nomination.candidateUserId || "")}
               />
-            </div>
+              <div style={detailGridStyle}>
+                <div style={detailPanelStyle}>
+                  <div style={labelStyle}>Academic details</div>
+                  <MetaList
+                    items={[
+                      { label: "CGPA", value: nomination.cgpa ?? "—" },
+                      { label: "No active backlog", value: nomination.hasNoActiveBacklogs ? "Yes" : "No" },
+                    ]}
+                    mutedTextStyle={mutedTextStyle}
+                  />
+                </div>
+                <div style={detailPanelStyle}>
+                  <div style={labelStyle}>Nomination</div>
+                  <MetaList
+                    items={[
+                      { label: "Submitted", value: formatDateTime(nomination.submittedAt) },
+                      { label: "Post", value: nomination.postTitle || "—" },
+                    ]}
+                    mutedTextStyle={mutedTextStyle}
+                  />
+                </div>
+              </div>
+            </SectionCard>
 
-            <div style={detailPanelStyle}>
-              <div style={labelStyle}>Supporting students</div>
-              <MetaList
-                items={[
-                  {
-                    label: "Proposers",
-                    value:
-                      (nomination.proposerEntries || [])
-                        .map((item) => `${item.name || item.rollNumber} (${item.status || "pending"})`)
-                        .join(", ") || "—",
-                  },
-                  {
-                    label: "Seconders",
-                    value:
-                      (nomination.seconderEntries || [])
-                        .map((item) => `${item.name || item.rollNumber} (${item.status || "pending"})`)
-                        .join(", ") || "—",
-                  },
-                ]}
-                mutedTextStyle={mutedTextStyle}
-              />
+            <div style={{ ...detailPanelStyle, minHeight: "100%" }}>
+              <div style={labelStyle}>Review comment</div>
+              {readOnly ? (
+                <div style={mutedTextStyle}>{reviewNotes || "No review comment available yet."}</div>
+              ) : (
+                <>
+                  <textarea
+                    style={noteError ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
+                    value={reviewNotes}
+                    onChange={(event) => setReviewNotes(event.target.value)}
+                    placeholder="Add review feedback. This is required when requesting modification."
+                  />
+                  {noteError ? <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-xs)" }}>{noteError}</div> : null}
+                </>
+              )}
             </div>
           </div>
 
-          <div style={detailPanelStyle}>
-            <div style={labelStyle}>Review comment</div>
-            {readOnly ? (
-              <div style={mutedTextStyle}>{reviewNotes || "No review comment available yet."}</div>
-            ) : (
-              <>
-                <textarea
-                  style={noteError ? { ...textareaStyle, borderColor: "var(--color-danger)" } : textareaStyle}
-                  value={reviewNotes}
-                  onChange={(event) => setReviewNotes(event.target.value)}
-                  placeholder="Add review feedback. This is required when requesting modification."
-                />
-                {noteError ? <div style={{ color: "var(--color-danger-text)", fontSize: "var(--font-size-xs)" }}>{noteError}</div> : null}
-              </>
-            )}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: "var(--spacing-3)",
+              alignItems: "start",
+            }}
+          >
+            <SectionCard icon={Users} title="Proposers">
+              {renderSupporterList(nomination.proposerEntries || [])}
+            </SectionCard>
+
+            <SectionCard icon={Users} title="Seconders">
+              {renderSupporterList(nomination.seconderEntries || [])}
+            </SectionCard>
           </div>
 
           <div style={detailGridStyle}>
@@ -1336,6 +1621,18 @@ export const AdminNominationReviewModal = ({
         onClose={() => setViewerUrl("")}
         certificateUrl={viewerUrl}
       />
+
+      {studentDetailTarget ? (
+        <StudentDetailModal
+          selectedStudent={studentDetailTarget}
+          setShowStudentDetail={(show) => {
+            if (!show) {
+              setStudentDetailTarget(null)
+            }
+          }}
+          onUpdate={() => setStudentDetailTarget(null)}
+        />
+      ) : null}
     </>
   )
 }
