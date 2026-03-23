@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button } from "czero/react"
+import { Button, Modal } from "czero/react"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
@@ -1106,6 +1106,7 @@ const ElectionsPage = () => {
   const [liveVotingStats, setLiveVotingStats] = useState(null)
   const [loadingVotingStats, setLoadingVotingStats] = useState(false)
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
+  const [sendVotingEmailMode, setSendVotingEmailMode] = useState("reuse_existing")
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
@@ -1833,7 +1834,9 @@ const ElectionsPage = () => {
 
     try {
       setBusyKey(`voting-email:${selectedAdminElectionId}`)
-      const response = await electionsApi.sendVotingEmails(selectedAdminElectionId)
+      const response = await electionsApi.sendVotingEmails(selectedAdminElectionId, {
+        resendMode: sendVotingEmailMode,
+      })
       setLiveVotingStats((current) =>
         current
           ? {
@@ -1847,6 +1850,7 @@ const ElectionsPage = () => {
           : current
       )
       toast.success(response?.message || "Voting emails queued")
+      setShowSendVotingEmailsConfirm(false)
 
       window.setTimeout(() => {
         loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
@@ -1986,7 +1990,10 @@ const ElectionsPage = () => {
             nominationTabs={nominationTabs}
             liveVotingStats={liveVotingStats}
             loadingVotingStats={loadingVotingStats}
-            onSendVotingEmails={() => setShowSendVotingEmailsConfirm(true)}
+            onSendVotingEmails={() => {
+              setSendVotingEmailMode("reuse_existing")
+              setShowSendVotingEmailsConfirm(true)
+            }}
             socketConnected={isSocketConnected}
             onOpenCloneElection={openCloneElection}
             canCloneElection={canCloneElection}
@@ -2196,15 +2203,98 @@ const ElectionsPage = () => {
 
       {isAdminView ? (
         <>
-          <ConfirmationDialog
+          <Modal
             isOpen={showSendVotingEmailsConfirm}
             onClose={() => setShowSendVotingEmailsConfirm(false)}
-            onConfirm={sendVotingEmails}
             title="Send Voting List"
-            message="This will send voting ballot emails again to students who are still eligible to vote in this election. Use this only when you intentionally want to resend the voting list."
-            confirmText="Send Again"
-            cancelText="Cancel"
-          />
+            width={520}
+            footer={
+              <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setShowSendVotingEmailsConfirm(false)}
+                  disabled={busyKey === `voting-email:${selectedAdminElectionId}`}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={sendVotingEmails}
+                  loading={busyKey === `voting-email:${selectedAdminElectionId}`}
+                >
+                  Send Email
+                </Button>
+              </>
+            }
+          >
+            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              <div style={mutedTextStyle}>
+                Send the voting email again to students who are still eligible to vote in this election.
+              </div>
+              <div style={{ display: "grid", gap: "10px" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    padding: "var(--spacing-3)",
+                    border: "1px solid var(--color-border-primary)",
+                    borderRadius: "var(--radius-card-sm)",
+                    backgroundColor:
+                      sendVotingEmailMode === "reuse_existing"
+                        ? "var(--color-primary-bg)"
+                        : "var(--color-bg-primary)",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="sendVotingEmailMode"
+                    checked={sendVotingEmailMode === "reuse_existing"}
+                    onChange={() => setSendVotingEmailMode("reuse_existing")}
+                  />
+                  <div style={{ display: "grid", gap: "4px" }}>
+                    <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                      Reuse existing link
+                    </span>
+                    <span style={mutedTextStyle}>
+                      Resend the same voting link if an active one already exists for that student.
+                    </span>
+                  </div>
+                </label>
+
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    padding: "var(--spacing-3)",
+                    border: "1px solid var(--color-border-primary)",
+                    borderRadius: "var(--radius-card-sm)",
+                    backgroundColor:
+                      sendVotingEmailMode === "generate_new"
+                        ? "var(--color-primary-bg)"
+                        : "var(--color-bg-primary)",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="sendVotingEmailMode"
+                    checked={sendVotingEmailMode === "generate_new"}
+                    onChange={() => setSendVotingEmailMode("generate_new")}
+                  />
+                  <div style={{ display: "grid", gap: "4px" }}>
+                    <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                      Generate new link
+                    </span>
+                    <span style={mutedTextStyle}>
+                      Invalidates the old voting link and sends a new one to the student.
+                    </span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </Modal>
 
           <ConfirmationDialog
             isOpen={showPublishResultsConfirm}

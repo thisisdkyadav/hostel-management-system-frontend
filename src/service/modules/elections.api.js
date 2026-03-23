@@ -39,8 +39,8 @@ export const electionsApi = {
   publishResults: (electionId, payload) =>
     apiClient.post(`${BASE_PATH}/${electionId}/results/publish`, payload),
 
-  sendVotingEmails: (electionId) =>
-    apiClient.post(`${BASE_PATH}/${electionId}/voting-emails/send`, {}),
+  sendVotingEmails: (electionId, payload = {}) =>
+    apiClient.post(`${BASE_PATH}/${electionId}/voting-emails/send`, payload),
 
   getSupporterConfirmation: (token) =>
     apiClient.get(`${BASE_PATH}/supporter-confirmation/${token}`),
