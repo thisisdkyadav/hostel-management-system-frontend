@@ -435,7 +435,7 @@ const statusToneStyles = {
 const getStatusTone = (status) => {
   if (["verified", "published", "completed", "voting"].includes(status)) return "success"
   if (["rejected", "cancelled"].includes(status)) return "danger"
-  if (["withdrawal", "campaigning", "results", "handover", "modification_requested"].includes(status)) return "warning"
+  if (["withdrawal", "campaigning", "results", "handover", "modification_requested", "queued"].includes(status)) return "warning"
   if (["nomination", "announced", "draft", "submitted", "participation"].includes(status)) return "primary"
   return "default"
 }
@@ -1368,6 +1368,25 @@ const ElectionsPage = () => {
     }
   }, [isAdminView, onSocketEvent, selectedAdminElectionId])
 
+  useEffect(() => {
+    if (!isAdminView || adminViewTab !== "voting" || !selectedAdminElectionId) return undefined
+
+    const dispatchStatus = String(liveVotingStats?.dispatch?.status || "")
+    if (!["queued", "running"].includes(dispatchStatus)) return undefined
+
+    const intervalId = window.setInterval(() => {
+      loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
+    }, 3000)
+
+    return () => window.clearInterval(intervalId)
+  }, [
+    adminViewTab,
+    isAdminView,
+    liveVotingStats?.dispatch?.status,
+    loadVotingLiveStats,
+    selectedAdminElectionId,
+  ])
+
   const openCreateWizard = () => {
     setWizardMode("create")
     setWizardForm(createBlankElectionForm())
@@ -1843,7 +1862,7 @@ const ElectionsPage = () => {
               ...current,
               dispatch: {
                 ...current.dispatch,
-                status: "running",
+                status: "queued",
                 lastTriggeredAt: new Date().toISOString(),
               },
             }
@@ -2223,14 +2242,14 @@ const ElectionsPage = () => {
                   onClick={sendVotingEmails}
                   loading={busyKey === `voting-email:${selectedAdminElectionId}`}
                 >
-                  Send Email
+                  Queue Email Sending
                 </Button>
               </>
             }
           >
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
               <div style={mutedTextStyle}>
-                Send the voting email again to students who are still eligible to vote in this election.
+                Queue the voting email for students who are still eligible to vote in this election.
               </div>
               <div style={{ display: "grid", gap: "10px" }}>
                 <label

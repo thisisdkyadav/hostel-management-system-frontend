@@ -585,7 +585,7 @@ const AdminElectionWorkspace = ({
               loading={busyKey === `voting-email:${selectedAdminElectionId}`}
               disabled={
                 busyKey === `voting-email:${selectedAdminElectionId}` ||
-                votingDispatch.status === "running"
+                ["queued", "running"].includes(votingDispatch.status)
               }
             >
               Send Voting List
