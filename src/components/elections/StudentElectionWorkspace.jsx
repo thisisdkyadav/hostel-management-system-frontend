@@ -1,4 +1,4 @@
-import { Button, DataTable, Table } from "czero/react"
+import { Button, DataTable } from "czero/react"
 import { Alert } from "@/components/ui/feedback"
 import { StatusPill } from "@/components/elections/ElectionShared"
 
@@ -18,7 +18,7 @@ const StudentElectionWorkspace = ({
   busyKey,
   voteSelections,
   setVoteSelections,
-  castVote,
+  submitStudentVotes,
   infoBannerStyle,
   detailPanelStyle,
   mutedTextStyle,
@@ -26,8 +26,18 @@ const StudentElectionWorkspace = ({
   formatDateTime,
   pillBaseStyle,
   statusToneStyles,
-}) => (
-  <>
+}) => {
+  const votingAccessMode = String(selectedStudentElection?.votingAccess?.mode || "both")
+  const portalVotingEnabled = ["portal", "both"].includes(votingAccessMode)
+  const emailVotingEnabled = ["email", "both"].includes(votingAccessMode)
+  const votingPosts = selectedStudentElection?.posts || []
+  const hasSubmittedVote =
+    selectedStudentElection.mode === "voting" &&
+    votingPosts.length > 0 &&
+    votingPosts.every((post) => Boolean(post.hasVoted))
+
+  return (
+    <>
     <div style={infoBannerStyle}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
         <h2 style={{ margin: 0, fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)" }}>
@@ -144,12 +154,109 @@ const StudentElectionWorkspace = ({
       />
     ) : null}
 
-    {selectedStudentElection.mode === "voting" ? (
-      <Alert type="info" title="Voting Happens Through Email">
-        Your secure voting link is sent by email shortly before voting starts. That link contains all posts you can
-        vote for and lets you submit your vote in one step.
-      </Alert>
-    ) : null}
+      {selectedStudentElection.mode === "voting" ? (
+        !portalVotingEnabled ? (
+          <Alert type="info" title="Voting is available by email">
+            Your voting link is sent by email for this election. Student portal voting is not enabled here.
+          </Alert>
+        ) : hasSubmittedVote ? (
+          <Alert type="success" title="Vote already submitted">
+            Your vote has already been submitted for this election.
+          </Alert>
+        ) : (
+          <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            {emailVotingEnabled ? (
+              <Alert type="info">
+                You can submit your vote here in the student portal or through the email link sent for this election.
+              </Alert>
+            ) : null}
+
+            {votingPosts.map((post) => (
+              <div
+                key={post.id || post.postId}
+                style={{
+                  ...detailPanelStyle,
+                  gap: "var(--spacing-3)",
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: "var(--font-size-base)",
+                      fontWeight: "var(--font-weight-semibold)",
+                      color: "var(--color-text-heading)",
+                    }}
+                  >
+                    {post.title}
+                  </div>
+                  {post.code ? <div style={mutedTextStyle}>{post.code}</div> : null}
+                </div>
+
+                <div style={{ display: "grid", gap: "10px" }}>
+                  {(post.votingCandidates?.length ? post.votingCandidates : post.approvedCandidates || []).map((candidate) => {
+                    const inputName = `vote-${selectedStudentElection.id}-${post.id || post.postId}`
+                    const candidateId = String(candidate.id || candidate.nominationId)
+                    const isSelected =
+                      String(voteSelections[`${selectedStudentElection.id}:${post.id || post.postId}`] || "") ===
+                      candidateId
+
+                    return (
+                      <label
+                        key={candidateId}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                          padding: "12px 14px",
+                          borderRadius: "var(--radius-card-sm)",
+                          border: `1px solid ${isSelected ? "var(--color-primary)" : "var(--color-border-primary)"}`,
+                          backgroundColor: isSelected ? "var(--color-primary-bg)" : "var(--color-bg-primary)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name={inputName}
+                          checked={isSelected}
+                          onChange={() =>
+                            setVoteSelections((current) => ({
+                              ...current,
+                              [`${selectedStudentElection.id}:${post.id || post.postId}`]: candidateId,
+                            }))
+                          }
+                        />
+                        <div style={{ display: "grid", gap: "2px", minWidth: 0 }}>
+                          <div
+                            style={{
+                              fontWeight: "var(--font-weight-medium)",
+                              color: "var(--color-text-primary)",
+                            }}
+                          >
+                            {candidate.candidateName || candidate.candidateUserId?.name || candidate.candidateRollNumber}
+                          </div>
+                          {candidate.candidateRollNumber ? (
+                            <div style={mutedTextStyle}>{candidate.candidateRollNumber}</div>
+                          ) : null}
+                        </div>
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                onClick={() => submitStudentVotes(selectedStudentElection.id, votingPosts)}
+                loading={busyKey === `vote:${selectedStudentElection.id}`}
+                disabled={votingPosts.length === 0}
+              >
+                Submit Vote
+              </Button>
+            </div>
+          </div>
+        )
+      ) : null}
 
     {selectedStudentElection.mode === "results" ? (
       selectedStudentElection.results?.isPublished ? (
@@ -332,7 +439,8 @@ const StudentElectionWorkspace = ({
         <Alert type="info">Results will be published soon.</Alert>
       )
     ) : null}
-  </>
-)
+    </>
+  )
+}
 
 export default StudentElectionWorkspace

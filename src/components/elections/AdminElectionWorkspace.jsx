@@ -75,6 +75,9 @@ const AdminElectionWorkspace = ({
   readOnly = false,
 }) => {
   const isVotingStage = selectedAdminElection?.currentStage === "voting"
+  const emailVotingEnabled = ["email", "both"].includes(
+    String(selectedAdminElection?.votingAccess?.mode || "both")
+  )
   const canViewResultsTab = ["results", "handover", "completed"].includes(selectedAdminElection?.currentStage)
   const tabs = readOnly
     ? [{ label: "Nominations", value: "nominations" }]
@@ -571,25 +574,29 @@ const AdminElectionWorkspace = ({
               >
                 {socketConnected ? "Live" : "Reconnecting"}
               </StatusPill>
-              <StatusPill
-                tone={getStatusTone(votingDispatch.status || "idle")}
-                pillBaseStyle={pillBaseStyle}
-                statusToneStyles={statusToneStyles}
-              >
-                Emails {formatStageLabel(votingDispatch.status || "idle")}
-              </StatusPill>
+              {emailVotingEnabled ? (
+                <StatusPill
+                  tone={getStatusTone(votingDispatch.status || "idle")}
+                  pillBaseStyle={pillBaseStyle}
+                  statusToneStyles={statusToneStyles}
+                >
+                  Emails {formatStageLabel(votingDispatch.status || "idle")}
+                </StatusPill>
+              ) : null}
             </div>
-            <Button
-              size="sm"
-              onClick={onSendVotingEmails}
-              loading={busyKey === `voting-email:${selectedAdminElectionId}`}
-              disabled={
-                busyKey === `voting-email:${selectedAdminElectionId}` ||
-                ["queued", "running"].includes(votingDispatch.status)
-              }
-            >
-              Send Voting List
-            </Button>
+            {emailVotingEnabled ? (
+              <Button
+                size="sm"
+                onClick={onSendVotingEmails}
+                loading={busyKey === `voting-email:${selectedAdminElectionId}`}
+                disabled={
+                  busyKey === `voting-email:${selectedAdminElectionId}` ||
+                  ["queued", "running"].includes(votingDispatch.status)
+                }
+              >
+                Send Voting List
+              </Button>
+            ) : null}
           </div>
 
           <div style={infoGridStyle}>
@@ -605,12 +612,14 @@ const AdminElectionWorkspace = ({
               <span style={compactStatLabelStyle}>Turnout</span>
               <span style={compactStatValueStyle}>{votingOverview.turnoutPercentage || 0}%</span>
             </div>
-            <div style={compactStatStyle}>
-              <span style={compactStatLabelStyle}>Voting Emails Sent</span>
-              <span style={compactStatValueStyle}>
-                {votingDispatch.sentRecipients || 0}/{votingDispatch.totalRecipients || 0}
-              </span>
-            </div>
+            {emailVotingEnabled ? (
+              <div style={compactStatStyle}>
+                <span style={compactStatLabelStyle}>Voting Emails Sent</span>
+                <span style={compactStatValueStyle}>
+                  {votingDispatch.sentRecipients || 0}/{votingDispatch.totalRecipients || 0}
+                </span>
+              </div>
+            ) : null}
           </div>
 
           <DataTable

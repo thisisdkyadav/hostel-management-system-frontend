@@ -263,6 +263,12 @@ const statusOptions = [
   { value: "cancelled", label: "Cancelled" },
 ]
 
+const votingAccessOptions = [
+  { value: "both", label: "Email + Student Portal" },
+  { value: "email", label: "Email Only" },
+  { value: "portal", label: "Student Portal Only" },
+]
+
 const postCategoryOptions = [
   { value: "executive", label: "Executive" },
   { value: "senator", label: "Senator" },
@@ -323,6 +329,9 @@ const createBlankElectionForm = () => ({
   phase: "phase1",
   description: "",
   status: "draft",
+  votingAccess: {
+    mode: "both",
+  },
   mockSettings: {
     enabled: false,
     voterRollNumbers: [],
@@ -548,6 +557,9 @@ const buildElectionFormFromDetail = (detail) => ({
   phase: detail?.phase || "phase1",
   description: detail?.description || "",
   status: detail?.status || "draft",
+  votingAccess: {
+    mode: detail?.votingAccess?.mode || "both",
+  },
   mockSettings: {
     enabled: Boolean(detail?.mockSettings?.enabled),
     voterRollNumbers: Array.isArray(detail?.mockSettings?.voterRollNumbers)
@@ -602,6 +614,9 @@ const serializeElectionFormForApi = (form) => ({
   phase: form.phase,
   description: form.description.trim(),
   status: form.status,
+  votingAccess: {
+    mode: form.votingAccess?.mode || "both",
+  },
   mockSettings: {
     enabled: Boolean(form.mockSettings?.enabled),
     voterRollNumbers: Array.isArray(form.mockSettings?.voterRollNumbers)
@@ -743,6 +758,11 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
 
     if (!statusOptions.some((option) => option.value === form.status)) {
       errors.basics.status = "Select a valid election status."
+      markStep("basics")
+    }
+
+    if (!votingAccessOptions.some((option) => option.value === form.votingAccess?.mode)) {
+      errors.basics.votingAccess = "Select how students should be allowed to vote."
       markStep("basics")
     }
 
@@ -1623,19 +1643,24 @@ const ElectionsPage = () => {
     }
   }
 
-  const castVote = async (electionId, postId) => {
-    const selectedCandidateId = voteSelections[`${electionId}:${postId}`]
-    if (!selectedCandidateId) return
+  const submitStudentVotes = async (electionId, posts = []) => {
+    const votes = posts.map((post) => ({
+      postId: post.id || post.postId,
+      candidateNominationId: voteSelections[`${electionId}:${post.id || post.postId}`] || "",
+    }))
+
+    if (votes.some((vote) => !vote.candidateNominationId)) {
+      toast.error("Select one candidate for every available post before submitting your vote")
+      return
+    }
 
     try {
-      setBusyKey(`vote:${electionId}:${postId}`)
-      const response = await electionsApi.castVote(electionId, postId, {
-        candidateNominationId: selectedCandidateId,
-      })
-      toast.success(response?.message || "Vote cast successfully")
+      setBusyKey(`vote:${electionId}`)
+      const response = await electionsApi.submitStudentVotes(electionId, { votes })
+      toast.success(response?.message || "Vote submitted successfully")
       await loadStudentPortal()
     } catch (err) {
-      toast.error(formatApiErrorMessage(err, "Failed to cast vote"))
+      toast.error(formatApiErrorMessage(err, "Failed to submit vote"))
     } finally {
       setBusyKey("")
     }
@@ -2036,7 +2061,7 @@ const ElectionsPage = () => {
             busyKey={busyKey}
             voteSelections={voteSelections}
             setVoteSelections={setVoteSelections}
-            castVote={castVote}
+            submitStudentVotes={submitStudentVotes}
             infoBannerStyle={infoBannerStyle}
             detailPanelStyle={detailPanelStyle}
             mutedTextStyle={mutedTextStyle}
@@ -2068,6 +2093,7 @@ const ElectionsPage = () => {
             wizardSteps={wizardSteps}
             phaseOptions={phaseOptions}
             statusOptions={statusOptions}
+            votingAccessOptions={votingAccessOptions}
             postCategoryOptions={postCategoryOptions}
             timelineFieldDefs={timelineFieldDefs}
             requirementFieldDefs={requirementFieldDefs}

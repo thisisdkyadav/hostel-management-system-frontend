@@ -360,6 +360,7 @@ export const ElectionWizardModal = ({
   wizardSteps,
   phaseOptions,
   statusOptions,
+  votingAccessOptions,
   postCategoryOptions,
   timelineFieldDefs,
   requirementFieldDefs,
@@ -599,6 +600,28 @@ export const ElectionWizardModal = ({
             </select>
             {basicsErrors.status ? <div style={errorTextStyle}>{basicsErrors.status}</div> : null}
           </div>
+          <div>
+            <label style={labelStyle}>Voting access</label>
+            <select
+              style={basicsErrors.votingAccess ? { ...selectStyle, borderColor: "var(--color-danger)" } : selectStyle}
+              value={form.votingAccess?.mode || "both"}
+              onChange={(event) =>
+                updateForm({
+                  votingAccess: {
+                    ...(form.votingAccess || {}),
+                    mode: event.target.value,
+                  },
+                })
+              }
+            >
+              {votingAccessOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {basicsErrors.votingAccess ? <div style={errorTextStyle}>{basicsErrors.votingAccess}</div> : null}
+          </div>
         </div>
 
         <div style={flatPanelStyle}>
@@ -626,7 +649,7 @@ export const ElectionWizardModal = ({
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Mock election</div>
               <div style={mutedTextStyle}>
-                Limit voting email delivery to an uploaded mock voter list while keeping the rest of the election flow unchanged.
+                Limit voting to an uploaded mock voter list while keeping the rest of the election flow unchanged.
               </div>
             </div>
             <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
@@ -651,7 +674,7 @@ export const ElectionWizardModal = ({
                 type="warning"
                 title="Mock election enabled"
               >
-                Only the students from the uploaded mock voter CSV will receive voting links for this election.
+                Only the students from the uploaded mock voter CSV will be allowed to vote in this mock election.
               </Alert>
 
               <div>
