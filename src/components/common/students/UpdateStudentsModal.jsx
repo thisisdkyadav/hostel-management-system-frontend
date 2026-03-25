@@ -1179,6 +1179,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           ? response.unsuccessfulRollNumbers.length
           : 0
         const matchedCount = response?.matchedCount || response?.updatedCount || 0
+        const clearedCount = response?.clearedCount || 0
         const actionLabel = groupAssignmentMode === "add"
           ? "added to"
           : groupAssignmentMode === "remove"
@@ -1189,7 +1190,10 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
         if (unsuccessfulCount > 0) {
           toast.success(`Updated ${response.updatedCount || 0} students. ${unsuccessfulCount} roll numbers were not found.`)
         } else {
-          toast.success(`Successfully ${actionLabel} ${groupLabel} for ${matchedCount} student${matchedCount === 1 ? "" : "s"}.`)
+          const replaceSummary = groupAssignmentMode === "replace"
+            ? ` Cleared ${clearedCount} previous membership${clearedCount === 1 ? "" : "s"} for the selected group${selectedGroups.length === 1 ? "" : "s"}.`
+            : ""
+          toast.success(`Successfully ${actionLabel} ${groupLabel} for ${matchedCount} student${matchedCount === 1 ? "" : "s"}.${replaceSummary}`)
         }
       }
 
