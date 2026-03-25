@@ -3,6 +3,7 @@ import { Button, Modal } from "czero/react"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
+import CsvUploader from "@/components/common/CsvUploader"
 import { EmptyState, ErrorState, LoadingState, useToast } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
 import { useGlobal } from "@/contexts/GlobalProvider"
@@ -233,6 +234,7 @@ const errorBannerStyle = {
 }
 
 const nominationTemplateHeaders = ["rollNumber"]
+const votingListTemplateHeaders = ["rollNumber"]
 
 const wizardSteps = [
   { id: "basics", label: "Basics", sublabel: "Identity & phase" },
@@ -1127,6 +1129,7 @@ const ElectionsPage = () => {
   const [loadingVotingStats, setLoadingVotingStats] = useState(false)
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
   const [sendVotingEmailMode, setSendVotingEmailMode] = useState("reuse_existing")
+  const [sendVotingEmailRollNumbers, setSendVotingEmailRollNumbers] = useState([])
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
@@ -1880,6 +1883,7 @@ const ElectionsPage = () => {
       setBusyKey(`voting-email:${selectedAdminElectionId}`)
       const response = await electionsApi.sendVotingEmails(selectedAdminElectionId, {
         resendMode: sendVotingEmailMode,
+        targetRollNumbers: sendVotingEmailRollNumbers,
       })
       setLiveVotingStats((current) =>
         current
@@ -1895,6 +1899,7 @@ const ElectionsPage = () => {
       )
       toast.success(response?.message || "Voting emails queued")
       setShowSendVotingEmailsConfirm(false)
+      setSendVotingEmailRollNumbers([])
 
       window.setTimeout(() => {
         loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
@@ -2036,6 +2041,7 @@ const ElectionsPage = () => {
             loadingVotingStats={loadingVotingStats}
             onSendVotingEmails={() => {
               setSendVotingEmailMode("reuse_existing")
+              setSendVotingEmailRollNumbers([])
               setShowSendVotingEmailsConfirm(true)
             }}
             socketConnected={isSocketConnected}
@@ -2250,7 +2256,10 @@ const ElectionsPage = () => {
         <>
           <Modal
             isOpen={showSendVotingEmailsConfirm}
-            onClose={() => setShowSendVotingEmailsConfirm(false)}
+            onClose={() => {
+              setShowSendVotingEmailsConfirm(false)
+              setSendVotingEmailRollNumbers([])
+            }}
             title="Send Voting List"
             width={520}
             footer={
@@ -2258,7 +2267,10 @@ const ElectionsPage = () => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => setShowSendVotingEmailsConfirm(false)}
+                  onClick={() => {
+                    setShowSendVotingEmailsConfirm(false)
+                    setSendVotingEmailRollNumbers([])
+                  }}
                   disabled={busyKey === `voting-email:${selectedAdminElectionId}`}
                 >
                   Cancel
@@ -2276,6 +2288,43 @@ const ElectionsPage = () => {
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
               <div style={mutedTextStyle}>
                 Queue the voting email for students who are still eligible to vote in this election.
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gap: "var(--spacing-2)",
+                  padding: "var(--spacing-3)",
+                  border: "1px solid var(--color-border-primary)",
+                  borderRadius: "var(--radius-card-sm)",
+                  backgroundColor: "var(--color-bg-secondary)",
+                }}
+              >
+                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  Optional CSV filter
+                </div>
+                <div style={mutedTextStyle}>
+                  Upload a CSV with a single <code>rollNumber</code> column to send only to those students. Only students who are still valid voters in this election will actually receive the email.
+                  {selectedAdminElection?.mockSettings?.enabled
+                    ? " Mock election restrictions are also applied."
+                    : ""}
+                </div>
+                <CsvUploader
+                  requiredFields={votingListTemplateHeaders}
+                  templateHeaders={votingListTemplateHeaders}
+                  templateFileName="voting_list_filter.csv"
+                  instructionText="Upload a CSV with a single `rollNumber` column. Uploading a new file replaces the previous list."
+                  onDataParsed={(rows) => {
+                    const nextRollNumbers = rows
+                      .map((row) => String(row.rollNumber || "").trim().toUpperCase())
+                      .filter(Boolean)
+                    setSendVotingEmailRollNumbers([...new Set(nextRollNumbers)])
+                  }}
+                />
+                <div style={mutedTextStyle}>
+                  {sendVotingEmailRollNumbers.length > 0
+                    ? `${sendVotingEmailRollNumbers.length} uploaded roll number(s) will be checked against the election voter list${selectedAdminElection?.mockSettings?.enabled ? " and the mock voter list" : ""}.`
+                    : "No CSV uploaded. Email will be queued for all eligible voters."}
+                </div>
               </div>
               <div style={{ display: "grid", gap: "10px" }}>
                 <label
