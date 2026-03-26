@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { lostAndFoundApi } from "../../service"
-import { uploadApi } from "../../service"
+import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { Select, FileInput } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import { FaCalendarAlt, FaClipboardList, FaBoxOpen, FaImage, FaTimes, FaPlus } from "react-icons/fa"
@@ -45,7 +45,7 @@ const AddLostItemModal = ({ show, onClose, onItemAdded }) => {
         const formData = new FormData()
         formData.append("image", file)
         const response = await uploadApi.uploadLostAndFoundImage(formData)
-        uploadedUrls.push(response.url)
+        uploadedUrls.push(resolveUploadedFileRef(response))
       }
 
       setFormData((prev) => ({

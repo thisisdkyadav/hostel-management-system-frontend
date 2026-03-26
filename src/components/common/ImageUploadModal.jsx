@@ -3,7 +3,7 @@ import Cropper from "react-easy-crop"
 import { Button, Modal } from "czero/react"
 import FileInput from "./ui/FileInput"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
-import { uploadApi } from "../../service"
+import { uploadApi, resolveUploadedFileRef } from "../../service"
 
 const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
   const [image, setImage] = useState(null)
@@ -83,7 +83,7 @@ const ImageUploadModal = ({ userId, isOpen, onClose, onImageUpload }) => {
 
       const data = await uploadApi.uploadProfileImage(formData, userId)
 
-      const imageUrl = data.url
+      const imageUrl = resolveUploadedFileRef(data)
 
       setUploaded(true)
 

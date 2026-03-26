@@ -3,16 +3,13 @@ import { Button } from "czero/react"
 import CsvUploader from "@/components/common/CsvUploader"
 import CertificateViewerModal from "@/components/common/students/CertificateViewerModal"
 import { useToast } from "@/components/ui/feedback"
-import { electionsApi, uploadApi } from "@/service"
+import { electionsApi, uploadApi, resolveUploadedFileRef } from "@/service"
 
 const isPdfDocument = (url = "") => /\.pdf(\?.*)?$/i.test(String(url))
 const nominationDocumentMaxSizeBytes = 10 * 1024 * 1024
 
 const resolveUploadedUrl = (uploadResponse) => {
-  if (typeof uploadResponse === "string") return uploadResponse
-  if (uploadResponse?.url) return uploadResponse.url
-  if (uploadResponse?.data?.url) return uploadResponse.data.url
-  return ""
+  return resolveUploadedFileRef(uploadResponse)
 }
 
 export const StatusPill = ({

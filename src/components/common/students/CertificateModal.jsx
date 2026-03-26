@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { FormField } from "@/components/ui"
 import { FaTrash, FaUpload } from "react-icons/fa"
-import { uploadApi, certificateApi } from "../../../service"
+import { uploadApi, certificateApi, resolveUploadedFileRef } from "../../../service"
 import { FileInput } from "@/components/ui"
 import { Button, Modal } from "czero/react"
 
@@ -69,7 +69,7 @@ const CertificateModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       formData.append("file", file)
 
       const response = await uploadApi.uploadCertificate(formData)
-      setFormData((prev) => ({ ...prev, certificateUrl: response.url }))
+      setFormData((prev) => ({ ...prev, certificateUrl: resolveUploadedFileRef(response) }))
       setUploadedFile(file.name)
     } catch (error) {
       console.error("Upload error:", error)

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { FaExclamationTriangle, FaPlus, FaUserAlt, FaUpload, FaFileAlt, FaCheckCircle } from "react-icons/fa"
 import { Textarea, VStack, HStack, Label, Alert } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
-import { uploadApi } from "../../../service"
+import { uploadApi, resolveUploadedFileRef } from "../../../service"
 
 const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, handleAddProfile }) => {
   const [formData, setFormData] = useState({
@@ -82,7 +82,7 @@ const AddVisitorRequestModal = ({ isOpen, onClose, onSubmit, visitorProfiles, ha
       formData.append("h2Form", h2FormFile)
 
       const response = await uploadApi.uploadH2Form(formData)
-      setH2FormUrl(response.url)
+      setH2FormUrl(resolveUploadedFileRef(response))
       setH2FormUploaded(true)
     } catch (err) {
       setError(err.message || "Failed to upload H2 form. Please try again.")

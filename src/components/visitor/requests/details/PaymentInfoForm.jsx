@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { uploadApi } from "../../../../service"
+import { uploadApi, resolveUploadedFileRef } from "../../../../service"
 import { getMediaUrl } from "../../../../utils/mediaUtils"
 import { Textarea, VStack, HStack, Label } from "@/components/ui"
 import { Button, Input } from "czero/react"
@@ -64,11 +64,12 @@ const PaymentInfoForm = ({ onSubmit, onCancel, expectedAmount }) => {
       formData.append("image", file, "payment.jpg")
 
       const response = await uploadApi.uploadPaymentScreenshot(formData)
+      const storedFileRef = resolveUploadedFileRef(response)
       setFormData((prev) => ({
         ...prev,
-        screenshot: response.url,
+        screenshot: storedFileRef,
       }))
-      setPreviewUrl(getMediaUrl(response.url))
+      setPreviewUrl(getMediaUrl(storedFileRef))
       setErrors((prev) => ({
         ...prev,
         screenshot: "",

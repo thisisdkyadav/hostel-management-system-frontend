@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { MdInventory, MdSave, MdCancel, MdDelete } from "react-icons/md"
 import { BsCalendarDate } from "react-icons/bs"
 import { FaImage, FaTimes } from "react-icons/fa"
-import { uploadApi } from "../../service"
+import { uploadApi, resolveUploadedFileRef } from "../../service"
 import { getMediaUrl } from "../../utils/mediaUtils"
 import { Select, FileInput, Textarea } from "@/components/ui"
 import { Button, Input } from "czero/react"
@@ -71,7 +71,7 @@ const LostAndFoundEditForm = ({ item, onCancel, onSave, onDelete }) => {
         const imageFormData = new FormData()
         imageFormData.append("image", file)
         const response = await uploadApi.uploadLostAndFoundImage(imageFormData)
-        uploadedUrls.push(response.url)
+        uploadedUrls.push(resolveUploadedFileRef(response))
       }
 
       setFormData((prev) => ({

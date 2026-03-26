@@ -4,7 +4,7 @@ import "cropperjs/dist/cropper.css"
 import { FileInput } from "@/components/ui"
 import { Button, Modal } from "czero/react"
 import { HiCheckCircle, HiUpload, HiX, HiExclamation } from "react-icons/hi"
-import { uploadApi, idCardApi } from "../service"
+import { uploadApi, idCardApi, resolveUploadedFileRef } from "../service"
 
 const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => {
   const [image, setImage] = useState(null)
@@ -58,7 +58,7 @@ const IDCardUploadModal = ({ userId, isOpen, onClose, onImageUpload, side }) => 
 
       // First upload the image
       const uploadResponse = await uploadApi.uploadIDcard(formData, side)
-      const imageUrl = uploadResponse.url
+      const imageUrl = resolveUploadedFileRef(uploadResponse)
 
       // Get current ID card data to preserve the other side
       const currentData = await idCardApi.getIDcard(userId)

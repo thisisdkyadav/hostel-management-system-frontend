@@ -5,6 +5,32 @@
 
 import apiClient from "../core/apiClient"
 
+export const resolveUploadedFileRef = (uploadResponse) => {
+  if (typeof uploadResponse === "string") return uploadResponse
+  return (
+    uploadResponse?.fileRef ||
+    uploadResponse?.file_ref ||
+    uploadResponse?.data?.fileRef ||
+    uploadResponse?.data?.file_ref ||
+    uploadResponse?.url ||
+    uploadResponse?.data?.url ||
+    ""
+  )
+}
+
+export const resolveUploadedFileUrl = (uploadResponse) => {
+  if (typeof uploadResponse === "string") return uploadResponse
+  return (
+    uploadResponse?.url ||
+    uploadResponse?.data?.url ||
+    uploadResponse?.fileRef ||
+    uploadResponse?.file_ref ||
+    uploadResponse?.data?.fileRef ||
+    uploadResponse?.data?.file_ref ||
+    ""
+  )
+}
+
 export const uploadApi = {
   /**
    * Upload profile image
