@@ -2506,6 +2506,7 @@ const ElectionsPage = () => {
                   requiredFields={votingListTemplateHeaders}
                   templateHeaders={votingListTemplateHeaders}
                   templateFileName="voting_list_filter.csv"
+                  maxRecords={10000}
                   instructionText="Upload a CSV with a single `rollNumber` column. Uploading a new file replaces the previous list."
                   onDataParsed={(rows) => {
                     const nextRollNumbers = rows
@@ -2774,6 +2775,7 @@ const ElectionsPage = () => {
                   requiredFields={votingListTemplateHeaders}
                   templateHeaders={votingListTemplateHeaders}
                   templateFileName="test_email_students.csv"
+                  maxRecords={10000}
                   instructionText="Upload a CSV with a single `rollNumber` column. Uploading a new file replaces the previous list."
                   onDataParsed={(rows) => {
                     const nextRollNumbers = rows
