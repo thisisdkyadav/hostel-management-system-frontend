@@ -68,6 +68,7 @@ const AdminElectionWorkspace = ({
   liveVotingStats,
   loadingVotingStats,
   onSendVotingEmails,
+  onOpenVotingEmailRecipients,
   socketConnected,
   onOpenCloneElection,
   canCloneElection,
@@ -585,17 +586,27 @@ const AdminElectionWorkspace = ({
               ) : null}
             </div>
             {emailVotingEnabled ? (
-              <Button
-                size="sm"
-                onClick={onSendVotingEmails}
-                loading={busyKey === `voting-email:${selectedAdminElectionId}`}
-                disabled={
-                  busyKey === `voting-email:${selectedAdminElectionId}` ||
-                  ["queued", "running"].includes(votingDispatch.status)
-                }
-              >
-                Send Voting List
-              </Button>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={onOpenVotingEmailRecipients}
+                  disabled={loadingVotingStats && !(liveVotingStats?.posts || []).length}
+                >
+                  View Link Status
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={onSendVotingEmails}
+                  loading={busyKey === `voting-email:${selectedAdminElectionId}`}
+                  disabled={
+                    busyKey === `voting-email:${selectedAdminElectionId}` ||
+                    ["queued", "running"].includes(votingDispatch.status)
+                  }
+                >
+                  Send Voting List
+                </Button>
+              </div>
             ) : null}
           </div>
 

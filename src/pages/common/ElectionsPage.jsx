@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Button, Modal } from "czero/react"
+import { Button, Modal, Table } from "czero/react"
 import { FileText, History, Plus } from "lucide-react"
 import PageHeader from "@/components/common/PageHeader"
 import ConfirmationDialog from "@/components/common/ConfirmationDialog"
@@ -1130,6 +1130,9 @@ const ElectionsPage = () => {
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
   const [sendVotingEmailMode, setSendVotingEmailMode] = useState("reuse_existing")
   const [sendVotingEmailRollNumbers, setSendVotingEmailRollNumbers] = useState([])
+  const [showVotingEmailRecipientsModal, setShowVotingEmailRecipientsModal] = useState(false)
+  const [loadingVotingEmailRecipients, setLoadingVotingEmailRecipients] = useState(false)
+  const [votingEmailRecipientsData, setVotingEmailRecipientsData] = useState(null)
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
@@ -1254,6 +1257,26 @@ const ElectionsPage = () => {
       }
     } finally {
       setLoadingVotingStats(false)
+    }
+  }
+
+  const loadVotingEmailRecipients = async (electionId, { silent = false } = {}) => {
+    if (!electionId) {
+      setVotingEmailRecipientsData(null)
+      setLoadingVotingEmailRecipients(false)
+      return
+    }
+
+    try {
+      setLoadingVotingEmailRecipients(true)
+      const response = await electionsApi.getVotingEmailRecipients(electionId)
+      setVotingEmailRecipientsData(response?.data || null)
+    } catch (err) {
+      if (!silent) {
+        toast.error(formatApiErrorMessage(err, "Failed to load voting email recipients"))
+      }
+    } finally {
+      setLoadingVotingEmailRecipients(false)
     }
   }
 
@@ -1408,6 +1431,23 @@ const ElectionsPage = () => {
     liveVotingStats?.dispatch?.status,
     loadVotingLiveStats,
     selectedAdminElectionId,
+  ])
+
+  useEffect(() => {
+    if (!showVotingEmailRecipientsModal || !selectedAdminElectionId) return undefined
+
+    const dispatchStatus = String(liveVotingStats?.dispatch?.status || "")
+    if (!["queued", "running"].includes(dispatchStatus)) return undefined
+
+    const intervalId = window.setInterval(() => {
+      loadVotingEmailRecipients(selectedAdminElectionId, { silent: true }).catch(() => {})
+    }, 3000)
+
+    return () => window.clearInterval(intervalId)
+  }, [
+    liveVotingStats?.dispatch?.status,
+    selectedAdminElectionId,
+    showVotingEmailRecipientsModal,
   ])
 
   const openCreateWizard = () => {
@@ -1912,6 +1952,39 @@ const ElectionsPage = () => {
     }
   }
 
+  const openVotingEmailRecipientsModal = async () => {
+    if (!selectedAdminElectionId) return
+
+    setShowVotingEmailRecipientsModal(true)
+    await loadVotingEmailRecipients(selectedAdminElectionId)
+  }
+
+  const exportVotingEmailRecipientsCsv = () => {
+    const sentRecipients = votingEmailRecipientsData?.sentRecipients || []
+    const notSentRecipients = votingEmailRecipientsData?.notSentRecipients || []
+    const rows = [...sentRecipients, ...notSentRecipients].map((entry) => [
+      entry.name || "",
+      entry.rollNumber || "",
+      entry.email || "",
+      entry.status || "",
+      entry.sentAt ? formatDateTime(entry.sentAt) : "",
+      entry.lastError || "",
+    ])
+
+    const escapeCsv = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`
+    const headers = ["Name", "Roll Number", "Email", "Link Status", "Sent At", "Last Error"]
+    const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const date = new Date().toISOString().split("T")[0]
+    link.href = URL.createObjectURL(blob)
+    link.download = `election_voting_link_status_${date}.csv`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
+
   const cloneElection = async () => {
     if (!selectedAdminElectionId) return
 
@@ -2044,6 +2117,7 @@ const ElectionsPage = () => {
               setSendVotingEmailRollNumbers([])
               setShowSendVotingEmailsConfirm(true)
             }}
+            onOpenVotingEmailRecipients={openVotingEmailRecipientsModal}
             socketConnected={isSocketConnected}
             onOpenCloneElection={openCloneElection}
             canCloneElection={canCloneElection}
@@ -2386,6 +2460,126 @@ const ElectionsPage = () => {
                     </span>
                   </div>
                 </label>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={showVotingEmailRecipientsModal}
+            onClose={() => setShowVotingEmailRecipientsModal(false)}
+            title="Voting Link Status"
+            width={960}
+            footer={
+              <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setShowVotingEmailRecipientsModal(false)}
+                >
+                  Close
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={exportVotingEmailRecipientsCsv}
+                  disabled={
+                    (votingEmailRecipientsData?.sentRecipients || []).length === 0 &&
+                    (votingEmailRecipientsData?.notSentRecipients || []).length === 0
+                  }
+                >
+                  Export CSV
+                </Button>
+              </>
+            }
+          >
+            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+              <div style={infoGridStyle}>
+                <div style={compactStatStyle}>
+                  <span style={compactStatLabelStyle}>With Link</span>
+                  <span style={compactStatValueStyle}>
+                    {(votingEmailRecipientsData?.sentRecipients || []).length}
+                  </span>
+                </div>
+                <div style={compactStatStyle}>
+                  <span style={compactStatLabelStyle}>Without Link</span>
+                  <span style={compactStatValueStyle}>
+                    {(votingEmailRecipientsData?.notSentRecipients || []).length}
+                  </span>
+                </div>
+                <div style={compactStatStyle}>
+                  <span style={compactStatLabelStyle}>Dispatch Status</span>
+                  <span style={compactStatValueStyle}>
+                    {formatStageLabel(votingEmailRecipientsData?.dispatch?.status || "idle")}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "var(--spacing-4)", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+                <div style={flatPanelStyle}>
+                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                    Students With Active Or Used Link
+                  </div>
+                  <Table>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Head>Name</Table.Head>
+                        <Table.Head>Roll Number</Table.Head>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {loadingVotingEmailRecipients ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={2}>Loading...</Table.Cell>
+                        </Table.Row>
+                      ) : (votingEmailRecipientsData?.sentRecipients || []).length === 0 ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={2}>No students currently have a usable or already-used voting link.</Table.Cell>
+                        </Table.Row>
+                      ) : (
+                        (votingEmailRecipientsData?.sentRecipients || []).map((entry) => (
+                          <Table.Row key={`sent-${entry.rollNumber}`}>
+                            <Table.Cell>{entry.name || "—"}</Table.Cell>
+                            <Table.Cell>{entry.rollNumber || "—"}</Table.Cell>
+                          </Table.Row>
+                        ))
+                      )}
+                    </Table.Body>
+                  </Table>
+                </div>
+
+                <div style={flatPanelStyle}>
+                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                    Students Without Active Link
+                  </div>
+                  <Table>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Head>Name</Table.Head>
+                        <Table.Head>Roll Number</Table.Head>
+                        <Table.Head>Status</Table.Head>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {loadingVotingEmailRecipients ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={3}>Loading...</Table.Cell>
+                        </Table.Row>
+                      ) : (votingEmailRecipientsData?.notSentRecipients || []).length === 0 ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={3}>Every eligible student currently has a valid or already-used voting link.</Table.Cell>
+                        </Table.Row>
+                      ) : (
+                        (votingEmailRecipientsData?.notSentRecipients || []).map((entry) => (
+                          <Table.Row key={`pending-${entry.rollNumber}`}>
+                            <Table.Cell>{entry.name || "—"}</Table.Cell>
+                            <Table.Cell>{entry.rollNumber || "—"}</Table.Cell>
+                            <Table.Cell>{formatStageLabel(entry.status || "pending")}</Table.Cell>
+                          </Table.Row>
+                        ))
+                      )}
+                    </Table.Body>
+                  </Table>
+                </div>
               </div>
             </div>
           </Modal>
