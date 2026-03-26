@@ -11,6 +11,8 @@ export const electionsApi = {
 
   getVotingEmailRecipients: (id) => apiClient.get(`${BASE_PATH}/${id}/voting-emails/recipients`),
 
+  getTestEmailRecipients: (id) => apiClient.get(`${BASE_PATH}/${id}/test-emails/recipients`),
+
   getScopeCount: (payload) => apiClient.post(`${BASE_PATH}/scope-count`, payload),
 
   createElection: (payload) => apiClient.post(BASE_PATH, payload),
@@ -46,6 +48,9 @@ export const electionsApi = {
 
   sendVotingEmails: (electionId, payload = {}) =>
     apiClient.post(`${BASE_PATH}/${electionId}/voting-emails/send`, payload),
+
+  sendTestEmails: (electionId, payload = {}) =>
+    apiClient.post(`${BASE_PATH}/${electionId}/test-emails/send`, payload),
 
   getSupporterConfirmation: (token) =>
     apiClient.get(`${BASE_PATH}/supporter-confirmation/${token}`),

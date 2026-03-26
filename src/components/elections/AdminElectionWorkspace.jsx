@@ -69,6 +69,8 @@ const AdminElectionWorkspace = ({
   loadingVotingStats,
   onSendVotingEmails,
   onOpenVotingEmailRecipients,
+  onSendTestEmails,
+  onOpenTestEmailRecipients,
   socketConnected,
   onOpenCloneElection,
   canCloneElection,
@@ -679,6 +681,33 @@ const AdminElectionWorkspace = ({
 
       {adminViewTab === "info" ? (
         <>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              gap: "8px",
+              flexWrap: "wrap",
+              marginBottom: "var(--spacing-3)",
+            }}
+          >
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={onOpenTestEmailRecipients}
+            >
+              View Test Email Status
+            </Button>
+            <Button
+              size="sm"
+              onClick={onSendTestEmails}
+              loading={busyKey === `test-email:${selectedAdminElectionId}`}
+              disabled={["queued", "running"].includes(String(selectedAdminElection?.testEmailDispatch?.status || ""))}
+            >
+              Send Test Email
+            </Button>
+          </div>
+
           <div style={infoGridStyle}>
             <div style={compactStatStyle}>
               <span style={compactStatLabelStyle}>Announcement</span>
@@ -740,6 +769,18 @@ const AdminElectionWorkspace = ({
               <span style={compactStatLabelStyle}>Officers</span>
               <span style={compactStatValueStyle}>
                 {(selectedAdminElection.electionCommission?.officerRollNumbers || []).join(", ") || "—"}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Test Email Status</span>
+              <span style={compactStatValueStyle}>
+                {formatStageLabel(selectedAdminElection?.testEmailDispatch?.status || "idle")}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Test Emails Sent</span>
+              <span style={compactStatValueStyle}>
+                {selectedAdminElection?.testEmailDispatch?.sentRecipients || 0}
               </span>
             </div>
           </div>

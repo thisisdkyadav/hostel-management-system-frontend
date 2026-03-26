@@ -1133,6 +1133,12 @@ const ElectionsPage = () => {
   const [showVotingEmailRecipientsModal, setShowVotingEmailRecipientsModal] = useState(false)
   const [loadingVotingEmailRecipients, setLoadingVotingEmailRecipients] = useState(false)
   const [votingEmailRecipientsData, setVotingEmailRecipientsData] = useState(null)
+  const [showSendTestEmailsConfirm, setShowSendTestEmailsConfirm] = useState(false)
+  const [sendTestEmailRollNumbers, setSendTestEmailRollNumbers] = useState([])
+  const [manualTestEmailRollNumber, setManualTestEmailRollNumber] = useState("")
+  const [showTestEmailRecipientsModal, setShowTestEmailRecipientsModal] = useState(false)
+  const [loadingTestEmailRecipients, setLoadingTestEmailRecipients] = useState(false)
+  const [testEmailRecipientsData, setTestEmailRecipientsData] = useState(null)
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
@@ -1277,6 +1283,26 @@ const ElectionsPage = () => {
       }
     } finally {
       setLoadingVotingEmailRecipients(false)
+    }
+  }
+
+  const loadTestEmailRecipients = async (electionId, { silent = false } = {}) => {
+    if (!electionId) {
+      setTestEmailRecipientsData(null)
+      setLoadingTestEmailRecipients(false)
+      return
+    }
+
+    try {
+      setLoadingTestEmailRecipients(true)
+      const response = await electionsApi.getTestEmailRecipients(electionId)
+      setTestEmailRecipientsData(response?.data || null)
+    } catch (err) {
+      if (!silent) {
+        toast.error(formatApiErrorMessage(err, "Failed to load test email recipients"))
+      }
+    } finally {
+      setLoadingTestEmailRecipients(false)
     }
   }
 
@@ -1448,6 +1474,24 @@ const ElectionsPage = () => {
     liveVotingStats?.dispatch?.status,
     selectedAdminElectionId,
     showVotingEmailRecipientsModal,
+  ])
+
+  useEffect(() => {
+    if (!showTestEmailRecipientsModal || !selectedAdminElectionId) return undefined
+
+    const dispatchStatus = String(selectedAdminElection?.testEmailDispatch?.status || "")
+    if (!["queued", "running"].includes(dispatchStatus)) return undefined
+
+    const intervalId = window.setInterval(() => {
+      loadTestEmailRecipients(selectedAdminElectionId, { silent: true }).catch(() => {})
+      loadAdminDetail(selectedAdminElectionId).catch(() => {})
+    }, 3000)
+
+    return () => window.clearInterval(intervalId)
+  }, [
+    selectedAdminElection?.testEmailDispatch?.status,
+    selectedAdminElectionId,
+    showTestEmailRecipientsModal,
   ])
 
   const openCreateWizard = () => {
@@ -1985,6 +2029,76 @@ const ElectionsPage = () => {
     URL.revokeObjectURL(link.href)
   }
 
+  const getNormalizedTestEmailTargets = () => {
+    const manualRollNumber = String(manualTestEmailRollNumber || "").trim().toUpperCase()
+    return [...new Set([
+      ...sendTestEmailRollNumbers,
+      ...(manualRollNumber ? [manualRollNumber] : []),
+    ])]
+  }
+
+  const sendTestEmails = async () => {
+    if (!selectedAdminElectionId) return
+
+    const targetRollNumbers = getNormalizedTestEmailTargets()
+    if (targetRollNumbers.length === 0) {
+      toast.error("Add at least one student roll number or upload a CSV")
+      return
+    }
+
+    try {
+      setBusyKey(`test-email:${selectedAdminElectionId}`)
+      const response = await electionsApi.sendTestEmails(selectedAdminElectionId, {
+        targetRollNumbers,
+      })
+      toast.success(response?.message || "Test emails queued")
+      setShowSendTestEmailsConfirm(false)
+      setSendTestEmailRollNumbers([])
+      setManualTestEmailRollNumber("")
+
+      window.setTimeout(() => {
+        loadAdminDetail(selectedAdminElectionId).catch(() => {})
+      }, 1500)
+    } catch (err) {
+      toast.error(formatApiErrorMessage(err, "Failed to send test emails"))
+    } finally {
+      setBusyKey("")
+    }
+  }
+
+  const openTestEmailRecipientsModal = async () => {
+    if (!selectedAdminElectionId) return
+
+    setShowTestEmailRecipientsModal(true)
+    await loadTestEmailRecipients(selectedAdminElectionId)
+  }
+
+  const exportTestEmailRecipientsCsv = () => {
+    const sentRecipients = testEmailRecipientsData?.sentRecipients || []
+    const notSentRecipients = testEmailRecipientsData?.notSentRecipients || []
+    const rows = [...sentRecipients, ...notSentRecipients].map((entry) => [
+      entry.name || "",
+      entry.rollNumber || "",
+      entry.email || "",
+      entry.status || "",
+      entry.sentAt ? formatDateTime(entry.sentAt) : "",
+      entry.lastError || "",
+    ])
+
+    const escapeCsv = (value) => `"${String(value ?? "").replace(/"/g, '""')}"`
+    const headers = ["Name", "Roll Number", "Email", "Test Email Status", "Sent At", "Last Error"]
+    const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
+    const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const date = new Date().toISOString().split("T")[0]
+    link.href = URL.createObjectURL(blob)
+    link.download = `election_test_email_status_${date}.csv`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(link.href)
+  }
+
   const cloneElection = async () => {
     if (!selectedAdminElectionId) return
 
@@ -2118,6 +2232,12 @@ const ElectionsPage = () => {
               setShowSendVotingEmailsConfirm(true)
             }}
             onOpenVotingEmailRecipients={openVotingEmailRecipientsModal}
+            onSendTestEmails={() => {
+              setSendTestEmailRollNumbers([])
+              setManualTestEmailRollNumber("")
+              setShowSendTestEmailsConfirm(true)
+            }}
+            onOpenTestEmailRecipients={openTestEmailRecipientsModal}
             socketConnected={isSocketConnected}
             onOpenCloneElection={openCloneElection}
             canCloneElection={canCloneElection}
@@ -2571,6 +2691,213 @@ const ElectionsPage = () => {
                       ) : (
                         (votingEmailRecipientsData?.notSentRecipients || []).map((entry) => (
                           <Table.Row key={`pending-${entry.rollNumber}`}>
+                            <Table.Cell>{entry.name || "—"}</Table.Cell>
+                            <Table.Cell>{entry.rollNumber || "—"}</Table.Cell>
+                            <Table.Cell>{formatStageLabel(entry.status || "pending")}</Table.Cell>
+                          </Table.Row>
+                        ))
+                      )}
+                    </Table.Body>
+                  </Table>
+                </div>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={showSendTestEmailsConfirm}
+            onClose={() => {
+              setShowSendTestEmailsConfirm(false)
+              setSendTestEmailRollNumbers([])
+              setManualTestEmailRollNumber("")
+            }}
+            title="Send Test Email"
+            width={560}
+            footer={
+              <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => {
+                    setShowSendTestEmailsConfirm(false)
+                    setSendTestEmailRollNumbers([])
+                    setManualTestEmailRollNumber("")
+                  }}
+                  disabled={busyKey === `test-email:${selectedAdminElectionId}`}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={sendTestEmails}
+                  loading={busyKey === `test-email:${selectedAdminElectionId}`}
+                >
+                  Queue Test Email
+                </Button>
+              </>
+            }
+          >
+            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+              <div style={flatPanelStyle}>
+                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  Email Preview
+                </div>
+                <div style={mutedTextStyle}>Hello {"{Student Name}"},</div>
+                <div style={mutedTextStyle}>
+                  This is a test email for the election communication system.
+                </div>
+                <div style={mutedTextStyle}>
+                  Please ignore this email. This is only for testing the election email system.
+                </div>
+              </div>
+
+              <div style={flatPanelStyle}>
+                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  Send To One Student
+                </div>
+                <input
+                  value={manualTestEmailRollNumber}
+                  onChange={(event) => setManualTestEmailRollNumber(String(event.target.value || "").toUpperCase())}
+                  placeholder="Enter roll number"
+                  style={textareaStyle}
+                />
+              </div>
+
+              <div style={flatPanelStyle}>
+                <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                  Or Upload CSV
+                </div>
+                <div style={mutedTextStyle}>
+                  Upload a CSV with a single <code>rollNumber</code> column. Only students who are part of this election will receive the test email.
+                </div>
+                <CsvUploader
+                  requiredFields={votingListTemplateHeaders}
+                  templateHeaders={votingListTemplateHeaders}
+                  templateFileName="test_email_students.csv"
+                  instructionText="Upload a CSV with a single `rollNumber` column. Uploading a new file replaces the previous list."
+                  onDataParsed={(rows) => {
+                    const nextRollNumbers = rows
+                      .map((row) => String(row.rollNumber || "").trim().toUpperCase())
+                      .filter(Boolean)
+                    setSendTestEmailRollNumbers([...new Set(nextRollNumbers)])
+                  }}
+                />
+                <div style={mutedTextStyle}>
+                  {getNormalizedTestEmailTargets().length > 0
+                    ? `${getNormalizedTestEmailTargets().length} selected roll number(s) will be checked against the election student list.`
+                    : "Add one student manually or upload a CSV to send a test email."}
+                </div>
+              </div>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={showTestEmailRecipientsModal}
+            onClose={() => setShowTestEmailRecipientsModal(false)}
+            title="Test Email Status"
+            width={960}
+            footer={
+              <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setShowTestEmailRecipientsModal(false)}
+                >
+                  Close
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={exportTestEmailRecipientsCsv}
+                  disabled={
+                    (testEmailRecipientsData?.sentRecipients || []).length === 0 &&
+                    (testEmailRecipientsData?.notSentRecipients || []).length === 0
+                  }
+                >
+                  Export CSV
+                </Button>
+              </>
+            }
+          >
+            <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+              <div style={infoGridStyle}>
+                <div style={compactStatStyle}>
+                  <span style={compactStatLabelStyle}>Received Test Email</span>
+                  <span style={compactStatValueStyle}>
+                    {(testEmailRecipientsData?.sentRecipients || []).length}
+                  </span>
+                </div>
+                <div style={compactStatStyle}>
+                  <span style={compactStatLabelStyle}>Not Received Yet</span>
+                  <span style={compactStatValueStyle}>
+                    {(testEmailRecipientsData?.notSentRecipients || []).length}
+                  </span>
+                </div>
+                <div style={compactStatStyle}>
+                  <span style={compactStatLabelStyle}>Dispatch Status</span>
+                  <span style={compactStatValueStyle}>
+                    {formatStageLabel(testEmailRecipientsData?.dispatch?.status || "idle")}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "var(--spacing-4)", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+                <div style={flatPanelStyle}>
+                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                    Students Who Received Test Email
+                  </div>
+                  <Table>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Head>Name</Table.Head>
+                        <Table.Head>Roll Number</Table.Head>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {loadingTestEmailRecipients ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={2}>Loading...</Table.Cell>
+                        </Table.Row>
+                      ) : (testEmailRecipientsData?.sentRecipients || []).length === 0 ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={2}>No students have received a test email yet.</Table.Cell>
+                        </Table.Row>
+                      ) : (
+                        (testEmailRecipientsData?.sentRecipients || []).map((entry) => (
+                          <Table.Row key={`test-sent-${entry.rollNumber}`}>
+                            <Table.Cell>{entry.name || "—"}</Table.Cell>
+                            <Table.Cell>{entry.rollNumber || "—"}</Table.Cell>
+                          </Table.Row>
+                        ))
+                      )}
+                    </Table.Body>
+                  </Table>
+                </div>
+
+                <div style={flatPanelStyle}>
+                  <div style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)", marginBottom: "var(--spacing-3)" }}>
+                    Students Who Have Not Received Test Email
+                  </div>
+                  <Table>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Head>Name</Table.Head>
+                        <Table.Head>Roll Number</Table.Head>
+                        <Table.Head>Status</Table.Head>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {loadingTestEmailRecipients ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={3}>Loading...</Table.Cell>
+                        </Table.Row>
+                      ) : (testEmailRecipientsData?.notSentRecipients || []).length === 0 ? (
+                        <Table.Row>
+                          <Table.Cell colSpan={3}>Every eligible student has already received a test email.</Table.Cell>
+                        </Table.Row>
+                      ) : (
+                        (testEmailRecipientsData?.notSentRecipients || []).map((entry) => (
+                          <Table.Row key={`test-pending-${entry.rollNumber}`}>
                             <Table.Cell>{entry.name || "—"}</Table.Cell>
                             <Table.Cell>{entry.rollNumber || "—"}</Table.Cell>
                             <Table.Cell>{formatStageLabel(entry.status || "pending")}</Table.Cell>
