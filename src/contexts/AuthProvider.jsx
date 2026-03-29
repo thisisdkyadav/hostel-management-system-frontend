@@ -1,8 +1,9 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { Navigate, useLocation, useSearchParams } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { authApi } from "../service"
 import LoadingPage from "@/pages/LoadingPage"
 import useNetworkStatus from "../hooks/useNetworkStatus"
+import { buildLoginRedirectPath } from "../utils/authRedirect"
 
 export const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
@@ -16,7 +17,7 @@ export const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   }
 
   if (!user) {
-    return <Navigate to="/" state={{ from: location }} replace />
+    return <Navigate to={buildLoginRedirectPath(location)} replace />
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {

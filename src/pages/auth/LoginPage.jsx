@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import LoginWithGoogle from "../../components/LoginWithGoogle"
 import { ArrowRight } from "lucide-react"
 import hmsLogo from "../../assets/hms-logo-t-256.svg"
+import { getPostLoginRedirect } from "../../utils/authRedirect"
 import "../../styles/login.css"
 
 const LoginPage = () => {
@@ -11,34 +12,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("")
   const { user, login, loading, error, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
-
-  useEffect(() => {
-    if (user) {
-      const from = calculateHomeRoute(user)
-      navigate(from, { replace: true })
-    }
-  }, [user])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const userData = await login({ email, password })
-      const from = userData ? calculateHomeRoute(userData) : "/login"
-      navigate(from, { replace: true })
-    } catch (err) {
-      console.error("Login failed:", err)
-    }
-  }
-
-  const handleGoogleCallback = async (token) => {
-    try {
-      const userData = await loginWithGoogle(token)
-      const from = userData ? calculateHomeRoute(userData) : "/login"
-      navigate(from, { replace: true })
-    } catch (err) {
-      console.error("Google login failed:", err)
-    }
-  }
+  const [searchParams] = useSearchParams()
 
   const calculateHomeRoute = (user) => {
     switch (user.role) {
@@ -64,6 +38,37 @@ const LoginPage = () => {
         return "/gymkhana"
       default:
         return "/login"
+    }
+  }
+
+  const getRedirectDestination = (currentUser) => {
+    return getPostLoginRedirect(searchParams, calculateHomeRoute(currentUser))
+  }
+
+  useEffect(() => {
+    if (user) {
+      navigate(getRedirectDestination(user), { replace: true })
+    }
+  }, [user, navigate, searchParams])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const userData = await login({ email, password })
+      const from = userData ? getRedirectDestination(userData) : "/login"
+      navigate(from, { replace: true })
+    } catch (err) {
+      console.error("Login failed:", err)
+    }
+  }
+
+  const handleGoogleCallback = async (token) => {
+    try {
+      const userData = await loginWithGoogle(token)
+      const from = userData ? getRedirectDestination(userData) : "/login"
+      navigate(from, { replace: true })
+    } catch (err) {
+      console.error("Google login failed:", err)
     }
   }
 
@@ -195,4 +200,3 @@ const LoginPage = () => {
 }
 
 export default LoginPage
-
