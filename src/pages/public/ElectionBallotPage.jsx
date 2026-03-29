@@ -10,35 +10,57 @@ const pageShellStyle = {
   background: "var(--color-bg-page)",
 }
 
+const formatOneDateTime = (value) =>
+  value && !Number.isNaN(value.getTime())
+    ? value.toLocaleString(undefined, {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      })
+    : "—"
+
 const formatVotingWindow = (election = {}) => {
   const start = election?.votingStartAt ? new Date(election.votingStartAt) : null
   const end = election?.votingEndAt ? new Date(election.votingEndAt) : null
   const now = new Date()
-
-  const formatOne = (value) =>
-    value && !Number.isNaN(value.getTime())
-      ? value.toLocaleString(undefined, {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "numeric",
-          minute: "2-digit",
-        })
-      : "—"
 
   if (!start || Number.isNaN(start.getTime())) {
     return "Voting time not available"
   }
 
   if (now.getTime() < start.getTime()) {
-    return `Voting starts: ${formatOne(start)}`
+    return `Voting starts: ${formatOneDateTime(start)}`
   }
 
   if (end && !Number.isNaN(end.getTime()) && now.getTime() <= end.getTime()) {
-    return `Voting ends: ${formatOne(end)}`
+    return `Voting ends: ${formatOneDateTime(end)}`
   }
 
   return "Voting ended"
+}
+
+const getClosedVotingMessage = (tokenState, election = {}) => {
+  const start = election?.votingStartAt ? new Date(election.votingStartAt) : null
+  const end = election?.votingEndAt ? new Date(election.votingEndAt) : null
+  const now = new Date()
+
+  if (tokenState === "inactive") {
+    if (start && !Number.isNaN(start.getTime()) && now.getTime() < start.getTime()) {
+      return `Voting will start on ${formatOneDateTime(start)}.`
+    }
+    if (end && !Number.isNaN(end.getTime()) && now.getTime() > end.getTime()) {
+      return "Voting ended."
+    }
+    return "Voting is not active right now."
+  }
+
+  if (tokenState === "expired") {
+    return "Voting ended."
+  }
+
+  return ""
 }
 
 const ElectionBallotPage = () => {
@@ -78,6 +100,7 @@ const ElectionBallotPage = () => {
   const tokenState = ballot?.tokenState || "invalid"
   const posts = ballot?.posts || []
   const votingWindowLabel = formatVotingWindow(ballot?.election || {})
+  const closedVotingMessage = getClosedVotingMessage(tokenState, ballot?.election || {})
   const isActiveVotingView = tokenState === "active"
   const hasCompletedSelections = useMemo(
     () => posts.length > 0 && posts.every((post) => Boolean(selections[post.postId])),
@@ -203,10 +226,10 @@ const ElectionBallotPage = () => {
             {error ? <Alert type="error">{error}</Alert> : null}
             {successMessage ? <Alert type="success">{successMessage}</Alert> : null}
             {tokenState === "inactive" ? (
-              <Alert type="warning">This voting link only works during the voting window.</Alert>
+              <Alert type="warning">{closedVotingMessage || "Voting is not active right now."}</Alert>
             ) : null}
             {tokenState === "expired" ? (
-              <Alert type="warning">This voting link has expired.</Alert>
+              <Alert type="warning">{closedVotingMessage || "Voting ended."}</Alert>
             ) : null}
             {tokenState === "used" && !successMessage ? (
               <Alert type="info">Your vote has already been submitted.</Alert>

@@ -411,6 +411,11 @@ export const ElectionWizardModal = ({
   const timelineErrors = wizardErrors.timeline || {}
   const commissionErrors = wizardErrors.commission || {}
   const postErrors = wizardErrors.posts || []
+  const showVotingEmailStartField =
+    ["email", "both"].includes(form.votingAccess?.mode || "both")
+  const visibleTimelineFieldDefs = timelineFieldDefs.filter(
+    (field) => field.key !== "votingEmailStartAt" || showVotingEmailStartField
+  )
   const activePostErrors = postErrors[activePostIndex] || {}
 
   const updateForm = (patch) => {
@@ -624,6 +629,43 @@ export const ElectionWizardModal = ({
           </div>
         </div>
 
+        {["email", "both"].includes(form.votingAccess?.mode || "both") ? (
+          <div style={flatPanelStyle}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "var(--spacing-3)",
+                flexWrap: "wrap",
+              }}
+            >
+              <div>
+                <div style={{ ...labelStyle, marginBottom: "4px" }}>Auto send voting links</div>
+                <div style={mutedTextStyle}>
+                  If enabled, voting links will start sending automatically from the configured link-sending time.
+                </div>
+              </div>
+              <label style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--color-text-body)" }}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(form.votingAccess?.autoSendEnabled !== false)}
+                  onChange={(event) =>
+                    updateForm({
+                      votingAccess: {
+                        ...(form.votingAccess || {}),
+                        autoSendEnabled: event.target.checked,
+                      },
+                    })
+                  }
+                />
+                Enable auto send
+              </label>
+            </div>
+            {basicsErrors.autoSendEnabled ? <div style={errorTextStyle}>{basicsErrors.autoSendEnabled}</div> : null}
+          </div>
+        ) : null}
+
         <div style={flatPanelStyle}>
           <label style={labelStyle}>Description</label>
           <textarea
@@ -725,7 +767,7 @@ export const ElectionWizardModal = ({
             <div>
               <div style={{ ...labelStyle, marginBottom: "4px" }}>Election schedule</div>
               <div style={mutedTextStyle}>
-                Set the polling start time, then apply the D-15 template to prefill the rest of the schedule.
+                Set the polling start time, then apply the D-15 template to prefill the rest of the schedule. Link sending starts 6 hours before voting by default.
               </div>
             </div>
             <Button size="sm" variant="secondary" onClick={applyD15Timeline}>
@@ -741,7 +783,7 @@ export const ElectionWizardModal = ({
             gap: "var(--spacing-3)",
           }}
         >
-          {timelineFieldDefs.map((field) => (
+          {visibleTimelineFieldDefs.map((field) => (
             <div key={field.key} style={panelStyle}>
               <label style={labelStyle}>{field.label}</label>
               <Input

@@ -77,7 +77,7 @@ const AdminElectionWorkspace = ({
   cloneDisabledReason,
   readOnly = false,
 }) => {
-  const isVotingStage = selectedAdminElection?.currentStage === "voting"
+  const isVotingOperationsOpen = Boolean(selectedAdminElection?.votingControlWindowOpen)
   const emailVotingEnabled = ["email", "both"].includes(
     String(selectedAdminElection?.votingAccess?.mode || "both")
   )
@@ -88,7 +88,7 @@ const AdminElectionWorkspace = ({
         { label: "Posts", value: "posts" },
         { label: "Nominations", value: "nominations" },
         ...(canViewResultsTab ? [{ label: "Results", value: "results" }] : []),
-        ...(isVotingStage ? [{ label: "Ongoing Voting", value: "voting" }] : []),
+        ...(isVotingOperationsOpen ? [{ label: "Ongoing Voting", value: "voting" }] : []),
         { label: "Info", value: "info" },
       ]
   const votingDispatch = liveVotingStats?.dispatch || {}
@@ -549,7 +549,7 @@ const AdminElectionWorkspace = ({
         </>
       ) : null}
 
-      {adminViewTab === "voting" && isVotingStage ? (
+      {adminViewTab === "voting" && isVotingOperationsOpen ? (
         <>
           <div
             style={{
@@ -728,6 +728,19 @@ const AdminElectionWorkspace = ({
               </span>
             </div>
             <div style={compactStatStyle}>
+              <span style={compactStatLabelStyle}>Link Sending Starts</span>
+              <span style={compactStatValueStyle}>
+                {selectedAdminElection?.votingAccess?.autoSendEnabled === false || !emailVotingEnabled
+                  ? "Configured manual window"
+                  : formatDateTime(
+                      selectedAdminElection.timeline?.votingEmailStartAt ||
+                        (selectedAdminElection.timeline?.votingStartAt
+                          ? new Date(new Date(selectedAdminElection.timeline.votingStartAt).getTime() - 6 * 60 * 60 * 1000)
+                          : null)
+                    )}
+              </span>
+            </div>
+            <div style={compactStatStyle}>
               <span style={compactStatLabelStyle}>Voting Starts</span>
               <span style={compactStatValueStyle}>
                 {formatDateTime(selectedAdminElection.timeline?.votingStartAt)}
@@ -818,7 +831,7 @@ const AdminElectionWorkspace = ({
       ) : null}
 
       <LiveVotingFullscreenModal
-        isOpen={showVotingFullscreen && isVotingStage}
+        isOpen={showVotingFullscreen && isVotingOperationsOpen}
         onClose={() => setShowVotingFullscreen(false)}
         electionTitle={selectedAdminElection?.title}
         liveVotingStats={liveVotingStats}

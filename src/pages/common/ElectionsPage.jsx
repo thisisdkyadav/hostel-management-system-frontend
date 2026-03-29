@@ -285,6 +285,7 @@ const timelineFieldDefs = [
   { key: "withdrawalEndAt", label: "Withdrawal", day: "D-10" },
   { key: "campaigningStartAt", label: "Campaigning Start", day: "D-8" },
   { key: "campaigningEndAt", label: "Campaigning End", day: "D-2" },
+  { key: "votingEmailStartAt", label: "Link Sending Starts", day: "Configurable" },
   { key: "votingStartAt", label: "Voting Start", day: "D" },
   { key: "votingEndAt", label: "Voting End", day: "D" },
   { key: "resultsAnnouncedAt", label: "Results", day: "D+1" },
@@ -333,6 +334,7 @@ const createBlankElectionForm = () => ({
   status: "draft",
   votingAccess: {
     mode: "both",
+    autoSendEnabled: true,
   },
   mockSettings: {
     enabled: false,
@@ -349,6 +351,7 @@ const createBlankElectionForm = () => ({
     withdrawalEndAt: "",
     campaigningStartAt: "",
     campaigningEndAt: "",
+    votingEmailStartAt: "",
     votingStartAt: "",
     votingEndAt: "",
     resultsAnnouncedAt: "",
@@ -504,12 +507,21 @@ const buildD15Timeline = (votingStartValue) => {
     withdrawalEndAt: toDateTimeLocal(new Date(votingStart.getTime() - daysToMs(10))),
     campaigningStartAt: toDateTimeLocal(new Date(votingStart.getTime() - daysToMs(8))),
     campaigningEndAt: toDateTimeLocal(new Date(votingStart.getTime() - daysToMs(2))),
+    votingEmailStartAt: toDateTimeLocal(new Date(votingStart.getTime() - 6 * 60 * 60 * 1000)),
     votingStartAt: toDateTimeLocal(votingStart),
     votingEndAt: toDateTimeLocal(votingEnd),
     resultsAnnouncedAt: toDateTimeLocal(new Date(votingEnd.getTime() + daysToMs(1))),
     handoverAt: toDateTimeLocal(new Date(votingEnd.getTime() + daysToMs(20))),
   }
 }
+
+const getDefaultVotingEmailStartAt = (votingStartValue) => {
+  if (!votingStartValue) return null
+  const votingStart = new Date(votingStartValue)
+  if (Number.isNaN(votingStart.getTime())) return null
+  return new Date(votingStart.getTime() - 6 * 60 * 60 * 1000)
+}
+
 
 const summarizeScope = (scope = {}) => {
   const batches = Array.isArray(scope?.batches) ? scope.batches.length : 0
@@ -561,6 +573,7 @@ const buildElectionFormFromDetail = (detail) => ({
   status: detail?.status || "draft",
   votingAccess: {
     mode: detail?.votingAccess?.mode || "both",
+    autoSendEnabled: detail?.votingAccess?.autoSendEnabled !== false,
   },
   mockSettings: {
     enabled: Boolean(detail?.mockSettings?.enabled),
@@ -579,6 +592,12 @@ const buildElectionFormFromDetail = (detail) => ({
     withdrawalEndAt: toDateTimeLocal(detail?.timeline?.withdrawalEndAt),
     campaigningStartAt: toDateTimeLocal(detail?.timeline?.campaigningStartAt),
     campaigningEndAt: toDateTimeLocal(detail?.timeline?.campaigningEndAt),
+    votingEmailStartAt: toDateTimeLocal(
+      detail?.timeline?.votingEmailStartAt ||
+        ((detail?.votingAccess?.autoSendEnabled !== false && ["email", "both"].includes(detail?.votingAccess?.mode || "both"))
+          ? getDefaultVotingEmailStartAt(detail?.timeline?.votingStartAt)
+          : null)
+    ),
     votingStartAt: toDateTimeLocal(detail?.timeline?.votingStartAt),
     votingEndAt: toDateTimeLocal(detail?.timeline?.votingEndAt),
     resultsAnnouncedAt: toDateTimeLocal(detail?.timeline?.resultsAnnouncedAt),
@@ -618,6 +637,7 @@ const serializeElectionFormForApi = (form) => ({
   status: form.status,
   votingAccess: {
     mode: form.votingAccess?.mode || "both",
+    autoSendEnabled: Boolean(form.votingAccess?.autoSendEnabled !== false),
   },
   mockSettings: {
     enabled: Boolean(form.mockSettings?.enabled),
@@ -768,6 +788,11 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
       markStep("basics")
     }
 
+    if (typeof form.votingAccess?.autoSendEnabled !== "boolean") {
+      errors.basics.autoSendEnabled = "Choose whether voting links should be auto-sent."
+      markStep("basics")
+    }
+
     if (description.length > 5000) {
       errors.basics.description = "Description cannot exceed 5000 characters."
       markStep("basics")
@@ -795,8 +820,18 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
 
     timelineFieldDefs.forEach((field) => {
       const rawValue = form.timeline?.[field.key]
-      if (!rawValue && field.key !== "handoverAt") {
+      const requiresVotingEmailStartAt =
+        field.key === "votingEmailStartAt" &&
+        ["email", "both"].includes(String(form.votingAccess?.mode || "both"))
+
+      if (!rawValue && field.key !== "handoverAt" && field.key !== "votingEmailStartAt") {
         errors.timeline[field.key] = `${field.label} is required.`
+        markStep("timeline")
+        return
+      }
+
+      if (!rawValue && requiresVotingEmailStartAt) {
+        errors.timeline[field.key] = `${field.label} is required when email voting is enabled.`
         markStep("timeline")
         return
       }
@@ -838,6 +873,15 @@ const validateElectionWizard = (form, step = "all", hostels = []) => {
         }.`
         markStep("timeline")
       }
+    }
+
+    if (
+      parsedTimeline.votingEmailStartAt &&
+      parsedTimeline.votingStartAt &&
+      parsedTimeline.votingEmailStartAt > parsedTimeline.votingStartAt
+    ) {
+      errors.timeline.votingEmailStartAt = "Auto send must be on or before voting start."
+      markStep("timeline")
     }
 
     if (
@@ -1392,7 +1436,7 @@ const ElectionsPage = () => {
   useEffect(() => {
     if (!isAdminView) return
 
-    if (selectedAdminElection?.currentStage !== "voting") {
+    if (!selectedAdminElection?.votingControlWindowOpen) {
       setLiveVotingStats(null)
       setLoadingVotingStats(false)
       if (adminViewTab === "voting") {
@@ -1404,7 +1448,7 @@ const ElectionsPage = () => {
     if (selectedAdminElectionId) {
       loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
     }
-  }, [adminViewTab, isAdminView, selectedAdminElection?.currentStage, selectedAdminElectionId])
+  }, [adminViewTab, isAdminView, selectedAdminElection?.votingControlWindowOpen, selectedAdminElectionId])
 
   useEffect(() => {
     if (!isAdminView) return
