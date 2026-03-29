@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
-import { studentApi, authApi } from "../../service"
+import { studentApi, electionsApi } from "../../service"
 import { BiError } from "react-icons/bi"
 import { FaQrcode } from "react-icons/fa"
 import OfflineBanner from "../../components/common/OfflineBanner"
@@ -82,6 +83,7 @@ const StatsShimmer = () => (
 const DashboardPage = () => {
   const { user, isOnline } = useAuth()
   const { isPwaMobile } = usePwaMobile()
+  const navigate = useNavigate()
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -91,6 +93,9 @@ const DashboardPage = () => {
   const [showFeedbackPopup, setShowFeedbackPopup] = useState(false)
   const [currentFeedbackComplaint, setCurrentFeedbackComplaint] = useState(null)
   const [feedbackComplaintIndex, setFeedbackComplaintIndex] = useState(0)
+  const [activeVotingElection, setActiveVotingElection] = useState(null)
+  const [showVotingPopup, setShowVotingPopup] = useState(false)
+  const [hasCheckedVotingStatus, setHasCheckedVotingStatus] = useState(false)
 
   const fetchDashboardData = async () => {
     try {
@@ -249,9 +254,63 @@ const DashboardPage = () => {
     }
   }, [isOnline])
 
+  useEffect(() => {
+    if (user?.role !== "Student") {
+      setActiveVotingElection(null)
+      setShowVotingPopup(false)
+      setHasCheckedVotingStatus(true)
+      return
+    }
+
+    if (!isOnline) {
+      setActiveVotingElection(null)
+      setShowVotingPopup(false)
+      setHasCheckedVotingStatus(true)
+      return
+    }
+
+    let isActive = true
+
+    const loadActiveVotingElection = async () => {
+      try {
+        setHasCheckedVotingStatus(false)
+        const response = await electionsApi.getStudentCurrent()
+        if (!isActive) return
+
+        const elections = response?.data?.elections || []
+        const votingElection = elections.find((election) => election?.mode === "voting") || null
+
+        setActiveVotingElection(votingElection)
+        setShowVotingPopup(Boolean(votingElection))
+
+        if (votingElection) {
+          setShowBirthday(false)
+          setShowFeedbackPopup(false)
+          setCurrentFeedbackComplaint(null)
+        }
+      } catch (err) {
+        if (!isActive) return
+        console.error("Error checking active student voting:", err)
+        setActiveVotingElection(null)
+        setShowVotingPopup(false)
+      } finally {
+        if (isActive) {
+          setHasCheckedVotingStatus(true)
+        }
+      }
+    }
+
+    loadActiveVotingElection()
+
+    return () => {
+      isActive = false
+    }
+  }, [isOnline, user?.role])
+
   // Birthday display: check when dashboardData/profile becomes available
   useEffect(() => {
-    if (!dashboardData || !dashboardData.profile) return
+    if (!dashboardData || !dashboardData.profile || !hasCheckedVotingStatus) return
+    if (activeVotingElection) return
 
     const dob = dashboardData.profile.dateOfBirth || dashboardData.profile.dob || dashboardData.profile.DOB
     if (!isBirthdayToday(dob)) {
@@ -278,11 +337,11 @@ const DashboardPage = () => {
       // Birthday already shown, check for feedback complaints
       checkForFeedbackComplaints()
     }
-  }, [dashboardData, user])
+  }, [activeVotingElection, dashboardData, hasCheckedVotingStatus, user])
 
   // Check and show feedback popup for resolved complaints without feedback
   const checkForFeedbackComplaints = () => {
-    if (!dashboardData?.resolvedComplaintsWithoutFeedback?.length) return
+    if (activeVotingElection || !dashboardData?.resolvedComplaintsWithoutFeedback?.length) return
 
     const complaints = dashboardData.resolvedComplaintsWithoutFeedback
     const userId = user?._id || user?.id || "unknown_user"
@@ -361,6 +420,40 @@ const DashboardPage = () => {
     // Refresh dashboard data to update the complaints list
     fetchDashboardData()
   }
+
+  const handleVotingPopupClose = () => {
+    setShowVotingPopup(false)
+  }
+
+  const handleVotingPopupNavigate = () => {
+    setShowVotingPopup(false)
+    navigate("/student/elections")
+  }
+
+  const VotingActivePopup = ({ electionTitle, onClose, onGoToVoting }) => (
+    <Modal title="Voting In Progress" onClose={onClose} width={520}>
+      <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+        <p
+          style={{
+            margin: 0,
+            color: "var(--color-text-body)",
+            fontSize: "var(--font-size-base)",
+            lineHeight: 1.6,
+          }}
+        >
+          Voting for <strong>{electionTitle || "the current election"}</strong> is currently active. Go to the elections page to cast your vote now.
+        </p>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-3)", flexWrap: "wrap" }}>
+          <Button variant="secondary" onClick={onClose}>
+            Later
+          </Button>
+          <Button variant="primary" onClick={onGoToVoting}>
+            Go to Voting
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  )
 
   // Birthday overlay component with canvas-based confetti
   const BirthdayOverlay = ({ name, onClose }) => {
@@ -623,6 +716,15 @@ const DashboardPage = () => {
           </div>
         </Modal>
       )}
+
+      {/* Voting popup takes priority over birthday and feedback while voting is live */}
+      {showVotingPopup && activeVotingElection ? (
+        <VotingActivePopup
+          electionTitle={activeVotingElection.title}
+          onClose={handleVotingPopupClose}
+          onGoToVoting={handleVotingPopupNavigate}
+        />
+      ) : null}
 
       {/* Birthday overlay (appears once per user per year) */}
       {showBirthday && <BirthdayOverlay name={dashboardData?.profile?.name || dashboardData?.profile?.fullName || dashboardData?.profile?.displayName} onClose={handleBirthdayClose} />}
