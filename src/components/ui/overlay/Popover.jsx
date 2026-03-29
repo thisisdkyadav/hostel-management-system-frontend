@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect, forwardRef } from "react"
 
 /**
  * Popover Component - Click-triggered overlay
- * 
+ *
  * @param {React.ReactNode} children - Trigger element
  * @param {React.ReactNode} content - Popover content
  * @param {string} placement - Position: top, bottom, left, right
+ * @param {string} align - Alignment relative to the trigger: start, center, end
  * @param {string} trigger - Trigger type: click, hover
  * @param {boolean} isOpen - Controlled open state
  * @param {function} onOpenChange - Open state change handler
@@ -16,6 +17,7 @@ const Popover = forwardRef(({
   children,
   content,
   placement = "bottom",
+  align = "center",
   trigger = "click",
   isOpen: controlledOpen,
   onOpenChange,
@@ -39,6 +41,18 @@ const Popover = forwardRef(({
     }
   }
 
+  const getHorizontalPosition = (triggerRect, popoverRect) => {
+    if (align === "start") return triggerRect.left
+    if (align === "end") return triggerRect.right - popoverRect.width
+    return triggerRect.left + (triggerRect.width - popoverRect.width) / 2
+  }
+
+  const getVerticalPosition = (triggerRect, popoverRect) => {
+    if (align === "start") return triggerRect.top
+    if (align === "end") return triggerRect.bottom - popoverRect.height
+    return triggerRect.top + (triggerRect.height - popoverRect.height) / 2
+  }
+
   const calculatePosition = () => {
     if (!triggerRef.current || !popoverRef.current) return
 
@@ -52,23 +66,26 @@ const Popover = forwardRef(({
     switch (placement) {
       case "top":
         top = triggerRect.top - popoverRect.height - offset
-        left = triggerRect.left + (triggerRect.width - popoverRect.width) / 2
+        left = getHorizontalPosition(triggerRect, popoverRect)
         break
       case "bottom":
         top = triggerRect.bottom + offset
-        left = triggerRect.left + (triggerRect.width - popoverRect.width) / 2
+        left = getHorizontalPosition(triggerRect, popoverRect)
         break
       case "left":
-        top = triggerRect.top + (triggerRect.height - popoverRect.height) / 2
+        top = getVerticalPosition(triggerRect, popoverRect)
         left = triggerRect.left - popoverRect.width - offset
         break
       case "right":
-        top = triggerRect.top + (triggerRect.height - popoverRect.height) / 2
+        top = getVerticalPosition(triggerRect, popoverRect)
         left = triggerRect.right + offset
+        break
+      default:
+        top = triggerRect.bottom + offset
+        left = getHorizontalPosition(triggerRect, popoverRect)
         break
     }
 
-    // Keep within viewport
     const padding = 8
     left = Math.max(padding, Math.min(left, window.innerWidth - popoverRect.width - padding))
     top = Math.max(padding, Math.min(top, window.innerHeight - popoverRect.height - padding))
@@ -78,21 +95,18 @@ const Popover = forwardRef(({
 
   useEffect(() => {
     if (isOpen) {
-      // Delay to allow content to render
       setTimeout(calculatePosition, 0)
-      
-      // Recalculate on scroll/resize
+
       window.addEventListener("scroll", calculatePosition, true)
       window.addEventListener("resize", calculatePosition)
-      
+
       return () => {
         window.removeEventListener("scroll", calculatePosition, true)
         window.removeEventListener("resize", calculatePosition)
       }
     }
-  }, [isOpen])
+  }, [align, isOpen, placement])
 
-  // Close on outside click
   useEffect(() => {
     if (!isOpen || trigger !== "click") return
 
@@ -111,7 +125,6 @@ const Popover = forwardRef(({
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isOpen, trigger])
 
-  // Close on Escape
   useEffect(() => {
     if (!isOpen) return
 
@@ -180,7 +193,11 @@ const Popover = forwardRef(({
       </span>
       {isOpen && (
         <div
-          ref={popoverRef}
+          ref={(node) => {
+            popoverRef.current = node
+            if (typeof ref === "function") ref(node)
+            else if (ref) ref.current = node
+          }}
           className={className}
           style={popoverStyles}
           onMouseEnter={handleMouseEnter}

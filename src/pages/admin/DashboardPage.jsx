@@ -273,6 +273,7 @@ const DashboardPage = () => {
                         <Popover
                           trigger="hover"
                           placement="bottom"
+                          align="end"
                           content={<OnlineUsersPopupContent role="Student" roleLabel="Students" />}
                         >
                           <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
@@ -282,6 +283,7 @@ const DashboardPage = () => {
                         <Popover
                           trigger="hover"
                           placement="bottom"
+                          align="end"
                           content={<OnlineUsersPopupContent role="Hostel Supervisor" roleLabel="Hostel Supervisors" />}
                         >
                           <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
@@ -291,6 +293,7 @@ const DashboardPage = () => {
                         <Popover
                           trigger="hover"
                           placement="bottom"
+                          align="end"
                           content={<OnlineUsersPopupContent role="Admin" roleLabel="Admins" />}
                         >
                           <span className="px-[var(--spacing-1-5)] py-[var(--spacing-0-5)] bg-[var(--color-success-bg)] text-[var(--color-success-text)] rounded-[var(--radius-sm)] text-xs font-medium cursor-pointer hover:bg-[var(--color-success-bg)] transition-[var(--transition-colors)]">
