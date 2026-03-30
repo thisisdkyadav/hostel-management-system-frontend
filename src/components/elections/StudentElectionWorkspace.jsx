@@ -54,6 +54,11 @@ const StudentElectionWorkspace = ({
           fontSize: "var(--font-size-sm)",
         }}
       >
+        {selectedStudentElection.mode === "upcoming" ? (
+          <span>
+            <strong>Voting starts:</strong> {formatDateTime(selectedStudentElection.timeline?.votingStartAt)}
+          </span>
+        ) : null}
         {selectedStudentElection.mode === "voting" ? (
           <span>
             <strong>Voting:</strong> {formatDateTime(selectedStudentElection.timeline?.votingStartAt)} –{" "}
@@ -69,7 +74,19 @@ const StudentElectionWorkspace = ({
       </div>
     </div>
 
-    {selectedStudentElection.mode === "participation" ? (
+    {selectedStudentElection.mode === "upcoming" ? (
+      <div
+        style={{
+          border: "1px solid var(--color-border-primary)",
+          borderRadius: "var(--radius-xl)",
+          backgroundColor: "var(--color-bg-secondary)",
+          padding: "var(--spacing-5)",
+          color: "var(--color-text-body)",
+        }}
+      >
+        Voting will start on <strong>{formatDateTime(selectedStudentElection.timeline?.votingStartAt)}</strong>.
+      </div>
+    ) : selectedStudentElection.mode === "participation" ? (
       <DataTable
         data={selectedStudentElection.posts || []}
         emptyMessage="No posts are available for nomination right now."
