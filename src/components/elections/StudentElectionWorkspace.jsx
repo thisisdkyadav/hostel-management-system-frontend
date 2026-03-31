@@ -184,12 +184,6 @@ const StudentElectionWorkspace = ({
 
             <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
               {votingPosts.map((post) => {
-                const submittedLabel = post.hasVoted
-                  ? post.votedIsNota
-                    ? "NOTA"
-                    : post.votedCandidateLabel || "Submitted"
-                  : "No recorded vote"
-
                 return (
                   <div
                     key={post.id || post.postId}
@@ -219,9 +213,6 @@ const StudentElectionWorkspace = ({
                       >
                         {post.hasVoted ? "Submitted" : "Not recorded"}
                       </StatusPill>
-                      <span style={{ color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)" }}>
-                        {submittedLabel}
-                      </span>
                     </div>
                   </div>
                 )
