@@ -210,7 +210,7 @@ const StudentElectionWorkspace = ({
                 </div>
 
                 <div style={{ display: "grid", gap: "10px" }}>
-                  {(post.votingCandidates?.length ? post.votingCandidates : post.approvedCandidates || []).map((candidate) => {
+                  {(post.votingCandidates || []).map((candidate) => {
                     const inputName = `vote-${selectedStudentElection.id}-${post.id || post.postId}`
                     const candidateId = String(candidate.id || candidate.nominationId)
                     const isSelected =
