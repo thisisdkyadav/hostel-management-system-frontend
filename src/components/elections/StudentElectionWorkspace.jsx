@@ -31,10 +31,10 @@ const StudentElectionWorkspace = ({
   const portalVotingEnabled = ["portal", "both"].includes(votingAccessMode)
   const emailVotingEnabled = ["email", "both"].includes(votingAccessMode)
   const votingPosts = selectedStudentElection?.posts || []
+  const submittedVotingPosts = votingPosts.filter((post) => Boolean(post.hasVoted))
   const hasSubmittedVote =
     selectedStudentElection.mode === "voting" &&
-    votingPosts.length > 0 &&
-    votingPosts.every((post) => Boolean(post.hasVoted))
+    submittedVotingPosts.length > 0
 
   return (
     <>
@@ -177,9 +177,57 @@ const StudentElectionWorkspace = ({
             Your voting link is sent by email for this election. Student portal voting is not enabled here.
           </Alert>
         ) : hasSubmittedVote ? (
-          <Alert type="success" title="Vote already submitted">
-            Your vote has already been submitted for this election.
-          </Alert>
+          <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+            <Alert type="success" title="Vote already submitted">
+              Your vote has already been submitted for this election.
+            </Alert>
+
+            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              {votingPosts.map((post) => {
+                const submittedLabel = post.hasVoted
+                  ? post.votedIsNota
+                    ? "NOTA"
+                    : post.votedCandidateLabel || "Submitted"
+                  : "No recorded vote"
+
+                return (
+                  <div
+                    key={post.id || post.postId}
+                    style={{
+                      ...detailPanelStyle,
+                      gap: "10px",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "var(--font-size-base)",
+                          fontWeight: "var(--font-weight-semibold)",
+                          color: "var(--color-text-heading)",
+                        }}
+                      >
+                        {post.title}
+                      </div>
+                      {post.code ? <div style={mutedTextStyle}>{post.code}</div> : null}
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                      <StatusPill
+                        tone={post.hasVoted ? "success" : "warning"}
+                        pillBaseStyle={pillBaseStyle}
+                        statusToneStyles={statusToneStyles}
+                      >
+                        {post.hasVoted ? "Submitted" : "Not recorded"}
+                      </StatusPill>
+                      <span style={{ color: "var(--color-text-body)", fontWeight: "var(--font-weight-medium)" }}>
+                        {submittedLabel}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         ) : (
           <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
             {emailVotingEnabled ? (
