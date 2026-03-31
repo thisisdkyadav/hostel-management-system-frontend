@@ -1173,6 +1173,7 @@ const ElectionsPage = () => {
   const [loadingVotingStats, setLoadingVotingStats] = useState(false)
   const [showSendVotingEmailsConfirm, setShowSendVotingEmailsConfirm] = useState(false)
   const [sendVotingEmailMode, setSendVotingEmailMode] = useState("reuse_existing")
+  const [sendVotingEmailReminder, setSendVotingEmailReminder] = useState(false)
   const [sendVotingEmailRollNumbers, setSendVotingEmailRollNumbers] = useState([])
   const [showVotingEmailRecipientsModal, setShowVotingEmailRecipientsModal] = useState(false)
   const [loadingVotingEmailRecipients, setLoadingVotingEmailRecipients] = useState(false)
@@ -1243,6 +1244,7 @@ const ElectionsPage = () => {
   }, [selectedAdminElection])
 
   const canCloneElection = Boolean(selectedAdminElection && !cloneElectionDisabledReason)
+  const isAdminElectionLiveVotingStage = selectedAdminElection?.currentStage === "voting"
 
   const loadBatchOptions = async () => {
     try {
@@ -2011,6 +2013,7 @@ const ElectionsPage = () => {
       setBusyKey(`voting-email:${selectedAdminElectionId}`)
       const response = await electionsApi.sendVotingEmails(selectedAdminElectionId, {
         resendMode: sendVotingEmailMode,
+        reminder: sendVotingEmailReminder,
         targetRollNumbers: sendVotingEmailRollNumbers,
       })
       setLiveVotingStats((current) =>
@@ -2028,6 +2031,7 @@ const ElectionsPage = () => {
       toast.success(response?.message || "Voting emails queued")
       setShowSendVotingEmailsConfirm(false)
       setSendVotingEmailRollNumbers([])
+      setSendVotingEmailReminder(false)
 
       window.setTimeout(() => {
         loadVotingLiveStats(selectedAdminElectionId, { silent: true }).catch(() => {})
@@ -2272,6 +2276,7 @@ const ElectionsPage = () => {
             loadingVotingStats={loadingVotingStats}
             onSendVotingEmails={() => {
               setSendVotingEmailMode("reuse_existing")
+              setSendVotingEmailReminder(false)
               setSendVotingEmailRollNumbers([])
               setShowSendVotingEmailsConfirm(true)
             }}
@@ -2497,6 +2502,7 @@ const ElectionsPage = () => {
             onClose={() => {
               setShowSendVotingEmailsConfirm(false)
               setSendVotingEmailRollNumbers([])
+              setSendVotingEmailReminder(false)
             }}
             title="Send Voting List"
             width={520}
@@ -2508,6 +2514,7 @@ const ElectionsPage = () => {
                   onClick={() => {
                     setShowSendVotingEmailsConfirm(false)
                     setSendVotingEmailRollNumbers([])
+                    setSendVotingEmailReminder(false)
                   }}
                   disabled={busyKey === `voting-email:${selectedAdminElectionId}`}
                 >
@@ -2527,6 +2534,35 @@ const ElectionsPage = () => {
               <div style={mutedTextStyle}>
                 Queue the voting email for students who are still eligible to vote in this election.
               </div>
+              {isAdminElectionLiveVotingStage ? (
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    padding: "var(--spacing-3)",
+                    border: "1px solid var(--color-border-primary)",
+                    borderRadius: "var(--radius-card-sm)",
+                    backgroundColor: sendVotingEmailReminder
+                      ? "var(--color-primary-bg)"
+                      : "var(--color-bg-primary)",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={sendVotingEmailReminder}
+                    onChange={(event) => setSendVotingEmailReminder(event.target.checked)}
+                  />
+                  <div style={{ display: "grid", gap: "4px" }}>
+                    <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                      Send as reminder
+                    </span>
+                    <span style={mutedTextStyle}>
+                      Adds reminder text with voting end time and current turnout to the email. This is only available while voting is live.
+                    </span>
+                  </div>
+                </label>
+              ) : null}
               <div
                 style={{
                   display: "grid",
