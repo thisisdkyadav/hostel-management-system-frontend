@@ -1185,6 +1185,8 @@ const ElectionsPage = () => {
   const [loadingTestEmailRecipients, setLoadingTestEmailRecipients] = useState(false)
   const [testEmailRecipientsData, setTestEmailRecipientsData] = useState(null)
   const [showPublishResultsConfirm, setShowPublishResultsConfirm] = useState(false)
+  const [showResultsExportModal, setShowResultsExportModal] = useState(false)
+  const [resultsExportVariant, setResultsExportVariant] = useState("flat")
   const [cloneElectionOpen, setCloneElectionOpen] = useState(false)
   const [cloneElectionTitle, setCloneElectionTitle] = useState("")
 
@@ -1843,7 +1845,7 @@ const ElectionsPage = () => {
     }
   }
 
-  const exportResultsCsv = () => {
+  const exportResultsCsv = (variant = "flat") => {
     if (!selectedAdminElection?.results?.posts?.length) {
       toast.error("No result data available to export")
       return
@@ -1857,7 +1859,7 @@ const ElectionsPage = () => {
       return stringValue
     }
 
-    const rows = (selectedAdminElection.results.posts || []).flatMap((postResult) => {
+    const flatRows = (selectedAdminElection.results.posts || []).flatMap((postResult) => {
       const draft = resultsDrafts[String(postResult.postId)] || {}
       return (postResult.candidates || []).map((candidate, index) => {
         const selectedWinnerIds = Array.isArray(draft.winnerNominationIds)
@@ -1907,16 +1909,50 @@ const ElectionsPage = () => {
       "Notes",
     ]
 
-    const csvContent = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\n")
+    const groupedRows = [
+      ["Election", selectedAdminElection.title],
+      ["Academic Year", selectedAdminElection.academicYear],
+      [],
+      ...(selectedAdminElection.results.posts || []).flatMap((postResult) => {
+        const draft = resultsDrafts[String(postResult.postId)] || {}
+        const selectedWinnerIds = Array.isArray(draft.winnerNominationIds)
+          ? draft.winnerNominationIds.map((value) => String(value))
+          : draft.winnerNominationId
+            ? [String(draft.winnerNominationId)]
+            : []
+
+        return [
+          [postResult.postTitle],
+          ["", "Candidate", "Votes", "Percentage", "Is NOTA", "Selected Result"],
+          ...(postResult.candidates || []).map((candidate) => [
+            "",
+            candidate.candidateName,
+            candidate.voteCount || 0,
+            formatVotePercentage(candidate.voteCount, postResult.totalVotes),
+            candidate.isNota ? "YES" : "NO",
+            selectedWinnerIds.includes(String(candidate.nominationId || ""))
+              ? draft?.winnerIsTie
+                ? "TIE WINNER"
+                : "WINNER"
+              : "",
+          ]),
+          [],
+        ]
+      }),
+    ]
+
+    const rows = variant === "grouped" ? groupedRows : [headers, ...flatRows]
+    const csvContent = rows.map((row) => row.map(escapeCsv).join(",")).join("\n")
     const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" })
     const link = document.createElement("a")
     const date = new Date().toISOString().split("T")[0]
     link.href = URL.createObjectURL(blob)
-    link.download = `election_results_${date}.csv`
+    link.download = `election_results_${variant}_${date}.csv`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(link.href)
+    setShowResultsExportModal(false)
   }
 
   const exportNominationsCsv = () => {
@@ -2254,7 +2290,7 @@ const ElectionsPage = () => {
             resultsDrafts={resultsDrafts}
             busyKey={busyKey}
             onPublishResults={() => setShowPublishResultsConfirm(true)}
-            onExportResults={exportResultsCsv}
+            onExportResults={() => setShowResultsExportModal(true)}
             onExportNominations={exportNominationsCsv}
             setReviewNomination={setReviewNomination}
             setResultsEditorPostId={setResultsEditorPostId}
@@ -2990,6 +3026,96 @@ const ElectionsPage = () => {
                   </Table>
                 </div>
               </div>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={showResultsExportModal}
+            onClose={() => setShowResultsExportModal(false)}
+            title="Export Results"
+            width={520}
+            footer={
+              <>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setShowResultsExportModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => exportResultsCsv(resultsExportVariant)}
+                >
+                  Export CSV
+                </Button>
+              </>
+            }
+          >
+            <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+              <div style={mutedTextStyle}>
+                Choose the CSV format you want to export for this election result.
+              </div>
+
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "10px",
+                  padding: "var(--spacing-3)",
+                  border: "1px solid var(--color-border-primary)",
+                  borderRadius: "var(--radius-card-sm)",
+                  backgroundColor:
+                    resultsExportVariant === "flat"
+                      ? "var(--color-primary-bg)"
+                      : "var(--color-bg-primary)",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="resultsExportVariant"
+                  checked={resultsExportVariant === "flat"}
+                  onChange={() => setResultsExportVariant("flat")}
+                />
+                <div style={{ display: "grid", gap: "4px" }}>
+                  <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                    Flat candidate table
+                  </span>
+                  <span style={mutedTextStyle}>
+                    One row per candidate with post, votes, percentage, winner flags, and notes.
+                  </span>
+                </div>
+              </label>
+
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "10px",
+                  padding: "var(--spacing-3)",
+                  border: "1px solid var(--color-border-primary)",
+                  borderRadius: "var(--radius-card-sm)",
+                  backgroundColor:
+                    resultsExportVariant === "grouped"
+                      ? "var(--color-primary-bg)"
+                      : "var(--color-bg-primary)",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="resultsExportVariant"
+                  checked={resultsExportVariant === "grouped"}
+                  onChange={() => setResultsExportVariant("grouped")}
+                />
+                <div style={{ display: "grid", gap: "4px" }}>
+                  <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-heading)" }}>
+                    Post-wise grouped sheet
+                  </span>
+                  <span style={mutedTextStyle}>
+                    Election info on top, then each post in creation order with candidate-wise votes, percentage, and NOTA.
+                  </span>
+                </div>
+              </label>
             </div>
           </Modal>
 
