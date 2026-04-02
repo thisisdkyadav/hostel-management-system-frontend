@@ -185,7 +185,7 @@ export const GymkhanaProposalModal = ({
                       "Dates not added"}
                   </div>
                 </div>
-                <Button variant="secondary" size="sm" onClick={onOpenProposalDetails}>
+                <Button variant="primary" size="sm" onClick={onOpenProposalDetails}>
                   {canEditProposalForm ? "Edit Details" : "View Details"}
                 </Button>
               </div>
