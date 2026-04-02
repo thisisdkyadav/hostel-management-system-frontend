@@ -152,6 +152,14 @@ const EventsPage = () => {
         isOpen={calendarState.showEventModal}
         selectedEvent={calendarState.selectedEvent}
         onClose={calendarState.closeEventModal}
+        canEditEvent={calendarState.canEdit}
+        canRequestEventAmendment={
+          Boolean(
+            calendarState.calendar?.isLocked &&
+              calendarState.isGS &&
+              calendarState.canCreateEventsCapability
+          )
+        }
         canViewEventsCapability={calendarState.canViewEventsCapability}
         isGS={calendarState.isGS}
         isPresident={calendarState.isPresident}
@@ -166,6 +174,8 @@ const EventsPage = () => {
         getEventStatusVariant={calendarState.getEventStatusVariant}
         formatDateRange={calendarState.formatDateRange}
         categoryLabels={CATEGORY_LABELS}
+        onEditEvent={calendarState.handleEditEvent}
+        onRequestAmendment={calendarState.openAmendmentModal}
       />
 
       <GymkhanaProposalModal

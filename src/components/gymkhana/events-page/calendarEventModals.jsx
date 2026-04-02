@@ -121,6 +121,8 @@ export const GymkhanaEventDetailsModal = ({
   isOpen,
   selectedEvent,
   onClose,
+  canEditEvent,
+  canRequestEventAmendment,
   canViewEventsCapability,
   isGS,
   isPresident,
@@ -135,6 +137,8 @@ export const GymkhanaEventDetailsModal = ({
   getEventStatusVariant,
   formatDateRange,
   categoryLabels,
+  onEditEvent,
+  onRequestAmendment,
 }) => (
   <Modal
     isOpen={isOpen}
@@ -209,11 +213,25 @@ export const GymkhanaEventDetailsModal = ({
                 <CalendarDays size={12} />
                 {formatDateRange(selectedEvent.startDate, selectedEvent.endDate)}
               </span>
-              <span style={eventDetailMetaChipStyles}>
-                <CircleDollarSign size={12} />₹
-                {Number(selectedEvent.estimatedBudget || 0).toLocaleString()}
-              </span>
-            </div>
+                <span style={eventDetailMetaChipStyles}>
+                  <CircleDollarSign size={12} />₹
+                  {Number(selectedEvent.estimatedBudget || 0).toLocaleString()}
+                </span>
+              </div>
+            {(canEditEvent || canRequestEventAmendment) && (
+              <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                {canEditEvent && (
+                  <Button size="sm" variant="secondary" onClick={() => onEditEvent?.(selectedEvent)}>
+                    Edit Event
+                  </Button>
+                )}
+                {!canEditEvent && canRequestEventAmendment && (
+                  <Button size="sm" variant="secondary" onClick={() => onRequestAmendment?.(selectedEvent)}>
+                    Request Amendment
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>

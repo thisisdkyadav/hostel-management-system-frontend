@@ -558,6 +558,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   }
 
   const handleEditEvent = (event) => {
+    setShowEventModal(false)
     setSelectedEvent(event)
     resetDateOverlapInfo()
     const formModel = toFormModel(event)
@@ -569,6 +570,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   }
 
   const openAmendmentModal = (event = null) => {
+    setShowEventModal(false)
     setSelectedEvent(event)
     setAmendmentReason("")
     resetDateOverlapInfo()
@@ -587,16 +589,6 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   }
 
   const handleEventRowClick = (event) => {
-    if (canEdit) {
-      handleEditEvent(event)
-      return
-    }
-
-    if (calendar?.isLocked && isGS && canCreateEventsCapability) {
-      openAmendmentModal(event)
-      return
-    }
-
     handleEventClick(event)
   }
 
