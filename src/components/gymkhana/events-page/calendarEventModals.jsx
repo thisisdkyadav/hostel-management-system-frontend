@@ -307,7 +307,7 @@ export const GymkhanaEventDetailsModal = ({
                       </p>
                     </div>
                     {canOpenProposal && (
-                      <Button size="sm" variant="ghost" onClick={() => openProposalModal(selectedEvent)}>
+                      <Button size="sm" variant="primary" onClick={() => openProposalModal(selectedEvent)}>
                         <FileText size={12} />{" "}
                         {selectedEvent.proposalSubmitted ? "View" : "Submit"}
                       </Button>
@@ -347,7 +347,7 @@ export const GymkhanaEventDetailsModal = ({
                       </p>
                     </div>
                     {canManageBills && (
-                      <Button size="sm" variant="ghost" onClick={() => openExpenseModal(selectedEvent)}>
+                      <Button size="sm" variant="primary" onClick={() => openExpenseModal(selectedEvent)}>
                         <Receipt size={12} /> Manage
                       </Button>
                     )}
