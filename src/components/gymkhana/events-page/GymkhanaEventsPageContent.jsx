@@ -79,6 +79,7 @@ export default function GymkhanaEventsPageContent({
   setShowPendingBillsModal,
   setShowPendingProposalModal,
   setShowSettingsModal,
+  submitCalendarLabel,
   submitting,
   years,
   viewMode,
@@ -101,7 +102,7 @@ export default function GymkhanaEventsPageContent({
         )}
         {canSubmitCalendar && (
           <Button size="md" onClick={handleSubmitCalendar} loading={submitting}>
-            <Send size={16} /> Submit for Approval
+            <Send size={16} /> {submitCalendarLabel}
           </Button>
         )}
         {calendar?.isLocked && isGS && canCreateEventsCapability && (

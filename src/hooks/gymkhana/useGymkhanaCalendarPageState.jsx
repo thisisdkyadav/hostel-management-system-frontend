@@ -72,28 +72,37 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const canCreateEventsCapability = true
   const canApproveEventsCapability = true
   const maxApprovalAmount = null
+  const submittableCalendarStatuses = [
+    "draft",
+    "rejected",
+    "pending_president",
+    "pending_student_affairs",
+    "pending_joint_registrar",
+    "pending_associate_dean",
+    "pending_dean",
+    "approved",
+  ]
 
   const canEditGS =
     calendar &&
     !calendar.isLocked &&
     isGS &&
-    canCreateEventsCapability &&
-    (calendar.status === "draft" || calendar.status === "rejected")
+    canCreateEventsCapability
   const canEditPresident =
     calendar &&
     !calendar.isLocked &&
     isPresident &&
-    canCreateEventsCapability &&
-    ["draft", "rejected", "pending_president"].includes(calendar.status)
+    canCreateEventsCapability
   const canEdit = canEditGS || canEditPresident
   const canSubmitCalendar = Boolean(
     calendar &&
       !calendar.isLocked &&
       isPresident &&
       canCreateEventsCapability &&
-      calendar.status === "draft" &&
+      submittableCalendarStatuses.includes(calendar.status) &&
       events.length > 0
   )
+  const submitCalendarLabel = calendar?.status === "draft" ? "Submit for Approval" : "Resubmit for Approval"
   const canApprove = Boolean(
     calendar?.status &&
       canApproveEventsCapability &&
@@ -1020,6 +1029,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     showOverlapConfirmModal,
     showOverlapDetailsModal,
     showSettingsModal,
+    submitCalendarLabel,
     submitOverlapInfo,
     submitting,
     toggleNextApprovalStage,

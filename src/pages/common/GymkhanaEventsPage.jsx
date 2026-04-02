@@ -128,6 +128,7 @@ const EventsPage = () => {
         setShowPendingBillsModal={expenseState.setShowPendingBillsModal}
         setShowPendingProposalModal={proposalState.setShowPendingProposalModal}
         setShowSettingsModal={calendarState.setShowSettingsModal}
+        submitCalendarLabel={calendarState.submitCalendarLabel}
         submitting={calendarState.submitting}
         years={calendarState.years}
         viewMode={calendarState.viewMode}
