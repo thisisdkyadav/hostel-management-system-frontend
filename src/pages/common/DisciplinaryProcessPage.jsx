@@ -1327,6 +1327,7 @@ const DisciplinaryProcessPage = () => {
             label="Upload Complaint PDF"
             value={createComplaintPdfUrl}
             onChange={setCreateComplaintPdfUrl}
+            maxSizeMb={10}
             onUpload={async (file) => {
               setCreateComplaintPdfName(file.name)
               return uploadDiscoProcessPdf(file)
@@ -1616,6 +1617,7 @@ const DisciplinaryProcessPage = () => {
                                     },
                                   }))
                                 }
+                                maxSizeMb={10}
                                 onUpload={async (file) => {
                                   setStage2StatementsByStudentId((prev) => ({
                                     ...prev,
@@ -1649,6 +1651,7 @@ const DisciplinaryProcessPage = () => {
                         compact
                         value={stage2EvidenceDraftUrl}
                         onChange={setStage2EvidenceDraftUrl}
+                        maxSizeMb={10}
                         onUpload={async (file) => {
                           setStage2EvidenceDraftName(file.name)
                           return uploadDiscoProcessPdf(file)
@@ -1691,6 +1694,7 @@ const DisciplinaryProcessPage = () => {
                         compact
                         value={stage2ExtraDraftUrl}
                         onChange={setStage2ExtraDraftUrl}
+                        maxSizeMb={10}
                         onUpload={async (file) => {
                           setStage2ExtraDraftName(file.name)
                           return uploadDiscoProcessPdf(file)
@@ -1866,6 +1870,7 @@ const DisciplinaryProcessPage = () => {
                     compact
                     value={emailExtraDraftUrl}
                     onChange={setEmailExtraDraftUrl}
+                    maxSizeMb={10}
                     onUpload={async (file) => {
                       setEmailExtraDraftName(file.name)
                       return uploadDiscoProcessPdf(file)
@@ -1907,6 +1912,7 @@ const DisciplinaryProcessPage = () => {
                   label="Committee Minutes PDF"
                   value={minutesPdfUrl}
                   onChange={setMinutesPdfUrl}
+                  maxSizeMb={10}
                   onUpload={async (file) => {
                     setMinutesPdfName(file.name)
                     return uploadDiscoProcessPdf(file)
