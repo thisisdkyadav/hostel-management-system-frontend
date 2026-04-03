@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Button, Modal } from "czero/react"
+import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const PdfViewerModal = ({
   isOpen,
@@ -13,13 +14,15 @@ const PdfViewerModal = ({
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   const [fileType, setFileType] = useState("pdf")
+  const resolvedDocumentUrl = getMediaUrl(documentUrl)
+  const resolvedDownloadUrl = getMediaDownloadUrl(documentUrl)
 
   useEffect(() => {
     if (documentUrl && isOpen) {
       setIsLoading(true)
       setError(false)
 
-      const url = documentUrl.toLowerCase()
+      const url = String(documentUrl || "").toLowerCase()
       if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png")) {
         setFileType("image")
       } else {
@@ -30,7 +33,7 @@ const PdfViewerModal = ({
 
   const handleDownload = () => {
     const link = document.createElement("a")
-    link.href = documentUrl
+    link.href = resolvedDownloadUrl
     link.download = downloadFileName
     link.target = "_blank"
     document.body.appendChild(link)
@@ -58,7 +61,7 @@ const PdfViewerModal = ({
               <FaDownload /> Download
             </Button>
             <a
-              href={documentUrl}
+              href={resolvedDocumentUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-3)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", fontSize: "var(--font-size-sm)", textDecoration: "none", transition: "var(--transition-colors)" }}
@@ -79,7 +82,7 @@ const PdfViewerModal = ({
           {fileType === "image" ? (
             <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: "var(--spacing-4)" }}>
               <img
-                src={documentUrl}
+                src={resolvedDocumentUrl}
                 alt={title}
                 style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
                 onLoad={() => setIsLoading(false)}
@@ -101,7 +104,7 @@ const PdfViewerModal = ({
               )}
 
               <object
-                data={documentUrl}
+                data={resolvedDocumentUrl}
                 type="application/pdf"
                 style={{ width: "100%", height: "100%" }}
                 onLoad={() => setIsLoading(false)}
@@ -123,7 +126,7 @@ const PdfViewerModal = ({
                       <FaDownload /> Download PDF
                     </Button>
                     <a
-                      href={documentUrl}
+                      href={resolvedDocumentUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", padding: "var(--spacing-2) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-colors)" }}
