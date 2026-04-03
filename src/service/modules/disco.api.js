@@ -147,6 +147,15 @@ export const discoApi = {
   },
 
   /**
+   * Skip committee email step
+   * @param {string} caseId
+   * @param {Object} data - optional { reason }
+   */
+  skipCaseEmail: (caseId, data = {}) => {
+    return apiClient.post(`/disco/process/cases/${caseId}/skip-email`, data)
+  },
+
+  /**
    * Upload committee minutes metadata
    * @param {string} caseId
    * @param {Object} data

@@ -835,6 +835,28 @@ const DisciplinaryProcessPage = () => {
     }
   }
 
+  const handleSkipEmail = async () => {
+    if (!selectedAdminCase?.id) return
+
+    const confirmed = window.confirm(
+      "Skip committee email for this case and continue to committee minutes?"
+    )
+    if (!confirmed) return
+
+    try {
+      setEmailSubmitting(true)
+      await discoApi.skipCaseEmail(selectedAdminCase.id, {
+        reason: "Skipped from disciplinary process UI",
+      })
+      toast.success("Email step skipped")
+      await refreshAdminData()
+    } catch (error) {
+      toast.error(error.message || "Failed to skip email step")
+    } finally {
+      setEmailSubmitting(false)
+    }
+  }
+
   const handleSaveMinutes = async () => {
     if (!selectedAdminCase?.id) return
     if (!minutesPdfUrl) {
@@ -1888,9 +1910,14 @@ const DisciplinaryProcessPage = () => {
 
                 {!viewingHistoryStep && (
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button variant="primary" size="sm" loading={emailSubmitting} onClick={handleSendEmail}>
-                      <Mail size={14} /> Send & Continue
-                    </Button>
+                    <div style={{ display: "flex", gap: "var(--spacing-2)" }}>
+                      <Button variant="outline" size="sm" loading={emailSubmitting} onClick={handleSkipEmail}>
+                        Skip Email
+                      </Button>
+                      <Button variant="primary" size="sm" loading={emailSubmitting} onClick={handleSendEmail}>
+                        <Mail size={14} /> Send & Continue
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1905,7 +1932,7 @@ const DisciplinaryProcessPage = () => {
                 </div>
 
                 <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                  Email sent to committee. Upload the meeting minutes to proceed.
+                  Email step completed (sent or skipped). Upload the meeting minutes to proceed.
                 </div>
 
                 <PdfUploadField
