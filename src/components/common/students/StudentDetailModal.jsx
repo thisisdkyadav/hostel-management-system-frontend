@@ -820,7 +820,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       </div>
 
                       <div style={{ position: "absolute", bottom: "var(--spacing-2)", right: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", boxShadow: "var(--shadow-sm)" }}>
-                        <a href={idCardData.front} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)" }}>
+                        <a href={getMediaUrl(idCardData.front)} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)" }}>
                           <FaExpand size={14} />
                         </a>
                       </div>
@@ -843,7 +843,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                       </div>
 
                       <div style={{ position: "absolute", bottom: "var(--spacing-2)", right: "var(--spacing-2)", backgroundColor: "var(--color-bg-primary)", padding: "var(--spacing-2)", borderRadius: "var(--radius-full)", boxShadow: "var(--shadow-sm)" }}>
-                        <a href={idCardData.back} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)" }}>
+                        <a href={getMediaUrl(idCardData.back)} target="_blank" rel="noopener noreferrer" style={{ color: "var(--color-primary)" }}>
                           <FaExpand size={14} />
                         </a>
                       </div>

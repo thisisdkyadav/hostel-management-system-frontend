@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { getMediaUrl } from "../../../utils/mediaUtils"
+import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Modal } from "czero/react"
 import { Button } from "czero/react"
@@ -27,10 +27,10 @@ const CertificateViewerModal = ({ isOpen, onClose, certificateUrl }) => {
   }, [certificateUrl, isOpen])
 
   const handleDownload = () => {
-    const fullUrl = getMediaUrl(certificateUrl)
+    const fullUrl = getMediaDownloadUrl(certificateUrl)
     const link = document.createElement("a")
     link.href = fullUrl
-    link.download = certificateUrl.split("/").pop() || "certificate"
+    link.download = String(certificateUrl || "").split("/").pop() || "certificate"
     link.target = "_blank"
     document.body.appendChild(link)
     link.click()

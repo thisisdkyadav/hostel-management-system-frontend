@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
 import { overallBestPerformerApi, uploadApi } from "@/service"
+import { getMediaUrl } from "@/utils/mediaUtils"
 
 const COURSEWORK_MODE_OPTIONS = [
   { value: "ug_cgpa", label: "UG CGPA" },
@@ -626,7 +627,7 @@ const ItemsReviewTable = ({ title, items = [] }) => {
                 <td style={{ padding: "10px 12px", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>{item.calculatedPoints || 0}</td>
                 <td style={{ padding: "10px 12px" }}>
                   {item.proofs?.[0]?.url ? (
-                    <a href={item.proofs[0].url} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)" }}>
+                    <a href={getMediaUrl(item.proofs[0].url)} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)" }}>
                       Open
                     </a>
                   ) : (

@@ -1,5 +1,6 @@
 import React, { forwardRef, useState } from "react"
 import { FaUser } from "react-icons/fa"
+import { getMediaUrl } from "../../../utils/mediaUtils"
 
 /**
  * Avatar Component - User avatar display
@@ -102,9 +103,15 @@ const Avatar = forwardRef(({
 
   const renderContent = () => {
     if (src && !imageError) {
+      const normalizedSrc = String(src).trim()
+      const resolvedSrc =
+        normalizedSrc.startsWith("blob:") || normalizedSrc.startsWith("data:")
+          ? normalizedSrc
+          : getMediaUrl(normalizedSrc)
+
       return (
         <img
-          src={src}
+          src={resolvedSrc}
           alt={alt || name}
           style={imageStyles}
           onError={() => setImageError(true)}

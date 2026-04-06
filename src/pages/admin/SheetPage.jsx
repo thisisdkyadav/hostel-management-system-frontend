@@ -12,6 +12,7 @@ import { sheetApi } from "../../service"
 import ColumnFilterDropdown from "../../components/sheet/ColumnFilterDropdown"
 import ColumnVisibilityPanel from "../../components/sheet/ColumnVisibilityPanel"
 import FilterChips from "../../components/sheet/FilterChips"
+import { getMediaUrl } from "../../utils/mediaUtils"
 
 // Row height for virtualization
 const ROW_HEIGHT = 28
@@ -462,7 +463,7 @@ const styles = {
 
 // Cell renderers
 const renderProfileImage = (value) => {
-    if (value) return <img src={value} alt="" style={styles.avatar} />
+    if (value) return <img src={getMediaUrl(value)} alt="" style={styles.avatar} />
     return <span style={styles.avatarPlaceholder}><User size={12} /></span>
 }
 

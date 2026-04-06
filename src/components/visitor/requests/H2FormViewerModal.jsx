@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react"
 import { FaFileAlt, FaExternalLinkAlt, FaDownload, FaSpinner } from "react-icons/fa"
 import { Modal } from "czero/react"
 import { Button } from "czero/react"
+import { getMediaDownloadUrl, getMediaUrl } from "../../../utils/mediaUtils"
 
 const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
   const [fileType, setFileType] = useState(null)
+  const resolvedH2FormUrl = getMediaUrl(h2FormUrl)
+  const resolvedH2FormDownloadUrl = getMediaDownloadUrl(h2FormUrl)
 
   useEffect(() => {
     if (h2FormUrl && isOpen) {
@@ -14,7 +17,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
       setError(false)
 
       // Determine file type from URL or extension
-      const url = h2FormUrl.toLowerCase()
+      const url = String(h2FormUrl || "").toLowerCase()
       if (url.includes(".pdf") || url.includes("pdf")) {
         setFileType("pdf")
       } else if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png")) {
@@ -27,7 +30,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
 
   const handleDownload = () => {
     const link = document.createElement("a")
-    link.href = h2FormUrl
+    link.href = resolvedH2FormDownloadUrl
     link.download = "H2_Form.pdf"
     link.target = "_blank"
     document.body.appendChild(link)
@@ -55,7 +58,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
             <Button onClick={handleDownload} variant="success" size="sm">
               <FaDownload /> Download
             </Button>
-            <a href={h2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
+            <a href={resolvedH2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-3)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', fontSize: 'var(--font-size-sm)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
             >
               <FaExternalLinkAlt style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
@@ -68,7 +71,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
         <div style={{ flex: '1', backgroundColor: 'var(--color-bg-primary)', border: `var(--border-2) solid var(--color-border-primary)`, borderRadius: 'var(--radius-lg)', overflow: 'hidden', height: 'calc(100% - 100px)' }}>
           {fileType === "image" ? (
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--spacing-4)' }}>
-              <img src={h2FormUrl} alt="H2 Form Document" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onLoad={() => setIsLoading(false)}
+              <img src={resolvedH2FormUrl} alt="H2 Form Document" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
                   setIsLoading(false)
@@ -87,7 +90,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                 </div>
               )}
 
-              <object data={h2FormUrl} type="application/pdf" style={{ width: '100%', height: '100%' }} onLoad={() => setIsLoading(false)}
+              <object data={resolvedH2FormUrl} type="application/pdf" style={{ width: '100%', height: '100%' }} onLoad={() => setIsLoading(false)}
                 onError={() => {
                   setError(true)
                   setIsLoading(false)
@@ -102,7 +105,7 @@ const H2FormViewerModal = ({ isOpen, onClose, h2FormUrl }) => {
                     <Button onClick={handleDownload} variant="success" size="md">
                       <FaDownload /> Download PDF
                     </Button>
-                    <a href={h2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
+                    <a href={resolvedH2FormUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-2)', padding: 'var(--spacing-2) var(--spacing-4)', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', borderRadius: 'var(--radius-lg)', textDecoration: 'none', transition: 'var(--transition-colors)' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
                       onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary)'}
                     >
                       <FaExternalLinkAlt style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />
