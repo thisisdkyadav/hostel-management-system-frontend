@@ -103,11 +103,12 @@ const ApprovalHistory = ({
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             {history.map((log, idx) => {
                 const Icon = ACTION_ICONS[log.action] || Clock
-                const color = ACTION_COLORS[log.action] || "default"
+                const baseColor = ACTION_COLORS[log.action] || "default"
                 const actionLabel =
                     log.action === "approved" && idx !== lastApprovedIndex
                         ? "Recommended"
                         : formatActionLabel(log.action)
+                const color = actionLabel === "Recommended" ? "warning" : baseColor
 
                 return (
                     <div
