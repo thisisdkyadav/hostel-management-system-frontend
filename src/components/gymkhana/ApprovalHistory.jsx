@@ -23,6 +23,11 @@ const ACTION_COLORS = {
     revision_requested: "warning",
 }
 
+const formatActionLabel = (action) =>
+    String(action || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase())
+
 const ApprovalHistory = ({
     calendarId = null,
     proposalId = null,
@@ -89,11 +94,20 @@ const ApprovalHistory = ({
         )
     }
 
+    const lastApprovedIndex = history.reduce(
+        (latestIndex, log, index) => (log?.action === "approved" ? index : latestIndex),
+        -1
+    )
+
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
             {history.map((log, idx) => {
                 const Icon = ACTION_ICONS[log.action] || Clock
                 const color = ACTION_COLORS[log.action] || "default"
+                const actionLabel =
+                    log.action === "approved" && idx !== lastApprovedIndex
+                        ? "Recommended"
+                        : formatActionLabel(log.action)
 
                 return (
                     <div
@@ -123,7 +137,7 @@ const ApprovalHistory = ({
                         <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", marginBottom: "var(--spacing-1)" }}>
                                 <Badge variant={color}>
-                                    {log.action?.replace(/_/g, " ")}
+                                    {actionLabel}
                                 </Badge>
                                 <span style={{
                                     fontSize: "var(--font-size-xs)",
