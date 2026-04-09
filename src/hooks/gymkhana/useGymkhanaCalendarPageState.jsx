@@ -7,7 +7,9 @@ import {
   CATEGORY_OPTIONS,
   DEFAULT_EVENT_FORM,
   buildAvailableYearsForCreation,
+  buildBudgetCapsPayload,
   createDefaultOverlapState,
+  createEmptyBudgetCaps,
   formatDateKey,
   formatDateRange,
   getBudgetSummary,
@@ -21,10 +23,12 @@ import {
   mergeCalendarEventsWithGymkhanaEvents,
   normalizeEvent,
   normalizeEventId,
+  toBudgetCapsForm,
   toFormModel,
   toGymkhanaDisplayEvent,
   buildEventPayload,
   toCalendarEventPayload,
+  validateCategoryBudgetCaps,
 } from "@/components/gymkhana/events-page/shared"
 import { CalendarDays, FileText } from "lucide-react"
 import { Badge } from "@/components/ui/data-display"
@@ -51,6 +55,10 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const [showOverlapDetailsModal, setShowOverlapDetailsModal] = useState(false)
   const [showCreateCalendarModal, setShowCreateCalendarModal] = useState(false)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
+  const [calendarSettingsForm, setCalendarSettingsForm] = useState(() => ({
+    allowProposalBeforeApproval: false,
+    budgetCaps: createEmptyBudgetCaps(),
+  }))
   const [eventForm, setEventForm] = useState(DEFAULT_EVENT_FORM)
   const [amendmentReason, setAmendmentReason] = useState("")
   const [newAcademicYear, setNewAcademicYear] = useState("")
@@ -117,6 +125,18 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const canManageCalendarLock = isAdminLevel && canApproveEventsCapability && Boolean(calendar?._id)
   const canCreateCalendar = isAdminLevel && canCreateEventsCapability
 
+  function buildCalendarSettingsForm(calendarData = null) {
+    return {
+      allowProposalBeforeApproval: Boolean(calendarData?.allowProposalBeforeApproval),
+      budgetCaps: toBudgetCapsForm(calendarData?.budgetCaps),
+    }
+  }
+
+  useEffect(() => {
+    if (!showSettingsModal) return
+    setCalendarSettingsForm(buildCalendarSettingsForm(calendar))
+  }, [calendar, showSettingsModal])
+
   const budgetSummary = useMemo(() => getBudgetSummary(events), [events])
   const categoryFilterTabs = useMemo(
     () => [
@@ -179,12 +199,18 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     }
     return map
   }, [calendarHolidays])
+  const getBudgetStatSubtitle = (category) => {
+    const cap = calendar?.budgetCaps?.[category]
+    const capLabel = cap === null || cap === undefined ? "No cap" : `Cap ₹${Number(cap).toLocaleString()}`
+    return `${budgetSummary.counts[category] || 0} event(s) · ${capLabel}`
+  }
+
   const budgetStats = useMemo(
     () => [
       {
         title: "Academic Budget",
         value: `₹${(budgetSummary.byCategory.academic || 0).toLocaleString()}`,
-        subtitle: `${budgetSummary.counts.academic || 0} event(s)`,
+        subtitle: getBudgetStatSubtitle("academic"),
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.academic,
         tintBackground: true,
@@ -192,7 +218,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       {
         title: "Cultural Budget",
         value: `₹${(budgetSummary.byCategory.cultural || 0).toLocaleString()}`,
-        subtitle: `${budgetSummary.counts.cultural || 0} event(s)`,
+        subtitle: getBudgetStatSubtitle("cultural"),
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.cultural,
         tintBackground: true,
@@ -200,7 +226,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       {
         title: "Sports Budget",
         value: `₹${(budgetSummary.byCategory.sports || 0).toLocaleString()}`,
-        subtitle: `${budgetSummary.counts.sports || 0} event(s)`,
+        subtitle: getBudgetStatSubtitle("sports"),
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.sports,
         tintBackground: true,
@@ -208,7 +234,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       {
         title: "Technical Budget",
         value: `₹${(budgetSummary.byCategory.technical || 0).toLocaleString()}`,
-        subtitle: `${budgetSummary.counts.technical || 0} event(s)`,
+        subtitle: getBudgetStatSubtitle("technical"),
         icon: <CalendarDays size={16} />,
         color: CATEGORY_COLORS.technical,
         tintBackground: true,
@@ -221,7 +247,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         color: "var(--color-primary)",
       },
     ],
-    [budgetSummary, events.length]
+    [budgetSummary, events.length, calendar?.budgetCaps]
   )
   const dateConflicts = useMemo(() => getDateConflicts(events), [events])
   const pendingProposalReminders = useMemo(
@@ -294,6 +320,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       setSelectedYear(null)
       setCalendar(null)
       setEvents([])
+      setCalendarSettingsForm(buildCalendarSettingsForm())
       setHasAttemptedCalendarLoad(true)
       setLoading(false)
       return
@@ -315,6 +342,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       if (yearsList.length === 0) {
         setCalendar(null)
         setEvents([])
+        setCalendarSettingsForm(buildCalendarSettingsForm())
         setHasAttemptedCalendarLoad(true)
       }
     } catch (err) {
@@ -328,6 +356,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       setCalendar(null)
       setEvents([])
       setCalendarHolidays([])
+      setCalendarSettingsForm(buildCalendarSettingsForm())
       setHasAttemptedCalendarLoad(true)
       return
     }
@@ -351,6 +380,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       if (!calendarData) {
         setCalendar(null)
         setEvents([])
+        setCalendarSettingsForm(buildCalendarSettingsForm())
         setHasAttemptedCalendarLoad(true)
         return
       }
@@ -358,6 +388,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       const normalizedEvents = (calendarData.events || []).map(normalizeEvent)
       const isProposalCreationAllowedForCalendar =
         calendarData.status === "approved" || Boolean(calendarData.allowProposalBeforeApproval)
+      setCalendarSettingsForm(buildCalendarSettingsForm(calendarData))
       let mergedEvents = normalizedEvents
 
       try {
@@ -414,6 +445,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       if (err.status === 404) {
         setCalendar(null)
         setEvents([])
+        setCalendarSettingsForm(buildCalendarSettingsForm())
         setHasAttemptedCalendarLoad(true)
       } else {
         setError(err.message || "Failed to load calendar")
@@ -637,6 +669,14 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         )
       } else {
         updatedEvents = [...events, { ...payload, _id: `temp-${Date.now()}` }]
+      }
+
+      const budgetCapValidation = validateCategoryBudgetCaps(updatedEvents, calendar?.budgetCaps || {})
+      if (!budgetCapValidation.isValid) {
+        toast.error(
+          `${budgetCapValidation.label} category budget would become ₹${budgetCapValidation.total.toLocaleString()} which exceeds the configured cap of ₹${budgetCapValidation.cap.toLocaleString()}. Reduce the budget or ask Admin to increase the limit.`
+        )
+        return
       }
 
       await gymkhanaEventsApi.updateCalendar(calendar._id, {
@@ -871,7 +911,24 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     }
   }
 
-  const handleUpdateCalendarSettings = async (nextAllowProposalBeforeApproval) => {
+  const handleCalendarSettingsFieldChange = (field, value) => {
+    setCalendarSettingsForm((current) => ({
+      ...current,
+      [field]: value,
+    }))
+  }
+
+  const handleCalendarBudgetCapChange = (category, value) => {
+    setCalendarSettingsForm((current) => ({
+      ...current,
+      budgetCaps: {
+        ...current.budgetCaps,
+        [category]: value,
+      },
+    }))
+  }
+
+  const handleSaveCalendarSettings = async () => {
     if (!canManageCalendarLock) {
       toast.error("You do not have permission to manage calendar settings")
       return
@@ -879,12 +936,23 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
     if (!calendar?._id) return
 
+    const nextBudgetCaps = buildBudgetCapsPayload(calendarSettingsForm.budgetCaps)
+    const budgetCapValidation = validateCategoryBudgetCaps(events, nextBudgetCaps)
+    if (!budgetCapValidation.isValid) {
+      toast.error(
+        `Cannot set the ${budgetCapValidation.label} cap below the current allocated budget of ₹${budgetCapValidation.total.toLocaleString()}. Increase the cap or reduce events in that category first.`
+      )
+      return
+    }
+
     try {
       setSubmitting(true)
       await gymkhanaEventsApi.updateCalendarSettings(calendar._id, {
-        allowProposalBeforeApproval: Boolean(nextAllowProposalBeforeApproval),
+        allowProposalBeforeApproval: Boolean(calendarSettingsForm.allowProposalBeforeApproval),
+        budgetCaps: nextBudgetCaps,
       })
       toast.success("Calendar settings updated")
+      setShowSettingsModal(false)
       await fetchCalendar(selectedYear)
       await fetchYears()
     } catch (err) {
@@ -925,6 +993,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     budgetStats,
     budgetSummary,
     calendar,
+    calendarSettingsForm,
     calendarMonth,
     calendarNextApprovalStages,
     canApprove,
@@ -961,9 +1030,11 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     handleEventClick,
     handleEventFormChange,
     handleEventRowClick,
+    handleCalendarBudgetCapChange,
+    handleCalendarSettingsFieldChange,
     handleLockCalendar,
-    handleUpdateCalendarSettings,
     handleReject,
+    handleSaveCalendarSettings,
     handleSaveEvent,
     handleSubmitAmendment,
     handleSubmitCalendar,

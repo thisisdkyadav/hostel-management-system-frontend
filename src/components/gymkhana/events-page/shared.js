@@ -184,6 +184,60 @@ export const getBudgetSummary = (events = []) => {
   return { total, byCategory, counts }
 }
 
+export const createEmptyBudgetCaps = () =>
+  CATEGORY_ORDER.reduce((accumulator, category) => {
+    accumulator[category] = ""
+    return accumulator
+  }, {})
+
+export const toBudgetCapsForm = (budgetCaps = {}) =>
+  CATEGORY_ORDER.reduce((accumulator, category) => {
+    const rawValue = budgetCaps?.[category]
+    accumulator[category] =
+      rawValue === null || rawValue === undefined || rawValue === "" ? "" : String(rawValue)
+    return accumulator
+  }, {})
+
+export const buildBudgetCapsPayload = (budgetCaps = {}) =>
+  CATEGORY_ORDER.reduce((accumulator, category) => {
+    const rawValue = budgetCaps?.[category]
+    if (rawValue === null || rawValue === undefined || rawValue === "") {
+      accumulator[category] = null
+      return accumulator
+    }
+
+    const parsedValue = Number(rawValue)
+    accumulator[category] = Number.isFinite(parsedValue) && parsedValue >= 0 ? parsedValue : null
+    return accumulator
+  }, {})
+
+export const validateCategoryBudgetCaps = (events = [], budgetCaps = {}) => {
+  const normalizedBudgetCaps = buildBudgetCapsPayload(budgetCaps)
+  const summary = getBudgetSummary(events)
+
+  for (const category of CATEGORY_ORDER) {
+    const cap = normalizedBudgetCaps[category]
+    if (cap === null || cap === undefined) continue
+
+    const total = Number(summary.byCategory[category] || 0)
+    if (total > cap) {
+      return {
+        isValid: false,
+        category,
+        label: CATEGORY_LABELS[category] || category,
+        total,
+        cap,
+      }
+    }
+  }
+
+  return {
+    isValid: true,
+    summary,
+    budgetCaps: normalizedBudgetCaps,
+  }
+}
+
 export const getDateConflicts = (events = []) => {
   const normalized = events.map(normalizeEvent)
   const conflicts = []

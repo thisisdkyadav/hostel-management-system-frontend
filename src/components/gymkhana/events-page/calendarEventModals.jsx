@@ -1,6 +1,7 @@
-import { Button, Modal } from "czero/react"
+import { Button, Input, Modal } from "czero/react"
 import { Badge } from "@/components/ui/data-display"
 import { Checkbox, Select } from "@/components/ui/form"
+import { CATEGORY_OPTIONS } from "@/components/gymkhana/events-page/shared"
 import {
   CalendarDays,
   CircleDollarSign,
@@ -510,25 +511,34 @@ export const GymkhanaSettingsModal = ({
   isOpen,
   onClose,
   calendar,
+  budgetSummary,
+  settingsForm,
   submitting,
   onLock,
   onUnlock,
-  onToggleAllowProposalBeforeApproval,
+  onSettingsChange,
+  onBudgetCapChange,
+  onSaveSettings,
 }) => (
   <Modal
     isOpen={isOpen}
     title="Calendar Settings"
-    width={480}
+    width={560}
     onClose={onClose}
     footer={
-      <Button size="sm" variant="secondary" onClick={onClose}>
-        Close
-      </Button>
+      <div style={{ display: "flex", gap: "var(--spacing-2)", justifyContent: "flex-end" }}>
+        <Button size="sm" variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+        <Button size="sm" onClick={onSaveSettings} loading={submitting}>
+          Save Settings
+        </Button>
+      </div>
     }
   >
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
       <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-        Configure lock state and proposal rules for {calendar?.academicYear}
+        Configure lock state, proposal rules, and category budget caps for {calendar?.academicYear}
       </span>
       <div
         style={{
@@ -573,12 +583,61 @@ export const GymkhanaSettingsModal = ({
         }}
       >
         <Checkbox
-          checked={Boolean(calendar?.allowProposalBeforeApproval)}
+          checked={Boolean(settingsForm?.allowProposalBeforeApproval)}
           disabled={submitting}
           label="Allow proposal submission before calendar approval"
           description="If enabled, proposals can be submitted and approved even while this calendar is still draft or pending approval."
-          onChange={(event) => onToggleAllowProposalBeforeApproval?.(event.target.checked)}
+          onChange={(event) => onSettingsChange?.("allowProposalBeforeApproval", event.target.checked)}
         />
+      </div>
+      <div
+        style={{
+          borderRadius: "var(--radius-card-sm)",
+          padding: "var(--spacing-3)",
+          backgroundColor: "var(--color-bg-secondary)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--spacing-3)",
+        }}
+      >
+        <div>
+          <span
+            style={{
+              fontWeight: "var(--font-weight-medium)",
+              fontSize: "var(--font-size-sm)",
+              color: "var(--color-text-heading)",
+            }}
+          >
+            Category Budget Caps
+          </span>
+          <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+            Leave a field blank to keep that category unlimited. Event saves will be blocked once a category total exceeds its cap.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
+          {CATEGORY_OPTIONS.map((category) => {
+            const allocated = Number(budgetSummary?.byCategory?.[category.value] || 0)
+            return (
+              <div key={category.value} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+                <label style={formLabelStyles} htmlFor={`budget-cap-${category.value}`}>
+                  {category.label} Cap
+                </label>
+                <Input
+                  id={`budget-cap-${category.value}`}
+                  type="number"
+                  min="0"
+                  placeholder="No limit"
+                  value={settingsForm?.budgetCaps?.[category.value] ?? ""}
+                  disabled={submitting}
+                  onChange={(event) => onBudgetCapChange?.(category.value, event.target.value)}
+                />
+                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                  Current allocated budget: ₹{allocated.toLocaleString()}
+                </span>
+              </div>
+            )
+          })}
+        </div>
       </div>
     </div>
   </Modal>

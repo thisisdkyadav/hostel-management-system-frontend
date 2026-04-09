@@ -335,8 +335,12 @@ const EventsPage = () => {
         isOpen={calendarState.showSettingsModal}
         onClose={() => calendarState.setShowSettingsModal(false)}
         calendar={calendarState.calendar}
+        budgetSummary={calendarState.budgetSummary}
+        settingsForm={calendarState.calendarSettingsForm}
         submitting={calendarState.submitting}
-        onToggleAllowProposalBeforeApproval={calendarState.handleUpdateCalendarSettings}
+        onSettingsChange={calendarState.handleCalendarSettingsFieldChange}
+        onBudgetCapChange={calendarState.handleCalendarBudgetCapChange}
+        onSaveSettings={calendarState.handleSaveCalendarSettings}
         onLock={async () => {
           await calendarState.handleLockCalendar()
           calendarState.setShowSettingsModal(false)
