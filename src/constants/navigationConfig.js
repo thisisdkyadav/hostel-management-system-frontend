@@ -158,7 +158,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
-    { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", isNew: true, adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Elections", icon: BadgeCheck, section: "main", path: "/admin/elections", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Disciplinary Process", icon: ShieldCheck, section: "main", path: "/admin/disciplinary-process", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Complaints", icon: ClipboardCheck, section: "main", path: "/admin/complaints", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
@@ -351,7 +351,7 @@ export const getStudentNavItems = (
   { name: "Security", icon: ShieldCheck, section: "main", path: "/student/security" },
   { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
-  ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer", isNew: true }] : []),
+  ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer" }] : []),
   ...(electionPortalState?.canAccessPortal ? [{
     name: "Elections",
     icon: BadgeCheck,
