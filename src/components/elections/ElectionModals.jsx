@@ -2190,6 +2190,29 @@ export const AdminResultsEditModal = ({
               >
                 <input
                   type="checkbox"
+                  checked={draft?.showVoteCountToStudents !== false}
+                  onChange={(event) => onChange({ showVoteCountToStudents: event.target.checked })}
+                />
+                Show vote count to students for this post
+              </label>
+              <div style={mutedTextStyle}>
+                Leave this on to show candidate vote counts and percentages to students after result publication.
+                Turn it off to publish only the winner/result without the counts.
+              </div>
+            </div>
+
+            <div style={{ ...flatPanelStyle, display: "grid", gap: "10px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  color: "var(--color-text-body)",
+                  fontWeight: "var(--font-weight-medium)",
+                }}
+              >
+                <input
+                  type="checkbox"
                   checked={Boolean(draft?.winnerIsTie)}
                   onChange={(event) => {
                     const nextIsTie = event.target.checked

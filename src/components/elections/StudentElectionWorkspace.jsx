@@ -318,9 +318,12 @@ const StudentElectionWorkspace = ({
       selectedStudentElection.results?.isPublished ? (
         <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
           {(selectedStudentElection.results?.posts || []).map((postResult) => {
-            const rankedCandidates = [...(postResult.candidates || [])].sort(
-              (left, right) => Number(right.voteCount || 0) - Number(left.voteCount || 0)
-            )
+            const showVoteCountToStudents = postResult.showVoteCountToStudents !== false
+            const rankedCandidates = showVoteCountToStudents
+              ? [...(postResult.candidates || [])].sort(
+                  (left, right) => Number(right.voteCount || 0) - Number(left.voteCount || 0)
+                )
+              : [...(postResult.candidates || [])]
             const winnerIds = new Set((postResult.publishedWinnerNominationIds || []).map((value) => String(value)))
             const winners = rankedCandidates.filter((candidate) =>
               winnerIds.has(String(candidate.nominationId))
@@ -354,7 +357,7 @@ const StudentElectionWorkspace = ({
                       {postResult.postTitle}
                     </div>
                     <div style={mutedTextStyle}>
-                      {postResult.totalVotes} vote(s)
+                      {showVoteCountToStudents ? `${postResult.totalVotes || 0} vote(s)` : "Vote count hidden"}
                       {winners.length > 0
                         ? ` · ${postResult.publishedWinnerIsTie ? "Tie" : "Winner"}: ${winners.map((item) => item.candidateName).join(", ")}`
                         : ""}
@@ -376,7 +379,9 @@ const StudentElectionWorkspace = ({
                 <div style={{ display: "grid", gap: "8px" }}>
                   {rankedCandidates.map((candidate, index) => {
                     const isWinner = winnerIds.has(String(candidate.nominationId))
-                    const percentage = formatVotePercentage(candidate.voteCount, postResult.totalVotes)
+                    const percentage = showVoteCountToStudents
+                      ? formatVotePercentage(candidate.voteCount, postResult.totalVotes)
+                      : ""
                     const numericPercentage = Number.parseFloat(percentage)
 
                     return (
@@ -452,37 +457,43 @@ const StudentElectionWorkspace = ({
                                 Winner
                               </StatusPill>
                             ) : null}
-                            <span
-                              style={{
-                                fontWeight: "var(--font-weight-semibold)",
-                                color: "var(--color-text-heading)",
-                              }}
-                            >
-                              {candidate.voteCount} vote(s)
-                            </span>
-                            <span style={mutedTextStyle}>{percentage}</span>
+                            {showVoteCountToStudents ? (
+                              <>
+                                <span
+                                  style={{
+                                    fontWeight: "var(--font-weight-semibold)",
+                                    color: "var(--color-text-heading)",
+                                  }}
+                                >
+                                  {candidate.voteCount} vote(s)
+                                </span>
+                                <span style={mutedTextStyle}>{percentage}</span>
+                              </>
+                            ) : null}
                           </div>
                         </div>
 
-                        <div
-                          style={{
-                            height: "8px",
-                            borderRadius: "999px",
-                            backgroundColor: "var(--color-bg-secondary)",
-                            overflow: "hidden",
-                          }}
-                        >
+                        {showVoteCountToStudents ? (
                           <div
                             style={{
-                              width: `${Math.max(0, Math.min(numericPercentage, 100))}%`,
-                              height: "100%",
+                              height: "8px",
                               borderRadius: "999px",
-                              backgroundColor: isWinner
-                                ? "var(--color-success)"
-                                : "var(--color-primary)",
+                              backgroundColor: "var(--color-bg-secondary)",
+                              overflow: "hidden",
                             }}
-                          />
-                        </div>
+                          >
+                            <div
+                              style={{
+                                width: `${Math.max(0, Math.min(numericPercentage, 100))}%`,
+                                height: "100%",
+                                borderRadius: "999px",
+                                backgroundColor: isWinner
+                                  ? "var(--color-success)"
+                                  : "var(--color-primary)",
+                              }}
+                            />
+                          </div>
+                        ) : null}
                       </div>
                     )
                   })}

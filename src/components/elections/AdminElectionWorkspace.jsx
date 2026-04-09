@@ -534,6 +534,14 @@ const AdminElectionWorkspace = ({
                 },
               },
               {
+                header: "Student Counts",
+                key: "showVoteCountToStudents",
+                render: (postResult) => {
+                  const draft = resultsDrafts[String(postResult.postId)] || {}
+                  return draft?.showVoteCountToStudents !== false ? "Visible" : "Hidden"
+                },
+              },
+              {
                 header: "Leading Margin",
                 key: "leadingMargin",
                 render: (postResult) => {

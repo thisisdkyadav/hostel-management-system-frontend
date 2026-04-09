@@ -1123,6 +1123,7 @@ const buildResultsDraftMap = (results = {}) =>
                 ? "nota"
                 : post.previewWinnerNominationId || ""),
         winnerIsTie: Boolean(post.publishedWinnerIsTie || post.previewWinnerIsTie),
+        showVoteCountToStudents: post.showVoteCountToStudents !== false,
         notes: post.notes || "",
       },
     ])
@@ -1831,6 +1832,7 @@ const ElectionsPage = () => {
           winnerNominationIds: Array.isArray(draft?.winnerNominationIds) ? draft.winnerNominationIds : [],
           winnerIsNota: (Array.isArray(draft?.winnerNominationIds) ? draft.winnerNominationIds : []).includes("nota"),
           winnerIsTie: Boolean(draft?.winnerIsTie),
+          showVoteCountToStudents: draft?.showVoteCountToStudents !== false,
           notes: draft?.notes || "",
         })),
       }
