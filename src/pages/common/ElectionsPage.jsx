@@ -1153,6 +1153,7 @@ const ElectionsPage = () => {
   const [adminViewTab, setAdminViewTab] = useState(isGymkhanaElectionOfficerView ? "nominations" : "posts")
   const [nominationTab, setNominationTab] = useState("all")
   const [historyModalOpen, setHistoryModalOpen] = useState(false)
+  const [showMockHistoryElections, setShowMockHistoryElections] = useState(false)
 
   const [studentElections, setStudentElections] = useState([])
   const [selectedStudentElectionId, setSelectedStudentElectionId] = useState("")
@@ -1205,6 +1206,19 @@ const ElectionsPage = () => {
   const selectedStudentElection = useMemo(
     () => studentElections.find((item) => item.id === selectedStudentElectionId) || null,
     [studentElections, selectedStudentElectionId]
+  )
+
+  const adminSelectableElections = useMemo(
+    () => adminElections.filter((item) => !Boolean(item?.mockSettings?.enabled)),
+    [adminElections]
+  )
+
+  const selectedAdminElectionOption = useMemo(
+    () =>
+      selectedAdminElection ||
+      adminElections.find((item) => String(item.id) === String(selectedAdminElectionId)) ||
+      null,
+    [adminElections, selectedAdminElection, selectedAdminElectionId]
   )
 
   const filteredNominations = useMemo(() => {
@@ -1275,13 +1289,14 @@ const ElectionsPage = () => {
   const loadAdminElections = async (preserveSelection = true) => {
     const response = await electionsApi.listAdminElections()
     const elections = response?.data?.elections || []
+    const nonMockElections = elections.filter((item) => !Boolean(item?.mockSettings?.enabled))
     setAdminElections(elections)
 
     setSelectedAdminElectionId((current) => {
       if (preserveSelection && current && elections.some((item) => item.id === current)) {
         return current
       }
-      return sortByActivity(elections)
+      return sortByActivity(nonMockElections) || nonMockElections[0]?.id || ""
     })
   }
 
@@ -2226,10 +2241,11 @@ const ElectionsPage = () => {
             <HeaderSelect
               value={selectedAdminElectionId}
               onChange={setSelectedAdminElectionId}
-              options={adminElections}
+              options={adminSelectableElections}
               placeholder={isGymkhanaElectionOfficerView ? "Select published election" : "Select current or past election"}
               headerSelectStyle={headerSelectStyle}
               formatElectionOptionLabel={formatElectionOptionLabel}
+              selectedOption={selectedAdminElectionOption}
             />
             {isAdminView && adminElections.length > 0 ? (
               <Button size="md" variant="ghost" onClick={() => setHistoryModalOpen(true)}>
@@ -2274,7 +2290,9 @@ const ElectionsPage = () => {
                   : "Create the first election from the header to begin."
                 : isGymkhanaElectionOfficerView
                   ? "Choose one of the published elections from the header to review nominations."
-                  : "No election is auto-selected right now. Choose a current or past occurrence from the header."
+                  : adminSelectableElections.length === 0
+                    ? "Only mock elections are available right now. Open History and turn on mock elections to view them."
+                    : "No election is auto-selected right now. Choose a current or past occurrence from the header."
             }
           />
         ) : null}
@@ -2450,6 +2468,8 @@ const ElectionsPage = () => {
             elections={adminElections}
             selectedElectionId={selectedAdminElectionId}
             onSelect={setSelectedAdminElectionId}
+            showMockElections={showMockHistoryElections}
+            onToggleShowMockElections={setShowMockHistoryElections}
             modalBodyStyle={modalBodyStyle}
             mutedTextStyle={mutedTextStyle}
             formatStageLabel={formatStageLabel}

@@ -32,10 +32,16 @@ export const HeaderSelect = ({
   placeholder,
   headerSelectStyle,
   formatElectionOptionLabel,
+  selectedOption = null,
 }) => (
   <div style={{ minWidth: "320px" }}>
     <select style={headerSelectStyle} value={value} onChange={(event) => onChange(event.target.value)}>
       <option value="">{placeholder}</option>
+      {value && selectedOption && !options.some((option) => option.id === value) ? (
+        <option value={value} hidden>
+          {formatElectionOptionLabel(selectedOption)}
+        </option>
+      ) : null}
       {options.map((option) => (
         <option key={option.id} value={option.id}>
           {formatElectionOptionLabel(option)}

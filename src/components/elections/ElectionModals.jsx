@@ -35,6 +35,8 @@ export const ElectionHistoryModal = ({
   elections,
   selectedElectionId,
   onSelect,
+  showMockElections = false,
+  onToggleShowMockElections = null,
   modalBodyStyle,
   mutedTextStyle,
   formatStageLabel,
@@ -42,19 +44,43 @@ export const ElectionHistoryModal = ({
   formatDateTime,
   pillBaseStyle,
   statusToneStyles,
-}) => (
-  <Modal
-    isOpen={isOpen}
-    onClose={onClose}
-    title="Election History"
-    width={860}
-    footer={
-      <Button size="sm" variant="secondary" onClick={onClose}>
-        Close
-      </Button>
-    }
-  >
-    <div style={modalBodyStyle}>
+}) => {
+  const visibleElections = showMockElections
+    ? elections
+    : elections.filter((election) => !Boolean(election?.mockSettings?.enabled))
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Election History"
+      width={860}
+      footer={
+        <Button size="sm" variant="secondary" onClick={onClose}>
+          Close
+        </Button>
+      }
+    >
+      <div style={modalBodyStyle}>
+        {onToggleShowMockElections ? (
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginBottom: "var(--spacing-3)",
+              color: "var(--color-text-body)",
+              fontWeight: "var(--font-weight-medium)",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={showMockElections}
+              onChange={(event) => onToggleShowMockElections(event.target.checked)}
+            />
+            Show mock elections
+          </label>
+        ) : null}
       <Table>
         <Table.Header>
           <Table.Row>
@@ -66,20 +92,23 @@ export const ElectionHistoryModal = ({
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {elections.length === 0 ? (
+          {visibleElections.length === 0 ? (
             <Table.Row>
               <Table.Cell colSpan={5}>
                 <div style={{ padding: "var(--spacing-5)", textAlign: "center", color: "var(--color-text-muted)" }}>
-                  No elections available yet.
+                  {showMockElections ? "No elections available yet." : "No non-mock elections available here."}
                 </div>
               </Table.Cell>
             </Table.Row>
           ) : (
-            elections.map((election) => (
+            visibleElections.map((election) => (
               <Table.Row key={election.id}>
                 <Table.Cell>
                   <div style={{ display: "grid", gap: "4px" }}>
-                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>{election.title}</span>
+                    <span style={{ fontWeight: "var(--font-weight-semibold)" }}>
+                      {election.title}
+                      {election?.mockSettings?.enabled ? " · Mock" : ""}
+                    </span>
                     <span style={mutedTextStyle}>{election.academicYear}</span>
                   </div>
                 </Table.Cell>
@@ -111,9 +140,10 @@ export const ElectionHistoryModal = ({
           )}
         </Table.Body>
       </Table>
-    </div>
-  </Modal>
-)
+      </div>
+    </Modal>
+  )
+}
 
 export const CloneElectionModal = ({
   isOpen,
