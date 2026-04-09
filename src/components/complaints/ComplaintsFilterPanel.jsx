@@ -1,6 +1,6 @@
 import React from "react"
 import { RotateCcw } from "lucide-react"
-import { Select, Card, VStack, Label } from "@/components/ui"
+import { Select, Card, VStack, Label, Checkbox } from "@/components/ui"
 import { Button } from "czero/react"
 
 const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, categories }) => {
@@ -107,6 +107,22 @@ const ComplaintsFilterPanel = ({ filters, updateFilter, resetFilters, hostels, c
               { value: 50, label: "50" }
             ]}
           />
+        </VStack>
+
+        <VStack gap="xsmall">
+          <Label size="sm">Quick Views</Label>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-2)", paddingTop: "var(--spacing-1)" }}>
+            <Checkbox
+              checked={Boolean(filters.resolvedToday)}
+              onChange={(e) => updateFilter("resolvedToday", e.target.checked)}
+              label="Resolved Today"
+            />
+            <Checkbox
+              checked={Boolean(filters.overdue)}
+              onChange={(e) => updateFilter("overdue", e.target.checked)}
+              label="Overdue 20+ days"
+            />
+          </div>
         </VStack>
       </div>
     </Card>

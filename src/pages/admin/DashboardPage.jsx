@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import { FaUser, FaUsers, FaCalendarAlt, FaExclamationCircle } from "react-icons/fa"
 import { BiBuildings } from "react-icons/bi"
 import { TbBuildingCommunity } from "react-icons/tb"
@@ -103,6 +104,19 @@ const HeaderStatBadge = ({ label, value }) => (
     {label} {value}
   </span>
 )
+
+const buildComplaintDashboardLink = (filters = {}) => {
+  const params = new URLSearchParams()
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== false && value !== "") {
+      params.set(key, String(value))
+    }
+  })
+
+  const queryString = params.toString()
+  return queryString ? `/admin/complaints?${queryString}` : "/admin/complaints"
+}
 
 const DashboardPage = () => {
   const { user } = useAuth()
@@ -596,44 +610,59 @@ const DashboardPage = () => {
                   {/* Primary stats - 2x2 grid */}
                   <div className="grid grid-cols-2 gap-[var(--spacing-1-5)]">
                     {/* Pending */}
-                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-warning-bg)] border border-[var(--color-warning-light)] p-[var(--spacing-2)] hover:border-[var(--color-warning)] transition-all">
+                    <Link
+                      to={buildComplaintDashboardLink({ status: "Pending" })}
+                      className="block rounded-[var(--radius-xl)] bg-[var(--color-warning-bg)] border border-[var(--color-warning-light)] p-[var(--spacing-2)] hover:border-[var(--color-warning)] transition-all"
+                    >
                       <div className="flex items-center justify-between">
                         <p className="text-[0.65rem] font-semibold text-[var(--color-warning-text)] uppercase">Pending</p>
                         <div className="w-2 h-2 bg-[var(--color-warning)] rounded-[var(--radius-full)] animate-pulse"></div>
                       </div>
                       <p className="text-xl font-black text-[var(--color-warning-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.pending || 0}</p>
-                    </div>
+                    </Link>
 
                     {/* In Progress */}
-                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-info-bg)] border border-[var(--color-info-light)] p-[var(--spacing-2)] hover:border-[var(--color-info)] transition-all">
+                    <Link
+                      to={buildComplaintDashboardLink({ status: "In Progress" })}
+                      className="block rounded-[var(--radius-xl)] bg-[var(--color-info-bg)] border border-[var(--color-info-light)] p-[var(--spacing-2)] hover:border-[var(--color-info)] transition-all"
+                    >
                       <div className="flex items-center justify-between">
                         <p className="text-[0.65rem] font-semibold text-[var(--color-info-text)] uppercase">In Progress</p>
                         <AiOutlineLoading3Quarters className="w-3 h-3 text-[var(--color-info)] animate-spin" />
                       </div>
                       <p className="text-xl font-black text-[var(--color-info-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.inProgress || 0}</p>
-                    </div>
+                    </Link>
 
                     {/* Forwarded to IDO */}
-                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-purple-bg)] border border-[var(--color-purple-light-bg)] p-[var(--spacing-2)] hover:border-[var(--color-purple-text)] transition-all">
+                    <Link
+                      to={buildComplaintDashboardLink({ status: "Forwarded to IDO" })}
+                      className="block rounded-[var(--radius-xl)] bg-[var(--color-purple-bg)] border border-[var(--color-purple-light-bg)] p-[var(--spacing-2)] hover:border-[var(--color-purple-text)] transition-all"
+                    >
                       <div className="flex items-center justify-between">
                         <p className="text-[0.65rem] font-semibold text-[var(--color-purple-text)] uppercase">To IDO</p>
                         <span className="text-[0.5rem] font-bold text-[var(--color-purple-text)]">FWD</span>
                       </div>
                       <p className="text-xl font-black text-[var(--color-purple-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.forwardedToIDO || 0}</p>
-                    </div>
+                    </Link>
 
                     {/* Resolved Today */}
-                    <div className="rounded-[var(--radius-xl)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] p-[var(--spacing-2)] hover:border-[var(--color-success)] transition-all">
+                    <Link
+                      to={buildComplaintDashboardLink({ resolvedToday: true })}
+                      className="block rounded-[var(--radius-xl)] bg-[var(--color-success-bg)] border border-[var(--color-success-light)] p-[var(--spacing-2)] hover:border-[var(--color-success)] transition-all"
+                    >
                       <div className="flex items-center justify-between">
                         <p className="text-[0.65rem] font-semibold text-[var(--color-success-text)] uppercase">Today</p>
                         <span className="text-xs text-[var(--color-success)]">✓</span>
                       </div>
                       <p className="text-xl font-black text-[var(--color-success-text)] tabular-nums mt-[var(--spacing-0-5)]">{dashboardData?.complaints?.resolvedToday || 0}</p>
-                    </div>
+                    </Link>
                   </div>
 
                   {/* Overdue Summary */}
-                  <div className="mt-[var(--spacing-1-5)] bg-[var(--color-danger-bg)] p-[var(--spacing-2)] rounded-[var(--radius-xl)] border border-[var(--color-danger-light)]">
+                  <Link
+                    to={buildComplaintDashboardLink({ overdue: true })}
+                    className="mt-[var(--spacing-1-5)] block bg-[var(--color-danger-bg)] p-[var(--spacing-2)] rounded-[var(--radius-xl)] border border-[var(--color-danger-light)] hover:border-[var(--color-danger)] transition-all"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-[var(--spacing-1-5)]">
                         <span className="text-[var(--color-danger)] text-xs">⚠</span>
@@ -641,7 +670,7 @@ const DashboardPage = () => {
                       </div>
                       <p className="text-xl font-black text-[var(--color-danger-text)] tabular-nums">{dashboardData?.complaints?.overdueCount || 0}</p>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             )}
@@ -901,4 +930,3 @@ const DegreeWiseStudentsChart = ({ data, normalized = false, studentDataView = "
 
 
 export default DashboardPage
-
