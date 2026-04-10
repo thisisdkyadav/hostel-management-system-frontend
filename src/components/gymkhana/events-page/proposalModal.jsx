@@ -2,7 +2,7 @@ import { Button, Input, Modal } from "czero/react"
 import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
-import { Textarea } from "@/components/ui/form"
+import { Checkbox, Textarea } from "@/components/ui/form"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
