@@ -1,6 +1,7 @@
 import { Button, Modal, Table } from "czero/react"
+import { Select } from "@/components/ui"
 import { AlertTriangle, Check, X } from "lucide-react"
-import { Checkbox, Textarea } from "@/components/ui/form"
+import { Textarea } from "@/components/ui/form"
 import { formLabelStyles } from "@/components/gymkhana/events-page/sharedPrimitives"
 
 export const GymkhanaPendingProposalsModal = ({
@@ -252,10 +253,10 @@ export const GymkhanaApprovalModal = ({
   budgetSummary,
   dateConflicts,
   requiresCalendarNextApprovalSelection,
-  calendarNextApprovalStages,
-  toggleNextApprovalStage,
-  setCalendarNextApprovalStages,
+  calendarNextApproversByStage,
+  setCalendarNextApproverForStage,
   postStudentAffairsStageOptions,
+  postStudentAffairsApproverOptionsByStage,
   approvalComments,
   setApprovalComments,
   submitting,
@@ -282,7 +283,7 @@ export const GymkhanaApprovalModal = ({
           loading={submitting}
           disabled={
             requiresCalendarNextApprovalSelection &&
-            calendarNextApprovalStages.length === 0
+            Object.values(calendarNextApproversByStage || {}).filter(Boolean).length === 0
           }
         >
           <Check size={14} /> Approve
@@ -331,38 +332,50 @@ export const GymkhanaApprovalModal = ({
 
       {requiresCalendarNextApprovalSelection && (
         <div>
-          <label style={formLabelStyles}>Next Approval Order</label>
+          <label style={formLabelStyles}>Next Approvers</label>
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "var(--spacing-1)",
+              gap: "var(--spacing-2)",
               padding: "var(--spacing-2)",
               backgroundColor: "var(--color-bg-secondary)",
               borderRadius: "var(--radius-card-sm)",
             }}
           >
-            {postStudentAffairsStageOptions.map((stage) => (
-              <Checkbox
-                key={`calendar-stage-${stage}`}
-                label={stage}
-                checked={calendarNextApprovalStages.includes(stage)}
-                onChange={() =>
-                  toggleNextApprovalStage(stage, setCalendarNextApprovalStages)
-                }
-              />
-            ))}
             <span
               style={{
                 fontSize: "var(--font-size-xs)",
                 color: "var(--color-text-muted)",
-                marginTop: "var(--spacing-1)",
               }}
             >
-              {calendarNextApprovalStages.length > 0
-                ? calendarNextApprovalStages.join(" → ")
-                : "No stage selected"}
+              Leave a row blank to skip that stage.
             </span>
+            {postStudentAffairsStageOptions.map((stage) => (
+              <div
+                key={`calendar-stage-${stage}`}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "minmax(0, 190px) 1fr",
+                  gap: "var(--spacing-2)",
+                  alignItems: "center",
+                }}
+              >
+                <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                  {stage}
+                </span>
+                <Select
+                  name={`calendar-next-approver-${stage}`}
+                  value={calendarNextApproversByStage?.[stage] || ""}
+                  onChange={(event) => setCalendarNextApproverForStage(stage, event.target.value)}
+                  options={[
+                    { value: "", label: `Skip ${stage}` },
+                    ...(postStudentAffairsApproverOptionsByStage?.[stage] || []),
+                  ]}
+                  placeholder={`Select ${stage}`}
+                />
+              </div>
+            ))}
           </div>
         </div>
       )}

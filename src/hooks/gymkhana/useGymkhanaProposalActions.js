@@ -15,7 +15,10 @@ import {
   setNestedValue,
   toNumericValue,
   toProposalForm,
+  buildNextApproversPayload,
   buildProposalPayload,
+  createEmptyNextApproverSelection,
+  getNextApproverSelectionCount,
 } from "@/components/gymkhana/events-page/shared"
 
 export const useGymkhanaProposalActions = ({
@@ -37,7 +40,7 @@ export const useGymkhanaProposalActions = ({
   const [proposalData, setProposalData] = useState(null)
   const [proposalForm, setProposalForm] = useState(createDefaultProposalForm)
   const [proposalActionComments, setProposalActionComments] = useState("")
-  const [proposalNextApprovalStages, setProposalNextApprovalStages] = useState([])
+  const [proposalNextApproversByStage, setProposalNextApproversByStage] = useState(createEmptyNextApproverSelection)
   const [proposalLoading, setProposalLoading] = useState(false)
   const [proposalHistoryRefreshKey, setProposalHistoryRefreshKey] = useState(0)
   const [showProposalModal, setShowProposalModal] = useState(false)
@@ -105,6 +108,12 @@ export const useGymkhanaProposalActions = ({
     if (!canApproveEventsCapability) return false
     if (!proposalData?.status || !user?.subRole) return false
     if (!isProposalWithinApprovalLimit) return false
+
+    const assignedApproverUserId = normalizeEventId(proposalData?.currentApproverUser)
+    if (assignedApproverUserId && assignedApproverUserId !== normalizeEventId(user?._id)) {
+      return false
+    }
+
     return PROPOSAL_STATUS_TO_APPROVER[proposalData.status] === user.subRole
   }, [
     proposalData?.status,
@@ -191,10 +200,17 @@ export const useGymkhanaProposalActions = ({
     setProposalEvent(event)
     setShowProposalDetailsModal(false)
     setProposalActionComments("")
-    setProposalNextApprovalStages([])
+    setProposalNextApproversByStage(createEmptyNextApproverSelection())
     setProposalHistoryRefreshKey((prev) => prev + 1)
     setShowProposalModal(true)
     await fetchProposalForEvent(event)
+  }
+
+  const setProposalNextApproverForStage = (stage, userId) => {
+    setProposalNextApproversByStage((current) => ({
+      ...current,
+      [stage]: userId,
+    }))
   }
 
   const closeProposalModal = () => {
@@ -204,7 +220,7 @@ export const useGymkhanaProposalActions = ({
     setProposalData(null)
     setProposalForm(createDefaultProposalForm())
     setProposalActionComments("")
-    setProposalNextApprovalStages([])
+    setProposalNextApproversByStage(createEmptyNextApproverSelection())
   }
 
   const handleProposalFormChange = (field, value) => {
@@ -298,8 +314,10 @@ export const useGymkhanaProposalActions = ({
       toast.error(`Proposal amount exceeds your approval limit of ${maxApprovalAmount}`)
       return
     }
-    if (requiresProposalNextApprovalSelection && proposalNextApprovalStages.length === 0) {
-      toast.error("Select at least one next approval stage")
+    const nextApprovers = buildNextApproversPayload(proposalNextApproversByStage)
+
+    if (requiresProposalNextApprovalSelection && getNextApproverSelectionCount(proposalNextApproversByStage) === 0) {
+      toast.error("Select at least one next approver")
       return
     }
 
@@ -308,7 +326,8 @@ export const useGymkhanaProposalActions = ({
       await gymkhanaEventsApi.approveProposal(
         proposalData._id,
         proposalActionComments,
-        requiresProposalNextApprovalSelection ? proposalNextApprovalStages : []
+        [],
+        requiresProposalNextApprovalSelection ? nextApprovers : []
       )
       toast.success("Proposal approved")
       setProposalActionComments("")
@@ -403,7 +422,7 @@ export const useGymkhanaProposalActions = ({
     proposalData,
     proposalForm,
     proposalActionComments,
-    proposalNextApprovalStages,
+    proposalNextApproversByStage,
     proposalLoading,
     proposalHistoryRefreshKey,
     showProposalModal,
@@ -421,7 +440,8 @@ export const useGymkhanaProposalActions = ({
     proposalDeflection,
     requiresProposalNextApprovalSelection,
     setProposalActionComments,
-    setProposalNextApprovalStages,
+    setProposalNextApproverForStage,
+    setProposalNextApproversByStage,
     setShowPendingProposalModal,
     setShowProposalDetailsModal,
     toNumericValue,

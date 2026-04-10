@@ -8,6 +8,9 @@ import {
   normalizeEventId,
   toExpenseForm,
   buildExpensePayload,
+  buildNextApproversPayload,
+  createEmptyNextApproverSelection,
+  getNextApproverSelectionCount,
 } from "@/components/gymkhana/events-page/shared"
 
 export const useGymkhanaExpenseActions = ({
@@ -31,7 +34,7 @@ export const useGymkhanaExpenseActions = ({
   const [expenseForm, setExpenseForm] = useState(createDefaultExpenseForm)
   const [expenseLoading, setExpenseLoading] = useState(false)
   const [expenseApprovalComments, setExpenseApprovalComments] = useState("")
-  const [expenseNextApprovalStages, setExpenseNextApprovalStages] = useState([])
+  const [expenseNextApproversByStage, setExpenseNextApproversByStage] = useState(createEmptyNextApproverSelection)
   const [expenseHistoryRefreshKey, setExpenseHistoryRefreshKey] = useState(0)
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showPendingBillsModal, setShowPendingBillsModal] = useState(false)
@@ -164,6 +167,11 @@ export const useGymkhanaExpenseActions = ({
     }
     if (isSuperAdmin) return true
 
+    const assignedApproverUserId = normalizeEventId(expenseData?.currentApproverUser)
+    if (assignedApproverUserId && assignedApproverUserId !== normalizeEventId(user?._id)) {
+      return false
+    }
+
     const expenseStatusBySubRole = {
       "Student Affairs": "pending_student_affairs",
       "Joint Registrar SA": "pending_joint_registrar",
@@ -233,10 +241,17 @@ export const useGymkhanaExpenseActions = ({
 
     setExpenseEvent(event)
     setExpenseApprovalComments("")
-    setExpenseNextApprovalStages([])
+    setExpenseNextApproversByStage(createEmptyNextApproverSelection())
     setExpenseHistoryRefreshKey((prev) => prev + 1)
     setShowExpenseModal(true)
     await fetchExpenseForEvent(event)
+  }
+
+  const setExpenseNextApproverForStage = (stage, userId) => {
+    setExpenseNextApproversByStage((current) => ({
+      ...current,
+      [stage]: userId,
+    }))
   }
 
   const closeExpenseModal = () => {
@@ -245,7 +260,7 @@ export const useGymkhanaExpenseActions = ({
     setExpenseData(null)
     setExpenseForm(createDefaultExpenseForm())
     setExpenseApprovalComments("")
-    setExpenseNextApprovalStages([])
+    setExpenseNextApproversByStage(createEmptyNextApproverSelection())
   }
 
   const handleExpenseFormChange = (field, value) => {
@@ -350,8 +365,10 @@ export const useGymkhanaExpenseActions = ({
       toast.error(`Expense amount exceeds your approval limit of ${maxApprovalAmount}`)
       return
     }
-    if (requiresExpenseNextApprovalSelection && expenseNextApprovalStages.length === 0) {
-      toast.error("Select at least one next approval stage")
+    const nextApprovers = buildNextApproversPayload(expenseNextApproversByStage)
+
+    if (requiresExpenseNextApprovalSelection && getNextApproverSelectionCount(expenseNextApproversByStage) === 0) {
+      toast.error("Select at least one next approver")
       return
     }
 
@@ -360,7 +377,8 @@ export const useGymkhanaExpenseActions = ({
       await gymkhanaEventsApi.approveExpense(
         expenseData._id,
         expenseApprovalComments,
-        requiresExpenseNextApprovalSelection ? expenseNextApprovalStages : []
+        [],
+        requiresExpenseNextApprovalSelection ? nextApprovers : []
       )
       toast.success("Bills approved")
       setExpenseApprovalComments("")
@@ -430,7 +448,7 @@ export const useGymkhanaExpenseActions = ({
     expenseForm,
     expenseHistoryRefreshKey,
     expenseLoading,
-    expenseNextApprovalStages,
+    expenseNextApproversByStage,
     expenseTotal,
     expenseVariance,
     getFilenameFromUrl,
@@ -441,7 +459,8 @@ export const useGymkhanaExpenseActions = ({
     showExpenseModal,
     showPendingBillsModal,
     setExpenseApprovalComments,
-    setExpenseNextApprovalStages,
+    setExpenseNextApproverForStage,
+    setExpenseNextApproversByStage,
     setShowPendingBillsModal,
     closeExpenseModal,
     handleAddBillRow,

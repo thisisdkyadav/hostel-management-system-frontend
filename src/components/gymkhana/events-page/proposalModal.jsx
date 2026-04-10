@@ -1,7 +1,8 @@
 import { Button, Input, Modal } from "czero/react"
+import { Select } from "@/components/ui"
 import { Badge } from "@/components/ui/data-display"
 import { Alert } from "@/components/ui/feedback"
-import { Checkbox, Textarea } from "@/components/ui/form"
+import { Textarea } from "@/components/ui/form"
 import ApprovalHistory from "@/components/gymkhana/ApprovalHistory"
 import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 import {
@@ -42,9 +43,8 @@ export const GymkhanaProposalModal = ({
   proposalDeflection,
   canCurrentUserReviewProposal,
   requiresProposalNextApprovalSelection,
-  proposalNextApprovalStages,
-  toggleNextApprovalStage,
-  setProposalNextApprovalStages,
+  proposalNextApproversByStage,
+  setProposalNextApproverForStage,
   proposalActionComments,
   setProposalActionComments,
   handleRequestProposalRevision,
@@ -52,6 +52,7 @@ export const GymkhanaProposalModal = ({
   handleApproveProposal,
   proposalHistoryRefreshKey,
   postStudentAffairsStageOptions,
+  postStudentAffairsApproverOptionsByStage,
   toNumericValue,
   getProposalDueDate,
   onOpenProposalDetails,
@@ -358,34 +359,47 @@ export const GymkhanaProposalModal = ({
                       padding: "var(--spacing-2)",
                       backgroundColor: "var(--color-bg-secondary)",
                       borderRadius: "var(--radius-sm)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "var(--spacing-2)",
                     }}
                   >
-                    <label style={{ ...formLabelStyles, marginBottom: "var(--spacing-1)" }}>
-                      Next Approval Order
+                    <label style={{ ...formLabelStyles, marginBottom: 0 }}>
+                      Next Approvers
                     </label>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
-                      {postStudentAffairsStageOptions.map((stage) => (
-                        <Checkbox
-                          key={`proposal-stage-${stage}`}
-                          label={stage}
-                          checked={proposalNextApprovalStages.includes(stage)}
-                          onChange={() =>
-                            toggleNextApprovalStage(stage, setProposalNextApprovalStages)
-                          }
-                        />
-                      ))}
-                    </div>
-                    {proposalNextApprovalStages.length > 0 && (
-                      <p
+                    <span
+                      style={{
+                        fontSize: "var(--font-size-xs)",
+                        color: "var(--color-text-muted)",
+                      }}
+                    >
+                      Leave a row blank to skip that stage.
+                    </span>
+                    {postStudentAffairsStageOptions.map((stage) => (
+                      <div
+                        key={`proposal-stage-${stage}`}
                         style={{
-                          margin: "var(--spacing-1) 0 0 0",
-                          fontSize: "var(--font-size-xs)",
-                          color: "var(--color-text-muted)",
+                          display: "grid",
+                          gridTemplateColumns: "minmax(0, 190px) 1fr",
+                          gap: "var(--spacing-2)",
+                          alignItems: "center",
                         }}
                       >
-                        Order: {proposalNextApprovalStages.join(" → ")}
-                      </p>
-                    )}
+                        <span style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                          {stage}
+                        </span>
+                        <Select
+                          name={`proposal-next-approver-${stage}`}
+                          value={proposalNextApproversByStage?.[stage] || ""}
+                          onChange={(event) => setProposalNextApproverForStage(stage, event.target.value)}
+                          options={[
+                            { value: "", label: `Skip ${stage}` },
+                            ...(postStudentAffairsApproverOptionsByStage?.[stage] || []),
+                          ]}
+                          placeholder={`Select ${stage}`}
+                        />
+                      </div>
+                    ))}
                   </div>
                 )}
 
@@ -433,7 +447,7 @@ export const GymkhanaProposalModal = ({
                     loading={submitting}
                     disabled={
                       requiresProposalNextApprovalSelection &&
-                      proposalNextApprovalStages.length === 0
+                      Object.values(proposalNextApproversByStage || {}).filter(Boolean).length === 0
                     }
                   >
                     Approve

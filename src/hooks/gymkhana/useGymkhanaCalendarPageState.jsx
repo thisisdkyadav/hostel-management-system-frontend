@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
+import authzApi from "@/service/modules/authz.api"
 import {
   CALENDAR_STATUS_TO_APPROVER,
   CATEGORY_COLORS,
@@ -7,8 +8,10 @@ import {
   CATEGORY_OPTIONS,
   DEFAULT_EVENT_FORM,
   buildAvailableYearsForCreation,
+  buildNextApproversPayload,
   buildBudgetCapsPayload,
   createDefaultOverlapState,
+  createEmptyNextApproverSelection,
   createEmptyBudgetCaps,
   formatDateKey,
   formatDateRange,
@@ -21,6 +24,7 @@ import {
   getHolidaysForDate,
   isProposalWindowOpen,
   mergeCalendarEventsWithGymkhanaEvents,
+  getNextApproverSelectionCount,
   normalizeEvent,
   normalizeEventId,
   toBudgetCapsForm,
@@ -29,6 +33,7 @@ import {
   buildEventPayload,
   toCalendarEventPayload,
   validateCategoryBudgetCaps,
+  POST_STUDENT_AFFAIRS_STAGE_OPTIONS,
 } from "@/components/gymkhana/events-page/shared"
 import { CalendarDays, FileText } from "lucide-react"
 import { Badge } from "@/components/ui/data-display"
@@ -63,13 +68,49 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const [amendmentReason, setAmendmentReason] = useState("")
   const [newAcademicYear, setNewAcademicYear] = useState("")
   const [approvalComments, setApprovalComments] = useState("")
-  const [calendarNextApprovalStages, setCalendarNextApprovalStages] = useState([])
+  const [calendarNextApproversByStage, setCalendarNextApproversByStage] = useState(createEmptyNextApproverSelection)
+  const [postStudentAffairsApproverOptionsByStage, setPostStudentAffairsApproverOptionsByStage] = useState(() =>
+    POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
+      options[stage] = []
+      return options
+    }, {})
+  )
   const [submitting, setSubmitting] = useState(false)
   const [dateOverlapInfo, setDateOverlapInfo] = useState(createDefaultOverlapState)
   const [submitOverlapInfo, setSubmitOverlapInfo] = useState(null)
 
   const overlapCheckRequestRef = useRef(0)
   const calendarRequestRef = useRef(0)
+
+  const refreshPostStudentAffairsApproverOptions = async () => {
+    try {
+      const response = await authzApi.getUsersByRole("Admin", { limit: 100 })
+      const responseBody = response.data || response || {}
+      const usersPayload = responseBody.data || {}
+      const adminUsers = usersPayload.data || responseBody.users || []
+
+      const nextOptions = POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
+        options[stage] = adminUsers
+          .filter((adminUser) => adminUser?.subRole === stage)
+          .map((adminUser) => ({
+            value: adminUser._id,
+            label: adminUser.email
+              ? `${adminUser.name} (${adminUser.email})`
+              : adminUser.name || stage,
+          }))
+        return options
+      }, {})
+
+      setPostStudentAffairsApproverOptionsByStage(nextOptions)
+    } catch {
+      setPostStudentAffairsApproverOptionsByStage(
+        POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
+          options[stage] = []
+          return options
+        }, {})
+      )
+    }
+  }
 
   const isGymkhanaRole = user?.role === "Gymkhana"
   const isAdminLevel = user?.role === "Admin" || user?.role === "Super Admin"
@@ -115,7 +156,9 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     calendar?.status &&
       canApproveEventsCapability &&
       user?.subRole &&
-      CALENDAR_STATUS_TO_APPROVER[calendar.status] === user.subRole
+      CALENDAR_STATUS_TO_APPROVER[calendar.status] === user.subRole &&
+      (!normalizeEventId(calendar?.currentApproverUser) ||
+        normalizeEventId(calendar?.currentApproverUser) === normalizeEventId(user?._id))
   )
   const requiresCalendarNextApprovalSelection = Boolean(
     canApprove &&
@@ -136,6 +179,11 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     if (!showSettingsModal) return
     setCalendarSettingsForm(buildCalendarSettingsForm(calendar))
   }, [calendar, showSettingsModal])
+
+  useEffect(() => {
+    if (!canApproveEventsCapability || !isAdminLevel) return
+    refreshPostStudentAffairsApproverOptions()
+  }, [canApproveEventsCapability, isAdminLevel])
 
   const budgetSummary = useMemo(() => getBudgetSummary(events), [events])
   const categoryFilterTabs = useMemo(
@@ -500,13 +548,11 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     loadCalendarMonthView()
   }, [calendar?._id, calendarMonth, viewMode])
 
-  const toggleNextApprovalStage = (stage, setStages) => {
-    setStages((previousStages) => {
-      if (previousStages.includes(stage)) {
-        return previousStages.filter((existingStage) => existingStage !== stage)
-      }
-      return [...previousStages, stage]
-    })
+  const setCalendarNextApproverForStage = (stage, userId) => {
+    setCalendarNextApproversByStage((current) => ({
+      ...current,
+      [stage]: userId,
+    }))
   }
 
   const getEventsForCurrentDate = (date) => getEventsForDate(date, filteredEvents)
@@ -797,8 +843,10 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       return
     }
 
-    if (requiresCalendarNextApprovalSelection && calendarNextApprovalStages.length === 0) {
-      toast.error("Select at least one next approval stage")
+    const nextApprovers = buildNextApproversPayload(calendarNextApproversByStage)
+
+    if (requiresCalendarNextApprovalSelection && getNextApproverSelectionCount(calendarNextApproversByStage) === 0) {
+      toast.error("Select at least one next approver")
       return
     }
 
@@ -807,7 +855,8 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       await gymkhanaEventsApi.approveCalendar(
         calendar._id,
         approvalComments,
-        requiresCalendarNextApprovalSelection ? calendarNextApprovalStages : []
+        [],
+        requiresCalendarNextApprovalSelection ? nextApprovers : []
       )
       toast.success("Calendar approved successfully")
       setShowApprovalModal(false)
@@ -964,7 +1013,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
   const openApprovalModal = () => {
     setApprovalComments("")
-    setCalendarNextApprovalStages([])
+    setCalendarNextApproversByStage(createEmptyNextApproverSelection())
     setShowApprovalModal(true)
   }
 
@@ -995,7 +1044,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     calendar,
     calendarSettingsForm,
     calendarMonth,
-    calendarNextApprovalStages,
+    calendarNextApproversByStage,
     canApprove,
     canApproveEventsCapability,
     canCreateCalendar,
@@ -1068,7 +1117,8 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     setAmendmentReason,
     setApprovalComments,
     setCalendarMonth,
-    setCalendarNextApprovalStages,
+    setCalendarNextApproversByStage,
+    setCalendarNextApproverForStage,
     setDateOverlapInfo,
     setNewAcademicYear,
     setSubmitting,
@@ -1094,8 +1144,8 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     showSettingsModal,
     submitCalendarLabel,
     submitOverlapInfo,
+    postStudentAffairsApproverOptionsByStage,
     submitting,
-    toggleNextApprovalStage,
     viewMode,
     years,
     setViewMode,

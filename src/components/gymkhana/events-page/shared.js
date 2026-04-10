@@ -60,6 +60,21 @@ export const POST_STUDENT_AFFAIRS_STAGE_OPTIONS = [
   "Associate Dean SA",
   "Dean SA",
 ]
+
+export const createEmptyNextApproverSelection = () =>
+  POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((selection, stage) => {
+    selection[stage] = ""
+    return selection
+  }, {})
+
+export const buildNextApproversPayload = (selection = {}) =>
+  POST_STUDENT_AFFAIRS_STAGE_OPTIONS.flatMap((stage) => {
+    const userId = selection?.[stage]
+    return userId ? [{ stage, userId }] : []
+  })
+
+export const getNextApproverSelectionCount = (selection = {}) =>
+  buildNextApproversPayload(selection).length
 export const PROGRAMME_TYPE_OPTIONS = [
   { value: "Workshop", label: "Workshop" },
   { value: "Conference", label: "Conference" },

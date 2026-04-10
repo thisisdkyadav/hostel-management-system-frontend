@@ -7,6 +7,18 @@ import apiClient from "../core/apiClient"
 
 const BASE_PATH = "/student-affairs/events"
 
+const buildApprovalPayload = (comments = "", nextApprovalStages = [], nextApprovers = []) => {
+  const payload = { comments }
+
+  if (Array.isArray(nextApprovers) && nextApprovers.length > 0) {
+    payload.nextApprovers = nextApprovers
+  } else if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
+    payload.nextApprovalStages = nextApprovalStages
+  }
+
+  return payload
+}
+
 export const gymkhanaEventsApi = {
   /**
    * Get current gymkhana profile
@@ -89,12 +101,11 @@ export const gymkhanaEventsApi = {
   /**
    * Approve calendar
    */
-  approveCalendar: (id, comments = "", nextApprovalStages = []) => {
-    const payload = { comments }
-    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
-      payload.nextApprovalStages = nextApprovalStages
-    }
-    return apiClient.post(`${BASE_PATH}/calendar/${id}/approve`, payload)
+  approveCalendar: (id, comments = "", nextApprovalStages = [], nextApprovers = []) => {
+    return apiClient.post(
+      `${BASE_PATH}/calendar/${id}/approve`,
+      buildApprovalPayload(comments, nextApprovalStages, nextApprovers)
+    )
   },
 
   /**
@@ -330,12 +341,11 @@ export const gymkhanaEventsApi = {
   /**
    * Approve proposal
    */
-  approveProposal: (id, comments = "", nextApprovalStages = []) => {
-    const payload = { comments }
-    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
-      payload.nextApprovalStages = nextApprovalStages
-    }
-    return apiClient.post(`${BASE_PATH}/proposals/${id}/approve`, payload)
+  approveProposal: (id, comments = "", nextApprovalStages = [], nextApprovers = []) => {
+    return apiClient.post(
+      `${BASE_PATH}/proposals/${id}/approve`,
+      buildApprovalPayload(comments, nextApprovalStages, nextApprovers)
+    )
   },
 
   /**
@@ -394,12 +404,11 @@ export const gymkhanaEventsApi = {
   /**
    * Approve expense (Admin only)
    */
-  approveExpense: (id, comments = "", nextApprovalStages = []) => {
-    const payload = { comments }
-    if (Array.isArray(nextApprovalStages) && nextApprovalStages.length > 0) {
-      payload.nextApprovalStages = nextApprovalStages
-    }
-    return apiClient.post(`${BASE_PATH}/expenses/${id}/approve`, payload)
+  approveExpense: (id, comments = "", nextApprovalStages = [], nextApprovers = []) => {
+    return apiClient.post(
+      `${BASE_PATH}/expenses/${id}/approve`,
+      buildApprovalPayload(comments, nextApprovalStages, nextApprovers)
+    )
   },
 
   /**

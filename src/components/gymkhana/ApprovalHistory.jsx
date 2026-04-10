@@ -28,6 +28,9 @@ const formatActionLabel = (action) =>
         .replace(/_/g, " ")
         .replace(/\b\w/g, (char) => char.toUpperCase())
 
+const formatStageLabel = (stage) =>
+    stage === "Student Affairs" ? "Office - Student Affairs" : stage
+
 const ApprovalHistory = ({
     calendarId = null,
     proposalId = null,
@@ -94,10 +97,7 @@ const ApprovalHistory = ({
         )
     }
 
-    const lastApprovedIndex = history.reduce(
-        (latestIndex, log, index) => (log?.action === "approved" ? index : latestIndex),
-        -1
-    )
+    const isDosaStage = (stage) => stage === "Dean SA"
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
@@ -105,8 +105,10 @@ const ApprovalHistory = ({
                 const Icon = ACTION_ICONS[log.action] || Clock
                 const baseColor = ACTION_COLORS[log.action] || "default"
                 const actionLabel =
-                    log.action === "approved" && idx !== lastApprovedIndex
-                        ? "Recommended"
+                    log.action === "approved"
+                        ? isDosaStage(log.stage)
+                            ? "Approved"
+                            : "Recommended"
                         : formatActionLabel(log.action)
                 const color = actionLabel === "Recommended" ? "warning" : baseColor
 
@@ -144,7 +146,7 @@ const ApprovalHistory = ({
                                     fontSize: "var(--font-size-xs)",
                                     color: "var(--color-text-muted)"
                                 }}>
-                                    by {log.stage}
+                                    by {formatStageLabel(log.stage)}
                                 </span>
                             </div>
 

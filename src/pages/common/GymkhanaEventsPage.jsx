@@ -199,9 +199,8 @@ const EventsPage = () => {
         proposalDeflection={proposalState.proposalDeflection}
         canCurrentUserReviewProposal={proposalState.canCurrentUserReviewProposal}
         requiresProposalNextApprovalSelection={proposalState.requiresProposalNextApprovalSelection}
-        proposalNextApprovalStages={proposalState.proposalNextApprovalStages}
-        toggleNextApprovalStage={calendarState.toggleNextApprovalStage}
-        setProposalNextApprovalStages={proposalState.setProposalNextApprovalStages}
+        proposalNextApproversByStage={proposalState.proposalNextApproversByStage}
+        setProposalNextApproverForStage={proposalState.setProposalNextApproverForStage}
         proposalActionComments={proposalState.proposalActionComments}
         setProposalActionComments={proposalState.setProposalActionComments}
         handleRequestProposalRevision={proposalState.handleRequestProposalRevision}
@@ -209,6 +208,7 @@ const EventsPage = () => {
         handleApproveProposal={proposalState.handleApproveProposal}
         proposalHistoryRefreshKey={proposalState.proposalHistoryRefreshKey}
         postStudentAffairsStageOptions={POST_STUDENT_AFFAIRS_STAGE_OPTIONS}
+        postStudentAffairsApproverOptionsByStage={calendarState.postStudentAffairsApproverOptionsByStage}
         toNumericValue={proposalState.toNumericValue}
         getProposalDueDate={proposalState.getProposalDueDate}
         onOpenProposalDetails={() => proposalState.setShowProposalDetailsModal(true)}
@@ -252,15 +252,15 @@ const EventsPage = () => {
         expenseVariance={expenseState.expenseVariance}
         canApproveExpense={expenseState.canApproveExpense}
         requiresExpenseNextApprovalSelection={expenseState.requiresExpenseNextApprovalSelection}
-        expenseNextApprovalStages={expenseState.expenseNextApprovalStages}
-        toggleNextApprovalStage={calendarState.toggleNextApprovalStage}
-        setExpenseNextApprovalStages={expenseState.setExpenseNextApprovalStages}
+        expenseNextApproversByStage={expenseState.expenseNextApproversByStage}
+        setExpenseNextApproverForStage={expenseState.setExpenseNextApproverForStage}
         expenseApprovalComments={expenseState.expenseApprovalComments}
         setExpenseApprovalComments={expenseState.setExpenseApprovalComments}
         handleRejectExpense={expenseState.handleRejectExpense}
         handleApproveExpense={expenseState.handleApproveExpense}
         expenseHistoryRefreshKey={expenseState.expenseHistoryRefreshKey}
         postStudentAffairsStageOptions={POST_STUDENT_AFFAIRS_STAGE_OPTIONS}
+        postStudentAffairsApproverOptionsByStage={calendarState.postStudentAffairsApproverOptionsByStage}
         onSave={expenseState.handleCreateOrUpdateExpense}
       />
 
@@ -355,7 +355,6 @@ const EventsPage = () => {
         isOpen={calendarState.showApprovalModal}
         onClose={() => {
           calendarState.setShowApprovalModal(false)
-          calendarState.setCalendarNextApprovalStages([])
         }}
         calendar={calendarState.calendar}
         events={calendarState.events}
@@ -364,10 +363,10 @@ const EventsPage = () => {
         budgetSummary={calendarState.budgetSummary}
         dateConflicts={calendarState.dateConflicts}
         requiresCalendarNextApprovalSelection={calendarState.requiresCalendarNextApprovalSelection}
-        calendarNextApprovalStages={calendarState.calendarNextApprovalStages}
-        toggleNextApprovalStage={calendarState.toggleNextApprovalStage}
-        setCalendarNextApprovalStages={calendarState.setCalendarNextApprovalStages}
+        calendarNextApproversByStage={calendarState.calendarNextApproversByStage}
+        setCalendarNextApproverForStage={calendarState.setCalendarNextApproverForStage}
         postStudentAffairsStageOptions={POST_STUDENT_AFFAIRS_STAGE_OPTIONS}
+        postStudentAffairsApproverOptionsByStage={calendarState.postStudentAffairsApproverOptionsByStage}
         approvalComments={calendarState.approvalComments}
         setApprovalComments={calendarState.setApprovalComments}
         submitting={calendarState.submitting}
