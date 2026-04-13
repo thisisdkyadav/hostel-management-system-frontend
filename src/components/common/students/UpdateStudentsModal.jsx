@@ -309,7 +309,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     [validDepartments]
   )
 
-  const availableFields = ["name", "email", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
+  const availableFields = ["name", "email", "alumniEmailId", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
   const VISIBLE_REFERENCE_LIMIT = 25
 
@@ -367,6 +367,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     }
     if (column === "gender" && rowIssues.gender) {
       return { backgroundColor: "var(--color-info-bg)", color: "var(--color-info-text)", fontWeight: "var(--font-weight-medium)" }
+    }
+    if (["email", "guardianEmail", "alumniEmailId"].includes(column) && rowIssues[column]) {
+      return { backgroundColor: "var(--color-danger-bg-light)", color: "var(--color-danger-text)", fontWeight: "var(--font-weight-medium)" }
     }
     return null
   }
@@ -578,6 +581,8 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
           }
 
           const validGenders = ["Male", "Female"]
+          const emailFields = ["email", "guardianEmail", "alumniEmailId"]
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
           const degreeLookup = new Set(validDegrees.map((value) => value.toLowerCase()))
           const departmentLookup = new Set(validDepartments.map((value) => value.toLowerCase()))
           const invalidRecords = []
@@ -633,6 +638,19 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
               invalidRecords.push(issue)
               rowInvalidMap.department = issue.message
             }
+
+            emailFields.forEach((field) => {
+              if (studentData[field] && !emailPattern.test(studentData[field])) {
+                const issue = {
+                  row: index + 2,
+                  field,
+                  value: studentData[field],
+                  message: `Invalid ${field}: "${studentData[field]}"`,
+                }
+                invalidRecords.push(issue)
+                rowInvalidMap[field] = issue.message
+              }
+            })
 
             if (Object.keys(rowInvalidMap).length > 0) {
               invalidCellMap[index] = rowInvalidMap
@@ -2561,6 +2579,9 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     </li>
                     <li>
                       <span className="font-medium">email:</span> Email
+                    </li>
+                    <li>
+                      <span className="font-medium">alumniEmailId:</span> Email
                     </li>
                     <li>
                       <span className="font-medium">phone:</span> Number

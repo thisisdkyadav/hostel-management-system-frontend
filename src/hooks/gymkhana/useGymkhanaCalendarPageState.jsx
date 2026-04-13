@@ -3,20 +3,22 @@ import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
 import authzApi from "@/service/modules/authz.api"
 import {
   CALENDAR_STATUS_TO_APPROVER,
-  CATEGORY_COLORS,
-  CATEGORY_LABELS,
-  CATEGORY_OPTIONS,
-  DEFAULT_EVENT_FORM,
   buildAvailableYearsForCreation,
-  buildNextApproversPayload,
   buildBudgetCapsPayload,
+  buildNextApproversPayload,
   createDefaultOverlapState,
+  createDefaultEventForm,
   createEmptyNextApproverSelection,
   createEmptyBudgetCaps,
   formatDateKey,
   formatDateRange,
+  getCalendarCategoryDefinitions,
   getBudgetSummary,
   getCategoryBadgeStyle,
+  getCategoryColor,
+  getCategoryLabelsMap,
+  getCategoryOptions,
+  getCategoryOrder,
   getDateConflicts,
   getDaysInMonth,
   getEventStatusVariant,
@@ -62,9 +64,10 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [calendarSettingsForm, setCalendarSettingsForm] = useState(() => ({
     allowProposalBeforeApproval: false,
-    budgetCaps: createEmptyBudgetCaps(),
+    categoryDefinitions: getCalendarCategoryDefinitions(),
+    budgetCaps: createEmptyBudgetCaps(getCalendarCategoryDefinitions()),
   }))
-  const [eventForm, setEventForm] = useState(DEFAULT_EVENT_FORM)
+  const [eventForm, setEventForm] = useState(() => createDefaultEventForm())
   const [amendmentReason, setAmendmentReason] = useState("")
   const [newAcademicYear, setNewAcademicYear] = useState("")
   const [approvalComments, setApprovalComments] = useState("")
@@ -168,10 +171,17 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const canManageCalendarLock = isAdminLevel && canApproveEventsCapability && Boolean(calendar?._id)
   const canCreateCalendar = isAdminLevel && canCreateEventsCapability
 
+  const categoryDefinitions = useMemo(() => getCalendarCategoryDefinitions(calendar), [calendar])
+  const categoryOptions = useMemo(() => getCategoryOptions(categoryDefinitions), [categoryDefinitions])
+  const categoryLabels = useMemo(() => getCategoryLabelsMap(categoryDefinitions), [categoryDefinitions])
+  const categoryOrder = useMemo(() => getCategoryOrder(categoryDefinitions), [categoryDefinitions])
+
   function buildCalendarSettingsForm(calendarData = null) {
+    const nextCategoryDefinitions = getCalendarCategoryDefinitions(calendarData)
     return {
       allowProposalBeforeApproval: Boolean(calendarData?.allowProposalBeforeApproval),
-      budgetCaps: toBudgetCapsForm(calendarData?.budgetCaps),
+      categoryDefinitions: nextCategoryDefinitions,
+      budgetCaps: toBudgetCapsForm(calendarData?.budgetCaps, nextCategoryDefinitions),
     }
   }
 
@@ -185,17 +195,20 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     refreshPostStudentAffairsApproverOptions()
   }, [canApproveEventsCapability, isAdminLevel])
 
-  const budgetSummary = useMemo(() => getBudgetSummary(events), [events])
+  const budgetSummary = useMemo(
+    () => getBudgetSummary(events, categoryDefinitions),
+    [events, categoryDefinitions]
+  )
   const categoryFilterTabs = useMemo(
     () => [
       { label: "All", value: "all", count: events.length },
-      ...CATEGORY_OPTIONS.map((category) => ({
+      ...categoryOptions.map((category) => ({
         label: category.label,
         value: category.value,
         count: budgetSummary.counts[category.value] || 0,
       })),
     ],
-    [events.length, budgetSummary.counts]
+    [categoryOptions, events.length, budgetSummary.counts]
   )
   const filteredEvents = useMemo(() => {
     if (activeCategoryFilter === "all") return events
@@ -215,7 +228,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         header: "Category",
         render: (event) => (
           <Badge style={getCategoryBadgeStyle(event.category)}>
-            {CATEGORY_LABELS[event.category] || event.category}
+            {categoryLabels[event.category] || event.category}
           </Badge>
         ),
       },
@@ -230,7 +243,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         render: (event) => `₹${Number(event.estimatedBudget || 0).toLocaleString()}`,
       },
     ],
-    []
+    [categoryLabels]
   )
   const holidaysByDate = useMemo(() => {
     const map = new Map()
@@ -255,38 +268,14 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
   const budgetStats = useMemo(
     () => [
-      {
-        title: "Academic Budget",
-        value: `₹${(budgetSummary.byCategory.academic || 0).toLocaleString()}`,
-        subtitle: getBudgetStatSubtitle("academic"),
+      ...categoryDefinitions.map((definition) => ({
+        title: `${definition.label} Budget`,
+        value: `₹${(budgetSummary.byCategory[definition.key] || 0).toLocaleString()}`,
+        subtitle: getBudgetStatSubtitle(definition.key),
         icon: <CalendarDays size={16} />,
-        color: CATEGORY_COLORS.academic,
+        color: getCategoryColor(definition.key),
         tintBackground: true,
-      },
-      {
-        title: "Cultural Budget",
-        value: `₹${(budgetSummary.byCategory.cultural || 0).toLocaleString()}`,
-        subtitle: getBudgetStatSubtitle("cultural"),
-        icon: <CalendarDays size={16} />,
-        color: CATEGORY_COLORS.cultural,
-        tintBackground: true,
-      },
-      {
-        title: "Sports Budget",
-        value: `₹${(budgetSummary.byCategory.sports || 0).toLocaleString()}`,
-        subtitle: getBudgetStatSubtitle("sports"),
-        icon: <CalendarDays size={16} />,
-        color: CATEGORY_COLORS.sports,
-        tintBackground: true,
-      },
-      {
-        title: "Technical Budget",
-        value: `₹${(budgetSummary.byCategory.technical || 0).toLocaleString()}`,
-        subtitle: getBudgetStatSubtitle("technical"),
-        icon: <CalendarDays size={16} />,
-        color: CATEGORY_COLORS.technical,
-        tintBackground: true,
-      },
+      })),
       {
         title: "Total Budget",
         value: `₹${budgetSummary.total.toLocaleString()}`,
@@ -295,7 +284,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         color: "var(--color-primary)",
       },
     ],
-    [budgetSummary, events.length, calendar?.budgetCaps]
+    [budgetSummary, categoryDefinitions, events.length, calendar?.budgetCaps]
   )
   const dateConflicts = useMemo(() => getDateConflicts(events), [events])
   const pendingProposalReminders = useMemo(
@@ -660,7 +649,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         checkDateOverlap(formModel, event?._id)
       }
     } else {
-      setEventForm(DEFAULT_EVENT_FORM)
+      setEventForm(createDefaultEventForm(categoryDefinitions))
     }
 
     setShowAmendmentModal(true)
@@ -678,7 +667,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
     setSelectedEvent(null)
     resetDateOverlapInfo()
-    setEventForm(DEFAULT_EVENT_FORM)
+    setEventForm(createDefaultEventForm(categoryDefinitions))
     setShowAddEventModal(true)
   }
 
@@ -717,7 +706,11 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
         updatedEvents = [...events, { ...payload, _id: `temp-${Date.now()}` }]
       }
 
-      const budgetCapValidation = validateCategoryBudgetCaps(updatedEvents, calendar?.budgetCaps || {})
+      const budgetCapValidation = validateCategoryBudgetCaps(
+        updatedEvents,
+        calendar?.budgetCaps || {},
+        categoryDefinitions
+      )
       if (!budgetCapValidation.isValid) {
         toast.error(
           `${budgetCapValidation.label} category budget would become ₹${budgetCapValidation.total.toLocaleString()} which exceeds the configured cap of ₹${budgetCapValidation.cap.toLocaleString()}. Reduce the budget or ask Admin to increase the limit.`
@@ -985,8 +978,15 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
     if (!calendar?._id) return
 
-    const nextBudgetCaps = buildBudgetCapsPayload(calendarSettingsForm.budgetCaps)
-    const budgetCapValidation = validateCategoryBudgetCaps(events, nextBudgetCaps)
+    const nextBudgetCaps = buildBudgetCapsPayload(
+      calendarSettingsForm.budgetCaps,
+      calendarSettingsForm.categoryDefinitions
+    )
+    const budgetCapValidation = validateCategoryBudgetCaps(
+      events,
+      nextBudgetCaps,
+      calendarSettingsForm.categoryDefinitions
+    )
     if (!budgetCapValidation.isValid) {
       toast.error(
         `Cannot set the ${budgetCapValidation.label} cap below the current allocated budget of ₹${budgetCapValidation.total.toLocaleString()}. Increase the cap or reduce events in that category first.`
@@ -1056,6 +1056,10 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     canSubmitCalendar,
     canViewEventsCapability,
     categoryFilterTabs,
+    categoryDefinitions,
+    categoryLabels,
+    categoryOptions,
+    categoryOrder,
     dateConflicts,
     dateOverlapInfo,
     error,

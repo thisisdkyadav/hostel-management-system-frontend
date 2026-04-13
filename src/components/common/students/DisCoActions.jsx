@@ -11,6 +11,10 @@ const formatDisplayDate = (value) => {
   return parsed.toLocaleDateString()
 }
 
+const getActionCreatedDate = (action) => action?.createdDate || action?.date || action?.createdAt || null
+const getActionStartDate = (action) => action?.punishmentStartDate || action?.date || action?.createdDate || action?.createdAt || null
+const getActionEndDate = (action) => action?.punishmentEndDate || action?.punishmentStartDate || action?.date || action?.createdDate || action?.createdAt || null
+
 const DisCoActions = ({ userId }) => {
   const canManageDisciplinaryActions = true
   const [actions, setActions] = useState([])
@@ -196,6 +200,26 @@ const DisCoActions = ({ userId }) => {
       fontWeight: "var(--font-weight-semibold)",
       color: "var(--color-text-secondary)",
     },
+    dateGrid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+      gap: "var(--spacing-2)",
+      marginTop: "var(--spacing-3)",
+      padding: "var(--spacing-3)",
+      border: "var(--border-1) solid var(--color-border-primary)",
+      borderRadius: "var(--radius-md)",
+      backgroundColor: "var(--color-bg-secondary)",
+    },
+    dateMetaLabel: {
+      fontSize: "var(--font-size-xs)",
+      color: "var(--color-text-muted)",
+      marginBottom: "var(--spacing-0-5)",
+    },
+    dateMetaValue: {
+      fontSize: "var(--font-size-sm)",
+      color: "var(--color-text-primary)",
+      fontWeight: "var(--font-weight-medium)",
+    },
     reminderSection: {
       marginTop: "var(--spacing-3)",
       borderTop: "var(--border-1) solid var(--color-border-primary)",
@@ -284,7 +308,7 @@ const DisCoActions = ({ userId }) => {
               <div style={styles.cardHeader}>
                 <div style={styles.cardTitleRow}>
                   <h4 style={styles.cardTitle}>{action.actionTaken}</h4>
-                  <span style={styles.dateBadge}>{new Date(action.date).toLocaleDateString()}</span>
+                  <span style={styles.dateBadge}>{formatDisplayDate(getActionCreatedDate(action))}</span>
                 </div>
                 {canManageDisciplinaryActions && (
                   <Button onClick={() => handleEditClick(action)} variant="secondary" size="sm">
@@ -302,6 +326,21 @@ const DisCoActions = ({ userId }) => {
                     <span style={styles.cardLabel}>Remarks:</span> {action.remarks}
                   </p>
                 )}
+
+                <div style={styles.dateGrid}>
+                  <div>
+                    <div style={styles.dateMetaLabel}>Created</div>
+                    <div style={styles.dateMetaValue}>{formatDisplayDate(getActionCreatedDate(action))}</div>
+                  </div>
+                  <div>
+                    <div style={styles.dateMetaLabel}>Punishment Starts</div>
+                    <div style={styles.dateMetaValue}>{formatDisplayDate(getActionStartDate(action))}</div>
+                  </div>
+                  <div>
+                    <div style={styles.dateMetaLabel}>Punishment Ends</div>
+                    <div style={styles.dateMetaValue}>{formatDisplayDate(getActionEndDate(action))}</div>
+                  </div>
+                </div>
 
                 {Array.isArray(action.reminderItems) && action.reminderItems.length > 0 && (
                   <div style={styles.reminderSection}>

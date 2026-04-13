@@ -1,30 +1,169 @@
-export const CATEGORY_OPTIONS = [
-  { value: "academic", label: "Academic" },
-  { value: "cultural", label: "Cultural" },
-  { value: "sports", label: "Sports" },
-  { value: "technical", label: "Technical" },
+export const DEFAULT_CATEGORY_DEFINITIONS = [
+  { key: "academic", label: "Academic", isDefault: true },
+  { key: "cultural", label: "Cultural", isDefault: true },
+  { key: "sports", label: "Sports", isDefault: true },
+  { key: "technical", label: "Technical", isDefault: true },
 ]
 
-export const CATEGORY_LABELS = {
-  academic: "Academic",
-  cultural: "Cultural",
-  sports: "Sports",
-  technical: "Technical",
-}
+export const DEFAULT_CATEGORY_KEY = DEFAULT_CATEGORY_DEFINITIONS[0].key
 
-export const CATEGORY_COLORS = {
+const DEFAULT_CATEGORY_COLORS = {
   academic: "#475569",
   cultural: "#BE185D",
   sports: "#0D9488",
   technical: "#D97706",
 }
 
-export const CATEGORY_BADGE_BACKGROUNDS = {
+const DEFAULT_CATEGORY_BADGE_BACKGROUNDS = {
   academic: "#F1F5F9",
   cultural: "#FFF1F2",
   sports: "#F0FDFA",
   technical: "#FFFBEB",
 }
+
+const CATEGORY_COLOR_PALETTE = ["#1D4ED8", "#B45309", "#0F766E", "#7C3AED", "#C2410C", "#15803D", "#BE123C", "#4338CA"]
+const CATEGORY_BACKGROUND_PALETTE = ["#DBEAFE", "#FEF3C7", "#CCFBF1", "#EDE9FE", "#FFEDD5", "#DCFCE7", "#FFE4E6", "#E0E7FF"]
+
+export const getDefaultCategoryDefinitions = () =>
+  DEFAULT_CATEGORY_DEFINITIONS.map((definition) => ({ ...definition }))
+
+export const normalizeCategoryKey = (value = "") =>
+  String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_{2,}/g, "_")
+
+const toCategoryLabel = (key = "") =>
+  String(key || "")
+    .split("_")
+    .filter(Boolean)
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ")
+    .trim() || "Category"
+
+const getUniqueCategoryKey = (candidateKey, usedKeys) => {
+  const normalizedCandidate = normalizeCategoryKey(candidateKey) || "category"
+  if (!usedKeys.has(normalizedCandidate)) {
+    return normalizedCandidate
+  }
+
+  let suffix = 2
+  while (usedKeys.has(`${normalizedCandidate}_${suffix}`)) {
+    suffix += 1
+  }
+
+  return `${normalizedCandidate}_${suffix}`
+}
+
+export const getCalendarCategoryDefinitions = (source = null) => {
+  const explicitDefinitions = Array.isArray(source)
+    ? source
+    : Array.isArray(source?.categoryDefinitions)
+      ? source.categoryDefinitions
+      : []
+  const events = Array.isArray(source?.events) ? source.events : []
+  const budgetCapKeys = Object.keys(source?.budgetCaps || {})
+  const definitions = []
+  const definitionsByKey = new Map()
+
+  const upsertDefinition = (rawDefinition, usedKeys) => {
+    const rawKey = normalizeCategoryKey(rawDefinition?.key || rawDefinition?.label)
+    if (!rawKey) return
+
+    const isDefault = DEFAULT_CATEGORY_DEFINITIONS.some((definition) => definition.key === rawKey) || Boolean(rawDefinition?.isDefault)
+    const key = definitionsByKey.has(rawKey) || isDefault ? rawKey : getUniqueCategoryKey(rawKey, usedKeys)
+    usedKeys.add(key)
+    const normalizedDefinition = {
+      key,
+      label: String(rawDefinition?.label || "").trim() || toCategoryLabel(key),
+      isDefault,
+    }
+
+    if (definitionsByKey.has(key)) {
+      definitionsByKey.set(key, {
+        ...definitionsByKey.get(key),
+        ...normalizedDefinition,
+      })
+      const index = definitions.findIndex((definition) => definition.key === key)
+      if (index >= 0) {
+        definitions[index] = definitionsByKey.get(key)
+      }
+      return
+    }
+
+    definitions.push(normalizedDefinition)
+    definitionsByKey.set(key, normalizedDefinition)
+  }
+
+  const usedKeys = new Set()
+  for (const definition of getDefaultCategoryDefinitions()) {
+    upsertDefinition(definition, usedKeys)
+  }
+  for (const definition of explicitDefinitions) {
+    upsertDefinition(definition, usedKeys)
+  }
+
+  for (const category of [...events.map((event) => event?.category), ...budgetCapKeys]) {
+    const key = normalizeCategoryKey(category)
+    if (!key || definitionsByKey.has(key)) continue
+    const normalizedDefinition = {
+      key,
+      label: toCategoryLabel(key),
+      isDefault: DEFAULT_CATEGORY_DEFINITIONS.some((definition) => definition.key === key),
+    }
+    definitions.push(normalizedDefinition)
+    definitionsByKey.set(key, normalizedDefinition)
+  }
+
+  return definitions
+}
+
+export const getCategoryOptions = (source = null) =>
+  getCalendarCategoryDefinitions(source).map((definition) => ({
+    value: definition.key,
+    label: definition.label,
+  }))
+
+export const getCategoryLabelsMap = (source = null) =>
+  getCalendarCategoryDefinitions(source).reduce((labels, definition) => {
+    labels[definition.key] = definition.label
+    return labels
+  }, {})
+
+export const getCategoryOrder = (source = null) =>
+  getCalendarCategoryDefinitions(source).map((definition) => definition.key)
+
+const getCategoryPaletteIndex = (category = "") =>
+  [...String(category || "")].reduce((hash, character) => hash + character.charCodeAt(0), 0) %
+  CATEGORY_COLOR_PALETTE.length
+
+export const getCategoryColor = (category) =>
+  DEFAULT_CATEGORY_COLORS[category] || CATEGORY_COLOR_PALETTE[getCategoryPaletteIndex(category)]
+
+export const getCategoryBadgeBackground = (category) =>
+  DEFAULT_CATEGORY_BADGE_BACKGROUNDS[category] ||
+  CATEGORY_BACKGROUND_PALETTE[getCategoryPaletteIndex(category)]
+
+export const createCustomCategoryDefinition = (label = "", existingDefinitions = []) => {
+  const usedKeys = new Set(
+    getCalendarCategoryDefinitions(existingDefinitions).map((definition) => definition.key)
+  )
+  const key = getUniqueCategoryKey(label, usedKeys)
+  return {
+    key,
+    label: String(label || "").trim() || toCategoryLabel(key),
+    isDefault: false,
+  }
+}
+
+export const buildCategoryDefinitionsPayload = (definitions = []) =>
+  getCalendarCategoryDefinitions(definitions).map((definition) => ({
+    key: definition.key,
+    label: String(definition.label || "").trim(),
+    isDefault: Boolean(definition.isDefault),
+  }))
 
 export const CALENDAR_WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 export const CALENDAR_DAY_TINT = {
@@ -37,8 +176,6 @@ export const CALENDAR_DAY_BORDER = {
   saturday: "var(--color-primary)",
   sunday: "var(--color-danger-light)",
 }
-
-export const CATEGORY_ORDER = ["academic", "cultural", "sports", "technical"]
 export const VALID_OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
 export const CALENDAR_STATUS_TO_APPROVER = {
   pending_president: "President Gymkhana",
@@ -104,8 +241,8 @@ export const REGISTRATION_CATEGORIES = [
 ]
 
 export const getCategoryBadgeStyle = (category) => ({
-  backgroundColor: CATEGORY_BADGE_BACKGROUNDS[category] || "var(--color-primary-bg)",
-  color: CATEGORY_COLORS[category] || "var(--color-primary)",
+  backgroundColor: getCategoryBadgeBackground(category),
+  color: getCategoryColor(category),
   border: "1px solid transparent",
 })
 
@@ -176,12 +313,13 @@ export const formatDateRange = (startDate, endDate) => {
   return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`
 }
 
-export const getBudgetSummary = (events = []) => {
-  const byCategory = CATEGORY_ORDER.reduce((acc, category) => {
+export const getBudgetSummary = (events = [], categoryDefinitions = []) => {
+  const categoryOrder = getCategoryOrder({ categoryDefinitions, events })
+  const byCategory = categoryOrder.reduce((acc, category) => {
     acc[category] = 0
     return acc
   }, {})
-  const counts = CATEGORY_ORDER.reduce((acc, category) => {
+  const counts = categoryOrder.reduce((acc, category) => {
     acc[category] = 0
     return acc
   }, {})
@@ -199,22 +337,22 @@ export const getBudgetSummary = (events = []) => {
   return { total, byCategory, counts }
 }
 
-export const createEmptyBudgetCaps = () =>
-  CATEGORY_ORDER.reduce((accumulator, category) => {
+export const createEmptyBudgetCaps = (categoryDefinitions = []) =>
+  getCategoryOrder(categoryDefinitions).reduce((accumulator, category) => {
     accumulator[category] = ""
     return accumulator
   }, {})
 
-export const toBudgetCapsForm = (budgetCaps = {}) =>
-  CATEGORY_ORDER.reduce((accumulator, category) => {
+export const toBudgetCapsForm = (budgetCaps = {}, categoryDefinitions = []) =>
+  getCategoryOrder({ categoryDefinitions, budgetCaps }).reduce((accumulator, category) => {
     const rawValue = budgetCaps?.[category]
     accumulator[category] =
       rawValue === null || rawValue === undefined || rawValue === "" ? "" : String(rawValue)
     return accumulator
   }, {})
 
-export const buildBudgetCapsPayload = (budgetCaps = {}) =>
-  CATEGORY_ORDER.reduce((accumulator, category) => {
+export const buildBudgetCapsPayload = (budgetCaps = {}, categoryDefinitions = []) =>
+  getCategoryOrder({ categoryDefinitions, budgetCaps }).reduce((accumulator, category) => {
     const rawValue = budgetCaps?.[category]
     if (rawValue === null || rawValue === undefined || rawValue === "") {
       accumulator[category] = null
@@ -226,11 +364,17 @@ export const buildBudgetCapsPayload = (budgetCaps = {}) =>
     return accumulator
   }, {})
 
-export const validateCategoryBudgetCaps = (events = [], budgetCaps = {}) => {
-  const normalizedBudgetCaps = buildBudgetCapsPayload(budgetCaps)
-  const summary = getBudgetSummary(events)
+export const validateCategoryBudgetCaps = (events = [], budgetCaps = {}, categoryDefinitions = []) => {
+  const resolvedCategoryDefinitions = getCalendarCategoryDefinitions({
+    categoryDefinitions,
+    events,
+    budgetCaps,
+  })
+  const normalizedBudgetCaps = buildBudgetCapsPayload(budgetCaps, resolvedCategoryDefinitions)
+  const summary = getBudgetSummary(events, resolvedCategoryDefinitions)
+  const categoryLabels = getCategoryLabelsMap(resolvedCategoryDefinitions)
 
-  for (const category of CATEGORY_ORDER) {
+  for (const category of getCategoryOrder(resolvedCategoryDefinitions)) {
     const cap = normalizedBudgetCaps[category]
     if (cap === null || cap === undefined) continue
 
@@ -239,7 +383,7 @@ export const validateCategoryBudgetCaps = (events = [], budgetCaps = {}) => {
       return {
         isValid: false,
         category,
-        label: CATEGORY_LABELS[category] || category,
+        label: categoryLabels[category] || category,
         total,
         cap,
       }
@@ -310,12 +454,17 @@ export const createDefaultOverlapState = () => ({
 
 export const DEFAULT_EVENT_FORM = {
   title: "",
-  category: "academic",
+  category: DEFAULT_CATEGORY_KEY,
   startDate: "",
   endDate: "",
   estimatedBudget: "",
   description: "",
 }
+
+export const createDefaultEventForm = (categoryDefinitions = []) => ({
+  ...DEFAULT_EVENT_FORM,
+  category: getCategoryOrder(categoryDefinitions)[0] || DEFAULT_CATEGORY_KEY,
+})
 
 export const createDefaultRegistrationRow = () => ({
   registrationFee: "",
@@ -841,7 +990,7 @@ export const toFormModel = (event) => {
   const normalized = normalizeEvent(event)
   return {
     title: normalized.title || "",
-    category: normalized.category || "academic",
+    category: normalized.category || DEFAULT_CATEGORY_KEY,
     startDate: normalized.startDate ? String(normalized.startDate).split("T")[0] : "",
     endDate: normalized.endDate ? String(normalized.endDate).split("T")[0] : "",
     estimatedBudget:

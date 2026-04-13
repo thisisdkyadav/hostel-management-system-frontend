@@ -203,6 +203,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         department: selectedStudent.department || "",
         degree: selectedStudent.degree || "",
         batch: selectedStudent.batch || "",
+        alumniEmailId: selectedStudent.alumniEmailId || "",
         groups: Array.isArray(selectedStudent.groups) ? selectedStudent.groups : [],
         year: selectedStudent.year || "",
         admissionDate: selectedStudent.admissionDate || "",
@@ -311,6 +312,10 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
                       <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.email || "N/A"}</span>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
+                      <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.alumniEmailId || "N/A"}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Phone size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
@@ -455,6 +460,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", marginBottom: "var(--spacing-1)" }}>Address:</span>
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.address || "N/A"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
+                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Alumni Email ID:</span>
+                    <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", textAlign: "right", wordBreak: "break-word" }}>
+                      {studentDetails.alumniEmailId || "N/A"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1007,6 +1018,14 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             >
               Email Student
             </a>
+            {studentDetails.alumniEmailId ? (
+              <a
+                href={`mailto:${studentDetails.alumniEmailId}`}
+                style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }}
+              >
+                Email Alumni ID
+              </a>
+            ) : null}
             {canEditStudentProfile && (
               <Button onClick={() => setShowEditModal(true)} variant="primary" size="md">
                 Edit Student

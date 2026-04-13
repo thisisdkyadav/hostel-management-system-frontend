@@ -3,6 +3,8 @@ import { FormField } from "@/components/ui"
 import { FaTrash } from "react-icons/fa"
 import { Modal, Button } from "czero/react"
 
+const todayDateInput = () => new Date().toISOString().split("T")[0]
+
 const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEditing = false, onDelete = null }) => {
   const toReminderState = (items = []) =>
     Array.isArray(items)
@@ -19,7 +21,9 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
   const [formData, setFormData] = useState({
     reason: "",
     actionTaken: "",
-    date: "",
+    date: todayDateInput(),
+    punishmentStartDate: todayDateInput(),
+    punishmentEndDate: todayDateInput(),
     remarks: "",
     reminderItems: [],
   })
@@ -33,7 +37,9 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       setFormData({
         reason: initialData.reason || "",
         actionTaken: initialData.actionTaken || "",
-        date: initialData.date ? initialData.date.split("T")[0] : "",
+        date: initialData.createdDate ? initialData.createdDate.split("T")[0] : initialData.date ? initialData.date.split("T")[0] : "",
+        punishmentStartDate: initialData.punishmentStartDate ? initialData.punishmentStartDate.split("T")[0] : initialData.date ? initialData.date.split("T")[0] : "",
+        punishmentEndDate: initialData.punishmentEndDate ? initialData.punishmentEndDate.split("T")[0] : initialData.punishmentStartDate ? initialData.punishmentStartDate.split("T")[0] : initialData.date ? initialData.date.split("T")[0] : "",
         remarks: initialData.remarks || "",
         reminderItems: toReminderState(initialData.reminderItems),
       })
@@ -41,7 +47,9 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
       setFormData({
         reason: "",
         actionTaken: "",
-        date: "",
+        date: todayDateInput(),
+        punishmentStartDate: todayDateInput(),
+        punishmentEndDate: todayDateInput(),
         remarks: "",
         reminderItems: [],
       })
@@ -71,7 +79,23 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
     }
 
     if (!formData.date) {
-      newErrors.date = "Date is required"
+      newErrors.date = "Creation date is required"
+    }
+
+    if (!formData.punishmentStartDate) {
+      newErrors.punishmentStartDate = "Punishment start date is required"
+    }
+
+    if (!formData.punishmentEndDate) {
+      newErrors.punishmentEndDate = "Punishment end date is required"
+    }
+
+    if (
+      formData.punishmentStartDate &&
+      formData.punishmentEndDate &&
+      new Date(formData.punishmentEndDate) < new Date(formData.punishmentStartDate)
+    ) {
+      newErrors.punishmentEndDate = "Punishment end date cannot be before start date"
     }
 
     const invalidReminder = formData.reminderItems.find(
@@ -257,7 +281,11 @@ const DisCoActionModal = ({ isOpen, onClose, onSubmit, initialData = null, isEdi
 
           <FormField label="Reason" name="reason" value={formData.reason} onChange={handleChange} required error={errors.reason} placeholder="Enter reason for the action" />
 
-          <FormField label="Date" name="date" type="date" value={formData.date} onChange={handleChange} required error={errors.date} />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--spacing-3)" }}>
+            <FormField label="Creation Date" name="date" type="date" value={formData.date} onChange={handleChange} required error={errors.date} />
+            <FormField label="Punishment Start" name="punishmentStartDate" type="date" value={formData.punishmentStartDate} onChange={handleChange} required error={errors.punishmentStartDate} />
+            <FormField label="Punishment End" name="punishmentEndDate" type="date" value={formData.punishmentEndDate} onChange={handleChange} required error={errors.punishmentEndDate} />
+          </div>
 
           <FormField label="Remarks" name="remarks" type="textarea" value={formData.remarks} onChange={handleChange} error={errors.remarks} placeholder="Enter additional remarks (optional)" rows={3} />
 

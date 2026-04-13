@@ -488,6 +488,16 @@ export const adminApi = {
     return apiClient.put("/config/academicHolidays", { value: academicHolidays })
   },
 
+  // ==================== Gymkhana Event Categories ====================
+
+  getGymkhanaEventCategories: () => {
+    return apiClient.get("/config/gymkhanaEventCategories")
+  },
+
+  updateGymkhanaEventCategories: (categories) => {
+    return apiClient.put("/config/gymkhanaEventCategories", { value: categories })
+  },
+
   // ==================== System Settings ====================
 
   /**

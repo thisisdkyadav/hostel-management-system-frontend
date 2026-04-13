@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments, HiCalendar } from "react-icons/hi"
+import { HiCog, HiSave, HiAcademicCap, HiOfficeBuilding, HiUsers, HiAdjustments, HiCalendar, HiCollection } from "react-icons/hi"
 import { useAuth } from "../../contexts/AuthProvider"
 import { adminApi } from "../../service"
 import StudentEditPermissionsForm from "../../components/admin/settings/StudentEditPermissionsForm"
@@ -8,6 +8,7 @@ import StudentBatchManager from "../../components/admin/settings/StudentBatchMan
 import RegisteredStudentsForm from "../../components/admin/settings/RegisteredStudentsForm"
 import ConfigForm from "../../components/admin/settings/ConfigForm"
 import AcademicHolidaysForm from "../../components/admin/settings/AcademicHolidaysForm"
+import GymkhanaCategoryManager from "../../components/admin/settings/GymkhanaCategoryManager"
 import CommonSuccessModal from "../../components/common/CommonSuccessModal"
 import SettingsHeader from "../../components/headers/SettingsHeader"
 import { getBatchesForSelection, setBatchesForSelection } from "../../utils/studentBatchConfig"
@@ -25,6 +26,7 @@ const SettingsPage = () => {
     studentGroups: false,
     registeredStudents: false,
     academicHolidays: false,
+    gymkhanaCategories: false,
     systemSettings: false,
   })
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -35,6 +37,7 @@ const SettingsPage = () => {
   const [studentGroups, setStudentGroups] = useState([])
   const [registeredStudents, setRegisteredStudents] = useState({})
   const [academicHolidays, setAcademicHolidays] = useState({})
+  const [gymkhanaCategories, setGymkhanaCategories] = useState([])
   const [systemSettings, setSystemSettings] = useState({})
   const [successMessage, setSuccessMessage] = useState("")
   const [error, setError] = useState({
@@ -45,6 +48,7 @@ const SettingsPage = () => {
     studentGroups: null,
     registeredStudents: null,
     academicHolidays: null,
+    gymkhanaCategories: null,
     systemSettings: null,
   })
 
@@ -56,6 +60,7 @@ const SettingsPage = () => {
     "studentGroups",
     "registeredStudents",
     "academicHolidays",
+    "gymkhanaCategories",
     "systemSettings",
   ]
 
@@ -136,6 +141,8 @@ const SettingsPage = () => {
       }
     } else if (activeTab === "academicHolidays" && Object.keys(academicHolidays).length === 0) {
       fetchAcademicHolidays()
+    } else if (activeTab === "gymkhanaCategories" && gymkhanaCategories.length === 0) {
+      fetchGymkhanaCategories()
     } else if (activeTab === "systemSettings" && Object.keys(systemSettings).length === 0) {
       fetchSystemSettings()
     }
@@ -284,6 +291,23 @@ const SettingsPage = () => {
       }))
     } finally {
       setLoading((prev) => ({ ...prev, studentGroups: false }))
+    }
+  }
+
+  const fetchGymkhanaCategories = async () => {
+    setLoading((prev) => ({ ...prev, gymkhanaCategories: true }))
+    setError((prev) => ({ ...prev, gymkhanaCategories: null }))
+    try {
+      const response = await adminApi.getGymkhanaEventCategories()
+      setGymkhanaCategories(Array.isArray(response.value) ? response.value : [])
+    } catch (err) {
+      console.error("Error fetching Gymkhana categories:", err)
+      setError((prev) => ({
+        ...prev,
+        gymkhanaCategories: "Failed to load Gymkhana categories. Please try again later.",
+      }))
+    } finally {
+      setLoading((prev) => ({ ...prev, gymkhanaCategories: false }))
     }
   }
 
@@ -569,6 +593,29 @@ const SettingsPage = () => {
     }
   }
 
+  const handleUpdateGymkhanaCategories = async (updatedCategories) => {
+    if (!canUpdateTab("gymkhanaCategories")) {
+      toast.error("You do not have permission to update Gymkhana categories.")
+      return
+    }
+
+    const confirmUpdate = window.confirm("Are you sure you want to update Gymkhana categories?")
+    if (!confirmUpdate) return
+
+    setLoading((prev) => ({ ...prev, gymkhanaCategories: true }))
+    try {
+      const response = await adminApi.updateGymkhanaEventCategories(updatedCategories)
+      setGymkhanaCategories(response.configuration?.value || [])
+      setSuccessMessage(`Gymkhana categories updated successfully on ${new Date(response.configuration?.lastUpdated || Date.now()).toLocaleString()}`)
+      setShowSuccessModal(true)
+    } catch (err) {
+      console.error("Error updating Gymkhana categories:", err)
+      toast.error(err.message || "An error occurred while updating Gymkhana categories. Please try again.")
+    } finally {
+      setLoading((prev) => ({ ...prev, gymkhanaCategories: false }))
+    }
+  }
+
   if (user?.role !== "Admin" || !hasAnySettingsView) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[var(--color-bg-tertiary)] px-4">
@@ -640,6 +687,12 @@ const SettingsPage = () => {
                 <button onClick={() => handleTabChange("academicHolidays")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "academicHolidays" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
                   <HiCalendar className="mr-2 h-5 w-5" />
                   Academic Holidays
+                </button>
+              </li>
+              <li className="mr-2">
+                <button onClick={() => handleTabChange("gymkhanaCategories")} className={`inline-flex items-center px-4 py-2 text-sm font-medium ${activeTab === "gymkhanaCategories" ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]" : "text-[var(--color-text-muted)] hover:text-[var(--color-text-body)] hover:border-[var(--color-border-dark)]"}`}>
+                  <HiCollection className="mr-2 h-5 w-5" />
+                  Gymkhana Categories
                 </button>
               </li>
               <li className="mr-2">
@@ -829,6 +882,31 @@ const SettingsPage = () => {
                       academicHolidays={academicHolidays}
                       onUpdate={handleUpdateAcademicHolidays}
                       isLoading={loading.academicHolidays}
+                    />
+                  )}
+                </>
+              )}
+
+              {activeTab === "gymkhanaCategories" && (
+                <>
+                  <div className="bg-[var(--color-primary-bg)] text-[var(--color-primary)] rounded-lg p-4 mb-6 flex items-start">
+                    <div className="flex-shrink-0 mt-0.5 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h10M7 12h10m-7 5h7" />
+                      </svg>
+                    </div>
+                    <p className="text-sm">Manage the global Gymkhana category catalog. These categories are used across activity calendars, category filters, and budget-cap summaries, so changes here apply everywhere.</p>
+                  </div>
+
+                  {loading.gymkhanaCategories && gymkhanaCategories.length === 0 ? (
+                    <div className="flex justify-center py-6">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--color-primary)]"></div>
+                    </div>
+                  ) : (
+                    <GymkhanaCategoryManager
+                      categories={gymkhanaCategories}
+                      onUpdate={handleUpdateGymkhanaCategories}
+                      isLoading={loading.gymkhanaCategories}
                     />
                   )}
                 </>

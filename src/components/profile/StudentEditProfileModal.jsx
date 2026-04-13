@@ -139,6 +139,10 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
         label: "Guardian Email",
         icon: <HiMail style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
       },
+      alumniEmailId: {
+        label: "Alumni Email ID",
+        icon: <HiMail style={{ color: "var(--color-primary)" }} size={parseInt(getComputedStyle(document.documentElement).getPropertyValue("--icon-lg"))} />,
+      },
     }
 
     const config = fieldConfig[field] || {
@@ -315,6 +319,7 @@ const StudentEditProfileModal = ({ onClose, onUpdate, userId }) => {
                 {editableFields.includes("admissionDate") && renderField("admissionDate", "date")}
                 {editableFields.includes("bloodGroup") && renderField("bloodGroup")}
                 {editableFields.includes("phone") && renderField("phone", "tel")}
+                {editableFields.includes("alumniEmailId") && renderField("alumniEmailId", "email")}
                 {editableFields.includes("address") && renderField("address")}
 
                 {editableFields.includes("emergencyContact") && (

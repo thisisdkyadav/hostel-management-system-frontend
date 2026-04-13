@@ -18,9 +18,6 @@ import {
   GymkhanaOverlapConfirmModal,
 } from "@/components/gymkhana/events-page"
 import {
-  CATEGORY_LABELS,
-  CATEGORY_OPTIONS,
-  CATEGORY_ORDER,
   ORGANISING_UNIT_OPTIONS,
   POST_STUDENT_AFFAIRS_STAGE_OPTIONS,
   PROGRAMME_MODE_OPTIONS,
@@ -94,6 +91,8 @@ const EventsPage = () => {
         canEdit={calendarState.canEdit}
         canManageCalendarLock={calendarState.canManageCalendarLock}
         canSubmitCalendar={calendarState.canSubmitCalendar}
+        categoryLabels={calendarState.categoryLabels}
+        categoryOrder={calendarState.categoryOrder}
         categoryFilterTabs={calendarState.categoryFilterTabs}
         dateConflicts={calendarState.dateConflicts}
         eventTableColumns={calendarState.eventTableColumns}
@@ -173,7 +172,7 @@ const EventsPage = () => {
         getCategoryBadgeStyle={calendarState.getCategoryBadgeStyle}
         getEventStatusVariant={calendarState.getEventStatusVariant}
         formatDateRange={calendarState.formatDateRange}
-        categoryLabels={CATEGORY_LABELS}
+        categoryLabels={calendarState.categoryLabels}
         onEditEvent={calendarState.handleEditEvent}
         onRequestAmendment={calendarState.openAmendmentModal}
       />
@@ -270,7 +269,7 @@ const EventsPage = () => {
         selectedEvent={calendarState.selectedEvent}
         eventForm={calendarState.eventForm}
         handleEventFormChange={calendarState.handleEventFormChange}
-        categoryOptions={CATEGORY_OPTIONS}
+        categoryOptions={calendarState.categoryOptions}
         isDateRangeOrdered={calendarState.isDateRangeOrdered}
         overlapCheckInProgressForCurrentDates={calendarState.overlapCheckInProgressForCurrentDates}
         dateOverlapInfo={calendarState.dateOverlapInfo}
@@ -288,7 +287,7 @@ const EventsPage = () => {
         onClose={calendarState.closeAmendmentModal}
         eventForm={calendarState.eventForm}
         handleEventFormChange={calendarState.handleEventFormChange}
-        categoryOptions={CATEGORY_OPTIONS}
+        categoryOptions={calendarState.categoryOptions}
         isDateRangeOrdered={calendarState.isDateRangeOrdered}
         overlapCheckInProgressForCurrentDates={calendarState.overlapCheckInProgressForCurrentDates}
         dateOverlapInfo={calendarState.dateOverlapInfo}
@@ -358,8 +357,8 @@ const EventsPage = () => {
         }}
         calendar={calendarState.calendar}
         events={calendarState.events}
-        categoryOrder={CATEGORY_ORDER}
-        categoryLabels={CATEGORY_LABELS}
+        categoryOrder={calendarState.categoryOrder}
+        categoryLabels={calendarState.categoryLabels}
         budgetSummary={calendarState.budgetSummary}
         dateConflicts={calendarState.dateConflicts}
         requiresCalendarNextApprovalSelection={calendarState.requiresCalendarNextApprovalSelection}

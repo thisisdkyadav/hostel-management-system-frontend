@@ -1,7 +1,6 @@
 import { Button, Input, Modal } from "czero/react"
 import { Badge } from "@/components/ui/data-display"
 import { Checkbox, Select } from "@/components/ui/form"
-import { CATEGORY_OPTIONS } from "@/components/gymkhana/events-page/shared"
 import {
   CalendarDays,
   CircleDollarSign,
@@ -615,21 +614,21 @@ export const GymkhanaSettingsModal = ({
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
-          {CATEGORY_OPTIONS.map((category) => {
-            const allocated = Number(budgetSummary?.byCategory?.[category.value] || 0)
+          {(settingsForm?.categoryDefinitions || []).map((category) => {
+            const allocated = Number(budgetSummary?.byCategory?.[category.key] || 0)
             return (
-              <div key={category.value} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
-                <label style={formLabelStyles} htmlFor={`budget-cap-${category.value}`}>
+              <div key={category.key} style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-1)" }}>
+                <label style={formLabelStyles} htmlFor={`budget-cap-${category.key}`}>
                   {category.label} Cap
                 </label>
                 <Input
-                  id={`budget-cap-${category.value}`}
+                  id={`budget-cap-${category.key}`}
                   type="number"
                   min="0"
                   placeholder="No limit"
-                  value={settingsForm?.budgetCaps?.[category.value] ?? ""}
+                  value={settingsForm?.budgetCaps?.[category.key] ?? ""}
                   disabled={submitting}
-                  onChange={(event) => onBudgetCapChange?.(category.value, event.target.value)}
+                  onChange={(event) => onBudgetCapChange?.(category.key, event.target.value)}
                 />
                 <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                   Current allocated budget: ₹{allocated.toLocaleString()}

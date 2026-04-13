@@ -74,6 +74,8 @@ const createStudentActionDraft = () => ({
   reason: "",
   actionTaken: "",
   date: todayDateInput(),
+  punishmentStartDate: todayDateInput(),
+  punishmentEndDate: todayDateInput(),
   remarks: "",
   reminderItems: [],
 })
@@ -293,6 +295,8 @@ const DisciplinaryProcessPage = () => {
   const [finalReason, setFinalReason] = useState("")
   const [finalActionTaken, setFinalActionTaken] = useState("")
   const [finalDate, setFinalDate] = useState(todayDateInput())
+  const [finalPunishmentStartDate, setFinalPunishmentStartDate] = useState(todayDateInput())
+  const [finalPunishmentEndDate, setFinalPunishmentEndDate] = useState(todayDateInput())
   const [finalRemarks, setFinalRemarks] = useState("")
   const [finalActionEntryMode, setFinalActionEntryMode] = useState("common")
   const [finalReminderItems, setFinalReminderItems] = useState([])
@@ -489,6 +493,8 @@ const DisciplinaryProcessPage = () => {
     setFinalReason("")
     setFinalActionTaken("")
     setFinalDate(todayDateInput())
+    setFinalPunishmentStartDate(todayDateInput())
+    setFinalPunishmentEndDate(todayDateInput())
     setFinalRemarks("")
     setFinalActionEntryMode("common")
     setFinalReminderItems([])
@@ -888,6 +894,18 @@ const DisciplinaryProcessPage = () => {
       ? "Each reminder item needs both action text and due date"
       : ""
 
+  const getDateRangeValidationError = (startDate, endDate) => {
+    if (!startDate || !endDate) {
+      return "Punishment start date and end date are required"
+    }
+
+    if (new Date(endDate) < new Date(startDate)) {
+      return "Punishment end date cannot be before punishment start date"
+    }
+
+    return ""
+  }
+
   const buildReminderPayload = (items = []) =>
     items
       .filter((item) => item.action?.trim() && item.dueDate)
@@ -1018,6 +1036,12 @@ const DisciplinaryProcessPage = () => {
         return
       }
 
+      const dateError = getDateRangeValidationError(finalPunishmentStartDate, finalPunishmentEndDate)
+      if (dateError) {
+        toast.error(dateError)
+        return
+      }
+
       const reminderError = getReminderValidationError(finalReminderItems)
       if (reminderError) {
         toast.error(reminderError)
@@ -1028,6 +1052,15 @@ const DisciplinaryProcessPage = () => {
         const studentAction = finalStudentActionMap[student.userId]
         if (!studentAction?.reason?.trim() || !studentAction?.actionTaken?.trim()) {
           toast.error(`Add reason and action for ${student.name}`)
+          return
+        }
+
+        const dateError = getDateRangeValidationError(
+          studentAction.punishmentStartDate,
+          studentAction.punishmentEndDate
+        )
+        if (dateError) {
+          toast.error(`${student.name}: ${dateError}`)
           return
         }
 
@@ -1052,6 +1085,8 @@ const DisciplinaryProcessPage = () => {
             reason: finalReason.trim(),
             actionTaken: finalActionTaken.trim(),
             date: finalDate || null,
+            punishmentStartDate: finalPunishmentStartDate || null,
+            punishmentEndDate: finalPunishmentEndDate || null,
             remarks: finalRemarks.trim(),
             reminderItems: buildReminderPayload(finalReminderItems),
           }
@@ -1066,6 +1101,8 @@ const DisciplinaryProcessPage = () => {
                 reason: studentAction.reason.trim(),
                 actionTaken: studentAction.actionTaken.trim(),
                 date: studentAction.date || null,
+                punishmentStartDate: studentAction.punishmentStartDate || null,
+                punishmentEndDate: studentAction.punishmentEndDate || null,
                 remarks: (studentAction.remarks || "").trim(),
                 reminderItems: buildReminderPayload(studentAction.reminderItems || []),
               }
@@ -2068,17 +2105,39 @@ const DisciplinaryProcessPage = () => {
                           value={finalActionTaken}
                           onChange={(event) => setFinalActionTaken(event.target.value)}
                         />
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
-                          <Input
-                            type="date"
-                            value={finalDate}
-                            onChange={(event) => setFinalDate(event.target.value)}
-                          />
-                          <Input
-                            placeholder="Remarks (optional)"
-                            value={finalRemarks}
-                            onChange={(event) => setFinalRemarks(event.target.value)}
-                          />
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-2)" }}>
+                          <div>
+                            <div style={sectionLabelStyle}>Creation Date</div>
+                            <Input
+                              type="date"
+                              value={finalDate}
+                              onChange={(event) => setFinalDate(event.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <div style={sectionLabelStyle}>Punishment Start Date</div>
+                            <Input
+                              type="date"
+                              value={finalPunishmentStartDate}
+                              onChange={(event) => setFinalPunishmentStartDate(event.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <div style={sectionLabelStyle}>Punishment End Date</div>
+                            <Input
+                              type="date"
+                              value={finalPunishmentEndDate}
+                              onChange={(event) => setFinalPunishmentEndDate(event.target.value)}
+                            />
+                          </div>
+                          <div>
+                            <div style={sectionLabelStyle}>Remarks</div>
+                            <Input
+                              placeholder="Remarks (optional)"
+                              value={finalRemarks}
+                              onChange={(event) => setFinalRemarks(event.target.value)}
+                            />
+                          </div>
                         </div>
 
                         {/* Reminder Items */}
@@ -2139,17 +2198,39 @@ const DisciplinaryProcessPage = () => {
                                   value={studentAction.actionTaken}
                                   onChange={(event) => updateStudentActionField(student.userId, "actionTaken", event.target.value)}
                                 />
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-2)" }}>
-                                  <Input
-                                    type="date"
-                                    value={studentAction.date || ""}
-                                    onChange={(event) => updateStudentActionField(student.userId, "date", event.target.value)}
-                                  />
-                                  <Input
-                                    placeholder="Remarks"
-                                    value={studentAction.remarks || ""}
-                                    onChange={(event) => updateStudentActionField(student.userId, "remarks", event.target.value)}
-                                  />
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "var(--spacing-2)" }}>
+                                  <div>
+                                    <div style={sectionLabelStyle}>Creation Date</div>
+                                    <Input
+                                      type="date"
+                                      value={studentAction.date || ""}
+                                      onChange={(event) => updateStudentActionField(student.userId, "date", event.target.value)}
+                                    />
+                                  </div>
+                                  <div>
+                                    <div style={sectionLabelStyle}>Punishment Start Date</div>
+                                    <Input
+                                      type="date"
+                                      value={studentAction.punishmentStartDate || ""}
+                                      onChange={(event) => updateStudentActionField(student.userId, "punishmentStartDate", event.target.value)}
+                                    />
+                                  </div>
+                                  <div>
+                                    <div style={sectionLabelStyle}>Punishment End Date</div>
+                                    <Input
+                                      type="date"
+                                      value={studentAction.punishmentEndDate || ""}
+                                      onChange={(event) => updateStudentActionField(student.userId, "punishmentEndDate", event.target.value)}
+                                    />
+                                  </div>
+                                  <div>
+                                    <div style={sectionLabelStyle}>Remarks</div>
+                                    <Input
+                                      placeholder="Remarks"
+                                      value={studentAction.remarks || ""}
+                                      onChange={(event) => updateStudentActionField(student.userId, "remarks", event.target.value)}
+                                    />
+                                  </div>
                                 </div>
 
                                 {/* Student Reminder Items */}

@@ -20,13 +20,7 @@ import {
   X,
 } from "lucide-react"
 import { GymkhanaCalendarFooterTabs } from "@/components/gymkhana/events-page"
-import {
-  CALENDAR_WEEKDAY_LABELS,
-  CATEGORY_COLORS,
-  CATEGORY_LABELS,
-  CATEGORY_ORDER,
-  formatDateRange,
-} from "@/components/gymkhana/events-page/shared"
+import { CALENDAR_WEEKDAY_LABELS, formatDateRange, getCategoryColor } from "@/components/gymkhana/events-page/shared"
 
 const viewOptions = [
   { value: "list", label: "List", icon: <List size={14} /> },
@@ -45,6 +39,8 @@ export default function GymkhanaEventsPageContent({
   canEdit,
   canManageCalendarLock,
   canSubmitCalendar,
+  categoryLabels,
+  categoryOrder,
   categoryFilterTabs,
   dateConflicts,
   eventTableColumns,
@@ -137,9 +133,9 @@ export default function GymkhanaEventsPageContent({
           <div style={{ marginBottom: "var(--spacing-4)" }}>
             <StatCards
               stats={budgetStats}
-              columns={5}
+              columns={Math.min(Math.max(budgetStats.length, 1), 5)}
               loading={loading || !calendar}
-              loadingCount={5}
+              loadingCount={Math.min(Math.max(budgetStats.length, 1), 5)}
             />
           </div>
         )}
@@ -498,7 +494,7 @@ export default function GymkhanaEventsPageContent({
                 >
                   Legend
                 </span>
-                {CATEGORY_ORDER.map((category) => (
+                {categoryOrder.map((category) => (
                   <span
                     key={category}
                     style={{
@@ -514,11 +510,11 @@ export default function GymkhanaEventsPageContent({
                         width: 8,
                         height: 8,
                         borderRadius: 2,
-                        backgroundColor: CATEGORY_COLORS[category],
+                        backgroundColor: getCategoryColor(category),
                         flexShrink: 0,
                       }}
                     />
-                    {CATEGORY_LABELS[category]}
+                    {categoryLabels[category] || category}
                   </span>
                 ))}
                 <span
@@ -707,8 +703,8 @@ export default function GymkhanaEventsPageContent({
                                   fontSize: 10,
                                   padding: "2px var(--spacing-1)",
                                   marginBottom: 2,
-                                  backgroundColor: `${CATEGORY_COLORS[event.category]}15`,
-                                  borderLeft: `2.5px solid ${CATEGORY_COLORS[event.category]}`,
+                                  backgroundColor: `${getCategoryColor(event.category)}15`,
+                                  borderLeft: `2.5px solid ${getCategoryColor(event.category)}`,
                                   borderRadius: "0 var(--radius-xs) var(--radius-xs) 0",
                                   overflow: "hidden",
                                   textOverflow: "ellipsis",

@@ -50,6 +50,13 @@ const getStatusIcon = (status = "") => {
   }
 }
 
+const formatDate = (value) => {
+  if (!value) return "N/A"
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return "N/A"
+  return parsed.toLocaleDateString()
+}
+
 /**
  * CaseSummaryView - Complete case summary for closed cases
  */
@@ -613,7 +620,7 @@ const CaseSummaryView = ({
                       >
                         {action.student?.name || "Student"}
                       </span>
-                      {action.actionDate && (
+                      {(action.createdDate || action.date) && (
                         <span
                           style={{
                             display: "flex",
@@ -624,9 +631,21 @@ const CaseSummaryView = ({
                           }}
                         >
                           <Calendar size={12} />
-                          {new Date(action.actionDate).toLocaleDateString()}
+                          {formatDate(action.createdDate || action.date)}
                         </span>
                       )}
+                    </div>
+                    <div style={infoRowStyle}>
+                      <span style={infoLabelStyle}>Created:</span>
+                      <span style={infoValueStyle}>{formatDate(action.createdDate || action.date)}</span>
+                    </div>
+                    <div style={infoRowStyle}>
+                      <span style={infoLabelStyle}>Starts:</span>
+                      <span style={infoValueStyle}>{formatDate(action.punishmentStartDate || action.date)}</span>
+                    </div>
+                    <div style={infoRowStyle}>
+                      <span style={infoLabelStyle}>Ends:</span>
+                      <span style={infoValueStyle}>{formatDate(action.punishmentEndDate || action.punishmentStartDate || action.date)}</span>
                     </div>
                     <div style={infoRowStyle}>
                       <span style={infoLabelStyle}>Reason:</span>
