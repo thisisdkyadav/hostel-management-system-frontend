@@ -34,6 +34,13 @@ export const gymkhanaEventsApi = {
     return apiClient.get(`${BASE_PATH}/dashboard/summary`, { params: { daysUntilDue } })
   },
 
+  /**
+   * Get assignable post-Student-Affairs approvers grouped by stage
+   */
+  getPostStudentAffairsApprovers: () => {
+    return apiClient.get(`${BASE_PATH}/approval/post-student-affairs-approvers`)
+  },
+
   // ═══════════════════════════════════════════════════════════════════════════
   // CALENDAR OPERATIONS
   // ═══════════════════════════════════════════════════════════════════════════

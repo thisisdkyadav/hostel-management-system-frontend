@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import gymkhanaEventsApi from "@/service/modules/gymkhanaEvents.api"
-import authzApi from "@/service/modules/authz.api"
 import {
   CALENDAR_STATUS_TO_APPROVER,
   buildAvailableYearsForCreation,
@@ -87,20 +86,22 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
 
   const refreshPostStudentAffairsApproverOptions = async () => {
     try {
-      const response = await authzApi.getUsersByRole("Admin", { limit: 100 })
-      const responseBody = response.data || response || {}
-      const usersPayload = responseBody.data || {}
-      const adminUsers = usersPayload.data || responseBody.users || []
+      const response = await gymkhanaEventsApi.getPostStudentAffairsApprovers()
+      const approversByStage = response?.approversByStage || {}
 
       const nextOptions = POST_STUDENT_AFFAIRS_STAGE_OPTIONS.reduce((options, stage) => {
-        options[stage] = adminUsers
-          .filter((adminUser) => adminUser?.subRole === stage)
-          .map((adminUser) => ({
-            value: adminUser._id,
-            label: adminUser.email
-              ? `${adminUser.name} (${adminUser.email})`
-              : adminUser.name || stage,
-          }))
+        const stageApprovers = Array.isArray(approversByStage?.[stage])
+          ? approversByStage[stage]
+          : []
+
+        options[stage] = stageApprovers.map((approver) => ({
+          value: approver?.value || approver?.userId || approver?._id || "",
+          label:
+            approver?.label ||
+            (approver?.email
+              ? `${approver?.name || "User"} (${approver.email})`
+              : approver?.name || stage),
+        })).filter((option) => Boolean(option.value))
         return options
       }, {})
 
