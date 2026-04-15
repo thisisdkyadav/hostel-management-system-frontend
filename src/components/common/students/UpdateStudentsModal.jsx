@@ -309,7 +309,7 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
     [validDepartments]
   )
 
-  const availableFields = ["name", "email", "alumniEmailId", "phone", "password", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
+  const availableFields = ["name", "email", "alumniEmailId", "phone", "profileImage", "gender", "dateOfBirth", "degree", "department", "year", "address", "admissionDate", "guardian", "guardianPhone", "guardianEmail"]
   const requiredFields = ["rollNumber"]
   const VISIBLE_REFERENCE_LIMIT = 25
 
@@ -2585,9 +2585,6 @@ const UpdateStudentsModal = ({ isOpen, onClose, onUpdate }) => {
                     </li>
                     <li>
                       <span className="font-medium">phone:</span> Number
-                    </li>
-                    <li>
-                      <span className="font-medium">password:</span> String
                     </li>
                     <li>
                       <span className="font-medium">gender:</span> Male/Female

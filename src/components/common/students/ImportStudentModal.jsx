@@ -8,8 +8,7 @@ import SheetPreviewTable from "../../sheet/SheetPreviewTable"
 import { useSocket } from "../../../contexts/SocketProvider"
 
 const REQUIRED_FIELDS = ["name", "email", "rollNumber"]
-const OPTIONAL_FIELDS = ["password"]
-const ALLOWED_FIELDS = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS]
+const ALLOWED_FIELDS = [...REQUIRED_FIELDS]
 const IMPORT_PROGRESS_EVENT = "students:import:progress"
 const MAX_CSV_RESULT_ROWS_SHOWN = MAX_BULK_RECORDS
 
@@ -44,7 +43,6 @@ const normalizeCsvRows = (rows, headers) => {
     const name = toSafeString(row.name)
     const email = toSafeString(row.email)
     const rollNumber = toSafeString(row.rollNumber).toUpperCase()
-    const password = toSafeString(row.password)
 
     if (!name || !email || !rollNumber) {
       errors.push(`Row ${rowNumber}: Missing required fields (name, email, rollNumber)`)
@@ -70,9 +68,6 @@ const normalizeCsvRows = (rows, headers) => {
     seenRollNumbers.add(rollNumber)
 
     const student = { name, email, rollNumber }
-    if (password) {
-      student.password = password
-    }
 
     payload.push(student)
   })
@@ -278,7 +273,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     name: "",
     email: "",
     rollNumber: "",
-    password: "",
   })
   const [importProgress, setImportProgress] = useState({
     phase: "idle",
@@ -366,7 +360,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       name: "",
       email: "",
       rollNumber: "",
-      password: "",
     })
     setImportProgress({
       phase: "idle",
@@ -581,7 +574,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     const name = toSafeString(manualStudent.name)
     const email = toSafeString(manualStudent.email)
     const rollNumber = toSafeString(manualStudent.rollNumber).toUpperCase()
-    const password = toSafeString(manualStudent.password)
 
     if (!name || !email || !rollNumber) {
       setError("Name, email, and roll number are required")
@@ -601,9 +593,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     startImportProgress(1)
 
     const student = { name, email, rollNumber }
-    if (password) {
-      student.password = password
-    }
 
     try {
       const outcome = await onImport([student], { importJobId })
@@ -775,9 +764,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 <p style={{ marginTop: "var(--spacing-3)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                   <strong>Required fields:</strong> {REQUIRED_FIELDS.join(", ")}
                 </p>
-                <p style={{ marginTop: "var(--spacing-1)", fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
-                  <strong>Optional fields:</strong> {OPTIONAL_FIELDS.join(", ")}
-                </p>
                 <FileInput ref={fileInputRef} accept=".csv" onChange={handleFileUpload} hidden />
               </div>
 
@@ -792,7 +778,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>name:</span> String (Required)</li>
                     <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>email:</span> Email (Required)</li>
                     <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>rollNumber:</span> String (Required)</li>
-                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>password:</span> String (Optional)</li>
                   </ul>
                 </div>
               </div>
@@ -942,10 +927,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Roll Number *</label>
               <Input type="text" value={manualStudent.rollNumber} onChange={(event) => handleManualInputChange("rollNumber", event.target.value)} placeholder="Enter roll number" />
             </div>
-            <div>
-              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Password</label>
-              <Input type="password" value={manualStudent.password} onChange={(event) => handleManualInputChange("password", event.target.value)} placeholder="Optional custom password" />
-            </div>
           </div>
 
           {(isImporting || importProgress.phase === "processing" || importProgress.phase === "started") && (
@@ -1036,7 +1017,6 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     name: "",
                     email: "",
                     rollNumber: "",
-                    password: "",
                   })
                 }}
                 variant="secondary"
