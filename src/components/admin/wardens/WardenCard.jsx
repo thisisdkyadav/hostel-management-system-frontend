@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { FaBuilding, FaEdit, FaEnvelope, FaPhone, FaUserTie } from "react-icons/fa"
-import { BsCalendarCheck } from "react-icons/bs"
 import EditWardenForm from "./EditWardenForm"
 import { useGlobal } from "../../../contexts/GlobalProvider"
 import { getMediaUrl } from "../../../utils/mediaUtils"
@@ -40,14 +39,6 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
     }
   }
 
-  const calculateServiceYears = (joinDate) => {
-    if (!joinDate) return 0
-    const start = new Date(joinDate)
-    const now = new Date()
-    return Math.floor((now - start) / (365.25 * 24 * 60 * 60 * 1000))
-  }
-
-  const serviceYears = calculateServiceYears(warden.joinDate)
   const statusColor = getStatusColor(status)
 
   const handleSave = () => {
@@ -59,6 +50,12 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
     if (onDelete) onDelete()
     setShowEditForm(false)
   }
+
+  const gymkhanaCategoryText = Array.isArray(warden.categoryLabels) && warden.categoryLabels.length > 0
+    ? warden.categoryLabels.join(", ")
+    : Array.isArray(warden.categories) && warden.categories.length > 0
+      ? warden.categories.join(", ")
+      : "Not assigned"
 
   if (isGymkhana) {
     return (
@@ -73,7 +70,9 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
               </div>
               <div>
                 <h3 style={{ fontWeight: 'var(--font-weight-bold)', fontSize: 'var(--font-size-lg)', color: 'var(--color-text-secondary)' }}>{warden.name}</h3>
-                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)' }}>{warden.subRole || 'No sub role assigned'}</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-tertiary)', marginTop: 'var(--spacing-0-5)' }}>
+                  {warden.position || warden.subRole || 'No sub role assigned'}
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -90,6 +89,14 @@ const WardenCard = ({ warden, staffType = "warden", onUpdate, onDelete }) => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
               <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Sub Role</span>
               <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{warden.subRole || 'Not assigned'}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Position</span>
+              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{warden.position || 'Not set'}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--spacing-4)' }}>
+              <span style={{ color: 'var(--color-text-muted)', fontWeight: 'var(--font-weight-medium)' }}>Categories</span>
+              <span style={{ color: 'var(--color-text-body)', textAlign: 'right' }}>{gymkhanaCategoryText}</span>
             </div>
           </CardBody>
 

@@ -18,7 +18,14 @@ export const filterStaffMembers = (staffMembers = [], staffType = "warden", filt
       .filter((staff) => {
         if (!normalizedSearchTerm) return true
 
+        const categorySearchText = Array.isArray(staff.categoryLabels) && staff.categoryLabels.length > 0
+          ? staff.categoryLabels.join(" ")
+          : Array.isArray(staff.categories) && staff.categories.length > 0
+            ? staff.categories.join(" ")
+            : ""
+
         const fields = [staff.name, staff.role, staff.subRole, staff.email]
+          .concat([staff.position, categorySearchText])
           .filter(Boolean)
           .map((value) => String(value).toLowerCase())
 

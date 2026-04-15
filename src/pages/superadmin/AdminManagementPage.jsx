@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import { FaUserShield, FaPlus, FaEdit, FaTrash } from "react-icons/fa"
-import { SearchInput } from "@/components/ui"
+import { SearchInput, Select } from "@/components/ui"
 import { Button, DataTable, Modal, Input } from "czero/react"
 import NoResults from "../../components/common/NoResults"
 import { superAdminApi } from "../../service"
+import { ADMIN_SUBROLE_OPTIONS } from "../../constants/adminSubRoles"
 
 const AdminManagementPage = () => {
   const [admins, setAdmins] = useState([])
@@ -54,7 +55,13 @@ const AdminManagementPage = () => {
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
-      filtered = filtered.filter((admin) => admin.name.toLowerCase().includes(term) || admin.email.toLowerCase().includes(term) || (admin.phone && admin.phone.includes(term)))
+      filtered = filtered.filter((admin) =>
+        admin.name.toLowerCase().includes(term) ||
+        admin.email.toLowerCase().includes(term) ||
+        (admin.phone && admin.phone.includes(term)) ||
+        (admin.subRole && admin.subRole.toLowerCase().includes(term)) ||
+        (admin.category && admin.category.toLowerCase().includes(term))
+      )
     }
 
     setFilteredAdmins(filtered)
@@ -148,6 +155,16 @@ const AdminManagementPage = () => {
       render: (admin) => <div className="text-sm text-gray-900">{admin.email}</div>,
     },
     {
+      header: "Sub Role",
+      key: "subRole",
+      render: (admin) => <div className="text-sm text-gray-900">{admin.subRole || "—"}</div>,
+    },
+    {
+      header: "Category",
+      key: "category",
+      render: (admin) => <div className="text-sm text-gray-900">{admin.category || "—"}</div>,
+    },
+    {
       header: "Phone",
       key: "phone",
       render: (admin) => <div className="text-sm text-gray-900">{admin.phone || "—"}</div>,
@@ -190,7 +207,7 @@ const AdminManagementPage = () => {
         <div className="text-gray-600 mb-4">System administrators have complete access to the admin portal, allowing them to manage hostels, wardens, students, and other system resources.</div>
 
         <div className="flex justify-end">
-          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search admins by name or email" className="w-full sm:w-64 md:w-72" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search admins by name, email, sub role, or category" className="w-full sm:w-64 md:w-72" />
         </div>
       </div>
 
@@ -232,6 +249,8 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
     name: admin?.name || "",
     email: admin?.email || "",
     phone: admin?.phone || "",
+    category: admin?.category || "Admin",
+    subRole: admin?.subRole || ADMIN_SUBROLE_OPTIONS[0]?.value || "",
     password: "",
   })
 
@@ -261,6 +280,12 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
 
     if (formData.phone && !/^\d{10,15}$/.test(formData.phone.replace(/[^0-9]/g, ""))) {
       newErrors.phone = "Phone number is invalid"
+    }
+    if (!formData.subRole) {
+      newErrors.subRole = "Sub role is required"
+    }
+    if (!formData.category || !formData.category.trim()) {
+      newErrors.category = "Category is required"
     }
 
     return newErrors
@@ -333,6 +358,36 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
             </label>
             <Input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} error={errors.phone} />
             {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="subRole" className="block text-gray-700 text-sm font-medium mb-2">
+              Sub Role *
+            </label>
+            <Select
+              name="subRole"
+              id="subRole"
+              value={formData.subRole}
+              onChange={handleChange}
+              options={ADMIN_SUBROLE_OPTIONS}
+              error={errors.subRole}
+            />
+            {errors.subRole && <p className="mt-1 text-sm text-red-600">{errors.subRole}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-gray-700 text-sm font-medium mb-2">
+              Category *
+            </label>
+            <Input
+              type="text"
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              error={errors.category}
+            />
+            {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
           </div>
         </div>
 

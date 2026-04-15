@@ -33,7 +33,7 @@ const StaffManagement = ({ staffType = "warden" }) => {
         : "Gymkhana"
   const filterTabs = isGymkhana ? GYMKHANA_FILTER_TABS : WARDEN_FILTER_TABS
   const searchPlaceholder = isGymkhana
-    ? "Search Gymkhana users by name or sub role"
+    ? "Search Gymkhana users by name, sub role, position or category"
     : `Search ${staffTitle.toLowerCase()}s by name or hostel`
   const emptyMessage = isGymkhana ? "No Gymkhana users found" : `No ${staffTitle.toLowerCase()}s found`
 

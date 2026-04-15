@@ -2,15 +2,27 @@ import React, { useState } from "react"
 import { FiUser, FiMail, FiPhone, FiLock } from "react-icons/fi"
 import { FaUserShield } from "react-icons/fa"
 import { superAdminApi } from "../../../service"
-import { VStack, HStack, Label, Alert } from "@/components/ui"
+import { VStack, HStack, Label, Alert, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
-const AddAdminModal = ({ show, onClose, onAdd }) => {
+import { ADMIN_SUBROLE_OPTIONS } from "../../../constants/adminSubRoles"
+
+const AddAdminModal = ({
+  show,
+  onClose,
+  onAdd,
+  fixedSubRole = null,
+  subRoleOptions = ADMIN_SUBROLE_OPTIONS,
+}) => {
+  const defaultSubRole = fixedSubRole || subRoleOptions[0]?.value || ""
+  const defaultCategory = fixedSubRole === "HCU" ? "HCU" : "Admin"
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
-    category: "Admin",
+    category: defaultCategory,
+    subRole: defaultSubRole,
   })
 
   const [errors, setErrors] = useState({})
@@ -41,6 +53,9 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
     if (formData.phone && !/^\d{10,15}$/.test(formData.phone.replace(/[^0-9]/g, ""))) {
       newErrors.phone = "Phone number is invalid"
     }
+    if (!formData.subRole || !formData.subRole.trim()) {
+      newErrors.subRole = "Sub role is required"
+    }
     if (!formData.category || !formData.category.trim()) {
       newErrors.category = "Category is required"
     }
@@ -58,7 +73,12 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
 
     setIsSubmitting(true)
     try {
-      await superAdminApi.createAdmin(formData)
+      const payload = {
+        ...formData,
+        subRole: fixedSubRole || formData.subRole,
+      }
+
+      await superAdminApi.createAdmin(payload)
       alert("Administrator added successfully!")
       onAdd()
 
@@ -67,7 +87,8 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
         email: "",
         password: "",
         phone: "",
-        category: "Admin",
+        category: defaultCategory,
+        subRole: defaultSubRole,
       })
       setErrors({})
       onClose()
@@ -122,8 +143,8 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
             {errors.email && <Alert type="error">{errors.email}</Alert>}
           </div>
 
-          <div>
-            <Label htmlFor="password" required>Password</Label>
+	          <div>
+	            <Label htmlFor="password" required>Password</Label>
             <Input
               type="password"
               name="password"
@@ -135,23 +156,38 @@ const AddAdminModal = ({ show, onClose, onAdd }) => {
               required
               error={errors.password}
             />
-            {errors.password && <Alert type="error">{errors.password}</Alert>}
-          </div>
+	            {errors.password && <Alert type="error">{errors.password}</Alert>}
+	          </div>
 
-          <div>
-            <Label htmlFor="category" required>Category</Label>
-            <Input
-              type="text"
-              name="category"
-              id="category"
-              value={formData.category}
-              onChange={handleChange}
-              placeholder="Admin"
-              required
-              error={errors.category}
-            />
-            {errors.category && <Alert type="error">{errors.category}</Alert>}
-          </div>
+            <div>
+              <Label htmlFor="subRole" required>Sub Role</Label>
+              <Select
+                name="subRole"
+                id="subRole"
+                value={fixedSubRole || formData.subRole}
+                onChange={handleChange}
+                options={subRoleOptions}
+                disabled={Boolean(fixedSubRole)}
+                required
+                error={errors.subRole}
+              />
+              {errors.subRole && <Alert type="error">{errors.subRole}</Alert>}
+            </div>
+
+            <div>
+              <Label htmlFor="category" required>Category</Label>
+              <Input
+                type="text"
+                name="category"
+                id="category"
+                value={formData.category}
+                onChange={handleChange}
+                placeholder={fixedSubRole === "HCU" ? "HCU Category" : "Admin Category"}
+                error={errors.category}
+                required
+              />
+              {errors.category && <Alert type="error">{errors.category}</Alert>}
+            </div>
 
           <div>
             <Label htmlFor="phone">Phone (Optional)</Label>

@@ -2,19 +2,28 @@ import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaPhone, FaUserShield } from "react-icons/fa"
 import { HiCamera } from "react-icons/hi"
 import { superAdminApi } from "../../../service"
-import { VStack, HStack, Label } from "@/components/ui"
+import { VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+import { ADMIN_SUBROLE_OPTIONS } from "../../../constants/adminSubRoles"
 
-const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
+const EditAdminForm = ({
+  admin,
+  onClose,
+  onSave,
+  onDelete,
+  fixedSubRole = null,
+  subRoleOptions = ADMIN_SUBROLE_OPTIONS,
+}) => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     phone: admin.phone || "",
     profileImage: admin.profileImage || "",
-    category: admin.category || "Admin",
+    category: admin.category || (fixedSubRole === "HCU" ? "HCU" : "Admin"),
+    subRole: fixedSubRole || admin.subRole || "",
   })
 
   const [errors, setErrors] = useState({})
@@ -23,9 +32,10 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
     setFormData({
       phone: admin.phone || "",
       profileImage: admin.profileImage || "",
-      category: admin.category || "Admin",
+      category: admin.category || (fixedSubRole === "HCU" ? "HCU" : "Admin"),
+      subRole: fixedSubRole || admin.subRole || "",
     })
-  }, [admin])
+  }, [admin, fixedSubRole])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -43,6 +53,9 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
     const newErrors = {}
     if (formData.phone && !/^\d{10,15}$/.test(formData.phone.replace(/[^0-9]/g, ""))) {
       newErrors.phone = "Phone number is invalid"
+    }
+    if (!formData.subRole || !formData.subRole.trim()) {
+      newErrors.subRole = "Sub role is required"
     }
     if (!formData.category || !formData.category.trim()) {
       newErrors.category = "Category is required"
@@ -72,6 +85,7 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
         phone: formData.phone,
         profileImage: formData.profileImage,
         category: formData.category,
+        subRole: fixedSubRole || formData.subRole,
       }
 
       await superAdminApi.updateAdmin(admin.id, payload)
@@ -145,8 +159,8 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
             <p className="text-[var(--font-size-xs)] text-[var(--color-text-muted)] mt-[var(--spacing-1)]">Email cannot be changed</p>
           </div>
 
-          <div>
-            <Label htmlFor="phone">Phone Number</Label>
+	          <div>
+	            <Label htmlFor="phone">Phone Number</Label>
             <Input
               type="text"
               name="phone"
@@ -157,22 +171,36 @@ const EditAdminForm = ({ admin, onClose, onSave, onDelete }) => {
               placeholder="Enter phone number"
               error={errors.phone}
             />
-            {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
-          </div>
+	            {errors.phone && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.phone}</p>}
+	          </div>
 
-          <div>
-            <Label htmlFor="category">Category</Label>
-            <Input
-              type="text"
-              name="category"
-              id="category"
-              value={formData.category}
-              onChange={handleChange}
-              placeholder="Admin"
-              error={errors.category}
-            />
-            {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
-          </div>
+	          <div>
+	            <Label htmlFor="subRole">Sub Role</Label>
+              <Select
+                name="subRole"
+                id="subRole"
+                value={fixedSubRole || formData.subRole}
+                onChange={handleChange}
+                options={subRoleOptions}
+                disabled={Boolean(fixedSubRole)}
+                error={errors.subRole}
+              />
+	            {errors.subRole && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.subRole}</p>}
+	          </div>
+
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Input
+                type="text"
+                name="category"
+                id="category"
+                value={formData.category}
+                onChange={handleChange}
+                placeholder={fixedSubRole === "HCU" ? "HCU Category" : "Admin Category"}
+                error={errors.category}
+              />
+              {errors.category && <p className="mt-[var(--spacing-1)] text-[var(--font-size-sm)] text-[var(--color-danger)]">{errors.category}</p>}
+            </div>
 
           <HStack gap="small" justify="between" style={{ paddingTop: "var(--spacing-5)", marginTop: "var(--spacing-2)", borderTop: "var(--border-1) solid var(--color-border-light)" }}>
             <Button

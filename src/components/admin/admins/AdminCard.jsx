@@ -1,23 +1,15 @@
 import React, { useState } from "react"
-import { FaEdit, FaEnvelope, FaPhone, FaUserShield, FaTrash } from "react-icons/fa"
-import { BsCalendarCheck } from "react-icons/bs"
+import { FaEdit, FaEnvelope, FaPhone, FaUserShield } from "react-icons/fa"
 import EditAdminForm from "./EditAdminForm"
 import { getMediaUrl } from "../../../utils/mediaUtils"
-import { Card, CardHeader, CardBody, CardFooter, Badge } from "@/components/ui"
+import { Card, CardHeader, CardBody, CardFooter } from "@/components/ui"
 import { Button } from "czero/react"
 
-const AdminCard = ({ admin, onUpdate, onDelete }) => {
+const AdminCard = ({ admin, onUpdate, onDelete, fixedSubRole }) => {
   const [showEditForm, setShowEditForm] = useState(false)
-
-  const calculateServiceYears = (createdAt) => {
-    if (!createdAt) return 0
-    const start = new Date(createdAt)
-    const now = new Date()
-    return Math.floor((now - start) / (365.25 * 24 * 60 * 60 * 1000))
-  }
-
-  const serviceYears = calculateServiceYears(admin.createdAt)
   const status = admin.isActive !== false ? "active" : "inactive"
+  const subRoleLabel = fixedSubRole || admin.subRole || "Admin"
+  const categoryLabel = admin.category ? ` (${admin.category})` : ""
 
   const getStatusColor = (currentStatus) => {
     switch (currentStatus) {
@@ -62,7 +54,9 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
             </div>
             <div>
               <h3 className="font-[var(--font-weight-bold)] text-[var(--font-size-lg)] text-[var(--color-text-secondary)] truncate">{admin.name}</h3>
-              <div className="text-[var(--font-size-sm)] text-[var(--color-text-muted)] mt-[var(--spacing-0-5)] truncate">{admin.category || "Admin"}</div>
+              <div className="text-[var(--font-size-sm)] text-[var(--color-text-muted)] mt-[var(--spacing-0-5)] truncate">
+                {subRoleLabel}{categoryLabel}
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -115,7 +109,15 @@ const AdminCard = ({ admin, onUpdate, onDelete }) => {
         </CardFooter>
       </Card>
 
-      {showEditForm && <EditAdminForm admin={admin} onClose={() => setShowEditForm(false)} onSave={handleSave} onDelete={handleDelete} />}
+      {showEditForm && (
+        <EditAdminForm
+          admin={admin}
+          fixedSubRole={fixedSubRole}
+          onClose={() => setShowEditForm(false)}
+          onSave={handleSave}
+          onDelete={handleDelete}
+        />
+      )}
     </>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { FaTrash, FaSave, FaBuilding, FaPhone, FaCalendarAlt } from "react-icons/fa"
-import { FiTag, FiUser } from "react-icons/fi"
+import { FiTag, FiUser, FiBriefcase } from "react-icons/fi"
 import { HiCamera } from "react-icons/hi"
 import { adminApi } from "../../../service"
 import { useGlobal } from "../../../contexts/GlobalProvider"
@@ -8,6 +8,17 @@ import { Checkbox, VStack, HStack, Label, Select } from "@/components/ui"
 import { Button, Modal, Input } from "czero/react"
 import ImageUploadModal from "../../common/ImageUploadModal"
 import { getMediaUrl } from "../../../utils/mediaUtils"
+
+const normalizeGymkhanaCategoryDefinitions = (categoryDefinitions = []) => {
+  if (!Array.isArray(categoryDefinitions)) return []
+
+  return categoryDefinitions
+    .map((category) => ({
+      key: String(category?.key || "").trim(),
+      label: String(category?.label || "").trim(),
+    }))
+    .filter((category) => category.key && category.label)
+}
 
 const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelete }) => {
   const { hostelList } = useGlobal()
@@ -20,10 +31,13 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     { value: "President Gymkhana", label: "President Gymkhana" },
     { value: "Election Officer", label: "Election Officer" },
   ]
+  const [gymkhanaCategoryDefinitions, setGymkhanaCategoryDefinitions] = useState([])
 
   const [formData, setFormData] = useState({
     name: warden.name || "",
     subRole: warden.subRole || "",
+    categories: Array.isArray(warden.categories) ? warden.categories : [],
+    position: warden.position || "",
     phone: warden.phone || "",
     hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
     joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
@@ -35,6 +49,8 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     setFormData({
       name: warden.name || "",
       subRole: warden.subRole || "",
+      categories: Array.isArray(warden.categories) ? warden.categories : [],
+      position: warden.position || "",
       phone: warden.phone || "",
       hostelIds: warden.hostelIds?.map((h) => h._id || h) || [],
       joinDate: warden.joinDate ? new Date(warden.joinDate).toISOString().split("T")[0] : "",
@@ -43,8 +59,43 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
     })
   }, [warden])
 
+  useEffect(() => {
+    if (!isGymkhana) return
+
+    let isSubscribed = true
+
+    const fetchGymkhanaCategories = async () => {
+      try {
+        const response = await adminApi.getGymkhanaEventCategories()
+        if (!isSubscribed) return
+        setGymkhanaCategoryDefinitions(normalizeGymkhanaCategoryDefinitions(response?.value))
+      } catch (error) {
+        console.error("Error fetching Gymkhana categories:", error)
+        if (!isSubscribed) return
+        setGymkhanaCategoryDefinitions([])
+      }
+    }
+
+    fetchGymkhanaCategories()
+
+    return () => {
+      isSubscribed = false
+    }
+  }, [isGymkhana])
+
   const handleChange = (e) => {
     const { name, value, checked } = e.target
+
+    if (name === "categories") {
+      setFormData((prev) => {
+        const existingCategories = Array.isArray(prev.categories) ? prev.categories : []
+        if (checked) {
+          return { ...prev, categories: [...new Set([...existingCategories, value])] }
+        }
+        return { ...prev, categories: existingCategories.filter((categoryKey) => categoryKey !== value) }
+      })
+      return
+    }
 
     if (name === "hostelIds") {
       const hostelId = value
@@ -80,6 +131,8 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
         ? {
             name: formData.name,
             subRole: formData.subRole,
+            categories: formData.categories,
+            position: formData.position,
           }
         : {
             phone: formData.phone,
@@ -177,6 +230,65 @@ const EditWardenForm = ({ warden, staffType = "warden", onClose, onSave, onDelet
                   icon={<FiTag />}
                   required
                 />
+              </div>
+
+              <div>
+                <Label htmlFor="position">Position</Label>
+                <Input
+                  type="text"
+                  name="position"
+                  id="position"
+                  value={formData.position}
+                  onChange={handleChange}
+                  icon={<FiBriefcase />}
+                  placeholder="e.g., Cultural Coordinator"
+                />
+              </div>
+
+              <div>
+                <Label>Categories</Label>
+                <div
+                  style={{
+                    marginTop: "var(--spacing-2)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "var(--spacing-2)",
+                    maxHeight: "12rem",
+                    overflowY: "auto",
+                    border: "var(--border-1) solid var(--color-border-input)",
+                    borderRadius: "var(--radius-lg)",
+                    padding: "var(--spacing-3)",
+                  }}
+                >
+                  {gymkhanaCategoryDefinitions.length > 0 ? (
+                    gymkhanaCategoryDefinitions.map((category) => (
+                      <div key={category.key} style={{ display: "flex", alignItems: "center" }}>
+                        <Checkbox
+                          id={`gymkhana-category-${category.key}`}
+                          name="categories"
+                          checked={formData.categories.includes(category.key)}
+                          onChange={(event) =>
+                            handleChange({
+                              target: {
+                                name: "categories",
+                                value: category.key,
+                                checked: event.target.checked,
+                              },
+                            })
+                          }
+                        />
+                        <label
+                          htmlFor={`gymkhana-category-${category.key}`}
+                          style={{ marginLeft: "var(--spacing-3)", display: "block", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}
+                        >
+                          {category.label}
+                        </label>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>No Gymkhana categories configured yet.</p>
+                  )}
+                </div>
               </div>
             </VStack>
 

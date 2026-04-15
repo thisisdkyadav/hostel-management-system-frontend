@@ -7,6 +7,7 @@ import AddAdminModal from "../../components/admin/admins/AddAdminModal"
 import AdminStats from "../../components/admin/admins/AdminStats"
 import AdminManagementHeader from "../../components/headers/AdminManagementHeader"
 import { superAdminApi } from "../../service"
+import { HCU_SUBROLE } from "../../constants/adminSubRoles"
 
 const AdminManagementPage = () => {
   const [admins, setAdmins] = useState([])
@@ -21,8 +22,9 @@ const AdminManagementPage = () => {
       setLoading(true)
       setError(null)
       const data = await superAdminApi.getAllAdmins()
-      setAdmins(data || [])
-      setFilteredAdmins(data || [])
+      const hcuAdmins = (data || []).filter((admin) => admin?.subRole === HCU_SUBROLE)
+      setAdmins(hcuAdmins)
+      setFilteredAdmins(hcuAdmins)
     } catch (err) {
       console.error("Error fetching admins:", err)
       setError(err.message || "Failed to load administrators")
@@ -37,13 +39,16 @@ const AdminManagementPage = () => {
   }, [])
 
   useEffect(() => {
-    if (!admins.length) return
-
     let filtered = [...admins]
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
-      filtered = filtered.filter((admin) => admin.name.toLowerCase().includes(term) || admin.email.toLowerCase().includes(term) || (admin.phone && admin.phone.includes(term)))
+      filtered = filtered.filter((admin) =>
+        admin.name.toLowerCase().includes(term) ||
+        admin.email.toLowerCase().includes(term) ||
+        (admin.phone && admin.phone.includes(term)) ||
+        (admin.subRole && admin.subRole.toLowerCase().includes(term))
+      )
     }
 
     setFilteredAdmins(filtered)
@@ -56,17 +61,21 @@ const AdminManagementPage = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <AdminManagementHeader onAddAdmin={() => setShowAddModal(true)} />
+      <AdminManagementHeader
+        title="HCU Staff Management"
+        addButtonLabel="Add HCU Staff"
+        onAddAdmin={() => setShowAddModal(true)}
+      />
 
       <div className="flex-1 overflow-y-auto px-[var(--spacing-4)] sm:px-[var(--spacing-6)] lg:px-[var(--spacing-8)] py-[var(--spacing-6)]">
 
       <AdminStats admins={admins} />
 
       <div className="bg-[var(--color-bg-primary)] rounded-[var(--radius-xl)] shadow-[var(--shadow-md)] p-[var(--spacing-6)] mb-[var(--spacing-6)]">
-        <div className="text-[var(--color-text-muted)] mb-[var(--spacing-4)]">Manage system administrators who have access to the admin portal. Administrators can manage hostels, wardens, students, and other system resources.</div>
+        <div className="text-[var(--color-text-muted)] mb-[var(--spacing-4)]">Manage HCU staff accounts for admin operations. All users here are created with role Admin and sub-role HCU.</div>
 
         <div className="flex justify-end">
-          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search administrators by name or email" className="w-full sm:w-[var(--spacing-64)] md:w-[var(--spacing-72)]" />
+          <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search HCU staff by name or email" className="w-full sm:w-[var(--spacing-64)] md:w-[var(--spacing-72)]" />
         </div>
       </div>
 
@@ -83,19 +92,19 @@ const AdminManagementPage = () => {
       {loading && admins.length === 0 ? (
         <div className="text-center py-[var(--spacing-10)]">
           <div className="inline-block animate-spin rounded-[var(--radius-full)] h-[var(--spacing-8)] w-[var(--spacing-8)] border-t-[var(--border-2)] border-b-[var(--border-2)] border-[var(--color-primary)] mb-[var(--spacing-4)]"></div>
-          <p className="text-[var(--color-text-muted)]">Loading administrators...</p>
+          <p className="text-[var(--color-text-muted)]">Loading HCU staff...</p>
         </div>
       ) : filteredAdmins.length === 0 ? (
-        <NoResults icon={<FaUserShield className="text-[var(--color-border-primary)] text-[var(--font-size-3xl)]" />} message="No administrators found" suggestion="Try changing your search criteria or add a new administrator" />
+        <NoResults icon={<FaUserShield className="text-[var(--color-border-primary)] text-[var(--font-size-3xl)]" />} message="No HCU staff found" suggestion="Try changing your search criteria or add a new HCU staff member" />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--spacing-4)] md:gap-[var(--spacing-6)]">
           {filteredAdmins.map((admin) => (
-            <AdminCard key={admin.id} admin={admin} onUpdate={() => fetchAdmins()} onDelete={() => fetchAdmins()} />
+            <AdminCard key={admin.id} admin={admin} fixedSubRole={HCU_SUBROLE} onUpdate={() => fetchAdmins()} onDelete={() => fetchAdmins()} />
           ))}
         </div>
       )}
 
-      <AddAdminModal show={showAddModal} onClose={() => setShowAddModal(false)} onAdd={handleAddAdmin} />
+      <AddAdminModal show={showAddModal} fixedSubRole={HCU_SUBROLE} onClose={() => setShowAddModal(false)} onAdd={handleAddAdmin} />
       </div>
     </div>
   )
