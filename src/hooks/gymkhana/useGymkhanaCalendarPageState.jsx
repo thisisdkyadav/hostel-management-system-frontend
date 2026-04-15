@@ -838,6 +838,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     }
 
     const nextApprovers = buildNextApproversPayload(calendarNextApproversByStage)
+    const normalizedApprovalComments = String(approvalComments || "").trim()
 
     if (requiresCalendarNextApprovalSelection && getNextApproverSelectionCount(calendarNextApproversByStage) === 0) {
       toast.error("Select at least one next approver")
@@ -848,7 +849,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       setSubmitting(true)
       await gymkhanaEventsApi.approveCalendar(
         calendar._id,
-        approvalComments,
+        normalizedApprovalComments,
         [],
         requiresCalendarNextApprovalSelection ? nextApprovers : []
       )
@@ -870,14 +871,16 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       return
     }
 
-    if (!approvalComments || approvalComments.length < 10) {
+    const normalizedApprovalComments = String(approvalComments || "").trim()
+
+    if (normalizedApprovalComments.length < 10) {
       toast.error("Please provide a rejection reason (min 10 characters)")
       return
     }
 
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectCalendar(calendar._id, approvalComments)
+      await gymkhanaEventsApi.rejectCalendar(calendar._id, normalizedApprovalComments)
       toast.success("Calendar rejected")
       setShowApprovalModal(false)
       setApprovalComments("")

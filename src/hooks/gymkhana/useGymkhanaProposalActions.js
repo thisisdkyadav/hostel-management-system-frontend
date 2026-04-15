@@ -310,6 +310,7 @@ export const useGymkhanaProposalActions = ({
     }
 
     if (!proposalData?._id) return
+    const normalizedProposalActionComments = String(proposalActionComments || "").trim()
     if (!isProposalWithinApprovalLimit && maxApprovalAmount !== null) {
       toast.error(`Proposal amount exceeds your approval limit of ${maxApprovalAmount}`)
       return
@@ -325,7 +326,7 @@ export const useGymkhanaProposalActions = ({
       setSubmitting(true)
       await gymkhanaEventsApi.approveProposal(
         proposalData._id,
-        proposalActionComments,
+        normalizedProposalActionComments,
         [],
         requiresProposalNextApprovalSelection ? nextApprovers : []
       )
@@ -349,14 +350,15 @@ export const useGymkhanaProposalActions = ({
     }
 
     if (!proposalData?._id) return
-    if (!proposalActionComments || proposalActionComments.length < 10) {
+    const normalizedProposalActionComments = String(proposalActionComments || "").trim()
+    if (normalizedProposalActionComments.length < 10) {
       toast.error("Please provide a rejection reason (min 10 characters)")
       return
     }
 
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectProposal(proposalData._id, proposalActionComments)
+      await gymkhanaEventsApi.rejectProposal(proposalData._id, normalizedProposalActionComments)
       toast.success("Proposal rejected")
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)
@@ -377,14 +379,15 @@ export const useGymkhanaProposalActions = ({
     }
 
     if (!proposalData?._id) return
-    if (!proposalActionComments || proposalActionComments.length < 10) {
+    const normalizedProposalActionComments = String(proposalActionComments || "").trim()
+    if (normalizedProposalActionComments.length < 10) {
       toast.error("Please provide revision notes (min 10 characters)")
       return
     }
 
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.requestRevision(proposalData._id, proposalActionComments)
+      await gymkhanaEventsApi.requestRevision(proposalData._id, normalizedProposalActionComments)
       toast.success("Revision requested")
       setProposalActionComments("")
       await fetchProposalForEvent(proposalEvent)

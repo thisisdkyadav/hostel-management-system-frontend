@@ -31,6 +31,13 @@ const formatActionLabel = (action) =>
 const formatStageLabel = (stage) =>
     stage === "Student Affairs" ? "Office - Student Affairs" : stage
 
+const formatTimestamp = (value) => {
+    if (!value) return "Date unavailable"
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return "Date unavailable"
+    return date.toLocaleString()
+}
+
 const ApprovalHistory = ({
     calendarId = null,
     proposalId = null,
@@ -104,6 +111,7 @@ const ApprovalHistory = ({
             {history.map((log, idx) => {
                 const Icon = ACTION_ICONS[log.action] || Clock
                 const baseColor = ACTION_COLORS[log.action] || "default"
+                const safeComments = String(log?.comments || "").trim()
                 const actionLabel =
                     log.action === "approved"
                         ? isDosaStage(log.stage)
@@ -158,13 +166,13 @@ const ApprovalHistory = ({
                                 {log.performedBy?.name || "Unknown"}
                             </p>
 
-                            {log.comments && (
+                            {safeComments && (
                                 <p style={{
                                     fontSize: "var(--font-size-xs)",
                                     color: "var(--color-text-muted)",
                                     fontStyle: "italic",
                                 }}>
-                                    "{log.comments}"
+                                    "{safeComments}"
                                 </p>
                             )}
 
@@ -173,7 +181,7 @@ const ApprovalHistory = ({
                                 color: "var(--color-text-placeholder)",
                                 marginTop: "var(--spacing-1)"
                             }}>
-                                {new Date(log.createdAt).toLocaleString()}
+                                {formatTimestamp(log.createdAt)}
                             </p>
                         </div>
                     </div>

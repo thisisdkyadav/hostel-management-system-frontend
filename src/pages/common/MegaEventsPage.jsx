@@ -1061,6 +1061,7 @@ const MegaEventsPage = () => {
     }
 
     if (!proposalData?._id) return
+    const normalizedProposalComments = String(proposalComments || "").trim()
     if (!canApproveCurrentProposalAmount && maxApprovalAmount !== null) {
       toast.error(`Proposal amount exceeds your approval limit of ${maxApprovalAmount}`)
       return
@@ -1073,7 +1074,7 @@ const MegaEventsPage = () => {
       setSubmitting(true)
       await gymkhanaEventsApi.approveMegaOccurrenceProposal(
         selectedOccurrence._id,
-        proposalComments,
+        normalizedProposalComments,
         requiresProposalStageSelection ? proposalNextApprovalStages : []
       )
       toast.success("Proposal decision saved")
@@ -1094,13 +1095,14 @@ const MegaEventsPage = () => {
     }
 
     if (!proposalData?._id) return
-    if (!proposalComments || proposalComments.trim().length < 10) {
+    const normalizedProposalComments = String(proposalComments || "").trim()
+    if (normalizedProposalComments.length < 10) {
       toast.error("Rejection reason must be at least 10 characters")
       return
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectMegaOccurrenceProposal(selectedOccurrence._id, proposalComments.trim())
+      await gymkhanaEventsApi.rejectMegaOccurrenceProposal(selectedOccurrence._id, normalizedProposalComments)
       toast.success("Proposal rejected")
       setProposalHistoryRefreshKey((value) => value + 1)
       await loadProposalAndExpense(selectedOccurrence)
@@ -1119,7 +1121,8 @@ const MegaEventsPage = () => {
     }
 
     if (!proposalData?._id) return
-    if (!proposalComments || proposalComments.trim().length < 10) {
+    const normalizedProposalComments = String(proposalComments || "").trim()
+    if (normalizedProposalComments.length < 10) {
       toast.error("Revision comments must be at least 10 characters")
       return
     }
@@ -1127,7 +1130,7 @@ const MegaEventsPage = () => {
       setSubmitting(true)
       await gymkhanaEventsApi.requestMegaOccurrenceProposalRevision(
         selectedOccurrence._id,
-        proposalComments.trim()
+        normalizedProposalComments
       )
       toast.success("Revision requested")
       setProposalHistoryRefreshKey((value) => value + 1)
@@ -1188,6 +1191,7 @@ const MegaEventsPage = () => {
     }
 
     if (!expenseData?._id) return
+    const normalizedExpenseComments = String(expenseComments || "").trim()
     if (!canApproveCurrentExpenseAmount && maxApprovalAmount !== null) {
       toast.error(`Expense amount exceeds your approval limit of ${maxApprovalAmount}`)
       return
@@ -1200,7 +1204,7 @@ const MegaEventsPage = () => {
       setSubmitting(true)
       await gymkhanaEventsApi.approveMegaOccurrenceExpense(
         selectedOccurrence._id,
-        expenseComments,
+        normalizedExpenseComments,
         requiresExpenseStageSelection ? expenseNextApprovalStages : []
       )
       toast.success("Expense decision saved")
@@ -1221,13 +1225,14 @@ const MegaEventsPage = () => {
     }
 
     if (!expenseData?._id) return
-    if (!expenseComments || expenseComments.trim().length < 10) {
+    const normalizedExpenseComments = String(expenseComments || "").trim()
+    if (normalizedExpenseComments.length < 10) {
       toast.error("Rejection reason must be at least 10 characters")
       return
     }
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectMegaOccurrenceExpense(selectedOccurrence._id, expenseComments.trim())
+      await gymkhanaEventsApi.rejectMegaOccurrenceExpense(selectedOccurrence._id, normalizedExpenseComments)
       toast.success("Expense rejected")
       setExpenseHistoryRefreshKey((value) => value + 1)
       await loadProposalAndExpense(selectedOccurrence)

@@ -358,6 +358,7 @@ export const useGymkhanaExpenseActions = ({
     }
 
     if (!expenseData?._id) return
+    const normalizedExpenseApprovalComments = String(expenseApprovalComments || "").trim()
     if (
       maxApprovalAmount !== null &&
       Number(expenseData.totalExpenditure || 0) > maxApprovalAmount
@@ -376,7 +377,7 @@ export const useGymkhanaExpenseActions = ({
       setSubmitting(true)
       await gymkhanaEventsApi.approveExpense(
         expenseData._id,
-        expenseApprovalComments,
+        normalizedExpenseApprovalComments,
         [],
         requiresExpenseNextApprovalSelection ? nextApprovers : []
       )
@@ -400,14 +401,15 @@ export const useGymkhanaExpenseActions = ({
     }
 
     if (!expenseData?._id) return
-    if (!expenseApprovalComments || expenseApprovalComments.trim().length < 10) {
+    const normalizedExpenseApprovalComments = String(expenseApprovalComments || "").trim()
+    if (normalizedExpenseApprovalComments.length < 10) {
       toast.error("Please provide a rejection reason (min 10 characters)")
       return
     }
 
     try {
       setSubmitting(true)
-      await gymkhanaEventsApi.rejectExpense(expenseData._id, expenseApprovalComments)
+      await gymkhanaEventsApi.rejectExpense(expenseData._id, normalizedExpenseApprovalComments)
       toast.success("Bills rejected")
       setExpenseApprovalComments("")
       await fetchExpenseForEvent(expenseEvent)
