@@ -45,9 +45,7 @@ const AddAdminModal = ({
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid"
     }
-    if (!formData.password) {
-      newErrors.password = "Password is required"
-    } else if (formData.password.length < 6) {
+    if (formData.password && formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters"
     }
     if (formData.phone && !/^\d{10,15}$/.test(formData.phone.replace(/[^0-9]/g, ""))) {
@@ -76,6 +74,11 @@ const AddAdminModal = ({
       const payload = {
         ...formData,
         subRole: fixedSubRole || formData.subRole,
+      }
+      if (!payload.password || !payload.password.trim()) {
+        delete payload.password
+      } else {
+        payload.password = payload.password.trim()
       }
 
       await superAdminApi.createAdmin(payload)
@@ -144,7 +147,7 @@ const AddAdminModal = ({
           </div>
 
 	          <div>
-	            <Label htmlFor="password" required>Password</Label>
+	            <Label htmlFor="password">Password (Optional)</Label>
             <Input
               type="password"
               name="password"
@@ -152,8 +155,7 @@ const AddAdminModal = ({
               value={formData.password}
               onChange={handleChange}
               icon={<FiLock />}
-              placeholder="Enter password"
-              required
+              placeholder="Leave blank to set later"
               error={errors.password}
             />
 	            {errors.password && <Alert type="error">{errors.password}</Alert>}

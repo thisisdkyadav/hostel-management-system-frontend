@@ -273,9 +273,8 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid"
     }
-
-    if (!admin && !formData.password) {
-      newErrors.password = "Password is required for new administrators"
+    if (formData.password && formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters"
     }
 
     if (formData.phone && !/^\d{10,15}$/.test(formData.phone.replace(/[^0-9]/g, ""))) {
@@ -301,8 +300,10 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
     }
 
     const submitData = { ...formData }
-    if (admin && !submitData.password) {
+    if (!submitData.password || !submitData.password.trim()) {
       delete submitData.password
+    } else {
+      submitData.password = submitData.password.trim()
     }
 
     setIsSubmitting(true)
@@ -345,7 +346,7 @@ const AdminModal = ({ admin, onClose, onSubmit, title }) => {
           {!admin && (
             <div>
               <label htmlFor="password" className="block text-gray-700 text-sm font-medium mb-2">
-                Password *
+                Password (Optional)
               </label>
               <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} />
               {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
