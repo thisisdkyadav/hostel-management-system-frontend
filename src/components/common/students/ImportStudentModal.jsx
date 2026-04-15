@@ -7,7 +7,7 @@ import { BULK_RECORD_LIMIT_MESSAGE, MAX_BULK_RECORDS } from "@/constants/systemL
 import SheetPreviewTable from "../../sheet/SheetPreviewTable"
 import { useSocket } from "../../../contexts/SocketProvider"
 
-const REQUIRED_FIELDS = ["name", "email", "rollNumber"]
+const REQUIRED_FIELDS = ["name", "email", "rollNumber", "gender", "isDayScholar"]
 const ALLOWED_FIELDS = [...REQUIRED_FIELDS]
 const IMPORT_PROGRESS_EVENT = "students:import:progress"
 const MAX_CSV_RESULT_ROWS_SHOWN = MAX_BULK_RECORDS
@@ -23,6 +23,22 @@ const createImportJobId = () => {
 }
 
 const toSafeString = (value) => (value === null || value === undefined ? "" : String(value).trim())
+
+const normalizeGender = (value) => {
+  const normalized = toSafeString(value).toLowerCase()
+  if (normalized === "male") return "Male"
+  if (normalized === "female") return "Female"
+  if (normalized === "other") return "Other"
+  return toSafeString(value)
+}
+
+const parseIsDayScholar = (value) => {
+  if (typeof value === "boolean") return value
+  const normalized = toSafeString(value).toLowerCase()
+  if (normalized === "true") return true
+  if (normalized === "false") return false
+  return null
+}
 
 const normalizeCsvRows = (rows, headers) => {
   const previewRows = rows.map((row) => {
@@ -43,14 +59,21 @@ const normalizeCsvRows = (rows, headers) => {
     const name = toSafeString(row.name)
     const email = toSafeString(row.email)
     const rollNumber = toSafeString(row.rollNumber).toUpperCase()
+    const gender = normalizeGender(row.gender)
+    const isDayScholar = parseIsDayScholar(row.isDayScholar)
 
-    if (!name || !email || !rollNumber) {
-      errors.push(`Row ${rowNumber}: Missing required fields (name, email, rollNumber)`)
+    if (!name || !email || !rollNumber || !gender || isDayScholar === null) {
+      errors.push(`Row ${rowNumber}: Missing required fields (name, email, rollNumber, gender, isDayScholar)`)
       return
     }
 
     if (!emailRegex.test(email)) {
       errors.push(`Row ${rowNumber}: Invalid email format`)
+      return
+    }
+
+    if (!["Male", "Female", "Other"].includes(gender)) {
+      errors.push(`Row ${rowNumber}: Invalid gender "${gender}". Allowed values: Male, Female, Other`)
       return
     }
 
@@ -67,7 +90,7 @@ const normalizeCsvRows = (rows, headers) => {
     seenEmails.add(email.toLowerCase())
     seenRollNumbers.add(rollNumber)
 
-    const student = { name, email, rollNumber }
+    const student = { name, email, rollNumber, gender, isDayScholar }
 
     payload.push(student)
   })
@@ -273,6 +296,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     name: "",
     email: "",
     rollNumber: "",
+    gender: "",
+    isDayScholar: "",
   })
   const [importProgress, setImportProgress] = useState({
     phase: "idle",
@@ -360,6 +385,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
       name: "",
       email: "",
       rollNumber: "",
+      gender: "",
+      isDayScholar: "",
     })
     setImportProgress({
       phase: "idle",
@@ -574,14 +601,21 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     const name = toSafeString(manualStudent.name)
     const email = toSafeString(manualStudent.email)
     const rollNumber = toSafeString(manualStudent.rollNumber).toUpperCase()
+    const gender = normalizeGender(manualStudent.gender)
+    const isDayScholar = parseIsDayScholar(manualStudent.isDayScholar)
 
-    if (!name || !email || !rollNumber) {
-      setError("Name, email, and roll number are required")
+    if (!name || !email || !rollNumber || !gender || isDayScholar === null) {
+      setError("Name, email, roll number, gender, and day scholar flag are required")
       return
     }
 
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address")
+      return
+    }
+
+    if (!["Male", "Female", "Other"].includes(gender)) {
+      setError("Please choose a valid gender")
       return
     }
 
@@ -592,7 +626,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
     importJobIdRef.current = importJobId
     startImportProgress(1)
 
-    const student = { name, email, rollNumber }
+    const student = { name, email, rollNumber, gender, isDayScholar }
 
     try {
       const outcome = await onImport([student], { importJobId })
@@ -778,7 +812,12 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>name:</span> String (Required)</li>
                     <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>email:</span> Email (Required)</li>
                     <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>rollNumber:</span> String (Required)</li>
+                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>gender:</span> Male/Female/Other (Required)</li>
+                    <li><span style={{ fontWeight: "var(--font-weight-medium)" }}>isDayScholar:</span> true/false (Required)</li>
                   </ul>
+                  <p style={{ marginTop: "var(--spacing-2)" }}>
+                    Day scholar details (owner/home details) are not imported here and should be updated separately in bulk update.
+                  </p>
                 </div>
               </div>
 
@@ -927,6 +966,31 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
               <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Roll Number *</label>
               <Input type="text" value={manualStudent.rollNumber} onChange={(event) => handleManualInputChange("rollNumber", event.target.value)} placeholder="Enter roll number" />
             </div>
+            <div>
+              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Gender *</label>
+              <select
+                value={manualStudent.gender}
+                onChange={(event) => handleManualInputChange("gender", event.target.value)}
+                style={{ width: "100%", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-2) var(--spacing-3)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-primary)" }}
+              >
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-medium)", marginBottom: "var(--spacing-1)" }}>Is Day Scholar? *</label>
+              <select
+                value={manualStudent.isDayScholar}
+                onChange={(event) => handleManualInputChange("isDayScholar", event.target.value)}
+                style={{ width: "100%", border: "var(--border-1) solid var(--color-border-input)", borderRadius: "var(--radius-lg)", padding: "var(--spacing-2) var(--spacing-3)", backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-primary)" }}
+              >
+                <option value="">Select day scholar flag</option>
+                <option value="true">true (Day Scholar)</option>
+                <option value="false">false (Hosteller)</option>
+              </select>
+            </div>
           </div>
 
           {(isImporting || importProgress.phase === "processing" || importProgress.phase === "started") && (
@@ -1017,6 +1081,8 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                     name: "",
                     email: "",
                     rollNumber: "",
+                    gender: "",
+                    isDayScholar: "",
                   })
                 }}
                 variant="secondary"
@@ -1032,7 +1098,7 @@ const ImportStudentModal = ({ isOpen, onClose, onImport }) => {
                 variant="primary"
                 size="md"
                 loading={isImporting}
-                disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || isImporting}
+                disabled={!manualStudent.name || !manualStudent.email || !manualStudent.rollNumber || !manualStudent.gender || !manualStudent.isDayScholar || isImporting}
               >
                 {!isImporting && <FaCheck />}
                 {isImporting ? "Adding Student..." : "Add Student"}
