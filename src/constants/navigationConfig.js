@@ -168,7 +168,7 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Wardens", icon: UserCog, section: "main", path: "/admin/wardens", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Associate Wardens", icon: UserCheck, section: "main", path: "/admin/associate-wardens", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Hostel Supervisors", icon: ClipboardCheck, section: "main", path: "/admin/hostel-supervisors", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
-    { name: "HDU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
+    { name: "HCU Staff", icon: ShieldCheck, section: "main", path: "/admin/administrators", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Gymkhana Members", icon: GraduationCap, section: "main", path: "/admin/gymkhana", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Security", icon: Shield, section: "main", path: "/admin/security", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
     { name: "Maintenance", icon: Wrench, section: "main", path: "/admin/maintenance", adminCategory: ADMIN_NAV_CATEGORY_STAFF },
