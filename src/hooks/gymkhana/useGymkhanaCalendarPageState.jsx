@@ -15,6 +15,7 @@ import {
   getBudgetSummary,
   getCategoryBadgeStyle,
   getCategoryColor,
+  getConfiguredBudgetCapsTotal,
   getCategoryLabelsMap,
   getCategoryOptions,
   getCategoryOrder,
@@ -63,6 +64,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const [calendarSettingsForm, setCalendarSettingsForm] = useState(() => ({
     allowProposalBeforeApproval: false,
+    overallBudget: "",
     categoryDefinitions: getCalendarCategoryDefinitions(),
     budgetCaps: createEmptyBudgetCaps(getCalendarCategoryDefinitions()),
   }))
@@ -181,6 +183,12 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     const nextCategoryDefinitions = getCalendarCategoryDefinitions(calendarData)
     return {
       allowProposalBeforeApproval: Boolean(calendarData?.allowProposalBeforeApproval),
+      overallBudget:
+        calendarData?.overallBudget === null ||
+        calendarData?.overallBudget === undefined ||
+        calendarData?.overallBudget === ""
+          ? ""
+          : String(calendarData.overallBudget),
       categoryDefinitions: nextCategoryDefinitions,
       budgetCaps: toBudgetCapsForm(calendarData?.budgetCaps, nextCategoryDefinitions),
     }
@@ -993,7 +1001,35 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
     )
     if (!budgetCapValidation.isValid) {
       toast.error(
-        `Cannot set the ${budgetCapValidation.label} cap below the current allocated budget of ₹${budgetCapValidation.total.toLocaleString()}. Increase the cap or reduce events in that category first.`
+        "Cannot set the " +
+          budgetCapValidation.label +
+          " cap below the current allocated budget of ₹" +
+          budgetCapValidation.total.toLocaleString() +
+          ". Increase the cap or reduce events in that category first."
+      )
+      return
+    }
+
+    const rawOverallBudget = String(calendarSettingsForm.overallBudget ?? "").trim()
+    const nextOverallBudget = rawOverallBudget === "" ? null : Number(rawOverallBudget)
+
+    if (rawOverallBudget !== "" && (!Number.isFinite(nextOverallBudget) || nextOverallBudget < 0)) {
+      toast.error("Enter a valid overall calendar budget (0 or more), or leave it blank for no cap")
+      return
+    }
+
+    const configuredCategoryCapsTotal = getConfiguredBudgetCapsTotal(
+      nextBudgetCaps,
+      calendarSettingsForm.categoryDefinitions
+    )
+
+    if (nextOverallBudget !== null && configuredCategoryCapsTotal > nextOverallBudget) {
+      toast.error(
+        "Total configured category caps (₹" +
+          configuredCategoryCapsTotal.toLocaleString() +
+          ") exceed overall calendar budget (₹" +
+          nextOverallBudget.toLocaleString() +
+          "). Reduce category caps or increase overall budget."
       )
       return
     }
@@ -1002,6 +1038,7 @@ export const useGymkhanaCalendarPageState = ({ user, toast }) => {
       setSubmitting(true)
       await gymkhanaEventsApi.updateCalendarSettings(calendar._id, {
         allowProposalBeforeApproval: Boolean(calendarSettingsForm.allowProposalBeforeApproval),
+        overallBudget: nextOverallBudget,
         budgetCaps: nextBudgetCaps,
       })
       toast.success("Calendar settings updated")

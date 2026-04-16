@@ -364,6 +364,14 @@ export const buildBudgetCapsPayload = (budgetCaps = {}, categoryDefinitions = []
     return accumulator
   }, {})
 
+export const getConfiguredBudgetCapsTotal = (budgetCaps = {}, categoryDefinitions = []) => {
+  const normalizedBudgetCaps = buildBudgetCapsPayload(budgetCaps, categoryDefinitions)
+  return Object.values(normalizedBudgetCaps).reduce((sum, cap) => {
+    if (cap === null || cap === undefined) return sum
+    return sum + Number(cap || 0)
+  }, 0)
+}
+
 export const validateCategoryBudgetCaps = (events = [], budgetCaps = {}, categoryDefinitions = []) => {
   const resolvedCategoryDefinitions = getCalendarCategoryDefinitions({
     categoryDefinitions,

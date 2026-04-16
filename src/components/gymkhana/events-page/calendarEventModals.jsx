@@ -596,6 +596,32 @@ export const GymkhanaSettingsModal = ({
           backgroundColor: "var(--color-bg-secondary)",
           display: "flex",
           flexDirection: "column",
+          gap: "var(--spacing-1)",
+        }}
+      >
+        <label style={formLabelStyles} htmlFor="calendar-overall-budget">
+          Overall Calendar Budget Cap
+        </label>
+        <Input
+          id="calendar-overall-budget"
+          type="number"
+          min="0"
+          placeholder="No overall limit"
+          value={settingsForm?.overallBudget ?? ""}
+          disabled={submitting}
+          onChange={(event) => onSettingsChange?.("overallBudget", event.target.value)}
+        />
+        <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+          Leave blank to keep no overall cap. The total configured category caps cannot exceed this value.
+        </p>
+      </div>
+      <div
+        style={{
+          borderRadius: "var(--radius-card-sm)",
+          padding: "var(--spacing-3)",
+          backgroundColor: "var(--color-bg-secondary)",
+          display: "flex",
+          flexDirection: "column",
           gap: "var(--spacing-3)",
         }}
       >
@@ -611,6 +637,12 @@ export const GymkhanaSettingsModal = ({
           </span>
           <p style={{ margin: 0, fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
             Leave a field blank to keep that category unlimited. Event saves will be blocked once a category total exceeds its cap.
+            <br />
+            Configured category caps total: ₹{Object.values(settingsForm?.budgetCaps || {}).reduce((sum, value) => {
+              if (value === null || value === undefined || value === "") return sum
+              const parsedValue = Number(value)
+              return Number.isFinite(parsedValue) && parsedValue >= 0 ? sum + parsedValue : sum
+            }, 0).toLocaleString()}
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "var(--spacing-3)" }}>
