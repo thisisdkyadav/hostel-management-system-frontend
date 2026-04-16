@@ -20,6 +20,7 @@
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.23",
     "date-fns": "^4.1.0",
+    "czero": "^0.2.5",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.562.0",
     "node-forge": "^1.4.0",
