@@ -45,17 +45,17 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           // Core React - keep together for better caching
-          if (id.includes("node_modules/react/") || 
+          if (id.includes("node_modules/react/") ||
               id.includes("node_modules/react-dom/") ||
               id.includes("node_modules/scheduler/")) {
             return "react-core";
           }
-          
+
           // React Router - separate chunk
           if (id.includes("node_modules/react-router")) {
             return "react-router";
           }
-          
+
           // Icons libraries - large, lazy load
           if (id.includes("node_modules/lucide-react")) {
             return "icons-lucide";
@@ -63,29 +63,29 @@ export default defineConfig({
           if (id.includes("node_modules/react-icons")) {
             return "icons-react";
           }
-          
-          
+
+
           // Socket.io - only needed when authenticated
           if (id.includes("node_modules/socket.io")) {
             return "socket";
           }
-          
+
           // Date picker - only needed in forms
-          if (id.includes("node_modules/react-datepicker") || 
+          if (id.includes("node_modules/react-datepicker") ||
               id.includes("node_modules/date-fns")) {
             return "datepicker";
           }
-          
+
           // TanStack (table/virtual) - only needed for data grids
           if (id.includes("node_modules/@tanstack")) {
             return "tanstack";
           }
-          
+
           // QR Scanner - pure JS, no React dependency
           if (id.includes("node_modules/html5-qrcode")) {
             return "qr-scanner";
           }
-          
+
           // Capacitor - mobile features
           if (id.includes("node_modules/@capacitor")) {
             return "capacitor";

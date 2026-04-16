@@ -5,12 +5,7 @@
  * Import from this file for consistent API access throughout the application.
  * 
  * @example
- * // Named imports (recommended)
  * import { authApi, studentApi, hostelApi } from '@/service'
- * 
- * // Or import the entire api object
- * import api from '@/service'
- * api.auth.login(credentials)
  */
 
 // Core utilities
@@ -64,85 +59,7 @@ export { appointmentsApi } from "./modules/appointments.api"
 export { overallBestPerformerApi } from "./modules/overallBestPerformer.api"
 export { electionsApi } from "./modules/elections.api"
 
-// Default export with all APIs grouped
-import { authApi } from "./modules/auth.api"
-import { studentApi } from "./modules/student.api"
-import { studentProfileApi } from "./modules/studentProfile.api"
-import { hostelApi } from "./modules/hostel.api"
-import { adminApi } from "./modules/admin.api"
-import { wardenApi, associateWardenApi, hostelSupervisorApi } from "./modules/warden.api"
-import { visitorApi } from "./modules/visitor.api"
-import { leaveApi } from "./modules/leave.api"
-import { complaintApi } from "./modules/complaint.api"
-import { securityApi } from "./modules/security.api"
-import { maintenanceApi } from "./modules/maintenance.api"
-import { eventsApi } from "./modules/events.api"
-import { lostAndFoundApi } from "./modules/lostAndFound.api"
-import { inventoryApi } from "./modules/inventory.api"
-import { healthApi } from "./modules/health.api"
-import { feedbackApi } from "./modules/feedback.api"
-import { taskApi } from "./modules/task.api"
-import { statsApi } from "./modules/stats.api"
-import { dashboardApi } from "./modules/dashboard.api"
-import { uploadApi } from "./modules/upload.api"
-import { notificationApi } from "./modules/notification.api"
-import { authzApi } from "./modules/authz.api"
-import { userApi } from "./modules/user.api"
-import { certificateApi } from "./modules/certificate.api"
-import { idCardApi } from "./modules/idCard.api"
-import { hostelGateApi } from "./modules/hostelGate.api"
-import { insuranceProviderApi } from "./modules/insuranceProvider.api"
-import { liveCheckInOutApi } from "./modules/liveCheckInOut.api"
-import { onlineUsersApi } from "./modules/onlineUsers.api"
-import { sheetApi } from "./modules/sheet.api"
-import { superAdminApi } from "./modules/superAdmin.api"
-import { undertakingApi } from "./modules/undertaking.api"
-import { discoApi } from "./modules/disco.api"
-import { faceScannerApi } from "./modules/faceScanner.api"
-import { appointmentsApi } from "./modules/appointments.api"
-import { overallBestPerformerApi } from "./modules/overallBestPerformer.api"
-import { electionsApi } from "./modules/elections.api"
-
-const api = {
-  auth: authApi,
-  student: studentApi,
-  studentProfile: studentProfileApi,
-  hostel: hostelApi,
-  admin: adminApi,
-  warden: wardenApi,
-  associateWarden: associateWardenApi,
-  hostelSupervisor: hostelSupervisorApi,
-  visitor: visitorApi,
-  leave: leaveApi,
-  complaint: complaintApi,
-  security: securityApi,
-  maintenance: maintenanceApi,
-  events: eventsApi,
-  lostAndFound: lostAndFoundApi,
-  inventory: inventoryApi,
-  health: healthApi,
-  feedback: feedbackApi,
-  task: taskApi,
-  stats: statsApi,
-  dashboard: dashboardApi,
-  upload: uploadApi,
-  notification: notificationApi,
-  authz: authzApi,
-  user: userApi,
-  certificate: certificateApi,
-  idCard: idCardApi,
-  hostelGate: hostelGateApi,
-  insuranceProvider: insuranceProviderApi,
-  liveCheckInOut: liveCheckInOutApi,
-  onlineUsers: onlineUsersApi,
-  sheet: sheetApi,
-  superAdmin: superAdminApi,
-  undertaking: undertakingApi,
-  disco: discoApi,
-  faceScanner: faceScannerApi,
-  appointments: appointmentsApi,
-  overallBestPerformer: overallBestPerformerApi,
-  elections: electionsApi,
-}
-
-export default api
+// NOTE:
+// Keep this module as named re-exports only.
+// Avoid importing every API module here for a default aggregate object,
+// because it inflates shared/startup bundles.
