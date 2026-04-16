@@ -2248,7 +2248,14 @@ const ElectionsPage = () => {
               selectedOption={selectedAdminElectionOption}
             />
             {isAdminView && adminElections.length > 0 ? (
-              <Button size="md" variant="ghost" onClick={() => setHistoryModalOpen(true)}>
+              <Button
+                size="md"
+                variant="ghost"
+                onClick={() => {
+                  setShowMockHistoryElections(false)
+                  setHistoryModalOpen(true)
+                }}
+              >
                 <History size={16} /> History
               </Button>
             ) : null}
