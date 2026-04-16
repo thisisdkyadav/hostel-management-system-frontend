@@ -1692,9 +1692,9 @@ export const AdminNominationReviewModal = ({
 
           <div style={detailGridStyle}>
             {[
-              { label: "Grade Card", value: nomination.gradeCardUrl },
+              { label: "Grade Card (Optional)", value: nomination.gradeCardUrl },
               { label: "Manifesto (Optional)", value: nomination.manifestoUrl },
-              { label: "POR Documents", value: nomination.porDocumentUrl },
+              { label: "POR Documents (Optional)", value: nomination.porDocumentUrl },
               { label: "Student ID Front", value: nomination.candidateIdCard?.front || "" },
               { label: "Student ID Back", value: nomination.candidateIdCard?.back || "" },
             ].map((item) => (
@@ -2116,10 +2116,9 @@ export const StudentNominationModal = ({
 
           <div style={detailGridStyle}>
             <DocumentUploadField
-              label="Grade Card"
+              label="Grade Card (Optional)"
               value={form.gradeCardUrl}
               onChange={(nextValue) => updateForm({ gradeCardUrl: nextValue })}
-              required
               flatPanelStyle={flatPanelStyle}
               labelStyle={labelStyle}
               mutedTextStyle={mutedTextStyle}

@@ -1049,10 +1049,6 @@ const validateNominationForm = (form, post) => {
     return invalidSupporter.lookupMessage || `Verify roll number ${invalidSupporter.rollNumber} before saving the nomination.`
   }
 
-  if (!String(form.gradeCardUrl || "").trim()) {
-    return "Upload the latest grade card before submitting your nomination."
-  }
-
   if (
     !isValidUrlOrEmpty(form.gradeCardUrl) ||
     !isValidUrlOrEmpty(form.manifestoUrl) ||
