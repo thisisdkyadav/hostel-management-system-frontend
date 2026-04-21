@@ -12,7 +12,6 @@ const ComplaintListView = ({ complaints, onViewDetails, loading = false }) => {
     {
       header: "ID/Title",
       key: "title",
-      style: { maxWidth: "100px" },
       render: (complaint) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-placeholder)' }}>{complaint.id?.substring(0, 8)}</div>

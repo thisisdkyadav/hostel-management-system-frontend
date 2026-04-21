@@ -122,7 +122,6 @@ const ComplaintsTab = ({ userId }) => {
       color: "var(--color-text-muted)",
       textTransform: "uppercase",
       letterSpacing: "var(--letter-spacing-wider)",
-      maxWidth: "160px",
     },
     tbody: {
       backgroundColor: "var(--color-bg-primary)",
@@ -143,7 +142,6 @@ const ComplaintsTab = ({ userId }) => {
     tdTitle: {
       color: "var(--color-text-primary)",
       fontWeight: "var(--font-weight-medium)",
-      maxWidth: "160px",
     },
     statusBadge: {
       padding: "var(--spacing-0-5) var(--spacing-2)",
