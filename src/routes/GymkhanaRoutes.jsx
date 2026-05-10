@@ -4,9 +4,11 @@ import GymkhanaLayout from "../layouts/GymkhanaLayout"
 
 // Gymkhana pages
 const DashboardPage = lazy(() => import("../pages/gymkhana/DashboardPage"))
+const ClubPage = lazy(() => import("../pages/gymkhana/ClubPage"))
 const ElectionsPage = lazy(() => import("../pages/common/ElectionsPage"))
 const GymkhanaEventsPage = lazy(() => import("../pages/common/GymkhanaEventsPage"))
 const MegaEventsPage = lazy(() => import("../pages/common/MegaEventsPage"))
+const PorRequestsPage = lazy(() => import("../pages/common/PorRequestsPage"))
 const ProfilePage = lazy(() => import("../pages/common/ProfilePage"))
 
 // Utility pages
@@ -20,9 +22,11 @@ import { ProtectedRoute, useAuth } from "../contexts/AuthProvider.jsx"
 
 const gymkhanaPrefetchLoaders = [
   () => import("../pages/gymkhana/DashboardPage"),
+  () => import("../pages/gymkhana/ClubPage"),
   () => import("../pages/common/ElectionsPage"),
   () => import("../pages/common/GymkhanaEventsPage"),
   () => import("../pages/common/MegaEventsPage"),
+  () => import("../pages/common/PorRequestsPage"),
   () => import("../pages/common/ProfilePage"),
 ]
 
@@ -33,6 +37,36 @@ const GymkhanaRolePrefetch = () => {
 
 const normalizeSubRole = (subRole = "") =>
   String(subRole || "").trim().toLowerCase().replace(/\s+/g, " ")
+
+const ClubOnly = ({ children }) => {
+  const { user, getHomeRoute } = useAuth()
+
+  if (normalizeSubRole(user?.subRole) !== "club") {
+    return (
+      <AccessDenied
+        message="Only club accounts can access the club workspace."
+        to={getHomeRoute()}
+      />
+    )
+  }
+
+  return children
+}
+
+const NonClubOnly = ({ children }) => {
+  const { user, getHomeRoute } = useAuth()
+
+  if (normalizeSubRole(user?.subRole) === "club") {
+    return (
+      <AccessDenied
+        message="Club accounts can only access the club workspace, POR workspace, and profile."
+        to={getHomeRoute()}
+      />
+    )
+  }
+
+  return children
+}
 
 const ElectionOfficerOnly = ({ children }) => {
   const { user, getHomeRoute } = useAuth()
@@ -67,6 +101,10 @@ const NonElectionOfficerOnly = ({ children }) => {
 const GymkhanaHomePage = () => {
   const { user } = useAuth()
 
+  if (normalizeSubRole(user?.subRole) === "club") {
+    return <Navigate to="/gymkhana/club" replace />
+  }
+
   if (normalizeSubRole(user?.subRole) === "election officer") {
     return <Navigate to="/gymkhana/elections" replace />
   }
@@ -83,8 +121,26 @@ const GymkhanaRoutes = () => (
           <Route
             index
             element={
-              <RouteAccessGuard routeKey="route.gymkhana.dashboard" fallback={<NotFoundPage />}>
-                <GymkhanaHomePage />
+              <GymkhanaHomePage />
+            }
+          />
+          <Route
+            path="club"
+            element={
+              <RouteAccessGuard routeKey="route.gymkhana.club" fallback={<NotFoundPage />}>
+                <ClubOnly>
+                  <ClubPage />
+                </ClubOnly>
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="por"
+            element={
+              <RouteAccessGuard routeKey="route.gymkhana.por" fallback={<NotFoundPage />}>
+                <NonElectionOfficerOnly>
+                  <PorRequestsPage />
+                </NonElectionOfficerOnly>
               </RouteAccessGuard>
             }
           />
@@ -93,7 +149,9 @@ const GymkhanaRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.gymkhana.events" fallback={<NotFoundPage />}>
                 <NonElectionOfficerOnly>
-                  <GymkhanaEventsPage />
+                  <NonClubOnly>
+                    <GymkhanaEventsPage />
+                  </NonClubOnly>
                 </NonElectionOfficerOnly>
               </RouteAccessGuard>
             }
@@ -103,7 +161,9 @@ const GymkhanaRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.gymkhana.megaEvents" fallback={<NotFoundPage />}>
                 <NonElectionOfficerOnly>
-                  <MegaEventsPage />
+                  <NonClubOnly>
+                    <MegaEventsPage />
+                  </NonClubOnly>
                 </NonElectionOfficerOnly>
               </RouteAccessGuard>
             }
@@ -121,7 +181,9 @@ const GymkhanaRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.gymkhana.elections" fallback={<NotFoundPage />}>
                 <ElectionOfficerOnly>
-                  <ElectionsPage />
+                  <NonClubOnly>
+                    <ElectionsPage />
+                  </NonClubOnly>
                 </ElectionOfficerOnly>
               </RouteAccessGuard>
             }

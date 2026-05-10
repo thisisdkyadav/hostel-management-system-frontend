@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { useAuth } from "../../contexts/AuthProvider"
 import { ArrowRight } from "lucide-react"
-import { getPostLoginRedirect } from "../../utils/authRedirect"
+import { getDefaultHomeRoute, getPostLoginRedirect } from "../../utils/authRedirect"
 
 const SSOLoginPage = () => {
   const [searchParams] = useSearchParams()
@@ -11,33 +11,6 @@ const SSOLoginPage = () => {
   const { loginWithSSO } = useAuth()
   const [error, setError] = useState(null)
   const [status, setStatus] = useState("Authenticating...")
-
-  const calculateHomeRoute = (user) => {
-    switch (user.role) {
-      case "Student":
-        return "/student"
-      case "Warden":
-        return "/warden"
-      case "Security":
-        return "/guard"
-      case "Hostel Gate":
-        return "/hostel-gate"
-      case "Admin":
-        return "/admin"
-      case "Super Admin":
-        return "/super-admin"
-      case "Maintenance Staff":
-        return "/maintenance"
-      case "Associate Warden":
-        return "/associate-warden"
-      case "Hostel Supervisor":
-        return "/hostel-supervisor"
-      case "Gymkhana":
-        return "/gymkhana"
-      default:
-        return "/login"
-    }
-  }
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -55,7 +28,7 @@ const SSOLoginPage = () => {
         setStatus("Login successful! Redirecting...")
         await new Promise((resolve) => setTimeout(resolve, 800)) // Small delay for visual feedback
 
-        navigate(getPostLoginRedirect(searchParams, calculateHomeRoute(user)), { replace: true })
+        navigate(getPostLoginRedirect(searchParams, getDefaultHomeRoute(user)), { replace: true })
       } catch (err) {
         console.error("SSO verification error:", err)
         setError(err.message || "Failed to authenticate with SSO")

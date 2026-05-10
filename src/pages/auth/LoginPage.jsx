@@ -4,7 +4,7 @@ import { useAuth } from "../../contexts/AuthProvider"
 import LoginWithGoogle from "../../components/LoginWithGoogle"
 import { ArrowRight } from "lucide-react"
 import hmsLogo from "../../assets/hms-logo-t-256.svg"
-import { getPostLoginRedirect } from "../../utils/authRedirect"
+import { getDefaultHomeRoute, getPostLoginRedirect } from "../../utils/authRedirect"
 import "../../styles/login.css"
 
 const LoginPage = () => {
@@ -14,35 +14,8 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const calculateHomeRoute = (user) => {
-    switch (user.role) {
-      case "Student":
-        return "/student"
-      case "Warden":
-        return "/warden"
-      case "Security":
-        return "/guard"
-      case "Hostel Gate":
-        return "/hostel-gate"
-      case "Admin":
-        return "/admin"
-      case "Super Admin":
-        return "/super-admin"
-      case "Maintenance Staff":
-        return "/maintenance"
-      case "Associate Warden":
-        return "/associate-warden"
-      case "Hostel Supervisor":
-        return "/hostel-supervisor"
-      case "Gymkhana":
-        return "/gymkhana"
-      default:
-        return "/login"
-    }
-  }
-
   const getRedirectDestination = (currentUser) => {
-    return getPostLoginRedirect(searchParams, calculateHomeRoute(currentUser))
+    return getPostLoginRedirect(searchParams, getDefaultHomeRoute(currentUser))
   }
 
   useEffect(() => {

@@ -156,6 +156,8 @@ export const getAdminNavItems = (handleLogout, user = null) => {
     { name: "Task Management", icon: ListTodo, section: "main", path: "/admin/task-management", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Visitor Accommodation", icon: BedDouble, section: "main", path: "/admin/visitors", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
     { name: "Events", icon: CalendarDays, section: "main", path: "/admin/events", adminCategory: ADMIN_NAV_CATEGORY_HOSTELS },
+    { name: "Clubs", icon: Users, section: "main", path: "/admin/clubs", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
+    { name: "POR", icon: BadgeCheck, section: "main", path: "/admin/por", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Gymkhana Events", icon: CalendarDays, section: "main", path: "/admin/gymkhana-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/admin/mega-events", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
     { name: "Best All-Rounder Award", icon: Trophy, section: "main", path: "/admin/overall-best-performer", adminCategory: ADMIN_NAV_CATEGORY_STUDENT_AFFAIRS },
@@ -351,6 +353,7 @@ export const getStudentNavItems = (
   { name: "Security", icon: ShieldCheck, section: "main", path: "/student/security" },
   { name: "ID Card", icon: IdCard, section: "main", path: "/student/id-card" },
   { name: "Undertakings", icon: FileSignature, section: "main", path: "/student/undertakings" },
+  { name: "POR", icon: BadgeCheck, section: "main", path: "/student/por" },
   ...(showOverallBestPerformer ? [{ name: "Best Performer", icon: Trophy, section: "main", path: "/student/overall-best-performer" }] : []),
   ...(electionPortalState?.canAccessPortal ? [{
     name: "Elections",
@@ -368,7 +371,18 @@ export const getStudentNavItems = (
 // ============================================
 
 export const getGymkhanaNavItems = (handleLogout, user = null) => {
-  const isElectionOfficer = normalizeSubRole(getSubRoleValue(user)) === "election officer"
+  const normalizedSubRole = normalizeSubRole(getSubRoleValue(user))
+  const isElectionOfficer = normalizedSubRole === "election officer"
+  const isClub = normalizedSubRole === "club"
+
+  if (isClub) {
+    return [
+      { name: "Club Home", icon: Users, section: "main", path: "/gymkhana/club" },
+      { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
+      createProfileItem("/gymkhana"),
+      createLogoutItem(handleLogout),
+    ]
+  }
 
   if (isElectionOfficer) {
     return [
@@ -380,6 +394,7 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
 
   return [
     { name: "Dashboard", icon: LayoutDashboard, section: "main", path: "/gymkhana" },
+    { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
     { name: "Events", icon: CalendarDays, section: "main", path: "/gymkhana/events" },
     { name: "Mega Events", icon: CalendarDays, section: "main", path: "/gymkhana/mega-events" },
     createProfileItem("/gymkhana"),

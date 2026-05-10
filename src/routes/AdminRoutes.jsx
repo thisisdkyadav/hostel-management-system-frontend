@@ -6,6 +6,7 @@ import AdminLayout from "../layouts/AdminLayout"
 const AdminDashboard = lazy(() => import("../pages/admin/DashboardPage"))
 const LiveCheckInOutPage = lazy(() => import("../pages/admin/LiveCheckInOutPage"))
 const FaceScannersPage = lazy(() => import("../pages/admin/FaceScannersPage"))
+const ClubsPage = lazy(() => import("../pages/admin/ClubsPage"))
 const AdminHostels = lazy(() => import("../pages/admin/HostelsPage"))
 const AdminAdminManagement = lazy(() => import("../pages/admin/AdminManagementPage"))
 const AdminWarden = lazy(() => import("../pages/admin/WardensPage"))
@@ -37,6 +38,7 @@ const MegaEventsPage = lazy(() => import("../pages/common/MegaEventsPage"))
 const ProfilePage = lazy(() => import("../pages/common/ProfilePage"))
 const NotificationCenterPage = lazy(() => import("../pages/common/NotificationCenterPage"))
 const OverallBestPerformerPage = lazy(() => import("../pages/common/OverallBestPerformerPage"))
+const PorRequestsPage = lazy(() => import("../pages/common/PorRequestsPage"))
 
 // Warden pages (shared)
 const FeedbacksPage = lazy(() => import("../pages/warden/FeedbacksPage"))
@@ -54,6 +56,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/admin/DashboardPage"),
   () => import("../pages/admin/LiveCheckInOutPage"),
   () => import("../pages/admin/FaceScannersPage"),
+  () => import("../pages/admin/ClubsPage"),
   () => import("../pages/admin/HostelsPage"),
   () => import("../pages/admin/AdminManagementPage"),
   () => import("../pages/admin/WardensPage"),
@@ -83,6 +86,7 @@ const adminPrefetchLoaders = [
   () => import("../pages/common/ProfilePage"),
   () => import("../pages/common/NotificationCenterPage"),
   () => import("../pages/common/OverallBestPerformerPage"),
+  () => import("../pages/common/PorRequestsPage"),
   () => import("../pages/warden/FeedbacksPage"),
 ]
 
@@ -142,6 +146,8 @@ const AdminRoutes = () => {
                 <Route path="visitors" element={guardRoute("route.admin.visitors", <VisitorRequestsPage />)} />
                 <Route path="lost-and-found" element={guardRoute("route.admin.lostAndFound", <LostAndFoundPage />)} />
                 <Route path="events" element={guardRoute("route.admin.events", <EventsPage />)} />
+                <Route path="clubs" element={guardRoute("route.admin.clubs", <ClubsPage />)} />
+                <Route path="por" element={guardRoute("route.admin.por", <PorRequestsPage />)} />
                 <Route path="gymkhana-events" element={guardRoute("route.admin.gymkhanaEvents", <GymkhanaEventsPage />)} />
                 <Route path="mega-events" element={guardRoute("route.admin.megaEvents", <MegaEventsPage />)} />
                 <Route path="overall-best-performer" element={guardRoute("route.admin.overallBestPerformer", <OverallBestPerformerPage />)} />

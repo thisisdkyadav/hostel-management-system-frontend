@@ -17,6 +17,7 @@ const EventsPage = lazy(() => import("../pages/common/EventsPage"))
 const ElectionsPage = lazy(() => import("../pages/common/ElectionsPage"))
 const NotificationCenterPage = lazy(() => import("../pages/common/NotificationCenterPage"))
 const OverallBestPerformerPage = lazy(() => import("../pages/common/OverallBestPerformerPage"))
+const PorRequestsPage = lazy(() => import("../pages/common/PorRequestsPage"))
 
 // Warden pages (shared)
 const FeedbacksPage = lazy(() => import("../pages/warden/FeedbacksPage"))
@@ -42,6 +43,7 @@ const studentPrefetchLoaders = [
   () => import("../pages/common/ElectionsPage"),
   () => import("../pages/common/NotificationCenterPage"),
   () => import("../pages/common/OverallBestPerformerPage"),
+  () => import("../pages/common/PorRequestsPage"),
   () => import("../pages/warden/FeedbacksPage"),
 ]
 
@@ -141,6 +143,14 @@ const StudentRoutes = () => (
             element={
               <RouteAccessGuard routeKey="route.student.undertakings" fallback={<NotFoundPage />}>
                 <UndertakingsPage />
+              </RouteAccessGuard>
+            }
+          />
+          <Route
+            path="por"
+            element={
+              <RouteAccessGuard routeKey="route.student.por" fallback={<NotFoundPage />}>
+                <PorRequestsPage />
               </RouteAccessGuard>
             }
           />

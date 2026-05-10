@@ -3,7 +3,7 @@ import { Navigate, useLocation } from "react-router-dom"
 import { authApi } from "../service"
 import LoadingPage from "@/pages/LoadingPage"
 import useNetworkStatus from "../hooks/useNetworkStatus"
-import { buildLoginRedirectPath } from "../utils/authRedirect"
+import { buildLoginRedirectPath, getDefaultHomeRoute } from "../utils/authRedirect"
 
 export const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
@@ -117,32 +117,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const getHomeRoute = () => {
-    if (!user) return "/login"
-
-    switch (user.role) {
-      case "Student":
-        return "/student"
-      case "Warden":
-        return "/warden"
-      case "Security":
-        return "/guard"
-      case "Hostel Gate":
-        return "/hostel-gate"
-      case "Admin":
-        return "/admin"
-      case "Super Admin":
-        return "/super-admin"
-      case "Maintenance Staff":
-        return "/maintenance"
-      case "Associate Warden":
-        return "/associate-warden"
-      case "Hostel Supervisor":
-        return "/hostel-supervisor"
-      case "Gymkhana":
-        return "/gymkhana"
-      default:
-        return "/login"
-    }
+    return getDefaultHomeRoute(user)
   }
 
   useEffect(() => {
