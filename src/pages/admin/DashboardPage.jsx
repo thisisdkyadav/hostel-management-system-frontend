@@ -248,19 +248,19 @@ const DashboardPage = () => {
             }
             dayScholar.total = Math.max(0, registeredSums.total - normalSums.total)
 
-            // Hostlers are the normal/actual counts (fallback to dashboardData if no degreeWise)
+            // Prefer exact backend counts for hostlers/day scholars; fall back to derived values only if needed.
             const hostler = {
-              boys: normalSums.boys || dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || 0,
-              girls: normalSums.girls || dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || 0,
+              boys: dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || normalSums.boys || 0,
+              girls: dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || normalSums.girls || 0,
             }
-            hostler.total = normalSums.total || dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || hostler.boys + hostler.girls
+            hostler.total = dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || normalSums.total || hostler.boys + hostler.girls
 
-            // Fallback for day scholar if registered info missing: use provided counts
+            // Fall back to derived day scholar counts only if exact backend data is unavailable.
             const finalDayScholar = {
-              boys: dayScholar.boys || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || 0,
-              girls: dayScholar.girls || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || 0,
+              boys: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || dayScholar.boys || 0,
+              girls: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || dayScholar.girls || 0,
             }
-            finalDayScholar.total = dayScholar.total || dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || finalDayScholar.boys + finalDayScholar.girls
+            finalDayScholar.total = dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || dayScholar.total || finalDayScholar.boys + finalDayScholar.girls
 
             return (
               <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
