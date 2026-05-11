@@ -250,17 +250,17 @@ const DashboardPage = () => {
 
             // Prefer exact backend counts for hostlers/day scholars; fall back to derived values only if needed.
             const hostler = {
-              boys: dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys || normalSums.boys || 0,
-              girls: dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls || normalSums.girls || 0,
+              boys: dashboardData?.hostlerAndDayScholarCounts?.hostler?.boys ?? normalSums.boys ?? 0,
+              girls: dashboardData?.hostlerAndDayScholarCounts?.hostler?.girls ?? normalSums.girls ?? 0,
             }
-            hostler.total = dashboardData?.hostlerAndDayScholarCounts?.hostler?.total || normalSums.total || hostler.boys + hostler.girls
+            hostler.total = dashboardData?.hostlerAndDayScholarCounts?.hostler?.total ?? normalSums.total ?? (hostler.boys + hostler.girls)
 
             // Fall back to derived day scholar counts only if exact backend data is unavailable.
             const finalDayScholar = {
-              boys: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys || dayScholar.boys || 0,
-              girls: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls || dayScholar.girls || 0,
+              boys: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.boys ?? dayScholar.boys ?? 0,
+              girls: dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.girls ?? dayScholar.girls ?? 0,
             }
-            finalDayScholar.total = dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total || dayScholar.total || finalDayScholar.boys + finalDayScholar.girls
+            finalDayScholar.total = dashboardData?.hostlerAndDayScholarCounts?.dayScholar?.total ?? dayScholar.total ?? (finalDayScholar.boys + finalDayScholar.girls)
 
             return (
               <div className="flex items-center gap-[var(--spacing-2-5)] border-l border-[var(--color-border-primary)] pl-[var(--spacing-5)]">
