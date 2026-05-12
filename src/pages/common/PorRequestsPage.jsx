@@ -336,6 +336,7 @@ const PorRequestDetailModal = ({
   const canAct = Boolean(request?.permissions?.canApprove)
   const isStudentAffairsApproval =
     viewer?.canSelectPostApprovers && request?.status === "pending_student_affairs"
+  const primaryDecisionLabel = request?.currentApprovalStage === "Dean SA" ? "Approve" : "Recommend"
 
   return (
     <Modal
@@ -559,7 +560,7 @@ const PorRequestDetailModal = ({
                       disabled={actionLoading}
                       loading={actionLoading === "approve"}
                     >
-                      Approve
+                      {primaryDecisionLabel}
                     </Button>
                   </div>
                 </div>
