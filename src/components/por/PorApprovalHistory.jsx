@@ -35,6 +35,8 @@ const formatTimestamp = (value) => {
   return date.toLocaleString()
 }
 
+const isDosaStage = (stage) => stage === "Dean SA"
+
 const timelineRailStyle = {
   position: "relative",
   width: "32px",
@@ -121,11 +123,18 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
     >
       {history.map((log, idx) => {
         const Icon = ACTION_ICONS[log.action] || Clock
-        const color = ACTION_COLORS[log.action] || "default"
+        const baseColor = ACTION_COLORS[log.action] || "default"
         const safeComments = String(log?.comments || "").trim()
         const safeActorName = log.performedBy?.name || "Unknown"
         const safeActorRole = log.performedBy?.subRole || log.performedBy?.email || ""
         const isLast = idx === history.length - 1
+        const actionLabel =
+          log.action === "approved"
+            ? isDosaStage(log.stage)
+              ? "Approved"
+              : "Recommended"
+            : formatActionLabel(log.action)
+        const color = actionLabel === "Recommended" ? "warning" : baseColor
 
         if (compact) {
           return (
@@ -176,7 +185,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                     flexWrap: "wrap",
                   }}
                 >
-                  <Badge variant={color}>{formatActionLabel(log.action)}</Badge>
+                  <Badge variant={color}>{actionLabel}</Badge>
                   <span
                     style={{
                       fontSize: "11px",
@@ -230,9 +239,9 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
               gap: "var(--spacing-3)",
               alignItems: "start",
             }}
-          >
-            <div
-              style={{
+              >
+                <div
+                  style={{
                 paddingTop: "4px",
                 display: "grid",
                 gap: "4px",
@@ -316,7 +325,7 @@ const PorApprovalHistory = ({ porRequestId = null, compact = false }) => {
                   marginBottom: "var(--spacing-1)",
                 }}
               >
-                <Badge variant={color}>{formatActionLabel(log.action)}</Badge>
+                <Badge variant={color}>{actionLabel}</Badge>
                 <span
                   style={{
                     fontSize: "var(--font-size-xs)",
