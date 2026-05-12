@@ -2,23 +2,23 @@
  * AuthZ API Module (Layer-3)
  */
 
-import apiClient from "../core/apiClient"
+import { goApiClient } from "../core/apiClient"
 
 export const authzApi = {
-  getCatalog: () => apiClient.get("/authz/catalog"),
+  getCatalog: () => goApiClient.get("/authz/catalog"),
 
-  getMyAuthz: () => apiClient.get("/authz/me"),
+  getMyAuthz: () => goApiClient.get("/authz/me"),
 
   getUsersByRole: (role = "", params = {}) => {
     const endpoint = role ? `/authz/users/${encodeURIComponent(role)}` : "/authz/users"
-    return apiClient.get(endpoint, { params })
+    return goApiClient.get(endpoint, { params })
   },
 
-  getUserAuthz: (userId) => apiClient.get(`/authz/user/${userId}`),
+  getUserAuthz: (userId) => goApiClient.get(`/authz/user/${userId}`),
 
-  updateUserAuthz: (userId, payload) => apiClient.put(`/authz/user/${userId}`, payload),
+  updateUserAuthz: (userId, payload) => goApiClient.put(`/authz/user/${userId}`, payload),
 
-  resetUserAuthz: (userId, payload = {}) => apiClient.post(`/authz/user/${userId}/reset`, payload),
+  resetUserAuthz: (userId, payload = {}) => goApiClient.post(`/authz/user/${userId}/reset`, payload),
 }
 
 export default authzApi
