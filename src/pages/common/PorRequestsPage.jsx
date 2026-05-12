@@ -163,7 +163,7 @@ const getViewerSubtitle = (mode) => {
     return "Review category-routed POR requests before they move to Office - Student Affairs."
   }
 
-  return "Review POR requests, monitor the approval chain, and assign post-Student-Affairs approvers where required."
+  return "Review POR requests, monitor the approval chain, and assign post-Student-Affairs recommenders where required."
 }
 
 const shouldShowStats = (viewer) => Boolean(viewer?.showStats)
@@ -501,7 +501,7 @@ const PorRequestDetailModal = ({
                 <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
                   <div>
                     <Label htmlFor="por-review-comment">
-                      {isStudentAffairsApproval ? "Review Comment & Next Approvers" : "Review Comment"}
+                      {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
                     </Label>
                     <Textarea
                       id="por-review-comment"
@@ -514,7 +514,7 @@ const PorRequestDetailModal = ({
 
                   {isStudentAffairsApproval ? (
                     <div style={infoBoxStyle}>
-                      <span style={sectionLabelStyle}>Next Approvers</span>
+                      <span style={sectionLabelStyle}>Next Recommenders</span>
                       <div
                         className="grid grid-cols-1 gap-3"
                         style={{ marginTop: "var(--spacing-2)" }}
