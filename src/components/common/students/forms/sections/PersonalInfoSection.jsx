@@ -48,7 +48,7 @@ const PersonalInfoSection = ({ data, onChange }) => {
 
         <FormField label="Email Address" name="email" type="email" value={data.email || ""} onChange={handleChange} required />
 
-        <FormField label="Alumni Email ID" name="alumniEmailId" type="email" value={data.alumniEmailId || ""} onChange={handleChange} />
+        <FormField label="Secondary Email" name="secondaryEmail" type="email" value={data.secondaryEmail || ""} onChange={handleChange} />
 
         <FormField label="Phone Number" name="phone" type="tel" value={data.phone || ""} onChange={handleChange} />
 

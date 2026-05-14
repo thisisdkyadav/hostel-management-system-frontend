@@ -203,7 +203,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
         department: selectedStudent.department || "",
         degree: selectedStudent.degree || "",
         batch: selectedStudent.batch || "",
-        alumniEmailId: selectedStudent.alumniEmailId || "",
+        secondaryEmail: selectedStudent.secondaryEmail || "",
         groups: Array.isArray(selectedStudent.groups) ? selectedStudent.groups : [],
         year: selectedStudent.year || "",
         admissionDate: selectedStudent.admissionDate || "",
@@ -315,7 +315,7 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Mail size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
-                      <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.alumniEmailId || "N/A"}</span>
+                      <span style={{ color: "var(--color-text-body)", fontSize: "var(--font-size-sm)" }}>{studentDetails.secondaryEmail || "N/A"}</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Phone size={16} style={{ color: "var(--color-primary)", marginRight: "var(--spacing-2)", flexShrink: 0 }} />
@@ -462,9 +462,9 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>{studentDetails.address || "N/A"}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: "var(--spacing-4)" }}>
-                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Alumni Email ID:</span>
+                    <span style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)", flexShrink: 0 }}>Secondary Email:</span>
                     <span style={{ fontWeight: "var(--font-weight-medium)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", textAlign: "right", wordBreak: "break-word" }}>
-                      {studentDetails.alumniEmailId || "N/A"}
+                      {studentDetails.secondaryEmail || "N/A"}
                     </span>
                   </div>
                 </div>
@@ -1018,12 +1018,12 @@ const StudentDetailModal = ({ selectedStudent, setShowStudentDetail, onUpdate, i
             >
               Email Student
             </a>
-            {studentDetails.alumniEmailId ? (
+            {studentDetails.secondaryEmail ? (
               <a
-                href={`mailto:${studentDetails.alumniEmailId}`}
+                href={`mailto:${studentDetails.secondaryEmail}`}
                 style={{ padding: "var(--spacing-2-5) var(--spacing-4)", backgroundColor: "var(--color-primary)", color: "var(--color-white)", borderRadius: "var(--radius-lg)", textDecoration: "none", transition: "var(--transition-all)", boxShadow: "var(--shadow-sm)" }}
               >
-                Email Alumni ID
+                Email Secondary Address
               </a>
             ) : null}
             {canEditStudentProfile && (

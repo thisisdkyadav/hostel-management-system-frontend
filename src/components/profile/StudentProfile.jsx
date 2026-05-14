@@ -32,7 +32,7 @@ const normalizeStudentProfile = (profile) => {
     guardian: profile.guardian || "",
     guardianPhone: profile.guardianPhone || "",
     guardianEmail: profile.guardianEmail || "",
-    alumniEmailId: profile.alumniEmailId || "",
+    secondaryEmail: profile.secondaryEmail || "",
     hostel: profile.hostel || "",
     unit: profile.unit || "",
     room: profile.room || "",
@@ -129,7 +129,7 @@ const StudentProfile = ({ user }) => {
         <div>
           <ProfileCard title="Personal Information">
             <ProfileInfo label="Email Address" value={studentData.email} icon={FiMail} />
-            <ProfileInfo label="Alumni Email ID" value={studentData.alumniEmailId} icon={FiMail} />
+            <ProfileInfo label="Secondary Email" value={studentData.secondaryEmail} icon={FiMail} />
             <ProfileInfo label="Phone Number" value={studentData.phone} icon={FiPhone} />
             <ProfileInfo label="Roll Number" value={studentData.rollNumber} icon={FiHash} />
             <ProfileInfo label="Permanent Address" value={studentData.address} icon={FiMapPin} />
