@@ -690,6 +690,13 @@ const statusTone = (status) => {
   return "warning"
 }
 
+const getApplicationWindowLabel = (status) => {
+  if (status === "open") return "Application open"
+  if (status === "scheduled") return "Upcoming"
+  if (status === "closed") return "Closed"
+  return "Unavailable"
+}
+
 const INTER_INTRA_ACTIVITY_MARKS = [
   "Inter IIT top 3 - 5",
   "Inter IIT top 5 - 4",
@@ -1885,6 +1892,7 @@ const OverallBestPerformerPage = () => {
   const [occurrenceForm, setOccurrenceForm] = useState({
     title: "",
     awardYear: String(new Date().getFullYear()),
+    applyStartAt: "",
     applyEndAt: "",
     description: "",
     eligibleRows: [],
@@ -2040,6 +2048,7 @@ const OverallBestPerformerPage = () => {
       setOccurrenceForm({
         title: occurrenceDetail.occurrence.title || "",
         awardYear: String(occurrenceDetail.occurrence.awardYear || new Date().getFullYear()),
+        applyStartAt: formatDateTimeInput(occurrenceDetail.occurrence.applyStartAt),
         applyEndAt: formatDateTimeInput(occurrenceDetail.occurrence.applyEndAt),
         description: occurrenceDetail.occurrence.description || "",
         eligibleRows: [],
@@ -2051,6 +2060,7 @@ const OverallBestPerformerPage = () => {
     setOccurrenceForm({
       title: "",
       awardYear: String(new Date().getFullYear()),
+      applyStartAt: "",
       applyEndAt: "",
       description: "",
       eligibleRows: [],
@@ -2077,8 +2087,18 @@ const OverallBestPerformerPage = () => {
       return
     }
 
+    if (!occurrenceForm.applyStartAt) {
+      toast.error("Application start date is required")
+      return
+    }
+
     if (!occurrenceForm.applyEndAt) {
-      toast.error("Application deadline is required")
+      toast.error("Application end date is required")
+      return
+    }
+
+    if (new Date(occurrenceForm.applyStartAt) >= new Date(occurrenceForm.applyEndAt)) {
+      toast.error("Application start date must be before the end date")
       return
     }
 
@@ -2092,6 +2112,7 @@ const OverallBestPerformerPage = () => {
       const payload = {
         title: occurrenceForm.title.trim(),
         awardYear: Number(occurrenceForm.awardYear || new Date().getFullYear()),
+        applyStartAt: new Date(occurrenceForm.applyStartAt).toISOString(),
         applyEndAt: new Date(occurrenceForm.applyEndAt).toISOString(),
         description: occurrenceForm.description.trim(),
         ...(rollNumbers.length > 0 ? { eligibleRollNumbers: rollNumbers } : {}),
@@ -2265,12 +2286,20 @@ const OverallBestPerformerPage = () => {
             title={
               portalState?.data?.studentStatusAllowed === false
                 ? "Best Performer unavailable"
+                : portalState?.data?.applicationWindowStatus === "scheduled"
+                  ? "Application window not started"
+                  : portalState?.data?.applicationWindowStatus === "closed"
+                    ? "Application window closed"
                 : "No accessible occurrence"
             }
             description={
               portalState?.data?.studentStatusAllowed === false
                 ? "Only students with Active or Graduated status can access the Best Performer portal."
-                : "There is no active Overall Best Performer occurrence for you right now."
+                : portalState?.data?.applicationWindowStatus === "scheduled"
+                  ? "The Best Performer portal will become visible only after the configured application start date."
+                  : portalState?.data?.applicationWindowStatus === "closed"
+                    ? "The Best Performer portal is visible to students only between the configured application start and end date."
+                    : "There is no active Overall Best Performer occurrence for you right now."
             }
           />
         </div>
@@ -2322,9 +2351,9 @@ const OverallBestPerformerPage = () => {
             ) : null}
           </>
         ) : (
-          <div style={badgeStyle(currentOccurrence?.status === "active" ? "primary" : "default")}>
+          <div style={badgeStyle(currentOccurrence?.applicationWindowStatus === "open" ? "primary" : "default")}>
             <Trophy size={14} />
-            {currentOccurrence?.status === "active" ? "Application open" : "Submitted occurrence"}
+            {getApplicationWindowLabel(currentOccurrence?.applicationWindowStatus)}
           </div>
         )}
       </PageHeader>
@@ -2334,9 +2363,10 @@ const OverallBestPerformerPage = () => {
           <>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
               <SummaryMetric icon={CalendarDays} label="Award year" value={currentOccurrence.awardYear} />
-              <SummaryMetric icon={Clock3} label="Deadline" value={new Date(currentOccurrence.applyEndAt).toLocaleString()} />
+              <SummaryMetric icon={Clock3} label="Application starts" value={currentOccurrence.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"} />
+              <SummaryMetric icon={Clock3} label="Application ends" value={new Date(currentOccurrence.applyEndAt).toLocaleString()} />
               <SummaryMetric icon={Users} label="Eligible students" value={currentOccurrence.eligibleStudentCount || 0} />
-              <SummaryMetric icon={Trophy} label="Status" value={currentOccurrence.status} />
+              <SummaryMetric icon={Trophy} label="Window" value={getApplicationWindowLabel(currentOccurrence.applicationWindowStatus)} />
             </div>
 
             {currentOccurrence.description ? (
@@ -2414,7 +2444,10 @@ const OverallBestPerformerPage = () => {
               <div style={{ ...panelBodyStyle, display: "grid", gap: "var(--spacing-3)" }}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--spacing-2)" }}>
                   <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
-                    Deadline: {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
+                    Start: {currentOccurrence?.applyStartAt ? new Date(currentOccurrence.applyStartAt).toLocaleString() : "—"}
+                  </span>
+                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
+                    End: {currentOccurrence?.applyEndAt ? new Date(currentOccurrence.applyEndAt).toLocaleString() : "—"}
                   </span>
                   <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
                     Min CGPA/CPI: 6.50
@@ -2432,7 +2465,7 @@ const OverallBestPerformerPage = () => {
                     Application rules
                   </div>
                   <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
-                    You can edit your application until the deadline. Eligibility follows the manual form: only students with Active or Graduated status, passing out student declaration, minimum CGPA/CPI 6.50, no disciplinary action, and no FR grade counted in academics. Once the deadline passes, the application becomes read-only and remains visible only if you applied in that occurrence.
+                    The portal is visible to students only between the configured application start and end date. During that window, you can edit your application. Eligibility follows the manual form: only students with Active or Graduated status, passing out student declaration, minimum CGPA/CPI 6.50, no disciplinary action, and no FR grade counted in academics.
                   </div>
                 </div>
               </div>
@@ -2966,6 +2999,10 @@ const OverallBestPerformerPage = () => {
               <div>
                 <label style={fieldLabelStyle}>Award year</label>
                 <input value={occurrenceForm.awardYear} onChange={(event) => setOccurrenceForm((current) => ({ ...current, awardYear: event.target.value }))} style={inputStyle} />
+              </div>
+              <div>
+                <label style={fieldLabelStyle}>Application start date</label>
+                <input type="datetime-local" value={occurrenceForm.applyStartAt} onChange={(event) => setOccurrenceForm((current) => ({ ...current, applyStartAt: event.target.value }))} style={inputStyle} />
               </div>
               <div>
                 <label style={fieldLabelStyle}>Application end date</label>
