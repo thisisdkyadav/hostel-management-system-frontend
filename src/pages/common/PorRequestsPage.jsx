@@ -25,7 +25,7 @@ const createDefaultForm = () => ({
 })
 
 const POST_SA_STAGE_ORDER = [
-  "Joint Registrar SA",
+  "Officer SA",
   "Associate Dean SA",
   "Dean SA",
 ]

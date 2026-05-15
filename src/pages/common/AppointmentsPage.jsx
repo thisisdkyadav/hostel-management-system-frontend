@@ -7,7 +7,7 @@ import { Badge, Pagination, Select, Textarea, useToast, StatCards } from "@/comp
 import { appointmentsApi } from "../../service"
 import { useAuth } from "../../contexts/AuthProvider"
 
-const APPOINTMENT_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
+const APPOINTMENT_SUBROLES = ["Officer SA", "Associate Dean SA", "Dean SA"]
 const APPOINTMENT_STATUS_TAB_CONFIG = [
   { label: "All", value: "all" },
   { label: "Pending", value: "Pending" },

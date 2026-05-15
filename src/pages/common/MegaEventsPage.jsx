@@ -15,7 +15,7 @@ import PdfUploadField from "@/components/common/pdf/PdfUploadField"
 const EXPENSE_STATUS_TO_APPROVER = {
   pending: "Student Affairs",
   pending_student_affairs: "Student Affairs",
-  pending_joint_registrar: "Joint Registrar SA",
+  pending_joint_registrar: "Officer SA",
   pending_associate_dean: "Associate Dean SA",
   pending_dean: "Dean SA",
 }
@@ -24,13 +24,13 @@ const PROPOSAL_STATUS_TO_APPROVER = {
   pending: "Student Affairs",
   pending_president: "President Gymkhana",
   pending_student_affairs: "Student Affairs",
-  pending_joint_registrar: "Joint Registrar SA",
+  pending_joint_registrar: "Officer SA",
   pending_associate_dean: "Associate Dean SA",
   pending_dean: "Dean SA",
 }
 
 const POST_STUDENT_AFFAIRS_STAGE_OPTIONS = [
-  "Joint Registrar SA",
+  "Officer SA",
   "Associate Dean SA",
   "Dean SA",
 ]

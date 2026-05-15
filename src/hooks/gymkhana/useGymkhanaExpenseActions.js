@@ -174,7 +174,7 @@ export const useGymkhanaExpenseActions = ({
 
     const expenseStatusBySubRole = {
       "Student Affairs": "pending_student_affairs",
-      "Joint Registrar SA": "pending_joint_registrar",
+      "Officer SA": "pending_joint_registrar",
       "Associate Dean SA": "pending_associate_dean",
       "Dean SA": "pending_dean",
     }

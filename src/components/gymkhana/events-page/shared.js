@@ -180,7 +180,7 @@ export const VALID_OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/
 export const CALENDAR_STATUS_TO_APPROVER = {
   pending_president: "President Gymkhana",
   pending_student_affairs: "Student Affairs",
-  pending_joint_registrar: "Joint Registrar SA",
+  pending_joint_registrar: "Officer SA",
   pending_associate_dean: "Associate Dean SA",
   pending_dean: "Dean SA",
 }
@@ -188,12 +188,12 @@ export const PROPOSAL_STATUS_TO_APPROVER = {
   pending: "Student Affairs",
   pending_president: "President Gymkhana",
   pending_student_affairs: "Student Affairs",
-  pending_joint_registrar: "Joint Registrar SA",
+  pending_joint_registrar: "Officer SA",
   pending_associate_dean: "Associate Dean SA",
   pending_dean: "Dean SA",
 }
 export const POST_STUDENT_AFFAIRS_STAGE_OPTIONS = [
-  "Joint Registrar SA",
+  "Officer SA",
   "Associate Dean SA",
   "Dean SA",
 ]

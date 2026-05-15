@@ -70,7 +70,7 @@ const createProfileItem = (basePath) => ({
   path: `${basePath}/profile`
 })
 
-const APPOINTMENT_ADMIN_SUBROLES = ["Joint Registrar SA", "Associate Dean SA", "Dean SA"]
+const APPOINTMENT_ADMIN_SUBROLES = ["Officer SA", "Associate Dean SA", "Dean SA"]
 
 const normalizeSubRole = (subRole = "") => String(subRole).trim().toLowerCase().replace(/\s+/g, " ")
 
