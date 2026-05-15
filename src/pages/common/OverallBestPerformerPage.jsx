@@ -2262,8 +2262,16 @@ const OverallBestPerformerPage = () => {
         <PageHeader title="Overall Best Performer" subtitle="Student portal" showDate={false} />
         <div style={{ padding: "var(--spacing-6)" }}>
           <EmptyState
-            title="No accessible occurrence"
-            description="There is no active Overall Best Performer occurrence for you right now."
+            title={
+              portalState?.data?.studentStatusAllowed === false
+                ? "Best Performer unavailable"
+                : "No accessible occurrence"
+            }
+            description={
+              portalState?.data?.studentStatusAllowed === false
+                ? "Only students with Active or Graduated status can access the Best Performer portal."
+                : "There is no active Overall Best Performer occurrence for you right now."
+            }
           />
         </div>
       </div>
@@ -2414,6 +2422,9 @@ const OverallBestPerformerPage = () => {
                   <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
                     Passing-out students only
                   </span>
+                  <span style={buildMetaChipStyle({ backgroundColor: "var(--color-bg-primary)" })}>
+                    Allowed status: Active / Graduated
+                  </span>
                 </div>
 
                 <div>
@@ -2421,7 +2432,7 @@ const OverallBestPerformerPage = () => {
                     Application rules
                   </div>
                   <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
-                    You can edit your application until the deadline. Eligibility follows the manual form: passing out student, minimum CGPA/CPI 6.50, no disciplinary action, and no FR grade counted in academics. Once the deadline passes, the application becomes read-only and remains visible only if you applied in that occurrence.
+                    You can edit your application until the deadline. Eligibility follows the manual form: only students with Active or Graduated status, passing out student declaration, minimum CGPA/CPI 6.50, no disciplinary action, and no FR grade counted in academics. Once the deadline passes, the application becomes read-only and remains visible only if you applied in that occurrence.
                   </div>
                 </div>
               </div>
@@ -2454,6 +2465,9 @@ const OverallBestPerformerPage = () => {
                     <span style={buildMetaChipStyle()}>{portalState?.data?.student?.name || "Student"}</span>
                     <span style={buildMetaChipStyle()}>{portalState?.data?.student?.rollNumber || "—"}</span>
                     <span style={buildMetaChipStyle()}>{portalState?.data?.student?.department || "—"}</span>
+                    <span style={buildMetaChipStyle()}>
+                      Status: {portalState?.data?.student?.status || "—"}
+                    </span>
                     <span style={buildMetaChipStyle()}>Review: {currentApplication?.review?.status || "draft"}</span>
                   </div>
                   {currentApplication?.review?.status === "rejected" && currentApplication.review?.remarks ? (
