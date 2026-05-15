@@ -178,6 +178,123 @@ const buildClubOptions = (clubs = []) =>
     label: club.name || "Club",
   }))
 
+const isGroupedReviewEligible = (request, viewer) =>
+  viewer?.mode !== "student" &&
+  Boolean(request?.permissions?.canApprove) &&
+  isPendingStatus(request?.status) &&
+  Boolean(request?.student?.id || request?.student?._id || request?.student?.rollNumber || request?.student?.email) &&
+  Boolean(request?.currentApprovalStage)
+
+const buildGroupedReviewKey = (request) => {
+  const studentKey =
+    request?.student?.id ||
+    request?.student?._id ||
+    request?.student?.rollNumber ||
+    request?.student?.email ||
+    request?.student?.name ||
+    "student"
+
+  return [
+    studentKey,
+    request?.currentApprovalStage || "",
+    request?.status || "",
+  ].join("::")
+}
+
+const buildGroupSummary = (requests = []) => {
+  const clubs = Array.from(new Set(requests.map((request) => request?.club?.name).filter(Boolean)))
+  const positions = Array.from(new Set(requests.map((request) => request?.positionTitle).filter(Boolean)))
+  const categories = Array.from(new Set(requests.map((request) => request?.gymkhanaCategoryLabel).filter(Boolean)))
+  const latestUpdatedAt = requests
+    .map((request) => request?.updatedAt || request?.createdAt || null)
+    .filter(Boolean)
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] || null
+
+  return {
+    clubs,
+    positions,
+    categories,
+    latestUpdatedAt,
+  }
+}
+
+const buildTableRows = (requests = [], viewer = {}) => {
+  if (viewer?.mode === "student") {
+    return requests.map((request) => ({
+      rowType: "single",
+      id: request.id,
+      request,
+    }))
+  }
+
+  const grouped = new Map()
+  const tableRows = []
+
+  requests.forEach((request) => {
+    if (!isGroupedReviewEligible(request, viewer)) {
+      tableRows.push({
+        rowType: "single",
+        id: request.id,
+        request,
+      })
+      return
+    }
+
+    const key = buildGroupedReviewKey(request)
+    if (!grouped.has(key)) {
+      grouped.set(key, [])
+    }
+    grouped.get(key).push(request)
+  })
+
+  grouped.forEach((groupRequests, key) => {
+    if (groupRequests.length === 1) {
+      tableRows.push({
+        rowType: "single",
+        id: groupRequests[0].id,
+        request: groupRequests[0],
+      })
+      return
+    }
+
+    const primaryRequest = groupRequests[0]
+    const summary = buildGroupSummary(groupRequests)
+
+    tableRows.push({
+      rowType: "group",
+      id: `group:${key}`,
+      requests: groupRequests,
+      student: primaryRequest.student,
+      status: primaryRequest.status,
+      currentApprovalStage: primaryRequest.currentApprovalStage,
+      isActionRequired: groupRequests.some((request) => request?.isActionRequired),
+      gymkhanaCategoryLabel:
+        summary.categories.length === 1
+          ? summary.categories[0]
+          : summary.categories.length > 1
+            ? `Multiple (${summary.categories.length})`
+            : "—",
+      updatedAt: summary.latestUpdatedAt,
+      clubs: summary.clubs,
+      positions: summary.positions,
+      requestCount: groupRequests.length,
+      primaryRequest,
+    })
+  })
+
+  return tableRows.sort((a, b) => {
+    const aDate = new Date(a.rowType === "group" ? a.updatedAt : a.request?.updatedAt || a.request?.createdAt || 0).getTime()
+    const bDate = new Date(b.rowType === "group" ? b.updatedAt : b.request?.updatedAt || b.request?.createdAt || 0).getTime()
+    return bDate - aDate
+  })
+}
+
+const buildGroupedRequestCommentState = (requests = []) =>
+  requests.reduce((acc, request) => {
+    acc[request.id] = request?.rejectionReason || ""
+    return acc
+  }, {})
+
 const PorRequestFormModal = ({
   isOpen,
   isSaving,
@@ -603,6 +720,286 @@ const PorRequestDetailModal = ({
   )
 }
 
+const PorRequestGroupModal = ({
+  isOpen,
+  group,
+  viewer,
+  approversByStage,
+  useCommonComment,
+  onUseCommonCommentChange,
+  commonReviewComment,
+  onCommonReviewCommentChange,
+  perRequestComments,
+  onPerRequestCommentChange,
+  postSaAssignments,
+  onPostSaAssignmentChange,
+  onClose,
+  onApprove,
+  onReject,
+  onRequestRevision,
+  onOpenIndividual,
+  actionLoading,
+}) => {
+  if (!isOpen || !group?.requests?.length) return null
+
+  const requests = group.requests
+  const student = group.student || {}
+  const isStudentAffairsApproval =
+    viewer?.canSelectPostApprovers && group?.status === "pending_student_affairs"
+  const primaryDecisionLabel = group?.currentApprovalStage === "Dean SA" ? "Approve" : "Recommend"
+  const commentRequiredForBulkNegativeAction = useCommonComment
+    ? Boolean(String(commonReviewComment || "").trim())
+    : requests.every((request) => Boolean(String(perRequestComments?.[request.id] || "").trim()))
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Grouped POR Review"
+      width={1180}
+      minHeight="60vh"
+      closeButtonVariant="button"
+    >
+      <div style={detailBodyStyle}>
+        <div style={metaBarStyle}>
+          <div style={metaBarLeftStyle}>
+            <span style={buildMetaChipStyle()}>
+              <Users size={12} />
+              {student?.name || "Student"}
+            </span>
+            <span style={buildMetaChipStyle()}>{student?.rollNumber || student?.email || "—"}</span>
+            <Badge variant={getStatusVariant(group.status)}>{formatStatusLabel(group.status)}</Badge>
+            <span style={buildMetaChipStyle()}>
+              <ShieldCheck size={12} />
+              {formatStageLabel(group.currentApprovalStage)}
+            </span>
+            <span style={buildMetaChipStyle()}>
+              <FileText size={12} />
+              {group.requestCount} PORs
+            </span>
+          </div>
+        </div>
+
+        <div
+          className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.9fr)]"
+          style={{ gap: "var(--spacing-4)", alignItems: "start" }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <EventDetailSectionCard
+              icon={Users}
+              title="Student Overview"
+              accentColor="var(--color-info)"
+            >
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
+                  <EventDetailInfoRow label="Name" value={student?.name || "—"} />
+                  <EventDetailInfoRow label="Roll Number" value={student?.rollNumber || "—"} />
+                  <EventDetailInfoRow label="Email" value={student?.email || "—"} />
+                </div>
+                <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
+                  <EventDetailInfoRow label="Department" value={student?.department || "—"} />
+                  <EventDetailInfoRow label="Degree" value={student?.degree || "—"} />
+                  <EventDetailInfoRow label="Batch" value={student?.batch || "—"} />
+                </div>
+              </div>
+            </EventDetailSectionCard>
+
+            <EventDetailSectionCard
+              icon={FileText}
+              title="POR Requests"
+              accentColor="var(--color-primary)"
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-3)" }}>
+                {requests.map((request, index) => (
+                  <div
+                    key={request.id}
+                    style={{
+                      border: "1px solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-card-sm)",
+                      backgroundColor: "var(--color-bg-secondary)",
+                      padding: "var(--spacing-3)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "var(--spacing-2)",
+                        flexWrap: "wrap",
+                        marginBottom: "var(--spacing-2)",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+                        <span
+                          style={buildMetaChipStyle({
+                            fontFamily: "monospace",
+                            backgroundColor: "var(--color-bg-muted)",
+                          })}
+                        >
+                          {request.id}
+                        </span>
+                        <span style={buildMetaChipStyle()}>{request.club?.name || "—"}</span>
+                        <span style={buildMetaChipStyle()}>{request.gymkhanaCategoryLabel || "—"}</span>
+                      </div>
+
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => onOpenIndividual?.(request)}
+                      >
+                        Open Individually
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                      <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
+                        <EventDetailInfoRow label="Position" value={request.positionTitle || "—"} />
+                        <EventDetailInfoRow label="Tenure" value={request.tenure || "—"} />
+                        <EventDetailInfoRow
+                          label="Disciplinary Disclosure"
+                          value={request.hasDisciplinaryAction ? "Yes" : "No"}
+                        />
+                      </div>
+
+                      <div style={{ display: "grid", gap: "var(--spacing-2)" }}>
+                        <div style={infoBoxStyle}>
+                          <span style={sectionLabelStyle}>Responsibilities</span>
+                          <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
+                            {request.positionDetails || "—"}
+                          </div>
+                        </div>
+
+                        {request.hasDisciplinaryAction ? (
+                          <div style={infoBoxStyle}>
+                            <span style={sectionLabelStyle}>Disciplinary Details</span>
+                            <div style={{ marginTop: "var(--spacing-2)", ...detailTextStyle }}>
+                              {request.disciplinaryActionDetails || "No details provided."}
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {!useCommonComment ? (
+                      <div style={{ marginTop: "var(--spacing-3)" }}>
+                        <Label htmlFor={`group-por-comment-${request.id}`}>
+                          Comment for POR {index + 1}
+                        </Label>
+                        <Textarea
+                          id={`group-por-comment-${request.id}`}
+                          value={perRequestComments?.[request.id] || ""}
+                          onChange={(event) => onPerRequestCommentChange?.(request.id, event.target.value)}
+                          rows={3}
+                          placeholder="Add a separate comment for this POR request"
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </EventDetailSectionCard>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+            <EventDetailSectionCard
+              icon={BadgeCheck}
+              title="Grouped Review Decision"
+              accentColor="var(--color-primary)"
+            >
+              <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+                <Checkbox
+                  id="por-group-common-comment"
+                  checked={useCommonComment}
+                  onChange={(event) => onUseCommonCommentChange?.(Boolean(event?.target?.checked))}
+                  label="Use one common comment for all selected POR requests"
+                />
+
+                {useCommonComment ? (
+                  <div>
+                    <Label htmlFor="por-group-review-comment">
+                      {isStudentAffairsApproval ? "Review Comment & Next Recommenders" : "Review Comment"}
+                    </Label>
+                    <Textarea
+                      id="por-group-review-comment"
+                      value={commonReviewComment}
+                      onChange={(event) => onCommonReviewCommentChange?.(event.target.value)}
+                      rows={5}
+                      placeholder="Add one comment to apply across all selected POR requests"
+                    />
+                  </div>
+                ) : (
+                  <div style={infoBoxStyle}>
+                    <span style={sectionLabelStyle}>Per-POR Comments</span>
+                    <div
+                      style={{
+                        marginTop: "var(--spacing-2)",
+                        fontSize: "var(--font-size-sm)",
+                        color: "var(--color-text-muted)",
+                      }}
+                    >
+                      Enter comments inside each POR card on the left when you want different rejection or modification notes.
+                    </div>
+                  </div>
+                )}
+
+                {isStudentAffairsApproval ? (
+                  <div style={infoBoxStyle}>
+                    <span style={sectionLabelStyle}>Next Recommenders</span>
+                    <div className="grid grid-cols-1 gap-3" style={{ marginTop: "var(--spacing-2)" }}>
+                      {POST_SA_STAGE_ORDER.map((stage) => (
+                        <div key={stage}>
+                          <Label htmlFor={`group-por-approver-${stage}`}>{stage}</Label>
+                          <Select
+                            id={`group-por-approver-${stage}`}
+                            value={postSaAssignments[stage] || ""}
+                            onChange={(event) => onPostSaAssignmentChange?.(stage, event.target.value)}
+                            options={(approversByStage?.[stage] || []).map((option) => ({
+                              value: option.userId || option.value,
+                              label: option.label,
+                            }))}
+                            placeholder="Optional"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="flex flex-wrap justify-end gap-3">
+                  <Button
+                    variant="secondary"
+                    onClick={onRequestRevision}
+                    disabled={actionLoading || !commentRequiredForBulkNegativeAction}
+                    loading={actionLoading === "revision"}
+                  >
+                    Modification Required
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={onReject}
+                    disabled={actionLoading || !commentRequiredForBulkNegativeAction}
+                    loading={actionLoading === "reject"}
+                  >
+                    Reject All
+                  </Button>
+                  <Button
+                    onClick={onApprove}
+                    disabled={actionLoading}
+                    loading={actionLoading === "approve"}
+                  >
+                    {primaryDecisionLabel} All
+                  </Button>
+                </div>
+              </div>
+            </EventDetailSectionCard>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
 const PorRequestsPage = () => {
   const [workspace, setWorkspace] = useState({
     viewer: null,
@@ -618,11 +1015,17 @@ const PorRequestsPage = () => {
   const [showFormModal, setShowFormModal] = useState(false)
   const [editingRequest, setEditingRequest] = useState(null)
   const [selectedRequest, setSelectedRequest] = useState(null)
+  const [selectedRequestGroup, setSelectedRequestGroup] = useState(null)
   const [formData, setFormData] = useState(createDefaultForm())
   const [savingForm, setSavingForm] = useState(false)
   const [reviewComment, setReviewComment] = useState("")
+  const [groupReviewComment, setGroupReviewComment] = useState("")
+  const [useCommonGroupComment, setUseCommonGroupComment] = useState(true)
+  const [groupRequestComments, setGroupRequestComments] = useState({})
   const [postSaAssignments, setPostSaAssignments] = useState({})
+  const [groupPostSaAssignments, setGroupPostSaAssignments] = useState({})
   const [actionLoading, setActionLoading] = useState("")
+  const [groupActionLoading, setGroupActionLoading] = useState("")
 
   const fetchWorkspace = async ({ keepLoading = false } = {}) => {
     try {
@@ -691,6 +1094,11 @@ const PorRequestsPage = () => {
     })
   }, [activeTab, requests, searchTerm])
 
+  const tableRows = useMemo(
+    () => buildTableRows(filteredRequests, viewer),
+    [filteredRequests, viewer]
+  )
+
   const tableColumns = useMemo(() => {
     const columns = []
 
@@ -698,16 +1106,19 @@ const PorRequestsPage = () => {
       columns.push({
         header: "Student",
         key: "student",
-        render: (request) => (
+        render: (row) => {
+          const student = row.rowType === "group" ? row.student : row.request?.student
+          return (
           <div style={{ display: "grid", gap: "4px" }}>
             <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
-              {request.student.name || "—"}
+                {student?.name || "—"}
             </div>
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-              {request.student.rollNumber || "—"}
+                {student?.rollNumber || "—"}
             </div>
           </div>
-        ),
+          )
+        },
       })
     }
 
@@ -715,21 +1126,49 @@ const PorRequestsPage = () => {
       {
         header: "Club / POR",
         key: "club",
-        render: (request) => (
-          <div style={{ display: "grid", gap: "4px" }}>
-            <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
-              {request.club.name || "—"}
+        render: (row) => {
+          if (row.rowType === "group") {
+            const clubsLabel =
+              row.clubs.length === 1
+                ? row.clubs[0]
+                : `${row.clubs.length} clubs`
+            const positionsPreview =
+              row.positions.length <= 2
+                ? row.positions.join(", ")
+                : `${row.positions.slice(0, 2).join(", ")} +${row.positions.length - 2} more`
+
+            return (
+              <div style={{ display: "grid", gap: "4px" }}>
+                <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                  {row.requestCount} POR requests
+                </div>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  {clubsLabel}
+                </div>
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  {positionsPreview || "Multiple positions"}
+                </div>
+              </div>
+            )
+          }
+
+          const request = row.request
+          return (
+            <div style={{ display: "grid", gap: "4px" }}>
+              <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+                {request.club.name || "—"}
+              </div>
+              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                {request.positionTitle || "—"}
+              </div>
             </div>
-            <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-              {request.positionTitle || "—"}
-            </div>
-          </div>
-        ),
+          )
+        },
       },
       {
         header: "Tenure",
         key: "tenure",
-        render: (request) => request.tenure || "—",
+        render: (row) => (row.rowType === "group" ? "Multiple" : row.request?.tenure || "—"),
       }
     )
 
@@ -737,7 +1176,10 @@ const PorRequestsPage = () => {
       columns.push({
         header: "Category",
         key: "category",
-        render: (request) => request.gymkhanaCategoryLabel || "—",
+        render: (row) =>
+          row.rowType === "group"
+            ? row.gymkhanaCategoryLabel || "—"
+            : row.request?.gymkhanaCategoryLabel || "—",
       })
     }
 
@@ -745,22 +1187,30 @@ const PorRequestsPage = () => {
       {
         header: "Status",
         key: "status",
-        render: (request) => (
+        render: (row) => {
+          const status = row.rowType === "group" ? row.status : row.request?.status
+          const isActionRequired = row.rowType === "group" ? row.isActionRequired : row.request?.isActionRequired
+
+          return (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-            <Badge variant={getStatusVariant(request.status)}>{formatStatusLabel(request.status)}</Badge>
-            {request.isActionRequired ? <Badge variant="warning">Action Required</Badge> : null}
+              <Badge variant={getStatusVariant(status)}>{formatStatusLabel(status)}</Badge>
+              {isActionRequired ? <Badge variant="warning">Action Required</Badge> : null}
+              {row.rowType === "group" ? <Badge variant="info">Grouped</Badge> : null}
           </div>
-        ),
+          )
+        },
       },
       {
         header: "Current Stage",
         key: "currentApprovalStage",
-        render: (request) => formatStageLabel(request.currentApprovalStage),
+        render: (row) =>
+          formatStageLabel(row.rowType === "group" ? row.currentApprovalStage : row.request?.currentApprovalStage),
       },
       {
         header: "Updated",
         key: "updatedAt",
-        render: (request) => formatDateTime(request.updatedAt),
+        render: (row) =>
+          formatDateTime(row.rowType === "group" ? row.updatedAt : row.request?.updatedAt),
       }
     )
 
@@ -784,6 +1234,7 @@ const PorRequestsPage = () => {
       tenure: request?.tenure || "",
     })
     setSelectedRequest(null)
+    setSelectedRequestGroup(null)
     setShowFormModal(true)
   }
 
@@ -827,8 +1278,19 @@ const PorRequestsPage = () => {
 
   const openRequest = (request) => {
     setSelectedRequest(request)
+    setSelectedRequestGroup(null)
     setReviewComment(request?.rejectionReason || "")
     setPostSaAssignments({})
+  }
+
+  const openRequestGroup = (group) => {
+    setSelectedRequest(null)
+    setSelectedRequestGroup(group)
+    setGroupReviewComment("")
+    setUseCommonGroupComment(true)
+    setGroupRequestComments(buildGroupedRequestCommentState(group?.requests || []))
+    setGroupPostSaAssignments({})
+    setGroupActionLoading("")
   }
 
   const closeRequestModal = () => {
@@ -836,6 +1298,26 @@ const PorRequestsPage = () => {
     setReviewComment("")
     setPostSaAssignments({})
     setActionLoading("")
+  }
+
+  const closeRequestGroupModal = () => {
+    setSelectedRequestGroup(null)
+    setGroupReviewComment("")
+    setUseCommonGroupComment(true)
+    setGroupRequestComments({})
+    setGroupPostSaAssignments({})
+    setGroupActionLoading("")
+  }
+
+  const openTableRow = (row) => {
+    if (row?.rowType === "group") {
+      openRequestGroup(row)
+      return
+    }
+
+    if (row?.request) {
+      openRequest(row.request)
+    }
   }
 
   const handleApprove = async () => {
@@ -894,6 +1376,120 @@ const PorRequestsPage = () => {
       console.error("Failed to request POR revision:", err)
       toast.error(err?.message || "Failed to request modification.")
       setActionLoading("")
+    }
+  }
+
+  const getGroupCommentForRequest = (requestId) =>
+    useCommonGroupComment ? groupReviewComment : groupRequestComments?.[requestId] || ""
+
+  const buildNextApproversPayload = (assignments = {}) =>
+    POST_SA_STAGE_ORDER
+      .map((stage) => ({
+        stage,
+        userId: assignments[stage],
+      }))
+      .filter((assignment) => assignment.userId)
+
+  const handleGroupApprove = async () => {
+    const requestsToProcess = selectedRequestGroup?.requests || []
+    if (requestsToProcess.length === 0) return
+
+    setGroupActionLoading("approve")
+
+    try {
+      const nextApprovers = buildNextApproversPayload(groupPostSaAssignments)
+      const results = await Promise.allSettled(
+        requestsToProcess.map((request) =>
+          porApi.approve(request.id, {
+            comments: getGroupCommentForRequest(request.id),
+            nextApprovers,
+          })
+        )
+      )
+
+      const successCount = results.filter((result) => result.status === "fulfilled").length
+      const failureCount = results.length - successCount
+      const primaryDecisionLabel =
+        selectedRequestGroup?.currentApprovalStage === "Dean SA" ? "approved" : "recommended"
+
+      if (failureCount === 0) {
+        toast.success(`${successCount} POR request${successCount === 1 ? "" : "s"} ${primaryDecisionLabel}.`)
+      } else {
+        toast.error(
+          `${successCount} POR request${successCount === 1 ? "" : "s"} processed, ${failureCount} failed.`
+        )
+      }
+
+      closeRequestGroupModal()
+      await fetchWorkspace({ keepLoading: true })
+    } catch (err) {
+      console.error("Failed to process grouped POR approval:", err)
+      toast.error(err?.message || "Failed to process grouped POR requests.")
+      setGroupActionLoading("")
+    }
+  }
+
+  const handleGroupReject = async () => {
+    const requestsToProcess = selectedRequestGroup?.requests || []
+    if (requestsToProcess.length === 0) return
+
+    setGroupActionLoading("reject")
+
+    try {
+      const results = await Promise.allSettled(
+        requestsToProcess.map((request) => porApi.reject(request.id, getGroupCommentForRequest(request.id)))
+      )
+
+      const successCount = results.filter((result) => result.status === "fulfilled").length
+      const failureCount = results.length - successCount
+
+      if (failureCount === 0) {
+        toast.success(`${successCount} POR request${successCount === 1 ? "" : "s"} rejected.`)
+      } else {
+        toast.error(
+          `${successCount} POR request${successCount === 1 ? "" : "s"} rejected, ${failureCount} failed.`
+        )
+      }
+
+      closeRequestGroupModal()
+      await fetchWorkspace({ keepLoading: true })
+    } catch (err) {
+      console.error("Failed to process grouped POR rejection:", err)
+      toast.error(err?.message || "Failed to reject grouped POR requests.")
+      setGroupActionLoading("")
+    }
+  }
+
+  const handleGroupRequestRevision = async () => {
+    const requestsToProcess = selectedRequestGroup?.requests || []
+    if (requestsToProcess.length === 0) return
+
+    setGroupActionLoading("revision")
+
+    try {
+      const results = await Promise.allSettled(
+        requestsToProcess.map((request) =>
+          porApi.requestRevision(request.id, getGroupCommentForRequest(request.id))
+        )
+      )
+
+      const successCount = results.filter((result) => result.status === "fulfilled").length
+      const failureCount = results.length - successCount
+
+      if (failureCount === 0) {
+        toast.success(`Modification requested for ${successCount} POR request${successCount === 1 ? "" : "s"}.`)
+      } else {
+        toast.error(
+          `Modification requested for ${successCount} POR request${successCount === 1 ? "" : "s"}, ${failureCount} failed.`
+        )
+      }
+
+      closeRequestGroupModal()
+      await fetchWorkspace({ keepLoading: true })
+    } catch (err) {
+      console.error("Failed to request grouped POR revisions:", err)
+      toast.error(err?.message || "Failed to request grouped POR modifications.")
+      setGroupActionLoading("")
     }
   }
 
@@ -971,10 +1567,10 @@ const PorRequestsPage = () => {
           ) : (
             <DataTable
               columns={tableColumns}
-              data={filteredRequests}
+              data={tableRows}
               loading={false}
               emptyMessage="No POR requests match the current filters."
-              onRowClick={openRequest}
+              onRowClick={openTableRow}
             />
           )}
         </div>
@@ -1012,6 +1608,31 @@ const PorRequestsPage = () => {
         onRequestRevision={handleRequestRevision}
         onEdit={() => openEditModal(selectedRequest)}
         actionLoading={actionLoading}
+      />
+
+      <PorRequestGroupModal
+        isOpen={Boolean(selectedRequestGroup)}
+        group={selectedRequestGroup}
+        viewer={viewer}
+        approversByStage={workspace.approversByStage}
+        useCommonComment={useCommonGroupComment}
+        onUseCommonCommentChange={setUseCommonGroupComment}
+        commonReviewComment={groupReviewComment}
+        onCommonReviewCommentChange={setGroupReviewComment}
+        perRequestComments={groupRequestComments}
+        onPerRequestCommentChange={(requestId, value) =>
+          setGroupRequestComments((current) => ({ ...current, [requestId]: value }))
+        }
+        postSaAssignments={groupPostSaAssignments}
+        onPostSaAssignmentChange={(stage, value) =>
+          setGroupPostSaAssignments((current) => ({ ...current, [stage]: value }))
+        }
+        onClose={closeRequestGroupModal}
+        onApprove={handleGroupApprove}
+        onReject={handleGroupReject}
+        onRequestRevision={handleGroupRequestRevision}
+        onOpenIndividual={(request) => openRequest(request)}
+        actionLoading={groupActionLoading}
       />
     </div>
   )

@@ -5,6 +5,8 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
+  Eye,
+  ExternalLink,
   Plus,
   Save,
   Trophy,
@@ -27,7 +29,7 @@ import {
   useToast,
 } from "@/components/ui/feedback"
 import { useAuth } from "@/contexts/AuthProvider"
-import { overallBestPerformerApi, uploadApi } from "@/service"
+import { overallBestPerformerApi, porApi, uploadApi } from "@/service"
 import { getMediaUrl } from "@/utils/mediaUtils"
 
 const BTP_AWARD_OPTIONS = [
@@ -98,6 +100,91 @@ const CO_CURRICULAR_OPTIONS = [
   { value: "workshop", label: "Workshop" },
   { value: "social_service", label: "Social service" },
 ]
+
+const PROOF_SOURCE_OPTIONS = [
+  { value: "upload", label: "Upload PDF" },
+  { value: "por", label: "Use Verified POR" },
+]
+
+const BTP_AWARD_POINTS = {
+  none: 0,
+  institute_best: 5,
+  second: 4,
+  third: 3,
+  department_award_or_nomination: 2,
+}
+
+const PROJECT_GRADE_POINTS = {
+  none: 0,
+  AP: 5,
+  AA: 4,
+  AB: 3,
+  BB: 2,
+  OTHER: 1,
+}
+
+const PUBLICATION_POINTS = {
+  journal_first_author: 4,
+  journal_co_author: 2,
+  patent_granted: 5,
+  patent_filed: 2,
+  patent_published: 3,
+  conference_first_author: 2,
+  conference_co_author: 1,
+}
+
+const TECHNOLOGY_TRANSFER_POINTS = {
+  lead_role: 4,
+  supporting_role: 2,
+}
+
+const RESPONSIBILITY_POINTS = {
+  gymkhana_or_fluxus_coordinator_or_il_event_organiser: 5,
+  club_head_or_placmgr_or_fluxus_head_or_senator: 4,
+  organiser_of_national_level_event: 4,
+  chair_of_scientific_body: 4,
+  position_holder_in_scientific_body: 3,
+  organiser_or_avana_or_coordinator: 3,
+  team_member: 2,
+  participation: 1,
+}
+
+const AWARD_POINTS = {
+  young_scientist_award: 7.5,
+  incubator_generating_revenue: 5,
+  international_award: 5,
+  incubated_startup: 4,
+  national_award: 3,
+}
+
+const ACTIVITY_LEVEL_POINTS = {
+  inter_iit_top_3: 5,
+  inter_iit_top_5: 4,
+  intra_iit_top_3: 3,
+  intra_iit_top_5: 2,
+  participation_inter_iit: 2,
+  participation_intra_iit: 1,
+}
+
+const CO_CURRICULAR_POINTS = {
+  competitive_exam_topper: 4,
+  competitive_exam_rank_2_5: 3,
+  competitive_exam_rank_6_10: 2,
+  competitive_exam_participation: 1,
+  workshop: 2,
+  social_service: 2,
+}
+
+const SECTION_MAX_POINTS = {
+  coursework: 15,
+  projectThesis: 15,
+  responsibilities: 15,
+  awards: 15,
+  cultural: 10,
+  scienceTechnology: 10,
+  gamesSports: 10,
+  coCurricular: 10,
+}
 
 const surfaceStyle = {
   backgroundColor: "var(--color-bg-primary)",
@@ -225,7 +312,9 @@ const createEmptyItem = (scoreType = "") => ({
   referenceCode: "",
   scoreType,
   notes: "",
+  proofSourceType: "upload",
   proofUrl: "",
+  proofPorId: "",
 })
 
 const createEmptyReference = () => ({
@@ -247,14 +336,164 @@ const formatDateTimeInput = (value) => {
   return `${year}-${month}-${day}T${hours}:${minutes}`
 }
 
-const buildProofs = (proofUrl, referenceCode) => {
+const resolvePrimaryProof = (proofs = []) => (Array.isArray(proofs) ? proofs[0] || null : null)
+
+const buildProofStateFromProofs = (proofs = []) => {
+  const proof = resolvePrimaryProof(proofs)
+
+  if (proof?.sourceType === "por") {
+    return {
+      proofSourceType: "por",
+      proofUrl: "",
+      proofPorId: proof?.porRequestId || proof?.linkedPor?.id || "",
+    }
+  }
+
+  return {
+    proofSourceType: "upload",
+    proofUrl: proof?.url || "",
+    proofPorId: "",
+  }
+}
+
+const hasSelectedProof = ({ proofSourceType = "upload", proofUrl = "", proofPorId = "" } = {}) =>
+  proofSourceType === "por" ? Boolean(String(proofPorId || "").trim()) : Boolean(String(proofUrl || "").trim())
+
+const buildProofs = ({ proofSourceType = "upload", proofUrl = "", proofPorId = "" } = {}, referenceCode) => {
+  if (proofSourceType === "por") {
+    if (!proofPorId) return []
+    return [
+      {
+        label: referenceCode || "Verified POR",
+        sourceType: "por",
+        porRequestId: proofPorId,
+        url: "",
+      },
+    ]
+  }
+
   if (!proofUrl) return []
   return [
     {
       label: referenceCode || "Proof",
+      sourceType: "upload",
       url: proofUrl,
     },
   ]
+}
+
+const roundToTwo = (value) => Math.round((Number(value) + Number.EPSILON) * 100) / 100
+const clampPoints = (value, max) => Math.max(0, Math.min(roundToTwo(value), max))
+
+const sumItemPoints = (items = [], pointsMap = {}, max = Number.POSITIVE_INFINITY) => {
+  const total = (Array.isArray(items) ? items : []).reduce((sum, item) => {
+    const hasMinimumData = String(item?.title || "").trim() && String(item?.scoreType || "").trim()
+    if (!hasMinimumData) return sum
+    return sum + Number(pointsMap[item.scoreType] || 0)
+  }, 0)
+
+  return clampPoints(total, max)
+}
+
+const computeStudentScorePreview = (form = {}) => {
+  const coursework = clampPoints(Number(form?.coursework?.scoreValue || 0) * 1.5, SECTION_MAX_POINTS.coursework)
+
+  const publicationTotal = sumItemPoints(
+    form?.projectThesis?.publicationItems,
+    PUBLICATION_POINTS,
+    form?.projectThesis?.track === "pg_thesis" ? 10 : 5
+  )
+
+  const projectThesis =
+    form?.projectThesis?.track === "pg_thesis"
+      ? clampPoints(
+          publicationTotal +
+            sumItemPoints(
+              form?.projectThesis?.technologyTransferItems,
+              TECHNOLOGY_TRANSFER_POINTS,
+              5
+            ),
+          SECTION_MAX_POINTS.projectThesis
+        )
+      : clampPoints(
+          publicationTotal +
+            Number(BTP_AWARD_POINTS[form?.projectThesis?.btpAwardLevel] || 0) +
+            Number(PROJECT_GRADE_POINTS[form?.projectThesis?.projectGrade] || 0),
+          SECTION_MAX_POINTS.projectThesis
+        )
+
+  const breakdown = {
+    coursework,
+    projectThesis,
+    responsibilities: sumItemPoints(
+      form?.responsibilityItems,
+      RESPONSIBILITY_POINTS,
+      SECTION_MAX_POINTS.responsibilities
+    ),
+    awards: sumItemPoints(form?.awardItems, AWARD_POINTS, SECTION_MAX_POINTS.awards),
+    cultural: sumItemPoints(form?.culturalItems, ACTIVITY_LEVEL_POINTS, SECTION_MAX_POINTS.cultural),
+    scienceTechnology: sumItemPoints(
+      form?.scienceTechnologyItems,
+      ACTIVITY_LEVEL_POINTS,
+      SECTION_MAX_POINTS.scienceTechnology
+    ),
+    gamesSports: sumItemPoints(
+      form?.gamesSportsItems,
+      ACTIVITY_LEVEL_POINTS,
+      SECTION_MAX_POINTS.gamesSports
+    ),
+    coCurricular: sumItemPoints(
+      form?.coCurricularItems,
+      CO_CURRICULAR_POINTS,
+      SECTION_MAX_POINTS.coCurricular
+    ),
+  }
+
+  breakdown.total = roundToTwo(
+    breakdown.coursework +
+      breakdown.projectThesis +
+      breakdown.responsibilities +
+      breakdown.awards +
+      breakdown.cultural +
+      breakdown.scienceTechnology +
+      breakdown.gamesSports +
+      breakdown.coCurricular
+  )
+
+  return breakdown
+}
+
+const collectLinkedPorsFromApplication = (application = null) => {
+  if (!application) return []
+
+  const proofs = []
+  const pushProofs = (entries = []) => {
+    for (const proof of Array.isArray(entries) ? entries : []) {
+      if (proof?.linkedPor?.id) {
+        proofs.push(proof.linkedPor)
+      }
+    }
+  }
+
+  pushProofs(application?.coursework?.proofs)
+  pushProofs(application?.projectThesis?.btpAwardProofs)
+  pushProofs(application?.projectThesis?.projectGradeProofs)
+
+  for (const item of application?.projectThesis?.publicationItems || []) pushProofs(item?.proofs)
+  for (const item of application?.projectThesis?.technologyTransferItems || []) pushProofs(item?.proofs)
+  for (const item of application?.responsibilityItems || []) pushProofs(item?.proofs)
+  for (const item of application?.awardItems || []) pushProofs(item?.proofs)
+  for (const item of application?.culturalItems || []) pushProofs(item?.proofs)
+  for (const item of application?.scienceTechnologyItems || []) pushProofs(item?.proofs)
+  for (const item of application?.gamesSportsItems || []) pushProofs(item?.proofs)
+  for (const item of application?.coCurricularItems || []) pushProofs(item?.proofs)
+
+  const uniqueById = new Map()
+  for (const por of proofs) {
+    uniqueById.set(por.id, por)
+  }
+
+  return [...uniqueById.values()]
 }
 
 const toFormItems = (items = []) =>
@@ -268,7 +507,7 @@ const toFormItems = (items = []) =>
     referenceCode: item?.referenceCode || "",
     scoreType: item?.scoreType || "",
     notes: item?.notes || "",
-    proofUrl: item?.proofs?.[0]?.url || "",
+    ...buildProofStateFromProofs(item?.proofs),
   }))
 
 const toFormReferences = (references = []) => {
@@ -314,18 +553,32 @@ const createInitialForm = (student = {}, application = null) => ({
         ? String(application.coursework.scoreValue)
         : "",
     notes: application?.coursework?.notes || "",
-    proofUrl: application?.coursework?.proofs?.[0]?.url || "",
+    ...buildProofStateFromProofs(application?.coursework?.proofs),
   },
   projectThesis: {
     track: application?.projectThesis?.track || "btech_project",
     btpAwardLevel: application?.projectThesis?.btpAwardLevel || "none",
     btpAwardTitle: application?.projectThesis?.btpAwardTitle || "",
     btpAwardNotes: application?.projectThesis?.btpAwardNotes || "",
-    btpAwardProofUrl: application?.projectThesis?.btpAwardProofs?.[0]?.url || "",
+    ...(() => {
+      const proofState = buildProofStateFromProofs(application?.projectThesis?.btpAwardProofs)
+      return {
+        btpAwardProofSourceType: proofState.proofSourceType,
+        btpAwardProofUrl: proofState.proofUrl,
+        btpAwardProofPorId: proofState.proofPorId,
+      }
+    })(),
     projectGrade: application?.projectThesis?.projectGrade || "none",
     projectGradeTitle: application?.projectThesis?.projectGradeTitle || "",
     projectGradeNotes: application?.projectThesis?.projectGradeNotes || "",
-    projectGradeProofUrl: application?.projectThesis?.projectGradeProofs?.[0]?.url || "",
+    ...(() => {
+      const proofState = buildProofStateFromProofs(application?.projectThesis?.projectGradeProofs)
+      return {
+        projectGradeProofSourceType: proofState.proofSourceType,
+        projectGradeProofUrl: proofState.proofUrl,
+        projectGradeProofPorId: proofState.proofPorId,
+      }
+    })(),
     publicationItems: toFormItems(application?.projectThesis?.publicationItems),
     technologyTransferItems: toFormItems(application?.projectThesis?.technologyTransferItems),
   },
@@ -350,7 +603,7 @@ const sanitizeItemsForPayload = (items = []) =>
       referenceCode: item.referenceCode || "",
       scoreType: item.scoreType,
       notes: item.notes || "",
-      proofs: buildProofs(item.proofUrl, item.referenceCode),
+      proofs: buildProofs(item, item.referenceCode),
     }))
 
 const buildPayload = (form) => ({
@@ -387,7 +640,7 @@ const buildPayload = (form) => ({
     evaluationMode: form.coursework.evaluationMode,
     scoreValue: Number(form.coursework.scoreValue || 0),
     notes: form.coursework.notes || "",
-    proofs: buildProofs(form.coursework.proofUrl, "COURSEWORK"),
+    proofs: buildProofs(form.coursework, "COURSEWORK"),
   },
   projectThesis: {
     track: form.projectThesis.track,
@@ -396,14 +649,28 @@ const buildPayload = (form) => ({
     btpAwardNotes: form.projectThesis.btpAwardNotes || "",
     btpAwardProofs:
       form.projectThesis.btpAwardLevel !== "none"
-        ? buildProofs(form.projectThesis.btpAwardProofUrl, "BTP")
+        ? buildProofs(
+            {
+              proofSourceType: form.projectThesis.btpAwardProofSourceType,
+              proofUrl: form.projectThesis.btpAwardProofUrl,
+              proofPorId: form.projectThesis.btpAwardProofPorId,
+            },
+            "BTP"
+          )
         : [],
     projectGrade: form.projectThesis.projectGrade,
     projectGradeTitle: form.projectThesis.projectGradeTitle || "",
     projectGradeNotes: form.projectThesis.projectGradeNotes || "",
     projectGradeProofs:
       form.projectThesis.projectGrade !== "none"
-        ? buildProofs(form.projectThesis.projectGradeProofUrl, "GRADE")
+        ? buildProofs(
+            {
+              proofSourceType: form.projectThesis.projectGradeProofSourceType,
+              proofUrl: form.projectThesis.projectGradeProofUrl,
+              proofPorId: form.projectThesis.projectGradeProofPorId,
+            },
+            "GRADE"
+          )
         : [],
     publicationItems: sanitizeItemsForPayload(form.projectThesis.publicationItems),
     technologyTransferItems: sanitizeItemsForPayload(form.projectThesis.technologyTransferItems),
@@ -589,8 +856,8 @@ const validateScoredItems = (items = [], sectionTitle = "section") => {
     if (!String(item.scoreType || "").trim()) {
       return `${sectionTitle}: scoring category is required for item ${index + 1}.`
     }
-    if (!String(item.proofUrl || "").trim()) {
-      return `${sectionTitle}: supporting PDF is required for item ${index + 1}.`
+    if (!hasSelectedProof(item)) {
+      return `${sectionTitle}: supporting proof is required for item ${index + 1}.`
     }
   }
 
@@ -603,6 +870,238 @@ const uploadBestPerformerProof = async (file) => {
   return uploadApi.uploadOverallBestPerformerProofPDF(formData)
 }
 
+const getPorOptionLabel = (por) => {
+  if (!por) return "Select verified POR"
+  const parts = [por.positionTitle, por.club?.name, por.tenure].filter(Boolean)
+  return parts.join(" · ") || por.id
+}
+
+const PorProofDetailModal = ({ open, onClose, porRequest }) => {
+  if (!open || !porRequest) return null
+
+  return (
+    <Modal
+      title="Verified POR Details"
+      onClose={onClose}
+      width={980}
+      minHeight="50vh"
+      closeButtonVariant="button"
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
+        <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+          <span style={buildMetaChipStyle({ fontFamily: "monospace", backgroundColor: "var(--color-bg-muted)" })}>
+            {porRequest.id}
+          </span>
+          <span style={buildMetaChipStyle()}>{porRequest.status || "approved"}</span>
+          <span style={buildMetaChipStyle()}>{porRequest.gymkhanaCategoryLabel || "—"}</span>
+          <span style={buildMetaChipStyle()}>
+            <CalendarDays size={12} />
+            {porRequest.approvedAt
+              ? `Verified ${new Date(porRequest.approvedAt).toLocaleString()}`
+              : porRequest.updatedAt || porRequest.createdAt
+                ? `Updated ${new Date(porRequest.updatedAt || porRequest.createdAt).toLocaleString()}`
+                : "Timestamp unavailable"}
+          </span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.15fr) minmax(0, 0.85fr)", gap: "var(--spacing-4)" }}>
+          <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+            <div style={fieldClusterStyle}>
+              <span style={sectionLabelStyle}>POR Submission</span>
+              <div style={{ fontSize: "var(--font-size-lg)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                {porRequest.positionTitle || "—"}
+              </div>
+              <div style={{ color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
+                Tenure: {porRequest.tenure || "—"}
+              </div>
+              <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+                {porRequest.positionDetails || "—"}
+              </div>
+            </div>
+
+            <div style={fieldClusterStyle}>
+              <span style={sectionLabelStyle}>Disciplinary Disclosure</span>
+              <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                {porRequest.hasDisciplinaryAction ? "Disciplinary action disclosed" : "No disciplinary action declared"}
+              </div>
+              {porRequest.hasDisciplinaryAction ? (
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-body)", lineHeight: 1.7 }}>
+                  {porRequest.disciplinaryActionDetails || "No details provided."}
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+            <div style={fieldClusterStyle}>
+              <span style={sectionLabelStyle}>Student Details</span>
+              <div style={{ display: "grid", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <div><strong>Name:</strong> {porRequest.student?.name || "—"}</div>
+                <div><strong>Roll Number:</strong> {porRequest.student?.rollNumber || "—"}</div>
+                <div><strong>Email:</strong> {porRequest.student?.email || "—"}</div>
+                <div><strong>Department:</strong> {porRequest.student?.department || "—"}</div>
+                <div><strong>Degree:</strong> {porRequest.student?.degree || "—"}</div>
+                <div><strong>Batch:</strong> {porRequest.student?.batch || "—"}</div>
+              </div>
+            </div>
+
+            <div style={fieldClusterStyle}>
+              <span style={sectionLabelStyle}>Routing Details</span>
+              <div style={{ display: "grid", gap: "var(--spacing-2)", fontSize: "var(--font-size-sm)", color: "var(--color-text-body)" }}>
+                <div><strong>Club:</strong> {porRequest.club?.name || "—"}</div>
+                <div><strong>Club Email:</strong> {porRequest.club?.email || "—"}</div>
+                <div><strong>GS Category:</strong> {porRequest.gymkhanaCategoryLabel || "—"}</div>
+                <div><strong>Current Stage:</strong> {porRequest.currentApprovalStage || "Completed"}</div>
+                <div><strong>Revision Count:</strong> {porRequest.revisionCount || 0}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+const SupportingProofField = ({
+  label,
+  proofSourceType = "upload",
+  proofUrl = "",
+  proofPorId = "",
+  onChange,
+  verifiedPors = [],
+  disabled = false,
+  uploadedText = "Supporting PDF uploaded",
+  viewerTitle = "Supporting document",
+}) => {
+  const [showPorModal, setShowPorModal] = useState(false)
+  const selectedPor = (verifiedPors || []).find((por) => por.id === proofPorId) || null
+  const canUsePor = Array.isArray(verifiedPors) && verifiedPors.length > 0
+  const effectiveSourceType = proofSourceType === "por" && canUsePor ? "por" : "upload"
+
+  const handleSourceChange = (nextSourceType) => {
+    if (nextSourceType === "por") {
+      onChange({
+        proofSourceType: "por",
+        proofUrl: "",
+        proofPorId: proofPorId || selectedPor?.id || "",
+      })
+      return
+    }
+
+    onChange({
+      proofSourceType: "upload",
+      proofUrl,
+      proofPorId: "",
+    })
+  }
+
+  return (
+    <>
+      <div style={{ display: "grid", gap: "var(--spacing-3)" }}>
+        {canUsePor ? (
+          <div style={fieldClusterStyle}>
+            <span style={sectionLabelStyle}>Proof Source</span>
+            <div style={{ display: "flex", gap: "var(--spacing-2)", flexWrap: "wrap" }}>
+              {PROOF_SOURCE_OPTIONS.map((option) => (
+                <Button
+                  key={`${label}-${option.value}`}
+                  size="sm"
+                  variant={effectiveSourceType === option.value ? undefined : "secondary"}
+                  onClick={() => handleSourceChange(option.value)}
+                  disabled={disabled}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {effectiveSourceType === "por" ? (
+          <div style={fieldClusterStyle}>
+            <span style={sectionLabelStyle}>{label}</span>
+            <select
+              value={proofPorId}
+              onChange={(event) =>
+                onChange({
+                  proofSourceType: "por",
+                  proofUrl: "",
+                  proofPorId: event.target.value,
+                })
+              }
+              disabled={disabled}
+              style={inputStyle}
+            >
+              <option value="">Select a verified POR</option>
+              {(verifiedPors || []).map((por) => (
+                <option key={por.id} value={por.id}>
+                  {getPorOptionLabel(por)}
+                </option>
+              ))}
+            </select>
+
+            {selectedPor ? (
+              <div
+                style={{
+                  padding: "var(--spacing-3)",
+                  borderRadius: "var(--radius-card-sm)",
+                  border: "1px solid var(--color-border-primary)",
+                  backgroundColor: "var(--color-bg-secondary)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "var(--spacing-3)",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div style={{ display: "grid", gap: "4px" }}>
+                  <div style={{ fontSize: "var(--font-size-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--color-text-primary)" }}>
+                    {selectedPor.positionTitle || "Verified POR"}
+                  </div>
+                  <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
+                    {selectedPor.club?.name || "—"} · {selectedPor.gymkhanaCategoryLabel || "—"} · {selectedPor.tenure || "—"}
+                  </div>
+                </div>
+                <Button size="sm" variant="secondary" onClick={() => setShowPorModal(true)}>
+                  <Eye size={14} /> View POR
+                </Button>
+              </div>
+            ) : (
+              <div style={helperTextStyle}>Select one of your verified PORs to use it as supporting proof.</div>
+            )}
+          </div>
+        ) : (
+          <PdfUploadField
+            label={label}
+            value={proofUrl}
+            onChange={(url) =>
+              onChange({
+                proofSourceType: "upload",
+                proofUrl: url,
+                proofPorId: "",
+              })
+            }
+            onUpload={uploadBestPerformerProof}
+            disabled={disabled}
+            uploadedText={uploadedText}
+            viewerTitle={viewerTitle}
+          />
+        )}
+
+        {!canUsePor ? (
+          <div style={helperTextStyle}>Only uploaded PDFs are available right now because you do not have any verified PORs yet.</div>
+        ) : null}
+      </div>
+
+      <PorProofDetailModal
+        open={showPorModal}
+        onClose={() => setShowPorModal(false)}
+        porRequest={selectedPor}
+      />
+    </>
+  )
+}
+
 const MinimalScoredItemsEditor = ({
   step,
   title,
@@ -610,6 +1109,7 @@ const MinimalScoredItemsEditor = ({
   items,
   onChange,
   options,
+  verifiedPors = [],
   disabled = false,
   uploadLabel = "Supporting document",
   titleLabel = "Title",
@@ -622,6 +1122,12 @@ const MinimalScoredItemsEditor = ({
 
   const updateItem = (index, field, value) => {
     onChange(rows.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)))
+  }
+
+  const updateItemFields = (index, nextFields) => {
+    onChange(
+      rows.map((item, itemIndex) => (itemIndex === index ? { ...item, ...nextFields } : item))
+    )
   }
 
   const addItem = () => {
@@ -639,7 +1145,7 @@ const MinimalScoredItemsEditor = ({
           <div style={fieldClusterStyle}>
             <span style={sectionLabelStyle}>No Entries Added</span>
             <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)", lineHeight: 1.6 }}>
-              Add only the relevant achievements for this section. A supporting PDF is required for every item.
+              Add only the relevant achievements for this section. Every item needs either an uploaded PDF or one of your verified PORs as supporting proof.
             </div>
           </div>
         ) : null}
@@ -703,11 +1209,13 @@ const MinimalScoredItemsEditor = ({
                 />
               </div>
               <div>
-                <PdfUploadField
+                <SupportingProofField
                   label={uploadLabel}
-                  value={item.proofUrl}
-                  onChange={(url) => updateItem(index, "proofUrl", url)}
-                  onUpload={uploadBestPerformerProof}
+                  proofSourceType={item.proofSourceType}
+                  proofUrl={item.proofUrl}
+                  proofPorId={item.proofPorId}
+                  onChange={(proofState) => updateItemFields(index, proofState)}
+                  verifiedPors={verifiedPors}
                   disabled={disabled}
                   uploadedText="Supporting PDF uploaded"
                   viewerTitle={`${title} supporting document`}
@@ -757,10 +1265,13 @@ const SingleSelectionAchievementEditor = ({
   titleValue,
   notesValue,
   proofUrl,
+  proofSourceType = "upload",
+  proofPorId = "",
   onValueChange,
   onTitleChange,
   onNotesChange,
   onProofChange,
+  verifiedPors = [],
   disabled = false,
   titleLabel = "Title",
   titlePlaceholder = "",
@@ -802,11 +1313,13 @@ const SingleSelectionAchievementEditor = ({
             />
           </div>
           <div>
-            <PdfUploadField
+            <SupportingProofField
               label="Supporting document"
-              value={proofUrl}
+              proofSourceType={proofSourceType}
+              proofUrl={proofUrl}
+              proofPorId={proofPorId}
               onChange={onProofChange}
-              onUpload={uploadBestPerformerProof}
+              verifiedPors={verifiedPors}
               disabled={disabled}
               uploadedText="Supporting PDF uploaded"
               viewerTitle={`${heading} supporting document`}
@@ -1102,7 +1615,35 @@ const MarkingSchemeModal = ({ open, onClose }) => {
   )
 }
 
-const ItemsReviewTable = ({ title, items = [] }) => {
+const ProofActionButton = ({ proof, onViewPor }) => {
+  if (!proof) {
+    return <span style={{ color: "var(--color-text-muted)" }}>—</span>
+  }
+
+  if (proof.sourceType === "por") {
+    if (!proof.linkedPor) {
+      return <span style={{ color: "var(--color-text-muted)" }}>Verified POR linked</span>
+    }
+
+    return (
+      <Button size="sm" variant="secondary" onClick={() => onViewPor?.(proof.linkedPor || null)}>
+        <Eye size={14} /> View POR
+      </Button>
+    )
+  }
+
+  if (proof.url) {
+    return (
+      <a href={getMediaUrl(proof.url)} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+        <ExternalLink size={14} /> Open PDF
+      </a>
+    )
+  }
+
+  return <span style={{ color: "var(--color-text-muted)" }}>—</span>
+}
+
+const ItemsReviewTable = ({ title, items = [], onViewPor }) => {
   if (!items.length) return null
 
   return (
@@ -1131,13 +1672,7 @@ const ItemsReviewTable = ({ title, items = [] }) => {
                 <td style={{ padding: "10px 12px", color: "var(--color-text-body)" }}>{item.referenceCode || "—"}</td>
                 <td style={{ padding: "10px 12px", color: "var(--color-primary)", fontWeight: "var(--font-weight-semibold)" }}>{item.calculatedPoints || 0}</td>
                 <td style={{ padding: "10px 12px" }}>
-                  {item.proofs?.[0]?.url ? (
-                    <a href={getMediaUrl(item.proofs[0].url)} target="_blank" rel="noreferrer" style={{ color: "var(--color-primary)" }}>
-                      Open
-                    </a>
-                  ) : (
-                    <span style={{ color: "var(--color-text-muted)" }}>—</span>
-                  )}
+                  <ProofActionButton proof={resolvePrimaryProof(item.proofs)} onViewPor={onViewPor} />
                 </td>
               </tr>
             ))}
@@ -1156,10 +1691,12 @@ const ReviewModal = ({
   deciding,
 }) => {
   const [remarks, setRemarks] = useState("")
+  const [activePorDetail, setActivePorDetail] = useState(null)
 
   useEffect(() => {
     if (open) {
       setRemarks(application?.review?.remarks || "")
+      setActivePorDetail(null)
     }
   }, [open, application])
 
@@ -1197,16 +1734,12 @@ const ReviewModal = ({
                   <div><strong>No FR grade:</strong> {application.personalAcademic?.hasNoFrGrade ? "Yes" : "No"}</div>
                   <div><strong>Declaration accepted:</strong> {application.personalAcademic?.declarationAccepted ? "Yes" : "No"}</div>
                 </div>
-                {application.coursework?.proofs?.[0]?.url ? (
-                  <a
-                    href={getMediaUrl(application.coursework.proofs[0].url)}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ display: "inline-block", marginTop: "var(--spacing-3)", color: "var(--color-primary)" }}
-                  >
-                    Open coursework proof
-                  </a>
-                ) : null}
+                <div style={{ marginTop: "var(--spacing-3)" }}>
+                  <ProofActionButton
+                    proof={resolvePrimaryProof(application.coursework?.proofs)}
+                    onViewPor={setActivePorDetail}
+                  />
+                </div>
                 {(application.personalAcademic?.references || []).length ? (
                 <div style={{ marginTop: "var(--spacing-4)" }}>
                   <div style={{ fontSize: "var(--font-size-xs)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-text-muted)", marginBottom: "var(--spacing-2)" }}>
@@ -1244,16 +1777,12 @@ const ReviewModal = ({
                           {application.projectThesis.btpAwardNotes}
                         </div>
                       ) : null}
-                      {application.projectThesis?.btpAwardProofs?.[0]?.url ? (
-                        <a
-                          href={getMediaUrl(application.projectThesis.btpAwardProofs[0].url)}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ display: "inline-block", marginTop: "8px", color: "var(--color-primary)" }}
-                        >
-                          Open proof
-                        </a>
-                      ) : null}
+                      <div style={{ marginTop: "8px" }}>
+                        <ProofActionButton
+                          proof={resolvePrimaryProof(application.projectThesis?.btpAwardProofs)}
+                          onViewPor={setActivePorDetail}
+                        />
+                      </div>
                     </div>
                   ) : null}
 
@@ -1273,28 +1802,24 @@ const ReviewModal = ({
                           {application.projectThesis.projectGradeNotes}
                         </div>
                       ) : null}
-                      {application.projectThesis?.projectGradeProofs?.[0]?.url ? (
-                        <a
-                          href={getMediaUrl(application.projectThesis.projectGradeProofs[0].url)}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ display: "inline-block", marginTop: "8px", color: "var(--color-primary)" }}
-                        >
-                          Open proof
-                        </a>
-                      ) : null}
+                      <div style={{ marginTop: "8px" }}>
+                        <ProofActionButton
+                          proof={resolvePrimaryProof(application.projectThesis?.projectGradeProofs)}
+                          onViewPor={setActivePorDetail}
+                        />
+                      </div>
                     </div>
                   ) : null}
                 </div>
               ) : null}
-              <ItemsReviewTable title="Project publications / patents" items={application.projectThesis?.publicationItems || []} />
-              <ItemsReviewTable title="Technology transfer" items={application.projectThesis?.technologyTransferItems || []} />
-              <ItemsReviewTable title="Responsibilities" items={application.responsibilityItems || []} />
-              <ItemsReviewTable title="Awards" items={application.awardItems || []} />
-              <ItemsReviewTable title="Cultural activities" items={application.culturalItems || []} />
-              <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} />
-              <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} />
-              <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} />
+              <ItemsReviewTable title="Project publications / patents" items={application.projectThesis?.publicationItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Technology transfer" items={application.projectThesis?.technologyTransferItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Responsibilities" items={application.responsibilityItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Awards" items={application.awardItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Cultural activities" items={application.culturalItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Science & Technology activities" items={application.scienceTechnologyItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Games & Sports activities" items={application.gamesSportsItems || []} onViewPor={setActivePorDetail} />
+              <ItemsReviewTable title="Co-curricular activities" items={application.coCurricularItems || []} onViewPor={setActivePorDetail} />
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-4)" }}>
@@ -1327,6 +1852,11 @@ const ReviewModal = ({
             </div>
           </div>
         </div>
+        <PorProofDetailModal
+          open={Boolean(activePorDetail)}
+          onClose={() => setActivePorDetail(null)}
+          porRequest={activePorDetail}
+        />
       </div>
     </Modal>
   )
@@ -1343,6 +1873,7 @@ const OverallBestPerformerPage = () => {
   const [selectedOccurrenceId, setSelectedOccurrenceId] = useState("")
   const [occurrenceDetail, setOccurrenceDetail] = useState(null)
   const [portalState, setPortalState] = useState(null)
+  const [verifiedPors, setVerifiedPors] = useState([])
   const [applicationForm, setApplicationForm] = useState(createInitialForm())
   const [savingApplication, setSavingApplication] = useState(false)
   const [savingOccurrence, setSavingOccurrence] = useState(false)
@@ -1363,6 +1894,10 @@ const OverallBestPerformerPage = () => {
   const currentApplication = portalState?.data?.application || null
   const canEditStudentForm = Boolean(portalState?.data?.canEdit)
   const applicantStage = useMemo(() => getApplicantStage(applicationForm), [applicationForm])
+  const studentScorePreview = useMemo(
+    () => computeStudentScorePreview(applicationForm),
+    [applicationForm]
+  )
 
   const updatePersonalAcademicField = (field, value) => {
     setApplicationForm((current) => ({
@@ -1392,11 +1927,15 @@ const OverallBestPerformerPage = () => {
                 btpAwardLevel: "none",
                 btpAwardTitle: "",
                 btpAwardNotes: "",
+                btpAwardProofSourceType: "upload",
                 btpAwardProofUrl: "",
+                btpAwardProofPorId: "",
                 projectGrade: "none",
                 projectGradeTitle: "",
                 projectGradeNotes: "",
+                projectGradeProofSourceType: "upload",
                 projectGradeProofUrl: "",
+                projectGradeProofPorId: "",
               }
             : {
                 technologyTransferItems: [],
@@ -1428,9 +1967,27 @@ const OverallBestPerformerPage = () => {
   }
 
   const loadStudentData = async () => {
-    const state = await overallBestPerformerApi.getStudentPortalState()
+    const [state, porWorkspace] = await Promise.all([
+      overallBestPerformerApi.getStudentPortalState(),
+      porApi.getWorkspace().catch(() => null),
+    ])
     setPortalState(state)
     setApplicationForm(createInitialForm(state?.data?.student, state?.data?.application))
+    const approvedWorkspacePors = (porWorkspace?.requests || []).filter((request) => request.status === "approved")
+    const linkedApplicationPors = collectLinkedPorsFromApplication(state?.data?.application)
+    const mergedPors = new Map()
+
+    for (const por of [...approvedWorkspacePors, ...linkedApplicationPors]) {
+      if (por?.id) {
+        mergedPors.set(por.id, por)
+      }
+    }
+
+    setVerifiedPors(
+      [...mergedPors.values()].sort(
+        (left, right) => new Date(right.updatedAt || right.createdAt || 0) - new Date(left.updatedAt || left.createdAt || 0)
+      )
+    )
   }
 
   useEffect(() => {
@@ -1439,6 +1996,7 @@ const OverallBestPerformerPage = () => {
         setLoading(true)
         setError("")
         if (isAdminView) {
+          setVerifiedPors([])
           await loadAdminData()
         } else {
           await loadStudentData()
@@ -1594,8 +2152,8 @@ const OverallBestPerformerPage = () => {
       return
     }
 
-    if (!String(applicationForm.coursework.proofUrl || "").trim()) {
-      toast.error("Academic transcript / coursework proof PDF is required.")
+    if (!hasSelectedProof(applicationForm.coursework)) {
+      toast.error("Academic transcript / coursework proof is required.")
       return
     }
 
@@ -1617,9 +2175,13 @@ const OverallBestPerformerPage = () => {
     if (applicationForm.projectThesis.track === "btech_project") {
       if (
         applicationForm.projectThesis.btpAwardLevel !== "none" &&
-        !String(applicationForm.projectThesis.btpAwardProofUrl || "").trim()
+        !hasSelectedProof({
+          proofSourceType: applicationForm.projectThesis.btpAwardProofSourceType,
+          proofUrl: applicationForm.projectThesis.btpAwardProofUrl,
+          proofPorId: applicationForm.projectThesis.btpAwardProofPorId,
+        })
       ) {
-        toast.error("BTP award proof PDF is required when you add a BTP award entry.")
+        toast.error("BTP award proof is required when you add a BTP award entry.")
         return
       }
 
@@ -1633,9 +2195,13 @@ const OverallBestPerformerPage = () => {
 
       if (
         applicationForm.projectThesis.projectGrade !== "none" &&
-        !String(applicationForm.projectThesis.projectGradeProofUrl || "").trim()
+        !hasSelectedProof({
+          proofSourceType: applicationForm.projectThesis.projectGradeProofSourceType,
+          proofUrl: applicationForm.projectThesis.projectGradeProofUrl,
+          proofPorId: applicationForm.projectThesis.projectGradeProofPorId,
+        })
       ) {
-        toast.error("Project grade proof PDF is required when you add a project grade entry.")
+        toast.error("Project grade proof is required when you add a project grade entry.")
         return
       }
 
@@ -1901,6 +2467,35 @@ const OverallBestPerformerPage = () => {
                 </div>
               </div>
 
+              <SectionPanel title="Score Preview">
+                <div style={{ display: "grid", gap: "var(--spacing-4)" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--spacing-3)" }}>
+                    <SummaryMetric icon={Trophy} label="Current Score" value={studentScorePreview.total} />
+                    <SummaryMetric
+                      icon={Save}
+                      label="Saved Score"
+                      value={currentApplication ? currentApplication.calculatedTotal || 0 : "Not saved"}
+                    />
+                    <SummaryMetric
+                      icon={CheckCircle2}
+                      label="Final Review Score"
+                      value={
+                        currentApplication?.review?.status === "approved" ||
+                        currentApplication?.review?.status === "rejected"
+                          ? currentApplication?.finalScore ?? 0
+                          : "Pending review"
+                      }
+                    />
+                  </div>
+
+                  <div style={helperTextStyle}>
+                    This score preview updates as you edit the form. The saved score is the last submitted calculation, and the final review score appears after admin review.
+                  </div>
+
+                  <ScoreBreakdownCard breakdown={studentScorePreview} />
+                </div>
+              </SectionPanel>
+
               <SectionPanel
                 title="1. Academic achievements"
                 subtitle="Choose your programme type and provide your CGPA / CPI with supporting transcript proof."
@@ -1958,16 +2553,18 @@ const OverallBestPerformerPage = () => {
                     </div>
 
                     <div>
-                      <PdfUploadField
+                      <SupportingProofField
                         label="Supporting document"
-                        value={applicationForm.coursework.proofUrl}
-                        onChange={(url) =>
+                        proofSourceType={applicationForm.coursework.proofSourceType}
+                        proofUrl={applicationForm.coursework.proofUrl}
+                        proofPorId={applicationForm.coursework.proofPorId}
+                        onChange={(proofState) =>
                           setApplicationForm((current) => ({
                             ...current,
-                            coursework: { ...current.coursework, proofUrl: url },
+                            coursework: { ...current.coursework, ...proofState },
                           }))
                         }
-                        onUpload={uploadBestPerformerProof}
+                        verifiedPors={verifiedPors}
                         disabled={!canEditStudentForm}
                         uploadedText="Academic proof uploaded"
                         viewerTitle="Academic transcript / coursework proof"
@@ -2006,7 +2603,9 @@ const OverallBestPerformerPage = () => {
                         options={BTP_AWARD_OPTIONS}
                         titleValue={applicationForm.projectThesis.btpAwardTitle}
                         notesValue={applicationForm.projectThesis.btpAwardNotes}
+                        proofSourceType={applicationForm.projectThesis.btpAwardProofSourceType}
                         proofUrl={applicationForm.projectThesis.btpAwardProofUrl}
+                        proofPorId={applicationForm.projectThesis.btpAwardProofPorId}
                         onValueChange={(value) =>
                           setApplicationForm((current) => ({
                             ...current,
@@ -2014,7 +2613,13 @@ const OverallBestPerformerPage = () => {
                               ...current.projectThesis,
                               btpAwardLevel: value,
                               ...(value === "none"
-                                ? { btpAwardTitle: "", btpAwardNotes: "", btpAwardProofUrl: "" }
+                                ? {
+                                    btpAwardTitle: "",
+                                    btpAwardNotes: "",
+                                    btpAwardProofSourceType: "upload",
+                                    btpAwardProofUrl: "",
+                                    btpAwardProofPorId: "",
+                                  }
                                 : {}),
                             },
                           }))
@@ -2031,12 +2636,18 @@ const OverallBestPerformerPage = () => {
                             projectThesis: { ...current.projectThesis, btpAwardNotes: value },
                           }))
                         }
-                        onProofChange={(value) =>
+                        onProofChange={(proofState) =>
                           setApplicationForm((current) => ({
                             ...current,
-                            projectThesis: { ...current.projectThesis, btpAwardProofUrl: value },
+                            projectThesis: {
+                              ...current.projectThesis,
+                              btpAwardProofSourceType: proofState.proofSourceType,
+                              btpAwardProofUrl: proofState.proofUrl,
+                              btpAwardProofPorId: proofState.proofPorId,
+                            },
                           }))
                         }
+                        verifiedPors={verifiedPors}
                         disabled={!canEditStudentForm}
                         titleLabel="Project title"
                         titlePlaceholder="Enter the BTP title"
@@ -2050,7 +2661,9 @@ const OverallBestPerformerPage = () => {
                         options={PROJECT_GRADE_OPTIONS}
                         titleValue={applicationForm.projectThesis.projectGradeTitle}
                         notesValue={applicationForm.projectThesis.projectGradeNotes}
+                        proofSourceType={applicationForm.projectThesis.projectGradeProofSourceType}
                         proofUrl={applicationForm.projectThesis.projectGradeProofUrl}
+                        proofPorId={applicationForm.projectThesis.projectGradeProofPorId}
                         onValueChange={(value) =>
                           setApplicationForm((current) => ({
                             ...current,
@@ -2058,7 +2671,13 @@ const OverallBestPerformerPage = () => {
                               ...current.projectThesis,
                               projectGrade: value,
                               ...(value === "none"
-                                ? { projectGradeTitle: "", projectGradeNotes: "", projectGradeProofUrl: "" }
+                                ? {
+                                    projectGradeTitle: "",
+                                    projectGradeNotes: "",
+                                    projectGradeProofSourceType: "upload",
+                                    projectGradeProofUrl: "",
+                                    projectGradeProofPorId: "",
+                                  }
                                 : {}),
                             },
                           }))
@@ -2075,12 +2694,18 @@ const OverallBestPerformerPage = () => {
                             projectThesis: { ...current.projectThesis, projectGradeNotes: value },
                           }))
                         }
-                        onProofChange={(value) =>
+                        onProofChange={(proofState) =>
                           setApplicationForm((current) => ({
                             ...current,
-                            projectThesis: { ...current.projectThesis, projectGradeProofUrl: value },
+                            projectThesis: {
+                              ...current.projectThesis,
+                              projectGradeProofSourceType: proofState.proofSourceType,
+                              projectGradeProofUrl: proofState.proofUrl,
+                              projectGradeProofPorId: proofState.proofPorId,
+                            },
                           }))
                         }
+                        verifiedPors={verifiedPors}
                         disabled={!canEditStudentForm}
                         titleLabel="Project title"
                         titlePlaceholder="Enter the project title"
@@ -2093,7 +2718,7 @@ const OverallBestPerformerPage = () => {
                   <MinimalScoredItemsEditor
                     step={applicantStage === "ug" ? "2" : "2"}
                     title={applicantStage === "ug" ? "Project publications / patents" : "Thesis publications / patents"}
-                    subtitle="Add only the relevant publications or patents and attach the required supporting PDF."
+                    subtitle="Add only the relevant publications or patents and attach the required supporting proof."
                     items={applicationForm.projectThesis.publicationItems}
                     onChange={(items) =>
                       setApplicationForm((current) => ({
@@ -2102,6 +2727,7 @@ const OverallBestPerformerPage = () => {
                       }))
                     }
                     options={PUBLICATION_OPTIONS}
+                    verifiedPors={verifiedPors}
                     disabled={!canEditStudentForm}
                     uploadLabel="Supporting document"
                     titleLabel="Achievement title"
@@ -2124,6 +2750,7 @@ const OverallBestPerformerPage = () => {
                         }))
                       }
                       options={TECH_TRANSFER_OPTIONS}
+                      verifiedPors={verifiedPors}
                       disabled={!canEditStudentForm}
                       uploadLabel="Supporting document"
                       titleLabel="Transfer / work title"
@@ -2139,10 +2766,11 @@ const OverallBestPerformerPage = () => {
               <MinimalScoredItemsEditor
                 step="3"
                 title="Position of responsibility"
-                subtitle="Choose the exact POR marking category, add the title, a short description, and upload the supporting PDF."
+                subtitle="Choose the exact POR marking category, add the title, a short description, and attach the supporting proof."
                 items={applicationForm.responsibilityItems}
                 onChange={(items) => setApplicationForm((current) => ({ ...current, responsibilityItems: items }))}
                 options={RESPONSIBILITY_OPTIONS}
+                verifiedPors={verifiedPors}
                 disabled={!canEditStudentForm}
                 uploadLabel="Supporting document"
                 titleLabel="Position title"
@@ -2158,6 +2786,7 @@ const OverallBestPerformerPage = () => {
                 items={applicationForm.awardItems}
                 onChange={(items) => setApplicationForm((current) => ({ ...current, awardItems: items }))}
                 options={AWARD_OPTIONS}
+                verifiedPors={verifiedPors}
                 disabled={!canEditStudentForm}
                 uploadLabel="Supporting document"
                 titleLabel="Achievement title"
@@ -2173,6 +2802,7 @@ const OverallBestPerformerPage = () => {
                 items={applicationForm.culturalItems}
                 onChange={(items) => setApplicationForm((current) => ({ ...current, culturalItems: items }))}
                 options={ACTIVITY_LEVEL_OPTIONS}
+                verifiedPors={verifiedPors}
                 disabled={!canEditStudentForm}
                 uploadLabel="Supporting document"
                 titleLabel="Achievement title"
@@ -2188,6 +2818,7 @@ const OverallBestPerformerPage = () => {
                 items={applicationForm.scienceTechnologyItems}
                 onChange={(items) => setApplicationForm((current) => ({ ...current, scienceTechnologyItems: items }))}
                 options={ACTIVITY_LEVEL_OPTIONS}
+                verifiedPors={verifiedPors}
                 disabled={!canEditStudentForm}
                 uploadLabel="Supporting document"
                 titleLabel="Achievement title"
@@ -2203,6 +2834,7 @@ const OverallBestPerformerPage = () => {
                 items={applicationForm.gamesSportsItems}
                 onChange={(items) => setApplicationForm((current) => ({ ...current, gamesSportsItems: items }))}
                 options={ACTIVITY_LEVEL_OPTIONS}
+                verifiedPors={verifiedPors}
                 disabled={!canEditStudentForm}
                 uploadLabel="Supporting document"
                 titleLabel="Achievement title"
@@ -2218,6 +2850,7 @@ const OverallBestPerformerPage = () => {
                 items={applicationForm.coCurricularItems}
                 onChange={(items) => setApplicationForm((current) => ({ ...current, coCurricularItems: items }))}
                 options={CO_CURRICULAR_OPTIONS}
+                verifiedPors={verifiedPors}
                 disabled={!canEditStudentForm}
                 uploadLabel="Supporting document"
                 titleLabel="Achievement title"
