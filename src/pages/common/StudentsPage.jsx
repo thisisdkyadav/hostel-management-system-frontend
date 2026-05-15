@@ -5,6 +5,7 @@ import StudentFilterSection from "../../components/common/students/StudentFilter
 import StudentDetailModal from "../../components/common/students/StudentDetailModal"
 import ImportStudentModal from "../../components/common/students/ImportStudentModal"
 import UpdateStudentsModal from "../../components/common/students/UpdateStudentsModal"
+import StudentExportModal from "../../components/common/students/StudentExportModal"
 import StudentTableView from "../../components/common/students/StudentTableView"
 import { Pagination } from "@/components/ui"
 import { Button } from "czero/react"
@@ -37,8 +38,9 @@ const StudentsPage = () => {
   const [showImportModal, setShowImportModal] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showAllocateModal, setShowAllocateModal] = useState(false)
+  const [showExportModal, setShowExportModal] = useState(false)
 
-  const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents, missingOptions } = useStudents({
+  const { students, totalCount, loading, error, filters, updateFilter, pagination, totalPages, setCurrentPage, setPageSize, sorting, handleSort, resetFilters, refreshStudents, importStudents, missingOptions, buildQueryParams } = useStudents({
     perPage: 10,
     autoFetch: canViewStudentsList,
   })
@@ -218,60 +220,79 @@ const StudentsPage = () => {
     }
   }
 
-  const handleExportStudents = async () => {
-    if (!canExportStudents) {
-      alert("You do not have permission to export students.")
-      return
-    }
-
-    const userIds = students.map((student) => student.userId)
-    if (userIds.length === 0) {
-      alert("No students to export")
-      return
-    }
-    const studentsDetails = await fetchFullStudentDetails(userIds)
-
+  const downloadStudentsCsv = (studentsDetails, filenamePrefix = "students_export") => {
     if (studentsDetails.length === 0) {
-      alert("No students to export")
-      return
+      throw new Error("No students to export")
     }
 
-    try {
-      const firstStudent = studentsDetails[0]
-      const headers = Object.keys(firstStudent).filter((key) => !["id", "userId", "allocationId"].includes(key))
+    const firstStudent = studentsDetails[0]
+    const headers = Object.keys(firstStudent).filter((key) => !["id", "userId", "allocationId"].includes(key))
 
-      let csvContent = headers.join(",") + "\n"
+    let csvContent = `${headers.join(",")}\n`
 
-      studentsDetails.forEach((student) => {
-        const row = headers
-          .map((header) => {
-            const value = student[header] !== null && student[header] !== undefined ? student[header] : ""
+    studentsDetails.forEach((student) => {
+      const row = headers
+        .map((header) => {
+          const rawValue = student[header] !== null && student[header] !== undefined ? student[header] : ""
+          const value = Array.isArray(rawValue) || typeof rawValue === "object"
+            ? JSON.stringify(rawValue)
+            : rawValue
 
-            if (typeof value === "string" && (value.includes(",") || value.includes('"') || value.includes("\n"))) {
-              return `"${value.replace(/"/g, '""')}"`
-            }
-            return value
-          })
-          .join(",")
+          if (typeof value === "string" && (value.includes(",") || value.includes('"') || value.includes("\n"))) {
+            return `"${value.replace(/"/g, '""')}"`
+          }
+          return value
+        })
+        .join(",")
 
-        csvContent += row + "\n"
-      })
+      csvContent += `${row}\n`
+    })
 
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement("a")
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    const date = new Date().toISOString().split("T")[0]
 
-      const date = new Date().toISOString().split("T")[0]
+    link.href = url
+    link.setAttribute("download", `${filenamePrefix}_${date}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
-      link.href = url
-      link.setAttribute("download", `students_export_${date}.csv`)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    } catch (error) {
-      console.error("Error exporting students:", error)
-      alert("Failed to export students: " + error.message)
+  const handleExportStudents = async ({ mode, rollNumbers = [] }) => {
+    if (!canExportStudents) {
+      throw new Error("You do not have permission to export students.")
     }
+
+    let studentsDetails = []
+    let filenamePrefix = "students_export"
+
+    if (mode === "visible") {
+      const userIds = students.map((student) => student.userId).filter(Boolean)
+      if (userIds.length === 0) {
+        throw new Error("No students to export")
+      }
+      studentsDetails = await fetchFullStudentDetails(userIds)
+      filenamePrefix = "students_visible_export"
+    } else if (mode === "filtered") {
+      const filterParams = buildQueryParams()
+      delete filterParams.page
+      delete filterParams.limit
+      const response = await studentApi.exportStudents({ mode: "filters", filters: filterParams })
+      studentsDetails = response.data
+      filenamePrefix = "students_filtered_export"
+    } else if (mode === "rollNumbers") {
+      if (rollNumbers.length === 0) {
+        throw new Error("Upload at least one roll number before exporting.")
+      }
+      const response = await studentApi.exportStudents({ mode: "rollNumbers", rollNumbers })
+      studentsDetails = response.data
+      filenamePrefix = "students_roll_numbers_export"
+    }
+
+    downloadStudentsCsv(studentsDetails, filenamePrefix)
   }
 
   if (!canViewStudentsList) {
@@ -298,7 +319,7 @@ const StudentsPage = () => {
         onImport={() => setShowImportModal(true)}
         onBulkUpdate={() => setShowUpdateModal(true)}
         onUpdateAllocations={() => setShowAllocateModal(true)}
-        onExport={handleExportStudents}
+        onExport={() => setShowExportModal(true)}
         userRole={user?.role}
         canImport={canImportStudents}
         canBulkUpdate={canBulkUpdateStudents}
@@ -328,6 +349,15 @@ const StudentsPage = () => {
         {["Admin"].includes(user?.role) && canImportStudents && <ImportStudentModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} onImport={handleImportStudents} />}
         {["Admin"].includes(user?.role) && canBulkUpdateStudents && <UpdateStudentsModal isOpen={showUpdateModal} onClose={() => setShowUpdateModal(false)} onUpdate={handleUpdateStudents} />}
         {["Admin"].includes(user?.role) && canUpdateStudentAllocations && showAllocateModal && <UpdateAllocationModal isOpen={showAllocateModal} onClose={() => setShowAllocateModal(false)} onAllocate={handleUpdateAllocations} />}
+        {canExportStudents && (
+          <StudentExportModal
+            isOpen={showExportModal}
+            onClose={() => setShowExportModal(false)}
+            onExport={handleExportStudents}
+            visibleCount={students.length}
+            filteredCount={totalCount}
+          />
+        )}
       </div>
 
       <PageFooter

@@ -35,6 +35,15 @@ const unwrapStudentsByIdsResponse = (response) => {
   }
 }
 
+const unwrapStudentsExportResponse = (response) => {
+  const data = unwrapStandardResponse(response)
+  return {
+    data: data?.students || [],
+    errors: data?.errors || [],
+    totalMatched: data?.totalMatched || 0,
+  }
+}
+
 const unwrapStudentDetailsResponse = (response) => {
   const data = unwrapStandardResponse(response)
   return {
@@ -127,6 +136,14 @@ export const studentApi = {
    */
   getStudentsByIds: (userIds) => {
     return apiClient.post("/students/profiles-admin/profiles/ids", { userIds }).then(unwrapStudentsByIdsResponse)
+  },
+
+  /**
+   * Get full student details for export by filters or roll numbers
+   * @param {Object} payload - { mode: "filters"|"rollNumbers", filters?, rollNumbers? }
+   */
+  exportStudents: (payload) => {
+    return apiClient.post("/students/profiles-admin/profiles/export", payload).then(unwrapStudentsExportResponse)
   },
 
   /**
