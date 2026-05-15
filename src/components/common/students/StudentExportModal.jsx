@@ -24,6 +24,12 @@ const getRollNumberFromRow = (row) => {
   return values.length === 1 ? values[0] : ""
 }
 
+const hasKnownRollNumberHeader = (fields = []) => {
+  const normalizedFields = new Set(fields.map((field) => toSafeString(field).toLowerCase()))
+  return ["rollnumber", "roll number", "roll_number", "roll no", "rollno", "roll_no", "roll"]
+    .some((field) => normalizedFields.has(field))
+}
+
 const downloadRollNumberTemplate = () => {
   const blob = new Blob(["rollNumber\n"], { type: "text/csv;charset=utf-8" })
   const url = URL.createObjectURL(blob)
@@ -114,8 +120,11 @@ const StudentExportModal = ({ isOpen, onClose, onExport, visibleCount = 0, filte
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
+        const includeHeaderAsValue = !hasKnownRollNumberHeader(results.meta.fields) && results.meta.fields?.length === 1
+        const headerValues = includeHeaderAsValue ? results.meta.fields : []
         const parsed = results.data
           .map(getRollNumberFromRow)
+          .concat(headerValues)
           .map(normalizeRollNumber)
           .filter(Boolean)
         const uniqueRollNumbers = [...new Set(parsed)]

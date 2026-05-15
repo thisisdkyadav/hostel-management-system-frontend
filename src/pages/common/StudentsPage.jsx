@@ -210,16 +210,6 @@ const StudentsPage = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
-  const fetchFullStudentDetails = async (userIds) => {
-    try {
-      const response = await studentApi.getStudentsByIds(userIds)
-      return response.data
-    } catch (error) {
-      console.error("Error fetching student details:", error)
-      throw error
-    }
-  }
-
   const downloadStudentsCsv = (studentsDetails, filenamePrefix = "students_export") => {
     if (studentsDetails.length === 0) {
       throw new Error("No students to export")
@@ -274,7 +264,11 @@ const StudentsPage = () => {
       if (userIds.length === 0) {
         throw new Error("No students to export")
       }
-      studentsDetails = await fetchFullStudentDetails(userIds)
+      const response = await studentApi.getStudentsByIds(userIds)
+      studentsDetails = response.data
+      if (response.errors?.length > 0) {
+        alert(`${response.errors.length} visible student record${response.errors.length === 1 ? "" : "s"} could not be included.`)
+      }
       filenamePrefix = "students_visible_export"
     } else if (mode === "filtered") {
       const filterParams = buildQueryParams()
@@ -289,6 +283,9 @@ const StudentsPage = () => {
       }
       const response = await studentApi.exportStudents({ mode: "rollNumbers", rollNumbers })
       studentsDetails = response.data
+      if (response.errors?.length > 0) {
+        alert(`${response.errors.length} roll number${response.errors.length === 1 ? "" : "s"} could not be included in the export.`)
+      }
       filenamePrefix = "students_roll_numbers_export"
     }
 
