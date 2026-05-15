@@ -88,7 +88,7 @@ export const isCsoAdminSubRole = (userOrSubRole = null) => {
 
   const nonRestrictedAdminSubRoles = new Set([
     "student affairs",
-    "joint registrar sa",
+    "officer sa",
     "associate dean sa",
     "dean sa",
   ])

@@ -35,7 +35,7 @@ const STATUS_META = {
   pending_gs: { label: "Pending GS", variant: "warning" },
   pending_president: { label: "Pending President", variant: "warning" },
   pending_student_affairs: { label: "Pending Student Affairs", variant: "warning" },
-  pending_joint_registrar: { label: "Pending Joint Registrar", variant: "warning" },
+  pending_officer: { label: "Pending Officer", variant: "warning" },
   pending_associate_dean: { label: "Pending Associate Dean", variant: "warning" },
   pending_dean: { label: "Pending Dean", variant: "warning" },
   approved: { label: "Approved", variant: "success" },
