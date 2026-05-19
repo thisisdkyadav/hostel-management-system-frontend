@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
 import { Button, DataTable, Input, Modal, Tabs } from "czero/react"
-import { BadgeCheck, Building2, CalendarDays, Clock3, FilePenLine, FileText, ShieldAlert, ShieldCheck, UserRoundSearch, Users } from "lucide-react"
+import { BadgeCheck, Building2, CalendarDays, Clock3, FilePenLine, FileText, Plus, Settings2, ShieldAlert, ShieldCheck, Trash2, UserRoundSearch, Users } from "lucide-react"
 import toast from "react-hot-toast"
 import PageHeader from "../../components/common/PageHeader"
 import PdfUploadField from "../../components/common/pdf/PdfUploadField"
 import PorApprovalHistory from "../../components/por/PorApprovalHistory"
-import { Badge, Checkbox, EmptyState, ErrorState, Label, LoadingState, Select, StatCards, Textarea } from "@/components/ui"
+import { Badge, EmptyState, ErrorState, Label, LoadingState, Select, StatCards, Textarea } from "@/components/ui"
 import { porApi, uploadApi } from "@/service"
 import {
   EventDetailInfoRow,
@@ -17,7 +17,7 @@ import {
 } from "@/components/gymkhana/events-page/sharedPrimitives"
 
 const createDefaultForm = () => ({
-  clubId: "",
+  porCategoryId: "",
   hasDisciplinaryAction: false,
   disciplinaryActionDetails: "",
   positionTitle: "",
@@ -34,6 +34,7 @@ const POST_SA_STAGE_ORDER = [
 ]
 
 const STATUS_META = {
+  pending_gymkhana: { label: "Pending Gymkhana", variant: "warning" },
   pending_club: { label: "Pending Club", variant: "warning" },
   pending_gs: { label: "Pending GS", variant: "warning" },
   pending_president: { label: "Pending President", variant: "warning" },
@@ -146,6 +147,7 @@ const getViewerTitle = (mode) => {
   if (mode === "club") return "Club POR Requests"
   if (mode === "gs") return "GS POR Requests"
   if (mode === "president") return "President POR Requests"
+  if (mode === "gymkhana") return "Gymkhana POR Requests"
   return "POR Verification"
 }
 
@@ -155,18 +157,22 @@ const getViewerSubtitle = (mode) => {
   }
 
   if (mode === "club") {
-    return "Review student POR requests submitted under your club and approve, reject, or ask for modifications."
+    return "Review POR requests assigned to your club account and move them through the Gymkhana workflow."
   }
 
   if (mode === "gs") {
-    return "Review POR requests routed to your Gymkhana category."
+    return "Review POR requests assigned to your Gymkhana role."
   }
 
   if (mode === "president") {
-    return "Review category-routed POR requests before they move to Office - Student Affairs."
+    return "Review POR requests before they move to Office - Student Affairs."
   }
 
-  return "Review POR requests, monitor the approval chain, and assign post-Student-Affairs recommenders where required."
+  if (mode === "gymkhana") {
+    return "Review POR requests assigned to you in the configured Gymkhana reviewer chain."
+  }
+
+  return "Review POR requests, manage POR categories, monitor the approval chain, and assign post-Student-Affairs recommenders where required."
 }
 
 const shouldShowStats = (viewer) => Boolean(viewer?.showStats)
@@ -175,10 +181,10 @@ const shouldShowStudentColumn = (viewer) => viewer?.mode !== "student"
 
 const shouldShowCategoryColumn = (viewer) => viewer?.mode !== "student"
 
-const buildClubOptions = (clubs = []) =>
-  (Array.isArray(clubs) ? clubs : []).map((club) => ({
-    value: club.id,
-    label: club.name || "Club",
+const buildPorCategoryOptions = (porCategories = []) =>
+  (Array.isArray(porCategories) ? porCategories : []).map((category) => ({
+    value: category.id,
+    label: category.name || "POR Category",
   }))
 
 const isGroupedReviewEligible = (request, viewer) =>
@@ -207,7 +213,7 @@ const buildGroupedReviewKey = (request) => {
 const buildGroupSummary = (requests = []) => {
   const clubs = Array.from(new Set(requests.map((request) => request?.club?.name).filter(Boolean)))
   const positions = Array.from(new Set(requests.map((request) => request?.positionTitle).filter(Boolean)))
-  const categories = Array.from(new Set(requests.map((request) => request?.gymkhanaCategoryLabel).filter(Boolean)))
+  const categories = Array.from(new Set(requests.map((request) => request?.porCategoryName).filter(Boolean)))
   const latestUpdatedAt = requests
     .map((request) => request?.updatedAt || request?.createdAt || null)
     .filter(Boolean)
@@ -313,10 +319,34 @@ const getFilenameFromUrl = (url, fallback = "document.pdf") => {
   }
 }
 
+const createEmptyCategoryStep = (index = 0) => ({
+  label: `Gymkhana Step ${index + 1}`,
+  reviewerUserIds: [],
+  reviewerPickerId: "",
+})
+
+const createDefaultCategoryForm = () => ({
+  name: "",
+  gymkhanaSteps: [createEmptyCategoryStep(0)],
+})
+
+const formatCurrentReviewerLabel = (request) => {
+  const reviewerUsers = Array.isArray(request?.currentApproverUsers) ? request.currentApproverUsers : []
+  if (reviewerUsers.length === 0) {
+    return request?.currentApproverUser?.name || "Unassigned"
+  }
+
+  if (reviewerUsers.length === 1) {
+    return reviewerUsers[0]?.name || "Assigned reviewer"
+  }
+
+  return `${reviewerUsers[0]?.name || "Assigned reviewer"} +${reviewerUsers.length - 1}`
+}
+
 const PorRequestFormModal = ({
   isOpen,
   isSaving,
-  clubs,
+  porCategories,
   formData,
   onChange,
   onClose,
@@ -325,7 +355,7 @@ const PorRequestFormModal = ({
 }) => {
   if (!isOpen) return null
 
-  const clubOptions = buildClubOptions(clubs)
+  const categoryOptions = buildPorCategoryOptions(porCategories)
   const updateSupportingDocument = (url, name = "") => {
     onChange?.({
       target: {
@@ -365,14 +395,14 @@ const PorRequestFormModal = ({
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="md:col-span-2">
-            <Label htmlFor="por-club" required>Club</Label>
+            <Label htmlFor="por-category" required>POR Category</Label>
             <Select
-              id="por-club"
-              name="clubId"
-              value={formData.clubId}
+              id="por-category"
+              name="porCategoryId"
+              value={formData.porCategoryId}
               onChange={onChange}
-              options={clubOptions}
-              placeholder="Select club"
+              options={categoryOptions}
+              placeholder="Select POR category"
               required
               disabled={isSaving}
             />
@@ -497,11 +527,327 @@ const PorRequestFormModal = ({
           <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving}>
             Cancel
           </Button>
-          <Button type="submit" loading={isSaving} disabled={isSaving || clubOptions.length === 0}>
+          <Button type="submit" loading={isSaving} disabled={isSaving || categoryOptions.length === 0}>
             {isEdit ? "Resubmit Request" : "Create Request"}
           </Button>
         </div>
       </form>
+    </Modal>
+  )
+}
+
+const PorCategoryFormModal = ({
+  isOpen,
+  isSaving,
+  formData,
+  reviewerOptions,
+  onChangeName,
+  onChangeStepLabel,
+  onSelectReviewer,
+  onAddReviewer,
+  onRemoveReviewer,
+  onAddStep,
+  onRemoveStep,
+  onClose,
+  onSubmit,
+  isEdit = false,
+}) => {
+  if (!isOpen) return null
+
+  const reviewerOptionMap = new Map(
+    (Array.isArray(reviewerOptions) ? reviewerOptions : []).map((option) => [option.id, option])
+  )
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEdit ? "Edit POR Category" : "Create POR Category"}
+      width={980}
+      minHeight="50vh"
+    >
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          onSubmit?.()
+        }}
+        className="flex min-h-[42vh] flex-col justify-between gap-6"
+      >
+        <div className="space-y-5">
+          <div>
+            <Label htmlFor="por-category-name" required>Category Name</Label>
+            <Input
+              id="por-category-name"
+              value={formData.name}
+              onChange={(event) => onChangeName?.(event.target.value)}
+              placeholder="e.g. Technical Council"
+              disabled={isSaving}
+              required
+            />
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div
+                  style={{
+                    fontSize: "var(--font-size-sm)",
+                    fontWeight: "var(--font-weight-semibold)",
+                    color: "var(--color-text-heading)",
+                  }}
+                >
+                  Gymkhana Review Steps
+                </div>
+                <div
+                  style={{
+                    marginTop: "4px",
+                    fontSize: "var(--font-size-sm)",
+                    color: "var(--color-text-muted)",
+                  }}
+                >
+                  Add one or more Gymkhana stages that should recommend the POR before Office - Student Affairs.
+                </div>
+              </div>
+
+              <Button type="button" variant="secondary" onClick={onAddStep} disabled={isSaving}>
+                <Plus size={16} />
+                Add Step
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {(Array.isArray(formData.gymkhanaSteps) ? formData.gymkhanaSteps : []).map((step, stepIndex) => {
+                const selectedReviewerIds = Array.isArray(step.reviewerUserIds) ? step.reviewerUserIds : []
+                const selectedReviewers = selectedReviewerIds
+                  .map((reviewerId) => reviewerOptionMap.get(reviewerId))
+                  .filter(Boolean)
+                const availableReviewerOptions = (Array.isArray(reviewerOptions) ? reviewerOptions : [])
+                  .filter((option) => !selectedReviewerIds.includes(option.id))
+                  .map((option) => ({
+                    value: option.id,
+                    label: option.label,
+                  }))
+
+                return (
+                  <div
+                    key={`por-category-step-${stepIndex}`}
+                    style={{
+                      border: "1px solid var(--color-border-primary)",
+                      borderRadius: "var(--radius-card-sm)",
+                      backgroundColor: "var(--color-bg-secondary)",
+                      padding: "var(--spacing-4)",
+                    }}
+                  >
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor={`por-category-step-label-${stepIndex}`} required>
+                            Step {stepIndex + 1} Label
+                          </Label>
+                          <Input
+                            id={`por-category-step-label-${stepIndex}`}
+                            value={step.label}
+                            onChange={(event) => onChangeStepLabel?.(stepIndex, event.target.value)}
+                            placeholder={`Gymkhana Step ${stepIndex + 1}`}
+                            disabled={isSaving}
+                            required
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+                          <div>
+                            <Label htmlFor={`por-category-step-reviewer-${stepIndex}`}>
+                              Add Gymkhana Reviewer
+                            </Label>
+                            <Select
+                              id={`por-category-step-reviewer-${stepIndex}`}
+                              value={step.reviewerPickerId || ""}
+                              onChange={(event) => onSelectReviewer?.(stepIndex, event.target.value)}
+                              options={availableReviewerOptions}
+                              placeholder="Select reviewer"
+                              disabled={isSaving}
+                            />
+                          </div>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => onAddReviewer?.(stepIndex)}
+                            disabled={isSaving || !step.reviewerPickerId}
+                          >
+                            Add Reviewer
+                          </Button>
+                        </div>
+
+                        <div style={infoBoxStyle}>
+                          <span style={sectionLabelStyle}>Assigned Reviewers</span>
+                          {selectedReviewers.length > 0 ? (
+                            <div className="mt-3 space-y-2">
+                              {selectedReviewers.map((reviewer) => (
+                                <div
+                                  key={`${reviewer.id}-${stepIndex}`}
+                                  className="flex items-center justify-between gap-3 rounded-lg border border-[var(--color-border-primary)] bg-[var(--color-bg-primary)] px-3 py-2"
+                                >
+                                  <div className="min-w-0">
+                                    <div className="truncate text-sm font-medium text-[var(--color-text-primary)]">
+                                      {reviewer.name}
+                                    </div>
+                                    <div className="truncate text-xs text-[var(--color-text-muted)]">
+                                      {reviewer.email}
+                                    </div>
+                                    <div className="mt-1 text-[11px] text-[var(--color-text-placeholder)]">
+                                      {reviewer.subRole || reviewer.role}
+                                    </div>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => onRemoveReviewer?.(stepIndex, reviewer.id)}
+                                    disabled={isSaving}
+                                  >
+                                    <Trash2 size={14} />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="mt-2 text-sm text-[var(--color-text-muted)]">
+                              Select at least one Gymkhana user for this step.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onRemoveStep?.(stepIndex)}
+                          disabled={isSaving || (formData.gymkhanaSteps?.length || 0) <= 1}
+                        >
+                          <Trash2 size={14} />
+                          Remove Step
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <Button type="button" variant="secondary" onClick={onClose} disabled={isSaving}>
+            Cancel
+          </Button>
+          <Button type="submit" loading={isSaving} disabled={isSaving}>
+            {isEdit ? "Save Category" : "Create Category"}
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  )
+}
+
+const PorCategoryManagementModal = ({
+  isOpen,
+  categories,
+  onClose,
+  onAdd,
+  onEdit,
+}) => {
+  if (!isOpen) return null
+
+  const categoryRows = Array.isArray(categories) ? categories : []
+  const categoryColumns = [
+    {
+      header: "Category",
+      key: "name",
+      render: (category) => (
+        <div style={{ display: "grid", gap: "4px" }}>
+          <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
+            {category.name || "—"}
+          </div>
+          <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+            {(category.gymkhanaSteps?.length || category.stepCount || 0)} Gymkhana step
+            {(category.gymkhanaSteps?.length || category.stepCount || 0) === 1 ? "" : "s"}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Review Flow",
+      key: "steps",
+      render: (category) => (
+        <div style={{ display: "grid", gap: "4px" }}>
+          {(Array.isArray(category.gymkhanaSteps) ? category.gymkhanaSteps : []).map((step, index) => (
+            <div
+              key={`${category.id}-table-step-${index}`}
+              style={{
+                fontSize: "var(--font-size-sm)",
+                color: "var(--color-text-muted)",
+              }}
+            >
+              {index + 1}. {step.label || "Step"}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      header: "Reviewers",
+      key: "reviewers",
+      render: (category) => {
+        const reviewerCount = (Array.isArray(category.gymkhanaSteps) ? category.gymkhanaSteps : []).reduce(
+          (count, step) => count + (Array.isArray(step.reviewers) ? step.reviewers.length : Array.isArray(step.reviewerUserIds) ? step.reviewerUserIds.length : 0),
+          0
+        )
+
+        return reviewerCount || "—"
+      },
+    },
+  ]
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Manage POR Categories"
+      width={1080}
+      minHeight="50vh"
+    >
+      <div className="flex min-h-[42vh] flex-col gap-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <div className="text-sm text-[var(--color-text-muted)]">
+              Create categories and define the ordered Gymkhana review flow before Office - Student Affairs.
+            </div>
+          </div>
+          <div className="flex justify-start lg:justify-end">
+            <Button onClick={onAdd}>
+              <Plus size={16} />
+              Add Category
+            </Button>
+          </div>
+        </div>
+        {categoryRows.length > 0 ? (
+          <DataTable
+            columns={categoryColumns}
+            data={categoryRows}
+            loading={false}
+            emptyMessage="No POR categories added yet."
+            onRowClick={onEdit}
+          />
+        ) : (
+          <EmptyState
+            icon={Building2}
+            title="No POR Categories Yet"
+            message="Create the first POR category to define how Gymkhana recommendations should flow before Student Affairs."
+          />
+        )}
+      </div>
     </Modal>
   )
 }
@@ -552,7 +898,7 @@ const PorRequestDetailModal = ({
               {request.id}
             </span>
             <Badge variant={getStatusVariant(request.status)}>{formatStatusLabel(request.status)}</Badge>
-            <span style={buildMetaChipStyle()}>{request.gymkhanaCategoryLabel || "—"}</span>
+            <span style={buildMetaChipStyle()}>{request.porCategoryName || "—"}</span>
             <span style={buildMetaChipStyle()}>
               <ShieldCheck size={12} />
               {formatStageLabel(request.currentApprovalStage)}
@@ -657,16 +1003,15 @@ const PorRequestDetailModal = ({
                 accentColor="var(--color-success)"
               >
                 <div style={{ display: "grid", gap: "var(--spacing-1)" }}>
-                  <EventDetailInfoRow label="Club" value={request.club.name || "—"} />
-                  <EventDetailInfoRow label="Club Email" value={request.club.email || "—"} />
-                  <EventDetailInfoRow label="GS Category" value={request.gymkhanaCategoryLabel || "—"} />
+                  <EventDetailInfoRow label="POR Category" value={request.porCategoryName || "—"} />
+                  <EventDetailInfoRow label="Club" value={request.club?.name || "—"} />
                   <EventDetailInfoRow
                     label="Current Stage"
                     value={formatStageLabel(request.currentApprovalStage)}
                   />
                   <EventDetailInfoRow
                     label="Current Reviewer"
-                    value={request.currentApproverUser?.name || "Unassigned"}
+                    value={formatCurrentReviewerLabel(request)}
                   />
                   <EventDetailInfoRow
                     label="Last Updated"
@@ -936,8 +1281,8 @@ const PorRequestGroupModal = ({
                         >
                           {request.id}
                         </span>
-                        <span style={buildMetaChipStyle()}>{request.club?.name || "—"}</span>
-                        <span style={buildMetaChipStyle()}>{request.gymkhanaCategoryLabel || "—"}</span>
+                        <span style={buildMetaChipStyle()}>{request.porCategoryName || "—"}</span>
+                        {request.club?.name ? <span style={buildMetaChipStyle()}>{request.club.name}</span> : null}
                       </div>
 
                       <Button
@@ -1113,10 +1458,11 @@ const PorRequestGroupModal = ({
 const PorRequestsPage = () => {
   const [workspace, setWorkspace] = useState({
     viewer: null,
-    clubs: [],
+    porCategories: [],
     requests: [],
     stats: [],
     approversByStage: {},
+    gymkhanaReviewerOptions: [],
   })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
@@ -1136,6 +1482,11 @@ const PorRequestsPage = () => {
   const [groupPostSaAssignments, setGroupPostSaAssignments] = useState({})
   const [actionLoading, setActionLoading] = useState("")
   const [groupActionLoading, setGroupActionLoading] = useState("")
+  const [showCategoryManagerModal, setShowCategoryManagerModal] = useState(false)
+  const [showCategoryModal, setShowCategoryModal] = useState(false)
+  const [editingCategory, setEditingCategory] = useState(null)
+  const [categoryForm, setCategoryForm] = useState(createDefaultCategoryForm())
+  const [savingCategory, setSavingCategory] = useState(false)
 
   const fetchWorkspace = async ({ keepLoading = false } = {}) => {
     try {
@@ -1146,10 +1497,13 @@ const PorRequestsPage = () => {
       const response = await porApi.getWorkspace()
       setWorkspace({
         viewer: response?.viewer || null,
-        clubs: Array.isArray(response?.clubs) ? response.clubs : [],
+        porCategories: Array.isArray(response?.porCategories) ? response.porCategories : [],
         requests: Array.isArray(response?.requests) ? response.requests : [],
         stats: Array.isArray(response?.stats) ? response.stats : [],
         approversByStage: response?.approversByStage || {},
+        gymkhanaReviewerOptions: Array.isArray(response?.gymkhanaReviewerOptions)
+          ? response.gymkhanaReviewerOptions
+          : [],
       })
     } catch (err) {
       console.error("Failed to load POR workspace:", err)
@@ -1165,6 +1519,8 @@ const PorRequestsPage = () => {
 
   const viewer = workspace.viewer || {}
   const requests = workspace.requests || []
+  const porCategories = workspace.porCategories || []
+  const gymkhanaReviewerOptions = workspace.gymkhanaReviewerOptions || []
 
   const statusTabs = useMemo(() => buildStatusTabs(requests), [requests])
 
@@ -1190,7 +1546,7 @@ const PorRequestsPage = () => {
         request?.student?.rollNumber,
         request?.student?.email,
         request?.club?.name,
-        request?.gymkhanaCategoryLabel,
+        request?.porCategoryName,
         request?.positionTitle,
         request?.tenure,
         formatStatusLabel(request?.status),
@@ -1234,14 +1590,16 @@ const PorRequestsPage = () => {
 
     columns.push(
       {
-        header: "Club / POR",
+        header: "Category / POR",
         key: "club",
         render: (row) => {
           if (row.rowType === "group") {
-            const clubsLabel =
-              row.clubs.length === 1
-                ? row.clubs[0]
-                : `${row.clubs.length} clubs`
+            const categoryLabel =
+              row.categories.length === 1
+                ? row.categories[0]
+                : row.categories.length > 1
+                  ? `${row.categories.length} categories`
+                  : "Multiple categories"
             const positionsPreview =
               row.positions.length <= 2
                 ? row.positions.join(", ")
@@ -1253,8 +1611,13 @@ const PorRequestsPage = () => {
                   {row.requestCount} POR requests
                 </div>
                 <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
-                  {clubsLabel}
+                  {categoryLabel}
                 </div>
+                {row.clubs.length > 0 ? (
+                  <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                    {row.clubs.length === 1 ? row.clubs[0] : `${row.clubs.length} clubs`}
+                  </div>
+                ) : null}
                 <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                   {positionsPreview || "Multiple positions"}
                 </div>
@@ -1266,11 +1629,16 @@ const PorRequestsPage = () => {
           return (
             <div style={{ display: "grid", gap: "4px" }}>
               <div style={{ fontWeight: "var(--font-weight-medium)", color: "var(--color-text-primary)" }}>
-                {request.club.name || "—"}
+                {request.porCategoryName || "—"}
               </div>
               <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
                 {request.positionTitle || "—"}
               </div>
+              {request.club?.name ? (
+                <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-muted)" }}>
+                  Club: {request.club.name}
+                </div>
+              ) : null}
             </div>
           )
         },
@@ -1288,8 +1656,8 @@ const PorRequestsPage = () => {
         key: "category",
         render: (row) =>
           row.rowType === "group"
-            ? row.gymkhanaCategoryLabel || "—"
-            : row.request?.gymkhanaCategoryLabel || "—",
+            ? row.gymkhanaCategoryLabel || row.categories?.join(", ") || "—"
+            : row.request?.gymkhanaCategoryLabel || row.request?.porCategoryName || "—",
       })
     }
 
@@ -1336,7 +1704,7 @@ const PorRequestsPage = () => {
   const openEditModal = (request) => {
     setEditingRequest(request)
     setFormData({
-      clubId: request?.club?.id || "",
+      porCategoryId: request?.porCategory?.id || "",
       hasDisciplinaryAction: Boolean(request?.hasDisciplinaryAction),
       disciplinaryActionDetails: request?.disciplinaryActionDetails || "",
       positionTitle: request?.positionTitle || "",
@@ -1390,6 +1758,145 @@ const PorRequestsPage = () => {
       toast.error(err?.message || "Failed to save POR request.")
     } finally {
       setSavingForm(false)
+    }
+  }
+
+  const openCreateCategoryModal = () => {
+    setEditingCategory(null)
+    setCategoryForm(createDefaultCategoryForm())
+    setShowCategoryModal(true)
+  }
+
+  const openEditCategoryModal = (category) => {
+    setEditingCategory(category)
+    setCategoryForm({
+      name: category?.name || "",
+      gymkhanaSteps: (Array.isArray(category?.gymkhanaSteps) ? category.gymkhanaSteps : []).map((step, index) => ({
+        label: step?.label || `Gymkhana Step ${index + 1}`,
+        reviewerUserIds: Array.isArray(step?.reviewerUserIds) ? step.reviewerUserIds : [],
+        reviewerPickerId: "",
+      })),
+    })
+    setShowCategoryModal(true)
+  }
+
+  const closeCategoryManagerModal = () => {
+    setShowCategoryManagerModal(false)
+  }
+
+  const handleCategoryNameChange = (value) => {
+    setCategoryForm((current) => ({ ...current, name: value }))
+  }
+
+  const handleCategoryStepLabelChange = (stepIndex, value) => {
+    setCategoryForm((current) => ({
+      ...current,
+      gymkhanaSteps: current.gymkhanaSteps.map((step, index) =>
+        index === stepIndex ? { ...step, label: value } : step
+      ),
+    }))
+  }
+
+  const handleCategoryReviewerSelect = (stepIndex, value) => {
+    setCategoryForm((current) => ({
+      ...current,
+      gymkhanaSteps: current.gymkhanaSteps.map((step, index) =>
+        index === stepIndex ? { ...step, reviewerPickerId: value } : step
+      ),
+    }))
+  }
+
+  const handleAddCategoryReviewer = (stepIndex) => {
+    setCategoryForm((current) => ({
+      ...current,
+      gymkhanaSteps: current.gymkhanaSteps.map((step, index) => {
+        if (index !== stepIndex || !step.reviewerPickerId) return step
+        if (step.reviewerUserIds.includes(step.reviewerPickerId)) {
+          return { ...step, reviewerPickerId: "" }
+        }
+
+        return {
+          ...step,
+          reviewerUserIds: [...step.reviewerUserIds, step.reviewerPickerId],
+          reviewerPickerId: "",
+        }
+      }),
+    }))
+  }
+
+  const handleRemoveCategoryReviewer = (stepIndex, reviewerId) => {
+    setCategoryForm((current) => ({
+      ...current,
+      gymkhanaSteps: current.gymkhanaSteps.map((step, index) =>
+        index === stepIndex
+          ? {
+              ...step,
+              reviewerUserIds: step.reviewerUserIds.filter((value) => value !== reviewerId),
+            }
+          : step
+      ),
+    }))
+  }
+
+  const handleAddCategoryStep = () => {
+    setCategoryForm((current) => ({
+      ...current,
+      gymkhanaSteps: [...current.gymkhanaSteps, createEmptyCategoryStep(current.gymkhanaSteps.length)],
+    }))
+  }
+
+  const handleRemoveCategoryStep = (stepIndex) => {
+    setCategoryForm((current) => ({
+      ...current,
+      gymkhanaSteps: current.gymkhanaSteps.filter((_, index) => index !== stepIndex).map((step, index) => ({
+        ...step,
+        label: step.label || `Gymkhana Step ${index + 1}`,
+      })),
+    }))
+  }
+
+  const handleSubmitCategory = async () => {
+    const normalizedName = String(categoryForm.name || "").trim()
+    if (!normalizedName) {
+      toast.error("Please enter a category name.")
+      return
+    }
+
+    const invalidStep = (categoryForm.gymkhanaSteps || []).find(
+      (step) => !String(step.label || "").trim() || !Array.isArray(step.reviewerUserIds) || step.reviewerUserIds.length === 0
+    )
+    if (invalidStep) {
+      toast.error("Every Gymkhana step needs a label and at least one reviewer.")
+      return
+    }
+
+    const payload = {
+      name: normalizedName,
+      gymkhanaSteps: categoryForm.gymkhanaSteps.map((step) => ({
+        label: String(step.label || "").trim(),
+        reviewerUserIds: step.reviewerUserIds,
+      })),
+    }
+
+    setSavingCategory(true)
+    try {
+      if (editingCategory?.id) {
+        await porApi.updateCategory(editingCategory.id, payload)
+        toast.success("POR category updated successfully.")
+      } else {
+        await porApi.createCategory(payload)
+        toast.success("POR category created successfully.")
+      }
+
+      setShowCategoryModal(false)
+      setEditingCategory(null)
+      setCategoryForm(createDefaultCategoryForm())
+      await fetchWorkspace({ keepLoading: true })
+    } catch (err) {
+      console.error("Failed to save POR category:", err)
+      toast.error(err?.message || "Failed to save POR category.")
+    } finally {
+      setSavingCategory(false)
     }
   }
 
@@ -1618,7 +2125,7 @@ const PorRequestsPage = () => {
     return <ErrorState message={error} />
   }
 
-  if (!viewer?.mode || viewer.mode === "unknown" || viewer.mode === "gymkhana_other" || viewer.mode === "admin_other") {
+  if (!viewer?.mode || viewer.mode === "unknown" || viewer.mode === "admin_other") {
     return (
       <EmptyState
         icon={ShieldAlert}
@@ -1638,6 +2145,12 @@ const PorRequestsPage = () => {
           <Button onClick={openCreateModal}>
             <FilePenLine size={16} />
             Create POR Request
+          </Button>
+        ) : null}
+        {viewer.canManageCategories ? (
+          <Button variant="secondary" onClick={() => setShowCategoryManagerModal(true)}>
+            <Settings2 size={16} />
+            Manage Categories
           </Button>
         ) : null}
       </PageHeader>
@@ -1696,7 +2209,7 @@ const PorRequestsPage = () => {
       <PorRequestFormModal
         isOpen={showFormModal}
         isSaving={savingForm}
-        clubs={workspace.clubs}
+        porCategories={porCategories}
         formData={formData}
         onChange={handleFormChange}
         onClose={() => {
@@ -1706,6 +2219,35 @@ const PorRequestsPage = () => {
         }}
         onSubmit={handleSubmitForm}
         isEdit={Boolean(editingRequest)}
+      />
+
+      <PorCategoryManagementModal
+        isOpen={showCategoryManagerModal}
+        categories={porCategories}
+        onClose={closeCategoryManagerModal}
+        onAdd={openCreateCategoryModal}
+        onEdit={openEditCategoryModal}
+      />
+
+      <PorCategoryFormModal
+        isOpen={showCategoryModal}
+        isSaving={savingCategory}
+        formData={categoryForm}
+        reviewerOptions={gymkhanaReviewerOptions}
+        onChangeName={handleCategoryNameChange}
+        onChangeStepLabel={handleCategoryStepLabelChange}
+        onSelectReviewer={handleCategoryReviewerSelect}
+        onAddReviewer={handleAddCategoryReviewer}
+        onRemoveReviewer={handleRemoveCategoryReviewer}
+        onAddStep={handleAddCategoryStep}
+        onRemoveStep={handleRemoveCategoryStep}
+        onClose={() => {
+          setShowCategoryModal(false)
+          setEditingCategory(null)
+          setCategoryForm(createDefaultCategoryForm())
+        }}
+        onSubmit={handleSubmitCategory}
+        isEdit={Boolean(editingCategory)}
       />
 
       <PorRequestDetailModal

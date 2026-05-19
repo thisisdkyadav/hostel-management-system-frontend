@@ -387,6 +387,7 @@ export const getGymkhanaNavItems = (handleLogout, user = null) => {
   if (isElectionOfficer) {
     return [
       { name: "Elections", icon: BadgeCheck, section: "main", path: "/gymkhana/elections" },
+      { name: "POR", icon: BadgeCheck, section: "main", path: "/gymkhana/por" },
       createProfileItem("/gymkhana"),
       createLogoutItem(handleLogout),
     ]

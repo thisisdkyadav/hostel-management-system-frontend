@@ -138,9 +138,7 @@ const GymkhanaRoutes = () => (
             path="por"
             element={
               <RouteAccessGuard routeKey="route.gymkhana.por" fallback={<NotFoundPage />}>
-                <NonElectionOfficerOnly>
-                  <PorRequestsPage />
-                </NonElectionOfficerOnly>
+                <PorRequestsPage />
               </RouteAccessGuard>
             }
           />

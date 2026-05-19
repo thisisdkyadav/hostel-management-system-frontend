@@ -22,8 +22,16 @@ export const porApi = {
     return apiClient.post("/student-affairs/por", data).then(unwrapStandardResponse)
   },
 
+  createCategory: (data) => {
+    return apiClient.post("/student-affairs/por/categories", data).then(unwrapStandardResponse)
+  },
+
   update: (requestId, data) => {
     return apiClient.put(`/student-affairs/por/${requestId}`, data).then(unwrapStandardResponse)
+  },
+
+  updateCategory: (categoryId, data) => {
+    return apiClient.put(`/student-affairs/por/categories/${categoryId}`, data).then(unwrapStandardResponse)
   },
 
   approve: (requestId, payload = {}) => {
